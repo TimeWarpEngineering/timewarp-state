@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <LangVersion>7.3</LangVersion>
+    <PackageId>Blazor-State</PackageId>
+    <Version>0.0.1-alpha-0002</Version>
+    <Authors>Steven T. Cramer</Authors>
+    <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
+    <Copyright>Copyright 2018 (c) TimeWarp Enterprises Limited</Copyright>
+    <PackageTags>blazor state mediatr mediator pipeline</PackageTags>
+    <PackageProjectUrl>https://github.com/TimeWarpEngineering/blazor-state</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state</RepositoryUrl>
+    <LicenseUrl>https://github.com/torhovland/blazor-redux/blob/master/LICENSE</LicenseUrl>
+    <RootNamespace>BlazorState</RootNamespace>
+    <AssemblyName>BlazorState</AssemblyName>
+    <Company>TimeWarp Enterprises Limited</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- .js/.css files will be referenced via <script>/<link> tags; other content files will just be included in the app's 'dist' directory without any tags referencing them -->
+    <EmbeddedResource Include="Content\**\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Content\**\*.css" LogicalName="blazor:css:%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Content\**" Exclude="**\*.js;**\*.css" LogicalName="blazor:file:%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazor.Extensions.Logging" Version="0.1.1-dev" />
+    <PackageReference Include="MediatR" Version="4.1.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.4.0-preview1-10285" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.4.0-preview1-10285" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0-rc1-final" />
+    <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.4.0-preview1-10285" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Behaviors\State\" />
+  </ItemGroup>
+</Project>

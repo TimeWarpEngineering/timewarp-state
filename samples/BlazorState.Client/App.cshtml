@@ -1,0 +1,25 @@
+﻿@using BlazorState.Behaviors.ReduxDevTools
+@using BlazorState.Features.Routing
+@SingletonComponents
+<!--
+    Configuring this here is temporary. Later we'll move the app config
+    into Program.cs, and it won't be necessary to specify AppAssembly.
+-->
+<Router AppAssembly=typeof(Program).Assembly />
+
+@functions{
+
+  RenderFragment SingletonComponents;
+
+  protected override void OnInit()
+  {
+    base.OnInit();
+    SingletonComponents = builder =>
+    {
+      builder.OpenComponent<ReduxDevToolsComponent>(0);
+      builder.CloseComponent();
+      builder.OpenComponent<RouteManagerComponent>(1);
+      builder.CloseComponent();
+    };
+  }
+}
