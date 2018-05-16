@@ -2,9 +2,9 @@
 {
   using System;
   using System.Linq;
-  using BlazorState.Behaviors.JavaScriptInterop;
   using BlazorState.Behaviors.ReduxDevTools;
   using BlazorState.Behaviors.State;
+  using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
   using BlazorState.Store;
   using MediatR;
@@ -37,9 +37,9 @@
       }
 
       //TODO: some behaviors depend on others
-      // example ReduxDevToosl depends on StateBehavoir
+      // example ReduxDevToosl depends on CloneStateBehavoir
       // We should build a dependency list based on the Options and then register from the resulting list.
-      // If we seperate behaviors into own packages that will change things.
+      // If we separate behaviors into own packages that will change things.
       aServices.AddMediatR();
       if (options.UseCloneStateBehavior)
       {

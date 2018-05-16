@@ -1,6 +1,5 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools
+﻿namespace BlazorState.Features.JavaScriptInterop
 {
-  using BlazorState.Behaviors.JavaScriptInterop;
   using Microsoft.AspNetCore.Blazor.Components;
 
   /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.JavaScriptInterop
+﻿namespace BlazorState.Features.JavaScriptInterop
 {
   using System;
   using MediatR;

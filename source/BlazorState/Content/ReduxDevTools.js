@@ -5,13 +5,13 @@
       name: 'Blazor State',
       features: {
         pause: false, // start/pause recording of dispatched actions
-        lock: false, // lock/unlock dispatching actions and side effects    
+        lock: false, // lock/unlock dispatching actions and side effects
         persist: false, // persist states on page reloading
         export: false, // export history of actions in a file
         import: false, // import history of actions from a file
-        jump: true, // jump back and forth (time travelling)
+        jump: true, // jump back and forth (time traveling)
         skip: false, // skip (cancel) actions
-        reorder: false, // drag and drop actions in the history list 
+        reorder: false, // drag and drop actions in the history list
         dispatch: false, // dispatch custom actions or action creators
         test: false // generate tests for the selected actions
       }
@@ -58,7 +58,7 @@
       'JUMP_TO_STATE': 'BlazorState.Behaviors.ReduxDevTools.Features.JumpToState.Request',
       'RESET': undefined,
       'ROLLBACK': undefined,
-      'TOGGLE_ACTION': undefined,
+      'TOGGLE_ACTION': undefined
     };
     var blazorRequestType;
     switch (message.type) {
@@ -70,26 +70,6 @@
         break;
       case 'DISPATCH':
         blazorRequestType = dispatchRequests[message.payload.type];
-        //if (message.payload) {
-        //  switch (message.payload.type) {
-        //    case 'JUMP_TO_ACTION', 'JUMP_TO_STATE':
-        //      blazorRequestType = 'BlazorState.Behaviors.ReduxDevTools.Features.JumpToState.Request';
-        //      break;
-        //    case 'COMMIT':
-        //      // blazorRequestType = "BlazorState.Behaviors.ReduxDevTools.Features.Commit.Request";
-        //      break;
-        //    case 'TOGGLE_ACTION':
-        //      break;
-        //    case 'IMPORT_STATE':
-        //    //  blazorRequestType = "BlazorState.Behaviors.DevTools.Features.ImportState.Request"
-        //      break;
-        //    case 'RESET':
-        //    //  blazorRequestType = "BlazorState.Behaviors.DevTools.Features.Reset.Request"
-        //      break;
-        //    case 'ROLLBACK':
-        //      break;
-        //  }
-        //}
         break;
     }
     blazorRequestType &&

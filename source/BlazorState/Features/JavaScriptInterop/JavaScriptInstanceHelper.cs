@@ -1,7 +1,11 @@
-﻿using System;
-
-namespace BlazorState.Behaviors.JavaScriptInterop
+﻿namespace BlazorState.Features.JavaScriptInterop
 {
+  using System;
+
+  /// <summary>
+  /// Maintains a static reference to the JsonRequestHandler
+  /// </summary>
+  /// <remarks>Yes this is service locater anti-pattern. But is cleanest option so far.</remarks>
   public static class JavaScriptInstanceHelper
   {
     public static JsonRequestHandler JsonRequestHandler { get; set; }

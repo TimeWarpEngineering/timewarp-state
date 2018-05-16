@@ -1,6 +1,6 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.Commit
 {
-  using BlazorState.Behaviors.JavaScriptInterop;
+  using BlazorState.Features.JavaScriptInterop;
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
 
