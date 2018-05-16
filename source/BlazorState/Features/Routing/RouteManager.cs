@@ -7,7 +7,7 @@
   public class RouteManager
   {
     public RouteManager(
-      IUriHelper aUriHelper, 
+      IUriHelper aUriHelper,
       IMediator aMediator,
       IStore aStore)
     {
@@ -17,8 +17,8 @@
       Mediator.Send(new Routing.InitializeRoute.Request());
     }
 
-    private IUriHelper UriHelper { get; }
     private IMediator Mediator { get; }
+    private IUriHelper UriHelper { get; }
 
     private void OnLocationChanged(object sender, string e)
     {

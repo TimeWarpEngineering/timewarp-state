@@ -9,7 +9,7 @@
     <PackageReference Include="MediatR" Version="4.1.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="0.4.0-preview1-10285" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="0.4.0-preview1-10286" />
     <PackageReference Include="Scrutor" Version="2.2.2" />
   </ItemGroup>
 
