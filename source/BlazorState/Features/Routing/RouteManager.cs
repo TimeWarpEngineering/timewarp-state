@@ -13,18 +13,21 @@
     {
       UriHelper = aUriHelper;
       Mediator = aMediator;
+      Store = aStore;
       UriHelper.OnLocationChanged += OnLocationChanged;
       Mediator.Send(new Routing.InitializeRoute.Request());
     }
 
     private IMediator Mediator { get; }
+    private IStore Store { get; }
     private IUriHelper UriHelper { get; }
+    private RouteState RouteState => Store.GetState<RouteState>();
 
     private void OnLocationChanged(object sender, string e)
     {
       string absoluteUri = UriHelper.ToAbsoluteUri(e).ToString();
-
-      Mediator.Send(new Routing.ChangeRoute.Request { NewRoute = absoluteUri });
+      if(RouteState.Route != absoluteUri)
+        Mediator.Send(new Routing.ChangeRoute.Request { NewRoute = absoluteUri });
     }
   }
 }
