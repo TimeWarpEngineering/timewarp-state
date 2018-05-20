@@ -22,6 +22,7 @@
     <Company>TimeWarp Enterprises Limited</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/dev/assets/Logo.png</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
