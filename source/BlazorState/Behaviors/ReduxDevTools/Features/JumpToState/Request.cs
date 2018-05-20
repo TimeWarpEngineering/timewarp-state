@@ -1,12 +1,12 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.JumpToState
 {
-  using BlazorState.Behaviors.JavaScriptInterop;
+  using BlazorState.Features.JavaScriptInterop;
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
 
   public class Request : IRequest, IReduxRequest
   {
-    public Request() { }  //Needed for Deserialize below
+    public Request() { }  //Needed for De-serialize below
 
     public Request(string aRequestAsJson) : this()
     {

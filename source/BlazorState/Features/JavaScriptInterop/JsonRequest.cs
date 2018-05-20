@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.JavaScriptInterop
+﻿namespace BlazorState.Features.JavaScriptInterop
 {
   public class BaseJsonRequest
   {

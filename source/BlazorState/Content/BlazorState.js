@@ -1,7 +1,7 @@
 ﻿class BlazorState {
   constructor() {
     this.assemblyName = 'BlazorState';
-    this.namespace = 'BlazorState.Behaviors.JavaScriptInterop';
+    this.namespace = 'BlazorState.Features.JavaScriptInterop';
     this.typeName = 'JavaScriptInstanceHelper';
     this.methodName = 'Handle';
 
