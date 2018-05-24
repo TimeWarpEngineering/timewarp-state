@@ -18,7 +18,7 @@
     };
     this.Extension = this.GetExtension();
     this.DevTools = this.GetDevTools();
-    this.IsEnabled = this.DevTools !== null;
+    this.IsEnabled = this.DevTools ? true : false;
     this.Init();
   }
 
@@ -37,7 +37,7 @@
     const extension = window.__REDUX_DEVTOOLS_EXTENSION__;
 
     if (!extension) {
-      console.log('Redux DevTools not installed.');
+      console.log('Redux DevTools are not installed.');
     }
     return extension;
   }
@@ -113,6 +113,7 @@
 var reduxDevTools;
 
 Blazor.registerFunction('blazor-state.ReduxDevTools.create', function () {
+  console.log('js - blazor-state.ReduxDevTools.create');
   reduxDevTools = new ReduxDevTools();
   return reduxDevTools.IsEnabled;
 });
