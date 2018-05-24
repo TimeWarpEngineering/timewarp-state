@@ -35,7 +35,6 @@
       if (request != null)
       {
         Logger.LogDebug($"{GetType().Name}: request created of type {request.GetType().FullName}");
-
         await Mediator.Send(request);
       }
     }

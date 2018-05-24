@@ -6,7 +6,6 @@
   using BlazorState.Behaviors.ReduxDevTools.Features;
   using BlazorState.Store;
   using MediatR;
-  using MediatR.Pipeline;
   using Microsoft.Extensions.Logging;
 
   //TODO: this should be a IRequestPostProcessor but I couldn't get it to work.
@@ -47,7 +46,7 @@
         Logger.LogDebug($"{GetType().Name}: Call next");
         TResponse response = await next();
         Logger.LogDebug($"{GetType().Name}: Start Post Processing");
-        if (!(aRequest is IReduxRequest))
+        if (!(aRequest is IReduxRequest) && ReduxDevToolsInterop.IsEnabled)
         {
           ReduxDevToolsInterop.Dispatch(aRequest, Store.GetSerializableState());
         }
