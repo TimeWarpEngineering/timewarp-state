@@ -9,6 +9,7 @@
   public interface IDevToolsComponent
   {
     ComponentRegistry ComponentRegistry { get; set; }
+
     void ReRender();
   }
 }

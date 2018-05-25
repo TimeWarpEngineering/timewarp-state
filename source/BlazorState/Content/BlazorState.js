@@ -15,5 +15,4 @@
     const requestAsString = Blazor.platform.toDotNetString(requestAsJson);
     Blazor.platform.callMethod(this.requestHandler, null, [requestAsString]);
   }
-
 }

@@ -1,6 +1,5 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
-  using System;
   using Microsoft.AspNetCore.Blazor.Browser.Interop;
   using Microsoft.AspNetCore.Blazor.Components;
 

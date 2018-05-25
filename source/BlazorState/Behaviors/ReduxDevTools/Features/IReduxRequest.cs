@@ -3,5 +3,6 @@
   /// <summary>
   /// Marker Interface to allow for filtering of Devtools Requests
   /// </summary>
-  interface IReduxRequest { }
+  internal interface IReduxRequest
+  { }
 }
