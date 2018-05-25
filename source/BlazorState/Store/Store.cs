@@ -1,10 +1,9 @@
-﻿namespace BlazorState.Store
+﻿namespace BlazorState
 {
   using System;
   using System.Collections.Generic;
   using System.Dynamic;
   using System.Linq;
-  using BlazorState.State;
   using Microsoft.AspNetCore.Blazor;
   using Microsoft.Extensions.Logging;
 
@@ -78,6 +77,19 @@
       }
     }
 
+    public void SetState(IState aNewState)
+    {
+      string typeName = aNewState.GetType().FullName;
+      SetState(typeName, aNewState);
+    }
+
+    public void SetState(string typeName, object aNewState)
+    {
+      var newState = (IState)aNewState;
+      Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{typeName}: Guid:{newState.Guid}");
+      States[typeName] = newState;
+    }
+
     private void LoadStateFromJson(KeyValuePair<string, object> keyValuePair)
     {
       string typeName = keyValuePair.Key;
@@ -99,19 +111,6 @@
 
       // reassign
       SetState(typeName, newState);
-    }
-
-    public void SetState(IState aNewState)
-    {
-      string typeName = aNewState.GetType().FullName;
-      SetState(typeName, aNewState);
-    }
-
-    public void SetState(string typeName, object aNewState)
-    {
-      var newState = (IState)aNewState;
-      Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{typeName}: Guid:{newState.Guid}");
-      States[typeName] = newState;
     }
   }
 }

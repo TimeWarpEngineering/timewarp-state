@@ -3,8 +3,7 @@
   using System;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.State;
-  using BlazorState.Store;
+  using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
 

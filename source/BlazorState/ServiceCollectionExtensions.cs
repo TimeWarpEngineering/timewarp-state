@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Extentions.DependencyInjection
+﻿namespace BlazorState
 {
   using System;
   using System.Linq;
@@ -6,7 +6,6 @@
   using BlazorState.Behaviors.State;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
-  using BlazorState.Store;
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;

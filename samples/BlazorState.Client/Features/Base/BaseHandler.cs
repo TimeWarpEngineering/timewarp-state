@@ -1,6 +1,4 @@
 ﻿using BlazorState.Client.State;
-using BlazorState.State;
-using BlazorState.Store;
 using MediatR;
 
 namespace BlazorState.Client.Features.Base
@@ -10,7 +8,7 @@ namespace BlazorState.Client.Features.Base
   /// </summary>
   /// <typeparam name="TRequest"></typeparam>
   /// <typeparam name="TState"></typeparam>
-  public abstract class BaseHandler<TRequest, TState> : Handlers.RequestHandler<TRequest, TState>
+  public abstract class BaseHandler<TRequest, TState> : RequestHandler<TRequest, TState>
     where TRequest : IRequest<TState>
     where TState : IState
   {

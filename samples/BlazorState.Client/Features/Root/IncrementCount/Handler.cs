@@ -2,9 +2,9 @@
 {
   using System.Threading;
   using System.Threading.Tasks;
+  using BlazorState;
   using BlazorState.Client.Features.Base;
   using BlazorState.Client.State;
-  using BlazorState.Store;
 
   public class Handler : BaseHandler<Request, CounterState>
   {

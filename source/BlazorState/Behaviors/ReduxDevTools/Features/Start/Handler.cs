@@ -2,14 +2,14 @@
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Store;
+  using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class Handler : IRequestHandler<Request>
+  public class StartHandler : IRequestHandler<StartRequest>
   {
-    public Handler(
-            ILogger<Handler> aLogger,
+    public StartHandler(
+            ILogger<StartHandler> aLogger,
       IStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop)
     {
@@ -23,7 +23,7 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task Handle(Request aRequest, CancellationToken aCancellationToken)
+    public Task Handle(StartRequest aRequest, CancellationToken aCancellationToken)
     {
       return Task.CompletedTask;
     }

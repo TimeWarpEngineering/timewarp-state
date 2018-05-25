@@ -1,6 +1,6 @@
 ﻿namespace BlazorState.Client.State
 {
-  using BlazorState.State;
+  using BlazorState;
 
   public class CounterState : State<CounterState>
   {

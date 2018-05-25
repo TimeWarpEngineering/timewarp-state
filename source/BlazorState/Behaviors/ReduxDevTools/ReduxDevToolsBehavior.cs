@@ -3,8 +3,8 @@
   using System;
   using System.Threading;
   using System.Threading.Tasks;
+  using BlazorState;
   using BlazorState.Behaviors.ReduxDevTools.Features;
-  using BlazorState.Store;
   using MediatR;
   using Microsoft.Extensions.Logging;
 

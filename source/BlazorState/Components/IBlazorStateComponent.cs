@@ -1,9 +1,7 @@
-﻿using BlazorState.Behaviors.ReduxDevTools;
-using BlazorState.Store;
-using MediatR;
-
-namespace BlazorState.Components
+﻿namespace BlazorState
 {
+  using MediatR;
+
   /// <summary>
   /// Minimum implementation needed for BlazorState to function
   /// </summary>
@@ -15,7 +13,7 @@ namespace BlazorState.Components
   ///    [Inject] public IStore Store { get; set; }
   //// }
   /// </example>
-public interface IBlazorStateComponent
+  public interface IBlazorStateComponent
   {
     IMediator Mediator { get; set; }
     IStore Store { get; set; }

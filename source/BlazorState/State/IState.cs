@@ -1,4 +1,4 @@
-﻿namespace BlazorState.State
+﻿namespace BlazorState
 {
   using System;
 

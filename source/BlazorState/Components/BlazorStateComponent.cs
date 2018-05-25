@@ -1,6 +1,5 @@
-﻿namespace BlazorState.Components
+﻿namespace BlazorState
 {
-  using BlazorState.Store;
   using MediatR;
   using Microsoft.AspNetCore.Blazor.Components;
 

@@ -2,11 +2,11 @@
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Store;
+  using BlazorState;
   using CounterSample.Client.Features.Counter.IncrementCount;
   using CounterSample.Client.Features.Counter.State;
 
-  public class IncrementCountHandler : Handlers.RequestHandler<IncrementCountRequest, CounterState>
+  public class IncrementCountHandler : RequestHandler<IncrementCountRequest, CounterState>
   {
     public IncrementCountHandler(IStore aStore) : base(aStore) { }
 
