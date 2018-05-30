@@ -12,7 +12,7 @@ This sample shows how to take the standard Visual Studio Blazor template and add
  
 ### Configure the services
 1. In the `CounterSample.Client` project in the `Program.cs` file. 
-2. Add `using BlazorState.Extentions.DependencyInjection;`
+2. Add `using BlazorState;`
 3. Change the serviceProvider initialization code to add Blazor-State
 ```
   var serviceProvider = new BrowserServiceProvider(services =>
@@ -36,7 +36,7 @@ I organize the Features by the State they act upon.
 ### Adding state
 1. In the `Features` folder add a folder named `Counter`.
 1. Within the `Counter` folder create a class file named `CounterState.cs`.
-2. Add `using BlazorState.State;`
+2. Add `using BlazorState;`
 
 Your class should:
 * descend from `State<CounterState>`:
