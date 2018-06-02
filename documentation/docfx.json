@@ -4,8 +4,10 @@
       "src": [
         {
           "files": [
-            "src/**.csproj"
-          ]
+            "source/BlazorState/BlazorState.csproj",
+            "samples/**.csproj"
+          ],
+          "src": "../"
         }
       ],
       "dest": "api",
@@ -22,10 +24,16 @@
       },
       {
         "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
+          "docs/**.md",
+          "docs/**/toc.yml",
           "toc.yml",
           "*.md"
+        ]
+      },
+      {
+        "src":"../",
+        "files":[
+          "samples/**.md"
         ]
       }
     ],
@@ -34,7 +42,14 @@
         "files": [
           "images/**"
         ]
+      },
+      {
+        "src": "../",
+        "files": [
+          "assets/**"
+        ]
       }
+
     ],
     "overwrite": [
       {
@@ -51,7 +66,7 @@
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "default"
+      "template"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
