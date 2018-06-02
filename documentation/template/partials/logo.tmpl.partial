@@ -2,5 +2,5 @@
 
 
 <a class="navbar-brand" href="{{_rel}}index.html">
-  <img id="logo" src="{{_rel}}../assets/Logo.png" height="46" width="46" alt="{{_appName}}" >
+  <img id="logo" src="{{_rel}}assets/Logo.png" height="46" width="46" alt="{{_appName}}" >
 </a>
