@@ -1,9 +1,8 @@
 ﻿namespace BlazorState.Client.State
 {
   using System.Collections.Generic;
-  using System.Linq;
+  using BlazorState;
   using BlazorState.Shared;
-  using BlazorState.State;
 
   public class WeatherForecastsState : State<WeatherForecastsState>
   {

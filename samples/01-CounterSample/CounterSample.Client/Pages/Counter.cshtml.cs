@@ -1,5 +1,4 @@
-﻿using BlazorState.Components;
-using BlazorState.Store;
+﻿using BlazorState;
 using CounterSample.Client.Features.Counter.IncrementCount;
 using CounterSample.Client.Features.Counter.State;
 using MediatR;

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using BlazorState.State;
-
-namespace BlazorState.Store
+﻿namespace BlazorState
 {
+  using System;
+  using System.Collections.Generic;
+
   public interface IStore
   {
     Guid Guid { get; }

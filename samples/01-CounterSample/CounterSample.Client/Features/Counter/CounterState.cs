@@ -1,6 +1,6 @@
 ﻿namespace CounterSample.Client.Features.Counter.State
 {
-  using BlazorState.State;
+  using BlazorState;
 
   public class CounterState : State<CounterState>
   {

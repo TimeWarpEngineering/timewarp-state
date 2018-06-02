@@ -7,14 +7,14 @@
   /// <summary>
   /// Request received from Redux Dev Tools when one presses the Start Button.
   /// </summary>
-  public class Request : IRequest, IReduxRequest
+  public class StartRequest : IRequest, IReduxRequest
   {
-    public Request() { }  //Needed for De serialize below
+    public StartRequest() { }  //Needed for De serialize below
 
-    public Request(string aRequestAsJson) : this()
+    public StartRequest(string aRequestAsJson) : this()
     {
-      JsonRequest<Request> jsonRequest =
-        JsonUtil.Deserialize<JsonRequest<Request>>(aRequestAsJson);
+      JsonRequest<StartRequest> jsonRequest =
+        JsonUtil.Deserialize<JsonRequest<StartRequest>>(aRequestAsJson);
 
       Type = jsonRequest.Payload.Type;
       Source = jsonRequest.Payload.Source;

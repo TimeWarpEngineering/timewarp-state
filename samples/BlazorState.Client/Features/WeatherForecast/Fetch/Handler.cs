@@ -4,10 +4,9 @@
   using System.Net.Http;
   using System.Threading;
   using System.Threading.Tasks;
+  using BlazorState;
   using BlazorState.Client.State;
-  using BlazorState.Handlers;
   using BlazorState.Shared;
-  using BlazorState.Store;
   using Microsoft.AspNetCore.Blazor;
 
   public class Handler : RequestHandler<Request, WeatherForecastsState>

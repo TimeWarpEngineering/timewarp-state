@@ -1,9 +1,7 @@
-﻿namespace BlazorState.Handlers
+﻿namespace BlazorState
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.State;
-  using BlazorState.Store;
   using MediatR;
 
   public abstract class RequestHandler<TRequest, TState> : IRequestHandler<TRequest, TState>

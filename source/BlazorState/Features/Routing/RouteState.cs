@@ -1,6 +1,6 @@
 ﻿namespace BlazorState.Features.Routing
 {
-  using BlazorState.State;
+  using BlazorState;
 
   /// <summary>
   /// Maintain the Route in Blazor-State

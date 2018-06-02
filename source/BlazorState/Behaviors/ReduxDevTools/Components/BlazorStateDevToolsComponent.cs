@@ -1,7 +1,7 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
   using System;
-  using BlazorState.Components;
+  using BlazorState;
   using Microsoft.AspNetCore.Blazor.Components;
 
   /// <summary>

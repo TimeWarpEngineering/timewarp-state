@@ -1,14 +1,13 @@
-﻿namespace BlazorState.Features.Routing.InitializeRoute
+﻿namespace BlazorState.Features.Routing
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Handlers;
-  using BlazorState.Store;
+  using BlazorState;
   using Microsoft.AspNetCore.Blazor.Services;
 
-  public class Handler : RequestHandler<Request, RouteState>
+  public class InitializeRouteHandler : RequestHandler<InitializeRouteRequest, RouteState>
   {
-    public Handler(
+    public InitializeRouteHandler(
       IStore aStore,
       IUriHelper aUriHelper
       ) : base(aStore)
@@ -20,7 +19,7 @@
 
     private IUriHelper UriHelper { get; }
 
-    public override Task<RouteState> Handle(Request request, CancellationToken cancellationToken)
+    public override Task<RouteState> Handle(InitializeRouteRequest request, CancellationToken cancellationToken)
     {
       RouteState.Route = UriHelper.GetAbsoluteUri().ToString();
       return Task.FromResult(RouteState);

@@ -1,8 +1,7 @@
 ﻿namespace BlazorState.Client
 {
-  using System;
   using Blazor.Extensions.Logging;
-  using BlazorState.Extentions.DependencyInjection;
+  using BlazorState;
   using Microsoft.AspNetCore.Blazor.Browser.Rendering;
   using Microsoft.AspNetCore.Blazor.Browser.Services;
   using Microsoft.Extensions.DependencyInjection;

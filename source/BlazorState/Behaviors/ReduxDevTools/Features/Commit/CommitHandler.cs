@@ -2,14 +2,14 @@
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Store;
+  using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class Handler : IRequestHandler<Request>
+  public class CommitHandler : IRequestHandler<CommitRequest>
   {
-    public Handler(
-      ILogger<Handler> aLogger,
+    public CommitHandler(
+      ILogger<CommitHandler> aLogger,
       IStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop)
     {
@@ -23,11 +23,11 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task Handle(Request aRequest, CancellationToken aCancellationToken)
+    public Task Handle(CommitRequest aRequest, CancellationToken aCancellationToken)
     {
       Logger.LogDebug($"{GetType().FullName}");
       Logger.LogDebug($"{aRequest.Type}");
-      
+
       ReduxDevToolsInterop.DispatchInit(Store.GetSerializableState());
       return Task.CompletedTask;
     }

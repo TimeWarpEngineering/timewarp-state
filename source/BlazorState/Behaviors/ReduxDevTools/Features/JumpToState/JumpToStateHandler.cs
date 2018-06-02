@@ -2,14 +2,14 @@
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Store;
+  using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class Handler : IRequestHandler<Request>
+  public class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
   {
-    public Handler(
-      ILogger<Handler> aLogger,
+    public JumpToStateHandler(
+      ILogger<JumpToStateHandler> aLogger,
       IStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop,
       ComponentRegistry aComponentRegistry)
@@ -26,7 +26,7 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task Handle(Request aRequest, CancellationToken aCancellationToken)
+    public Task Handle(JumpToStateRequest aRequest, CancellationToken aCancellationToken)
     {
       Logger.LogDebug($"{GetType().FullName}");
       Logger.LogDebug($"{aRequest.JsonRequest.Payload.State}");

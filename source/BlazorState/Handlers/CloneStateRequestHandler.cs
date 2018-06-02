@@ -1,7 +1,5 @@
-﻿namespace BlazorState.Handlers
+﻿namespace BlazorState
 {
-  using BlazorState.State;
-  using BlazorState.Store;
   using MediatR;
 
   /// <summary>

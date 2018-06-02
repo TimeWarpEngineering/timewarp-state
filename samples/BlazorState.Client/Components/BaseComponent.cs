@@ -4,7 +4,7 @@
   using BlazorState.Client.State;
 
   /// <summary>
-  /// Makes access the State a little easier and by inheriting from 
+  /// Makes access the State a little easier and by inheriting from
   /// BlazorStateDevToolsComponent it allows for ReduxDevTools operation.
   /// </summary>
   /// <remarks>

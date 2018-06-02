@@ -4,21 +4,21 @@
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
 
-  public class Request : IRequest, IReduxRequest
+  public class JumpToStateRequest : IRequest, IReduxRequest
   {
-    public Request() { }  //Needed for De-serialize below
+    public JumpToStateRequest() { }  //Needed for De-serialize below
 
-    public Request(string aRequestAsJson) : this()
+    public JumpToStateRequest(string aRequestAsJson) : this()
     {
       JsonRequest =
-        JsonUtil.Deserialize<JsonRequest<DispatchRequest<Request>>>(aRequestAsJson);
+        JsonUtil.Deserialize<JsonRequest<DispatchRequest<JumpToStateRequest>>>(aRequestAsJson);
 
       Type = JsonRequest.Payload.Type;
       ActionId = JsonRequest.Payload.Payload.ActionId;
     }
 
     public int ActionId { get; set; }
-    public JsonRequest<DispatchRequest<Request>> JsonRequest { get; }
+    public JsonRequest<DispatchRequest<JumpToStateRequest>> JsonRequest { get; }
     public string Type { get; set; }
   }
 }

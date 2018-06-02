@@ -1,14 +1,13 @@
-﻿namespace BlazorState.Features.Routing.ChangeRoute
+﻿namespace BlazorState.Features.Routing
 {
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Handlers;
-  using BlazorState.Store;
+  using BlazorState;
   using Microsoft.AspNetCore.Blazor.Services;
 
-  public class Handler : RequestHandler<Request, RouteState>
+  public class ChangeRouteHandler : RequestHandler<ChangeRouteRequest, RouteState>
   {
-    public Handler(
+    public ChangeRouteHandler(
       IStore aStore,
       IUriHelper aUriHelper
       ) : base(aStore)
@@ -20,7 +19,7 @@
 
     private IUriHelper UriHelper { get; }
 
-    public override Task<RouteState> Handle(Request request, CancellationToken cancellationToken)
+    public override Task<RouteState> Handle(ChangeRouteRequest request, CancellationToken cancellationToken)
     {
       if (RouteState.Route != request.NewRoute)
       {
