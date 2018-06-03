@@ -8,6 +8,8 @@ namespace CounterSample.Client
   {
     private static void Main(string[] args)
     {
+      #region serviceProvider initialization
+
       var serviceProvider = new BrowserServiceProvider(services =>
       {
         services.AddBlazorState(options =>
@@ -17,6 +19,8 @@ namespace CounterSample.Client
           options.UseCloneStateBehavior = true; // The basics.
         });
       });
+
+      #endregion serviceProvider initialization
 
       new BrowserRenderer(serviceProvider).AddComponent<App>("app");
     }

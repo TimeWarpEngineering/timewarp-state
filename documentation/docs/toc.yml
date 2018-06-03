@@ -1,8 +1,6 @@
-- name: Getting Started
-  href: GettingStarted.md
-- name: Blazor-State Sample
-  href: Details1.md
-- name: Details 2
-  href: Details2.md
-- name: README
-  href: ../samples/01-CounterSample/README.html
+- name: Blazor-State Overview
+  href: overview.md
+- name: Blazor-State Sample Application Part 1
+  topicUid: BlazorStateSample:01:README.md
+- name: Blazor-State Sample Application Part 2
+  topicUid: BlazorStateSample:Part2.md

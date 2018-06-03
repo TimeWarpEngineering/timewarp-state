@@ -2,6 +2,9 @@
 {
   using BlazorState;
 
+  // region used by docfx
+  #region CounterState
+    
   public class CounterState : State<CounterState>
   {
     /// <summary>
@@ -30,4 +33,5 @@
       Count = 3;
     }
   }
+  #endregion
 }

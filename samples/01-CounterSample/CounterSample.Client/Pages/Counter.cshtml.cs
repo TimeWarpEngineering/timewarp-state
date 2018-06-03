@@ -6,16 +6,24 @@ using Microsoft.AspNetCore.Blazor.Components;
 
 namespace CounterSample.Client.Pages
 {
+  # region CounterModel
+
   public class CounterModel : BlazorComponent, IBlazorStateComponent
   {
     public CounterState CounterState => Store.GetState<CounterState>();
     [Inject] public IMediator Mediator { get; set; }
     [Inject] public IStore Store { get; set; }
 
+    #region IncrementCount
+
     public void IncrementCount()
     {
       var incrementCountRequest = new IncrementCountRequest { Amount = 3 };
       Mediator.Send(incrementCountRequest);
     }
+
+    #endregion IncrementCount
   }
+
+  #endregion
 }

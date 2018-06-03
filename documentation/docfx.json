@@ -33,7 +33,8 @@
       {
         "src":"../",
         "files":[
-          "samples/**.md"
+          "samples/**.md",
+          "*.md"
         ]
       }
     ],
