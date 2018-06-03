@@ -6,7 +6,7 @@ Blazor-State is a client side pipeline architecture utilizing MediatR with plugi
 If you are familiar with 
 [MediatR](https://github.com/jbogard/MediatR]),
  [Redux](https://redux.js.org/), 
-or the [Command Pattern](https://en.wikipedia.org/wiki/Command_pattern]) 
+or the [Command Pattern](https://en.wikipedia.org/wiki/Command_pattern) 
 you will feel right at home.
 All of the behaviors are written as plug-ins/middle-ware and attached to the MediatR pipeline. 
 You can pick and choose which behaviors you would like to use or even write your own.
