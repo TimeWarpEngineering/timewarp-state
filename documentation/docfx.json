@@ -62,11 +62,15 @@
         ]
       }
     ],
+    "globalMetadata": {
+      "_appFaviconPath": "assets/Logo.png",
+      "_appLogoPath":"assets/Logo.svg"
+    },
     "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
-      "template"
+      "default"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
