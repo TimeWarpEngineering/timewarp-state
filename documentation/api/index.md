@@ -1,2 +1,3 @@
-# PLACEHOLDER
-TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
+# Blazor-State API
+Currently only the public API is included in the DocFx generated documents.  
+Hopefully soon there will be easy way to include all.
