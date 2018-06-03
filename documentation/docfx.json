@@ -4,8 +4,7 @@
       "src": [
         {
           "files": [
-            "source/BlazorState/BlazorState.csproj",
-            "samples/**.csproj"
+            "source/BlazorState/BlazorState.csproj"
           ],
           "src": "../"
         }

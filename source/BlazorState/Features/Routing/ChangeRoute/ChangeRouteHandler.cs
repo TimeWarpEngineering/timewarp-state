@@ -5,7 +5,7 @@
   using BlazorState;
   using Microsoft.AspNetCore.Blazor.Services;
 
-  public class ChangeRouteHandler : RequestHandler<ChangeRouteRequest, RouteState>
+  internal class ChangeRouteHandler : RequestHandler<ChangeRouteRequest, RouteState>
   {
     public ChangeRouteHandler(
       IStore aStore,

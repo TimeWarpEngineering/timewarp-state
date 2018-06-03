@@ -7,7 +7,7 @@
   /// <summary>
   /// Request received from Redux Dev Tools when one presses the Start Button.
   /// </summary>
-  public class StartRequest : IRequest, IReduxRequest
+  internal class StartRequest : IRequest, IReduxRequest
   {
     public StartRequest() { }  //Needed for De serialize below
 

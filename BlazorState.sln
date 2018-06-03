@@ -26,16 +26,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Todo.md = Todo.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-CounterSample", "01-CounterSample", "{57EACF4A-7495-49D4-A9E2-5F3D49F40BF0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorStateSample", "BlazorStateSample", "{57EACF4A-7495-49D4-A9E2-5F3D49F40BF0}"
 	ProjectSection(SolutionItems) = preProject
-		samples\01-CounterSample\README.md = samples\01-CounterSample\README.md
+		samples\BlazorStateSample\README.md = samples\BlazorStateSample\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CounterSample.Server", "samples\01-CounterSample\CounterSample.Server\CounterSample.Server.csproj", "{B7D76903-D4CF-4C43-86CC-1C6F9089E95D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Server", "samples\BlazorStateSample\BlazorStateSample.Server\BlazorStateSample.Server.csproj", "{B7D76903-D4CF-4C43-86CC-1C6F9089E95D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CounterSample.Client", "samples\01-CounterSample\CounterSample.Client\CounterSample.Client.csproj", "{28D4B029-1886-4648-BA9F-4D65DE6E406D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Client", "samples\BlazorStateSample\BlazorStateSample.Client\BlazorStateSample.Client.csproj", "{28D4B029-1886-4648-BA9F-4D65DE6E406D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CounterSample.Shared", "samples\01-CounterSample\CounterSample.Shared\CounterSample.Shared.csproj", "{345CF583-F678-4089-A636-4B81B56FC34B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Shared", "samples\BlazorStateSample\BlazorStateSample.Shared\BlazorStateSample.Shared.csproj", "{345CF583-F678-4089-A636-4B81B56FC34B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

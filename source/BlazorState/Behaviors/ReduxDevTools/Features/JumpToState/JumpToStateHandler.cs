@@ -6,7 +6,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
+  internal class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
   {
     public JumpToStateHandler(
       ILogger<JumpToStateHandler> aLogger,

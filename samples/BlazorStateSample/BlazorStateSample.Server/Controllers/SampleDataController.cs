@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CounterSample.Shared;
+using BlazorStateSample.Shared;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CounterSample.Server.Controllers
+namespace BlazorStateSample.Server.Controllers
 {
   [Route("api/[controller]")]
   public class SampleDataController : Controller

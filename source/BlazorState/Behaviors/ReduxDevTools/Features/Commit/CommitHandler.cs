@@ -6,7 +6,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class CommitHandler : IRequestHandler<CommitRequest>
+  internal class CommitHandler : IRequestHandler<CommitRequest>
   {
     public CommitHandler(
       ILogger<CommitHandler> aLogger,

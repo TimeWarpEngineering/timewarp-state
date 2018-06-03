@@ -4,7 +4,7 @@
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
 
-  public class JumpToStateRequest : IRequest, IReduxRequest
+  internal class JumpToStateRequest : IRequest, IReduxRequest
   {
     public JumpToStateRequest() { }  //Needed for De-serialize below
 

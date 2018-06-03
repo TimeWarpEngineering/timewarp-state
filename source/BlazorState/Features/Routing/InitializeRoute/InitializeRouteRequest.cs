@@ -2,5 +2,5 @@
 {
   using MediatR;
 
-  public class InitializeRouteRequest : IRequest<RouteState> { }
+  internal class InitializeRouteRequest : IRequest<RouteState> { }
 }

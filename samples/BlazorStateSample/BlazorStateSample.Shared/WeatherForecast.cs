@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CounterSample.Shared
+namespace BlazorStateSample.Shared
 {
   public class WeatherForecast
   {

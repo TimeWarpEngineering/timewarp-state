@@ -1,6 +1,6 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
-  public class DispatchRequest<TPayload>
+  internal class DispatchRequest<TPayload>
   {
     public int Id { get; set; }
     public TPayload Payload { get; set; }

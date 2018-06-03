@@ -3,7 +3,7 @@
   using Microsoft.AspNetCore.Blazor.Browser.Interop;
   using Microsoft.Extensions.Logging;
 
-  public class ReduxDevToolsInterop
+  internal class ReduxDevToolsInterop
   {
     private const string jsFunctionName = "ReduxDevToolsDispatch";
 

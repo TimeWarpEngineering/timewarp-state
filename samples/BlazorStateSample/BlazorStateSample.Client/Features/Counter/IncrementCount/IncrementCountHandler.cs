@@ -3,8 +3,8 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using CounterSample.Client.Features.Counter.IncrementCount;
-  using CounterSample.Client.Features.Counter.State;
+  using BlazorStateSample.Client.Features.Counter.IncrementCount;
+  using BlazorStateSample.Client.Features.Counter.State;
 
   public class IncrementCountHandler : RequestHandler<IncrementCountRequest, CounterState>
   {

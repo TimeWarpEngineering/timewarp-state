@@ -6,7 +6,7 @@
   /// </summary>
   /// <example>
   /// </example>
-  public interface IDevToolsComponent
+  internal interface IDevToolsComponent
   {
     ComponentRegistry ComponentRegistry { get; set; }
 

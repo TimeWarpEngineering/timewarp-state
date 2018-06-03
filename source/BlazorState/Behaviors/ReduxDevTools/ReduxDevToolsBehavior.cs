@@ -15,7 +15,7 @@
   /// </summary>
   /// <typeparam name="TRequest"></typeparam>
   /// <typeparam name="TResponse"></typeparam>
-  public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+  internal class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   //public class ReduxDevToolsBehavior<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
     public ReduxDevToolsBehavior(

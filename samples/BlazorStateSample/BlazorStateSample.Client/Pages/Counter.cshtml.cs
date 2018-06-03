@@ -1,10 +1,10 @@
 ﻿using BlazorState;
-using CounterSample.Client.Features.Counter.IncrementCount;
-using CounterSample.Client.Features.Counter.State;
+using BlazorStateSample.Client.Features.Counter.IncrementCount;
+using BlazorStateSample.Client.Features.Counter.State;
 using MediatR;
 using Microsoft.AspNetCore.Blazor.Components;
 
-namespace CounterSample.Client.Pages
+namespace BlazorStateSample.Client.Pages
 {
   # region CounterModel
 

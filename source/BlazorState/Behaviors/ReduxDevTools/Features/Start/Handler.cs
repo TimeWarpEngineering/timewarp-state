@@ -6,7 +6,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class StartHandler : IRequestHandler<StartRequest>
+  internal class StartHandler : IRequestHandler<StartRequest>
   {
     public StartHandler(
             ILogger<StartHandler> aLogger,

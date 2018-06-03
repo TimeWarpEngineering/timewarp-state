@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Blazor.Browser.Rendering;
 using Microsoft.AspNetCore.Blazor.Browser.Services;
 
-namespace CounterSample.Client
+namespace BlazorStateSample.Client
 {
   public class Program
   {

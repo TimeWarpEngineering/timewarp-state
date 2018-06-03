@@ -2,7 +2,7 @@
 {
   using MediatR;
 
-  public class ChangeRouteRequest : IRequest<RouteState>
+  internal class ChangeRouteRequest : IRequest<RouteState>
   {
     public string NewRoute { get; set; }
   }

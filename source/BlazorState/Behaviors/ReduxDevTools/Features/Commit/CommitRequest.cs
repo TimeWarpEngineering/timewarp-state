@@ -4,7 +4,7 @@
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
 
-  public class CommitRequest : IRequest, IReduxRequest
+  internal class CommitRequest : IRequest, IReduxRequest
   {
     public CommitRequest() { }  //Needed for Deserialize below
 

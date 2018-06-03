@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CounterSample.Client\CounterSample.Client.csproj" />
-    <ProjectReference Include="..\CounterSample.Shared\CounterSample.Shared.csproj" />
+    <ProjectReference Include="..\BlazorStateSample.Client\BlazorStateSample.Client.csproj" />
+    <ProjectReference Include="..\BlazorStateSample.Shared\BlazorStateSample.Shared.csproj" />
   </ItemGroup>
-
 </Project>

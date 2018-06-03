@@ -7,7 +7,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  public class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+  internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
     public CloneStateBehavior(
       ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,

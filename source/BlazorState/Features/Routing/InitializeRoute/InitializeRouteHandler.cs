@@ -5,7 +5,7 @@
   using BlazorState;
   using Microsoft.AspNetCore.Blazor.Services;
 
-  public class InitializeRouteHandler : RequestHandler<InitializeRouteRequest, RouteState>
+  internal class InitializeRouteHandler : RequestHandler<InitializeRouteRequest, RouteState>
   {
     public InitializeRouteHandler(
       IStore aStore,

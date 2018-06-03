@@ -21,7 +21,7 @@ This sample shows how to add Blazor-State to the standard Visual Studio `Blazor 
 2. Add `using BlazorState;`
 3. Change the serviceProvider initialization code to add Blazor-State
 
-[!code-csharp[serviceProvider initialization](../01-CounterSample/CounterSample.Client/Program.cs?name=serviceProvider initialization)] 
+[!code-csharp[serviceProvider initialization](../BlazorStateSample/BlazorStateSample.Client/Program.cs?name=serviceProvider initialization)] 
 
 ## File Strucutre of: Feature, State, Request, Handler 
 With the mediator pattern for each `Request` there is an associated `Handler` 
@@ -47,7 +47,7 @@ Your class should:
 
 4. Enter the code as follows:
 
-[!code-csharp[CounterState](../01-CounterSample/CounterSample.Client/Features/Counter/CounterState.cs?name=CounterState)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/CounterState.cs?name=CounterState)]
 
 ## Seperation of HTML and C#.
 I like to keep my C# code separated from the HTML and yet colocated.
@@ -69,7 +69,7 @@ CounterModel should:
  optionally:
 * add property to access State from the store.
 as follows:
-[!code-csharp[CounterState](../01-CounterSample/CounterSample.Client/Pages/Counter.cshtml.cs?range=11-15)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Pages/Counter.cshtml.cs?range=11-15)]
 
 ## Displaying state in the user interface.
 1. Edit `Pages\Counter.cshtml` and add the following `inherits` clause.
@@ -79,7 +79,7 @@ as follows:
 2. Change the HTML that displays the value of the counter to `@CounterState.Count`.
 3. Remove the @functions sections.
 
-[!code-csharp[CounterState](../01-CounterSample/CounterSample.Client/Pages/Counter.cshtml)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Pages/Counter.cshtml)]
 
 ## Sending requests that will mutate the state
 Changes to state are done by sending a `Request` through the mediator pipeline.
@@ -94,7 +94,7 @@ The `Request` is then handled by a `Handler` which can freely mutate the state.
 * The class should inherit from IRequest
 as follows:
 
-[!code-csharp[CounterState](../01-CounterSample/CounterSample.Client/Features/Counter/IncrementCount/IncrementCountRequest.cs)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/IncrementCount/IncrementCountRequest.cs)]
 
 ## Sending the request to the mediator pipeline
 
@@ -102,7 +102,7 @@ To Send the request to the Pipeline when the user clicks the `Click me` button.
 
 Add the following method to `Pages\Counter.cshtml.cs`.
 
-[!code-csharp[CounterState](../01-CounterSample/CounterSample.Client/Pages/Counter.cshtml.cs?name=IncrementCount)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Pages/Counter.cshtml.cs?name=IncrementCount)]
 
 ## Handling the request 
 
@@ -117,7 +117,7 @@ The Handler should:
   * Override the `Handle` method
 as follows:
 
-[!code-csharp[CounterState](../01-CounterSample/CounterSample.Client/Features/Counter/IncrementCount/IncrementCountHandler.cs)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/IncrementCount/IncrementCountHandler.cs)]
 
 ## Validate
 
