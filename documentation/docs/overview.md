@@ -1,6 +1,6 @@
 # Blazor-State
 
-[Project Site] (https://github.com/TimeWarpEngineering/blazor-state)
+[Project Site](https://github.com/TimeWarpEngineering/blazor-state)
 
 Blazor-State is a client side pipeline architecture utilizing MediatR with plugin behaviors.  
 If you are familiar with 
