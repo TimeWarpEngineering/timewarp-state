@@ -4,8 +4,11 @@
   using Microsoft.AspNetCore.Blazor.Components;
 
   /// <summary>
-  ///
+  /// Add this component to Client App to use ReduxDevTools
   /// </summary>
+  /// <example>
+  /// TODO:
+  /// </example>
   public class ReduxDevToolsComponent : BlazorComponent
   {
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }

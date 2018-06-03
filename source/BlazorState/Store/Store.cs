@@ -7,7 +7,7 @@
   using Microsoft.AspNetCore.Blazor;
   using Microsoft.Extensions.Logging;
 
-  public class Store : IStore
+  internal class Store : IStore
   {
     public static int Count;
 

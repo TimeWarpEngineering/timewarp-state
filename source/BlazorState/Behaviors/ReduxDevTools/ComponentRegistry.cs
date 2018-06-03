@@ -4,7 +4,7 @@
 
   /// <summary>
   /// Keeps collection of components so we can cause a ReRender
-  /// from an Handler
+  /// from a Handler
   /// </summary>
   public class ComponentRegistry
   {
