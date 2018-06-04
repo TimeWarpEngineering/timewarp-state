@@ -6,7 +6,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  internal class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
+  internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
   {
     public JumpToStateHandler(
       ILogger<JumpToStateHandler> aLogger,
@@ -26,13 +26,12 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task<Unit> Handle(JumpToStateRequest aRequest, CancellationToken aCancellationToken)
+    protected override void Handle(JumpToStateRequest aRequest)
     {
       Logger.LogDebug($"{GetType().FullName}");
       Logger.LogDebug($"{aRequest.JsonRequest.Payload.State}");
       Store.LoadStatesFromJson(aRequest.JsonRequest.Payload.State);
       ComponentRegistry.ReRenderAll();
-      return Unit.Task;
     }
   }
 }

@@ -6,7 +6,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  internal class StartHandler : IRequestHandler<StartRequest>
+  internal class StartHandler : RequestHandler<StartRequest>
   {
     public StartHandler(
             ILogger<StartHandler> aLogger,
@@ -23,9 +23,9 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task<Unit> Handle(StartRequest aRequest, CancellationToken aCancellationToken)
+    protected override void Handle(StartRequest aRequest)
     {
-      return Unit.Task;
+      // Does nothing currently
     }
   }
 }

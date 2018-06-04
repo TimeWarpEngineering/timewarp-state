@@ -6,7 +6,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
 
-  internal class CommitHandler : IRequestHandler<CommitRequest>
+  internal class CommitHandler : RequestHandler<CommitRequest>
   {
     public CommitHandler(
       ILogger<CommitHandler> aLogger,
@@ -23,13 +23,12 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task<Unit> Handle(CommitRequest aRequest, CancellationToken aCancellationToken)
+    protected override void Handle(CommitRequest aRequest)
     {
       Logger.LogDebug($"{GetType().FullName}");
       Logger.LogDebug($"{aRequest.Type}");
 
       ReduxDevToolsInterop.DispatchInit(Store.GetSerializableState());
-      return Unit.Task;
     }
   }
 }
