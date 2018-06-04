@@ -23,13 +23,13 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task Handle(CommitRequest aRequest, CancellationToken aCancellationToken)
+    public Task<Unit> Handle(CommitRequest aRequest, CancellationToken aCancellationToken)
     {
       Logger.LogDebug($"{GetType().FullName}");
       Logger.LogDebug($"{aRequest.Type}");
 
       ReduxDevToolsInterop.DispatchInit(Store.GetSerializableState());
-      return Task.CompletedTask;
+      return Unit.Task;
     }
   }
 }

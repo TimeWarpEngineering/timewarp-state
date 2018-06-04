@@ -23,9 +23,9 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task Handle(StartRequest aRequest, CancellationToken aCancellationToken)
+    public Task<Unit> Handle(StartRequest aRequest, CancellationToken aCancellationToken)
     {
-      return Task.CompletedTask;
+      return Unit.Task;
     }
   }
 }

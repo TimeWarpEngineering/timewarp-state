@@ -41,8 +41,8 @@
 
   <ItemGroup>
     <PackageReference Include="Blazor.Extensions.Logging" Version="0.1.1-dev" />
-    <PackageReference Include="MediatR" Version="4.1.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="4.1.0" />
+    <PackageReference Include="MediatR" Version="5.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.4.0-preview1-10303" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.4.0-preview1-10303" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />

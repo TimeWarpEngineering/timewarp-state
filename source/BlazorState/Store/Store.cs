@@ -9,10 +9,8 @@
 
   internal class Store : IStore
   {
-    public static int Count;
-
     public Store(
-          IServiceProvider aServiceProvider
+      IServiceProvider aServiceProvider
       , ILogger<Store> aLogger
     )
     {

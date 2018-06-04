@@ -26,13 +26,13 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IStore Store { get; }
 
-    public Task Handle(JumpToStateRequest aRequest, CancellationToken aCancellationToken)
+    public Task<Unit> Handle(JumpToStateRequest aRequest, CancellationToken aCancellationToken)
     {
       Logger.LogDebug($"{GetType().FullName}");
       Logger.LogDebug($"{aRequest.JsonRequest.Payload.State}");
       Store.LoadStatesFromJson(aRequest.JsonRequest.Payload.State);
       ComponentRegistry.ReRenderAll();
-      return Task.CompletedTask;
+      return Unit.Task;
     }
   }
 }
