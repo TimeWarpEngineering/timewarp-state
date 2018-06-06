@@ -17,7 +17,7 @@ This sample shows how to add Blazor-State to the standard Visual Studio `Blazor 
   Note that you might have to check the `Include prerelease` checkbox.
  
 ## Configure the services
-1. In the `BlazorStateSample.Client` project in the `Program.cs` (<xref:BlazorState.Client.Program>) file. 
+1. In the `BlazorStateSample.Client` project in the `Program.cs` file. 
 2. Add `using BlazorState;`
 3. Change the serviceProvider initialization code to add Blazor-State
 

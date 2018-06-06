@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.4.0-preview1-10303" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.4.0-preview1-10303" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.4.0-preview1-10311" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.4.0-preview1-10311" />
   </ItemGroup>
 
   <ItemGroup>
