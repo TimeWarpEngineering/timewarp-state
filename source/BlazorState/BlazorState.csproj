@@ -1,28 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <IsPackable>true</IsPackable>
     <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
-    <LangVersion>7.3</LangVersion>
     <PackageId>Blazor-State</PackageId>
     <Version>0.0.1-alpha-0002</Version>
-    <Authors>Steven T. Cramer</Authors>
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
-    <Copyright>Copyright 2018 (c) TimeWarp Enterprises Limited</Copyright>
-    <PackageTags>blazor state mediatr mediator pipeline</PackageTags>
-    <PackageProjectUrl>https://github.com/TimeWarpEngineering/blazor-state</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state</RepositoryUrl>
-    <LicenseUrl>https://github.com/torhovland/blazor-redux/blob/master/LICENSE</LicenseUrl>
     <RootNamespace>BlazorState</RootNamespace>
     <AssemblyName>BlazorState</AssemblyName>
     <Company>TimeWarp Enterprises Limited</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageIconUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/dev/assets/Logo.png</PackageIconUrl>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
