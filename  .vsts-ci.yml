@@ -1,2 +1,93 @@
+queue:
+
+  name: TimeWarpEnterprises
+
+#Your build definition references an undefined variable named ‘Parameters.RestoreBuildProjects’. Create or edit the build definition for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build definition references an undefined variable named ‘Parameters.RestoreBuildProjects’. Create or edit the build definition for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build definition references an undefined variable named ‘Parameters.TestProjects’. Create or edit the build definition for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+#Your build definition references a secret variable named ‘MyGetApiKey’. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+
 steps:
 - script: echo hello world 
+- task: DotNetCoreInstaller@0
+  displayName: Use .NET Core sdk 2.1.300
+  inputs:
+    version: 2.1.300
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '$(Parameters.RestoreBuildProjects)'
+    feedsToUse: config
+    nugetConfigPath: NuGet.config
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(Parameters.RestoreBuildProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '$(Parameters.TestProjects)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    command: pack
+    packagesToPack: 'source/BlazorState/BlazorState.csproj'
+    versioningScheme: byPrereleaseNumber
+    majorVersion: 0
+    patchVersion: 1
+
+- task: DotNetCoreCLI@2
+  displayName: Publish The BlazorState.Server project which will be deployed to azure
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'samples/BlazorState.Server/BlazorState.Server.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+  enabled: false
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: drop
+    publishLocation: Container
+
+- task: DotNetCoreCLI@2
+  displayName: Push Nuget to MyGet
+  inputs:
+    command: custom
+    custom: nuget
+    arguments: 'push $(Build.ArtifactStagingDirectory)\*.nupkg -s https://www.myget.org/F/timewarp-enterprises/api/v3/index.json -k $(MyGetApiKey)'
+
+- task: DeleteFiles@1
+  displayName: Delete files from 
+  inputs:
+    Contents: ghpages
+  enabled: false
+
+- task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
+  displayName: Create DocFx Documentation
+  inputs:
+    solution: 'documentation/docfx.json'
+  enabled: false
+
+- task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
+  displayName: Publishes to GitHub Pages
+  inputs:
+    docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+    githubusername: TimeWarpEngineering
+    githubemail: '$(GitHubEmail)'
+    githubaccesstoken: $(GitHubAccessToken)
+    repositoryname: 'blazor-state'
+  enabled: false
