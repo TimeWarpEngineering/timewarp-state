@@ -1,14 +1,5 @@
 queue:
-
   name: TimeWarpEnterprises
-
-#Your build definition references an undefined variable named ‘Parameters.RestoreBuildProjects’. Create or edit the build definition for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build definition references an undefined variable named ‘Parameters.RestoreBuildProjects’. Create or edit the build definition for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
-#Your build definition references an undefined variable named ‘Parameters.TestProjects’. Create or edit the build definition for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
-#Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
-#Your build definition references a secret variable named ‘MyGetApiKey’. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
 
 steps:
 - script: echo hello world 
