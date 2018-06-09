@@ -2,7 +2,6 @@ queue:
   name: TimeWarpEnterprises
 
 steps:
-- script: echo hello world 
 - task: DotNetCoreInstaller@0
   displayName: Use .NET Core sdk 2.1.300
   inputs:
@@ -34,10 +33,7 @@ steps:
   inputs:
     command: pack
     packagesToPack: 'source/BlazorState/BlazorState.csproj'
-    versioningScheme: byPrereleaseNumber
-    majorVersion: 0
-    patchVersion: 1
-
+    
 - task: DotNetCoreCLI@2
   displayName: Publish The BlazorState.Server project which will be deployed to azure
   inputs:
