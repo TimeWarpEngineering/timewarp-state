@@ -33,7 +33,7 @@ steps:
   inputs:
     command: pack
     packagesToPack: 'source/BlazorState/BlazorState.csproj'
-
+    
 - task: DotNetCoreCLI@2
   displayName: Publish The BlazorState.Server project which will be deployed to azure
   inputs:
