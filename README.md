@@ -1,2 +1,3 @@
-# blazor-state
-Manage Client side state in Blazor using MediatR pipeline.
+# Blazor-State
+
+See the GitHub pages site for [Documentation](https://timewarpengineering.github.io/blazor-state/)
