@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
     <PackageId>Blazor-State</PackageId>
-    <Version>0.0.1-alpha-0002</Version>
+    <Version>0.0.1-alpha-0003</Version>
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RootNamespace>BlazorState</RootNamespace>
