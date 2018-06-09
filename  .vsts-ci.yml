@@ -9,6 +9,8 @@ queue:
 #Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
 #Your build definition references the ‘BuildConfiguration’ variable, which you’ve selected to be settable at queue time. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
 #Your build definition references a secret variable named ‘MyGetApiKey’. Create or edit the build definition for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+variables:
+  projects:"**/*.csproj"
 
 steps:
 - script: echo hello world 
@@ -21,22 +23,22 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: '$(Parameters.RestoreBuildProjects)'
+    projects: "**/*.csproj"
     feedsToUse: config
     nugetConfigPath: NuGet.config
 
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
-    projects: '$(Parameters.RestoreBuildProjects)'
-    arguments: '--configuration $(BuildConfiguration)'
+    projects: "**/*.csproj"
+    arguments: --configuration release
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '$(Parameters.TestProjects)'
-    arguments: '--configuration $(BuildConfiguration)'
+    projects: "**/*Tests/*.csproj"
+    arguments: --configuration release
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
