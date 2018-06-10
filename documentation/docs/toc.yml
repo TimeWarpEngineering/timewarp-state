@@ -1,6 +1,6 @@
 - name: Blazor-State Overview
   href: overview.md
 - name: Blazor-State Sample Application Part 1
-  topicUid: BlazorStateSample:01:README.md
+  topicUid: BlazorStateSample:README.md
 - name: Blazor-State Sample Application Part 2
   topicUid: BlazorStateSample:Part2.md

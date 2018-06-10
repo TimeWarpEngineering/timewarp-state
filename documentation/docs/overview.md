@@ -17,7 +17,7 @@ Blazor-State is available as a [Nuget Package](https://www.nuget.org/packages/Bl
 
 ## Getting Started
 
-The easiest way to get started is to down load the repository and take a look at the [sample](BlazorStateSample:01:README.md) project.
+The easiest way to get started is to down load the repository and take a look at the [sample](xref:BlazorStateSample:README.md) project.
 
 ## Architecture
 
@@ -64,7 +64,7 @@ Redux Devtools implemented feautres:
 
 Other developer tools commands are not yet implemented (Would be good spot for a PR)
 
-[!include[Terminology](terminology.md)]
+[!include[Terminology](../terminology.md)]
 
 ### PureFunctions vs NonPureFunctions:
 Blazor-State does not distinguish these.

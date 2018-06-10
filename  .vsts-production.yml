@@ -32,9 +32,9 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    command: pack
-    packagesToPack: 'source/BlazorState/BlazorState.csproj'
-    arguments: --version-suffix "alpha-$(Build.BuildID)"
+    command: custom
+    custom: pack 
+    arguments: '$(Build.SourcesDirectory)/source/BlazorState/BlazorState.csproj --output $(Build.StagingDirectory) /p:Configuration=release --version-suffix $(Build.BuildID) --verbosity Detailed'
     
 - task: DotNetCoreCLI@2
   displayName: Publish The BlazorState.Server project which will be deployed to azure
@@ -43,7 +43,7 @@ steps:
     publishWebProjects: false
     projects: 'samples/BlazorState.Server/BlazorState.Server.csproj'
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-  enabled: false
+  enabled: true
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
@@ -63,13 +63,13 @@ steps:
   displayName: Delete files from 
   inputs:
     Contents: ghpages
-  enabled: false
+  enabled: true
 
 - task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
   displayName: Create DocFx Documentation
   inputs:
     solution: 'documentation/docfx.json'
-  enabled: false
+  enabled: true
 
 - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
   displayName: Publishes to GitHub Pages
@@ -79,4 +79,4 @@ steps:
     githubemail: '$(GitHubEmail)'
     githubaccesstoken: $(GitHubAccessToken)
     repositoryname: 'blazor-state'
-  enabled: false
+  enabled: true
