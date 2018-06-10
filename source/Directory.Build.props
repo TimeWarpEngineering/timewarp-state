@@ -1,4 +1,10 @@
 <Project>
+  <!-- Versioning properties -->
+  <PropertyGroup>
+    <VersionPrefix>0.0.3</VersionPrefix>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+  </PropertyGroup>
+
   <PropertyGroup>
     <_ParentDirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('..', '$(_DirectoryBuildPropsFile)'))</_ParentDirectoryBuildPropsPath>
   </PropertyGroup>

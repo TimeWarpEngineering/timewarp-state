@@ -1,0 +1,50 @@
+queue:
+  name: TimeWarpEnterprises
+
+steps:
+- script: echo BuildID $(Build.BuildID)
+- task: DotNetCoreInstaller@0
+  displayName: Use .NET Core sdk 2.1.300
+  inputs:
+    version: 2.1.300
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: 'source/BlazorState/BlazorState.csproj'
+    feedsToUse: config
+    nugetConfigPath: NuGet.config
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: 'source/BlazorState/BlazorState.csproj'
+    arguments: --configuration release
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: "**/*Tests/*.csproj"
+    arguments: --configuration release
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    command: pack
+    packagesToPack: 'source/BlazorState/BlazorState.csproj'
+    
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: drop
+    publishLocation: Container
+
+- task: NuGetCommand@2
+  displayName: Push Nuget to Nuget
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: Nuget.org
