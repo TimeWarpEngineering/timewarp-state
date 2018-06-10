@@ -28,12 +28,6 @@
     <TestProjectTargetFramework>netstandard2.0</TestProjectTargetFramework>
   </PropertyGroup>
 
-  <!-- Versioning properties -->
-  <PropertyGroup>
-    <VersionPrefix>0.0.2</VersionPrefix>
-    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-  </PropertyGroup>
-
   <Choose>
     <When Condition="'$(OfficialBuild)' != 'true'">
       <!-- On non-official builds we don't burn in a git sha. In large part because it
