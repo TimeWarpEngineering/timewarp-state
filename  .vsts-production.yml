@@ -43,7 +43,7 @@ steps:
     publishWebProjects: false
     projects: 'samples/BlazorState.Server/BlazorState.Server.csproj'
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-  enabled: false
+  enabled: true
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
@@ -63,13 +63,13 @@ steps:
   displayName: Delete files from 
   inputs:
     Contents: ghpages
-  enabled: false
+  enabled: true
 
 - task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
   displayName: Create DocFx Documentation
   inputs:
     solution: 'documentation/docfx.json'
-  enabled: false
+  enabled: true
 
 - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
   displayName: Publishes to GitHub Pages
@@ -79,4 +79,4 @@ steps:
     githubemail: '$(GitHubEmail)'
     githubaccesstoken: $(GitHubAccessToken)
     repositoryname: 'blazor-state'
-  enabled: false
+  enabled: true
