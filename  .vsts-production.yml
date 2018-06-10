@@ -32,9 +32,8 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
-    command: custom
-    custom: pack 
-    arguments: '$(Build.SourcesDirectory)/source/BlazorState/BlazorState.csproj --output $(Build.StagingDirectory) /p:Configuration=release --version-suffix $(Build.BuildID) --verbosity Detailed'
+    command: pack
+    packagesToPack: 'source/BlazorState/BlazorState.csproj'
     
 - task: DotNetCoreCLI@2
   displayName: Publish The BlazorState.Server project which will be deployed to azure
