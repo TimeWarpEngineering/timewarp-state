@@ -51,7 +51,7 @@ steps:
     ArtifactName: drop
     publishLocation: Container
 
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   displayName: Push Nuget to Nuget
   inputs:
     command: push
