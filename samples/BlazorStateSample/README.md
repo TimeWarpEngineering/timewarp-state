@@ -1,5 +1,5 @@
 ---
-uid: BlazorStateSample:01:README.md
+uid: BlazorStateSample:README.md
 title: Blazor-State Sample Application Part 01
 ---
 
@@ -7,7 +7,7 @@ title: Blazor-State Sample Application Part 01
 This sample shows how to add Blazor-State to the standard Visual Studio `Blazor Hosted` template.
 
 > [!NOTE]
->[Run this sample online]
+>[Run completed sample online]
 
 ## Creating the project
 1. Create a new Blazor website using the `Hosted Blazor` template in Visual Studio 
@@ -50,8 +50,8 @@ Your class should:
 [!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/CounterState.cs?name=CounterState)]
 
 ## Seperation of HTML and C#.
-I like to keep my C# code separated from the HTML and yet colocated.
-So instead of a `@functions` sections for each .cshtml file we 
+I like to keep my C# code separated from the HTML and yet co-located.
+Instead of a `@functions` sections for each .cshtml file we 
 will have an associated .cshtml.cs. file and Visual Studio will automatically group these together.
 This is not required but I find it easier to reason about.
 
@@ -125,5 +125,5 @@ Execute the app and confirm that the "Click me" button properly increments the v
 
 Next we will convert the FetchData page to use Blazor-State to demonstrate making http requests.
 
-[Run this sample online]: <http://blazor-state-sample-01.azurewebsites.net/>
+[Run completed sample online]: <https://blazor-state.azurewebsites.net/>
 [Getting Started Guide]: (https://blazor.net/docs/get-started.html)
