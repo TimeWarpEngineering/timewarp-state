@@ -1,0 +1,61 @@
+queue:
+  name: TimeWarpEnterprises
+
+steps:
+- script: echo BuildID $(Build.BuildID)
+- task: DotNetCoreInstaller@0
+  displayName: Use .NET Core sdk 2.1.300
+  inputs:
+    version: 2.1.300
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: "**/*.csproj"
+    feedsToUse: config
+    nugetConfigPath: NuGet.config
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: "**/*.csproj"
+    arguments: --configuration release
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: "**/*Tests/*.csproj"
+    arguments: --configuration release
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    command: pack
+    packagesToPack: 'source/BlazorState/BlazorState.csproj'
+    versioningScheme: byPrereleaseNumber
+    majorVersion: 0
+    patchVersion: 1
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack
+  inputs:
+    command: custom
+    custom: pack 
+    arguments: '$(Build.SourcesDirectory)/source/BlazorState/BlazorState.csproj --output $(Build.StagingDirectory) /p:Configuration=release --version-suffix beta-$(Build.BuildID) --verbosity Detailed'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: drop
+    publishLocation: Container
+
+- task: DotNetCoreCLI@2
+  displayName: Push Nuget to MyGet
+  inputs:
+    command: custom
+    custom: nuget
+    arguments: 'push $(Build.ArtifactStagingDirectory)\*.nupkg -s https://www.myget.org/F/timewarp-enterprises/api/v3/index.json -k $(MyGetApiKey)'

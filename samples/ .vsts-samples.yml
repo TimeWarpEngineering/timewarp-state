@@ -1,0 +1,46 @@
+queue:
+  name: TimeWarpEnterprises
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: Use .NET Core sdk 2.1.300
+  inputs:
+    version: 2.1.300
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: "samples/**/*.csproj"
+    feedsToUse: config
+    nugetConfigPath: NuGet.config
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: "samples/**/*.csproj"
+    arguments: --configuration release
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: "samples/**/*Tests/*.csproj"
+    arguments: --configuration release
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: Publish The Sample BlazorState.Server project which will be deployed to azure
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'samples/BlazorState.Server/BlazorState.Server.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+  enabled: true
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: drop
+    publishLocation: Container
