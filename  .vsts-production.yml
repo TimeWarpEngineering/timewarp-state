@@ -34,6 +34,9 @@ steps:
   inputs:
     command: pack
     packagesToPack: 'source/BlazorState/BlazorState.csproj'
+    majorVersion: 0
+    minorVersion: 0
+    patchVersion: "1-alpha-$(Build.BuildID)"
     
 - task: DotNetCoreCLI@2
   displayName: Publish The BlazorState.Server project which will be deployed to azure
