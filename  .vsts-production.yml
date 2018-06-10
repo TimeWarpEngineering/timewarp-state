@@ -2,6 +2,7 @@ queue:
   name: TimeWarpEnterprises
 
 steps:
+- script: echo BuildID $(Build.BuildID)
 - task: DotNetCoreInstaller@0
   displayName: Use .NET Core sdk 2.1.300
   inputs:
@@ -53,9 +54,9 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Push Nuget to Nuget
   inputs:
-    command: custom
-    custom: nuget
-    arguments: 'push $(Build.ArtifactStagingDirectory)\*.nupkg -s https://api.nuget.org/v3/index.json -k $(NuGetApiKey)'
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: Nuget.org
 
 - task: DeleteFiles@1
   displayName: Delete files from 

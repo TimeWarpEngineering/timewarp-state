@@ -2,7 +2,7 @@ queue:
   name: TimeWarpEnterprises
 
 steps:
-- script: echo hello world 
+- script: echo BuildID $(Build.BuildID)
 - task: DotNetCoreInstaller@0
   displayName: Use .NET Core sdk 2.1.300
   inputs:
