@@ -10,24 +10,7 @@ See the GitHub pages site for [Documentation](https://timewarpengineering.github
 
 Blazor-State is available as a [Nuget Package](https://www.nuget.org/packages/Blazor-State/)
 
-For step by step see the [sample](xref:BlazorStateSample:README.md.
-
-# Quickstart
-
-##Register Services
-[!code-csharp[serviceProvider initialization](../BlazorStateSample/BlazorStateSample.Client/Program.cs?name=serviceProvider initialization)] 
-
-##Create State
-[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/CounterState.cs?name=CounterState)]
-
-## Display State
-[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Pages/Counter.cshtml)]
-
-## Create Requests 
-[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/IncrementCount/IncrementCountRequest.cs)]
-
-## Create Handlers
-[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/IncrementCount/IncrementCountHandler.cs)]
+For step by step see the [sample](https://timewarpengineering.github.io/blazor-state/samples/BlazorStateSample/README.html)
 
 ## Acknowledgements
 Jimmy Bogard (MediatR). Jimmy is an amazing developer and a knowledge sharer.  
