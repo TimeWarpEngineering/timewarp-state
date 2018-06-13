@@ -7,17 +7,17 @@ Given we are using MediatR will use the names associated with it but list other 
 
 In Redux they call them "Action".  
 In UML they are "Signal".  
-In Command Pattern they are "Command"
+In Command Pattern they are "Command"  
 In MediatR they are `Request`
 
 ### Reducer/**Handler**/Executor
 
-This the code that processes the `Request` and returns the `Response`.
+This is the code that processes the `Request` and returns the `Response`.
 
 In Redux they call them "Reducer". 
-(State in State out doesn't reduce anything but they still call them that)
-In Command Pattern we call them "Executor".
-In MediatR they are `Handler`.
+(State in, State out, doesn't reduce anything yet they still call them that)  
+In Command Pattern we call them "Executor".  
+In MediatR they are `Handler`.  
 
 ### Feature
 

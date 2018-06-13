@@ -1,7 +1,5 @@
 ﻿This example shows how the client and server parallel structures. 
 Both utlizing the MediatR Pipeline and the Command pattern of Model in Model out.
-# Nightly Builds
-Currently we are running against nightly builds. On release of Blazor 0.4.0 we are hopeful we can change that.
 
 # Logging
 If no Logger is provided we will utilize the "Null Logger".
