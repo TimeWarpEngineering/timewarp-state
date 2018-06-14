@@ -5,7 +5,7 @@ Blazor-State is a client side pipeline architecture utilizing MediatR with plugi
 ## [GitHub Site](https://github.com/TimeWarpEngineering/blazor-state)
 
 If you are familiar with 
-[MediatR](https://github.com/jbogard/MediatR]),
+[MediatR](https://github.com/jbogard/MediatR),
  [Redux](https://redux.js.org/), 
 or the [Command Pattern](https://en.wikipedia.org/wiki/Command_pattern) 
 you will feel right at home.
@@ -53,7 +53,7 @@ and updating `State` upon completion.  (Single responsibility principle)
 #### ReduxDevToolsBehavior
 
 One of the nice features of redux was the 
-[developer tools](httpshttps://github.com/zalmoxisus/redux-devtools-extension).
+[developer tools](https://github.com/zalmoxisus/redux-devtools-extension).
 They allow for the monitoring of State transitions, time travel and more.
 This behavior implements the integration of these developer tools. 
 
