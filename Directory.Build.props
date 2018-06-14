@@ -5,8 +5,8 @@
     <Copyright>(c) TimeWarp Enterprises Limited</Copyright>
     <PackageLicenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/TimeWarpEngineering/blazor-state</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/dev/assets/Logo.png</PackageIconUrl>
-    <PackageTags>Microsoft ASP.NET Core Blazor State Mediatr Mediator Pipeline</PackageTags>
+    <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</PackageIconUrl>
+    <PackageTags>Microsoft ASP.NET Core Blazor State MediatR Mediator Pipeline Redux</PackageTags>
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/BlazorExtensions/Logging</RepositoryUrl>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state</RepositoryUrl>
