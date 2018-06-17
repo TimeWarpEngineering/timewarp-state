@@ -37,11 +37,10 @@ export class ReduxDevTools {
   Init() {
     if (this.IsEnabled) {
       this.DevTools.subscribe(ReduxDevTools.MessageHandler);
-      const name = "ReduxDevToolsDispatch";
-      console.log(name);
+      const functionName = "ReduxDevToolsDispatch";
 
-      Blazor.registerFunction(name, ReduxDevTools.ReduxDevToolsDispatch);
-      console.log(`${name} function registered with Blazor`);
+      Blazor.registerFunction(functionName, ReduxDevTools.ReduxDevToolsDispatch);
+      console.log(`${functionName} function registered with Blazor`);
 
       window[DevToolsName] = this.DevTools;
     }
