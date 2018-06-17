@@ -1,4 +1,12 @@
-﻿class BlazorState {
+﻿import { Blazor } from './Blazor';
+
+export class BlazorState {
+  requestHandler: any;
+  methodName: string;
+  typeName: string;
+  namespace: string;
+  assemblyName: string;
+
   constructor() {
     this.assemblyName = 'BlazorState';
     this.namespace = 'BlazorState.Features.JavaScriptInterop';
