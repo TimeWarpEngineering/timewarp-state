@@ -1,4 +1,16 @@
-﻿class ReduxDevTools {
+﻿import { Blazor } from './Blazor';
+import { BlazorState } from './BlazorState';
+
+const ReduxExtentionName: string = '__REDUX_DEVTOOLS_EXTENSION__';
+const DevToolsName: string = 'devTools';
+
+export class ReduxDevTools {
+  IsEnabled: boolean;
+  DevTools: any;
+  Extension: any;
+  Config: { name: string; features: { pause: boolean; lock: boolean; persist: boolean; export: boolean; import: boolean; jump: boolean; skip: boolean; reorder: boolean; dispatch: boolean; test: boolean; }; };
+  BlazorState: BlazorState;
+
   constructor() {
     this.BlazorState = new BlazorState(); // Depends on this functionality
     this.Config = {
@@ -25,16 +37,18 @@
   Init() {
     if (this.IsEnabled) {
       this.DevTools.subscribe(ReduxDevTools.MessageHandler);
+      const functionName = "ReduxDevToolsDispatch";
 
-      Blazor.registerFunction(ReduxDevTools.ReduxDevToolsDispatch.name, ReduxDevTools.ReduxDevToolsDispatch);
-      console.log(`${ReduxDevTools.ReduxDevToolsDispatch.name} function registered with Blazor`);
+      Blazor.registerFunction(functionName, ReduxDevTools.ReduxDevToolsDispatch);
+      console.log(`${functionName} function registered with Blazor`);
 
-      window.devTools = this.DevTools;
+      window[DevToolsName] = this.DevTools;
     }
   }
 
   GetExtension() {
-    const extension = window.__REDUX_DEVTOOLS_EXTENSION__;
+    const extension = window[ReduxExtentionName];
+    //const extension = window.__REDUX_DEVTOOLS_EXTENSION__;
 
     if (!extension) {
       console.log('Redux DevTools are not installed.');
@@ -100,12 +114,12 @@
   static ReduxDevToolsDispatch(action, state) {
     if (action === 'init') {
       console.log("ReduxDevTools.js: Dispatching redux action: init");
-      return window.devTools.init(state);
+      return window[DevToolsName].init(state);
     }
     else {
       console.log("ReduxDevTools.js: Dispatching redux action");
       console.log(action);
-      return window.devTools.send(action, state);
+      return window[DevToolsName].send(action, state);
     }
   }
 }

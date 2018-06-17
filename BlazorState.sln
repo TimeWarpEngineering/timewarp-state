@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Shared", "samples\BlazorStateSample\BlazorStateSample.Shared\BlazorStateSample.Shared.csproj", "{345CF583-F678-4089-A636-4B81B56FC34B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Js", "source\BlazorState.Js\BlazorState.Js.csproj", "{51173297-32B7-473E-BA34-788B8E022536}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{345CF583-F678-4089-A636-4B81B56FC34B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{345CF583-F678-4089-A636-4B81B56FC34B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{345CF583-F678-4089-A636-4B81B56FC34B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51173297-32B7-473E-BA34-788B8E022536}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51173297-32B7-473E-BA34-788B8E022536}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51173297-32B7-473E-BA34-788B8E022536}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51173297-32B7-473E-BA34-788B8E022536}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
