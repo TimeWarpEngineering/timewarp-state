@@ -1,7 +1,7 @@
 <Project>
   <!-- Versioning properties -->
   <PropertyGroup>
-    <VersionPrefix>0.0.4</VersionPrefix>
+    <VersionPrefix>0.0.5</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
   </PropertyGroup>
 
@@ -9,7 +9,8 @@
     <_ParentDirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('..', '$(_DirectoryBuildPropsFile)'))</_ParentDirectoryBuildPropsPath>
   </PropertyGroup>
 
-  <Import Project="$(_ParentDirectoryBuildPropsPath)" Condition="Exists('$(_ParentDirectoryBuildPropsPath)')" />
+  <Import Project="$(_ParentDirectoryBuildPropsPath)"
+          Condition="Exists('$(_ParentDirectoryBuildPropsPath)')" />
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>

@@ -1,11 +1,6 @@
 <Project>
+  <!-- Set InformationVersion here, since $(Version) is already set at this point. -->
   <PropertyGroup>
-    <_ParentDirectoryBuildTargetsPath Condition="'$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('..', '$(_DirectoryBuildTargetsFile)'))</_ParentDirectoryBuildTargetsPath>
+    <InformationalVersion>$(Version). Commit Hash: $(GitHeadSha)</InformationalVersion>
   </PropertyGroup>
-
-  <Import Project="$(_ParentDirectoryBuildTargetsPath)" Condition="Exists('$(_ParentDirectoryBuildTargetsPath)')" />
-
-  <ItemGroup Condition="'$(IsPackable)'=='true' and '$(SourceLinkCreate)'=='true' and '$(IncludeBuildOutput)'=='true'">
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.2" PrivateAssets="All" />
-  </ItemGroup>
 </Project>

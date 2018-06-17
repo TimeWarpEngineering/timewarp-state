@@ -21,17 +21,12 @@
     <WebpackInputs Include="**\*.ts" Exclude="dist\**;node_modules\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <WebpackInputs Remove="src\LogObject.ts" />
-    <WebpackInputs Remove="src\LogObjectType.ts" />
-  </ItemGroup>
-
   <Target Name="EnsureNpmRestored" Condition="!Exists('node_modules')">
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec Command="npm install" />
   </Target>
 
-  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="dist\BlazorState.js" DependsOnTargets="EnsureNpmRestored">
+  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="dist\blazorstate.js" DependsOnTargets="EnsureNpmRestored">
     <RemoveDir Directories="dist" />
     <Exec Command="npm run build" />
     <ItemGroup>
