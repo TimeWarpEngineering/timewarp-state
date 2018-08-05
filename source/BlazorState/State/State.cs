@@ -16,11 +16,7 @@
 
     public abstract object Clone();
 
-    public TState Hydrate(string aJsonString)
-    {
-      TState result = JsonUtil.Deserialize<TState>(aJsonString);
-      return result;
-    }
+    public TState Hydrate(string aJsonString) => JsonUtil.Deserialize<TState>(aJsonString);
 
     protected abstract void Initialize();
   }
