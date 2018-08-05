@@ -1,30 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
-    <PackageId>Blazor-State</PackageId>
+    <Title>Blazor State</Title>
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
+    <OutputType>Library</OutputType>
+    <PackageId>BlazorState</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <RootNamespace>BlazorState</RootNamespace>
-    <AssemblyName>BlazorState</AssemblyName>
     <Company>TimeWarp Enterprises Limited</Company>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
-  <ItemGroup>
-    <!-- .js/.css files will be referenced via <script>/<link> tags; other content files will just be included in the app's 'dist' directory without any tags referencing them -->
-    <EmbeddedResource Include="Content\**\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
-    <EmbeddedResource Include="Content\**\*.css" LogicalName="blazor:css:%(RecursiveDir)%(Filename)%(Extension)" />
-    <EmbeddedResource Include="Content\**" Exclude="**\*.js;**\*.css" LogicalName="blazor:file:%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Behaviors\State\**" />
-    <EmbeddedResource Remove="Behaviors\State\**" />
-    <None Remove="Behaviors\State\**" />
-  </ItemGroup>
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="5.0.1" />
@@ -32,14 +19,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.4.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
-    <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.4.0-preview1-10285" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
   </ItemGroup>
 
-  <ItemGroup>
-    <BlazorGenerate Remove="Behaviors\State\**" />
-  </ItemGroup>
+  <Target Name="IncludeJsDll">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)BlazorState.Js.dll" />
+    </ItemGroup>
+  </Target>
 </Project>
