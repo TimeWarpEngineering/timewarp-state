@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Client.Features.Root.IncrementCount
+﻿namespace BlazorState.Client.Features.Counter.IncrementCount
 {
   using BlazorState.Client.State;
   using MediatR;
