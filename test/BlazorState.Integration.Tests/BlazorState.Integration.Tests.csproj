@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fixie" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.5.1" />
+    <PackageReference Include="Selenium.Chrome.WebDriver" Version="2.40.0" />
+    <PackageReference Include="Selenium.Support" Version="3.14.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="3.14.0" />
+    <PackageReference Include="Shouldly" Version="3.0.0" />
+    <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\source\BlazorState\BlazorState.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
+</Project>

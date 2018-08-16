@@ -3,11 +3,12 @@
   using BlazorState.EndToEnd.Tests.Infrastructure;
   using OpenQA.Selenium;
   using Shouldly;
+  using static Infrastructure.WaitAndAssert;
 
   public class CounterPageTests : BaseTest
   {
     /// <summary>
-    ///
+    /// 
     /// </summary>
     /// <param name="aWebDriver"></param>
     /// <param name="aServerFixture">
@@ -21,7 +22,7 @@
       aServerFixture.Environment = AspNetEnvironment.Development;
       aServerFixture.BuildWebHostMethod = BlazorState.Server.Program.BuildWebHost;
 
-      Navigate("/", noReload: false);
+      Navigate("/", aReload: true);
       WaitUntilLoaded();
     }
 
@@ -31,7 +32,11 @@
     {
       // Navigate to "Counter"
       WebDriver.FindElement(By.LinkText("Counter")).Click();
-      WaitAssert.Equal("Counter", () => WebDriver.FindElement(By.TagName("h1")).Text);
+      WaitAndAssertEqual
+      (
+        expected: "Counter",
+        actual: () => WebDriver.FindElement(By.TagName("h1")).Text
+      );
 
       // Observe the initial value is 3
       IWebElement countDisplayElement = WebDriver.FindElement(By.CssSelector("h1 + p"));
@@ -40,11 +45,11 @@
       // Click the button; see it increment by 5
       IWebElement button = WebDriver.FindElement(By.CssSelector(".main button"));
       button.Click();
-      WaitAssert.Equal("Current count: 8", () => countDisplayElement.Text);
+      WaitAndAssertEqual("Current count: 8", () => countDisplayElement.Text);
       button.Click();
-      WaitAssert.Equal("Current count: 13", () => countDisplayElement.Text);
+      WaitAndAssertEqual("Current count: 13", () => countDisplayElement.Text);
       button.Click();
-      WaitAssert.Equal("Current count: 18", () => countDisplayElement.Text);
+      WaitAndAssertEqual("Current count: 18", () => countDisplayElement.Text);
     }
   }
 }

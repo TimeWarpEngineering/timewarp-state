@@ -16,9 +16,6 @@ namespace BlazorState.Server
             .UseStartup<Startup>()
             .Build();
 
-    public static void Main(string[] args)
-    {
-      BuildWebHost(args).Run();
-    }
+    public static void Main(string[] args) => BuildWebHost(args).Run();
   }
 }

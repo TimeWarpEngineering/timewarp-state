@@ -52,9 +52,6 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
 
     public ITestOutputHelper Output { get; set; }
 
-    public void Dispose()
-    {
-      Browser.Dispose();
-    }
+    public void Dispose() => Browser.Dispose();
   }
 }

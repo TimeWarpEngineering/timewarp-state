@@ -2,6 +2,7 @@
 using BlazorState.EndToEnd.Tests.Infrastructure;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using Shouldly;
 
 namespace BlazorState.EndToEnd.Tests
 {
@@ -13,30 +14,24 @@ namespace BlazorState.EndToEnd.Tests
       ServerFixture = aServerFixture;
     }
 
+    private readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+
     private ServerFixture ServerFixture { get; }
     private IWebDriver WebDriver { get; }
 
-    protected void Navigate(string relativeUrl, bool noReload = false)
+    protected void Navigate(string aRelativeUrl, bool aReload = true)
     {
-      var absoluteUrl = new Uri(ServerFixture.RootUri, relativeUrl);
+      var absoluteUrl = new Uri(ServerFixture.RootUri, aRelativeUrl);
 
-      if (noReload)
-      {
-        string existingUrl = WebDriver.Url;
-        if (string.Equals(existingUrl, absoluteUrl.AbsoluteUri, StringComparison.Ordinal))
-        {
-          return;
-        }
-      }
+      if (!aReload && string.Equals(WebDriver.Url, absoluteUrl.AbsoluteUri, StringComparison.Ordinal))
+        return;      
 
-      WebDriver.Navigate().GoToUrl("about:blank"); // Causes a reload
+      WebDriver.Navigate().GoToUrl("about:blank");
       WebDriver.Navigate().GoToUrl(absoluteUrl);
     }
 
-    protected void WaitUntilLoaded()
-    {
-      new WebDriverWait(WebDriver, TimeSpan.FromSeconds(30)).Until(
-          driver => driver.FindElement(By.TagName("app")).Text != "Loading...");
-    }
+    protected void WaitUntilLoaded() => 
+      new WebDriverWait(WebDriver, TimeSpan.FromSeconds(30))
+      .Until(aWebDriver => aWebDriver.FindElement(By.TagName("app")).Text != "Loading...");
   }
 }

@@ -31,7 +31,7 @@
         var driver = new RemoteWebDriver(chromeOptions);
         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
         WebDriver = driver;
-        WaitAssert.WebDriver = driver;
+        WaitAndAssert.WebDriver = driver;
         Logs = new RemoteLogs(driver);
       }
       catch (WebDriverException ex)

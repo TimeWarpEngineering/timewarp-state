@@ -1,0 +1,47 @@
+﻿namespace BlazorState.E2E.Tests
+{
+  using Fixie;
+  using Microsoft.Extensions.DependencyInjection;
+
+  public class TestingConvention : Discovery, Execution
+  {
+    public TestingConvention()
+    {
+      var testServices = new ServiceCollection();
+      ConfigureTestServices(testServices);
+      ServiceProvider serviceProvider = testServices.BuildServiceProvider();
+      ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
+
+      Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
+    }
+
+    private IServiceScopeFactory ServiceScopeFactory { get; }
+
+    public void Execute(TestClass aTestClass)
+    {
+      aTestClass.RunCases(aCase =>
+      {
+        using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
+        {
+          object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
+          //object instance = aTestClass.Construct();
+
+          Setup(instance);
+
+          aCase.Execute(instance);
+        }
+      });
+    }
+
+    private static void Setup(object aInstance)
+    {
+      System.Reflection.MethodInfo method = aInstance.GetType().GetMethod(nameof(Setup));
+      method?.Execute(aInstance);
+    }
+
+    private void ConfigureTestServices(ServiceCollection aServiceCollection)
+    {
+      //aServiceCollection.AddSingleton();
+    }
+  }
+}

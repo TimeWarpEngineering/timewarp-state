@@ -18,9 +18,6 @@
     public int TemperatureC { get; set; }
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-    public object Clone()
-    {
-      return new WeatherForecast(this);
-    }
+    public object Clone() => new WeatherForecast(this);
   }
 }

@@ -9,9 +9,6 @@
   {
     [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
 
-    protected override void OnInit()
-    {
-      JavaScriptInstanceHelper.JsonRequestHandler = JsonRequestHandler;
-    }
+    protected override void OnInit() => JavaScriptInstanceHelper.JsonRequestHandler = JsonRequestHandler;
   }
 }

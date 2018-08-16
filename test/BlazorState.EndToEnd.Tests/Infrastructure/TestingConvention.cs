@@ -1,17 +1,20 @@
 ﻿namespace BlazorState.EndToEnd.Tests
 {
+  using System;
   using BlazorState.EndToEnd.Tests.Infrastructure;
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
 
-  public class TestingConvention : Discovery, Execution
+  public class TestingConvention : Discovery, Execution, IDisposable
   {
+    
     public TestingConvention()
     {
       Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
     }
 
     private IServiceScopeFactory ServiceScopeFactory { get; set; }
+    private BrowserFixture BrowserFixture { get; set; }
 
     public void Execute(TestClass aTestClass)
     {
@@ -47,10 +50,14 @@
 
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
-      var browserFixture = new BrowserFixture();
-      aServiceCollection.AddSingleton(browserFixture.WebDriver);
+      BrowserFixture = new BrowserFixture();
+      aServiceCollection.AddSingleton(BrowserFixture.WebDriver);
       aServiceCollection.AddSingleton(new ServerFixture());
+      //TODO use Scrutor to register all Tests classes
       aServiceCollection.AddScoped<CounterPageTests>();
+      aServiceCollection.AddScoped<FetchDataPageTests>();
     }
+
+    public void Dispose() => BrowserFixture.WebDriver.Quit();
   }
 }

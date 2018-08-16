@@ -1,19 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-
-namespace BlazorState.EndToEnd.Tests.Infrastructure
+﻿namespace BlazorState.EndToEnd.Tests.Infrastructure
 {
+  using System;
+  using System.IO;
+  using System.Linq;
+  using System.Threading;
+  using Microsoft.AspNetCore.Hosting;
+  using Microsoft.AspNetCore.Hosting.Server.Features;
+
   public class ServerFixture
   {
-    private readonly Lazy<Uri> _rootUriInitializer;
+    private readonly Lazy<Uri> LazyUri;
 
     public ServerFixture()
     {
-      _rootUriInitializer = new Lazy<Uri>(() =>
+      LazyUri = new Lazy<Uri>(() =>
         new Uri(StartAndGetRootUri()));
     }
 
@@ -21,37 +21,37 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
 
     public BuildWebHost BuildWebHostMethod { get; set; }
     public AspNetEnvironment Environment { get; set; } = AspNetEnvironment.Production;
-    public Uri RootUri => _rootUriInitializer.Value;
+    public Uri RootUri => LazyUri.Value;
     private IWebHost WebHost { get; set; }
 
-    protected static string FindSampleOrTestSitePath(string projectName)
+    protected static string FindSampleOrTestSitePath(string aProjectName)
     {
       string solutionDir = FindSolutionDir();
       string[] possibleLocations = new[]
       {
-        Path.Combine(solutionDir, "samples", projectName),
-        Path.Combine(solutionDir, "samples", "Hosted", projectName),
-        Path.Combine(solutionDir, "test", "testapps", projectName)
+        Path.Combine(solutionDir, "samples", aProjectName),
+        Path.Combine(solutionDir, "samples", "Hosted", aProjectName),
+        Path.Combine(solutionDir, "test", "testapps", aProjectName)
       };
 
       return possibleLocations.FirstOrDefault(Directory.Exists)
-          ?? throw new ArgumentException($"Cannot find a sample or test site with name '{projectName}'.");
+        ?? throw new ArgumentException($"Cannot find a sample or test site with name '{aProjectName}'.");
     }
 
     protected static string FindSolutionDir()
     {
       return FindClosestDirectoryContaining(
-          "BlazorState.sln",
-          Path.GetDirectoryName(typeof(ServerFixture).Assembly.Location));
+        aFilename: "BlazorState.sln",
+        aStartDirectory: Path.GetDirectoryName(typeof(ServerFixture).Assembly.Location));
     }
 
-    protected static void RunInBackgroundThread(Action action)
+    protected static void RunInBackgroundThread(Action aAction)
     {
       var isDone = new ManualResetEvent(false);
 
       new Thread(() =>
       {
-        action();
+        aAction();
         isDone.Set();
       }).Start();
 
@@ -69,12 +69,14 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
       string sampleSitePath = FindSampleOrTestSitePath(
                 BuildWebHostMethod.Method.DeclaringType.Assembly.GetName().Name);
 
-      return BuildWebHostMethod(new[]
+      IWebHost webHost = BuildWebHostMethod(new[]
       {
-                "--urls", "http://127.0.0.1:0",
-                "--contentroot", sampleSitePath,
-                "--environment", Environment.ToString(),
-            });
+        "--urls", "http://127.0.0.1:0",
+        "--contentroot", sampleSitePath,
+        "--environment", Environment.ToString(),
+      });
+
+      return webHost;
     }
 
     protected string StartAndGetRootUri()
@@ -87,23 +89,21 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
     }
 
     private static string FindClosestDirectoryContaining(
-                      string filename,
-      string startDirectory)
+      string aFilename,
+      string aStartDirectory)
     {
-      string dir = startDirectory;
+      string directory = aStartDirectory;
       while (true)
       {
-        if (File.Exists(Path.Combine(dir, filename)))
-        {
-          return dir;
-        }
+        if (File.Exists(Path.Combine(directory, aFilename)))
+          return directory;
 
-        dir = Directory.GetParent(dir)?.FullName;
-        if (string.IsNullOrEmpty(dir))
+        directory = Directory.GetParent(directory)?.FullName;
+        if (string.IsNullOrEmpty(directory))
         {
           throw new FileNotFoundException(
-              $"Could not locate a file called '{filename}' in " +
-              $"directory '{startDirectory}' or any parent directory.");
+              $"Could not locate a file called '{aFilename}' in " +
+              $"directory '{aStartDirectory}' or any parent directory.");
         }
       }
     }
