@@ -11,6 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\..\source\BlazorState\BlazorState.csproj" />
   </ItemGroup>
 </Project>
