@@ -1,4 +1,4 @@
-﻿namespace BlazorState.E2E.Tests
+﻿namespace BlazorState.Integration.Tests.Infrastructure
 {
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
