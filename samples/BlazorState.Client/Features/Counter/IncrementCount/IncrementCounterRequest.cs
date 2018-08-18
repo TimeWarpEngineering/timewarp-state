@@ -2,7 +2,7 @@
 {
   using MediatR;
 
-  public class Request : IRequest<CounterState>
+  public class IncrementCounterRequest : IRequest<CounterState>
   {
     public int Amount { get; set; }
   }

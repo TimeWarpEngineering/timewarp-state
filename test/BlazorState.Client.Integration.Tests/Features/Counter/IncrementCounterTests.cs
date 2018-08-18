@@ -33,7 +33,7 @@ namespace BlazorState.Client.Integration.Tests.Features.Counter
       CounterState.Initialize(aCount: 22);
 
       // Create request
-      var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.Request
+      var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.IncrementCounterRequest
       {
         Amount = 5
       };
@@ -51,7 +51,7 @@ namespace BlazorState.Client.Integration.Tests.Features.Counter
       CounterState.Initialize(aCount: 15);
 
       // Create request
-      var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.Request
+      var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.IncrementCounterRequest
       {
         Amount = -2
       };

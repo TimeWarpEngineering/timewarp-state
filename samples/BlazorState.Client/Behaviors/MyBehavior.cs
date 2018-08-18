@@ -1,5 +1,4 @@
 ﻿namespace BlazorState.Client.Behaviors
-
 {
   using System;
   using System.Threading;

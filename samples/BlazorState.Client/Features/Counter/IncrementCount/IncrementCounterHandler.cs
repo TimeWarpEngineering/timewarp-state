@@ -8,11 +8,11 @@
 
   public partial class CounterState
   {
-    public class Handler : BaseHandler<Request, CounterState>
+    public class IncrementCounterHandler : BaseHandler<IncrementCounterRequest, CounterState>
     {
-      public Handler(IStore aStore) : base(aStore) { }
+      public IncrementCounterHandler(IStore aStore) : base(aStore) { }
 
-      public override Task<CounterState> Handle(Request request, CancellationToken cancellationToken)
+      public override Task<CounterState> Handle(IncrementCounterRequest request, CancellationToken cancellationToken)
       {
         CounterState.Count += request.Amount;
         return Task.FromResult(CounterState);

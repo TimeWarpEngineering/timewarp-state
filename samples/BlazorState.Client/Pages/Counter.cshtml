@@ -11,6 +11,6 @@
 
   void ButtonClick()
   {
-    Mediator.Send(new Features.Counter.IncrementCount.Request { Amount = 5 });
+    Mediator.Send(new Features.Counter.IncrementCount.IncrementCounterRequest { Amount = 5 });
   }
 }
