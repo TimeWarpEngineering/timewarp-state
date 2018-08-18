@@ -1,6 +1,7 @@
 ﻿namespace BlazorState.Client.Components
 {
   using BlazorState.Behaviors.ReduxDevTools;
+  using BlazorState.Client.Features.Counter;
   using BlazorState.Client.State;
 
   /// <summary>

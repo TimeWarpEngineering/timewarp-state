@@ -1,4 +1,5 @@
-﻿using BlazorState.Client.State;
+﻿using BlazorState.Client.Features.Counter;
+using BlazorState.Client.State;
 using MediatR;
 
 namespace BlazorState.Client.Features.Base
