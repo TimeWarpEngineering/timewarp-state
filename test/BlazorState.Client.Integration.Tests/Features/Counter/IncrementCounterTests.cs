@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using BlazorState.Client.Features.Counter;
 using BlazorState.Client.State;
 using BlazorState.Integration.Tests.Infrastructure;
 using MediatR;
@@ -33,7 +34,7 @@ namespace BlazorState.Client.Integration.Tests.Features.Counter
       // Given our TestFixture the state defaults to the InitialState.
       // IStore store = ServiceProvider.GetService<IStore>();
       
-      CounterState.Count = 22;
+      CounterState.Initialize(aCount:22);
 
       // Create request
       var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.Request
@@ -51,10 +52,8 @@ namespace BlazorState.Client.Integration.Tests.Features.Counter
     public async Task Should_Decrement_Counter()
     {
       //Arrange
+      CounterState.Initialize(aCount: 15);
 
-      // Setup know state.  In app this wouldn't be allowed but for testing 
-      // Direct manipulation of state is fine.
-      CounterState.Count = 15;
       // Create request
       var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.Request
       {
