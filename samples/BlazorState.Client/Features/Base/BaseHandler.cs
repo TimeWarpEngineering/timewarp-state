@@ -1,16 +1,15 @@
-﻿using BlazorState.Client.Features.Application;
-using BlazorState.Client.Features.Counter;
-using BlazorState.Client.Features.WeatherForecast;
-using MediatR;
-
-namespace BlazorState.Client.Features.Base
+﻿namespace BlazorState.Client.Features.Base
 {
+  using BlazorState.Client.Features.Application;
+  using BlazorState.Client.Features.Counter;
+  using BlazorState.Client.Features.WeatherForecast;
+  using MediatR;
   /// <summary>
-  /// Similare
+  /// Base Handler that makes it easy to access state
   /// </summary>
   /// <typeparam name="TRequest"></typeparam>
   /// <typeparam name="TState"></typeparam>
-  public abstract class BaseHandler<TRequest, TState> : RequestHandler<TRequest, TState>
+  public abstract class BaseHandler<TRequest, TState> : BlazorState.RequestHandler<TRequest, TState>
     where TRequest : IRequest<TState>
     where TState : IState
   {

@@ -3,32 +3,32 @@
   using System.Collections.Generic;
   using System.Reflection;
   using BlazorState;
-  using BlazorState.Shared;
+  using BlazorState.Shared.Features.WeatherForecast;
 
   public partial class WeatherForecastsState : State<WeatherForecastsState>
   {
-    private List<WeatherForecast> _WeatherForecasts;
+    private List<WeatherForecastDto> _WeatherForecasts;
 
     public WeatherForecastsState()
     {
-      _WeatherForecasts = new List<WeatherForecast>();
+      _WeatherForecasts = new List<WeatherForecastDto>();
     }
 
     protected WeatherForecastsState(WeatherForecastsState aState) : this()
     {
-      foreach (WeatherForecast forecast in aState.WeatherForecasts)
+      foreach (WeatherForecastDto weatherForecastDto in aState.WeatherForecasts)
       {
-        _WeatherForecasts.Add(forecast.Clone() as WeatherForecast);
+        _WeatherForecasts.Add(weatherForecastDto.Clone() as WeatherForecastDto);
       }
     }
 
-    public IReadOnlyList<WeatherForecast> WeatherForecasts => _WeatherForecasts.AsReadOnly();
+    public IReadOnlyList<WeatherForecastDto> WeatherForecasts => _WeatherForecasts.AsReadOnly();
 
     public override object Clone() => new WeatherForecastsState(this);
 
     protected override void Initialize() { }
 
-    private void Initialize(List<WeatherForecast> aWeatherForecastList)
+    private void Initialize(List<WeatherForecastDto> aWeatherForecastList)
     {
       ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
       _WeatherForecasts = aWeatherForecastList ??

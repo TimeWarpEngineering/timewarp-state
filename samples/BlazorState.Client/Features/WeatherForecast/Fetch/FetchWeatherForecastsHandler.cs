@@ -6,13 +6,14 @@
   using System.Threading.Tasks;
   using BlazorState;
   using BlazorState.Shared;
+  using BlazorState.Shared.Features.WeatherForecast;
   using Microsoft.AspNetCore.Blazor;
 
   public partial class WeatherForecastsState
   {
-    public class Handler : RequestHandler<FetchWeatherForecastsRequest, WeatherForecastsState>
+    public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsRequest, WeatherForecastsState>
     {
-      public Handler(IStore aStore, HttpClient aHttpClient) : base(aStore)
+      public FetchWeatherForecastsHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
       {
         HttpClient = aHttpClient;
       }
@@ -23,8 +24,11 @@
       public override async Task<WeatherForecastsState> Handle(FetchWeatherForecastsRequest request, CancellationToken cancellationToken)
       {
         //TODO: add IsLoading
-        AjaxResponse ajaxResponse = await HttpClient.GetJsonAsync<AjaxResponse>("/api/weatherforecast");
-        List<WeatherForecast> weatherForecasts = ajaxResponse.WeatherForecasts;
+        GetWeatherForecastsResponse getWeatherForecastsResponse = 
+          await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>
+          (GetWeatherForecastsRequest.Route);
+
+        List<WeatherForecastDto> weatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
         WeatherForecastsState._WeatherForecasts = weatherForecasts;
         return WeatherForecastsState;
       }

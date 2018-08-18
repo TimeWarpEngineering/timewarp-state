@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Server.Features.Base
+﻿namespace BlazorState.Shared.Features.Base
 {
   using System;
 

@@ -1,12 +1,12 @@
-﻿namespace BlazorState.Shared
+﻿namespace BlazorState.Shared.Features.WeatherForecast
 {
   using System;
 
-  public class WeatherForecast : ICloneable
+  public class WeatherForecastDto : ICloneable
   {
-    public WeatherForecast() { }
+    public WeatherForecastDto() { }
 
-    protected WeatherForecast(WeatherForecast aWeatherForecast)
+    protected WeatherForecastDto(WeatherForecastDto aWeatherForecast)
     {
       Date = new DateTime(aWeatherForecast.Date.Ticks);
       TemperatureC = aWeatherForecast.TemperatureC;
@@ -18,6 +18,6 @@
     public int TemperatureC { get; set; }
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-    public object Clone() => new WeatherForecast(this);
+    public object Clone() => new WeatherForecastDto(this);
   }
 }
