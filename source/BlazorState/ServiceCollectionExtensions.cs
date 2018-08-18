@@ -28,8 +28,9 @@
       var options = new Options();
       aConfigure?.Invoke(options);
 
-      ServiceDescriptor loggerServiceDescriptor =
-        aServices.FirstOrDefault(s => s.ServiceType == typeof(ILogger<>));
+      ServiceDescriptor loggerServiceDescriptor = aServices.FirstOrDefault(
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>));
+
       if (loggerServiceDescriptor == null)
       {
         aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));

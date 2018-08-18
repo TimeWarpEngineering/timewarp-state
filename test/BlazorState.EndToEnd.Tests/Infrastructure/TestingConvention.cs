@@ -53,9 +53,14 @@
       BrowserFixture = new BrowserFixture();
       aServiceCollection.AddSingleton(BrowserFixture.WebDriver);
       aServiceCollection.AddSingleton(new ServerFixture());
-      //TODO use Scrutor to register all Tests classes
-      aServiceCollection.AddScoped<CounterPageTests>();
-      aServiceCollection.AddScoped<FetchDataPageTests>();
+      // TODO: should use the same collection as `Classes` here
+      aServiceCollection.Scan(scan => scan
+        // Start with all non abstract types in this assembly
+        .FromAssemblyOf<TestingConvention>()
+        // Add all the classes that end in Tests
+        .AddClasses(action: (aClasses) => aClasses.TypeName().EndsWith("Tests"))
+        .AsSelf()
+        .WithScopedLifetime());
     }
 
     public void Dispose() => BrowserFixture.WebDriver.Quit();

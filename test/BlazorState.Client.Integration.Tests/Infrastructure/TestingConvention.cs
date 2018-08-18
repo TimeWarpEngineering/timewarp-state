@@ -24,10 +24,7 @@
         using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
         {
           object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-          //object instance = aTestClass.Construct();
-
           Setup(instance);
-
           aCase.Execute(instance);
         }
       });
@@ -42,6 +39,13 @@
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
       //aServiceCollection.AddSingleton();
+      aServiceCollection.Scan(scan => scan
+        // Start with all non abstract types in this assembly
+        .FromAssemblyOf<TestingConvention>()
+        // Add all the classes that end in Tests
+        .AddClasses(action: (aClasses) => aClasses.TypeName().EndsWith("Tests"))
+        .AsSelf()
+        .WithScopedLifetime());
     }
   }
 }
