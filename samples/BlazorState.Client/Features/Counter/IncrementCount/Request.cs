@@ -1,6 +1,5 @@
 ﻿namespace BlazorState.Client.Features.Counter.IncrementCount
 {
-  using BlazorState.Client.State;
   using MediatR;
 
   public class Request : IRequest<CounterState>

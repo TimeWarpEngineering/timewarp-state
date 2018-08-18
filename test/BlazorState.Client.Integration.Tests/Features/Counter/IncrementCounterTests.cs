@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BlazorState.Client.Features.Counter;
-using BlazorState.Client.State;
 using BlazorState.Integration.Tests.Infrastructure;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,14 +29,14 @@ namespace BlazorState.Client.Integration.Tests.Features.Counter
       // Setup know state.
       // Given our TestFixture the state defaults to the InitialState.
       // IStore store = ServiceProvider.GetService<IStore>();
-      
-      CounterState.Initialize(aCount:22);
+
+      CounterState.Initialize(aCount: 22);
 
       // Create request
       var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.Request
-        {
-          Amount = 5
-        };
+      {
+        Amount = 5
+      };
       //Act
       // Send Request
       CounterState = await Mediator.Send(incrementCounterRequest);

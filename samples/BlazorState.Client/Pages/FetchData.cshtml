@@ -36,8 +36,8 @@ else
 
 @functions {
 
-protected override async Task OnInitAsync()
-{
-  await Mediator.Send(new Features.WeatherForecast.Fetch.Request());
-}
+  protected override async Task OnInitAsync()
+  {
+    await Mediator.Send(new Features.WeatherForecast.FetchWeatherForecastsRequest());
+  }
 }

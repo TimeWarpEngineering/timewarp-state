@@ -1,8 +1,9 @@
 ﻿namespace BlazorState.Client.Components
 {
   using BlazorState.Behaviors.ReduxDevTools;
+  using BlazorState.Client.Features.Application;
   using BlazorState.Client.Features.Counter;
-  using BlazorState.Client.State;
+  using BlazorState.Client.Features.WeatherForecast;
 
   /// <summary>
   /// Makes access the State a little easier and by inheriting from

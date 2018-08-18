@@ -1,5 +1,6 @@
-﻿using BlazorState.Client.Features.Counter;
-using BlazorState.Client.State;
+﻿using BlazorState.Client.Features.Application;
+using BlazorState.Client.Features.Counter;
+using BlazorState.Client.Features.WeatherForecast;
 using MediatR;
 
 namespace BlazorState.Client.Features.Base

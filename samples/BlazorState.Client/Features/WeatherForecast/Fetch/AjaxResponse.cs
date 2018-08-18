@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Client.Features.WeatherForecast.Fetch
+﻿namespace BlazorState.Client.Features.WeatherForecast
 {
   using System.Collections.Generic;
   using BlazorState.Shared;
