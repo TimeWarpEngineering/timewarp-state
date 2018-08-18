@@ -5,7 +5,7 @@
   using Shouldly;
 
   /// <remarks>This is an abstract class so we need to create a derived class
-  /// to test it.  The only method that does anything is Hyrdate and it is a
+  /// to test it.  The only method that does anything is Hydrate and it is a
   /// direct call to JsonUtil.Deserialize.  It is tested in that package
   /// extensively.  One test just to show we thought about it.
   /// </remarks>
