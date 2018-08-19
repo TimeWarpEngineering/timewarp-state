@@ -17,8 +17,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.5.1" />
     <WebpackInputs Include="**\*.ts" Exclude="dist\**;node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WebpackInputs Remove="src\DotNet.ts" />
   </ItemGroup>
 
   <Target Name="EnsureNpmRestored" Condition="!Exists('node_modules')">

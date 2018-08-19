@@ -3,6 +3,7 @@
   using BlazorState.Features.JavaScriptInterop;
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
+  using Microsoft.JSInterop;
 
   internal class JumpToStateRequest : IRequest, IReduxRequest
   {
@@ -11,7 +12,7 @@
     public JumpToStateRequest(string aRequestAsJson) : this()
     {
       JsonRequest =
-        JsonUtil.Deserialize<JsonRequest<DispatchRequest<JumpToStateRequest>>>(aRequestAsJson);
+        Json.Deserialize<JsonRequest<DispatchRequest<JumpToStateRequest>>>(aRequestAsJson);
 
       Type = JsonRequest.Payload.Type;
       ActionId = JsonRequest.Payload.Payload.ActionId;

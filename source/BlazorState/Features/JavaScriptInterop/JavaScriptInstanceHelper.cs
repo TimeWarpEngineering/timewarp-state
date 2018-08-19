@@ -1,6 +1,7 @@
 ﻿namespace BlazorState.Features.JavaScriptInterop
 {
   using System;
+  using Microsoft.JSInterop;
 
   /// <summary>
   /// Maintains a static reference to the JsonRequestHandler
@@ -10,6 +11,7 @@
   {
     public static JsonRequestHandler JsonRequestHandler { get; set; }
 
+    [JSInvokable]
     public static void Handle(string aRequestAsJson)
     {
       if (JsonRequestHandler == null)

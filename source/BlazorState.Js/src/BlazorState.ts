@@ -1,26 +1,16 @@
-﻿import { Blazor } from './Blazor';
+﻿import { DotNet } from "./DotNet";
+
+export const BlazorStateName: string = 'BlazorState';
 
 export class BlazorState {
-  requestHandler: any;
-  methodName: string;
-  typeName: string;
-  namespace: string;
-  assemblyName: string;
 
-  constructor() {
-    this.assemblyName = 'BlazorState';
-    this.namespace = 'BlazorState.Features.JavaScriptInterop';
-    this.typeName = 'JavaScriptInstanceHelper';
-    this.methodName = 'Handle';
-
-    this.requestHandler =
-      Blazor.platform.findMethod(this.assemblyName, this.namespace, this.typeName, this.methodName);
-  }
-
-  DispatchRequest(request) {
+  async DispatchRequest(request) {
     const requestAsJson = JSON.stringify(request);
     console.log(`Dispatching request: ${requestAsJson}`);
-    const requestAsString = Blazor.platform.toDotNetString(requestAsJson);
-    Blazor.platform.callMethod(this.requestHandler, null, [requestAsString]);
+
+    const assemblyName = 'BlazorState';
+    const methodName = 'Handle';
+    //const requestAsString = Blazor.platform.toDotNetString(requestAsJson);
+    await DotNet.invokeMethodAsync(assemblyName, methodName, requestAsJson);
   }
 }

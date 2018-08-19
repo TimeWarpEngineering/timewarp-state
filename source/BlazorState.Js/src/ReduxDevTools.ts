@@ -1,8 +1,9 @@
-﻿import { Blazor } from './Blazor';
-import { BlazorState } from './BlazorState';
+﻿import { BlazorState, BlazorStateName } from './BlazorState';
 
 const ReduxExtentionName: string = '__REDUX_DEVTOOLS_EXTENSION__';
 const DevToolsName: string = 'devTools';
+export const CreateReduxDevToolsName: string = 'createReduxDevTools';
+const ReduxDevToolsName: string = "reduxDevTools";
 
 export class ReduxDevTools {
   IsEnabled: boolean;
@@ -12,7 +13,7 @@ export class ReduxDevTools {
   BlazorState: BlazorState;
 
   constructor() {
-    this.BlazorState = new BlazorState(); // Depends on this functionality
+    this.BlazorState = window[BlazorStateName]; // Depends on this functionality
     this.Config = {
       name: 'Blazor State',
       features: {
@@ -35,13 +36,9 @@ export class ReduxDevTools {
   }
 
   Init() {
+    window[ReduxDevToolsName] = this;
     if (this.IsEnabled) {
       this.DevTools.subscribe(ReduxDevTools.MessageHandler);
-      const functionName = "ReduxDevToolsDispatch";
-
-      Blazor.registerFunction(functionName, ReduxDevTools.ReduxDevToolsDispatch);
-      console.log(`${functionName} function registered with Blazor`);
-
       window[DevToolsName] = this.DevTools;
     }
   }
@@ -63,7 +60,7 @@ export class ReduxDevTools {
     }
     return devTools;
   }
-
+ 
   static MapRequestType(message) {
     var dispatchRequests = {
       'COMMIT': undefined,
@@ -106,12 +103,12 @@ export class ReduxDevTools {
         Payload: message
       };
 
-      reduxDevTools.BlazorState.DispatchRequest(jsonRequest);
+      window[ReduxDevToolsName].BlazorState.DispatchRequest(jsonRequest);
     } else
       console.log(`messages of this type are currently not supported`);
   }
 
-  static ReduxDevToolsDispatch(action, state) {
+  ReduxDevToolsDispatch(action, state) {
     if (action === 'init') {
       console.log("ReduxDevTools.js: Dispatching redux action: init");
       return window[DevToolsName].init(state);
@@ -122,12 +119,10 @@ export class ReduxDevTools {
       return window[DevToolsName].send(action, state);
     }
   }
+
+  static Create() {
+    console.log('js - ReduxDevTools.Create');
+    const reduxDevTools = new ReduxDevTools();   
+    return reduxDevTools.IsEnabled;
+  }
 }
-
-var reduxDevTools;
-
-Blazor.registerFunction('blazor-state.ReduxDevTools.create', function () {
-  console.log('js - blazor-state.ReduxDevTools.create');
-  reduxDevTools = new ReduxDevTools();
-  return reduxDevTools.IsEnabled;
-});

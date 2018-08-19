@@ -4,6 +4,7 @@
   using MediatR;
   using Microsoft.AspNetCore.Blazor;
   using Microsoft.Extensions.Logging;
+  using Microsoft.JSInterop;
 
   public class JsonRequestHandler
   {
@@ -21,8 +22,11 @@
 
     public async void Handle(string aRequestAsJson)
     {
+      if (string.IsNullOrWhiteSpace(aRequestAsJson))
+        throw new ArgumentException("was Null or empty",nameof(aRequestAsJson));
+
       Logger.LogDebug($"{GetType().Name}: Handling: {aRequestAsJson}");
-      BaseJsonRequest baseRequest = JsonUtil.Deserialize<BaseJsonRequest>(aRequestAsJson);
+      BaseJsonRequest baseRequest = Json.Deserialize<BaseJsonRequest>(aRequestAsJson);
       Logger.LogDebug($"{GetType().Name}: RequestType: {baseRequest.RequestType}");
       var requestType = Type.GetType(baseRequest.RequestType);
       if (requestType == null)
