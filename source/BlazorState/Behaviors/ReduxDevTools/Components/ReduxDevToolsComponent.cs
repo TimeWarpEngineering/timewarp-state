@@ -17,10 +17,11 @@
 
     protected async override Task OnInitAsync()
     {
-      ReduxDevToolsInterop.IsEnabled = await JSRuntime.Current.InvokeAsync<bool>("createReduxDevTools");
+      const string ReduxDevToolsFactoryName = "reduxDevToolsFactory";
+      ReduxDevToolsInterop.IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
       // We could send in the Store.GetSerializeState but it will be empty
       if (ReduxDevToolsInterop.IsEnabled)
-        ReduxDevToolsInterop.DispatchInit("");
+        ReduxDevToolsInterop.DispatchInit(string.Empty);
     }
   }
 }

@@ -2,8 +2,7 @@
 
 const ReduxExtentionName: string = '__REDUX_DEVTOOLS_EXTENSION__';
 const DevToolsName: string = 'devTools';
-export const CreateReduxDevToolsName: string = 'createReduxDevTools';
-const ReduxDevToolsName: string = "reduxDevTools";
+export const ReduxDevToolsName: string = "reduxDevTools";
 
 export class ReduxDevTools {
   IsEnabled: boolean;
@@ -36,9 +35,8 @@ export class ReduxDevTools {
   }
 
   Init() {
-    window[ReduxDevToolsName] = this;
     if (this.IsEnabled) {
-      this.DevTools.subscribe(ReduxDevTools.MessageHandler);
+      this.DevTools.subscribe(this.MessageHandler);
       window[DevToolsName] = this.DevTools;
     }
   }
@@ -61,7 +59,7 @@ export class ReduxDevTools {
     return devTools;
   }
  
-  static MapRequestType(message) {
+  MapRequestType(message) {
     var dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
@@ -89,11 +87,11 @@ export class ReduxDevTools {
     return blazorRequestType;
   }
 
-  static MessageHandler(message) {
+  MessageHandler(message) {
     console.log('ReduxDevTools.MessageHandler');
     console.log(message);
     var jsonRequest;
-    const requestType = ReduxDevTools.MapRequestType(message);
+    const requestType = this.MapRequestType(message);
     if (requestType) { // If we don't map this type then there is nothing to dispatch just ignore.
       jsonRequest = {
         // TODO: make sure non Requests from assemblies other than BlazorState also work.
@@ -103,7 +101,7 @@ export class ReduxDevTools {
         Payload: message
       };
 
-      window[ReduxDevToolsName].BlazorState.DispatchRequest(jsonRequest);
+      this.BlazorState.DispatchRequest(jsonRequest);
     } else
       console.log(`messages of this type are currently not supported`);
   }
@@ -120,9 +118,9 @@ export class ReduxDevTools {
     }
   }
 
-  static Create() {
-    console.log('js - ReduxDevTools.Create');
-    const reduxDevTools = new ReduxDevTools();   
-    return reduxDevTools.IsEnabled;
-  }
+  //static Create() {
+  //  console.log('js - ReduxDevTools.Create');
+  //  const reduxDevTools = new ReduxDevTools();   
+  //  return reduxDevTools.IsEnabled;
+  //}
 }
