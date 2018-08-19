@@ -1,5 +1,6 @@
 ﻿namespace BlazorState.Integration.Tests.Infrastructure
 {
+  using BlazorState.Client.Integration.Tests.Infrastructure;
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
 
@@ -38,7 +39,7 @@
 
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
-      //aServiceCollection.AddSingleton();
+      aServiceCollection.AddSingleton<BlazorStateTestServer>();
       aServiceCollection.Scan(scan => scan
         // Start with all non abstract types in this assembly
         .FromAssemblyOf<TestingConvention>()

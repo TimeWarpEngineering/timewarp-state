@@ -21,7 +21,9 @@
       private HttpClient HttpClient { get; }
       private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 
-      public override async Task<WeatherForecastsState> Handle(FetchWeatherForecastsRequest request, CancellationToken cancellationToken)
+      public override async Task<WeatherForecastsState> Handle(
+        FetchWeatherForecastsRequest aFetchWeatherForecastsRequest, 
+        CancellationToken aCancellationToken)
       {
         //TODO: add IsLoading
         GetWeatherForecastsResponse getWeatherForecastsResponse = 

@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using BlazorState.Client.Features.Counter;
-using BlazorState.Integration.Tests.Infrastructure;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
-
-namespace BlazorState.Client.Integration.Tests.Features.Counter
+﻿namespace BlazorState.Client.Integration.Tests.Features.Counter
 {
+  using System.Threading.Tasks;
+  using BlazorState.Client.Features.Counter;
+  using BlazorState.Integration.Tests.Infrastructure;
+  using MediatR;
+  using Microsoft.Extensions.DependencyInjection;
+  using Shouldly;
+
   class IncrementCounterTests
   {
     public IncrementCounterTests(TestFixture aTestFixture)

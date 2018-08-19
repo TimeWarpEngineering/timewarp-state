@@ -1,7 +1,10 @@
 ﻿namespace BlazorState.Integration.Tests.Infrastructure
 {
+  using System;
+  using System.Net.Http;
   using System.Threading.Tasks;
   using BlazorState;
+  using BlazorState.Client.Integration.Tests.Infrastructure;
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +22,6 @@
       var serviceCollection = new ServiceCollection();
       ConfigureServices(serviceCollection);
       ServiceProvider = serviceCollection.BuildServiceProvider();
-      //Mediator = ServiceProvider.GetService<IMediator>();
       //s_scopeFactory = ServiceProvider.GetService<IServiceScopeFactory>();
     }
 
@@ -31,10 +33,16 @@
     /// <param name="services"></param>
     private static void ConfigureServices(ServiceCollection aServiceCollection)
     {
-#pragma warning disable IDE0022 // Use expression body for methods
+      // TODO: why not inject this.
+      //var blazorStateTestServer = new BlazorStateTestServer();
+      //aServiceCollection.AddSingleton(blazorStateTestServer.CreateClient());
+      //aServiceCollection.AddSingleton(new HttpClient(new BrowserHttpMessageHandler())
+      //{
+      //  BaseAddress = new Uri(BrowserUriHelper.Instance.GetBaseUri())
+      //});
+      // Add HttpClient here like is done in BrowserServiceProvider?
       aServiceCollection.AddBlazorState();
-#pragma warning restore IDE0022 // Use expression body for methods
-                               //aServiceCollection.AddSingleton<IMediator, Mediator>();
+      //aServiceCollection.AddSingleton<BlazorStateTestServer>();
     }
     #endregion
 

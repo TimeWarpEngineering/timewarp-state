@@ -12,9 +12,11 @@
     {
       public IncrementCounterHandler(IStore aStore) : base(aStore) { }
 
-      public override Task<CounterState> Handle(IncrementCounterRequest request, CancellationToken cancellationToken)
+      public override Task<CounterState> Handle(
+        IncrementCounterRequest aIncrementCounterRequest, 
+        CancellationToken aCancellationToken)
       {
-        CounterState.Count += request.Amount;
+        CounterState.Count += aIncrementCounterRequest.Amount;
         return Task.FromResult(CounterState);
       }
     }
