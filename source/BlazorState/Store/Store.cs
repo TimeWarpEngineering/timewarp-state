@@ -7,6 +7,12 @@
   using Microsoft.AspNetCore.Blazor;
   using Microsoft.Extensions.Logging;
 
+  /// <summary>
+  /// </summary>
+  /// <remarks>TODO: A significant amount of this class is to support
+  /// Redux dev tools.  Should we not split this up so that portion
+  /// is only included if in dev mode.
+  /// </remarks>
   internal class Store : IStore
   {
     public Store(

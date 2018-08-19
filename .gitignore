@@ -290,3 +290,4 @@ __pycache__/
 /BlazorDefault2018-05-02.Server/
 /BlazorDefault2018-05-02.Shared/
 /.vscode/
+/source/BlazorState.Js/dist/

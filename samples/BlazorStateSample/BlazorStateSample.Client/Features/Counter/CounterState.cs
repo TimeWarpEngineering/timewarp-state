@@ -28,10 +28,7 @@
     /// <summary>
     /// Set the initial state
     /// </summary>
-    protected override void Initialize()
-    {
-      Count = 3;
-    }
+    protected override void Initialize() => Count = 3;
   }
   #endregion
 }

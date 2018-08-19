@@ -6,4 +6,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Base\" />
+    <Folder Include="Features\WeatherForecast\Fetch\" />
+    <Folder Include="Features\WeatherForecast\GetAll\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="5.1.0" />
+  </ItemGroup>
+
 </Project>

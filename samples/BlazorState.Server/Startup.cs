@@ -4,6 +4,7 @@ namespace BlazorState.Server
 {
   using System.Linq;
   using System.Net.Mime;
+  using System.Reflection;
   using MediatR;
   using Microsoft.AspNetCore.Blazor.Server;
   using Microsoft.AspNetCore.Builder;
@@ -51,7 +52,7 @@ namespace BlazorState.Server
             WasmMediaTypeNames.Application.Wasm,
           });
       });
-      services.AddMediatR();
+      services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       services.Scan(scan => scan
         .FromAssemblyOf<Startup>()
         .AddClasses()
