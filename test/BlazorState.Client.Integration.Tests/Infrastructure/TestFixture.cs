@@ -1,10 +1,12 @@
 ﻿namespace BlazorState.Integration.Tests.Infrastructure
 {
+  using System;
   using System.Reflection;
   using BlazorState;
   using BlazorState.Client;
   using BlazorState.Client.Integration.Tests.Infrastructure;
   using MediatR;
+  using Microsoft.AspNetCore.Blazor.Hosting;
   using Microsoft.Extensions.DependencyInjection;
 
   /// <summary>
@@ -13,30 +15,30 @@
   /// </summary>
   public class TestFixture//: IMediatorFixture, IStoreFixture, IServiceProviderFixture
   {
-    /// <summary>
-    /// This is the ServiceProvider that will be used by the Client
-    /// </summary>
-    public ServiceProvider ServiceProvider { get; set; }
-    private IMediator Mediator { get; set; }
-    private BlazorStateTestServer BlazorStateTestServer { get; }
-
     public TestFixture(BlazorStateTestServer aBlazorStateTestServer)
     {
       BlazorStateTestServer = aBlazorStateTestServer;
-
-      var serviceCollection = new ServiceCollection();
-      ConfigureServices(serviceCollection);
-      ServiceProvider = serviceCollection.BuildServiceProvider();
+      IWebAssemblyHostBuilder webAssemblyHostBuilder = BlazorWebAssemblyHost.CreateDefaultBuilder()
+            //.UseBlazorStartup<Startup>()
+            .ConfigureServices(ConfigureServices);
+      ServiceProvider = webAssemblyHostBuilder.Build().Services;
     }
 
     /// <summary>
-    /// This does what would be done in a StartUp class
+    /// This is the ServiceProvider that will be used by the Client
+    /// </summary>
+    public IServiceProvider ServiceProvider { get; set; }
+    private BlazorStateTestServer BlazorStateTestServer { get; }
+    private IMediator Mediator { get; set; }
+
+    /// <summary>
+    /// Special configuration for Testing with the Test Server
     /// </summary>
     /// <param name="aServiceCollection"></param>
-    private void ConfigureServices(ServiceCollection aServiceCollection)
+    private void ConfigureServices(IServiceCollection aServiceCollection)
     {
       aServiceCollection.AddSingleton(BlazorStateTestServer.CreateClient());
-      aServiceCollection.AddBlazorState(null, Assembly.GetAssembly(typeof(Startup)));
+      aServiceCollection.AddBlazorState(null, typeof(Startup).GetTypeInfo().Assembly);
     }
   }
 }

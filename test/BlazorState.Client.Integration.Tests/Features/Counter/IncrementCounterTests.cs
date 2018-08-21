@@ -1,5 +1,6 @@
 ﻿namespace BlazorState.Client.Integration.Tests.Features.Counter
 {
+  using System;
   using System.Threading.Tasks;
   using BlazorState.Client.Features.Counter;
   using BlazorState.Integration.Tests.Infrastructure;
@@ -17,7 +18,7 @@
       CounterState = Store.GetState<CounterState>();
     }
 
-    private ServiceProvider ServiceProvider { get; }
+    private IServiceProvider ServiceProvider { get; }
     private IMediator Mediator { get; }
     private IStore Store { get; }
     private CounterState CounterState { get; set; }
