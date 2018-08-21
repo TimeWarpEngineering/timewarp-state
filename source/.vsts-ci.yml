@@ -5,9 +5,9 @@ steps:
 - script: echo BuildID $(Build.BuildID)
 
 - task: Npm@1
-    inputs:
-      command: 'install'
-      workingDir: source/BlazorState.Js
+  inputs:
+    command: 'install'
+    workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
   displayName: Use .NET Core sdk 2.1.302
