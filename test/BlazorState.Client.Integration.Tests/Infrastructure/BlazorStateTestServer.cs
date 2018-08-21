@@ -5,7 +5,7 @@
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.TestHost;
 
-  class BlazorStateTestServer : TestServer
+  public class BlazorStateTestServer : TestServer
   {
     public BlazorStateTestServer() : base(WebHostBuilder()) { }
 

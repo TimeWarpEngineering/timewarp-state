@@ -1,7 +1,9 @@
 ﻿namespace BlazorState
 {
   using System;
+  using System.Collections.Generic;
   using System.Linq;
+  using System.Reflection;
   using BlazorState.Behaviors.ReduxDevTools;
   using BlazorState.Behaviors.State;
   using BlazorState.Features.JavaScriptInterop;
@@ -21,10 +23,19 @@
     /// <returns></returns>
     /// <example></example>
     /// <remarks>The order of registration matters. If the user wants to change they can configure themself vs using the extention</remarks>
+
     public static IServiceCollection AddBlazorState(
       this IServiceCollection aServices,
-      Action<Options> aConfigure = null)
+      Action<Options> aConfigure = null,
+      params Assembly[] aAssemblies)
     {
+      if (aAssemblies == null)
+        throw new ArgumentNullException(nameof(aAssemblies));
+
+      // Need to add this assembly
+      var assemblies = new List<Assembly>(aAssemblies);
+      assemblies.Add(Assembly.GetAssembly(typeof(ServiceCollectionExtensions)));
+
       var options = new Options();
       aConfigure?.Invoke(options);
 
@@ -40,7 +51,7 @@
       // example ReduxDevToosl depends on CloneStateBehavoir
       // We should build a dependency list based on the Options and then register from the resulting list.
       // If we separate behaviors into own packages that will change things.
-      aServices.AddMediatR();
+      aServices.AddMediatR(assemblies);
       if (options.UseCloneStateBehavior)
       {
         aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
@@ -67,5 +78,9 @@
     public bool UseCloneStateBehavior { get; set; } = true;
     public bool UseReduxDevToolsBehavior { get; set; } = true;
     public bool UseRouting { get; set; } = true;
+    /// <summary>
+    /// Assemblies to be searched for MediatR Requests
+    /// </summary>
+    public IEnumerable<Assembly> Assemblies { get; set; }
   }
 }
