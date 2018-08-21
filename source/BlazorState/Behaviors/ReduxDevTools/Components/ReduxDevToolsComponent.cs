@@ -5,7 +5,7 @@
   using Microsoft.JSInterop;
 
   /// <summary>
-  /// Add this component to Client App to use ReduxDevTools
+  /// Add this component to the Client Application to use ReduxDevTools
   /// </summary>
   /// <example>
   /// TODO:
@@ -14,8 +14,7 @@
   {
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 
-
-    protected async override Task OnInitAsync()
+    protected override async Task OnInitAsync()
     {
       const string ReduxDevToolsFactoryName = "reduxDevToolsFactory";
       ReduxDevToolsInterop.IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
