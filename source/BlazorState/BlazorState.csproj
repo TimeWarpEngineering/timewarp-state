@@ -4,7 +4,7 @@
     <Title>Blazor State</Title>
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
-    <PackageId>BlazorState</PackageId>
+    <PackageId>Blazor-State</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Company>TimeWarp Enterprises Limited</Company>
   </PropertyGroup>
