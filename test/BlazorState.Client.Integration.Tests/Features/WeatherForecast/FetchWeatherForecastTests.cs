@@ -1,5 +1,6 @@
 ﻿namespace BlazorState.Client.Integration.Tests.Features.WeatherForecast
 {
+  using System;
   using System.Threading.Tasks;
   using BlazorState.Client.Features.WeatherForecast;
   using BlazorState.Client.Integration.Tests.Infrastructure;
@@ -21,7 +22,7 @@
       WeatherForecastsState = Store.GetState<WeatherForecastsState>();
     }
 
-    private ServiceProvider ServiceProvider { get; }
+    private IServiceProvider ServiceProvider { get; }
     private IMediator Mediator { get; }
     private IStore Store { get; }
     private WeatherForecastsState WeatherForecastsState { get; set; }

@@ -6,6 +6,7 @@
   using System.Linq;
   using Microsoft.AspNetCore.Blazor;
   using Microsoft.Extensions.Logging;
+  using Microsoft.JSInterop;
 
   /// <summary>
   /// </summary>
@@ -74,7 +75,7 @@
     {
       Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
 
-      Dictionary<string, object> newStates = JsonUtil.Deserialize<Dictionary<string, object>>(aJsonString);
+      Dictionary<string, object> newStates = Json.Deserialize<Dictionary<string, object>>(aJsonString);
       foreach (KeyValuePair<string, object> keyValuePair in newStates)
       {
         LoadStateFromJson(keyValuePair);

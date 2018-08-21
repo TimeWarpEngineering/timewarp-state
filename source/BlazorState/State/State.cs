@@ -3,6 +3,7 @@
   using System;
   using System.Reflection;
   using Microsoft.AspNetCore.Blazor;
+  using Microsoft.JSInterop;
 
   public abstract class State<TState> : IState<TState>
   {
@@ -17,7 +18,7 @@
 
     public abstract object Clone();
 
-    public TState Hydrate(string aJsonString) => JsonUtil.Deserialize<TState>(aJsonString);
+    public TState Hydrate(string aJsonString) => Json.Deserialize<TState>(aJsonString);
 
     protected abstract void Initialize();
 

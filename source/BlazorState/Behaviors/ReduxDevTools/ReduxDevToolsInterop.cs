@@ -1,11 +1,11 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
-  using Microsoft.AspNetCore.Blazor.Browser.Interop;
   using Microsoft.Extensions.Logging;
+  using Microsoft.JSInterop;
 
   internal class ReduxDevToolsInterop
   {
-    private const string jsFunctionName = "ReduxDevToolsDispatch";
+    private const string JsFunctionName = "reduxDevTools.ReduxDevToolsDispatch";
 
     public ReduxDevToolsInterop(ILogger<ReduxDevToolsInterop> aLogger)
     {
@@ -22,14 +22,14 @@
         Logger.LogDebug($"{GetType().Name}: {nameof(this.Dispatch)}");
         Logger.LogDebug($"{GetType().Name}: aRequest.GetType().FullName:{aRequest.GetType().FullName}");
         var reduxAction = new ReduxAction(aRequest);
-        RegisteredFunction.Invoke<object>(jsFunctionName, reduxAction, state);
+        JSRuntime.Current.InvokeAsync<object>(JsFunctionName, reduxAction, state);
       }
     }
 
     public void DispatchInit(object state)
     {
       if (IsEnabled)
-        RegisteredFunction.Invoke<object>(jsFunctionName, "init", state);
+        JSRuntime.Current.InvokeAsync<object>(JsFunctionName, "init", state);
     }
   }
 }

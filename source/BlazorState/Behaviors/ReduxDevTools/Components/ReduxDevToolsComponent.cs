@@ -1,7 +1,8 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
-  using Microsoft.AspNetCore.Blazor.Browser.Interop;
+  using System.Threading.Tasks;
   using Microsoft.AspNetCore.Blazor.Components;
+  using Microsoft.JSInterop;
 
   /// <summary>
   /// Add this component to Client App to use ReduxDevTools
@@ -13,12 +14,14 @@
   {
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 
-    protected override void OnInit()
+
+    protected async override Task OnInitAsync()
     {
-      ReduxDevToolsInterop.IsEnabled = RegisteredFunction.Invoke<bool>("blazor-state.ReduxDevTools.create");
+      const string ReduxDevToolsFactoryName = "reduxDevToolsFactory";
+      ReduxDevToolsInterop.IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
       // We could send in the Store.GetSerializeState but it will be empty
       if (ReduxDevToolsInterop.IsEnabled)
-        ReduxDevToolsInterop.DispatchInit("");
+        ReduxDevToolsInterop.DispatchInit(string.Empty);
     }
   }
 }
