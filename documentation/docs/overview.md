@@ -18,7 +18,8 @@ Blazor-State is available as a [Nuget Package](https://www.nuget.org/packages/Bl
 
 ## Getting Started
 
-The easiest way to get started is to follow the [tutorial](xref:BlazorStateSample:README.md).
+After you have completed the [getting started for blazor](https://blazor.net/docs/get-started.html)
+the easiest way to get started with blazor-state is to follow the [tutorial](xref:BlazorStateSample:README.md).
 
 ## Architecture
 
