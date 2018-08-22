@@ -7,13 +7,13 @@ namespace BlazorState.EndToEnd.Tests
 {
   public abstract class BaseTest
   {
+    private readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+
     public BaseTest(IWebDriver aWebDriver, ServerFixture aServerFixture)
     {
       WebDriver = aWebDriver;
       ServerFixture = aServerFixture;
     }
-
-    private readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
 
     private ServerFixture ServerFixture { get; }
     private IWebDriver WebDriver { get; }

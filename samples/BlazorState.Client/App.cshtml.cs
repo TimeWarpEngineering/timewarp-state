@@ -8,11 +8,9 @@
 
   public class AppModel : BlazorComponent
   {
-    [Inject] private RouteManager RouteManager { get; set; }
-
     [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
-
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
+    [Inject] private RouteManager RouteManager { get; set; }
 
     protected override async Task OnInitAsync() => await ReduxDevToolsInterop.InitAsync();
   }

@@ -58,7 +58,7 @@ export class ReduxDevTools {
     }
     return devTools;
   }
- 
+
   MapRequestType(message) {
     var dispatchRequests = {
       'COMMIT': undefined,
@@ -120,7 +120,7 @@ export class ReduxDevTools {
 
   //static Create() {
   //  console.log('js - ReduxDevTools.Create');
-  //  const reduxDevTools = new ReduxDevTools();   
+  //  const reduxDevTools = new ReduxDevTools();
   //  return reduxDevTools.IsEnabled;
   //}
 }

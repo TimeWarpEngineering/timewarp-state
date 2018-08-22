@@ -4,11 +4,10 @@
   using OpenQA.Selenium;
   using static Infrastructure.WaitAndAssert;
 
-
   public class FetchDataPageTests : BaseTest
   {
     /// <summary>
-    /// Test that the FetchData link is available from the root page 
+    /// Test that the FetchData link is available from the root page
     /// The page loads
     /// And the page Loads data.
     /// </summary>

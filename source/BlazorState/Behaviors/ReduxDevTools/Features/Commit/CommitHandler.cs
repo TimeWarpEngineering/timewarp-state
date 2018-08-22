@@ -1,7 +1,5 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.Commit
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;

@@ -3,7 +3,6 @@
 export const BlazorStateName: string = 'BlazorState';
 
 export class BlazorState {
-
   async DispatchRequest(request) {
     const requestAsJson = JSON.stringify(request);
     console.log(`Dispatching request: ${requestAsJson}`);
