@@ -8,7 +8,7 @@
   public class CounterPageTests : BaseTest
   {
     /// <summary>
-    /// 
+    ///
     /// </summary>
     /// <param name="aWebDriver"></param>
     /// <param name="aServerFixture">
@@ -34,8 +34,8 @@
       WebDriver.FindElement(By.LinkText("Counter")).Click();
       WaitAndAssertEqual
       (
-        expected: "Counter",
-        actual: () => WebDriver.FindElement(By.TagName("h1")).Text
+        aExpected: "Counter",
+        aActual: () => WebDriver.FindElement(By.TagName("h1")).Text
       );
 
       // Observe the initial value is 3

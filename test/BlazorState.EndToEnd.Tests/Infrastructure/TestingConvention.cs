@@ -7,14 +7,15 @@
 
   public class TestingConvention : Discovery, Execution, IDisposable
   {
-    
     public TestingConvention()
     {
       Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
     }
 
-    private IServiceScopeFactory ServiceScopeFactory { get; set; }
     private BrowserFixture BrowserFixture { get; set; }
+    private IServiceScopeFactory ServiceScopeFactory { get; set; }
+
+    public void Dispose() => BrowserFixture.WebDriver.Quit();
 
     public void Execute(TestClass aTestClass)
     {
@@ -54,7 +55,7 @@
       aServiceCollection.AddSingleton(BrowserFixture.WebDriver);
       aServiceCollection.AddSingleton(new ServerFixture());
       // TODO: should use the same collection as `Classes` here
-      aServiceCollection.Scan(scan => scan
+      aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         // Start with all non abstract types in this assembly
         .FromAssemblyOf<TestingConvention>()
         // Add all the classes that end in Tests
@@ -62,7 +63,5 @@
         .AsSelf()
         .WithScopedLifetime());
     }
-
-    public void Dispose() => BrowserFixture.WebDriver.Quit();
   }
 }

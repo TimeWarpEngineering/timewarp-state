@@ -1,12 +1,7 @@
 ﻿namespace BlazorState.EndToEnd.Tests
 {
-  using System;
-  using System.Collections.ObjectModel;
-  using System.Threading;
   using BlazorState.EndToEnd.Tests.Infrastructure;
   using OpenQA.Selenium;
-  using OpenQA.Selenium.Support.UI;
-  using Shouldly;
   using static Infrastructure.WaitAndAssert;
 
 

@@ -8,7 +8,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
 
-  class IncrementCounterTests
+  internal class IncrementCounterTests
   {
     public IncrementCounterTests(TestFixture aTestFixture)
     {
@@ -18,33 +18,10 @@
       CounterState = Store.GetState<CounterState>();
     }
 
-    private IServiceProvider ServiceProvider { get; }
-    private IMediator Mediator { get; }
-    private IStore Store { get; }
     private CounterState CounterState { get; set; }
-
-    public async Task Should_Increment_Counter()
-    {
-      //Arrange
-
-      // Setup know state.
-      // Given our TestFixture the state defaults to the InitialState.
-      // IStore store = ServiceProvider.GetService<IStore>();
-
-      CounterState.Initialize(aCount: 22);
-
-      // Create request
-      var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.IncrementCounterRequest
-      {
-        Amount = 5
-      };
-      //Act
-      // Send Request
-      CounterState = await Mediator.Send(incrementCounterRequest);
-
-      //Assert
-      CounterState.Count.ShouldBe(27);
-    }
+    private IMediator Mediator { get; }
+    private IServiceProvider ServiceProvider { get; }
+    private IStore Store { get; }
 
     public async Task Should_Decrement_Counter()
     {
@@ -62,6 +39,25 @@
 
       //Assert
       CounterState.Count.ShouldBe(13);
+    }
+
+    public async Task Should_Increment_Counter()
+    {
+      //Arrange
+
+      // Setup know state.
+      CounterState.Initialize(aCount: 22);
+
+      // Create request
+      var incrementCounterRequest = new BlazorState.Client.Features.Counter.IncrementCount.IncrementCounterRequest
+      {
+        Amount = 5
+      };
+      //Act
+      CounterState = await Mediator.Send(incrementCounterRequest);
+
+      //Assert
+      CounterState.Count.ShouldBe(27);
     }
   }
 }

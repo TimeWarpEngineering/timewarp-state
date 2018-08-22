@@ -24,7 +24,6 @@
         FetchWeatherForecastsRequest aFetchWeatherForecastsRequest,
         CancellationToken aCancellationToken)
       {
-        //TODO: add IsLoading
         GetWeatherForecastsResponse getWeatherForecastsResponse =
           await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>
           (GetWeatherForecastsRequest.Route);

@@ -9,21 +9,20 @@
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
 
-  class FetchWeatherForecastTests
+  internal class FetchWeatherForecastTests
   {
     public FetchWeatherForecastTests(
-      TestFixture aTestFixture, 
+      TestFixture aTestFixture,
       BlazorStateTestServer aBlazorStateTestServer)
     {
-      
       ServiceProvider = aTestFixture.ServiceProvider;
       Mediator = ServiceProvider.GetService<IMediator>();
       Store = ServiceProvider.GetService<IStore>();
       WeatherForecastsState = Store.GetState<WeatherForecastsState>();
     }
 
-    private IServiceProvider ServiceProvider { get; }
     private IMediator Mediator { get; }
+    private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
     private WeatherForecastsState WeatherForecastsState { get; set; }
 

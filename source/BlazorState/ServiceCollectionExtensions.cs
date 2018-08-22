@@ -32,9 +32,11 @@
       if (aAssemblies == null)
         throw new ArgumentNullException(nameof(aAssemblies));
 
-      // Need to add this assembly
-      var assemblies = new List<Assembly>(aAssemblies);
-      assemblies.Add(Assembly.GetAssembly(typeof(ServiceCollectionExtensions)));
+      var assemblies = new List<Assembly>(aAssemblies)
+      {
+        // Need to add this assembly
+        Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
+      };
 
       var options = new Options();
       aConfigure?.Invoke(options);
@@ -78,9 +80,9 @@
     public bool UseCloneStateBehavior { get; set; } = true;
     public bool UseReduxDevToolsBehavior { get; set; } = true;
     public bool UseRouting { get; set; } = true;
-    /// <summary>
-    /// Assemblies to be searched for MediatR Requests
-    /// </summary>
-    public IEnumerable<Assembly> Assemblies { get; set; }
+    ///// <summary>
+    ///// Assemblies to be searched for MediatR Requests
+    ///// </summary>
+    //public IEnumerable<Assembly> Assemblies { get; set; }
   }
 }
