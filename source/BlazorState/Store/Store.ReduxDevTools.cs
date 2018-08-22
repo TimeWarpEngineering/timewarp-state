@@ -6,6 +6,7 @@
   using Microsoft.Extensions.Logging;
   using System.Dynamic;
   using System.Linq;
+  using BlazorState.Features.Routing;
 
   /// <summary>
   /// The portion of the store that is only needed to support
@@ -55,8 +56,9 @@
           .FirstOrDefault(aType => aType.FullName.Equals(typeName));
 
       // Get the Hydrate Method
-      // TODO: remove magic string
-      System.Reflection.MethodInfo hydrateMethodInfo = stateType.GetMethod("Hydrate");
+      // I am only trying to get the name of Hydrate
+      // I use RouteState as a type because it is in this project
+      System.Reflection.MethodInfo hydrateMethodInfo = stateType.GetMethod(nameof(State<RouteState>.Hydrate));
 
       // Call Hydrate on the Type
       object[] parameters = new object[] { aKeyValuePair.Value.ToString() };

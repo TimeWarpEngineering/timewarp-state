@@ -2,7 +2,6 @@
 {
   using System;
   using System.Reflection;
-  using Microsoft.AspNetCore.Blazor;
   using Microsoft.JSInterop;
 
   public abstract class State<TState> : IState<TState>
@@ -20,14 +19,14 @@
 
     public TState Hydrate(string aJsonString) => Json.Deserialize<TState>(aJsonString);
 
-    protected abstract void Initialize();
-
     public void ThrowIfNotTestAssembly(Assembly aAssembly)
     {
       if (!aAssembly.FullName.Contains("Test"))
       {
-        throw new System.FieldAccessException("Do not use this in production. This method is intended for Test access only!");
+        throw new FieldAccessException("Do not use this in production. This method is intended for Test access only!");
       }
     }
+
+    protected abstract void Initialize();
   }
 }
