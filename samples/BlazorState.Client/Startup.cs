@@ -8,6 +8,9 @@
 
   public class Startup
   {
+    public void Configure(IBlazorApplicationBuilder aBlazorApplicationBuilder) =>
+      aBlazorApplicationBuilder.AddComponent<App>("app");
+
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
       aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
@@ -16,8 +19,5 @@
       );
       aServiceCollection.AddBlazorState(null, typeof(Startup).GetTypeInfo().Assembly);
     }
-
-    public void Configure(IBlazorApplicationBuilder aBlazorApplicationBuilder) =>
-      aBlazorApplicationBuilder.AddComponent<App>("app");
   }
 }

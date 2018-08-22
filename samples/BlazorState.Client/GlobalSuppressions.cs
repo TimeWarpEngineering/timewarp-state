@@ -3,5 +3,4 @@
 // Project-level suppressions either have no target or are given
 // a specific target and scoped to a namespace, type, member, etc.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>", Scope = "member", Target = "~M:BlazorState.Client.State.CounterState.Initialize")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>", Scope = "member", Target = "~M:BlazorState.Client.State.ApplicationState.Initialize")]
+
