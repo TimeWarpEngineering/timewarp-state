@@ -4,6 +4,7 @@
   using BlazorState.Client.Features.Counter;
   using BlazorState.Client.Features.WeatherForecast;
   using MediatR;
+
   /// <summary>
   /// Base Handler that makes it easy to access state
   /// </summary>

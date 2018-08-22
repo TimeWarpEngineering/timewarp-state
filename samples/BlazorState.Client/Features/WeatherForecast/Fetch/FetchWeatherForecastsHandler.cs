@@ -5,7 +5,6 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using BlazorState.Shared;
   using BlazorState.Shared.Features.WeatherForecast;
   using Microsoft.AspNetCore.Blazor;
 
@@ -22,11 +21,11 @@
       private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 
       public override async Task<WeatherForecastsState> Handle(
-        FetchWeatherForecastsRequest aFetchWeatherForecastsRequest, 
+        FetchWeatherForecastsRequest aFetchWeatherForecastsRequest,
         CancellationToken aCancellationToken)
       {
         //TODO: add IsLoading
-        GetWeatherForecastsResponse getWeatherForecastsResponse = 
+        GetWeatherForecastsResponse getWeatherForecastsResponse =
           await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>
           (GetWeatherForecastsRequest.Route);
 

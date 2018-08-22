@@ -8,7 +8,7 @@
   using Microsoft.Extensions.Logging;
 
   /// <summary>
-  /// Sample Pipeline Behvaior AKA Middleware
+  /// Sample Pipeline Behavior AKA Middle-ware
   /// </summary>
   /// <typeparam name="TRequest"></typeparam>
   /// <typeparam name="TResponse"></typeparam>
@@ -29,14 +29,14 @@
     private IStore Store { get; }
 
     public async Task<TResponse> Handle(
-      TRequest request,
-      CancellationToken cancellationToken,
-      RequestHandlerDelegate<TResponse> next)
+      TRequest aRequest,
+      CancellationToken aCancellationToken,
+      RequestHandlerDelegate<TResponse> aNext)
     {
       Logger.LogDebug($"{GetType().Name}: Start");
 
       Logger.LogDebug($"{GetType().Name}: Call next");
-      TResponse newState = await next();
+      TResponse newState = await aNext();
       Logger.LogDebug($"{GetType().Name}: Start Post Processing");
       // Constrain here based on a type or anything you want.
       if (typeof(IState).IsAssignableFrom(typeof(TResponse)))

@@ -6,14 +6,14 @@
 
   public class Program
   {
-    public static IWebHost BuildWebHost(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
+    public static IWebHost BuildWebHost(string[] aArgumentArray) =>
+        WebHost.CreateDefaultBuilder(aArgumentArray)
             .UseConfiguration(new ConfigurationBuilder()
-              .AddCommandLine(args)
+              .AddCommandLine(aArgumentArray)
               .Build())
             .UseStartup<Startup>()
             .Build();
 
-    public static void Main(string[] args) => BuildWebHost(args).Run();
+    public static void Main(string[] aArgumentArray) => BuildWebHost(aArgumentArray).Run();
   }
 }

@@ -1,5 +1,5 @@
 ﻿@page "/fetchdata"
-@inherits BaseComponent
+@inherits WeatherForecastsPageModel
 
 <h1>Weather forecast</h1>
 
@@ -32,12 +32,4 @@ else
       }
     </tbody>
   </table>
-}
-
-@functions {
-
-  protected override async Task OnInitAsync()
-  {
-    await Mediator.Send(new Features.WeatherForecast.FetchWeatherForecastsRequest());
-  }
 }

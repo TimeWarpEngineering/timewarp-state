@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Base\" />
-    <Folder Include="Features\WeatherForecast\Fetch\" />
     <Folder Include="Features\WeatherForecast\GetAll\" />
   </ItemGroup>
 
