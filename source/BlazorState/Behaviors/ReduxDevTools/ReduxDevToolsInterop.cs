@@ -25,21 +25,21 @@
         DispatchInit(string.Empty);
     }
 
-    public void Dispatch<TRequest>(TRequest aRequest, object state)
+    public void Dispatch<TRequest>(TRequest aRequest, object aState)
     {
       if (IsEnabled)
       {
         Logger.LogDebug($"{GetType().Name}: {nameof(this.Dispatch)}");
         Logger.LogDebug($"{GetType().Name}: aRequest.GetType().FullName:{aRequest.GetType().FullName}");
         var reduxAction = new ReduxAction(aRequest);
-        JSRuntime.Current.InvokeAsync<object>(JsFunctionName, reduxAction, state);
+        JSRuntime.Current.InvokeAsync<object>(JsFunctionName, reduxAction, aState);
       }
     }
 
-    public void DispatchInit(object state)
+    public void DispatchInit(object aState)
     {
       if (IsEnabled)
-        JSRuntime.Current.InvokeAsync<object>(JsFunctionName, "init", state);
+        JSRuntime.Current.InvokeAsync<object>(JsFunctionName, "init", aState);
     }
   }
 }
