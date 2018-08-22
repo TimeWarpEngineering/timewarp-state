@@ -22,11 +22,11 @@
     private IStore Store { get; }
 
     public async Task<TResponse> Handle(
-      TRequest request,
-      CancellationToken cancellationToken,
-      RequestHandlerDelegate<TResponse> next)
+      TRequest aRequest,
+      CancellationToken aCancellationToken,
+      RequestHandlerDelegate<TResponse> aNext)
     {
-      Logger.LogDebug($"Pipeline Start: {request.GetType().FullName}");
+      Logger.LogDebug($"Pipeline Start: {aRequest.GetType().FullName}");
       Logger.LogDebug($"{GetType().Name}: Start");
 
       Type responseType = typeof(TResponse);
@@ -50,7 +50,7 @@
       try
       {
         Logger.LogDebug($"{GetType().Name}: {GetType().Name}: Call next");
-        TResponse response = await next();
+        TResponse response = await aNext();
         Logger.LogDebug($"{GetType().Name}: {GetType().Name}: Start Post Processing");
         Logger.LogDebug($"{GetType().Name}: {GetType().Name}: End");
         return response;

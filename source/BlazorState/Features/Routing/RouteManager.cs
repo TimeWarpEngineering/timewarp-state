@@ -22,9 +22,9 @@
     private IStore Store { get; }
     private IUriHelper UriHelper { get; }
 
-    private void OnLocationChanged(object sender, string e)
+    private void OnLocationChanged(object aSender, string aNewLocation)
     {
-      string absoluteUri = UriHelper.ToAbsoluteUri(e).ToString();
+      string absoluteUri = UriHelper.ToAbsoluteUri(aNewLocation).ToString();
       if (RouteState.Route != absoluteUri)
         Mediator.Send(new ChangeRouteRequest { NewRoute = absoluteUri });
     }
