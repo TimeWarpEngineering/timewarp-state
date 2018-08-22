@@ -2,11 +2,11 @@
 {
   using System;
   using System.Collections.Generic;
-  using Microsoft.JSInterop;
-  using Microsoft.Extensions.Logging;
   using System.Dynamic;
   using System.Linq;
   using BlazorState.Features.Routing;
+  using Microsoft.Extensions.Logging;
+  using Microsoft.JSInterop;
 
   /// <summary>
   /// The portion of the store that is only needed to support
@@ -14,21 +14,6 @@
   /// </summary>
   internal partial class Store : IReduxDevToolsStore
   {
-    /// <summary>
-    /// Needed for ReduxDevTools time travel
-    /// </summary>
-    /// <param name="aJsonString"></param>
-    public void LoadStatesFromJson(string aJsonString)
-    {
-      Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
-
-      Dictionary<string, object> newStates = Json.Deserialize<Dictionary<string, object>>(aJsonString);
-      foreach (KeyValuePair<string, object> keyValuePair in newStates)
-      {
-        LoadStateFromJson(keyValuePair);
-      }
-    }
-
     /// <summary>
     /// Returns the States in a manner that can be serialized
     /// </summary>
@@ -43,6 +28,21 @@
       }
 
       return states;
+    }
+
+    /// <summary>
+    /// Needed for ReduxDevTools time travel
+    /// </summary>
+    /// <param name="aJsonString"></param>
+    public void LoadStatesFromJson(string aJsonString)
+    {
+      Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
+
+      Dictionary<string, object> newStates = Json.Deserialize<Dictionary<string, object>>(aJsonString);
+      foreach (KeyValuePair<string, object> keyValuePair in newStates)
+      {
+        LoadStateFromJson(keyValuePair);
+      }
     }
 
     private void LoadStateFromJson(KeyValuePair<string, object> aKeyValuePair)

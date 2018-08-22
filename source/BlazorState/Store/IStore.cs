@@ -3,6 +3,13 @@
   using System;
   using System.Collections.Generic;
 
+  public interface IReduxDevToolsStore
+  {
+    IDictionary<string, object> GetSerializableState();
+
+    void LoadStatesFromJson(string aJsonString);
+  }
+
   public interface IStore
   {
     Guid Guid { get; }
@@ -11,13 +18,4 @@
 
     void SetState(IState aState);
   }
-
-  public interface IReduxDevToolsStore
-  {
-    IDictionary<string, object> GetSerializableState();
-
-    void LoadStatesFromJson(string aJsonString);
-  }
-
 }
-

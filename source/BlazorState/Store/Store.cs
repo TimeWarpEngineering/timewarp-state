@@ -31,10 +31,10 @@
     /// </summary>
     /// <remarks>Useful when logging </remarks>
     public Guid Guid { get; } = Guid.NewGuid();
+
     private ILogger Logger { get; }
     private IServiceProvider ServiceProvider { get; }
     private IDictionary<string, IState> States { get; }
-
 
     /// <summary>
     /// Get the State of the particular type
@@ -45,6 +45,16 @@
     {
       Type stateType = typeof(TState);
       return (TState)GetState(stateType);
+    }
+
+    /// <summary>
+    /// Set the state for specific Type
+    /// </summary>
+    /// <param name="aNewState"></param>
+    public void SetState(IState aNewState)
+    {
+      string typeName = aNewState.GetType().FullName;
+      SetState(typeName, aNewState);
     }
 
     private object GetState(Type aType)
@@ -64,16 +74,6 @@
           Logger.LogDebug($"{GetType().Name}: State exists: {state.Guid}");
         return state;
       }
-    }
-
-    /// <summary>
-    /// Set the state for specific Type
-    /// </summary>
-    /// <param name="aNewState"></param>
-    public void SetState(IState aNewState)
-    {
-      string typeName = aNewState.GetType().FullName;
-      SetState(typeName, aNewState);
     }
 
     private void SetState(string aTypeName, object aNewState)
