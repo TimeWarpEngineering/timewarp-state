@@ -7,14 +7,17 @@
   {
     Guid Guid { get; }
 
-    IDictionary<string, object> GetSerializableState();
-
     TState GetState<TState>();
-
-    object GetState(Type aType);
-
-    void LoadStatesFromJson(string aJsonString);
 
     void SetState(IState aState);
   }
+
+  public interface IReduxDevToolsStore
+  {
+    IDictionary<string, object> GetSerializableState();
+
+    void LoadStatesFromJson(string aJsonString);
+  }
+
 }
+

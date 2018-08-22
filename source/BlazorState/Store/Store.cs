@@ -2,11 +2,7 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Dynamic;
-  using System.Linq;
-  using Microsoft.AspNetCore.Blazor;
   using Microsoft.Extensions.Logging;
-  using Microsoft.JSInterop;
 
   /// <summary>
   /// </summary>
@@ -14,7 +10,7 @@
   /// Redux dev tools.  Should we not split this up so that portion
   /// is only included if in dev mode.
   /// </remarks>
-  internal class Store : IStore
+  internal partial class Store : IStore
   {
     public Store(
       IServiceProvider aServiceProvider
@@ -30,29 +26,28 @@
       }
     }
 
+    /// <summary>
+    /// Unique Guid for the Store.
+    /// </summary>
+    /// <remarks>Useful when logging </remarks>
     public Guid Guid { get; } = Guid.NewGuid();
     private ILogger Logger { get; }
     private IServiceProvider ServiceProvider { get; }
     private IDictionary<string, IState> States { get; }
 
-    public IDictionary<string, object> GetSerializableState()
-    {
-      var states = (IDictionary<string, object>)new ExpandoObject();
-      foreach (KeyValuePair<string, IState> pair in States.OrderBy(x => x.Key))
-      {
-        states[pair.Key] = pair.Value;
-      }
 
-      return states;
-    }
-
+    /// <summary>
+    /// Get the State of the particular type
+    /// </summary>
+    /// <typeparam name="TState"></typeparam>
+    /// <returns>The specific IState</returns>
     public TState GetState<TState>()
     {
       Type stateType = typeof(TState);
       return (TState)GetState(stateType);
     }
 
-    public object GetState(Type aType)
+    private object GetState(Type aType)
     {
       using (Logger.BeginScope(nameof(GetState)))
       {
@@ -71,51 +66,21 @@
       }
     }
 
-    public void LoadStatesFromJson(string aJsonString)
-    {
-      Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
-
-      Dictionary<string, object> newStates = Json.Deserialize<Dictionary<string, object>>(aJsonString);
-      foreach (KeyValuePair<string, object> keyValuePair in newStates)
-      {
-        LoadStateFromJson(keyValuePair);
-      }
-    }
-
+    /// <summary>
+    /// Set the state for specific Type
+    /// </summary>
+    /// <param name="aNewState"></param>
     public void SetState(IState aNewState)
     {
       string typeName = aNewState.GetType().FullName;
       SetState(typeName, aNewState);
     }
 
-    public void SetState(string typeName, object aNewState)
+    private void SetState(string aTypeName, object aNewState)
     {
       var newState = (IState)aNewState;
-      Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{typeName}: Guid:{newState.Guid}");
-      States[typeName] = newState;
-    }
-
-    private void LoadStateFromJson(KeyValuePair<string, object> keyValuePair)
-    {
-      string typeName = keyValuePair.Key;
-      Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}:typeName: {typeName}");
-      // Get the Type
-      Type stateType = AppDomain.CurrentDomain.GetAssemblies()
-          .Where(a => !a.IsDynamic)
-          .SelectMany(a => a.GetTypes())
-          .FirstOrDefault(t => t.FullName.Equals(typeName));
-
-      // Get the Hydrate Method
-      // TODO: remove magic string
-      System.Reflection.MethodInfo hydrateMethodInfo = stateType.GetMethod("Hydrate");
-
-      // Call Hydrate on the Type
-      object[] parameters = new object[] { keyValuePair.Value.ToString() };
-      object currentState = GetState(stateType);
-      var newState = (IState)hydrateMethodInfo.Invoke(currentState, parameters);
-
-      // reassign
-      SetState(typeName, newState);
+      Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{aTypeName}: Guid:{newState.Guid}");
+      States[aTypeName] = newState;
     }
   }
 }

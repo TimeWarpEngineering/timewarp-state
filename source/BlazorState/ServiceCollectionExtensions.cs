@@ -65,6 +65,7 @@
         aServices.AddSingleton<ReduxDevToolsInterop>();
         aServices.AddSingleton<JsonRequestHandler>();
         aServices.AddSingleton<ComponentRegistry>();
+        aServices.AddSingleton(typeof(IReduxDevToolsStore), typeof(Store));
       }
       if (options.UseRouting)
       {

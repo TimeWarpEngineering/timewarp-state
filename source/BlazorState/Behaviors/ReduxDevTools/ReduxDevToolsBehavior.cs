@@ -21,7 +21,7 @@
     public ReduxDevToolsBehavior(
       ILogger<ReduxDevToolsBehavior<TRequest, TResponse>> aLogger,
       ReduxDevToolsInterop aReduxDevToolsInterop,
-      IStore aStore)
+      IReduxDevToolsStore aStore)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name} constructor");
@@ -33,7 +33,7 @@
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
 
     //private History<TState> History { get; }
-    private IStore Store { get; }
+    private IReduxDevToolsStore Store { get; }
 
     public async Task<TResponse> Handle(
       TRequest aRequest,

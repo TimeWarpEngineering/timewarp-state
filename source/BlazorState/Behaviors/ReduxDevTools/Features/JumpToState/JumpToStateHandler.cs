@@ -10,7 +10,7 @@
   {
     public JumpToStateHandler(
       ILogger<JumpToStateHandler> aLogger,
-      IStore aStore,
+      IReduxDevToolsStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop,
       ComponentRegistry aComponentRegistry)
     {
@@ -24,7 +24,7 @@
     private ComponentRegistry ComponentRegistry { get; }
     private ILogger Logger { get; }
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-    private IStore Store { get; }
+    private IReduxDevToolsStore Store { get; }
 
     protected override void Handle(JumpToStateRequest aRequest)
     {
