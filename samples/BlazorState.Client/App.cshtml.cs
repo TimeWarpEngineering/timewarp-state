@@ -10,6 +10,8 @@
   {
     [Inject] private RouteManager RouteManager { get; set; }
 
+    [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
+
     public RenderFragment SingletonComponents { get; set; }
 
     protected override void OnInit()
@@ -17,8 +19,6 @@
       base.OnInit();
       SingletonComponents = builder =>
       {
-        builder.OpenComponent<JavaScriptInteropComponent>(0);
-        builder.CloseComponent();
         builder.OpenComponent<ReduxDevToolsComponent>(0);
         builder.CloseComponent();
       };
