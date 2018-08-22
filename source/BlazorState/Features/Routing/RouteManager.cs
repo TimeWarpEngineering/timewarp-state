@@ -3,7 +3,7 @@
   using MediatR;
   using Microsoft.AspNetCore.Blazor.Services;
 
-  internal class RouteManager
+  public class RouteManager
   {
     public RouteManager(
       IUriHelper aUriHelper,
