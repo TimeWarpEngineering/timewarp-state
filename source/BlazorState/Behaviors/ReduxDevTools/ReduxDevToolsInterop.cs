@@ -1,9 +1,10 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
+  using System.Threading.Tasks;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
 
-  internal class ReduxDevToolsInterop
+  public class ReduxDevToolsInterop
   {
     private const string JsFunctionName = "reduxDevTools.ReduxDevToolsDispatch";
 
@@ -14,6 +15,15 @@
 
     public bool IsEnabled { get; set; }
     private ILogger Logger { get; }
+
+    public async Task InitAsync()
+    {
+      const string ReduxDevToolsFactoryName = "reduxDevToolsFactory";
+      IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
+      // We could send in the Store.GetSerializeState but it will be empty
+      if (IsEnabled)
+        DispatchInit(string.Empty);
+    }
 
     public void Dispatch<TRequest>(TRequest aRequest, object state)
     {
