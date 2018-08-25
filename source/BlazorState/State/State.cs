@@ -1,6 +1,7 @@
 ﻿namespace BlazorState
 {
   using System;
+  using System.Collections.Generic;
   using System.Reflection;
   using Microsoft.JSInterop;
 
@@ -11,13 +12,19 @@
       Initialize();
     }
 
-    public Guid Guid { get; } = Guid.NewGuid();
+    public Guid Guid { get; protected set; } = Guid.NewGuid();
 
     TState IState<TState>.State { get; }
 
     public abstract object Clone();
 
-    public TState Hydrate(string aJsonString) => Json.Deserialize<TState>(aJsonString);
+    /// <summary>
+    /// returns a new instance of type TState
+    /// </summary>
+    /// <param name="aKeyValuePairs">Initialize the TState instance with these values</param>
+    /// <returns></returns>
+    /// <remarks>Implement this if you want to use ReduxDevTools Time Travel</remarks>
+    public virtual TState Hydrate(IDictionary<string, object> aKeyValuePairs) => throw new NotImplementedException();
 
     public void ThrowIfNotTestAssembly(Assembly aAssembly)
     {

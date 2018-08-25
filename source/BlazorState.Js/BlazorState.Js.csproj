@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <WebpackInputs Remove="src\Constants.ts" />
     <WebpackInputs Remove="src\DotNet.ts" />
   </ItemGroup>
 

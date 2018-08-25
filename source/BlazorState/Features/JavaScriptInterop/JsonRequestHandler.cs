@@ -14,11 +14,25 @@
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
+      InitializeJavascriptInterop();
     }
+
+    /// <summary>
+    /// Sends 
+    /// </summary>
+    /// <remarks>Sends an instance of this item to JavaScript side
+    /// </remarks>
+    private void InitializeJavascriptInterop() => 
+      JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
 
     private ILogger Logger { get; }
     private IMediator Mediator { get; }
 
+    /// <summary>
+    /// This will handle the Javascript interop
+    /// </summary>
+    /// <param name="aRequestAsJson"></param>
+    [JSInvokable]
     public async void Handle(string aRequestAsJson)
     {
       if (string.IsNullOrWhiteSpace(aRequestAsJson))

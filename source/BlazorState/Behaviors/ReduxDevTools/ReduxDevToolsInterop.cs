@@ -8,13 +8,18 @@
   {
     private const string JsFunctionName = "reduxDevTools.ReduxDevToolsDispatch";
 
-    public ReduxDevToolsInterop(ILogger<ReduxDevToolsInterop> aLogger)
+    public ReduxDevToolsInterop(
+      ILogger<ReduxDevToolsInterop> aLogger,
+      IReduxDevToolsStore aStore)
     {
+
       Logger = aLogger;
+      Store = aStore;
     }
 
     public bool IsEnabled { get; set; }
     private ILogger Logger { get; }
+    private IReduxDevToolsStore Store { get; }
 
     public void Dispatch<TRequest>(TRequest aRequest, object aState)
     {
@@ -35,11 +40,11 @@
 
     public async Task InitAsync()
     {
-      const string ReduxDevToolsFactoryName = "reduxDevToolsFactory";
+      const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
       IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
-      // We could send in the Store.GetSerializeState but it will be empty
+
       if (IsEnabled)
-        DispatchInit(string.Empty);
+        DispatchInit(Store.GetSerializableState());
     }
   }
 }

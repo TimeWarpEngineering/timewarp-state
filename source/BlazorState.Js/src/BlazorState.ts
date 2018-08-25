@@ -1,15 +1,10 @@
-﻿import { DotNet } from "./DotNet";
-
-export const BlazorStateName: string = 'BlazorState';
+﻿import {  JsonRequestHandlerMethodName, JsonRequestHandlerName } from './Constants';
 
 export class BlazorState {
   async DispatchRequest(request) {
     const requestAsJson = JSON.stringify(request);
-    console.log(`Dispatching request: ${requestAsJson}`);
 
-    const assemblyName = 'BlazorState';
-    const methodName = 'Handle';
-    //const requestAsString = Blazor.platform.toDotNetString(requestAsJson);
-    await DotNet.invokeMethodAsync(assemblyName, methodName, requestAsJson);
+    console.log(`Dispatching request: ${requestAsJson}`);
+    await window[JsonRequestHandlerName].invokeMethodAsync(JsonRequestHandlerMethodName, requestAsJson);
   }
 }

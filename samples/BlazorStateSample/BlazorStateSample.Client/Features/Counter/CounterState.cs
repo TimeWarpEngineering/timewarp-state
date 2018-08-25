@@ -1,12 +1,11 @@
-﻿namespace BlazorStateSample.Client.Features.Counter.State
+﻿namespace BlazorStateSample.Client.Features.Counter
 {
   using BlazorState;
 
   // region used by docfx
-
   #region CounterState
 
-  public class CounterState : State<CounterState>
+  public partial class CounterState : State<CounterState>
   {
     /// <summary>
     /// Parameterless constructor needed for deserialization.

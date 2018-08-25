@@ -1,21 +1,30 @@
-import { BlazorState, BlazorStateName } from './BlazorState';
-import { ReduxDevTools, ReduxDevToolsName } from './ReduxDevTools';
+import { BlazorState } from './BlazorState';
+import { ReduxDevTools} from './ReduxDevTools';
+import {
+  BlazorStateName,
+  InitializeJavaScriptInteropName,
+  JsonRequestHandlerName,
+  ReduxDevToolsFactoryName,
+  ReduxDevToolsName,
+} from './Constants';
 
-const ReduxDevToolsFactoryName: string = 'reduxDevToolsFactory';
-
-function initialize() {
+function Initialize() {
   console.log("Initialize BlazorState");
   if (typeof window !== 'undefined' && !window[BlazorStateName]) {
     window[BlazorStateName] = new BlazorState();
-    window[ReduxDevToolsFactoryName] = reduxDevToolsFactory;
+    window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
+    window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   }
 }
 
-function reduxDevToolsFactory(): boolean {
-  console.log('js - ReduxDevTools.Create');
+function InitializeJavaScriptInterop(JsonRequestHandler) {
+  window[JsonRequestHandlerName] = JsonRequestHandler;
+};
+
+function ReduxDevToolsFactory(): boolean {
   const reduxDevTools = new ReduxDevTools();
   window[ReduxDevToolsName] = reduxDevTools;
   return reduxDevTools.IsEnabled;
 }
 
-initialize();
+Initialize();

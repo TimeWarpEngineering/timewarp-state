@@ -57,7 +57,7 @@
       if (options.UseCloneStateBehavior)
       {
         aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-        aServices.AddSingleton(typeof(IStore), typeof(Store));
+        aServices.AddSingleton<IStore, Store>();
       }
       if (options.UseReduxDevToolsBehavior)
       {
@@ -65,7 +65,7 @@
         aServices.AddSingleton<ReduxDevToolsInterop>();
         aServices.AddSingleton<JsonRequestHandler>();
         aServices.AddSingleton<ComponentRegistry>();
-        aServices.AddSingleton(typeof(IReduxDevToolsStore), typeof(Store));
+        aServices.AddSingleton(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
       }
       if (options.UseRouting)
       {

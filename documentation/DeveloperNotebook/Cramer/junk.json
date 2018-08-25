@@ -1,0 +1,29 @@
+{
+  "weatherForecasts": [{
+    "date": "2018-08-26T07:42:54.3762363Z",
+    "summary": "Chilly",
+    "temperatureC": 19,
+    "temperatureF": 66
+  }, {
+    "date": "2018-08-27T07:42:54.3766171Z",
+    "summary": "Balmy",
+    "temperatureC": -14,
+    "temperatureF": 7
+  }, {
+    "date": "2018-08-28T07:42:54.3766181Z",
+    "summary": "Scorching",
+    "temperatureC": 13,
+    "temperatureF": 55
+  }, {
+    "date": "2018-08-29T07:42:54.3766181Z",
+    "summary": "Mild",
+    "temperatureC": 11,
+    "temperatureF": 51
+  }, {
+    "date": "2018-08-30T07:42:54.3766187Z",
+    "summary": "Mild",
+    "temperatureC": -12,
+    "temperatureF": 11
+  }],
+  "guid": "b44adb71-77bc-4e4c-888e-9f90b6331e14"
+}
