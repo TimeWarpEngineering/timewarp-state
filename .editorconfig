@@ -155,7 +155,7 @@ dotnet_naming_rule.static_fields_should_be_camel_case.style = static_field_style
 dotnet_naming_symbols.static_fields.applicable_kinds = field
 dotnet_naming_symbols.static_fields.required_modifiers = static
 
-dotnet_naming_style.static_field_style.capitalization = camel_case
+dotnet_naming_style.static_field_style.capitalization = pascal_case
 dotnet_naming_style.static_field_style.required_prefix = s_
 
 # local variables should be camelCase

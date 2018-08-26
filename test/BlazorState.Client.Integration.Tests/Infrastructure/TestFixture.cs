@@ -5,7 +5,6 @@
   using BlazorState;
   using BlazorState.Client;
   using BlazorState.Client.Integration.Tests.Infrastructure;
-  using MediatR;
   using Microsoft.AspNetCore.Blazor.Hosting;
   using Microsoft.Extensions.DependencyInjection;
 
@@ -18,9 +17,11 @@
     public TestFixture(BlazorStateTestServer aBlazorStateTestServer)
     {
       BlazorStateTestServer = aBlazorStateTestServer;
-      IWebAssemblyHostBuilder webAssemblyHostBuilder = BlazorWebAssemblyHost.CreateDefaultBuilder()
-            //.UseBlazorStartup<Startup>()
-            .ConfigureServices(ConfigureServices);
+      IWebAssemblyHostBuilder webAssemblyHostBuilder =
+        BlazorWebAssemblyHost.CreateDefaultBuilder()
+          //.UseBlazorStartup<Startup>()
+          .ConfigureServices(ConfigureServices);
+
       ServiceProvider = webAssemblyHostBuilder.Build().Services;
     }
 
@@ -28,8 +29,8 @@
     /// This is the ServiceProvider that will be used by the Client
     /// </summary>
     public IServiceProvider ServiceProvider { get; set; }
+
     private BlazorStateTestServer BlazorStateTestServer { get; }
-    private IMediator Mediator { get; set; }
 
     /// <summary>
     /// Special configuration for Testing with the Test Server

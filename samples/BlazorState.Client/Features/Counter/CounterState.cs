@@ -22,11 +22,6 @@
     public override object Clone() => new CounterState(this);
 
     /// <summary>
-    /// Set the Initial State
-    /// </summary>
-    protected override void Initialize() => Count = 3;
-
-    /// <summary>
     /// Use in Tests ONLY, to initialize the State
     /// </summary>
     /// <param name="aCount"></param>
@@ -35,5 +30,10 @@
       ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
       Count = aCount;
     }
+
+    /// <summary>
+    /// Set the Initial State
+    /// </summary>
+    protected override void Initialize() => Count = 3;
   }
 }

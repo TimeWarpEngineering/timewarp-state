@@ -2,7 +2,7 @@
 {
   using BlazorState;
 
-  public class ApplicationState : State<ApplicationState>
+  public partial class ApplicationState : State<ApplicationState>
   {
     public ApplicationState() { }
 

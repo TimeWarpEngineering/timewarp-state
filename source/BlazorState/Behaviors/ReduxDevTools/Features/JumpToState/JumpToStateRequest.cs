@@ -2,7 +2,6 @@
 {
   using BlazorState.Features.JavaScriptInterop;
   using MediatR;
-  using Microsoft.AspNetCore.Blazor;
   using Microsoft.JSInterop;
 
   internal class JumpToStateRequest : IRequest, IReduxRequest

@@ -19,12 +19,12 @@
 
     private IUriHelper UriHelper { get; }
 
-    public override Task<RouteState> Handle(ChangeRouteRequest request, CancellationToken cancellationToken)
+    public override Task<RouteState> Handle(ChangeRouteRequest aChangeRouteRequest, CancellationToken aCancellationToken)
     {
-      if (RouteState.Route != request.NewRoute)
+      if (RouteState.Route != aChangeRouteRequest.NewRoute)
       {
-        RouteState.Route = request.NewRoute;
-        UriHelper.NavigateTo(request.NewRoute);
+        RouteState.Route = aChangeRouteRequest.NewRoute;
+        UriHelper.NavigateTo(aChangeRouteRequest.NewRoute);
       }
       return Task.FromResult(RouteState);
     }

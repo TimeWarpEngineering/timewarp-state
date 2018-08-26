@@ -4,7 +4,7 @@
   using System.Threading.Tasks;
   using BlazorState;
   using BlazorStateSample.Client.Features.Counter.IncrementCount;
-  using BlazorStateSample.Client.Features.Counter.State;
+  using BlazorStateSample.Client.Features.Counter;
 
   public class IncrementCountHandler : RequestHandler<IncrementCountRequest, CounterState>
   {
@@ -12,9 +12,9 @@
 
     public CounterState CounterState => Store.GetState<CounterState>();
 
-    public override Task<CounterState> Handle(IncrementCountRequest request, CancellationToken cancellationToken)
+    public override Task<CounterState> Handle(IncrementCountRequest aIncrementCountRequest, CancellationToken aCancellationToken)
     {
-      CounterState.Count += request.Amount;
+      CounterState.Count += aIncrementCountRequest.Amount;
       return Task.FromResult(CounterState);
     }
   }

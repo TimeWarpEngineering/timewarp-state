@@ -10,6 +10,7 @@
     /// a default constructor is required for deserialization
     /// </summary>
     public GetWeatherForecastsResponse() { }
+
     public GetWeatherForecastsResponse(Guid aRequestId)
     {
       WeatherForecasts = new List<WeatherForecastDto>();

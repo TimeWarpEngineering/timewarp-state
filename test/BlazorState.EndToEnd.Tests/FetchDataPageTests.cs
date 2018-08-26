@@ -1,19 +1,13 @@
 ﻿namespace BlazorState.EndToEnd.Tests
 {
-  using System;
-  using System.Collections.ObjectModel;
-  using System.Threading;
   using BlazorState.EndToEnd.Tests.Infrastructure;
   using OpenQA.Selenium;
-  using OpenQA.Selenium.Support.UI;
-  using Shouldly;
   using static Infrastructure.WaitAndAssert;
-
 
   public class FetchDataPageTests : BaseTest
   {
     /// <summary>
-    /// Test that the FetchData link is available from the root page 
+    /// Test that the FetchData link is available from the root page
     /// The page loads
     /// And the page Loads data.
     /// </summary>

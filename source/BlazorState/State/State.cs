@@ -1,8 +1,8 @@
 ﻿namespace BlazorState
 {
   using System;
+  using System.Collections.Generic;
   using System.Reflection;
-  using Microsoft.AspNetCore.Blazor;
   using Microsoft.JSInterop;
 
   public abstract class State<TState> : IState<TState>
@@ -12,22 +12,28 @@
       Initialize();
     }
 
-    public Guid Guid { get; } = Guid.NewGuid();
+    public Guid Guid { get; protected set; } = Guid.NewGuid();
 
     TState IState<TState>.State { get; }
 
     public abstract object Clone();
 
-    public TState Hydrate(string aJsonString) => Json.Deserialize<TState>(aJsonString);
-
-    protected abstract void Initialize();
+    /// <summary>
+    /// returns a new instance of type TState
+    /// </summary>
+    /// <param name="aKeyValuePairs">Initialize the TState instance with these values</param>
+    /// <returns></returns>
+    /// <remarks>Implement this if you want to use ReduxDevTools Time Travel</remarks>
+    public virtual TState Hydrate(IDictionary<string, object> aKeyValuePairs) => throw new NotImplementedException();
 
     public void ThrowIfNotTestAssembly(Assembly aAssembly)
     {
       if (!aAssembly.FullName.Contains("Test"))
       {
-        throw new System.FieldAccessException("Do not use this in production. This method is intended for Test access only!");
+        throw new FieldAccessException("Do not use this in production. This method is intended for Test access only!");
       }
     }
+
+    protected abstract void Initialize();
   }
 }

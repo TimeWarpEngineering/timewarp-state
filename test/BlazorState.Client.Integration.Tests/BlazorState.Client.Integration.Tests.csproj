@@ -17,4 +17,10 @@
     <ProjectReference Include="..\..\samples\BlazorState.Client\BlazorState.Client.csproj" />
     <ProjectReference Include="..\..\samples\BlazorState.Server\BlazorState.Server.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Store\Store.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
