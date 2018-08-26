@@ -22,20 +22,21 @@ steps:
     projects: "**/*.csproj"
     feedsToUse: config
     nugetConfigPath: NuGet.config
-  enabled: false
+  enabled: true
 
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
+    command: build
     projects: "**/*.csproj"
-    arguments: --configuration release
+    arguments: --configuration debug
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
     projects: "**/*Tests/*.csproj"
-    arguments: --configuration release
+    arguments: --configuration debug
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack

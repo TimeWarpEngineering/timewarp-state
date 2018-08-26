@@ -27,6 +27,7 @@ steps:
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
+    command: build
     projects: 'source/BlazorState/BlazorState.csproj'
     arguments: --configuration release
 
