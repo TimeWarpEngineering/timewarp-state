@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.EndToEnd.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{DA4CCF8F-5B8A-4E37-B1AD-8A4E4BD3186A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorState.Server.Integration.Tests", "test\BlazorState.Server.Integration.Tests\BlazorState.Server.Integration.Tests.csproj", "{DAC76EBF-11B5-4975-AAFE-9195FD783941}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{2C4878C7-B7FD-4F12-B54D-3A2223A40FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C4878C7-B7FD-4F12-B54D-3A2223A40FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C4878C7-B7FD-4F12-B54D-3A2223A40FB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAC76EBF-11B5-4975-AAFE-9195FD783941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAC76EBF-11B5-4975-AAFE-9195FD783941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAC76EBF-11B5-4975-AAFE-9195FD783941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAC76EBF-11B5-4975-AAFE-9195FD783941}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{23A299E1-4F24-4DC8-A699-F04A8B35B76C} = {7876E7E1-BDB1-42B4-B5F3-2C524F372195}
 		{2C4878C7-B7FD-4F12-B54D-3A2223A40FB6} = {23A299E1-4F24-4DC8-A699-F04A8B35B76C}
 		{DA4CCF8F-5B8A-4E37-B1AD-8A4E4BD3186A} = {437186AC-1CB6-4FE4-8C36-0C2F135021C9}
+		{DAC76EBF-11B5-4975-AAFE-9195FD783941} = {23A299E1-4F24-4DC8-A699-F04A8B35B76C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}

@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Client.Integration.Tests.Infrastructure
+﻿namespace BlazorState.Server.Integration.Tests.Infrastructure
 {
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
@@ -11,12 +11,10 @@
       ConfigureTestServices(testServices);
       ServiceProvider serviceProvider = testServices.BuildServiceProvider();
       ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
-
       Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
     }
 
     private IServiceScopeFactory ServiceScopeFactory { get; }
-
     public void Execute(TestClass aTestClass)
     {
       aTestClass.RunCases(aCase =>
@@ -24,8 +22,9 @@
         using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
         {
           object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-          Setup(instance);
-          aCase.Execute(instance);
+        Setup(instance);
+
+        aCase.Execute(instance);
         }
       });
     }
@@ -35,14 +34,12 @@
       System.Reflection.MethodInfo method = aInstance.GetType().GetMethod(nameof(Setup));
       method?.Execute(aInstance);
     }
-
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
       aServiceCollection.AddSingleton<BlazorStateTestServer>();
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         // Start with all non abstract types in this assembly
         .FromAssemblyOf<TestingConvention>()
-        // Add all the classes that end in Tests
         .AddClasses(action: (aClasses) => aClasses.TypeName().EndsWith("Tests"))
         .AsSelf()
         .WithScopedLifetime());

@@ -5,7 +5,6 @@
   using BlazorState;
   using BlazorState.Client;
   using BlazorState.Client.Integration.Tests.Infrastructure;
-  using MediatR;
   using Microsoft.AspNetCore.Blazor.Hosting;
   using Microsoft.Extensions.DependencyInjection;
 
@@ -32,7 +31,6 @@
     public IServiceProvider ServiceProvider { get; set; }
 
     private BlazorStateTestServer BlazorStateTestServer { get; }
-    private IMediator Mediator { get; set; }
 
     /// <summary>
     /// Special configuration for Testing with the Test Server
