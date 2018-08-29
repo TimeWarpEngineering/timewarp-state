@@ -3,10 +3,17 @@ queue:
 
 steps:
 - script: echo BuildID $(Build.BuildID)
-- task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.300
+
+- task: Npm@1
   inputs:
-    version: 2.1.300
+    command: 'install'
+    workingDir: source/BlazorState.Js
+
+- task: DotNetCoreInstaller@0
+  displayName: Use .NET Core sdk 2.1.302
+  inputs:
+    version: 2.1.302
+  enabled: true
 
 - task: DotNetCoreCLI@2
   displayName: Restore
@@ -15,10 +22,12 @@ steps:
     projects: 'source/BlazorState/BlazorState.csproj'
     feedsToUse: config
     nugetConfigPath: NuGet.config
+  enabled: false
 
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
+    command: build
     projects: 'source/BlazorState/BlazorState.csproj'
     arguments: --configuration release
 

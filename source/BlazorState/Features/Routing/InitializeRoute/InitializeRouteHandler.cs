@@ -19,7 +19,7 @@
 
     private IUriHelper UriHelper { get; }
 
-    public override Task<RouteState> Handle(InitializeRouteRequest request, CancellationToken cancellationToken)
+    public override Task<RouteState> Handle(InitializeRouteRequest aInitializeRouteRequest, CancellationToken aCancellationToken)
     {
       RouteState.Route = UriHelper.GetAbsoluteUri().ToString();
       return Task.FromResult(RouteState);

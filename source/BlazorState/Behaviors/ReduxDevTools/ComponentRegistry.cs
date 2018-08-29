@@ -15,6 +15,6 @@
 
     internal List<IDevToolsComponent> DevToolsComponents { get; }
 
-    public void ReRenderAll() => DevToolsComponents.ForEach(c => c.ReRender());
+    public void ReRenderAll() => DevToolsComponents.ForEach(aDevToolsComponent => aDevToolsComponent.ReRender());
   }
 }

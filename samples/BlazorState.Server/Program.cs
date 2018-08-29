@@ -1,6 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-namespace BlazorState.Server
+﻿namespace BlazorState.Server
 {
   using Microsoft.AspNetCore;
   using Microsoft.AspNetCore.Hosting;
@@ -8,17 +6,14 @@ namespace BlazorState.Server
 
   public class Program
   {
-    public static IWebHost BuildWebHost(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
+    public static IWebHost BuildWebHost(string[] aArgumentArray) =>
+        WebHost.CreateDefaultBuilder(aArgumentArray)
             .UseConfiguration(new ConfigurationBuilder()
-                .AddCommandLine(args)
-                .Build())
+              .AddCommandLine(aArgumentArray)
+              .Build())
             .UseStartup<Startup>()
             .Build();
 
-    public static void Main(string[] args)
-    {
-      BuildWebHost(args).Run();
-    }
+    public static void Main(string[] aArgumentArray) => BuildWebHost(aArgumentArray).Run();
   }
 }

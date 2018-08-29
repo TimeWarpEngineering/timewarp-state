@@ -1,7 +1,5 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.JumpToState
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
@@ -10,7 +8,7 @@
   {
     public JumpToStateHandler(
       ILogger<JumpToStateHandler> aLogger,
-      IStore aStore,
+      IReduxDevToolsStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop,
       ComponentRegistry aComponentRegistry)
     {
@@ -24,14 +22,16 @@
     private ComponentRegistry ComponentRegistry { get; }
     private ILogger Logger { get; }
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-    private IStore Store { get; }
+    private IReduxDevToolsStore Store { get; }
 
     protected override void Handle(JumpToStateRequest aRequest)
     {
-      Logger.LogDebug($"{GetType().FullName}");
-      Logger.LogDebug($"{aRequest.JsonRequest.Payload.State}");
+      Logger.LogDebug($"Type:{GetType().FullName}");
+      Logger.LogDebug($"State: {aRequest.JsonRequest.Payload.State}");
       Store.LoadStatesFromJson(aRequest.JsonRequest.Payload.State);
+      Logger.LogDebug($"After LoadStatesFromJson");
       ComponentRegistry.ReRenderAll();
+      Logger.LogDebug($"After ReRenderAll");
     }
   }
 }

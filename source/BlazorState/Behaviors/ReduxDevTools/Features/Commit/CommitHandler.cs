@@ -1,7 +1,5 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.Commit
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
@@ -10,7 +8,7 @@
   {
     public CommitHandler(
       ILogger<CommitHandler> aLogger,
-      IStore aStore,
+      IReduxDevToolsStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop)
     {
       Logger = aLogger;
@@ -21,7 +19,7 @@
 
     private ILogger Logger { get; }
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-    private IStore Store { get; }
+    private IReduxDevToolsStore Store { get; }
 
     protected override void Handle(CommitRequest aRequest)
     {

@@ -2,8 +2,6 @@
 
 Blazor-State is a client side pipeline architecture utilizing MediatR with plugin behaviors.  
 
-## [GitHub Site](https://github.com/TimeWarpEngineering/blazor-state)
-
 If you are familiar with 
 [MediatR](https://github.com/jbogard/MediatR),
  [Redux](https://redux.js.org/), 
@@ -12,13 +10,21 @@ you will feel right at home.
 All of the behaviors are written as plug-ins/middle-ware and attached to the MediatR pipeline. 
 You can pick and choose which behaviors you would like to use or even write your own.
 
+Please see our **[GitHub Site](https://github.com/TimeWarpEngineering/blazor-state)** for source and filing of issues.
+
 ## Installation
 
 Blazor-State is available as a [Nuget Package](https://www.nuget.org/packages/Blazor-State/)
 
+```
+dotnet add package Blazor-State
+```
+
 ## Getting Started
 
-The easiest way to get started is to follow the [tutorial](xref:BlazorStateSample:README.md).
+After you have completed the [getting started for blazor](https://blazor.net/docs/get-started.html)
+the easiest way to get started with blazor-state is to follow the [tutorial](xref:BlazorStateSample:README.md).
+Or see a more complete sample app  
 
 ## Architecture
 
@@ -45,14 +51,14 @@ Handlers on the Blazor side can callback to the JavaScript side if needed.
 
 #### CloneStateBehavior
 
-"Don't mutate state" is the Redux mantra. Always return a new state.
-This behavior handles that for you by creating a clone of the `State` 
+"Don't mutate state" always return a new state.
+The `CloneStateBehavior` behavior handles that for you by creating a clone of the `State` 
 prior to processing the `Request`
 and updating `State` upon completion.  (Single responsibility principle)
 
 #### ReduxDevToolsBehavior
 
-One of the nice features of redux was the 
+One of the nice features of redux is the 
 [developer tools](https://github.com/zalmoxisus/redux-devtools-extension).
 They allow for the monitoring of State transitions, time travel and more.
 This behavior implements the integration of these developer tools. 
@@ -71,13 +77,13 @@ Other developer tools commands are not yet implemented (Would be good spot for a
 Blazor-State does not distinguish these.
 As they are processed via the pipeline the same.
 Thus, async calls to fetch data, send emails, or just update local state
-are implemented in the same manner. Although the developer should be aware that Handlers have side effects and 
+are implemented in the same manner. Although the developer **should** be aware that Handlers have side effects and 
 if the developer chose they could mark the Requests as such. i.e. IRequestWithSideEffect
 
 [!include[Contributing](../acknowledgements.md)]
 
 ## License
 
-MIT
+The Unlicense [https://choosealicense.com/licenses/unlicense/]
 
 [!include[Contributing](../contributing.md)]

@@ -2,7 +2,7 @@
 {
   using BlazorState.Features.JavaScriptInterop;
   using MediatR;
-  using Microsoft.AspNetCore.Blazor;
+  using Microsoft.JSInterop;
 
   internal class CommitRequest : IRequest, IReduxRequest
   {
@@ -11,7 +11,7 @@
     public CommitRequest(string aRequestAsJson) : this()
     {
       JsonRequest =
-        JsonUtil.Deserialize<JsonRequest<DispatchRequest<CommitRequest>>>(aRequestAsJson);
+        Json.Deserialize<JsonRequest<DispatchRequest<CommitRequest>>>(aRequestAsJson);
 
       Type = JsonRequest.Payload.Type;
     }

@@ -1,6 +1,7 @@
 ﻿namespace BlazorState
 {
   using System;
+  using System.Collections.Generic;
 
   public interface IState : ICloneable
   {
@@ -11,6 +12,6 @@
   {
     TState State { get; }
 
-    TState Hydrate(string aJsonString);
+    TState Hydrate(IDictionary<string, object> aKeyValuePairs);
   }
 }

@@ -1,6 +1,7 @@
 ﻿namespace BlazorState.Server.Features.Base
 {
   using System.Threading.Tasks;
+  using BlazorState.Shared.Features.Base;
   using MediatR;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.Extensions.Logging;

@@ -1,26 +1,13 @@
 ﻿namespace BlazorState.Client
 {
-  using Blazor.Extensions.Logging;
-  using BlazorState;
-  using Microsoft.AspNetCore.Blazor.Browser.Rendering;
-  using Microsoft.AspNetCore.Blazor.Browser.Services;
-  using Microsoft.Extensions.DependencyInjection;
-  using Microsoft.Extensions.Logging;
+  using Microsoft.AspNetCore.Blazor.Hosting;
 
   public class Program
   {
-    private static void Main(string[] args)
-    {
-      var serviceProvider = new BrowserServiceProvider(services =>
-      {
-        services.AddLogging(builder => builder
-            .AddBrowserConsole()
-            .SetMinimumLevel(LogLevel.Trace)
-        );
-        services.AddBlazorState();
-      });
+    private static IWebAssemblyHostBuilder CreateHostBuilder(string[] aArgumentArray) =>
+        BlazorWebAssemblyHost.CreateDefaultBuilder()
+            .UseBlazorStartup<Startup>();
 
-      new BrowserRenderer(serviceProvider).AddComponent<App>("app");
-    }
+    private static void Main(string[] aArgumentArray) => CreateHostBuilder(aArgumentArray).Build().Run();
   }
 }

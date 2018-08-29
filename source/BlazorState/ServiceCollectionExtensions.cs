@@ -1,7 +1,9 @@
 ﻿namespace BlazorState
 {
   using System;
+  using System.Collections.Generic;
   using System.Linq;
+  using System.Reflection;
   using BlazorState.Behaviors.ReduxDevTools;
   using BlazorState.Behaviors.State;
   using BlazorState.Features.JavaScriptInterop;
@@ -20,7 +22,9 @@
     /// <param name="aConfigure"></param>
     /// <returns></returns>
     /// <example></example>
-    /// <remarks>The order of registration matters. If the user wants to change they can configure themself vs using the extention</remarks>
+    /// <remarks>The order of registration matters. 
+    /// If the user wants to change they can configure themselves vs using this extension</remarks>
+
     public static IServiceCollection AddBlazorState(
       this IServiceCollection aServices,
       Action<Options> aConfigure = null)
@@ -28,8 +32,21 @@
       var options = new Options();
       aConfigure?.Invoke(options);
 
-      ServiceDescriptor loggerServiceDescriptor =
-        aServices.FirstOrDefault(s => s.ServiceType == typeof(ILogger<>));
+      var assemblies = new List<Assembly>(options.Assemblies)
+      {
+        // Need to add this assembly
+        Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
+      };
+
+      // By default add in the calling assembly
+      if (assemblies.Count() == 1)
+      {
+        assemblies.Add(Assembly.GetCallingAssembly());
+      }
+
+      ServiceDescriptor loggerServiceDescriptor = aServices.FirstOrDefault(
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>));
+
       if (loggerServiceDescriptor == null)
       {
         aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
@@ -39,18 +56,19 @@
       // example ReduxDevToosl depends on CloneStateBehavoir
       // We should build a dependency list based on the Options and then register from the resulting list.
       // If we separate behaviors into own packages that will change things.
-      aServices.AddMediatR();
+      aServices.AddMediatR(assemblies);
+      aServices.AddSingleton<JsonRequestHandler>();
       if (options.UseCloneStateBehavior)
       {
         aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-        aServices.AddSingleton(typeof(IStore), typeof(Store));
+        aServices.AddSingleton<IStore, Store>();
       }
       if (options.UseReduxDevToolsBehavior)
       {
         aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
         aServices.AddSingleton<ReduxDevToolsInterop>();
-        aServices.AddSingleton<JsonRequestHandler>();
         aServices.AddSingleton<ComponentRegistry>();
+        aServices.AddSingleton(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
       }
       if (options.UseRouting)
       {
@@ -63,8 +81,17 @@
 
   public class Options
   {
+    public Options()
+    {
+      Assemblies = new Assembly[] { };
+    }
+
     public bool UseCloneStateBehavior { get; set; } = true;
     public bool UseReduxDevToolsBehavior { get; set; } = true;
     public bool UseRouting { get; set; } = true;
+    ///// <summary>
+    ///// Assemblies to be searched for MediatR Requests
+    ///// </summary>
+    public IEnumerable<Assembly> Assemblies { get; set; }
   }
 }

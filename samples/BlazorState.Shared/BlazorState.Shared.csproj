@@ -6,4 +6,18 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Features\WeatherForecast\GetAll\**" />
+    <EmbeddedResource Remove="Features\WeatherForecast\GetAll\**" />
+    <None Remove="Features\WeatherForecast\GetAll\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Base\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="5.1.0" />
+  </ItemGroup>
+
 </Project>

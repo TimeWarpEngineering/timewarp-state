@@ -2,7 +2,7 @@
 {
   using BlazorState.Features.JavaScriptInterop;
   using MediatR;
-  using Microsoft.AspNetCore.Blazor;
+  using Microsoft.JSInterop;
 
   /// <summary>
   /// Request received from Redux Dev Tools when one presses the Start Button.
@@ -14,7 +14,7 @@
     public StartRequest(string aRequestAsJson) : this()
     {
       JsonRequest<StartRequest> jsonRequest =
-        JsonUtil.Deserialize<JsonRequest<StartRequest>>(aRequestAsJson);
+        Json.Deserialize<JsonRequest<StartRequest>>(aRequestAsJson);
 
       Type = jsonRequest.Payload.Type;
       Source = jsonRequest.Payload.Source;

@@ -4,6 +4,7 @@ namespace BlazorState.Server
 {
   using System.Linq;
   using System.Net.Mime;
+  using System.Reflection;
   using MediatR;
   using Microsoft.AspNetCore.Blazor.Server;
   using Microsoft.AspNetCore.Builder;
@@ -14,45 +15,44 @@ namespace BlazorState.Server
 
   public class Startup
   {
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder aApplicationBuilder, IHostingEnvironment aHostingEnvironment)
     {
-      app.UseResponseCompression();
+      aApplicationBuilder.UseResponseCompression();
 
-      if (env.IsDevelopment())
+      if (aHostingEnvironment.IsDevelopment())
       {
-        app.UseDeveloperExceptionPage();
+        aApplicationBuilder.UseDeveloperExceptionPage();
       }
 
-      app.UseMvc(routes =>
+      aApplicationBuilder.UseMvc(aRouteBuilder =>
       {
-        routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
+        aRouteBuilder.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
       });
 
-      app.UseBlazor<Client.Program>();
+      aApplicationBuilder.UseBlazor<Client.Program>();
     }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      services.AddMvc()
-        .AddJsonOptions(options =>
+      aServiceCollection.AddMvc()
+        .AddJsonOptions(aMvcJsonOptions =>
         {
-          options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+          aMvcJsonOptions.SerializerSettings.ContractResolver = new DefaultContractResolver();
         });
 
-      services.AddResponseCompression(options =>
+      aServiceCollection.AddResponseCompression(aResponseCompressionOptions =>
       {
-        options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        aResponseCompressionOptions.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
           new[]
           {
             MediaTypeNames.Application.Octet,
             WasmMediaTypeNames.Application.Wasm,
           });
       });
-      services.AddMediatR();
-      services.Scan(scan => scan
+      aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+      aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         .FromAssemblyOf<Startup>()
         .AddClasses()
         .AsSelf()

@@ -1,8 +1,5 @@
-﻿import { Blazor } from './Blazor';
-import { BlazorState } from './BlazorState';
-
-const ReduxExtentionName: string = '__REDUX_DEVTOOLS_EXTENSION__';
-const DevToolsName: string = 'devTools';
+﻿import { BlazorState, } from './BlazorState';
+import { BlazorStateName, ReduxExtentionName, DevToolsName, ReduxDevToolsName } from './Constants';
 
 export class ReduxDevTools {
   IsEnabled: boolean;
@@ -12,7 +9,7 @@ export class ReduxDevTools {
   BlazorState: BlazorState;
 
   constructor() {
-    this.BlazorState = new BlazorState(); // Depends on this functionality
+    this.BlazorState = window[BlazorStateName]; // Depends on this functionality
     this.Config = {
       name: 'Blazor State',
       features: {
@@ -36,19 +33,13 @@ export class ReduxDevTools {
 
   Init() {
     if (this.IsEnabled) {
-      this.DevTools.subscribe(ReduxDevTools.MessageHandler);
-      const functionName = "ReduxDevToolsDispatch";
-
-      Blazor.registerFunction(functionName, ReduxDevTools.ReduxDevToolsDispatch);
-      console.log(`${functionName} function registered with Blazor`);
-
+      this.DevTools.subscribe(this.MessageHandler);
       window[DevToolsName] = this.DevTools;
     }
   }
 
   GetExtension() {
     const extension = window[ReduxExtentionName];
-    //const extension = window.__REDUX_DEVTOOLS_EXTENSION__;
 
     if (!extension) {
       console.log('Redux DevTools are not installed.');
@@ -64,7 +55,7 @@ export class ReduxDevTools {
     return devTools;
   }
 
-  static MapRequestType(message) {
+  MapRequestType(message) {
     var dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
@@ -92,42 +83,29 @@ export class ReduxDevTools {
     return blazorRequestType;
   }
 
-  static MessageHandler(message) {
+  MessageHandler = (message) => {
     console.log('ReduxDevTools.MessageHandler');
     console.log(message);
     var jsonRequest;
-    const requestType = ReduxDevTools.MapRequestType(message);
+    const requestType = this.MapRequestType(message);
     if (requestType) { // If we don't map this type then there is nothing to dispatch just ignore.
       jsonRequest = {
         // TODO: make sure non Requests from assemblies other than BlazorState also work.
-        //RequestType: 'BlazorState.Behaviors.DevTools.Features.Start.ReduxDevToolsStartRequest, BlazorState',
-        //RequestType: 'BlazorState.Behaviors.DevTools.Features.Start.Request',
         RequestType: requestType,
         Payload: message
       };
 
-      reduxDevTools.BlazorState.DispatchRequest(jsonRequest);
+      this.BlazorState.DispatchRequest(jsonRequest);
     } else
       console.log(`messages of this type are currently not supported`);
   }
 
-  static ReduxDevToolsDispatch(action, state) {
+  ReduxDevToolsDispatch(action, state) {
     if (action === 'init') {
-      console.log("ReduxDevTools.js: Dispatching redux action: init");
       return window[DevToolsName].init(state);
     }
     else {
-      console.log("ReduxDevTools.js: Dispatching redux action");
-      console.log(action);
       return window[DevToolsName].send(action, state);
     }
   }
 }
-
-var reduxDevTools;
-
-Blazor.registerFunction('blazor-state.ReduxDevTools.create', function () {
-  console.log('js - blazor-state.ReduxDevTools.create');
-  reduxDevTools = new ReduxDevTools();
-  return reduxDevTools.IsEnabled;
-});
