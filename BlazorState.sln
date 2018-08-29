@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27604.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Server", "samples\BlazorState.Server\BlazorState.Server.csproj", "{033AE0DF-530E-4DB6-8519-74D202F73B1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Server", "samples\TimeWarpBlazor\BlazorState.Server\BlazorState.Server.csproj", "{033AE0DF-530E-4DB6-8519-74D202F73B1F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Client", "samples\BlazorState.Client\BlazorState.Client.csproj", "{1D6C4BA2-5DF0-40C5-A5FD-34B89AD96B94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Client", "samples\TimeWarpBlazor\BlazorState.Client\BlazorState.Client.csproj", "{1D6C4BA2-5DF0-40C5-A5FD-34B89AD96B94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Shared", "samples\BlazorState.Shared\BlazorState.Shared.csproj", "{02E9D005-F79E-4AE8-9510-3BDE5F8799BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Shared", "samples\TimeWarpBlazor\BlazorState.Shared\BlazorState.Shared.csproj", "{02E9D005-F79E-4AE8-9510-3BDE5F8799BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState", "source\BlazorState\BlazorState.csproj", "{DF355720-EA1E-4505-AE68-1D36BD0D4711}"
 EndProject
@@ -39,11 +39,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Server.Integrat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorStateSample", "BlazorStateSample", "{A1FF1F5B-51D4-460E-83A2-D84ECA3CC44E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Server", "samples\01-Sample\Sample.Server\Sample.Server.csproj", "{9F6F020B-6F59-487D-87EF-CCCF6FCE2DB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "samples\01-Sample\Sample.Server\Sample.Server.csproj", "{9F6F020B-6F59-487D-87EF-CCCF6FCE2DB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Client", "samples\01-Sample\Sample.Client\Sample.Client.csproj", "{4095E5E8-6814-4A1C-BA59-3D1D73406B81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "samples\01-Sample\Sample.Client\Sample.Client.csproj", "{4095E5E8-6814-4A1C-BA59-3D1D73406B81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Shared", "samples\01-Sample\Sample.Shared\Sample.Shared.csproj", "{C09385FC-FE13-49B6-B760-76B5D30F8630}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "samples\01-Sample\Sample.Shared\Sample.Shared.csproj", "{C09385FC-FE13-49B6-B760-76B5D30F8630}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{908B0A29-DD28-4807-B28E-3CF820B86B1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
