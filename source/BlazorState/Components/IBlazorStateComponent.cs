@@ -11,7 +11,7 @@
   ///  {
   ///    [Inject] public IMediator Mediator { get; set; }
   ///    [Inject] public IStore Store { get; set; }
-  //// }
+  /// }
   /// </example>
   public interface IBlazorStateComponent
   {

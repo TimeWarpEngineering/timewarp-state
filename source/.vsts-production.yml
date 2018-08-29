@@ -13,7 +13,7 @@ steps:
   displayName: Use .NET Core sdk 2.1.302
   inputs:
     version: 2.1.302
-  enabled: false
+  enabled: true
 
 - task: DotNetCoreCLI@2
   displayName: Restore

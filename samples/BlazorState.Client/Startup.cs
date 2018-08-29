@@ -17,7 +17,7 @@
           .AddBrowserConsole()
           .SetMinimumLevel(LogLevel.Trace)
       );
-      aServiceCollection.AddBlazorState(null, typeof(Startup).GetTypeInfo().Assembly);
+      aServiceCollection.AddBlazorState();
     }
   }
 }

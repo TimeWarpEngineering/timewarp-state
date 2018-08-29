@@ -39,7 +39,8 @@
     private void ConfigureServices(IServiceCollection aServiceCollection)
     {
       aServiceCollection.AddSingleton(BlazorStateTestServer.CreateClient());
-      aServiceCollection.AddBlazorState(null, typeof(Startup).GetTypeInfo().Assembly);
+      aServiceCollection.AddBlazorState(aOptions => aOptions.Assemblies = 
+        new Assembly[] { typeof(Startup).GetTypeInfo().Assembly });
     }
   }
 }

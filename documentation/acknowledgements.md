@@ -7,7 +7,7 @@ I have learned great amounts.
 Peter Morris ([Blazor-Fluxor](https://github.com/mrpmorris/blazor-fluxor)). Pete and I 
 have been friends for many years and he is an amazing developer and person who has taught me much.
 Not surprisingly Pete and I think much alike. 
-We independently started working on our Redux replacement
+We independently started working on our blazor state management
 components. Although I started first :P (By like a few days)
 Pete's component attempts to solve most of the same problems.
 Blazor-State draws on the strengths of a proven pipeline in MediatR where as Fluxor 

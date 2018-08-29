@@ -22,7 +22,7 @@ steps:
     projects: "**/*.csproj"
     feedsToUse: config
     nugetConfigPath: NuGet.config
-  enabled: true
+  enabled: false
 
 - task: DotNetCoreCLI@2
   displayName: Build
