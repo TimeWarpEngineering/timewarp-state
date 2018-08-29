@@ -11,7 +11,7 @@ This sample shows how to add Blazor-State to the standard Visual Studio `Blazor 
 
 ## Creating the project
 1. Create a new Blazor website using the `Hosted Blazor` template in Visual Studio 
-   (See the [Blazor Getting Started Guide] for details on how to use Blazor).
+   (See the [Blazor Getting Started Guide](https://blazor.net/docs/get-started.html) for details on how to use Blazor).
 2. Name the project `BlazorStateSample`.
 3. Add the Blazor-State NuGet package to `BlazorStateSample.Client` project. 
   Note that you might have to check the `Include prerelease` checkbox.

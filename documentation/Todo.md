@@ -8,7 +8,7 @@ This will let dev tools go back to pages.
 - [ ] <del>Implement Routing Feature so the Route is in RouteState.</del>
 
 - [x] Add in automated CI
-- [ ] Add tests
+- [x] Add tests
 
 - [ ] Implement DevTools Handlers (Currently only Jump works)
 See the MobX example for how to implement more ReduxDevTools functionality
@@ -25,10 +25,12 @@ https://github.com/zalmoxisus/mobx-remotedev/blob/master/src/monitorActions.js
 - [ ] Review TODOs in source
 - [ ] Update Samples to latest templates
 - [ ] Extract common items to Directory.Build.props
-- [ ] <del>Add Name to IState (Pete's Idea nice option)</del> Not going to use as we are using Class.FullName to look up now.
+- [x] <del>Add Name to IState (Pete's Idea nice option)</del> Not going to use as we are using Class.FullName to look up now.
 
 - [ ] ReduxDevToolsBehavoir uses the pipeline but we probably don't care to log those interaction.
 So Maybe we should add a Filter to ignore logging some request IReduxAction marker or something?
 - [ ] CodeMaid Clean all before publish ()
 
 - [ ] Update Source link to the now .net foundation version. https://github.com/dotnet/sourcelink/ 
+
+- [ ] Add documentation on installing Selenium java and chromedriver.exe etc.
