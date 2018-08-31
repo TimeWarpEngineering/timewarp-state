@@ -35,7 +35,7 @@ If you use F# and need redux like functionality checkout his library.
 
 ## License
 
-MIT
+The Unlicense
 
 ## Contributing
 
