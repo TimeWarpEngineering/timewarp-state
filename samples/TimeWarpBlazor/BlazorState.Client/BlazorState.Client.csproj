@@ -16,12 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\BlazorState.Js\BlazorState.Js.csproj" />
-    <ProjectReference Include="..\..\source\BlazorState\BlazorState.csproj" />
-    <ProjectReference Include="..\BlazorState.Shared\BlazorState.Shared.csproj" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <ProjectReference Include="..\..\..\source\BlazorState.Js\BlazorState.Js.csproj" />
+    <ProjectReference Include="..\..\..\source\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\BlazorState.Shared\BlazorState.Shared.csproj" />
   </ItemGroup>
 </Project>

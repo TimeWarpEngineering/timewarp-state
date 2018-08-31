@@ -29,9 +29,7 @@
       string solutionDir = FindSolutionDir();
       string[] possibleLocations = new[]
       {
-        Path.Combine(solutionDir, "samples", aProjectName),
-        Path.Combine(solutionDir, "samples", "Hosted", aProjectName),
-        Path.Combine(solutionDir, "test", "testapps", aProjectName)
+        Path.Combine(solutionDir, "samples", "TimeWarpBlazor", aProjectName),
       };
 
       return possibleLocations.FirstOrDefault(Directory.Exists)
