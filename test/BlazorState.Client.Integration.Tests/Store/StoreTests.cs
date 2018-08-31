@@ -30,6 +30,7 @@
     private IServiceProvider ServiceProvider { get; }
     private Store Store { get; }
 
+#if DEBUG
     public void ShouldLoadStatesFromJson()
     {
       //Arrange
@@ -61,5 +62,6 @@
       routeState.Route.ShouldBe("http://localhost:54956/fetchdata");
       routeState.Guid.ToString().ShouldBe("b2bb7499-d8b1-4deb-a664-5c67b51d8434");
     }
+#endif
   }
 }
