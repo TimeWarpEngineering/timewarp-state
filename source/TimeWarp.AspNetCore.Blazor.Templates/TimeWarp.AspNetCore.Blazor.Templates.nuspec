@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>TimeWarp.AspNetCore.Blazor.Templates</id>
+    <version>$version$</version>
+    <authors>Steven T. Cramer</authors>
+    <description>TimeWarp Templates for ASP.NET Core Blazor</description>
+    <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
+    <language>en-US</language>
+    <projectUrl>https://github.com/TimeWarpEngineering/blazor-state</projectUrl>
+    <licenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</licenseUrl>
+    <tags>aspnet templates blazor spa pwa timewarp</tags>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+  </metadata>
+  <files>
+    <file
+      src="content/**/*"
+      exclude="**/launchSettings.json;**/node_modules/**;**/bin/**;**/obj/**;**/*.user;**/.vs/**;**/.vscode/**;content/Directory.Build.*;**/.template.config.src/**"
+      target="Content" />
+  </files>
+</package>
