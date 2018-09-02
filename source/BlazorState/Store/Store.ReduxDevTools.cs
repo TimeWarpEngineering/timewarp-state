@@ -56,11 +56,9 @@
       Logger.LogDebug($"{GetType().Name}:{nameof(LoadStateFromJson)}:typeName: {typeName}");
       Logger.LogDebug($"aKeyValuePair.Value: {aKeyValuePair.Value}");
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
-      //var newStateKeyValuePairs = (Dictionary<string, object>) aKeyValuePair.Value;
-      //Logger.LogDebug($"newStateKeyValuePairs.Count: {newStateKeyValuePairs.Count}");
+      
       object newStateKeyValuePairs = Json.Deserialize<object>(aKeyValuePair.Value.ToString());
-      //Logger.LogDebug($"newStateKeyValuePairs.Count: {newStateKeyValuePairs.Count}");
-
+      
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)
