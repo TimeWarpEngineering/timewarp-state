@@ -58,11 +58,11 @@
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
       
       object newStateKeyValuePairs = Json.Deserialize<object>(aKeyValuePair.Value.ToString());
-      
+
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)
-          .SelectMany(aAssembly => aAssembly.GetTypes())
+          .SelectMany(aAssembly => aAssembly.GetExportedTypes())
           .FirstOrDefault(aType => aType.FullName.Equals(typeName));
 
       Logger.LogDebug($"stateType == null{stateType == null}");
