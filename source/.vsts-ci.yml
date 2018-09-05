@@ -36,7 +36,7 @@ steps:
   inputs:
     command: test
     projects: "**/*Tests/*.csproj"
-    arguments: --configuration debug
+    arguments: '--configuration debug'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
