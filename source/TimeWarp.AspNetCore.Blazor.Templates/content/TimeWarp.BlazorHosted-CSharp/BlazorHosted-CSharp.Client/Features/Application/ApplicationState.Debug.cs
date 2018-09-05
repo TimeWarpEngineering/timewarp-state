@@ -1,5 +1,4 @@
-﻿#if DEBUG
-namespace BlazorHosted_CSharp.Client.Features.Application
+﻿namespace BlazorHosted_CSharp.Client.Features.Application
 {
   using System.Collections.Generic;
   using BlazorState;
@@ -17,4 +16,3 @@ namespace BlazorHosted_CSharp.Client.Features.Application
     }
   }
 }
-#endif

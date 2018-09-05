@@ -7,7 +7,7 @@
   /// <summary>
   /// Maintain the Route in Blazor-State
   /// </summary>
-  internal class RouteState : State<RouteState>
+  public class RouteState : State<RouteState>
   {
     public RouteState() { }
 

@@ -30,7 +30,6 @@
     private IStore Store { get; }
     private IReduxDevToolsStore ReduxDevToolsStore { get; }
 
-#if DEBUG
     public void ShouldLoadStatesFromJson()
     {
       //Arrange
@@ -58,6 +57,5 @@
       weatherForecastsState.WeatherForecasts[0].Date.Minute.ShouldBe(29);
       weatherForecastsState.WeatherForecasts[0].Date.Second.ShouldBe(54);
     }
-#endif
   }
 }

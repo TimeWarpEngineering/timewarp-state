@@ -70,7 +70,7 @@
       // Get the Hydrate Method
       // I am only trying to get the name of "Hydrate" without magic string.
       // I use RouteState as a type because it is in this project
-      System.Reflection.MethodInfo hydrateMethodInfo = stateType.GetMethod(nameof(State<RouteState>.Hydrate));
+      System.Reflection.MethodInfo hydrateMethodInfo = stateType?.GetMethod(nameof(State<RouteState>.Hydrate));
       Logger.LogDebug($"hydrateMethodInfo == null: {hydrateMethodInfo == null}");
 
       // Call Hydrate on the Type

@@ -1,19 +1,20 @@
 {
-  "author": "Microsoft",
+  "author": "Steven T. Cramer",
   "classifications": [
+	"TimeWarp",
     "Web",
     "Blazor",
     "Hosted"
   ],
-  "groupIdentity": "Microsoft.Web.Blazor.Hosted",
+  "groupIdentity": "TimeWarp.Web.Blazor.Hosted",
   "guids": [
-    "4C26868E-5E7C-458D-82E3-040509D0C71F",
-    "5990939C-7E7B-4CFA-86FF-44CA5756498A",
-    "650B3CE7-2E93-4CC4-9F46-466686815EAA",
-    "0AFFA7FD-4E37-4636-AB91-3753E746DB98"
+    "16FA64C2-4A0E-42D4-94E6-C8CFDE84597E",
+    "19B3F119-0F8A-430A-8336-9F6797B990E9",
+    "CFFB80F7-6230-4244-A07F-12F5A295FB21",
+    "545E3103-354C-4058-8D8F-60D70DCC115B"
   ],
-  "identity": "Microsoft.Web.Blazor.Hosted.CSharp",
-  "name": "Blazor (hosted in ASP.NET server)",
+  "identity": "TimeWarp.Web.Blazor.Hosted.CSharp",
+  "name": "TimeWarp Blazor (hosted in ASP.NET server)",
   "preferNameDirectory": true,
   "primaryOutputs": [
     {
@@ -45,7 +46,7 @@
       "path": "BlazorHosted-CSharp.Shared/BlazorHosted-CSharp.Shared.csproj"
     }
   ],
-  "shortName": "blazorhosted",
+  "shortName": "timewarp-blazor",
   "sourceName": "BlazorHosted-CSharp",
   "sources": [
     {
@@ -81,12 +82,6 @@
     "HostIdentifier": {
       "type": "bind",
       "binding": "HostIdentifier"
-    },
-    "IncludeCustomRestoreSourcesSymbol": {
-      "type": "parameter",
-      "datatype": "bool",
-      "description": "If set, includes restore sources for the Blazor MyGet feed.",
-      "defaultValue": "${IncludeCustomRestoreSources}"
     },
     "TemplateBlazorVersionSymbol": {
       "type": "parameter",

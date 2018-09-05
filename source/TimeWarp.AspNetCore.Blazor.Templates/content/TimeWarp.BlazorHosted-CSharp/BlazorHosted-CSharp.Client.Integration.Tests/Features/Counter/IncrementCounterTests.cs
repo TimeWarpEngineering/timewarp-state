@@ -1,5 +1,4 @@
-﻿# if DEBUG
-namespace BlazorHosted_CSharp.Client.Integration.Tests.Features.Counter
+﻿namespace BlazorHosted_CSharp.Client.Integration.Tests.Features.Counter
 {
   using System;
   using System.Threading.Tasks;
@@ -63,4 +62,3 @@ namespace BlazorHosted_CSharp.Client.Integration.Tests.Features.Counter
     }
   }
 }
-#endif

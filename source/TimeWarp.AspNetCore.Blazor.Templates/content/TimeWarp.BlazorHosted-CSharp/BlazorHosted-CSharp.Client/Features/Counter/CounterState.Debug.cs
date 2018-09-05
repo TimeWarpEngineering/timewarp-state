@@ -1,5 +1,4 @@
-﻿#if  DEBUG
-namespace BlazorHosted_CSharp.Client.Features.Counter
+﻿namespace BlazorHosted_CSharp.Client.Features.Counter
 {
   using System;
   using System.Collections.Generic;
@@ -31,4 +30,3 @@ namespace BlazorHosted_CSharp.Client.Features.Counter
     }
   }
 }
-#endif

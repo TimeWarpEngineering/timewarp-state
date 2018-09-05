@@ -2,13 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>TimeWarp.AspNetCore.Blazor.Templates</id>
-    <version>$version$</version>
+    <version>0.0.6</version>
     <authors>Steven T. Cramer</authors>
     <description>TimeWarp Templates for ASP.NET Core Blazor</description>
     <iconUrl>http://go.microsoft.com/fwlink/?LinkID=288859</iconUrl>
     <language>en-US</language>
     <projectUrl>https://github.com/TimeWarpEngineering/blazor-state</projectUrl>
     <licenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</licenseUrl>
+
     <tags>aspnet templates blazor spa pwa timewarp</tags>
     <packageTypes>
       <packageType name="Template" />

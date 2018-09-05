@@ -1,9 +1,8 @@
-﻿#if DEBUG
-namespace BlazorHosted_CSharp.Client.Features.WeatherForecast
+﻿namespace BlazorHosted_CSharp.Client.Features.WeatherForecast
 {
   using System.Collections.Generic;
-  using BlazorState;
   using BlazorHosted_CSharp.Shared.Features.WeatherForecast;
+  using BlazorState;
   using Microsoft.JSInterop;
 
   public partial class WeatherForecastsState : State<WeatherForecastsState>
@@ -21,4 +20,3 @@ namespace BlazorHosted_CSharp.Client.Features.WeatherForecast
     }
   }
 }
-#endif
