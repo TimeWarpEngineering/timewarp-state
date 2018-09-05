@@ -19,7 +19,7 @@ steps:
   displayName: Restore
   inputs:
     command: restore
-    projects: "**/*.csproj"
+    projects: '**/*.csproj'
     feedsToUse: config
     nugetConfigPath: NuGet.config
   enabled: false
@@ -28,21 +28,21 @@ steps:
   displayName: Build all except the template project
   inputs:
     command: build
-    projects: '**/*.csproj;!**/TimeWarp.AspNetCore.Blazor.Templates.csproj'
+    projects: '**\*.csproj;!**\TimeWarp.AspNetCore.Blazor.Templates.csproj'
     arguments: --configuration debug    
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '**/*Tests/*.csproj'
+    projects: '**\*Tests\*.csproj'
     arguments: '--configuration Debug'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack
   inputs:
     command: pack
-    packagesToPack: 'source/BlazorState/BlazorState.csproj'
+    packagesToPack: 'source\BlazorState\BlazorState.csproj'
     versioningScheme: byPrereleaseNumber
     majorVersion: 0
     patchVersion: 1
