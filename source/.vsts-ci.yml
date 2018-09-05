@@ -25,11 +25,18 @@ steps:
   enabled: false
 
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build 
   inputs:
     command: build
     projects: "**/*.csproj"
     arguments: --configuration debug
+
+- task: DotNetCoreCLI@2
+  displayName: Build all except the template project
+  inputs:
+    command: build
+    projects: "**/*.csproj;!source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.csproj"
+    arguments: --configuration debug    
 
 - task: DotNetCoreCLI@2
   displayName: Test
