@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27604.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Server", "samples\BlazorState.Server\BlazorState.Server.csproj", "{033AE0DF-530E-4DB6-8519-74D202F73B1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Server", "samples\TimeWarpBlazor\BlazorState.Server\BlazorState.Server.csproj", "{033AE0DF-530E-4DB6-8519-74D202F73B1F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Client", "samples\BlazorState.Client\BlazorState.Client.csproj", "{1D6C4BA2-5DF0-40C5-A5FD-34B89AD96B94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Client", "samples\TimeWarpBlazor\BlazorState.Client\BlazorState.Client.csproj", "{1D6C4BA2-5DF0-40C5-A5FD-34B89AD96B94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Shared", "samples\BlazorState.Shared\BlazorState.Shared.csproj", "{02E9D005-F79E-4AE8-9510-3BDE5F8799BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Shared", "samples\TimeWarpBlazor\BlazorState.Shared\BlazorState.Shared.csproj", "{02E9D005-F79E-4AE8-9510-3BDE5F8799BD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState", "source\BlazorState\BlazorState.csproj", "{DF355720-EA1E-4505-AE68-1D36BD0D4711}"
 EndProject
@@ -39,11 +39,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Server.Integrat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorStateSample", "BlazorStateSample", "{A1FF1F5B-51D4-460E-83A2-D84ECA3CC44E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Server", "samples\01-Sample\Sample.Server\Sample.Server.csproj", "{9F6F020B-6F59-487D-87EF-CCCF6FCE2DB2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "samples\01-Sample\Sample.Server\Sample.Server.csproj", "{9F6F020B-6F59-487D-87EF-CCCF6FCE2DB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Client", "samples\01-Sample\Sample.Client\Sample.Client.csproj", "{4095E5E8-6814-4A1C-BA59-3D1D73406B81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "samples\01-Sample\Sample.Client\Sample.Client.csproj", "{4095E5E8-6814-4A1C-BA59-3D1D73406B81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Shared", "samples\01-Sample\Sample.Shared\Sample.Shared.csproj", "{C09385FC-FE13-49B6-B760-76B5D30F8630}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "samples\01-Sample\Sample.Shared\Sample.Shared.csproj", "{C09385FC-FE13-49B6-B760-76B5D30F8630}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{908B0A29-DD28-4807-B28E-3CF820B86B1B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeWarpBlazor", "TimeWarpBlazor", "{0979F9CC-12E7-492C-8B82-4BFC5D372025}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.Client", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\BlazorHosted-CSharp.Client\BlazorHosted-CSharp.Client.csproj", "{223E5F9C-8264-41AB-8F05-6E5DCA5663DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.Shared", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\BlazorHosted-CSharp.Shared\BlazorHosted-CSharp.Shared.csproj", "{0F035F19-A11E-446B-A80D-69B4BADB4E9B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.Server", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\BlazorHosted-CSharp.Server\BlazorHosted-CSharp.Server.csproj", "{274A02EE-C156-4FB0-9F00-8FAFE59AAEC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.Client.Integration.Tests", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\BlazorHosted-CSharp.Client.Integration.Tests\BlazorHosted-CSharp.Client.Integration.Tests.csproj", "{F25D07C4-8171-48E6-98A4-98356BBC80DD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.EndToEnd.Tests", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\BlazorHosted-CSharp.EndToEnd.Tests\BlazorHosted-CSharp.EndToEnd.Tests.csproj", "{3E36EF21-4073-4AD8-8166-4DA7C740E53A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.Server.Integration.Tests", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\BlazorHosted-CSharp.Server.Integration.Tests\BlazorHosted-CSharp.Server.Integration.Tests.csproj", "{66327FEF-423E-44DA-A4FF-EE604CC95888}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +129,30 @@ Global
 		{C09385FC-FE13-49B6-B760-76B5D30F8630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C09385FC-FE13-49B6-B760-76B5D30F8630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C09385FC-FE13-49B6-B760-76B5D30F8630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{223E5F9C-8264-41AB-8F05-6E5DCA5663DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{223E5F9C-8264-41AB-8F05-6E5DCA5663DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{223E5F9C-8264-41AB-8F05-6E5DCA5663DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{223E5F9C-8264-41AB-8F05-6E5DCA5663DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F035F19-A11E-446B-A80D-69B4BADB4E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F035F19-A11E-446B-A80D-69B4BADB4E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F035F19-A11E-446B-A80D-69B4BADB4E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F035F19-A11E-446B-A80D-69B4BADB4E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{274A02EE-C156-4FB0-9F00-8FAFE59AAEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{274A02EE-C156-4FB0-9F00-8FAFE59AAEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{274A02EE-C156-4FB0-9F00-8FAFE59AAEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{274A02EE-C156-4FB0-9F00-8FAFE59AAEC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F25D07C4-8171-48E6-98A4-98356BBC80DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F25D07C4-8171-48E6-98A4-98356BBC80DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F25D07C4-8171-48E6-98A4-98356BBC80DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F25D07C4-8171-48E6-98A4-98356BBC80DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E36EF21-4073-4AD8-8166-4DA7C740E53A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E36EF21-4073-4AD8-8166-4DA7C740E53A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E36EF21-4073-4AD8-8166-4DA7C740E53A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E36EF21-4073-4AD8-8166-4DA7C740E53A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -133,6 +175,14 @@ Global
 		{9F6F020B-6F59-487D-87EF-CCCF6FCE2DB2} = {DA4CCF8F-5B8A-4E37-B1AD-8A4E4BD3186A}
 		{4095E5E8-6814-4A1C-BA59-3D1D73406B81} = {DA4CCF8F-5B8A-4E37-B1AD-8A4E4BD3186A}
 		{C09385FC-FE13-49B6-B760-76B5D30F8630} = {DA4CCF8F-5B8A-4E37-B1AD-8A4E4BD3186A}
+		{0979F9CC-12E7-492C-8B82-4BFC5D372025} = {908B0A29-DD28-4807-B28E-3CF820B86B1B}
+		{223E5F9C-8264-41AB-8F05-6E5DCA5663DC} = {0979F9CC-12E7-492C-8B82-4BFC5D372025}
+		{0F035F19-A11E-446B-A80D-69B4BADB4E9B} = {0979F9CC-12E7-492C-8B82-4BFC5D372025}
+		{274A02EE-C156-4FB0-9F00-8FAFE59AAEC6} = {0979F9CC-12E7-492C-8B82-4BFC5D372025}
+		{F25D07C4-8171-48E6-98A4-98356BBC80DD} = {D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE}
+		{D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE} = {0979F9CC-12E7-492C-8B82-4BFC5D372025}
+		{3E36EF21-4073-4AD8-8166-4DA7C740E53A} = {D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE}
+		{66327FEF-423E-44DA-A4FF-EE604CC95888} = {D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}

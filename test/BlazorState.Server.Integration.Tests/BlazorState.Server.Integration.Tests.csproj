@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\samples\BlazorState.Server\BlazorState.Server.csproj" />
-    <ProjectReference Include="..\..\samples\BlazorState.Shared\BlazorState.Shared.csproj" />
+    <ProjectReference Include="..\..\samples\TimeWarpBlazor\BlazorState.Server\BlazorState.Server.csproj" />
+    <ProjectReference Include="..\..\samples\TimeWarpBlazor\BlazorState.Shared\BlazorState.Shared.csproj" />
   </ItemGroup>
 
 </Project>

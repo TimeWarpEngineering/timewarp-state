@@ -1,0 +1,45 @@
+{
+  "BlazorHosted_CSharp.Client.Features.Application.ApplicationState": {
+    "name": "Blazor State Demo Application",
+    "guid": "5a2efcec-6297-4254-a2dc-30e4e567e549"
+  },
+  "BlazorHosted_CSharp.Client.Features.Counter.CounterState": {
+    "count": 18,
+    "guid": "a0d74c63-13f4-4a2f-b18b-9a1fdaa397b2"
+  },
+  "BlazorHosted_CSharp.Client.Features.WeatherForecast.WeatherForecastsState": {
+    "weatherForecasts": [
+      {
+        "date": "2018-08-26T09:29:54.0507889Z",
+        "summary": "Freezing",
+        "temperatureC": 16,
+        "temperatureF": 60
+      },
+      {
+        "date": "2018-08-27T09:29:54.0509154Z",
+        "summary": "Warm",
+        "temperatureC": 8,
+        "temperatureF": 46
+      },
+      {
+        "date": "2018-08-28T09:29:54.0509159Z",
+        "summary": "Chilly",
+        "temperatureC": 10,
+        "temperatureF": 49
+      },
+      {
+        "date": "2018-08-29T09:29:54.0509159Z",
+        "summary": "Freezing",
+        "temperatureC": 30,
+        "temperatureF": 85
+      },
+      {
+        "date": "2018-08-30T09:29:54.0509159Z",
+        "summary": "Balmy",
+        "temperatureC": -7,
+        "temperatureF": 20
+      }
+    ],
+    "guid": "6e420071-e4b2-471f-8041-fedb5515fda0"
+  }
+}

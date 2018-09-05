@@ -56,15 +56,13 @@
       Logger.LogDebug($"{GetType().Name}:{nameof(LoadStateFromJson)}:typeName: {typeName}");
       Logger.LogDebug($"aKeyValuePair.Value: {aKeyValuePair.Value}");
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
-      //var newStateKeyValuePairs = (Dictionary<string, object>) aKeyValuePair.Value;
-      //Logger.LogDebug($"newStateKeyValuePairs.Count: {newStateKeyValuePairs.Count}");
+      
       object newStateKeyValuePairs = Json.Deserialize<object>(aKeyValuePair.Value.ToString());
-      //Logger.LogDebug($"newStateKeyValuePairs.Count: {newStateKeyValuePairs.Count}");
 
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)
-          .SelectMany(aAssembly => aAssembly.GetTypes())
+          .SelectMany(aAssembly => aAssembly.GetExportedTypes())
           .FirstOrDefault(aType => aType.FullName.Equals(typeName));
 
       Logger.LogDebug($"stateType == null{stateType == null}");
@@ -72,7 +70,7 @@
       // Get the Hydrate Method
       // I am only trying to get the name of "Hydrate" without magic string.
       // I use RouteState as a type because it is in this project
-      System.Reflection.MethodInfo hydrateMethodInfo = stateType.GetMethod(nameof(State<RouteState>.Hydrate));
+      System.Reflection.MethodInfo hydrateMethodInfo = stateType?.GetMethod(nameof(State<RouteState>.Hydrate));
       Logger.LogDebug($"hydrateMethodInfo == null: {hydrateMethodInfo == null}");
 
       // Call Hydrate on the Type

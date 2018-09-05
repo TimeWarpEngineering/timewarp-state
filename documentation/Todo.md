@@ -34,3 +34,9 @@ So Maybe we should add a Filter to ignore logging some request IReduxAction mark
 - [ ] Update Source link to the now .net foundation version. https://github.com/dotnet/sourcelink/ 
 
 - [ ] Add documentation on installing Selenium java and chromedriver.exe etc.
+- [ ] Search with powergrep for "<LangVersion>"
+    if blazor-state\Directory.Build.props has `<LangVersion>latest</LangVersion>` then do we need it in all the others?
+
+- [ ] Automate deployment to MyGet of template nuget.
+- [ ] Add vsts vsts.ci.yaml into the template project.
+- [ ] Update global.json to latest
