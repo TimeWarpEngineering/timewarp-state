@@ -39,3 +39,4 @@ So Maybe we should add a Filter to ignore logging some request IReduxAction mark
 
 - [ ] Automate deployment to MyGet of template nuget.
 - [ ] Add vsts vsts.ci.yaml into the template project.
+- [ ] Update global.json to latest
