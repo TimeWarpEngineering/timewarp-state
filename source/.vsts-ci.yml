@@ -25,13 +25,6 @@ steps:
   enabled: false
 
 - task: DotNetCoreCLI@2
-  displayName: Build 
-  inputs:
-    command: build
-    projects: "**/*.csproj"
-    arguments: --configuration debug
-
-- task: DotNetCoreCLI@2
   displayName: Build all except the template project
   inputs:
     command: build
