@@ -1,6 +1,11 @@
 queue:
   name: TimeWarpEnterprises
 
+variables:
+  - Major: '0'
+  - Minor: '1'
+  - Patch: '0'
+
 steps:
 - script: echo BuildID $(Build.BuildID)
 
@@ -46,8 +51,8 @@ steps:
     command: pack
     packagesToPack: 'source\BlazorState\BlazorState.csproj'
     versioningScheme: byPrereleaseNumber
-    majorVersion: 0
-    patchVersion: 1
+    majorVersion: '$(Major)'
+    patchVersion: '$(Patch)'
   enabled: false
 
 - task: DotNetCoreCLI@2
@@ -65,14 +70,13 @@ steps:
 - task: NuGetCommand@2
   displayName: 'NuGet pack Templates'
   inputs:
-    command: custom
-    custom: pack 
-    arguments: >
-      $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
-      --output $(Build.StagingDirectory) 
-      /p:Configuration=Debug 
-      --version-suffix beta-$(Build.BuildID) 
-      --verbosity Detailed
+    command: pack
+    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+    configurationToPack: debug
+    versioningScheme: byBuildNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)-beta-$(Build.BUildID)'
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
