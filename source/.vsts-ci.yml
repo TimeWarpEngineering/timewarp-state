@@ -56,7 +56,7 @@ steps:
     command: custom
     custom: pack 
     arguments: |
-      $(Build.SourcesDirectory)/source/BlazorState/BlazorState.csproj 
+      '$(Build.SourcesDirectory)/source/BlazorState/BlazorState.csproj 
       --output $(Build.StagingDirectory) 
       /p:Configuration=release 
       --version-suffix beta-$(Build.BuildID) 
@@ -68,7 +68,7 @@ steps:
     command: custom
     custom: pack 
     arguments: |
-      $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+      '$(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
       --output $(Build.StagingDirectory) 
       /p:Configuration=Debug 
       --version-suffix beta-$(Build.BuildID) 
