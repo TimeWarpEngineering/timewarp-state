@@ -9,6 +9,9 @@ variables:
 
 steps:
 - script: echo BuildID $(Build.BuildID)
+- script: echo Major $(Major)
+- script: echo Minor $(Minor)
+- script: echo Patch $(Patch)
 
 - task: Npm@1
   inputs:
@@ -74,10 +77,10 @@ steps:
     command: pack
     packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
     configurationToPack: debug
-    versioningScheme: byBuildNumber
+    # versioningScheme: byBuildNumber
     majorVersion: '$(Major)'
     minorVersion: '$(Minor)'
-    patchVersion: '$(Patch)-beta-$(Build.BUildID)'
+    patchVersion: '$(Patch)-beta-$(Build.BuildID)'
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
