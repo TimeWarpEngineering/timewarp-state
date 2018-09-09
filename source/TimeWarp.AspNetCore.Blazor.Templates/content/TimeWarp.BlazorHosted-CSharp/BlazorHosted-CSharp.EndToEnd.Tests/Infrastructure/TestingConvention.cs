@@ -14,8 +14,13 @@
 
     private BrowserFixture BrowserFixture { get; set; }
     private IServiceScopeFactory ServiceScopeFactory { get; set; }
+    private SeleniumStandAlone SeleniumStandAlone { get; set; }
 
-    public void Dispose() => BrowserFixture.WebDriver.Quit();
+    public void Dispose()
+    {
+      BrowserFixture.WebDriver.Quit();
+      SeleniumStandAlone.Dispose();
+    }
 
     public void Execute(TestClass aTestClass)
     {
@@ -51,9 +56,10 @@
 
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
-      BrowserFixture = new BrowserFixture();
+      SeleniumStandAlone = new SeleniumStandAlone();
+      BrowserFixture = new BrowserFixture(SeleniumStandAlone);
       aServiceCollection.AddSingleton(BrowserFixture.WebDriver);
-      aServiceCollection.AddSingleton(new ServerFixture());
+      aServiceCollection.AddSingleton<ServerFixture>();
       // TODO: should use the same collection as `Classes` here
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         // Start with all non abstract types in this assembly

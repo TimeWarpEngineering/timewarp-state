@@ -1,8 +1,14 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 queue:
   name: TimeWarpEnterprises
 
+variables:
+ Major: '0'
+ Minor: '1'
+ Patch: '0'
+ Version: "$(Major).$(Minor).$(Patch)"
 steps:
-- script: echo BuildID $(Build.BuildID)
+- script: echo Version $(Version)
 
 - task: Npm@1
   inputs:
@@ -10,19 +16,10 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.302
+  displayName: Use .NET Core sdk 2.1.401
   inputs:
-    version: 2.1.302
-  enabled: true
+    version: 2.1.401
 
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: 'source/BlazorState/BlazorState.csproj'
-    feedsToUse: config
-    nugetConfigPath: NuGet.config
-  enabled: false
 
 - task: DotNetCoreCLI@2
   displayName: Build
@@ -36,14 +33,25 @@ steps:
   inputs:
     command: test
     projects: "**/*Tests/*.csproj"
-    arguments: --configuration debug
+    configurationToPack: debug
 
 - task: DotNetCoreCLI@2
-  displayName: dotnet pack
+  displayName: dotnet pack blazor-state
   inputs:
     command: pack
-    packagesToPack: 'source/BlazorState/BlazorState.csproj'
+    packagesToPack: 'source\BlazorState\BlazorState.csproj'
+    versionEnvVar: Version
+    versioningScheme: byEnvVar
+    configurationToPack: release
     
+- task: NuGetCommand@2
+  displayName: 'NuGet pack Templates'
+  inputs:
+    command: pack
+    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+    configurationToPack: debug
+    versioningScheme: byEnvVar
+    versionEnvVar: Version
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:

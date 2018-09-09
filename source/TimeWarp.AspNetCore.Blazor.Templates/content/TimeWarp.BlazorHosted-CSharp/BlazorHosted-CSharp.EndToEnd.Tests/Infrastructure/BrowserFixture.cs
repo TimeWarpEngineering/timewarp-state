@@ -7,7 +7,7 @@
 
   public class BrowserFixture : IDisposable
   {
-    public BrowserFixture()
+    public BrowserFixture( SeleniumStandAlone aSeleniumStandAlone)
     {
       var chromeOptions = new ChromeOptions();
 
@@ -45,6 +45,7 @@
 
     public ILogs Logs { get; }
     public IWebDriver WebDriver { get; }
+    private SeleniumStandAlone SeleniumStandAlone { get; }
 
     public void Dispose() => WebDriver.Dispose();
   }
