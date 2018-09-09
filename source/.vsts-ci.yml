@@ -1,4 +1,4 @@
-name:  0.1.0.beta-$(Build.BuildID)
+name: $(TeamProject)_$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 
 queue:
   name: TimeWarpEnterprises
@@ -52,11 +52,14 @@ steps:
     arguments: '--configuration Debug'
 
 - task: DotNetCoreCLI@2
-  displayName: dotnet pack
+  displayName: dotnet pack blazor-state
   inputs:
     command: pack
     packagesToPack: 'source\BlazorState\BlazorState.csproj'
     versioningScheme: byBuildNumber
+    majorVersion: '$(Major)'
+    minorVersion: '$(Minor)'
+    patchVersion: '$(Patch)'
     configurationToPack: release
   enabled: true
 
