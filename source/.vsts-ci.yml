@@ -1,13 +1,15 @@
+name:  $(Build.DefinitionName)-$(date:yyyyMMdd)$(rev:.r)
+
 queue:
   name: TimeWarpEnterprises
 
 variables:
- Dog: 'Test'
  Major: '0'
  Minor: '1'
  Patch: '0'
 
 steps:
+- script: echo BuildNumber $(Build.BuildNumber)
 - script: echo BuildID $(Build.BuildID)
 - script: echo Major $(Major)
 - script: echo Minor $(Minor)
