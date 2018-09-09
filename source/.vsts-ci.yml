@@ -1,4 +1,4 @@
-name:  0.1.0.$(Build.BuildID)
+name:  0.1.0.beta-$(Build.BuildID)
 
 queue:
   name: TimeWarpEnterprises
@@ -56,7 +56,8 @@ steps:
   inputs:
     command: pack
     packagesToPack: 'source\BlazorState\BlazorState.csproj'
-    arguments: --configuration release --version-suffix beta-$(Build.BuildID)
+    versioningScheme: byBuildNumber
+    configurationToPack: release
   enabled: true
 
 - task: DotNetCoreCLI@2
