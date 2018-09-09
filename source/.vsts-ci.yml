@@ -2,9 +2,10 @@ queue:
   name: TimeWarpEnterprises
 
 variables:
-- Major: '0'
-- Minor: '1'
-- Patch: '0'
+ Dog: 'Test'
+ Major: '0'
+ Minor: '1'
+ Patch: '0'
 
 steps:
 - script: echo BuildID $(Build.BuildID)
