@@ -26,10 +26,10 @@ steps:
   displayName: Build all except the template project
   inputs:
     command: build
-    configurationToPack: debug
     projects: |
      **/*.csproj
      !**\TimeWarp.AspNetCore.Blazor.Templates.csproj
+    configuration: debug     
 
 - task: DotNetCoreCLI@2
   displayName: Test
