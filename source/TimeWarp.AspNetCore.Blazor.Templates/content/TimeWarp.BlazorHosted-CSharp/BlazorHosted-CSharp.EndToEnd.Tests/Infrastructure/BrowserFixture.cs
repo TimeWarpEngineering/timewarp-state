@@ -45,7 +45,6 @@
 
     public ILogs Logs { get; }
     public IWebDriver WebDriver { get; }
-    private SeleniumStandAlone SeleniumStandAlone { get; }
 
     public void Dispose() => WebDriver.Dispose();
   }
