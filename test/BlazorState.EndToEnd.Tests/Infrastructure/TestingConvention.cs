@@ -18,7 +18,7 @@
 
     public void Dispose()
     {
-      BrowserFixture.WebDriver.Quit();
+      BrowserFixture?.WebDriver?.Quit();
       SeleniumStandAlone.Dispose();
     }
 

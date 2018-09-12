@@ -1,3 +1,9 @@
+Master: 
+[![Build Status](https://timewarpenterprises.visualstudio.com/Blazor-State/_apis/build/status/Blazor-State-CI-Master-Yaml)](https://timewarpenterprises.visualstudio.com/Blazor-State/_build/latest?definitionId=7)
+
+Dev:
+[![Build Status](https://timewarpenterprises.visualstudio.com/Blazor-State/_apis/build/status/Blazor-State-CI-Dev-Yaml)](https://timewarpenterprises.visualstudio.com/Blazor-State/_build/latest?definitionId=6)
+
 # Blazor-State
 
 State Management architecture utilizing the MediatR pipeline with plugin behaviors.
