@@ -18,7 +18,7 @@ namespace BlazorHosted_CSharp.EndToEnd.Tests.Infrastructure
         }
       };
       Process.Start();
-      Thread.Sleep(1000); // Wait for selenium-standalone to start.
+      Thread.Sleep(2000); // Wait for selenium-standalone to start.
     }
 
     public Process Process { get; }

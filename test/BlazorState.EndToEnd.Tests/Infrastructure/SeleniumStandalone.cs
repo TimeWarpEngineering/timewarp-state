@@ -18,7 +18,8 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
         }
       };
       Process.Start();
-      Thread.Sleep(1000); // Wait for selenium-standalone to start.
+      Thread.Sleep(2000); // Wait for selenium-standalone to start.
+      // TODO: should be able to tell when ready some how.
     }
 
     public Process Process { get; }
