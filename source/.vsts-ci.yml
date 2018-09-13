@@ -77,4 +77,4 @@ steps:
     command: 'push'
     nuGetFeedType: 'external' # Required when command == push. Options: internal, external
     packagesToPush: '$(build.artifactStagingDirectory)/*.nupkg' # Required when command == push
-    publishFeedCredentials: 'TimeWarp Enterprises MyGet Push Write Only' # Required when command == push && NuGetFeedType == external  
+    publishFeedCredentials: TimeWarp.MyGet # Required when command == push && NuGetFeedType == external  
