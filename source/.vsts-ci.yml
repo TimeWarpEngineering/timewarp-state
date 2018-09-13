@@ -69,3 +69,12 @@ steps:
     command: custom
     custom: nuget
     arguments: 'push $(Build.ArtifactStagingDirectory)\*.nupkg -s https://www.myget.org/F/timewarp-enterprises/api/v3/index.json -k $(MyGetApiKey)'
+  enabled: false
+# .NET Core
+# Push NuGet packages.
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    nuGetFeedType: 'external' # Required when command == push. Options: internal, external
+    packagesToPush: '$(build.artifactStagingDirectory)/*.nupkg' # Required when command == push
+    publishFeedCredentials: 'TimeWarp Enterprises MyGet Push Write Only' # Required when command == push && NuGetFeedType == external  

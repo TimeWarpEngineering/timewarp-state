@@ -65,3 +65,13 @@ steps:
     command: push
     nuGetFeedType: external
     publishFeedCredentials: Nuget.org
+  enabled: false
+
+# .NET Core
+# Push NuGet packages.
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'push'
+    nuGetFeedType: 'external' # Required when command == push. Options: internal, external
+    packagesToPush: '$(build.artifactStagingDirectory)/*.nupkg' # Required when command == push
+    publishFeedCredentials: Nuget.org # Required when command == push && NuGetFeedType == external  
