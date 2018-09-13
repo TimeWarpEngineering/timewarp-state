@@ -2,3 +2,5 @@
   href: overview.md
 - name: Sample Application
   topicUid: Sample:README.md
+- name: TimeWarp-Blazor Template
+  href: Template/TemplateOverview.md

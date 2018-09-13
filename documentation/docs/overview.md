@@ -24,7 +24,8 @@ dotnet add package Blazor-State
 
 After you have completed the [getting started for blazor](https://blazor.net/docs/get-started.html)
 the easiest way to get started with blazor-state is to follow the [tutorial](xref:BlazorStateSample:README.md).
-Or see a more complete sample app  
+
+Or create new application based on the [timewarp-blazor template](Template/TemplateOverview.md)
 
 ## Architecture
 
