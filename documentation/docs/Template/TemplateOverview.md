@@ -13,11 +13,11 @@ dotnet new timewarp-blazor -n MyBlazorApp
 ```
 
 ### Projects
-<Name>.Client
-<Name>.Server
-<Name>.Shared
+MyBlazorApp.Client<br/>
+MyBlazorApp.Server<br/>
+MyBlazorApp.Shared
 
 ### Test Projects
-<Name>.Client.Integration.Tests
-<Name>.Server.Integration.Tests
-<Name>.EndToEnd.Tests
+MyBlazorApp.Client.Integration.Tests<br/>
+MyBlazorApp.Server.Integration.Tests<br/>
+MyBlazorApp.EndToEnd.Tests
