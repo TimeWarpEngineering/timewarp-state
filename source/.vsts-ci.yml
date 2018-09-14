@@ -1,8 +1,16 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
 queue:
   name: TimeWarpEnterprises
 
+variables:
+ Major: '0'
+ Minor: '1'
+ Patch: '0'
+ Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
+
 steps:
-- script: echo BuildID $(Build.BuildID)
+- script: echo Version $(Version)
 
 - task: Npm@1
   inputs:
@@ -10,50 +18,43 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.302
+  displayName: Use .NET Core sdk 2.1.401
   inputs:
-    version: 2.1.302
-  enabled: true
+    version: 2.1.401
 
 - task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: "**/*.csproj"
-    feedsToUse: config
-    nugetConfigPath: NuGet.config
-  enabled: false
-
-- task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build all except the template project
   inputs:
     command: build
-    projects: "**/*.csproj"
-    arguments: --configuration debug
+    projects: |
+     **/*.csproj
+     !**\TimeWarp.AspNetCore.Blazor.Templates.csproj
+    configuration: debug     
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: "**/*Tests/*.csproj"
-    arguments: --configuration debug
+    projects: '**\*Tests\*.csproj'
+    configurationToPack: debug
 
 - task: DotNetCoreCLI@2
-  displayName: dotnet pack
+  displayName: dotnet pack blazor-state
   inputs:
     command: pack
-    packagesToPack: 'source/BlazorState/BlazorState.csproj'
-    versioningScheme: byPrereleaseNumber
-    majorVersion: 0
-    patchVersion: 1
-  enabled: false
+    packagesToPack: 'source\BlazorState\BlazorState.csproj'
+    versionEnvVar: Version
+    versioningScheme: byEnvVar
+    configurationToPack: release
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet pack
+- task: NuGetCommand@2
+  displayName: 'NuGet pack Templates'
   inputs:
-    command: custom
-    custom: pack 
-    arguments: '$(Build.SourcesDirectory)/source/BlazorState/BlazorState.csproj --output $(Build.StagingDirectory) /p:Configuration=release --version-suffix beta-$(Build.BuildID) --verbosity Detailed'
+    command: pack
+    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+    configurationToPack: debug
+    versioningScheme: byEnvVar
+    versionEnvVar: Version
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact

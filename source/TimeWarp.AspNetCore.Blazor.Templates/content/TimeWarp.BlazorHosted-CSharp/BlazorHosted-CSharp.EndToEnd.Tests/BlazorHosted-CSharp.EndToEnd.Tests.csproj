@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fixie" Version="2.0.1" />
+    <PackageReference Include="Selenium.Support" Version="3.14.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="3.14.0" />
+    <PackageReference Include="Shouldly" Version="3.0.0" />
+    <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorHosted-CSharp.Server\BlazorHosted-CSharp.Server.csproj" />
+  </ItemGroup>
+</Project>
