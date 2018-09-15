@@ -2,6 +2,7 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
 {
   using System;
   using System.Diagnostics;
+  using System.Net.Http;
   using System.Threading;
 
   public class SeleniumStandAlone : IDisposable
@@ -18,8 +19,15 @@ namespace BlazorState.EndToEnd.Tests.Infrastructure
         }
       };
       Process.Start();
-      Thread.Sleep(1000); // Wait for selenium-standalone to start.
-      // TODO: should be able to tell when ready some how.
+      WaitForSelenium().Wait();
+    }
+
+
+    internal async System.Threading.Tasks.Task WaitForSelenium()
+    {
+      var httpClient = new HttpClient();
+      HttpResponseMessage response = await httpClient.GetAsync("http://localhost:4444/wd/hub");
+      response.EnsureSuccessStatusCode();
     }
 
     public Process Process { get; }
