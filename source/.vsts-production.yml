@@ -16,9 +16,9 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.401
+  displayName: Use .NET Core sdk 2.1.402
   inputs:
-    version: 2.1.401
+    version: 2.1.402
 
 
 - task: DotNetCoreCLI@2

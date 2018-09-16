@@ -1,17 +1,19 @@
 {
   "author": "Steven T. Cramer",
   "classifications": [
-	"TimeWarp",
+    "TimeWarp",
     "Web",
     "Blazor",
     "Hosted"
   ],
   "groupIdentity": "TimeWarp.Web.Blazor.Hosted",
   "guids": [
-    "16FA64C2-4A0E-42D4-94E6-C8CFDE84597E",
     "19B3F119-0F8A-430A-8336-9F6797B990E9",
     "CFFB80F7-6230-4244-A07F-12F5A295FB21",
-    "545E3103-354C-4058-8D8F-60D70DCC115B"
+    "545E3103-354C-4058-8D8F-60D70DCC115B",
+    "7A297947-B1E9-4BC6-9F84-22E5EDB389B8",
+    "B82C7C95-4892-443C-AA6B-B6086B03DD30",
+    "86DAE2F4-34F2-4002-AE80-308D8A7FADE0"
   ],
   "identity": "TimeWarp.Web.Blazor.Hosted.CSharp",
   "name": "TimeWarp Blazor (hosted in ASP.NET server)",

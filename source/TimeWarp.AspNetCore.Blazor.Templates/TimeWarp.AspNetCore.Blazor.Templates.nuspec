@@ -2,7 +2,6 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>TimeWarp.AspNetCore.Blazor.Templates</id>
-    <version>0.0.6</version>
     <authors>Steven T. Cramer</authors>
     <description>TimeWarp Templates for ASP.NET Core Blazor</description>
     <iconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</iconUrl>
