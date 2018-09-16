@@ -23,12 +23,10 @@ steps:
     version: 2.1.402
 
 - task: DotNetCoreCLI@2
-  displayName: Build all except the template project
+  displayName: Build all
   inputs:
     command: build
-    projects: |
-     **/*.csproj
-     !**\TimeWarp.AspNetCore.Blazor.Templates.csproj
+    projects: **/*.csproj
     configuration: debug     
 
 - task: DotNetCoreCLI@2
