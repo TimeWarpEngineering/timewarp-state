@@ -3,7 +3,7 @@
   <metadata>
     <id>TimeWarp.AspNetCore.Blazor.Templates</id>
     <authors>Steven T. Cramer</authors>
-    <version>0.0.1</version>
+    <version>$version</version>
     <description>TimeWarp Templates for ASP.NET Core Blazor</description>
     <iconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</iconUrl>
     <language>en-US</language>
