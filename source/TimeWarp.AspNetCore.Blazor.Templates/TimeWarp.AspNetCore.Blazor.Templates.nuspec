@@ -3,13 +3,12 @@
   <metadata>
     <id>TimeWarp.AspNetCore.Blazor.Templates</id>
     <authors>Steven T. Cramer</authors>
-    <version>$version$</version>
+    <version>0.0.1</version>
     <description>TimeWarp Templates for ASP.NET Core Blazor</description>
     <iconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</iconUrl>
     <language>en-US</language>
     <projectUrl>https://github.com/TimeWarpEngineering/blazor-state</projectUrl>
     <licenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</licenseUrl>
-
     <tags>aspnet templates blazor spa pwa timewarp</tags>
     <packageTypes>
       <packageType name="Template" />
