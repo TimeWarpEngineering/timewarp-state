@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fixie" Version="2.0.1" />
+    <PackageReference Include="Fixie" Version="2.0.2" />
     <PackageReference Include="Selenium.Support" Version="3.14.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.14.0" />
     <PackageReference Include="Shouldly" Version="3.0.0" />

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor-State" Version="0.0.6" />
+    <PackageReference Include="Blazor-State" Version="*" />
     <PackageReference Include="Blazor.Extensions.Logging" Version="0.1.8" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.5.1" />

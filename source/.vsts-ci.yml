@@ -6,7 +6,7 @@ queue:
 variables:
  Major: '0'
  Minor: '1'
- Patch: '0'
+ Patch: '1'
  Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
 
 steps:
@@ -18,17 +18,15 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.401
+  displayName: Use .NET Core sdk 2.1.402
   inputs:
-    version: 2.1.401
+    version: 2.1.402
 
 - task: DotNetCoreCLI@2
-  displayName: Build all except the template project
+  displayName: Build all
   inputs:
     command: build
-    projects: |
-     **/*.csproj
-     !**\TimeWarp.AspNetCore.Blazor.Templates.csproj
+    projects: '**/*.csproj'
     configuration: debug     
 
 - task: DotNetCoreCLI@2

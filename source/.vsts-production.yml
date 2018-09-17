@@ -5,7 +5,7 @@ queue:
 variables:
  Major: '0'
  Minor: '1'
- Patch: '0'
+ Patch: '1'
  Version: "$(Major).$(Minor).$(Patch)"
 steps:
 - script: echo Version $(Version)
@@ -16,9 +16,9 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.401
+  displayName: Use .NET Core sdk 2.1.402
   inputs:
-    version: 2.1.401
+    version: 2.1.402
 
 
 - task: DotNetCoreCLI@2

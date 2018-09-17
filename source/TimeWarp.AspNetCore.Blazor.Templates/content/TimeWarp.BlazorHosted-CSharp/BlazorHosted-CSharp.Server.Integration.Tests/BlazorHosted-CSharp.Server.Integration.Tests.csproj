@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fixie" Version="2.0.1" />
+    <PackageReference Include="Fixie" Version="2.0.2" />
     <PackageReference Include="Shouldly" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
     <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
