@@ -1,4 +1,8 @@
 name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+ branches:
+  include:
+  - dev
 
 queue:
   name: TimeWarpEnterprises
@@ -43,7 +47,7 @@ steps:
     packagesToPack: 'source\BlazorState\BlazorState.csproj'
     versionEnvVar: Version
     versioningScheme: byEnvVar
-    configurationToPack: release
+    configurationToPack: debug
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack Templates'
