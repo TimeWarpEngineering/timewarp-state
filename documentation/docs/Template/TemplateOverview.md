@@ -3,7 +3,7 @@
 ### Installation
 
 ```
-dotnet new --install TimeWarp.AspNetCore.Blazor.Templates::*
+dotnet new --install TimeWarp.AspNetCore.Blazor.Templates
 ```
 
 ### Usage

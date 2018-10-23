@@ -3,6 +3,9 @@
   using MediatR;
   using Microsoft.AspNetCore.Blazor.Services;
 
+  /// <summary>
+  /// TODO does this need to be public?
+  /// </summary>
   public class RouteManager
   {
     public RouteManager(
