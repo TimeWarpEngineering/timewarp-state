@@ -1,6 +1,10 @@
 ﻿namespace BlazorState.Features.JavaScriptInterop
 {
   using System;
+  using System.Linq;
+  using System.Reflection;
+  using System.Threading;
+  using System.Threading.Tasks;
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
@@ -17,15 +21,8 @@
       InitializeJavascriptInterop();
     }
 
-    /// <summary>
-    /// Sends 
-    /// </summary>
-    /// <remarks>Sends an instance of this item to JavaScript side
-    /// </remarks>
-    private void InitializeJavascriptInterop() => 
-      JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
-
     private ILogger Logger { get; }
+
     private IMediator Mediator { get; }
 
     /// <summary>
@@ -33,27 +30,71 @@
     /// </summary>
     /// <param name="aRequestAsJson"></param>
     [JSInvokable]
-    public async void Handle(string aRequestAsJson)
+    public async void Handle(string aRequestTypeAssemblyQualifiedName, string aRequestAsJson = null)
     {
-      if (string.IsNullOrWhiteSpace(aRequestAsJson))
-        throw new ArgumentException("was Null or empty", nameof(aRequestAsJson));
+      if (string.IsNullOrWhiteSpace(aRequestTypeAssemblyQualifiedName))
+        throw new ArgumentException("was Null or empty", nameof(aRequestTypeAssemblyQualifiedName));
 
-      Logger.LogDebug($"{GetType().Name}: Handling: {aRequestAsJson}");
-      BaseJsonRequest baseRequest = Json.Deserialize<BaseJsonRequest>(aRequestAsJson);
-      Logger.LogDebug($"{GetType().Name}: RequestType: {baseRequest.RequestType}");
-      var requestType = Type.GetType(baseRequest.RequestType);
+      Logger.LogDebug($"{GetType().Name}: Handling request of type: {aRequestTypeAssemblyQualifiedName}: {aRequestAsJson}");
+
+      var requestType = Type.GetType(aRequestTypeAssemblyQualifiedName);
       if (requestType == null)
-      {
-        Logger.LogDebug($"{GetType().Name}: Type not found with name {baseRequest.RequestType}");
-        return;
-      }
+        throw new ArgumentException($"Type not found with name {aRequestTypeAssemblyQualifiedName}", nameof(aRequestTypeAssemblyQualifiedName));
+      else
+        Logger.LogDebug($"{GetType().Name}: Type ({aRequestTypeAssemblyQualifiedName})  was found");
 
-      var request = (IRequest)Activator.CreateInstance(requestType, aRequestAsJson);
-      if (request != null)
-      {
-        Logger.LogDebug($"{GetType().Name}: request created of type {request.GetType().FullName}");
-        await Mediator.Send(request);
-      }
+      object instance = Deserialize(aRequestAsJson, requestType);
+
+      object result = await SendToMediator(requestType, instance);
+
+      // TODO: We should probably return the result. But I want logic in C# not in js so holding off.
+    }
+
+    private object Deserialize(string aRequestAsJson, Type aRequestType)
+    {
+      MethodInfo deserializeMethodInfo = typeof(Json).GetMethod(nameof(Json.Deserialize), BindingFlags.Public | BindingFlags.Static);
+      MethodInfo deserializeGenericMethodInfo = deserializeMethodInfo.MakeGenericMethod(aRequestType);
+
+      object instance = deserializeGenericMethodInfo.Invoke(null, new object[] { aRequestAsJson });
+      if (instance == null)
+        throw new Exception($"Could not De-serialize ({aRequestAsJson} into and instance of type {aRequestType.AssemblyQualifiedName})");
+
+      Logger.LogDebug($"{GetType().Name}: request created of type {instance.GetType().FullName}");
+      return instance;
+    }
+
+    /// <summary>
+    /// Sends
+    /// </summary>
+    /// <remarks>Sends an instance of this item to JavaScript side
+    /// </remarks>
+    private void InitializeJavascriptInterop() =>
+      JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
+
+    private async Task<object> SendToMediator(Type aRequestType, object aInstance)
+    {
+      // return Mediator.Send(aInstance) is what this does but uses generics everywhere.
+
+      string genericRequestInterfaceName = typeof(IRequest<int>).Name;
+
+      MethodInfo sendMethodInfo = Mediator.GetType().GetMethod(nameof(Mediator.Send));
+      Type responseType = aRequestType
+        .GetInterfaces()
+        .FirstOrDefault(aType => aType.Name == genericRequestInterfaceName)
+        .GenericTypeArguments
+        .First();
+
+      Logger.LogDebug($"{GetType().Name}: The response type of this request should be {responseType.FullName}");
+
+      MethodInfo sendGenericMethodInfo = sendMethodInfo.MakeGenericMethod(responseType);
+
+      Logger.LogDebug($"{GetType().Name}: Invoking Mediator.Send");
+
+      // https://stackoverflow.com/questions/39674988/how-to-call-a-generic-async-method-using-reflection
+      var task = (Task)sendGenericMethodInfo.Invoke(Mediator, new object[] { aInstance, default(CancellationToken) });
+      await task.ConfigureAwait(false);
+      PropertyInfo resultProperty = task.GetType().GetProperty("Result");
+      return resultProperty.GetValue(task);
     }
   }
 }

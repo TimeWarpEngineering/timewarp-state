@@ -95,7 +95,7 @@ export class ReduxDevTools {
         Payload: message
       };
 
-      this.BlazorState.DispatchRequest(jsonRequest);
+      this.BlazorState.DispatchRequest(requestType, message);
     } else
       console.log(`messages of this type are currently not supported`);
   }

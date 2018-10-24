@@ -27,8 +27,8 @@
     protected override void Handle(JumpToStateRequest aRequest)
     {
       Logger.LogDebug($"Type:{GetType().FullName}");
-      Logger.LogDebug($"State: {aRequest.JsonRequest.Payload.State}");
-      Store.LoadStatesFromJson(aRequest.JsonRequest.Payload.State);
+      Logger.LogDebug($"State: {aRequest.State}");
+      Store.LoadStatesFromJson(aRequest.State);
       Logger.LogDebug($"After LoadStatesFromJson");
       ComponentRegistry.ReRenderAll();
       Logger.LogDebug($"After ReRenderAll");
