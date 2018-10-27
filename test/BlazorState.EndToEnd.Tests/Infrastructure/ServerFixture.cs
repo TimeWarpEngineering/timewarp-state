@@ -24,7 +24,12 @@
     public Uri RootUri => LazyUri.Value;
     private IWebHost WebHost { get; set; }
 
-    protected static string FindSampleOrTestSitePath(string aProjectName)
+    /// <summary>
+    /// Finds the path to the server you want to run to test
+    /// </summary>
+    /// <param name="aProjectName"></param>
+    /// <returns></returns>
+    protected static string FindSitePath(string aProjectName)
     {
       string solutionDir = FindSolutionDir();
       string[] possibleLocations = new[]
@@ -64,7 +69,7 @@
             $"No value was provided for {nameof(BuildWebHostMethod)}");
       }
 
-      string sampleSitePath = FindSampleOrTestSitePath(
+      string sampleSitePath = FindSitePath(
                 BuildWebHostMethod.Method.DeclaringType.Assembly.GetName().Name);
 
       IWebHost webHost = BuildWebHostMethod(new[]
