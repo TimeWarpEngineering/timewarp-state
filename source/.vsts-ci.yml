@@ -10,7 +10,7 @@ queue:
 variables:
  Major: '0'
  Minor: '2'
- Patch: '0'
+ Patch: '1'
  Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
 
 steps:
