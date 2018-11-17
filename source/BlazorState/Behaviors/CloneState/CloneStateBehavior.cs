@@ -26,8 +26,13 @@
       CancellationToken aCancellationToken,
       RequestHandlerDelegate<TResponse> aNext)
     {
-      Logger.LogDebug($"Pipeline Start: {aRequest.GetType().FullName}");
-      Logger.LogDebug($"{GetType().Name}: Start");
+      // logging variables
+      string className = GetType().Name;
+      className = className.Remove(className.IndexOf('`'));
+      string requestId = $"{aRequest.GetType().FullName}:{aRequest.GetHashCode()}";
+
+      Logger.LogDebug($"Pipeline Start: {requestId}");
+      Logger.LogDebug($"{className}: Start");
 
       Type responseType = typeof(TResponse);
 
@@ -35,24 +40,25 @@
       // Constrain here if not IState then ignore.
       if (typeof(IState).IsAssignableFrom(responseType))
       {
-        Logger.LogDebug($"{GetType().Name}: Clone State of type {responseType}");
+        Logger.LogDebug($"{className}: Clone State of type {responseType}");
         originalState = (IState)Store.GetState<TResponse>();
-        Logger.LogDebug($"{GetType().Name}: originalState.Guid:{originalState.Guid}");
+        Logger.LogDebug($"{className}: originalState.Guid:{originalState.Guid}");
         var newState = (IState)originalState.Clone();
-        Logger.LogDebug($"{GetType().Name}: newState.Guid:{newState.Guid}");
+        Logger.LogDebug($"{className}: newState.Guid:{newState.Guid}");
 
         Store.SetState(newState);
       }
       else
       {
-        Logger.LogDebug($"{GetType().Name}: Not cloning State because {responseType.Name} is not an IState");
+        Logger.LogDebug($"{className}: Not cloning State because {responseType.Name} is not an IState");
       }
       try
       {
-        Logger.LogDebug($"{GetType().Name}: {GetType().Name}: Call next");
+        Logger.LogDebug($"{className}: Call next");
         TResponse response = await aNext();
-        Logger.LogDebug($"{GetType().Name}: {GetType().Name}: Start Post Processing");
-        Logger.LogDebug($"{GetType().Name}: {GetType().Name}: End");
+        Logger.LogDebug($"{className}: Start Post Processing");
+        Logger.LogDebug($"{className}: End Post Processing");
+        Logger.LogDebug($"Pipeline End: {requestId}");
         return response;
       }
       catch (Exception aException)
@@ -62,9 +68,9 @@
         // Maybe if error occurs on one action we want to launch another action to
         // Update some error state so the user knows of the failure.
         // But as a rule if this is an exception it should be unexpected.
-        Logger.LogDebug($"{GetType().Name}: Error: {aException.Message}");
-        Logger.LogDebug($"{GetType().Name}: InnerError: {aException?.InnerException.Message}");
-        Logger.LogDebug($"{GetType().Name}: Restoring State of type: {responseType}");
+        Logger.LogError($"{className}: Error: {aException.Message}");
+        Logger.LogError($"{className}: InnerError: {aException?.InnerException.Message}");
+        Logger.LogError($"{className}: Restoring State of type: {responseType}");
         if (originalState != null)
           Store.SetState(originalState);
         throw;  // Do you throw or not? for now yes.
