@@ -67,7 +67,7 @@
       {
         aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
         aServices.AddSingleton<ReduxDevToolsInterop>();
-        aServices.AddSingleton<ComponentRegistry>();
+        aServices.AddSingleton<Subscriptions>();
         aServices.AddSingleton(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
       }
       if (options.UseRouting)
