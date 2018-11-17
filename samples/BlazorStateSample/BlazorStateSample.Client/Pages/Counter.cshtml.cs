@@ -13,6 +13,7 @@ namespace BlazorStateSample.Client.Pages
     public CounterState CounterState => Store.GetState<CounterState>();
     [Inject] public IMediator Mediator { get; set; }
     [Inject] public IStore Store { get; set; }
+    public void ReRender() => StateHasChanged();
 
     #region IncrementCount
 

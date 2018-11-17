@@ -11,11 +11,14 @@
   ///  {
   ///    [Inject] public IMediator Mediator { get; set; }
   ///    [Inject] public IStore Store { get; set; }
+  ///    public void ReRender() => StateHasChanged();
   /// }
   /// </example>
   public interface IBlazorStateComponent
   {
     IMediator Mediator { get; set; }
     IStore Store { get; set; }
+
+    void ReRender();
   }
 }
