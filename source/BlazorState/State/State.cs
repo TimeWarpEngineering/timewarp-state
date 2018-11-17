@@ -3,7 +3,6 @@
   using System;
   using System.Collections.Generic;
   using System.Reflection;
-  using Microsoft.JSInterop;
 
   public abstract class State<TState> : IState<TState>
   {

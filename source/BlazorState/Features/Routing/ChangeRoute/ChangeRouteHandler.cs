@@ -21,10 +21,11 @@
 
     public override Task<RouteState> Handle(ChangeRouteRequest aChangeRouteRequest, CancellationToken aCancellationToken)
     {
-      if (RouteState.Route != aChangeRouteRequest.NewRoute)
+      string newAbsoluteUri = UriHelper.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
+      if (RouteState.Route != newAbsoluteUri)
       {
-        RouteState.Route = aChangeRouteRequest.NewRoute;
-        UriHelper.NavigateTo(aChangeRouteRequest.NewRoute);
+        RouteState.Route = newAbsoluteUri;
+        UriHelper.NavigateTo(newAbsoluteUri);
       }
       return Task.FromResult(RouteState);
     }

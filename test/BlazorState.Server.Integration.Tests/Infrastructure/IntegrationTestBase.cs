@@ -1,4 +1,4 @@
-﻿namespace Herc.Pwa.Server.Integration.Tests
+﻿namespace BlazorState.Server.Integration.Tests.Infrastructure
 {
   using System.Threading.Tasks;
 

@@ -10,13 +10,10 @@
     where TRequest : IRequest<TResponse>
     where TResponse : BaseResponse
   {
-    public BaseController(ILogger<BaseController<TRequest, TResponse>> aLogger, IMediator aMediator)
+    public BaseController(IMediator aMediator)
     {
-      Logger = aLogger;
       Mediator = aMediator;
     }
-
-    protected ILogger Logger { get; }
 
     protected IMediator Mediator { get; }
 

@@ -1,4 +1,9 @@
 name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+ branches:
+  include:
+  - master
+
 queue:
   name: TimeWarpEnterprises
 
