@@ -12,6 +12,8 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>./bin/Packages</PackageOutputPath>
+    <PackageVersion>0.3.1</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -10,8 +10,9 @@ queue:
 variables:
  Major: '0'
  Minor: '3'
- Patch: '0'
+ Patch: '1'
  Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
+ Configuration: debug
 
 steps:
 - script: echo Version $(Version)
@@ -22,23 +23,34 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.403
+  displayName: Use .NET Core SDK 2.1.500 
   inputs:
-    version: 2.1.403
+    version: 2.1.500
+
+- powershell:
+   New-Item -ItemType Directory -Force -Path .\source\BlazorState\bin\Packages
+  displayName: 'PowerShell Script Ensure Packages Directory'
+
+- task: DotNetCoreCLI@2
+  displayName: Build BlazorState First
+  inputs:
+    command: build
+    projects: 'source/BlazorState/BlazorState.csproj'
+    configuration: $(Configuration)
 
 - task: DotNetCoreCLI@2
   displayName: Build all
   inputs:
     command: build
     projects: '**/*.csproj'
-    configuration: debug     
+    configuration: $(Configuration)
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
     projects: '**\*Tests\*.csproj'
-    configurationToPack: debug
+    configurationToPack: $(Configuration)
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack blazor-state
@@ -47,14 +59,14 @@ steps:
     packagesToPack: 'source\BlazorState\BlazorState.csproj'
     versionEnvVar: Version
     versioningScheme: byEnvVar
-    configurationToPack: debug
+    configurationToPack: $(Configuration)
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack Templates'
   inputs:
     command: pack
     packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
-    configurationToPack: debug
+    configurationToPack: $(Configuration)
     versioningScheme: byEnvVar
     versionEnvVar: Version
 
