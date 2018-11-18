@@ -57,6 +57,7 @@ steps:
     configurationToPack: debug
     versioningScheme: byEnvVar
     versionEnvVar: Version
+
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:

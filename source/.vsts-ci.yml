@@ -24,7 +24,7 @@ steps:
 - task: DotNetCoreInstaller@0
   displayName: Use .NET Core sdk 2.1.403
   inputs:
-    version: 2.1.403
+    version: 2.1.500
 
 - task: DotNetCoreCLI@2
   displayName: Build all
