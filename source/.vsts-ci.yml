@@ -23,9 +23,13 @@ steps:
     workingDir: source/BlazorState.Js
 
 - task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.403
+  displayName: Use .NET Core SDK 2.1.500 
   inputs:
     version: 2.1.500
+
+- powershell:
+   New-Item -ItemType Directory -Force -Path .\source\BlazorState\bin\Packages
+  displayName: 'PowerShell Script Ensure Packages Directory'
 
 - task: DotNetCoreCLI@2
   displayName: Build BlazorState First
