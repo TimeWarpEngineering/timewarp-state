@@ -1,21 +1,18 @@
-using Microsoft.AspNetCore.Blazor.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using ServerSideSample.App.Services;
-
 namespace ServerSideSample.App
 {
-    public class Startup
-    {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            // Since Blazor is running on the server, we can use an application service
-            // to read the forecast data.
-            services.AddSingleton<WeatherForecastService>();
-        }
+  using Microsoft.AspNetCore.Blazor.Builder;
+  using Microsoft.Extensions.DependencyInjection;
+  using ServerSideSample.App.Services;
 
-        public void Configure(IBlazorApplicationBuilder app)
-        {
-            app.AddComponent<App>("app");
-        }
+  public class Startup
+  {
+    public void ConfigureServices(IServiceCollection aServiceCollection)
+    {
+      // Since Blazor is running on the server, we can use an application service
+      // to read the forecast data.
+      aServiceCollection.AddSingleton<WeatherForecastService>();
     }
+
+    public void Configure(IBlazorApplicationBuilder aBlazorApplicationBuilder) => aBlazorApplicationBuilder.AddComponent<App>("app");
+  }
 }

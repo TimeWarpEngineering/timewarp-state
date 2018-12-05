@@ -1,22 +1,19 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-
-namespace ServerSideSample.Server
+﻿namespace ServerSideSample.Server
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            BuildWebHost(args).Run();
-        }
+  using Microsoft.AspNetCore;
+  using Microsoft.AspNetCore.Hosting;
+  using Microsoft.Extensions.Configuration;
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+  public class Program
+  {
+    public static IWebHost BuildWebHost(string[] aArgumentArray) =>
+            WebHost.CreateDefaultBuilder(aArgumentArray)
                 .UseConfiguration(new ConfigurationBuilder()
-                    .AddCommandLine(args)
+                    .AddCommandLine(aArgumentArray)
                     .Build())
                 .UseStartup<Startup>()
                 .Build();
-    }
+
+    public static void Main(string[] aArgumentArray) => BuildWebHost(aArgumentArray).Run();
+  }
 }
