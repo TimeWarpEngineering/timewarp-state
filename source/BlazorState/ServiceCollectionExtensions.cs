@@ -3,6 +3,7 @@
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Net.Http;
   using System.Reflection;
   using BlazorState.Behaviors.ReduxDevTools;
   using BlazorState.Behaviors.State;
@@ -10,6 +11,7 @@
   using BlazorState.Features.Routing;
   using BlazorState.Services;
   using MediatR;
+  using Microsoft.AspNetCore.Blazor.Services;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
@@ -33,6 +35,9 @@
       var options = new Options();
       aConfigure?.Invoke(options);
 
+      EnsureLogger(aServices);
+      EnsureHttpClient(aServices);
+
       var assemblies = new List<Assembly>(options.Assemblies)
       {
         // Need to add this assembly
@@ -44,9 +49,6 @@
       {
         assemblies.Add(Assembly.GetCallingAssembly());
       }
-
-      EnsureLogger(aServices);
-
       aServices.AddMediatR(assemblies);
       aServices.AddSingleton<JsRuntimeLocation>();
       aServices.AddSingleton<JsonRequestHandler>();
@@ -68,6 +70,34 @@
       }
 
       return aServices;
+    }
+
+    private static void EnsureHttpClient(IServiceCollection aServices)
+    {
+      var jsRuntimeLocation = new JsRuntimeLocation();
+      if (jsRuntimeLocation.IsServerSide)
+      {
+        // Server Side Blazor doesn't register HttpClient by default
+        if (!aServices.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))
+        {
+          // Setup HttpClient for server side in a client side compatible fashion
+          aServices.AddScoped<HttpClient>(aServiceProvider =>
+          {
+            // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+            IUriHelper uriHelper = aServiceProvider.GetRequiredService<IUriHelper>();
+            return new HttpClient
+            {
+              BaseAddress = new Uri(uriHelper.GetBaseUri())
+            };
+          });
+        }
+
+        Console.WriteLine("Running app server side");
+      }
+      else
+      {
+        Console.WriteLine("Running client side in Mono WASM");
+      }
     }
 
     private static void EnsureLogger(IServiceCollection aServices)
