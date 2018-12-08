@@ -45,13 +45,7 @@
         assemblies.Add(Assembly.GetCallingAssembly());
       }
 
-      ServiceDescriptor loggerServiceDescriptor = aServices.FirstOrDefault(
-        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>));
-
-      if (loggerServiceDescriptor == null)
-      {
-        aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
-      }
+      EnsureLogger(aServices);
 
       aServices.AddMediatR(assemblies);
       aServices.AddSingleton<JsRuntimeLocation>();
@@ -74,6 +68,17 @@
       }
 
       return aServices;
+    }
+
+    private static void EnsureLogger(IServiceCollection aServices)
+    {
+      ServiceDescriptor loggerServiceDescriptor = aServices.FirstOrDefault(
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>));
+
+      if (loggerServiceDescriptor == null)
+      {
+        aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
+      }
     }
   }
 
