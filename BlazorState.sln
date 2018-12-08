@@ -69,6 +69,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSideSample.App", "sam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSideSample.Server", "samples\ServerSideSample\ServerSideSample.Server\ServerSideSample.Server.csproj", "{5A03A00C-3C20-4261-839B-2D72E0CBC18F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerSideSample.Shared", "samples\ServerSideSample\ServerSideSample.Shared\ServerSideSample.Shared.csproj", "{3B283118-7EE7-4C03-9A29-6AE7823721C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{5A03A00C-3C20-4261-839B-2D72E0CBC18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A03A00C-3C20-4261-839B-2D72E0CBC18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A03A00C-3C20-4261-839B-2D72E0CBC18F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B283118-7EE7-4C03-9A29-6AE7823721C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B283118-7EE7-4C03-9A29-6AE7823721C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B283118-7EE7-4C03-9A29-6AE7823721C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B283118-7EE7-4C03-9A29-6AE7823721C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +206,7 @@ Global
 		{405D5F8C-27E8-415C-934E-2000EC6E9980} = {437186AC-1CB6-4FE4-8C36-0C2F135021C9}
 		{CA2DE1A6-D367-4F7B-B5A3-342962351912} = {405D5F8C-27E8-415C-934E-2000EC6E9980}
 		{5A03A00C-3C20-4261-839B-2D72E0CBC18F} = {405D5F8C-27E8-415C-934E-2000EC6E9980}
+		{3B283118-7EE7-4C03-9A29-6AE7823721C9} = {405D5F8C-27E8-415C-934E-2000EC6E9980}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}

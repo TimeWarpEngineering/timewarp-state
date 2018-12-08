@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width">
-    <title>ServerSideSample</title>
-    <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width">
+  <title>ServerSideSample</title>
+  <base href="/" />
+  <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+  <link href="css/site.css" rel="stylesheet" />
+  <link rel="prerender" href="?loadclient=true">
 </head>
 <body>
-    <app>Loading...</app>
+  <app>Loading...</app>
+  <script id="blazorMode"></script>
+  <script>
+    debugger;
+    const clientApplicationKey = 'clientApplication';
+    const clientApplicationValue = localStorage.getItem(clientApplicationKey);
+    const source = clientApplicationValue === '"ServerSideSample.App.App"' ?
+      '_framework/blazor.webassembly.js' :
+      '_framework/blazor.server.js';
 
-    <script src="_framework/blazor.server.js"></script>
+    document.getElementById('blazorMode').src = source;
+  </script>
 </body>
 </html>

@@ -10,8 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\source\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\ServerSideSample.Shared\ServerSideSample.Shared.csproj" />
   </ItemGroup>
 
 </Project>
