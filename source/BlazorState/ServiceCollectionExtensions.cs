@@ -8,6 +8,7 @@
   using BlazorState.Behaviors.State;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
+  using BlazorState.Services;
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
@@ -52,11 +53,8 @@
         aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
       }
 
-      //TODO: some behaviors depend on others
-      // example ReduxDevToosl depends on CloneStateBehavoir
-      // We should build a dependency list based on the Options and then register from the resulting list.
-      // If we separate behaviors into own packages that will change things.
       aServices.AddMediatR(assemblies);
+      aServices.AddSingleton<JsRuntimeLocation>();
       aServices.AddSingleton<JsonRequestHandler>();
       if (options.UseCloneStateBehavior)
       {

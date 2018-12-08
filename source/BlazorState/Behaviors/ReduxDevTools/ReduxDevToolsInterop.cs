@@ -1,6 +1,8 @@
 ﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
+  using System;
   using System.Threading.Tasks;
+  using BlazorState.Services;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
 
@@ -10,14 +12,16 @@
 
     public ReduxDevToolsInterop(
       ILogger<ReduxDevToolsInterop> aLogger,
-      IReduxDevToolsStore aStore)
+      IReduxDevToolsStore aStore,
+      JsRuntimeLocation aJsRuntimeLocation)
     {
-
       Logger = aLogger;
       Store = aStore;
+      JsRuntimeLocation = aJsRuntimeLocation;
     }
 
     public bool IsEnabled { get; set; }
+    private JsRuntimeLocation JsRuntimeLocation { get; }
     private ILogger Logger { get; }
     private IReduxDevToolsStore Store { get; }
 
@@ -40,11 +44,16 @@
 
     public async Task InitAsync()
     {
-      const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
-      IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
+      Console.WriteLine("Init ReduxDevToolsInterop");
+      if (JsRuntimeLocation.IsClientSide) // Only init if running in WASM
+      {
+        Console.WriteLine("Running in WASM");
+        const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
+        IsEnabled = await JSRuntime.Current.InvokeAsync<bool>(ReduxDevToolsFactoryName);
 
-      if (IsEnabled)
-        DispatchInit(Store.GetSerializableState());
+        if (IsEnabled)
+          DispatchInit(Store.GetSerializableState());
+      }
     }
   }
 }
