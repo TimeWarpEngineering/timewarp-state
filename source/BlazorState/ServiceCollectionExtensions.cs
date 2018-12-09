@@ -2,6 +2,7 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Diagnostics;
   using System.Linq;
   using System.Net.Http;
   using System.Reflection;
@@ -38,39 +39,80 @@
       EnsureLogger(aServices);
       EnsureHttpClient(aServices);
 
-      var assemblies = new List<Assembly>(options.Assemblies)
+      // GetCallingAssembly is dangerous.  But seems to be the only one that works for this.
+      // Getting a stack trace doesn't work on mono.
+      EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
+
+      aServices.AddScoped<JsRuntimeLocation>();
+      aServices.AddScoped<JsonRequestHandler>();
+      if (options.UseCloneStateBehavior)
+      {
+        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
+        aServices.AddScoped<IStore, Store>();
+      }
+      if (options.UseReduxDevToolsBehavior)
+      {
+        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
+        aServices.AddScoped<ReduxDevToolsInterop>();
+        aServices.AddScoped<Subscriptions>();
+        aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
+      }
+      if (options.UseRouting)
+      {
+        aServices.AddScoped<RouteManager>();
+      }
+
+      return aServices;
+    }
+
+    private static void EnsureMediator(IServiceCollection aServices, Options aOptions, Assembly aExecutingAssembly)
+    {
+      var assemblies = new List<Assembly>(aOptions.Assemblies)
       {
         // Need to add this assembly
         Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
       };
 
-      // By default add in the calling assembly
+      // By default add in the executing assembly
       if (assemblies.Count() == 1)
       {
-        assemblies.Add(Assembly.GetCallingAssembly());
+        assemblies.Add(aExecutingAssembly);
       }
       aServices.AddMediatR(assemblies);
-      aServices.AddSingleton<JsRuntimeLocation>();
-      aServices.AddSingleton<JsonRequestHandler>();
-      if (options.UseCloneStateBehavior)
-      {
-        aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-        aServices.AddSingleton<IStore, Store>();
-      }
-      if (options.UseReduxDevToolsBehavior)
-      {
-        aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
-        aServices.AddSingleton<ReduxDevToolsInterop>();
-        aServices.AddSingleton<Subscriptions>();
-        aServices.AddSingleton(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
-      }
-      if (options.UseRouting)
-      {
-        aServices.AddSingleton<RouteManager>();
-      }
-
-      return aServices;
     }
+
+    //private static void AddMediator(IServiceCollection aServices, Options options)
+    //{
+    //  var assemblies = new List<Assembly>(options.Assemblies)
+    //  {
+    //    // Need to add this assembly
+    //    Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
+    //  };
+    //  // By default add in the assembly that is calling AddBlazorState
+    //  if (assemblies.Count() == 1)
+    //  {
+    //    Assembly clientAssembly;
+    //    var jsRuntimeLocation = new JsRuntimeLocation();
+    //    if (jsRuntimeLocation.HasMono)
+    //    {
+    //      Console.WriteLine("HasMono == true");
+    //      clientAssembly = Assembly.GetExecutingAssembly();
+    //    }
+    //    else
+    //    {
+    //      Console.WriteLine("HasMono == false");
+    //      StackFrame[] stackFrames = new StackTrace().GetFrames();
+    //      Console.WriteLine($"stackFrames.Length: {stackFrames.Length}");
+    //      int frameIndex = Array.FindIndex(stackFrames, aStackFrame => aStackFrame.GetMethod().Name == "AddBlazorState");
+    //      Console.WriteLine($"frameIndex:{frameIndex}");
+    //      clientAssembly = stackFrames[frameIndex + 1].GetMethod().ReflectedType.Assembly;
+    //    }
+
+    //    assemblies.Add(clientAssembly);
+    //  }
+    //  aServices.AddMediatR(assemblies);
+    //}
+
 
     private static void EnsureHttpClient(IServiceCollection aServices)
     {
