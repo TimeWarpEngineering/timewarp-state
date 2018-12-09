@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\source\BlazorState.Js\BlazorState.Js.csproj" />
     <ProjectReference Include="..\..\..\source\BlazorState\BlazorState.csproj" />
     <ProjectReference Include="..\ServerSideSample.Shared\ServerSideSample.Shared.csproj" />
   </ItemGroup>
