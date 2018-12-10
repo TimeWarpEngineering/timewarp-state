@@ -7,20 +7,37 @@
   <base href="/" />
   <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
   <link href="css/site.css" rel="stylesheet" />
-  <link rel="prerender" href="?loadclient=true">
+  <!--<link rel="prerender" href="?loadclient=true">-->
 </head>
-<body>
+<body onload="loadClient()">
   <app>Loading...</app>
   <script id="blazorMode"></script>
   <script>
-    debugger;
+    const clientSideBlazorScript = '_framework/blazor.webassembly.js';
+    const serverSideBlazorScript = '_framework/blazor.server.js';
     const clientApplicationKey = 'clientApplication';
+    const expectedValue = 'ServerSideSample.1.0';
     const clientApplicationValue = localStorage.getItem(clientApplicationKey);
-    const source = clientApplicationValue === '"ServerSideSample.App.App"' ?
-      '_framework/blazor.webassembly.js' :
-      '_framework/blazor.server.js';
+    const clientLoaded = clientApplicationValue === expectedValue;
+    const forceClientSide = window.location.search.includes("loadclient=true");
+    const source = clientLoaded || forceClientSide ? clientSideBlazorScript : serverSideBlazorScript;
 
+    console.log(`Using script: ${source}`);
     document.getElementById('blazorMode').src = source;
+
+    function loadClient() {
+      if (!clientLoaded) {
+        console.log('set the flag in localstorage');
+        localStorage.setItem(clientApplicationKey, expectedValue);
+        console.log("load the client iframe into cache")
+        var iframe = document.createElement('iframe');
+        iframe.setAttribute('id', 'loaderFrame');
+        iframe.setAttribute('style', 'width:0; height:0; border:0; border:none');
+        document.body.appendChild(iframe);
+        const iframeSource = "?loadclient=true";
+        iframe.setAttribute("src", iframeSource);
+      }
+    }
   </script>
 </body>
 </html>
