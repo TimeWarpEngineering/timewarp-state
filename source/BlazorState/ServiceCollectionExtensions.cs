@@ -2,7 +2,6 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Diagnostics;
   using System.Linq;
   using System.Net.Http;
   using System.Reflection;
@@ -26,9 +25,8 @@
     /// <param name="aConfigure"></param>
     /// <returns></returns>
     /// <example></example>
-    /// <remarks>The order of registration matters. 
+    /// <remarks>The order of registration matters.
     /// If the user wants to change they can configure themselves vs using this extension</remarks>
-
     public static IServiceCollection AddBlazorState(
       this IServiceCollection aServices,
       Action<Options> aConfigure = null)
@@ -65,61 +63,14 @@
       return aServices;
     }
 
-    private static void EnsureMediator(IServiceCollection aServices, Options aOptions, Assembly aExecutingAssembly)
-    {
-      var assemblies = new List<Assembly>(aOptions.Assemblies)
-      {
-        // Need to add this assembly
-        Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
-      };
-
-      // By default add in the executing assembly
-      if (assemblies.Count() == 1)
-      {
-        assemblies.Add(aExecutingAssembly);
-      }
-      aServices.AddMediatR(assemblies);
-    }
-
-    //private static void AddMediator(IServiceCollection aServices, Options options)
-    //{
-    //  var assemblies = new List<Assembly>(options.Assemblies)
-    //  {
-    //    // Need to add this assembly
-    //    Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
-    //  };
-    //  // By default add in the assembly that is calling AddBlazorState
-    //  if (assemblies.Count() == 1)
-    //  {
-    //    Assembly clientAssembly;
-    //    var jsRuntimeLocation = new JsRuntimeLocation();
-    //    if (jsRuntimeLocation.HasMono)
-    //    {
-    //      Console.WriteLine("HasMono == true");
-    //      clientAssembly = Assembly.GetExecutingAssembly();
-    //    }
-    //    else
-    //    {
-    //      Console.WriteLine("HasMono == false");
-    //      StackFrame[] stackFrames = new StackTrace().GetFrames();
-    //      Console.WriteLine($"stackFrames.Length: {stackFrames.Length}");
-    //      int frameIndex = Array.FindIndex(stackFrames, aStackFrame => aStackFrame.GetMethod().Name == "AddBlazorState");
-    //      Console.WriteLine($"frameIndex:{frameIndex}");
-    //      clientAssembly = stackFrames[frameIndex + 1].GetMethod().ReflectedType.Assembly;
-    //    }
-
-    //    assemblies.Add(clientAssembly);
-    //  }
-    //  aServices.AddMediatR(assemblies);
-    //}
-
-
     private static void EnsureHttpClient(IServiceCollection aServices)
     {
       var jsRuntimeLocation = new JsRuntimeLocation();
+
+      // Server Side Blazor doesn't register HttpClient by default
       if (jsRuntimeLocation.IsServerSide)
       {
-        // Server Side Blazor doesn't register HttpClient by default
+        // Double check that nothing is registerd.
         if (!aServices.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))
         {
           // Setup HttpClient for server side in a client side compatible fashion
@@ -133,15 +84,13 @@
             };
           });
         }
-
-        Console.WriteLine("Running app server side");
-      }
-      else
-      {
-        Console.WriteLine("Running client side in Mono WASM");
       }
     }
 
+    /// <summary>
+    /// If no ILogger is registered it would throw as we inject it.  This provides us with a NullLogger to avoid that
+    /// </summary>
+    /// <param name="aServices"></param>
     private static void EnsureLogger(IServiceCollection aServices)
     {
       ServiceDescriptor loggerServiceDescriptor = aServices.FirstOrDefault(
@@ -152,6 +101,23 @@
         aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
       }
     }
+
+    /// <summary>
+    /// Scan Assemblies for Handlers.  Will add this assembly and the calling assembly.
+    /// </summary>
+    /// <param name="aServices"></param>
+    /// <param name="aOptions"></param>
+    /// <param name="aCallingAssembly">The calling assembly</param>
+    private static void EnsureMediator(IServiceCollection aServices, Options aOptions, Assembly aCallingAssembly)
+    {
+      var assemblies = new List<Assembly>(aOptions.Assemblies)
+      {
+        Assembly.GetAssembly(typeof(ServiceCollectionExtensions)),
+        aCallingAssembly
+      };
+
+      aServices.AddMediatR(assemblies);
+    }
   }
 
   public class Options
@@ -161,12 +127,13 @@
       Assemblies = new Assembly[] { };
     }
 
-    public bool UseCloneStateBehavior { get; set; } = true;
-    public bool UseReduxDevToolsBehavior { get; set; } = true;
-    public bool UseRouting { get; set; } = true;
     ///// <summary>
     ///// Assemblies to be searched for MediatR Requests
     ///// </summary>
     public IEnumerable<Assembly> Assemblies { get; set; }
+
+    public bool UseCloneStateBehavior { get; set; } = true;
+    public bool UseReduxDevToolsBehavior { get; set; } = true;
+    public bool UseRouting { get; set; } = true;
   }
 }
