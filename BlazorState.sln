@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{437186AC-1CB6-4FE4-8C36-0C2F135021C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosted", "Hosted", "{7876E7E1-BDB1-42B4-B5F3-2C524F372195}"
+	ProjectSection(SolutionItems) = preProject
+		samples\TimeWarpBlazor\Readme.md = samples\TimeWarpBlazor\Readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Server", "samples\BlazorStateSample\BlazorStateSample.Server\BlazorStateSample.Server.csproj", "{B7D76903-D4CF-4C43-86CC-1C6F9089E95D}"
 EndProject
