@@ -10,6 +10,10 @@
 </head>
 <body>
   <app>Loading...</app>
-  <script src="_framework/blazor.webassembly.js"></script>
+  <script src="BlazorDualMode.js"></script>
+  <script>
+    const applicationVersion = 'BlazorHosted-CSharp.Client.0.1.0';
+    configureBlazor(applicationVersion);
+  </script>
 </body>
 </html>
