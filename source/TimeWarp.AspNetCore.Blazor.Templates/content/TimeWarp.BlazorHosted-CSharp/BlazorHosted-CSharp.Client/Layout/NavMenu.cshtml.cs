@@ -1,4 +1,4 @@
-﻿namespace BlazorHosted_CSharp.Client.Shared
+﻿namespace BlazorHosted_CSharp.Client.Layout
 {
   using Microsoft.AspNetCore.Blazor.Components;
 
