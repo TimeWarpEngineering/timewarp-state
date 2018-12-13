@@ -32,7 +32,7 @@
     public void HasFetchDataPage()
     {
       // Navigate to "Fetch data"
-      WebDriver.FindElement(By.LinkText("Fetch data")).Click();
+      WebDriver.FindElement(By.CssSelector("[href='weatherforecasts']")).Click();
       WaitAndAssertEqual("Weather forecast", () => WebDriver.FindElement(By.TagName("h1")).Text);
 
       // There should be rows in the table
