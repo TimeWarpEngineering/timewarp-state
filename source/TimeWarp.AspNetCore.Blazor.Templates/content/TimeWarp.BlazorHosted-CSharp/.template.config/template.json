@@ -16,7 +16,7 @@
     "86DAE2F4-34F2-4002-AE80-308D8A7FADE0"
   ],
   "identity": "TimeWarp.Web.Blazor.Hosted.CSharp",
-  "name": "TimeWarp Blazor (hosted in ASP.NET server)",
+  "name": "TimeWarp Blazor (hosted in ASP.NET server supports dual mode)",
   "preferNameDirectory": true,
   "primaryOutputs": [
     {
