@@ -42,3 +42,6 @@ So Maybe we should add a Filter to ignore logging some request IReduxAction mark
 - [ ] Add DualMode.js to the template.
 - [ ] Write Console App that updates the version for all of Blazor-State 
    I think changes in like 4 or 5 places.
+
+
+   - [ ] Create Pull Request template to show what each pull request should have.  Investigate if I can get AzureDevOps to default to that template.
