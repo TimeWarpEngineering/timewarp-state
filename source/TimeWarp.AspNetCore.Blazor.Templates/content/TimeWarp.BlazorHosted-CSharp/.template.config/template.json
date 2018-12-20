@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json.schemastore.org/template",
   "author": "Steven T. Cramer",
   "classifications": [
     "TimeWarp",
@@ -6,7 +7,7 @@
     "Blazor",
     "Hosted"
   ],
-  "groupIdentity": "TimeWarp.Web.Blazor.Hosted",
+  "groupIdentity": "TimeWarp.Web.Blazor.Hosted.2",
   "guids": [
     "19B3F119-0F8A-430A-8336-9F6797B990E9",
     "CFFB80F7-6230-4244-A07F-12F5A295FB21",
@@ -16,111 +17,28 @@
     "86DAE2F4-34F2-4002-AE80-308D8A7FADE0"
   ],
   "identity": "TimeWarp.Web.Blazor.Hosted.CSharp",
-  "name": "TimeWarp Blazor (hosted in ASP.NET server supports dual mode)",
+  "name": "TimeWarp Blazor Hosted",
   "preferNameDirectory": true,
-  "primaryOutputs": [
-    {
-      "condition": "(HostIdentifier == \"dotnetcli\" || HostIdentifier == \"dotnetcli-preview\")", 
-      "path": "BlazorHosted-CSharp.sln"
-    },
-    {
-      "condition": "(OS == \"Windows_NT\" && HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "path": "BlazorHosted-CSharp.Server\\BlazorHosted-CSharp.Server.csproj"
-    },
-    {
-      "condition": "(OS != \"Windows_NT\" && HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "path": "BlazorHosted-CSharp.Server/BlazorHosted-CSharp.Server.csproj"
-    },
-    {
-      "condition": "(OS == \"Windows_NT\" && HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "path": "BlazorHosted-CSharp.Client\\BlazorHosted-CSharp.Client.csproj"
-    },
-    {
-      "condition": "(OS != \"Windows_NT\" && HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "path": "BlazorHosted-CSharp.Client/BlazorHosted-CSharp.Client.csproj"
-    },
-    {
-      "condition": "(OS == \"Windows_NT\" && HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "path": "BlazorHosted-CSharp.Shared\\BlazorHosted-CSharp.Shared.csproj"
-    },
-    {
-      "condition": "(OS != \"Windows_NT\" && HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-      "path": "BlazorHosted-CSharp.Shared/BlazorHosted-CSharp.Shared.csproj"
-    }
-  ],
   "shortName": "timewarp-blazor",
   "sourceName": "BlazorHosted-CSharp",
-  "sources": [
-    {
-      "source": "./",
-      "target": "./",
+  "sources": [{
+    "modifiers": [{
+      "condition": "(ExcludeTimeWarpProcess)",
       "exclude": [
-        ".template.config/**"
-      ],
-      "modifiers": [
-        {
-          "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
-          "exclude": [
-            "*.sln"
-          ]
-        }
+        "Documentation/Process/**/*"
       ]
-    }
-  ],
+    }]
+  }],
   "symbols": {
-    "Framework": {
+    "ExcludeTimeWarpProcess": {
       "type": "parameter",
-      "description": "The target framework for the project.",
-      "datatype": "choice",
-      "choices": [
-        {
-          "choice": "netcoreapp2.1",
-          "description": "Target netcoreapp2.1"
-        }
-      ],
-      "replaces": "netcoreapp2.1",
-      "defaultValue": "netcoreapp2.1"
-    },
-    "HostIdentifier": {
-      "type": "bind",
-      "binding": "HostIdentifier"
-    },
-    "TemplateBlazorVersionSymbol": {
-      "type": "parameter",
-      "datatype": "string",
-      "description": "Specifies which version of Blazor packages to use.",
-      "replaces": "$(TemplateBlazorPackageVersion)",
-      "defaultValue": "${TemplateBlazorVersion}"
-    },
-    "AspNetCorePackageVersionSymbol": {
-      "type": "parameter",
-      "datatype": "string",
-      "description": "Intended for internal use only.",
-      "replaces": " Version=\"$(AspNetCorePackageVersion)\"",
-      "defaultValue": ""
-    },
-    "skipRestore": {
-      "type": "parameter",
+      "description": "Use this flag to exclude the TimeWarp Process Documents, a editable minimalist process based in markdown documents",
       "datatype": "bool",
-      "description": "If specified, skips the automatic restore of the project on create.",
       "defaultValue": "false"
     }
   },
   "tags": {
     "language": "C#",
     "type": "project"
-  },
-  "postActions": [
-    {
-      "condition": "(!skipRestore)",
-      "description": "Restore NuGet packages required by this project.",
-      "manualInstructions": [
-        {
-          "text": "Run 'dotnet restore'"
-        }
-      ],
-      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
-      "continueOnError": true
-    }
-  ]
+  }
 }

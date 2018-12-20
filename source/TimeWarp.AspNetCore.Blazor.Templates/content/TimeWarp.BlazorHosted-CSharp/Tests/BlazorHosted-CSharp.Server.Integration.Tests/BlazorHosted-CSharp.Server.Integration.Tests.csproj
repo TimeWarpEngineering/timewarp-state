@@ -7,13 +7,14 @@
 
   <ItemGroup>
     <PackageReference Include="Fixie" Version="2.0.2" />
-    <PackageReference Include="Selenium.Support" Version="3.141.0" />
-    <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
     <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorHosted-CSharp.Server\BlazorHosted-CSharp.Server.csproj" />
+    <ProjectReference Include="..\..\Source\BlazorHosted-CSharp.Server\BlazorHosted-CSharp.Server.csproj" />
+    <ProjectReference Include="..\..\Source\BlazorHosted-CSharp.Shared\BlazorHosted-CSharp.Shared.csproj" />
   </ItemGroup>
+
 </Project>
