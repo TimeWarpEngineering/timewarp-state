@@ -7,7 +7,7 @@
     "Blazor",
     "Hosted"
   ],
-  "groupIdentity": "TimeWarp.Web.Blazor.Hosted.2",
+  "groupIdentity": "TimeWarp.Blazor",
   "guids": [
     "19B3F119-0F8A-430A-8336-9F6797B990E9",
     "CFFB80F7-6230-4244-A07F-12F5A295FB21",
@@ -16,8 +16,8 @@
     "B82C7C95-4892-443C-AA6B-B6086B03DD30",
     "86DAE2F4-34F2-4002-AE80-308D8A7FADE0"
   ],
-  "identity": "TimeWarp.Web.Blazor.Hosted.CSharp",
-  "name": "TimeWarp Blazor Hosted",
+  "identity": "TimeWarp.Blazor.CSharp",
+  "name": "TimeWarp Blazor",
   "preferNameDirectory": true,
   "shortName": "timewarp-blazor",
   "sourceName": "BlazorHosted-CSharp",
