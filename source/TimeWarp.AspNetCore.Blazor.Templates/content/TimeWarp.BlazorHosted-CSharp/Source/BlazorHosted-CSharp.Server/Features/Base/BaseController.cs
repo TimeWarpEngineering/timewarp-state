@@ -4,7 +4,6 @@
   using BlazorHosted_CSharp.Shared.Features.Base;
   using MediatR;
   using Microsoft.AspNetCore.Mvc;
-  using Microsoft.Extensions.Logging;
 
   public class BaseController<TRequest, TResponse> : Controller
     where TRequest : IRequest<TResponse>

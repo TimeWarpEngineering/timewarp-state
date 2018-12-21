@@ -1,3 +1,3 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("BlazorState.EndToEnd.Tests")]
+[assembly: InternalsVisibleTo("BlazorHosted-CSharp.Server.Integration.Tests")]
