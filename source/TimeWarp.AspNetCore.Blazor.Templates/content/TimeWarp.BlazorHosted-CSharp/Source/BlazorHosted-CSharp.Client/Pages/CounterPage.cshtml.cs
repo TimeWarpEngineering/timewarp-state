@@ -5,6 +5,6 @@
   public class CounterPageModel : BaseComponent
   {
     internal void ButtonClick() =>
-      Mediator.Send(new Features.Counter.IncrementCount.IncrementCounterRequest { Amount = 5 });
+      Mediator.Send(new Features.Counter.IncrementCount.IncrementCounterAction { Amount = 5 });
   }
 }

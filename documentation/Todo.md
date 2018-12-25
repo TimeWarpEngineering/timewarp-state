@@ -45,3 +45,4 @@ So Maybe we should add a Filter to ignore logging some request IReduxAction mark
 
 
    - [ ] Create Pull Request template to show what each pull request should have.  Investigate if I can get AzureDevOps to default to that template.
+   - [ ] Add Javascript project to the template.
