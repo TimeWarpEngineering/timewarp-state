@@ -1,42 +1,73 @@
 # Client Project (C#)
 
-**Action**: 
+**Action**: Actions are the client version of Requests.  
+Named differently solely to clarify where they are expected to run.  
+Actions are on the Client and Requests are on the server.
 
-**ActionHandler**:
+**ActionHandler**: The Client version of RequestHandler. 
+ActionHandler's are implemented as child classes of the State they will act upon, 
+(so they have access to the private members of the State) and inherit from the `BaseHandler` as in :
+```csharp
+public partial class CounterState
+{
+  public class IncrementCounterHandler : BaseHandler<IncrementCounterAction, CounterState>
+  ...
+```
 
-**Behavior**: 
+**Behavior**:  
+New in MediatR 3.0 are [behaviors](https://github.com/jbogard/MediatR/wiki/Behaviors), 
+which allow you to build your own pipeline. 
+A pipeline behavior is an implementation of `IPipelineBehavior<TRequest, TResponse>`. 
+It represents a similar pattern to filters in ASP.NET MVC/Web API or pipeline behaviors in NServiceBus. 
 
-**Component**:
+**Component**: [BlazorComponents](https://blazor.net/docs/components/index.html). 
+A component is a self-contained chunk of user interface (UI), such as a page, dialog, or form.
+A component includes both the HTML markup to render along with the processing logic, `Model`, needed to inject data or respond to UI events. 
+Components are flexible and lightweight, and they can be nested, reused, and shared between projects.
 
 **Feature**: Abstract concept that does not have an actual implementation but is the name for the grouping.
 
-**Interop**:
+**InteropDto**: 
+This is the C# object used to define the data transfered between the TypeScript Client 
+and C# Client.
 
-**InteropDto**:
+**Page**: This is a special `Component` in that a `Page` defines a `Route` and a `Layout`.
+Pages are thus potential entry points into the application.
 
-**Page**:
+**State**: a Class that defines a portion of State to be managed.
+Each class will need to inherit from `State<>` as in below:
+```csharp
+public partial class CounterState : State<CounterState>
+```
+State may be made up collections of other objects that also need to be defined.
 
-**State**:
 
 # Client TypeScript Project
 
-**Action**:
+**Action**: This is a TypeScript Interface that corresponds with the C# Action.  
+Facilitating the ability for the TypeScript Client to Dispatch Actions to the C# Client Pipeline.
 
-**Interop**:
+**Interop**: 
+TypeScript Class that controls the interoperability between C# and JavaScript. 
+Typically for using npm packages but also for direct Javascript functionality that is not yet available to Blazor/WASM.
 
-**InteropDto**:
+**InteropDto**: Objects that are used to transfer data between the C# client and the TypeScript client.
 
 
 # Server Project (C#)
-**Controller**:
+**Controller**: This is a ASP.Net Controller that inherits from `BaseController`.  
+The Controller is used to bind the HttpRequest Data to the Request Object 
+and to transfer back the Response.  
+Each Controller has only a single endpoint and has a one to one mapping with a `RequestHandler`
 
-**Entity**:
+**Entity**: This is the C# object representing the persisted Entities.  
+The DbContext will contain collections of these.
 
-**RequestHandler**:
+**RequestHandler**: This is a class that implements the [MediatR](https://github.com/jbogard/MediatR/) `IRequestHandler<TRequest, TResponse>`.
 
-**MappingProfile**:
+**MappingProfile**:  AutoMapper Profile for configuring the Mapping of Entities to Responses and DTOs.
 
-**DbContext**:
+**DbContext**: Entity Framework DbContext That communicates with the Persistence System.
 
 **Persistence**:  The Database to persist data.  The default starting point is SQL Server.  
 Using LocalDB for localDevelopment. 
@@ -46,6 +77,7 @@ The NOSQL Dbs get a bunch of hype and I am no fan of the SQL language, yet
 # Shared Project (C#)
 
 **Request**: This is a class that implements the [MediatR](https://github.com/jbogard/MediatR/) `IRequest`.
+The Mediator pipeline processes `Requests` and outputs `Response`
 
 **Response**: This is a class that implements the [MediatR](https://github.com/jbogard/MediatR/) `IRequestHandler<TRequest, TResponse>`.
 
