@@ -3,12 +3,15 @@
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Net.Http;
   using System.Reflection;
   using BlazorState.Behaviors.ReduxDevTools;
   using BlazorState.Behaviors.State;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
+  using BlazorState.Services;
   using MediatR;
+  using Microsoft.AspNetCore.Blazor.Services;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
@@ -22,9 +25,8 @@
     /// <param name="aConfigure"></param>
     /// <returns></returns>
     /// <example></example>
-    /// <remarks>The order of registration matters. 
+    /// <remarks>The order of registration matters.
     /// If the user wants to change they can configure themselves vs using this extension</remarks>
-
     public static IServiceCollection AddBlazorState(
       this IServiceCollection aServices,
       Action<Options> aConfigure = null)
@@ -32,18 +34,65 @@
       var options = new Options();
       aConfigure?.Invoke(options);
 
-      var assemblies = new List<Assembly>(options.Assemblies)
-      {
-        // Need to add this assembly
-        Assembly.GetAssembly(typeof(ServiceCollectionExtensions))
-      };
+      EnsureLogger(aServices);
+      EnsureHttpClient(aServices);
 
-      // By default add in the calling assembly
-      if (assemblies.Count() == 1)
+      // GetCallingAssembly is dangerous.  But seems to be the only one that works for this.
+      // Getting a stack trace doesn't work on mono.
+      EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
+
+      aServices.AddScoped<JsRuntimeLocation>();
+      aServices.AddScoped<JsonRequestHandler>();
+      if (options.UseCloneStateBehavior)
       {
-        assemblies.Add(Assembly.GetCallingAssembly());
+        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
+        aServices.AddScoped<IStore, Store>();
+      }
+      if (options.UseReduxDevToolsBehavior)
+      {
+        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
+        aServices.AddScoped<ReduxDevToolsInterop>();
+        aServices.AddScoped<Subscriptions>();
+        aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
+      }
+      if (options.UseRouting)
+      {
+        aServices.AddScoped<RouteManager>();
       }
 
+      return aServices;
+    }
+
+    private static void EnsureHttpClient(IServiceCollection aServices)
+    {
+      var jsRuntimeLocation = new JsRuntimeLocation();
+
+      // Server Side Blazor doesn't register HttpClient by default
+      if (jsRuntimeLocation.IsServerSide)
+      {
+        // Double check that nothing is registerd.
+        if (!aServices.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))
+        {
+          // Setup HttpClient for server side in a client side compatible fashion
+          aServices.AddScoped<HttpClient>(aServiceProvider =>
+          {
+            // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
+            IUriHelper uriHelper = aServiceProvider.GetRequiredService<IUriHelper>();
+            return new HttpClient
+            {
+              BaseAddress = new Uri(uriHelper.GetBaseUri())
+            };
+          });
+        }
+      }
+    }
+
+    /// <summary>
+    /// If no ILogger is registered it would throw as we inject it.  This provides us with a NullLogger to avoid that
+    /// </summary>
+    /// <param name="aServices"></param>
+    private static void EnsureLogger(IServiceCollection aServices)
+    {
       ServiceDescriptor loggerServiceDescriptor = aServices.FirstOrDefault(
         aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>));
 
@@ -51,31 +100,23 @@
       {
         aServices.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
       }
+    }
 
-      //TODO: some behaviors depend on others
-      // example ReduxDevToosl depends on CloneStateBehavoir
-      // We should build a dependency list based on the Options and then register from the resulting list.
-      // If we separate behaviors into own packages that will change things.
+    /// <summary>
+    /// Scan Assemblies for Handlers.  Will add this assembly and the calling assembly.
+    /// </summary>
+    /// <param name="aServices"></param>
+    /// <param name="aOptions"></param>
+    /// <param name="aCallingAssembly">The calling assembly</param>
+    private static void EnsureMediator(IServiceCollection aServices, Options aOptions, Assembly aCallingAssembly)
+    {
+      var assemblies = new List<Assembly>(aOptions.Assemblies)
+      {
+        Assembly.GetAssembly(typeof(ServiceCollectionExtensions)),
+        aCallingAssembly
+      };
+
       aServices.AddMediatR(assemblies);
-      aServices.AddSingleton<JsonRequestHandler>();
-      if (options.UseCloneStateBehavior)
-      {
-        aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-        aServices.AddSingleton<IStore, Store>();
-      }
-      if (options.UseReduxDevToolsBehavior)
-      {
-        aServices.AddSingleton(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
-        aServices.AddSingleton<ReduxDevToolsInterop>();
-        aServices.AddSingleton<Subscriptions>();
-        aServices.AddSingleton(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
-      }
-      if (options.UseRouting)
-      {
-        aServices.AddSingleton<RouteManager>();
-      }
-
-      return aServices;
     }
   }
 
@@ -86,12 +127,13 @@
       Assemblies = new Assembly[] { };
     }
 
-    public bool UseCloneStateBehavior { get; set; } = true;
-    public bool UseReduxDevToolsBehavior { get; set; } = true;
-    public bool UseRouting { get; set; } = true;
     ///// <summary>
     ///// Assemblies to be searched for MediatR Requests
     ///// </summary>
     public IEnumerable<Assembly> Assemblies { get; set; }
+
+    public bool UseCloneStateBehavior { get; set; } = true;
+    public bool UseReduxDevToolsBehavior { get; set; } = true;
+    public bool UseRouting { get; set; } = true;
   }
 }
