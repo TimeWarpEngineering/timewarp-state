@@ -1,8 +1,7 @@
 - [ ] Move ReduxDevToolsBehavoir to top of pipeline.  So when doing time travel we can disable actions from actually being executed.
-- [ ] JsonRequestHandler should be in its own component `JavascriptInteropComponent`
-And moved into the App.cshtml Singletons.
+
 - [ ] Move JavaScriptInterop Folder out of Behaviors (It isn't a behavior) although ReduxDevTools depends on it.
-- [ ] Update RouteManager to subscribe to Route Change and update the URL if not already there.
+- [x] Update RouteManager to subscribe to Route Change and update the URL if not already there.
 This will let dev tools go back to pages.
 
 - [ ] <del>Implement Routing Feature so the Route is in RouteState.</del>
@@ -40,3 +39,10 @@ So Maybe we should add a Filter to ignore logging some request IReduxAction mark
 - [ ] Automate deployment to MyGet of template nuget.
 - [ ] Add vsts vsts.ci.yaml into the template project.
 - [ ] Update global.json to latest
+- [ ] Add DualMode.js to the template.
+- [ ] Write Console App that updates the version for all of Blazor-State 
+   I think changes in like 4 or 5 places.
+
+
+   - [ ] Create Pull Request template to show what each pull request should have.  Investigate if I can get AzureDevOps to default to that template.
+   - [ ] Add Javascript project to the template.

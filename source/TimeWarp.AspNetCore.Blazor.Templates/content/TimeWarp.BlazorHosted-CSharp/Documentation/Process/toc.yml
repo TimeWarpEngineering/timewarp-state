@@ -1,0 +1,11 @@
+- name: Process
+  href: ProcessIntroduction.md
+  items:
+  - name: Backlog
+    href: Backlog/toc.yml
+  - name: Templates
+    href: Templates/toc.yml
+  - name: Definition of Ready
+    href: DefinitionOfReady.md
+  - name: Definition of Done
+    href: DefinitionOfDone.md

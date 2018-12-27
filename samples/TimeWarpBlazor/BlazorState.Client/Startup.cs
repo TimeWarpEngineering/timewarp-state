@@ -1,7 +1,8 @@
 ﻿namespace BlazorState.Client
 {
-  using System.Reflection;
   using Blazor.Extensions.Logging;
+  using BlazorState.Client.Services;
+  using BlazorState.Services;
   using Microsoft.AspNetCore.Blazor.Builder;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
@@ -13,10 +14,14 @@
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
+      aServiceCollection.AddSingleton<WeatherForecastService>();
+      if (new JsRuntimeLocation().IsClientSide)
+      {
+        aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
           .AddBrowserConsole()
-          .SetMinimumLevel(LogLevel.Trace)
-      );
+          .SetMinimumLevel(LogLevel.Trace));
+      };
+
       aServiceCollection.AddBlazorState();
     }
   }
