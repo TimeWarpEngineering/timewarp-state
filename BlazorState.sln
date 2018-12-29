@@ -66,6 +66,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.EndToEn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHosted-CSharp.Server.Integration.Tests", "source\TimeWarp.AspNetCore.Blazor.Templates\content\TimeWarp.BlazorHosted-CSharp\Tests\BlazorHosted-CSharp.Server.Integration.Tests\BlazorHosted-CSharp.Server.Integration.Tests.csproj", "{66327FEF-423E-44DA-A4FF-EE604CC95888}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E5536454-D05F-4C5B-92E5-AB44091503DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tools", "Tools\Source\Tools.csproj", "{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +160,10 @@ Global
 		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66327FEF-423E-44DA-A4FF-EE604CC95888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -186,6 +194,7 @@ Global
 		{D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE} = {0979F9CC-12E7-492C-8B82-4BFC5D372025}
 		{3E36EF21-4073-4AD8-8166-4DA7C740E53A} = {D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE}
 		{66327FEF-423E-44DA-A4FF-EE604CC95888} = {D7E74DD5-E9FC-40B6-BE50-4D1E02F231AE}
+		{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558} = {E5536454-D05F-4C5B-92E5-AB44091503DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}
