@@ -21,6 +21,12 @@ steps:
 - script: echo Version $(Version)
 - script: echo Build new TimeWarp Templates.
 
+- task: DotNetCoreCLI@2
+  displayName: Get dotnet core SDK version
+  inputs:
+    command: custom
+    arguments: --version
+
 #- task: Npm@1
 #  inputs:
 #    command: 'install'
