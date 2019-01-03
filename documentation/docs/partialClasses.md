@@ -10,7 +10,8 @@ We recommend partial classes when declaring States for two reasons.
 ### Child Classes
 
 We declare all `Request Handlers` as child classes of the state they act upon.
-Child classes have access to private members of the parent class. This allows us to make the parent class public data immutable to and allow only the `Handlers` to modify the private data.
+Child classes have access to private members of the parent class. 
+This allows us to make the parent class public data immutable and allow only the `Handlers` to modify the private data.
 
 This ensures that all attempts to mutate state are passed through the MediatR pipeline.  And yet lets us separate the handlers into a file of their own for better organization.
 
