@@ -70,7 +70,7 @@
       // Server Side Blazor doesn't register HttpClient by default
       if (jsRuntimeLocation.IsServerSide)
       {
-        // Double check that nothing is registerd.
+        // Double check that nothing is registered.
         if (!aServices.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))
         {
           // Setup HttpClient for server side in a client side compatible fashion
