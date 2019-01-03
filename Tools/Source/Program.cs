@@ -1,40 +1,17 @@
-﻿
-namespace Tools
+﻿namespace Tools
 {
-  using System;
-  using MediatR;
-  using Microsoft.Extensions.DependencyInjection;
-  using Tools.Commands.SetVersion;
+  using System.CommandLine;
+  using System.CommandLine.Builder;
+  using System.CommandLine.Invocation;
+  using System.Threading.Tasks;
 
-  class Program
+  partial class Program
   {
-
-    /// <summary>
-    /// Updates all the required files to this version.
-    /// Using semantic versioning Major.Minor.Patch
-    /// </summary>
-    /// <param name="Major">The Major version number to be set</param>
-    /// <param name="Minor">The Minor version number to be set</param>
-    /// <param name="Patch">The Patch version number to be set</param>
-    static async System.Threading.Tasks.Task Main(int Major, int Minor, int Patch)
+    private static async Task Main(string[] args)
     {
-      ServiceProvider serviceProvider = new ServiceCollection()
-        .AddLogging()
-        .AddMediatR()
-        .BuildServiceProvider();
+      Parser parser = new TimeWarpCommandLineBuilder().Build();
 
-      Console.WriteLine($"aMajor: {Major}");
-      Console.WriteLine($"aMinor: {Minor}");
-      Console.WriteLine($"aPatch: {Patch}");
-
-      IMediator mediator = serviceProvider.GetService<IMediator>();
-
-      await mediator.Send(new SetVersionRequest
-      {
-        Major = Major,
-        Minor = Minor,
-        Patch = Patch
-      });
+      await parser.InvokeAsync(args);
     }
   }
 }
