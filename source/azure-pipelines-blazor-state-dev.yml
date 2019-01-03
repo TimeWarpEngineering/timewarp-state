@@ -3,6 +3,11 @@ trigger:
  branches:
   include:
   - dev
+ paths:
+  include:
+  - source/BlazorState/*
+  - source/BlazorState.Js/*
+
 
 queue:
   name: TimeWarpEnterprises
@@ -16,16 +21,17 @@ variables:
 
 steps:
 - script: echo Version $(Version)
+- script: echo Building the blazor-state nuget package on MyGet
 
 - task: Npm@1
   inputs:
     command: 'install'
     workingDir: source/BlazorState.Js
 
-- task: DotNetCoreInstaller@0
-  displayName: Use .NET Core SDK 2.1.500 
-  inputs:
-    version: 2.1.500
+#- task: DotNetCoreInstaller@0
+#  displayName: Use .NET Core SDK 2.1.500 
+#  inputs:
+#    version: 2.1.500
 
 - powershell:
    New-Item -ItemType Directory -Force -Path .\source\BlazorState\bin\Packages
@@ -61,14 +67,14 @@ steps:
     versioningScheme: byEnvVar
     configurationToPack: $(Configuration)
 
-- task: NuGetCommand@2
-  displayName: 'NuGet pack Templates'
-  inputs:
-    command: pack
-    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
-    configurationToPack: $(Configuration)
-    versioningScheme: byEnvVar
-    versionEnvVar: Version
+#- task: NuGetCommand@2
+#  displayName: 'NuGet pack Templates'
+#  inputs:
+#    command: pack
+#    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+#    configurationToPack: $(Configuration)
+#    versioningScheme: byEnvVar
+#    versionEnvVar: Version
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
