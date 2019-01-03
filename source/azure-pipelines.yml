@@ -1,4 +1,4 @@
-name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
   include:
@@ -10,7 +10,7 @@ queue:
 variables:
  Major: '0'
  Minor: '3'
- Patch: '3'
+ Patch: '4'
  Version: "$(Major).$(Minor).$(Patch)"
 steps:
 - script: echo Version $(Version)

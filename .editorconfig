@@ -15,6 +15,10 @@ indent_style = space
 indent_size = 2
 end_of_line = crlf
 
+# Development files
+[*.{cs,csx,cshtml,csproj,sln,props,targets,json,md,yml,gitignore,}]
+charset = "utf-8"
+
 # Code files
 [*.cs,*.csx]
 indent_size = 2
