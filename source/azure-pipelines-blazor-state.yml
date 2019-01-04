@@ -1,0 +1,71 @@
+﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+ branches:
+  include:
+  - master
+ paths:
+  include:
+  - source/BlazorState/*
+  - source/BlazorState.Js/*
+
+queue:
+  name: TimeWarpEnterprises
+
+variables:
+ Major: '0'
+ Minor: '3'
+ Patch: '4'
+ Version: "$(Major).$(Minor).$(Patch)"
+steps:
+- script: echo Version $(Version)
+
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: source/BlazorState.Js
+
+- task: DotNetCoreCLI@2
+  displayName: Build BlazorState
+  inputs:
+    command: build
+    projects: 'source/BlazorState/BlazorState.csproj'
+    configuration: debug
+
+- task: DotNetCoreCLI@2
+  displayName: Run all Tests in the repo
+  inputs:
+    command: test
+    projects: "**/*Tests/*.csproj"
+    configurationToPack: debug
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet pack blazor-state
+  inputs:
+    command: pack
+    packagesToPack: 'source\BlazorState\BlazorState.csproj'
+    versionEnvVar: Version
+    versioningScheme: byEnvVar
+    configurationToPack: debug
+    
+#- task: NuGetCommand@2
+#  displayName: 'NuGet pack Templates'
+#  inputs:
+#    command: pack
+#    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+#    configurationToPack: debug
+#    versioningScheme: byEnvVar
+#    versionEnvVar: Version
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: drop
+    publishLocation: Container
+
+- task: NuGetCommand@2
+  displayName: Push Nuget to Nuget
+  inputs:
+    command: push
+    nuGetFeedType: external
+    publishFeedCredentials: Nuget.org
