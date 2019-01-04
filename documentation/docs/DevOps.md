@@ -27,3 +27,4 @@ Changes to tools may want to trigger new versions of outputs but currently they 
 Do I need DotNetCoreInstaller given the build agent is my machine it has 
 to have the version I am using installed already.
 I am going to remove it
+

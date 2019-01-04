@@ -3,6 +3,10 @@ trigger:
  branches:
   include:
   - master
+ paths:
+  include:
+  - source/BlazorState/*
+  - source/BlazorState.Js/*
 
 queue:
   name: TimeWarpEnterprises
@@ -20,21 +24,15 @@ steps:
     command: 'install'
     workingDir: source/BlazorState.Js
 
-- task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.500
-  inputs:
-    version: 2.1.500
-
-
 - task: DotNetCoreCLI@2
-  displayName: Build
+  displayName: Build BlazorState
   inputs:
     command: build
     projects: 'source/BlazorState/BlazorState.csproj'
     configuration: debug
 
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: Run all Tests in the repo
   inputs:
     command: test
     projects: "**/*Tests/*.csproj"
@@ -49,14 +47,14 @@ steps:
     versioningScheme: byEnvVar
     configurationToPack: debug
     
-- task: NuGetCommand@2
-  displayName: 'NuGet pack Templates'
-  inputs:
-    command: pack
-    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
-    configurationToPack: debug
-    versioningScheme: byEnvVar
-    versionEnvVar: Version
+#- task: NuGetCommand@2
+#  displayName: 'NuGet pack Templates'
+#  inputs:
+#    command: pack
+#    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+#    configurationToPack: debug
+#    versioningScheme: byEnvVar
+#    versionEnvVar: Version
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact

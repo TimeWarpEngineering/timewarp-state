@@ -1,4 +1,8 @@
-﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+﻿# If this builds the templates.
+# What do the templated depend on such that when they change I need to rebuilt this
+# If Blazor-State version changes then the template changes. So we need to have Blazor State in the path.
+# 
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
   include:
@@ -6,6 +10,8 @@ trigger:
  paths:
   include:
   - source/TimeWarp.AspNetCore.Blazor.Templates/*
+  - source/BlazorState/*
+  - source/BlazorState.Js/*
 
 queue:
   name: TimeWarpEnterprises
@@ -20,12 +26,6 @@ variables:
 steps:
 - script: echo Version $(Version)
 - script: echo Build new TimeWarp Templates.
-
-- task: DotNetCoreCLI@2
-  displayName: Get dotnet core SDK version
-  inputs:
-    command: custom
-    arguments: --version
 
 #- task: Npm@1
 #  inputs:
