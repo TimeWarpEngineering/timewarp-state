@@ -16,9 +16,11 @@ queue:
 
 
 variables:
-  docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-  githubusername: TimeWarpEngineering
-  repositoryname: 'blazor-state'
+  DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+  GitHubUsername: TimeWarpEngineering
+  RepositoryName: 'blazor-state'
+  CommitMessage: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
 
 steps:
 - script: echo Build Blazor-State Docs
