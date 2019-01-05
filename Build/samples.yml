@@ -13,6 +13,10 @@ trigger:
 queue:
   name: TimeWarpEnterprises
 
+# no PR builds
+pr: none
+
+
 steps:
 
 #- task: DotNetCoreCLI@2
