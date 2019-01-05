@@ -1,8 +1,17 @@
-﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+﻿# If this builds the templates.
+# What do the templated depend on such that when they change I need to rebuilt this
+# If Blazor-State version changes then the template changes. So we need to have Blazor State in the path.
+# 
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
   include:
   - dev
+ paths:
+  include:
+  - source/TimeWarp.AspNetCore.Blazor.Templates/*
+  - source/BlazorState/*
+  - source/BlazorState.Js/*
 
 queue:
   name: TimeWarpEnterprises
@@ -16,16 +25,17 @@ variables:
 
 steps:
 - script: echo Version $(Version)
+- script: echo Build new TimeWarp Templates.
 
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: source/BlazorState.Js
+#- task: Npm@1
+#  inputs:
+#    command: 'install'
+#    workingDir: source/BlazorState.Js
 
-- task: DotNetCoreInstaller@0
-  displayName: Use .NET Core SDK 2.1.500 
-  inputs:
-    version: 2.1.500
+#- task: DotNetCoreInstaller@0
+#  displayName: Use .NET Core SDK 2.1.500 
+#  inputs:
+#    version: 2.1.500
 
 - powershell:
    New-Item -ItemType Directory -Force -Path .\source\BlazorState\bin\Packages
@@ -39,27 +49,27 @@ steps:
     configuration: $(Configuration)
 
 - task: DotNetCoreCLI@2
-  displayName: Build all
+  displayName: Build all Template projects
   inputs:
     command: build
-    projects: '**/*.csproj'
+    projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/**/*.csproj'
     configuration: $(Configuration)
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '**\*Tests\*.csproj'
+    projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/**/*Tests/*.csproj'
     configurationToPack: $(Configuration)
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet pack blazor-state
-  inputs:
-    command: pack
-    packagesToPack: 'source\BlazorState\BlazorState.csproj'
-    versionEnvVar: Version
-    versioningScheme: byEnvVar
-    configurationToPack: $(Configuration)
+#- task: DotNetCoreCLI@2
+#  displayName: dotnet pack blazor-state
+#  inputs:
+#    command: pack
+#    packagesToPack: 'source\BlazorState\BlazorState.csproj'
+#    versionEnvVar: Version
+#    versioningScheme: byEnvVar
+#    configurationToPack: $(Configuration)
 
 - task: NuGetCommand@2
   displayName: 'NuGet pack Templates'

@@ -1,19 +1,27 @@
+# Primary output is the sample web site which will be pushed via release pipeline
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+ branches:
+  include:
+  - master
+ paths:
+  include:
+  - samples/*
+  - source/BlazorState/*
+  - source/BlazorState.Js/*
+
 queue:
   name: TimeWarpEnterprises
 
 steps:
-- task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.300
-  inputs:
-    version: 2.1.300
 
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: "samples/**/*.csproj"
-    feedsToUse: config
-    nugetConfigPath: NuGet.config
+#- task: DotNetCoreCLI@2
+#  displayName: Restore
+#  inputs:
+#    command: restore
+#    projects: "samples/**/*.csproj"
+#    feedsToUse: config
+#    nugetConfigPath: NuGet.config
 
 - task: DotNetCoreCLI@2
   displayName: Build
