@@ -11,7 +11,7 @@ Write-Host "DefaultWorkingDirectory:$env:System_DefaultWorkingDirectory"
     
 Write-Host "Cloning existing GitHub Pages branch"
 
-git clone https://${githubusername}:$githubaccesstoken@github.com/$githubusername/$repositoryname.git --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
+git clone https://${$env:GitHubUsername}:env:GitHubAccessTokenSecret@github.com/$env:GitHubUsername/$env:RepositoryName.git --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
     
 if ($lastexitcode -gt 0)
 {
