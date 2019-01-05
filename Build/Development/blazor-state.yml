@@ -8,6 +8,8 @@ trigger:
   - source/BlazorState/*
   - source/BlazorState.Js/*
 
+# no PR builds
+pr: none
 
 queue:
   name: TimeWarpEnterprises

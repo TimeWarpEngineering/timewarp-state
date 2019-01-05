@@ -1,3 +1,16 @@
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger:
+ branches:
+  include:
+  - master
+ paths:
+  include:
+  - documentation/*
+
+# no PR builds
+pr: none
+
 queue:
   name: TimeWarpEnterprises
 
