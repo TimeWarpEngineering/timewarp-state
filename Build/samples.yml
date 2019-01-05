@@ -42,7 +42,7 @@ steps:
   inputs:
     command: publish
     publishWebProjects: false
-    projects: 'samples/BlazorState.Server/BlazorState.Server.csproj'
+    projects: 'samples/TimeWarpBlazor/BlazorState.Server/BlazorState.Server.csproj'
     arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
   enabled: true
 
