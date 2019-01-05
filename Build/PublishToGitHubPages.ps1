@@ -23,7 +23,7 @@ $to = "$env:System_DefaultWorkingDirectory\ghpages"
 
 Write-Host "Copying new documentation into branch"
 
-Copy-Item env:DocPath $to -recurse -Force
+Copy-Item $env:DocPath $to -recurse -Force
 
 Write-Host "Committing the GitHub Pages Branch"
 
