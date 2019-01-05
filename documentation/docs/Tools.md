@@ -7,6 +7,7 @@
 * gmaster
 * docfx
 * cmder
+* TypeScript
 
 # Azure DevOps Plugins
 [GitHub Pages Publish](https://marketplace.visualstudio.com/items?itemName=AccidentalFish.githubpages-publish)
