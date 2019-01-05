@@ -24,4 +24,10 @@ steps:
     githubemail: '$(GitHubEmail)'
     githubaccesstoken: $(GitHubAccessToken)
     repositoryname: 'blazor-state'
-  enabled: true
+  enabled: false
+
+- task: PowerShell@2
+  displayName: 'PowerShell Script'
+  inputs:
+    targetType: ./
+    filePath: Build/PublishToGitHubPages.ps1

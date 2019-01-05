@@ -16,8 +16,10 @@
       BasePath = aSetVersionRequest.BasePath ?? @"C:\git\github\blazor-state\";
       BasePath = BasePath.TrimEnd(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }) + Path.DirectorySeparatorChar;
 
-      UpdateAzurePipeLinesYml(aSetVersionRequest, @"source\azure-pipelines-dev.yml");
-      UpdateAzurePipeLinesYml(aSetVersionRequest, @"source\azure-pipelines.yml");
+      UpdateAzurePipeLinesYml(aSetVersionRequest, @"Build\Development\blazor-state.yml");
+      UpdateAzurePipeLinesYml(aSetVersionRequest, @"Build\Development\templates.yml");
+      UpdateAzurePipeLinesYml(aSetVersionRequest, @"Build\blazor-state.yml");
+      UpdateAzurePipeLinesYml(aSetVersionRequest, @"Build\templates.yml");
       UpdateVersionPrefix(aSetVersionRequest);
       UpdatePackageVersion(aSetVersionRequest);
       UpdatePackageReference(aSetVersionRequest);
