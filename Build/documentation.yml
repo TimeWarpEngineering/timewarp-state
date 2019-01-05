@@ -42,5 +42,10 @@ steps:
 - task: PowerShell@2
   displayName: 'PowerShell Script'
   inputs:
+    docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+    githubusername: TimeWarpEngineering
+    githubemail: '$(GitHubEmail)'
+    githubaccesstoken: $(GitHubAccessToken)
+    repositoryname: 'blazor-state'
     targetType: FilePath
     filePath: Build/PublishToGitHubPages.ps1
