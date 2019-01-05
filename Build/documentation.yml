@@ -3,10 +3,6 @@ queue:
 
 steps:
 - script: echo Build Blazor-State Docs
-- task: DotNetCoreInstaller@0
-  displayName: Use .NET Core sdk 2.1.300
-  inputs:
-    version: 2.1.300
 
 - task: DeleteFiles@1
   displayName: Delete files from 
