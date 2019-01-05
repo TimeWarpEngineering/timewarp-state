@@ -42,5 +42,5 @@ steps:
 - task: PowerShell@2
   displayName: 'PowerShell Script'
   inputs:
-    targetType: ./
+    targetType: FilePath
     filePath: Build/PublishToGitHubPages.ps1
