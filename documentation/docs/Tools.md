@@ -7,3 +7,6 @@
 * gmaster
 * docfx
 * cmder
+
+# Azure DevOps Plugins
+[GitHub Pages Publish](https://marketplace.visualstudio.com/items?itemName=AccidentalFish.githubpages-publish)
