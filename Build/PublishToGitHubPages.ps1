@@ -3,7 +3,7 @@ Write-Host "DocPath:$env:DocPath"
 Write-Host "GitHubUsername:$env:GitHubUsername"
 Write-Host "RepositoryName:$env:RepositoryName"
 Write-Host "GitHubEmailSecret:$env:GitHubEmailSecret"
-Write-Host "GitHubAccessTokenSecret:$env:GitHubAccessTokenSecret"
+#Write-Host "GitHubAccessTokenSecret:$env:GitHubAccessTokenSecret"
 
 #Write-Host "commitMessage:$env:commitMessage" 
 #Write-Host "defaultWorkingDirectory:$env:defaultWorkingDirectory" 
