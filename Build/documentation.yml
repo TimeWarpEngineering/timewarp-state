@@ -14,6 +14,12 @@ pr: none
 queue:
   name: TimeWarpEnterprises
 
+
+variables:
+  docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+  githubusername: TimeWarpEngineering
+  repositoryname: 'blazor-state'
+
 steps:
 - script: echo Build Blazor-State Docs
 
@@ -42,10 +48,8 @@ steps:
 - task: PowerShell@2
   displayName: 'PowerShell Script'
   inputs:
-    docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-    githubusername: TimeWarpEngineering
-    githubemail: '$(GitHubEmail)'
-    githubaccesstoken: $(GitHubAccessToken)
-    repositoryname: 'blazor-state'
     targetType: FilePath
     filePath: Build/PublishToGitHubPages.ps1
+  env: 
+    GitHubAccessTokenSecret: $(GitHubAccessToken)
+    GitHubEmailSecret: '$(GitHubEmail)'

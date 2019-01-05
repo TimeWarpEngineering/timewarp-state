@@ -1,11 +1,12 @@
 # Display inputs.
-Write-Host "docPath:$docPath" 
-Write-Host "githubusername:$githubusername" 
-Write-Host "githubemail:$githubemail" 
-Write-Host "githubaccesstoken:$githubaccesstoken" 
-Write-Host "repositoryname:$repositoryname" 
-Write-Host "commitMessage:$commitMessage" 
-Write-Host "defaultWorkingDirectory:$defaultWorkingDirectory" 
+Write-Host "DocPath:$env:DocPath"
+Write-Host "GitHubUsername:$env:GitHubUsername"
+Write-Host "RepositoryName:$env:RepositoryName"
+Write-Host "GitHubEmailSecret:$env:GitHubEmailSecret"
+Write-Host "GitHubAccessTokenSecret:$env:GitHubAccessTokenSecret"
+
+#Write-Host "commitMessage:$env:commitMessage" 
+#Write-Host "defaultWorkingDirectory:$env:defaultWorkingDirectory" 
 
 
 #$docPath = Get-VstsInput -Name 'docPath' -Require
