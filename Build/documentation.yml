@@ -14,6 +14,14 @@ pr: none
 queue:
   name: TimeWarpEnterprises
 
+
+variables:
+  DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+  GitHubUsername: TimeWarpEngineering
+  RepositoryName: 'blazor-state'
+  CommitMessage: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+
 steps:
 - script: echo Build Blazor-State Docs
 
@@ -44,3 +52,5 @@ steps:
   inputs:
     targetType: FilePath
     filePath: Build/PublishToGitHubPages.ps1
+  env: 
+    GitHubAccessTokenSecret: $(GitHubAccessToken)
