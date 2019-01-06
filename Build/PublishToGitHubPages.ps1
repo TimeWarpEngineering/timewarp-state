@@ -7,7 +7,7 @@ Write-Host "GitHubEmailSecret:$env:GitHubEmail"
 Write-Host "GitHubAccessTokenSecret:$env:GitHubAccessTokenSecret"
 Write-Host "DefaultWorkingDirectory:$env:System_DefaultWorkingDirectory" 
 
-$repoUrl = "https://$env:GitHubUsername:`:$env:GitHubAccessTokenSecret" + "@github.com/$env:GitHubUsername/$env:RepositoryName.git"
+$repoUrl = "https://$env:GitHubUsername`:$env:GitHubAccessTokenSecret" + "@github.com/$env:GitHubUsername/$env:RepositoryName.git"
 
 Write-Host "Cloning existing GitHub Pages branch"
 
