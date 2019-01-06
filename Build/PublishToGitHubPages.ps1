@@ -10,8 +10,10 @@ Write-Host "DefaultWorkingDirectory:$env:System_DefaultWorkingDirectory"
 
     
 Write-Host "Cloning existing GitHub Pages branch"
+$repoUrl = "https://$env:GitHubUsername:`:$env:GitHubAccessTokenSecret" + "@github.com/$env:GitHubUsername/$env:RepositoryName.git"
+Write-Host $repoUrl
 
-git clone https://${$env:GitHubUsername}:env:GitHubAccessTokenSecret@github.com/$env:GitHubUsername/$env:RepositoryName.git --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
+git clone  $repoUrl --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
     
 if ($lastexitcode -gt 0)
 {
@@ -32,6 +34,7 @@ Write-Host "config git"
 git config core.autocrlf false
 git config user.email $env:GitHubEmailSecret
 git config user.name $env:GitHubUsername
+git config --list
 
 Write-Host "git add *"
 git add *
@@ -47,6 +50,7 @@ if ($lastexitcode -gt 0)
 }
 
 Write-Host "git push the GitHub Pages Branch"
+
 git push
 
 if ($lastexitcode -gt 0)
