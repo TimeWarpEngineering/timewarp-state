@@ -3,35 +3,34 @@ Write-Host "DocPath:$env:DocPath"
 Write-Host "GitHubUsername:$env:GitHubUsername"
 Write-Host "RepositoryName:$env:RepositoryName"
 Write-Host "CommitMessage:$env:CommitMessage" 
-Write-Host "GitHubEmailSecret:$env:GitHubEmailSecret"
+Write-Host "GitHubEmailSecret:$env:GitHubEmail"
 Write-Host "GitHubAccessTokenSecret:$env:GitHubAccessTokenSecret"
 Write-Host "DefaultWorkingDirectory:$env:System_DefaultWorkingDirectory" 
 
+$repoUrl = "https://$env:GitHubUsername:`:$env:GitHubAccessTokenSecret" + "@github.com/$env:GitHubUsername/$env:RepositoryName.git"
 
-    
 Write-Host "Cloning existing GitHub Pages branch"
 
-git clone https://${$env:GitHubUsername}:env:GitHubAccessTokenSecret@github.com/$env:GitHubUsername/$env:RepositoryName.git --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
+git clone  $repoUrl --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
     
 if ($lastexitcode -gt 0)
 {
     Write-Host "##vso[task.logissue type=error;]Unable to clone repository - check username, access token and repository name. Error code $lastexitcode"
     [Environment]::Exit(1)
 }
-    
+
 $to = "$env:System_DefaultWorkingDirectory\ghpages"
 
 Write-Host "Copying new documentation into branch"
 
 Copy-Item $env:DocPath $to -recurse -Force
 
-
-
 cd $env:System_DefaultWorkingDirectory\ghpages
 Write-Host "config git"
 git config core.autocrlf false
-git config user.email $env:GitHubEmailSecret
+git config user.email $env:GitHubEmail
 git config user.name $env:GitHubUsername
+git config --list
 
 Write-Host "git add *"
 git add *
@@ -47,6 +46,7 @@ if ($lastexitcode -gt 0)
 }
 
 Write-Host "git push the GitHub Pages Branch"
+
 git push
 
 if ($lastexitcode -gt 0)

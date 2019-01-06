@@ -54,4 +54,3 @@ steps:
     filePath: Build/PublishToGitHubPages.ps1
   env: 
     GitHubAccessTokenSecret: $(GitHubAccessToken)
-    GitHubEmailSecret: '$(GitHubEmail)'
