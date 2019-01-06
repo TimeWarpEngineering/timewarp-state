@@ -25,13 +25,19 @@ Write-Host "Copying new documentation into branch"
 
 Copy-Item $env:DocPath $to -recurse -Force
 
-Write-Host "Committing the GitHub Pages Branch"
+
 
 cd $env:System_DefaultWorkingDirectory\ghpages
+Write-Host "config git"
 git config core.autocrlf false
 git config user.email $env:GitHubEmailSecret
 git config user.name $env:GitHubUsername
+
+Write-Host "git add *"
 git add *
+
+Write-Host "Committing the GitHub Pages Branch"
+Write-Host "git commit -m $env:CommitMessage"
 git commit -m $env:CommitMessage
 
 if ($lastexitcode -gt 0)
@@ -40,6 +46,7 @@ if ($lastexitcode -gt 0)
     [Environment]::Exit(1)
 }
 
+Write-Host "git push the GitHub Pages Branch"
 git push
 
 if ($lastexitcode -gt 0)
