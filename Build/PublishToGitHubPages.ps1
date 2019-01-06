@@ -12,7 +12,9 @@ $repoUrl = "https://$env:GitHubUsername`:$env:GitHubAccessTokenSecret" + "@githu
 Write-Host "Cloning existing GitHub Pages branch"
 
 git clone  $repoUrl --branch=gh-pages $env:System_DefaultWorkingDirectory\ghpages --quiet
-    
+
+Get-ChildItem ghpages
+
 if ($lastexitcode -gt 0)
 {
     Write-Host "##vso[task.logissue type=error;]Unable to clone repository - check username, access token and repository name. Error code $lastexitcode"
@@ -47,7 +49,8 @@ if ($lastexitcode -gt 0)
 
 Write-Host "git push the GitHub Pages Branch"
 
-git push
+git push $repoUrl --all
+
 
 if ($lastexitcode -gt 0)
 {
