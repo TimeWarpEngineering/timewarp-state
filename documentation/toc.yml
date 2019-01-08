@@ -3,3 +3,5 @@
 - name: API
   href: api/
   homepage: api/index.md
+- name: Developer Notebook
+  href: DeveloperNotebook/

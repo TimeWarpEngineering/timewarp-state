@@ -7,6 +7,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using Tools.Behaviors;
   using Tools.Commands.SetVersion;
+  using Tools.Services;
 
   internal class Startup
   {
@@ -28,6 +29,7 @@
       aServiceCollection.AddScoped(typeof(IRequestPreProcessor<>), typeof(ValidationBehavior<>));
       aServiceCollection.AddScoped(typeof(IValidator<SetVersionRequest>), typeof(SetVersionValidator));
       aServiceCollection.AddLogging();
+      aServiceCollection.AddSingleton<GitService>();
     }
   }
 }
