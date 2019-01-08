@@ -23,6 +23,8 @@
       },
       {
         "files": [
+          "DeveloperNotebook/**.md",
+          "DeveloperNotebook/**/toc.yml",
           "docs/**.md",
           "docs/**/toc.yml",
           "toc.yml",
