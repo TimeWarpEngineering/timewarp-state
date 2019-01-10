@@ -28,7 +28,7 @@ steps:
   displayName: Build Timewarp Console Template projects
   inputs:
     command: build
-    projects: 'source/TimeWarp.Console.Blazor.Template/**/*.csproj'
+    projects: 'source/TimeWarp.Console.Template/**/*.csproj'
     configuration: $(Configuration)
 
 - task: DotNetCoreCLI@2
