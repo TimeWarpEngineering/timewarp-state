@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Steven T. Cramer",
+  "classifications": [
+    "TimeWarp",
+    "Console"    
+  ],
+  "groupIdentity": "TimeWarp.Console",
+  "guids": [
+    "19B3F119-0F8A-430A-8336-9F6797B990E9",
+    "CFFB80F7-6230-4244-A07F-12F5A295FB21",
+    "545E3103-354C-4058-8D8F-60D70DCC115B",
+    "7A297947-B1E9-4BC6-9F84-22E5EDB389B8",
+    "B82C7C95-4892-443C-AA6B-B6086B03DD30",
+    "86DAE2F4-34F2-4002-AE80-308D8A7FADE0"
+  ],
+  "identity": "TimeWarp.Console.CSharp",
+  "name": "TimeWarp Console",
+  "preferNameDirectory": true,
+  "shortName": "timewarp-console",
+  "sourceName": "Console-CSharp",
+  "sources": [{
+    "modifiers": [{
+      "condition": "(ExcludeTimeWarpProcess)",
+      "exclude": [
+        "Documentation/Process/**/*"
+      ]
+    }]
+  }],
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  }
+}
