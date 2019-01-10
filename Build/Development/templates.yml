@@ -27,16 +27,6 @@ steps:
 - script: echo Version $(Version)
 - script: echo Build new TimeWarp Templates.
 
-#- task: Npm@1
-#  inputs:
-#    command: 'install'
-#    workingDir: source/BlazorState.Js
-
-#- task: DotNetCoreInstaller@0
-#  displayName: Use .NET Core SDK 2.1.500 
-#  inputs:
-#    version: 2.1.500
-
 - powershell:
    New-Item -ItemType Directory -Force -Path .\source\BlazorState\bin\Packages
   displayName: 'PowerShell Script Ensure Packages Directory'
