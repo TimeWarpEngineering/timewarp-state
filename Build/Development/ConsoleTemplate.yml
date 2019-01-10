@@ -1,9 +1,9 @@
-﻿# Primary output is a new Nuget Package for TimeWarp Templates
+# Primary output is a new Nuget Package for TimeWarp Templates
 name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
   include:
-  - master
+  - dev
  paths:
   include:
   - source/TimeWarp.Console.Template/*
