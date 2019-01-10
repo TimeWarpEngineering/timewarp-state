@@ -1,4 +1,4 @@
-# Primary output is a new Nuget Package for TimeWarp Templates
+# Primary output is a new Nuget Package for TimeWarp Console Templates
 name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
@@ -25,12 +25,18 @@ steps:
 - script: echo Version $(Version)
 
 - task: DotNetCoreCLI@2
+  displayName: Build Timewarp Console Template projects
+  inputs:
+    command: build
+    projects: 'source/TimeWarp.Console.Blazor.Template/**/*.csproj'
+    configuration: $(Configuration)
+
+- task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
     projects: "source/TimeWarp.Console.Template/**/*Tests/*.csproj"
     configurationToPack: debug
-
    
 - task: NuGetCommand@2
   displayName: 'NuGet pack Console Template'
