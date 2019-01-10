@@ -62,15 +62,6 @@ steps:
     projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/**/*Tests/*.csproj'
     configurationToPack: $(Configuration)
 
-#- task: DotNetCoreCLI@2
-#  displayName: dotnet pack blazor-state
-#  inputs:
-#    command: pack
-#    packagesToPack: 'source\BlazorState\BlazorState.csproj'
-#    versionEnvVar: Version
-#    versioningScheme: byEnvVar
-#    configurationToPack: $(Configuration)
-
 - task: NuGetCommand@2
   displayName: 'NuGet pack Templates'
   inputs:

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <RootNamespace>Console_CSharp.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fixie" Version="2.0.3" />
+    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\Console-CSharp.csproj" />
+  </ItemGroup>
+
+</Project>
