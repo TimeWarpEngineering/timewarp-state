@@ -12,6 +12,34 @@
     {
 
     }
+    public async Task ShouldFailValidateParameter2GreaterthanParameter3()
+    {
+      string[] argumentArray = new string[]
+        {
+                  "SampleCommand",
+                  "--Parameter1",
+                  "Haa",
+                  "--Parameter2",
+                  "9",
+                  "--Parameter3",
+                  "7"
+        };
+      TextWriter textWriter = Console.Out;
+      int exitCode = 0;
+      string error = null;
+
+      using (var stringWriter = new StringWriter())
+      {
+        Console.SetError(stringWriter);
+        exitCode = await Program.Main(argumentArray);
+        error = stringWriter.ToString();
+      }
+      Console.SetError(textWriter);
+
+      exitCode.ShouldBe(1);
+      error.ShouldContain("Parameter3 must be greater than Parameter2");
+
+    }
 
 
     public async Task ShouldReturnFailure()
@@ -28,18 +56,18 @@
         };
       TextWriter textWriter = Console.Out;
       int exitCode = 0;
-      string output = null;
+      string error = null;
 
       using (var stringWriter = new StringWriter())
       {
         Console.SetError(stringWriter);
         exitCode = await Program.Main(argumentArray);
-        output = stringWriter.ToString();
+        error = stringWriter.ToString();
       }
       Console.SetError(textWriter);
 
       exitCode.ShouldBe(1);
-      output.ShouldContain("Parameter3 must be greater than Parameter2");
+      error.ShouldContain("'Parameter2' must be greater than or equal to '0'.");
 
     }
 
