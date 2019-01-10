@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>TimeWarp.Console.Template</id>
+    <authors>Steven T. Cramer</authors>
+    <version>$version$</version>
+    <description>TimeWarp Console Template</description>
+    <iconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</iconUrl>
+    <language>en-US</language>
+    <projectUrl>https://github.com/TimeWarpEngineering/blazor-state</projectUrl>
+    <licenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</licenseUrl>
+    <tags>template console timewarp</tags>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+  </metadata>
+  <files>
+    <file
+      src="content/**/*"
+      exclude="**/launchSettings.json;**/node_modules/**;**/bin/**;**/obj/**;**/*.user;**/.vs/**;**/.vscode/**;content/Directory.Build.*;**/.template.config.src/**"
+      target="Content" />
+  </files>
+</package>

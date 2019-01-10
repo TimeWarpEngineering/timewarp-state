@@ -1,14 +1,12 @@
-﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-
+# Primary output is a new Nuget Package for TimeWarp Console Templates
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
   include:
   - dev
  paths:
   include:
-  - source/TimeWarp.AspNetCore.Blazor.Templates/*
-  - source/BlazorState/*
-  - source/BlazorState.Js/*
+  - source/TimeWarp.Console.Template/*
 
 # no PR builds
 pr: none
@@ -18,45 +16,33 @@ queue:
 
 variables:
  Major: '0'
- Minor: '3'
- Patch: '5'
+ Minor: '0'
+ Patch: '1'
  Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
  Configuration: debug
 
 steps:
 - script: echo Version $(Version)
-- script: echo Build new TimeWarp Templates.
-
-- powershell:
-   New-Item -ItemType Directory -Force -Path .\source\BlazorState\bin\Packages
-  displayName: 'PowerShell Script Ensure Packages Directory'
 
 - task: DotNetCoreCLI@2
-  displayName: Build BlazorState First
+  displayName: Build Timewarp Console Template projects
   inputs:
     command: build
-    projects: 'source/BlazorState/BlazorState.csproj'
-    configuration: $(Configuration)
-
-- task: DotNetCoreCLI@2
-  displayName: Build all Template projects
-  inputs:
-    command: build
-    projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/**/*.csproj'
+    projects: 'source/TimeWarp.Console.Template/**/*.csproj'
     configuration: $(Configuration)
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/**/*Tests/*.csproj'
+    projects: "source/TimeWarp.Console.Template/**/*Tests/*.csproj"
     configurationToPack: $(Configuration)
-
+   
 - task: NuGetCommand@2
-  displayName: 'NuGet pack Templates'
+  displayName: 'NuGet pack Console Template'
   inputs:
     command: pack
-    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.AspNetCore.Blazor.Templates/TimeWarp.AspNetCore.Blazor.Templates.nuspec
+    packagesToPack: $(Build.SourcesDirectory)/source/TimeWarp.Console.Template/TimeWarp.Console.Template.nuspec
     configurationToPack: $(Configuration)
     versioningScheme: byEnvVar
     versionEnvVar: Version
