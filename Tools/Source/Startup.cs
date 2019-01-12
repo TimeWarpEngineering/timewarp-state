@@ -30,6 +30,7 @@
       aServiceCollection.AddScoped(typeof(IValidator<SetVersionRequest>), typeof(SetVersionValidator));
       aServiceCollection.AddLogging();
       aServiceCollection.AddSingleton<GitService>();
+      aServiceCollection.AddSingleton<YmlTools>();
     }
   }
 }

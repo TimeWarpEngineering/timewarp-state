@@ -5,18 +5,8 @@
   /// <summary>
   /// Set the version in all required files.
   /// </summary>
-  public class SetVersionRequest : IRequest
+  internal class SetBlazorTemplateVersionRequest : IRequest
   {
-    /// <summary>
-    /// All Valid projects
-    /// </summary>
-    internal static string[] ProjectList { get; } = new string[] { "BlazorState", "BlazorTemplate", "ConsoleTemplate" };
-
-    /// <summary>
-    /// The Project {BlazorState,BlazorTemplate,ConsoleTemplate}
-    /// </summary>
-    public string Project { get; set; }
-
     /// <summary>
     /// Major Version Number
     /// </summary>
