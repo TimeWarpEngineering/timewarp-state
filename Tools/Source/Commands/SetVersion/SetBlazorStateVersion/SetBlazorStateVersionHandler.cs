@@ -26,7 +26,6 @@
       UpdateAzurePipeLinesYml(aSetBlazorStateVersionRequest, @"\Build\Development\templates.yml");
       UpdateAzurePipeLinesYml(aSetBlazorStateVersionRequest, @"\Build\Development\blazor-state.yml");
       UpdateAzurePipeLinesYml(aSetBlazorStateVersionRequest, @"\Build\blazor-state.yml");
-      UpdateAzurePipeLinesYml(aSetBlazorStateVersionRequest, @"\Build\templates.yml");
       UpdateVersionPrefix(aSetBlazorStateVersionRequest);
       UpdatePackageVersion(aSetBlazorStateVersionRequest);
       UpdatePackageReference(aSetBlazorStateVersionRequest);
