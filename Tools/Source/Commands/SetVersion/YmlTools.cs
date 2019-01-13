@@ -15,6 +15,8 @@
     public YmlTools(GitService aGitService)
     {
       GitService = aGitService;
+      DirectoryInfo gitDirectory = GitService.GitRootDirectoryInfo();
+      BasePath = gitDirectory.FullName;
     }
 
     internal void UpdateAzurePipeLinesYml(int aMajor, int aMinor, int aPatch, string aRelativePath)
