@@ -39,9 +39,9 @@ I have only know Tor for a short time via the gitter on Blazor but he is already
 If you use F# and need redux like functionality checkout his library.
 
 
-## License
+## Unlicense
 
-The Unlicense
+The [Unlicense](https://choosealicense.com/licenses/unlicense/)
 
 ## Contributing
 
