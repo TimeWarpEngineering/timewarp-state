@@ -7,7 +7,7 @@
     <description>TimeWarp Console Template</description>
     <iconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</iconUrl>
     <language>en-US</language>
-    <projectUrl>https://github.com/TimeWarpEngineering/blazor-state</projectUrl>
+    <projectUrl>https://github.com/TimeWarpEngineering/blazor-state/tree/dev/source/TimeWarp.Console.Template/content/TimeWarp.Console-CSharp</projectUrl>
     <licenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</licenseUrl>
     <tags>template console timewarp</tags>
     <packageTypes>
