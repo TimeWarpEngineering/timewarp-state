@@ -1,11 +1,13 @@
 ﻿namespace Tools.Commands.SetVersion
 {
+  using System.Linq;
   using FluentValidation;
 
   internal class SetVersionValidator : AbstractValidator<SetVersionRequest>
   {
     public SetVersionValidator()
     {
+      RuleFor(a => SetVersionRequest.ProjectList.Contains(a.Project));
       RuleFor(aSetVersionRequest => aSetVersionRequest)
         .Must(ValidateIsNotAllZeros)
         .WithMessage("Not all versions can be zero. `0.0.0` is not a valid version");
