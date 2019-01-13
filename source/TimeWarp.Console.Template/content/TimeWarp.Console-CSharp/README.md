@@ -1,6 +1,6 @@
 ﻿![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png)
 
-# timewarp-console template
+# TimeWarp Console Template
 A dotnet core template with MediatR based console commands. 
 The command line help is derived from xml documentation comments.
 
@@ -14,6 +14,14 @@ The command line help is derived from xml documentation comments.
 
   Currently this template is part of the blazor-state mono-repo located on github @
   https://github.com/TimeWarpEngineering/blazor-state
+
+## Features
+
+Utilizes the experimental [CliCommandLineParser](https://github.com/dotnet/CliCommandLineParser)
+The TimeWarpCommandLineBuilder automaticaly builds commandline parameters and cli help
+from your MediatR `IRequest` base on your xml doc comments.
+
+See the `\Source\Commands\SampleCommand\SampleCommandRequest.cs` for an example.
 
 ## Build Status
 
