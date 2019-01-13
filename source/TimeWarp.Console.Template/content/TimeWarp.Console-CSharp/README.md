@@ -17,11 +17,14 @@ The command line help is derived from xml documentation comments.
 
 ## Features
 
-Utilizes the experimental [CliCommandLineParser](https://github.com/dotnet/CliCommandLineParser)
-The TimeWarpCommandLineBuilder automaticaly builds commandline parameters and cli help
+* Utilizes the experimental [CliCommandLineParser](https://github.com/dotnet/CliCommandLineParser) for consistent cli behavior.
+
+* Automatic commandline parameters and help. 
+    
+  The `TimeWarpCommandLineBuilder` class automaticaly builds commandline parameters and cli help
 from your MediatR `IRequest` base on your xml doc comments.
 
-See the `\Source\Commands\SampleCommand\SampleCommandRequest.cs` for an example.
+  > See `\Source\Commands\SampleCommand\SampleCommandRequest.cs` for an example.
 
 ## Build Status
 
