@@ -3,7 +3,10 @@
   using System.IO;
   using System.Text.RegularExpressions;
   using Tools.Services;
-
+  /// <summary>
+  /// Reusable Tools to work on Yml Files for SetVersion Commands
+  /// </summary>
+  /// <remarks> This is local to this command and is not a generic service</remarks>
   internal class YmlTools
   {
     private string BasePath { get; set; }
