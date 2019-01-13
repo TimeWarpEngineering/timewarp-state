@@ -1,6 +1,6 @@
 ﻿![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png)
 
-# timewarp-console template
+# TimeWarp Console Template
 A dotnet core template with MediatR based console commands. 
 The command line help is derived from xml documentation comments.
 
