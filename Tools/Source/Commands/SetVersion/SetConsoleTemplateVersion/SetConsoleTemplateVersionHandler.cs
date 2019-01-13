@@ -15,13 +15,19 @@
 
     public Task<Unit> Handle(SetConsoleTemplateVersionRequest aSetConsoleTemplateVersionRequest, CancellationToken aCancellationToken)
     {
+      UpdateAzurePipeLinesYml(aSetConsoleTemplateVersionRequest, @"\Build\Development\ConsoleTemplate.yml");
+      UpdateAzurePipeLinesYml(aSetConsoleTemplateVersionRequest, @"\Build\ConsoleTemplate.yml");
+      return Unit.Task;
+    }
+
+    private void UpdateAzurePipeLinesYml(SetConsoleTemplateVersionRequest aSetConsoleTemplateVersionRequest, string aRelativePath)
+    {
       YmlTools.UpdateAzurePipeLinesYml(
         aSetConsoleTemplateVersionRequest.Major,
         aSetConsoleTemplateVersionRequest.Minor,
         aSetConsoleTemplateVersionRequest.Patch,
-        @"\Build\Development\ConsoleTemplate.yml");
-
-      return Unit.Task;
+        aRelativePath
+        );
     }
   }
 }
