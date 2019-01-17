@@ -1,4 +1,4 @@
-﻿namespace Console_CSharp.Commands.SetVersion
+﻿namespace Console_CSharp.Commands.SampleCommand
 {
   using System;
   using System.Threading;
@@ -8,8 +8,6 @@
   internal class SampleCommandHandler
     : IRequestHandler<SampleCommandRequest>
   {
-    private string BasePath { get; set; }
-
     public Task<Unit> Handle(SampleCommandRequest aSampleCommandRequest, CancellationToken aCancellationToken)
     {
       Console.WriteLine($"Parameter1:{aSampleCommandRequest.Parameter1}");
