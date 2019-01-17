@@ -1,0 +1,3 @@
+# Windows 10
+
+Windows 10 turn on [Developer mode](https://docs.microsoft.com/en-us/windows/uwp/get-started/enable-your-device-for-development?ranMID=43674&ranEAID=je6NUbpObpQ&ranSiteID=je6NUbpObpQ-nPshwmccHxiorEZnfb1q_g&epi=je6NUbpObpQ-nPshwmccHxiorEZnfb1q_g&irgwc=1&OCID=AID681541_aff_7795_1243925&tduid=(ir__ryu66hskwgkfr3rexmlij6lydu2xhprhypuv6hfx00)(7795)(1243925)(je6NUbpObpQ-nPshwmccHxiorEZnfb1q_g)()&irclickid=_ryu66hskwgkfr3rexmlij6lydu2xhprhypuv6hfx00).
