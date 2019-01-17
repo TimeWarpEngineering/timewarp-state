@@ -6,8 +6,8 @@
   using MediatR.Pipeline;
   using Microsoft.Extensions.DependencyInjection;
   using Console_CSharp.Behaviors;
-  using Console_CSharp.Commands.SetVersion;
   using Console_CSharp.Services;
+  using Console_CSharp.Commands.SampleCommand;
 
   internal class Startup
   {

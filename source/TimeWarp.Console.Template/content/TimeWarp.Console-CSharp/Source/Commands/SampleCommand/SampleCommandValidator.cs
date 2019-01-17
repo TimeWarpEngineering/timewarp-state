@@ -1,4 +1,4 @@
-﻿namespace Console_CSharp.Commands.SetVersion
+﻿namespace Console_CSharp.Commands.SampleCommand
 {
   using FluentValidation;
 
