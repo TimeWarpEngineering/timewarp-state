@@ -1,0 +1,17 @@
+﻿# auto-generated
+- name: Basics
+  href: Basics.md
+- name: Coding Guide Lines
+  href: CodingGuideLines.md
+- name: Engineering Guidelines
+  href: EngineeringGuidelines.md
+- name: Keep An Eye On Ci
+  href: KeepAnEyeOnCi.md
+- name: Product Planning And Issue Tracking
+  href: ProductPlanningAndIssueTracking.md
+- name: Source Code Management
+  href: SourceCodeManagement.md
+- name: Testing Pull Requests
+  href: TestingPullRequests.md
+- name: Tips And Tricks
+  href: TipsAndTricks.md
