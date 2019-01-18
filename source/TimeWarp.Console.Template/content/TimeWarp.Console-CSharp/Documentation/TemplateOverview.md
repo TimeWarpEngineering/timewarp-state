@@ -38,9 +38,19 @@ Development:
 
 ## Installation
 
+### Installation requirements
+
+* [dotnet sdk 2.2 or later](https://dotnet.microsoft.com/download)
+* [powershell core](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-6)
+  > used to run the Publish.ps1 script which will publish the Operating system dependent version.
+
+### Install Template
+
 ```
 dotnet new --install TimeWarp.Console.Template
 ```
+
+
 
 ## Usage
 
@@ -49,16 +59,21 @@ dotnet new --install TimeWarp.Console.Template
 dotnet new timewarp-console -n MyConsoleApp
 ```
 
+Change to the newly created directory
+```
+cd MyConsoleApp
+```
+
 ### Publish
+
 
 ```
 .\Publish.ps1
 ```
 
-This will run `dotnet publish` and build the Windows specific
-output version and add that output directory to your powershell path.
+This will run `dotnet publish` and build the Operating system specific
+output version and add that output directory to your PowerShell path.
 
-> Modify this script to build for the OS of your system if not Windows 10.
 
 ### Run
 
