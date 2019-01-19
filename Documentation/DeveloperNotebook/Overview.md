@@ -1,1 +1,1 @@
-../../source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/Documentation/DeveloperNotebook/Overview.md
+C:/git/github/blazor-state/source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/Documentation/DeveloperNotebook/Overview.md
