@@ -158,6 +158,8 @@ The template includes the following coding style configurations.
 
 and should follow the [TimeWarp Coding Standards](TODO)
 
+https://github.com/aspnet/AspNetCore/wiki/Engineering-guidelines#coding-guidelines
+
 ## Contribute
 
 When contributing to this repository,

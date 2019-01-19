@@ -25,7 +25,7 @@ dotnet add package Blazor-State
 After you have completed the [getting started for blazor](https://blazor.net/docs/get-started.html)
 the easiest way to get started with blazor-state is to follow the [tutorial](xref:BlazorStateSample:README.md).
 
-Or create new application based on the [timewarp-blazor template](Template/TemplateOverview.md)
+Or create new application based on the [timewarp-blazor template](docs/Template/TemplateOverview.md)
 
 ## Architecture
 
@@ -72,7 +72,7 @@ Redux Devtools implemented feautres:
 
 Other developer tools commands are not yet implemented (Would be good spot for a PR)
 
-[!include[Terminology](../terminology.md)]
+[!include[Terminology](Partials/terminology.md)]
 
 ### PureFunctions vs NonPureFunctions:
 Blazor-State does not distinguish these.
@@ -81,13 +81,13 @@ Thus, async calls to fetch data, send emails, or just update local state
 are implemented in the same manner. Although the developer **should** be aware that Handlers have side effects and 
 if the developer chose they could mark the Requests as such. i.e. IRequestWithSideEffect
 
-[!include[Contributing](../acknowledgements.md)]
+[!include[Contributing](Partials/acknowledgements.md)]
 
 ## License
 
 The Unlicense [https://choosealicense.com/licenses/unlicense/]
 
-[!include[Contributing](../contributing.md)]
+[!include[Contributing](Partials/contributing.md)]
 
 
 2019-01-05 12:59:58

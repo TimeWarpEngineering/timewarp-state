@@ -10,7 +10,8 @@
         }
       ],
       "dest": "api",
-      "disableGitFeatures": false
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
     }
   ],
   "build": {
@@ -23,13 +24,10 @@
       },
       {
         "files": [
-          "DeveloperNotebook/**.md",
-          "DeveloperNotebook/**/toc.yml",
-          "docs/**.md",
-          "docs/**/toc.yml",
-          "toc.yml",
-          "*.md"
-        ]
+          "**/**.md",
+          "**/toc.yml"
+        ],
+        "exclude": [ "images/**", "**/Model**" ]
       },
       {
         "src":"../",
@@ -64,11 +62,11 @@
         ]
       }
     ],
+    "dest": "_site",
     "globalMetadata": {
       "_appFaviconPath": "assets/Logo.png",
       "_appLogoPath":"assets/Logo.svg"
     },
-    "dest": "_site",
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
     "template": [
