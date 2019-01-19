@@ -2,6 +2,9 @@
   href: docs/
 - name: API
   href: api/
-  homepage: api/index.md
+  homepage: api/Overview.md
 - name: Developer Notebook
   href: DeveloperNotebook/
+- name: Engineering Guidelines
+  href: EngineeringGuidelines/
+  homepage: EngineeringGuidelines/Overview.md
