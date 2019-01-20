@@ -1,5 +1,9 @@
 ﻿# auto-generated
+- name: Code Behind
+  href: CodeBehind.md
 - name: Definitions
   href: Definitions.md
 - name: Directory Structure
   href: DirectoryStructure.md
+- name: Partial Classes
+  href: PartialClasses.md
