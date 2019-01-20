@@ -67,7 +67,7 @@ This sample shows how to add Blazor-State to the standard Visual Studio `Blazor 
 
 ## Create the `CounterModel` for the `Counter` Page.
   > [!NOTE]
-  > see [](xref:CodeBehind:CodeBehind.md) for details.
+  > see [CodeBehind](xref:CodeBehind:CodeBehind.md) for details.
  * Create a new file named `Counter.cshtml.cs` in the same `Pages` folder as `Counter.cshtml`
  * Name the class `CounterModel`
  * inherit from BlazorComponent
