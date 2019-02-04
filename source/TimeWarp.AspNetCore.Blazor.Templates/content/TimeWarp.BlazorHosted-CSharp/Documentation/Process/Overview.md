@@ -12,6 +12,4 @@
 * No Burndown charts
 * Search by grep.
 
-[!include[Backlog](Backlog/BacklogIntroduction.md)]
-
-[!include[Backlog](Templates/TemplatesIntroduction.md)]
+[!include[Backlog](../Backlog/Overview.md)]

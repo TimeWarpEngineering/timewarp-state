@@ -1,10 +1,20 @@
-- name: Docs
-  href: docs/
-- name: API
-  href: api/
-  homepage: api/Overview.md
-- name: Developer Notebook
+﻿#- name: Home
+#  href: Overview.md
+- name: Blazor-State
+  href: Blazor-State/
+- name: Project Templates
+  href: Templates/
+- name: TimeWarp Development Process
+  href: Process/
+  dropdown: true
+  items:
+  - name: Backlog
+    href: Backlog/
+    homepage: Backlog/Overview.md
+  - name: DevOps
+    href: DevOps/
+  - name: Tools
+    href: Tools/
+- name: DeveloperNotebook
   href: DeveloperNotebook/
-- name: Engineering Guidelines
-  href: EngineeringGuidelines/
-  homepage: EngineeringGuidelines/Overview.md
+

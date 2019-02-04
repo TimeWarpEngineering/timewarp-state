@@ -1,11 +1,9 @@
-- name: Process
+﻿# auto-generated
+- name: Overview
   href: Overview.md
-  items:
-  - name: Backlog
-    href: Backlog/toc.yml
-  - name: Templates
-    href: Templates/toc.yml
-  - name: Definition of Ready
-    href: DefinitionOfReady.md
-  - name: Definition of Done
-    href: DefinitionOfDone.md
+- name: Definition Of Done
+  href: DefinitionOfDone.md
+- name: Definition Of Ready
+  href: DefinitionOfReady.md
+- name: Templates
+  href: Templates/toc.yml

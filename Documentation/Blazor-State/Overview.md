@@ -25,7 +25,7 @@ dotnet add package Blazor-State
 After you have completed the [getting started for blazor](https://blazor.net/docs/get-started.html)
 the easiest way to get started with blazor-state is to follow the [tutorial](xref:BlazorStateSample:README.md).
 
-Or create new application based on the [timewarp-blazor template](docs/Template/TemplateOverview.md)
+Or create new application based on the [timewarp-blazor template](../Templates/TimeWarpBlazorTemplate/TemplateOverview.md)
 
 ## Architecture
 
@@ -88,6 +88,3 @@ if the developer chose they could mark the Requests as such. i.e. IRequestWithSi
 The Unlicense [https://choosealicense.com/licenses/unlicense/]
 
 [!include[Contributing](Partials/contributing.md)]
-
-
-2019-01-05 12:59:58

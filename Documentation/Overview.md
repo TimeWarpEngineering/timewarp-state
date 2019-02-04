@@ -9,7 +9,7 @@
 
 ## Sites
 
-* documentation Documentation Site https://timewarpengineering.github.io/blazor-state/index.html
+* Documentation Site https://timewarpengineering.github.io/blazor-state/index.html
 
 Sample Sites:
 

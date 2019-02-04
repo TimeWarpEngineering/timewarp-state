@@ -39,6 +39,7 @@
           Summary = Summaries[random.Next(Summaries.Length)]
         }));
 
+      var AssemblyVersion = @Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
       return await Task.Run(() => response);
     }
   }

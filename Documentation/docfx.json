@@ -9,7 +9,7 @@
           "src": "../"
         }
       ],
-      "dest": "api",
+      "dest": "Blazor-State/api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
@@ -18,16 +18,10 @@
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/Overview.md"
-        ]
-      },
-      {
-        "files": [
           "**/**.md",
-          "**/toc.yml"
+          "**/**.yml"
         ],
-        "exclude": [ "images/**", "**/Model**" ]
+        "exclude": [ "images/**", "**/Model**", "_site/**" ]
       },
       {
         "src":"../",

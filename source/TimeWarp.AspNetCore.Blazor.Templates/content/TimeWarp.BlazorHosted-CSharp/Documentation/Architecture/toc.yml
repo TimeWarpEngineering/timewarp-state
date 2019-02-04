@@ -5,5 +5,7 @@
   href: Definitions.md
 - name: Directory Structure
   href: DirectoryStructure.md
+- name: File Structure
+  href: FileStructure.md
 - name: Partial Classes
   href: PartialClasses.md

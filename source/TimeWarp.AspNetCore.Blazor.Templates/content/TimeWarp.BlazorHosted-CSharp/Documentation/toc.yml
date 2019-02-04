@@ -1,0 +1,17 @@
+﻿# auto-generated
+- name: Template Overview
+  href: TemplateOverview.md
+- name: Read Me
+  href: ReadMe.md
+- name: Architecture
+  href: Architecture/toc.yml
+- name: Backlog
+  href: Backlog/toc.yml
+- name: DeveloperNotebook
+  href: DeveloperNotebook/toc.yml
+- name: EngineeringGuidelines
+  href: EngineeringGuidelines/toc.yml
+- name: Environment
+  href: Environment/toc.yml
+- name: Process
+  href: Process/toc.yml
