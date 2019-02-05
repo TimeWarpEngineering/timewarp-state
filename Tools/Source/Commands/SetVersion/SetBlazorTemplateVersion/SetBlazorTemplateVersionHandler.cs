@@ -20,7 +20,7 @@
         aSetBlazorTemplateVersionRequest.Major,
         aSetBlazorTemplateVersionRequest.Minor,
         aSetBlazorTemplateVersionRequest.Patch,
-        @"\Build\templates.yml");
+        @"\Build\BlazorTemplate.yml");
 
       return Unit.Task;
     }
