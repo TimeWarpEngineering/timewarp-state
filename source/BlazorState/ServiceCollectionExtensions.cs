@@ -116,7 +116,7 @@
         aCallingAssembly
       };
 
-      aServices.AddMediatR(assemblies);
+      aServices.AddMediatR(assemblies.ToArray());
     }
   }
 
