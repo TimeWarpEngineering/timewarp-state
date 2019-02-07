@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>Microsoft ASP.NET Core Blazor State MediatR Mediator Pipeline Redux</PackageTags>
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state</RepositoryUrl>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
