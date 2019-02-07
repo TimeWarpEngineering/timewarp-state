@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
+    <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <Target Name="IncludeJsDll">
