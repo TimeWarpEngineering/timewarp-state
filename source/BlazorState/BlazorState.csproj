@@ -5,6 +5,7 @@
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
+    <PackageIcon>..\..\assets\Logo.png</PackageIcon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Company>TimeWarp Enterprises Limited</Company>
   </PropertyGroup>
@@ -27,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <Target Name="IncludeJsDll">
