@@ -1,10 +1,9 @@
 ﻿namespace BlazorState.Features.Routing
 {
-  using System;
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using Microsoft.AspNetCore.Blazor.Services;
+  using Microsoft.AspNetCore.Components.Services;
 
   internal class ChangeRouteHandler : RequestHandler<ChangeRouteRequest, RouteState>
   {

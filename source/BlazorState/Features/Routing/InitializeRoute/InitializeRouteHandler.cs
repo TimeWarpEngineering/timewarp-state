@@ -3,7 +3,7 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using Microsoft.AspNetCore.Blazor.Services;
+  using Microsoft.AspNetCore.Components.Services;
 
   internal class InitializeRouteHandler : RequestHandler<InitializeRouteRequest, RouteState>
   {
