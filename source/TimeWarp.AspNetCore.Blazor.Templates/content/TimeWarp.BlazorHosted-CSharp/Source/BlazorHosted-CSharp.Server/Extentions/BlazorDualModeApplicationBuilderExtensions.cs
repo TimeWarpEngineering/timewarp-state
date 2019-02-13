@@ -7,6 +7,8 @@
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.Net.Http.Headers;
   using System.Net.Mime;
+  using System.Reflection;
+  using Microsoft.AspNetCore.Http.Headers;
 
 
   /// <summary>
@@ -24,7 +26,7 @@
     public static IApplicationBuilder UseBlazorDualMode<TProgram>(
         this IApplicationBuilder aApplicationBuilder)
     {
-      var clientAssemblyInServerBinDir = typeof(TProgram).Assembly;
+      Assembly clientAssemblyInServerBinDir = typeof(TProgram).Assembly;
       return aApplicationBuilder.UseBlazorDualMode(new BlazorOptions
       {
         ClientAssemblyPath = clientAssemblyInServerBinDir.Location,
@@ -97,7 +99,7 @@
       // Longer term, we should generate URLs based on content hashes (at least
       // for published apps) so that the browser doesn't need to make any requests
       // for unchanged files.
-      var headers = aStaticFileResponseContext.Context.Response.GetTypedHeaders();
+      ResponseHeaders headers = aStaticFileResponseContext.Context.Response.GetTypedHeaders();
       if (headers.CacheControl == null)
       {
         headers.CacheControl = new CacheControlHeaderValue
