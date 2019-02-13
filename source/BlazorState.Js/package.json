@@ -10,8 +10,8 @@
   "devDependencies": {
     "@types/emscripten": "0.0.31",
     "ts-loader": "5.3.3",
-    "typescript": "3.3.1",
-    "webpack": "4.29.2",
+    "typescript": "3.3.3",
+    "webpack": "4.29.3",
     "webpack-cli": "3.2.3"
   }
 }
