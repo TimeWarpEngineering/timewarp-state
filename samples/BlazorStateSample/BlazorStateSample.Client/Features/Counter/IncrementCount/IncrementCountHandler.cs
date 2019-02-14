@@ -1,13 +1,9 @@
-﻿using BlazorState;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace BlazorStateSample.Client.Features.Counter.IncrementCount
+﻿namespace BlazorStateSample.Client.Features.Counter.IncrementCount
 {
+  using BlazorState;
+  using System.Threading;
+  using System.Threading.Tasks;
+
   public class IncrementCountHandler : RequestHandler<IncrementCountAction, CounterState>
   {
     public IncrementCountHandler(IStore aStore) : base(aStore) { }

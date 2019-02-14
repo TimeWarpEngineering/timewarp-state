@@ -1,13 +1,12 @@
-﻿using BlazorState;
-using BlazorStateSample.Client.Features.Counter;
-using BlazorStateSample.Client.Features.Counter.IncrementCount;
-using MediatR;
-using Microsoft.AspNetCore.Components;
-
-namespace BlazorStateSample.Client.Pages
+﻿namespace BlazorStateSample.Client.Pages
 {
-  #region CounterModel
+  using BlazorState;
+  using BlazorStateSample.Client.Features.Counter;
+  using BlazorStateSample.Client.Features.Counter.IncrementCount;
+  using MediatR;
+  using Microsoft.AspNetCore.Components;
 
+  #region DocsCounterModel
   public class CounterModel : ComponentBase, IBlazorStateComponent
   {
     public CounterState CounterState => Store.GetState<CounterState>();
@@ -15,6 +14,7 @@ namespace BlazorStateSample.Client.Pages
     [Inject] public IStore Store { get; set; }
 
     public void ReRender() => StateHasChanged();
+    #endregion DocsCounterModel
 
     #region IncrementCount
     public void IncrementCount()
@@ -24,5 +24,4 @@ namespace BlazorStateSample.Client.Pages
     }
     #endregion IncrementCount
   }
-  #endregion CounterModel
 }

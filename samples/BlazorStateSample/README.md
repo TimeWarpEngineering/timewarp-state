@@ -62,7 +62,7 @@ Your class should:
 
 4. Enter the code as follows:
 
-[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/CounterState.cs?name=CounterState)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Features/Counter/CounterState.cs]
 
 ## Seperation of HTML and C#.
 I like to keep my C# code separated from the HTML and yet co-located.
@@ -77,18 +77,17 @@ This is not required but I find it easier to reason about.
 
 ## Create the `CounterModel` for the `Counter` Page.
 1. Create a new file named `Counter.cshtml.cs` in the same `Pages` folder as `Counter.cshtml`
-CounterModel should either:
+CounterModel should:
   
-  * A: 
-    * inherit from ComponentBase
-    * implement IBlazorStateComponent
-  * B:
-    * inherit from BlazorStateComponent (which does the items in "A")
+  * inherit from ComponentBase
+  * implement IBlazorStateComponent
+  > [!NOTE]
+  > Optionally one could inherit form BlazorStateComponent to accomplish the above two items.
 
-    optionally:
-    * add property to access State from the store.
+optionally:
+  * add property to access State from the store.
 as follows:
-[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Pages/Counter.cshtml.cs)]
+[!code-csharp[CounterState](../BlazorStateSample/BlazorStateSample.Client/Pages/Counter.cshtml.cs?name=DocsCounterModel)]
 
 ## Displaying state in the user interface.
 1. Edit `Pages\Counter.cshtml` and add the following `inherits` clause.
