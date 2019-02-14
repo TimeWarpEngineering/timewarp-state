@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorStateSample.Client.Features.Counter.IncrementCount
 {
-    public class IncrementCountAction: IRequest<CounterState>
-    {
-        public int Amount { get; set; }
-    }
+  public class IncrementCountAction : IRequest<CounterState>
+  {
+    public int Amount { get; set; }
+  }
 }

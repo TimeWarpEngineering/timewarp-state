@@ -4,16 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BlazorStateSample.Client
 {
-    public class Startup
+  public class Startup
+  {
+    public void ConfigureServices(IServiceCollection services)
     {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddBlazorState();
-        }
-
-        public void Configure(IComponentsApplicationBuilder app)
-        {
-            app.AddComponent<App>("app");
-        }
+      services.AddBlazorState();
     }
+
+    public void Configure(IComponentsApplicationBuilder app)
+    {
+      app.AddComponent<App>("app");
+    }
+  }
 }
