@@ -14,10 +14,10 @@
     {
       if (new JsRuntimeLocation().IsClientSide)
       {
-		  // TODO add this back once Blazor.Extentions.Logging is updated to 0.8.0
-      //aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
-      //    .AddBrowserConsole()
-      //    .SetMinimumLevel(LogLevel.Trace));
+        // TODO add this back once Blazor.Extentions.Logging is updated to 0.8.0
+        //aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
+        //    .AddBrowserConsole()
+        //    .SetMinimumLevel(LogLevel.Trace));
       };
       aServiceCollection.AddBlazorState();
     }

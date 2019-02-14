@@ -21,12 +21,12 @@
       aApplicationBuilder.UseMvc();
       aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
       aApplicationBuilder.UseBlazorDebugging();
-      
+
     }
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      aServiceCollection.AddMvc( )
+      aServiceCollection.AddMvc()
         .AddNewtonsoftJson(aOptions =>
            aOptions.SerializerSettings.ContractResolver =
               new DefaultContractResolver());
