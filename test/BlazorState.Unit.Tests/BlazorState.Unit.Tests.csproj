@@ -13,9 +13,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\source\BlazorState\BlazorState.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="State\" />
-    <Folder Include="Store\" />
-  </ItemGroup>
 </Project>

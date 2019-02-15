@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fixie" Version="2.0.2" />
+    <PackageReference Include="Fixie" Version="2.0.3" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,9 +22,9 @@
         using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
         {
           object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-        Setup(instance);
+          Setup(instance);
 
-        aCase.Execute(instance);
+          aCase.Execute(instance);
         }
       });
     }

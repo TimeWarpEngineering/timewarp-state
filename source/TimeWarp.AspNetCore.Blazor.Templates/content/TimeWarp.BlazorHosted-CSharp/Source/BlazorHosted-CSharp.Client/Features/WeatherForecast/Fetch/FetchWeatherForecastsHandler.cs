@@ -6,7 +6,7 @@
   using System.Threading.Tasks;
   using BlazorState;
   using BlazorHosted_CSharp.Shared.Features.WeatherForecast;
-  using Microsoft.AspNetCore.Blazor;
+  using Microsoft.AspNetCore.Components;
 
   public partial class WeatherForecastsState
   {

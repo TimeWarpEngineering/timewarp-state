@@ -1,14 +1,14 @@
 ﻿namespace BlazorState
 {
   using MediatR;
-  using Microsoft.AspNetCore.Blazor.Components;
+  using Microsoft.AspNetCore.Components;
 
   /// <summary>
   /// A simple non required Base Class that just injects Mediator and Store.
   /// And exposes StateHasChanged
   /// </summary>
   /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-  public class BlazorStateComponent : BlazorComponent,
+  public class BlazorStateComponent : ComponentBase,
      IBlazorStateComponent
   {
     [Inject] public IMediator Mediator { get; set; }

@@ -1,24 +1,23 @@
 ﻿namespace BlazorHosted_CSharp.Client
 {
-  using Blazor.Extensions.Logging;
   using BlazorState;
   using BlazorState.Services;
-  using Microsoft.AspNetCore.Blazor.Builder;
+  using Microsoft.AspNetCore.Components.Builder;
   using Microsoft.Extensions.DependencyInjection;
-  using Microsoft.Extensions.Logging;
 
   public class Startup
   {
-    public void Configure(IBlazorApplicationBuilder aBlazorApplicationBuilder) =>
+    public void Configure(IComponentsApplicationBuilder aBlazorApplicationBuilder) =>
       aBlazorApplicationBuilder.AddComponent<App>("app");
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
       if (new JsRuntimeLocation().IsClientSide)
       {
-      aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
-          .AddBrowserConsole()
-          .SetMinimumLevel(LogLevel.Trace));
+        // TODO add this back once Blazor.Extentions.Logging is updated to 0.8.0
+        //aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
+        //    .AddBrowserConsole()
+        //    .SetMinimumLevel(LogLevel.Trace));
       };
       aServiceCollection.AddBlazorState();
     }
