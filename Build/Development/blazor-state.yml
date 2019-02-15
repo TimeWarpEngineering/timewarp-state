@@ -8,8 +8,10 @@ trigger:
   - source/BlazorState/*
   - source/BlazorState.Js/*
 
-workspace:
-  clean: all
+jobs: 
+- job: Job1
+  workspace:
+    clean: all
 
 # no PR builds
 pr: none
