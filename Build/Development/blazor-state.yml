@@ -1,4 +1,4 @@
-﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
   include:
@@ -7,6 +7,9 @@ trigger:
   include:
   - source/BlazorState/*
   - source/BlazorState.Js/*
+
+workspace:
+  clean: all
 
 # no PR builds
 pr: none
