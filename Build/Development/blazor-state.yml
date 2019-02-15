@@ -21,11 +21,6 @@ variables:
  Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
  Configuration: debug
 
-jobs: 
-- job: Job1
-  workspace:
-    clean: all
-
 steps:
 - script: echo Version $(Version)
 - script: echo Building the blazor-state nuget package on MyGet
