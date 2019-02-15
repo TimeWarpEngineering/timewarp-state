@@ -25,7 +25,7 @@ jobs:
   steps:
   - script: echo Version $(Version)
   - script: echo Building the blazor-state nuget package on MyGet
-  - checkout:
+  - checkout: self
     clean: true
 
   - task: Npm@1
