@@ -56,7 +56,7 @@
       Logger.LogDebug($"{GetType().Name}:{nameof(LoadStateFromJson)}:typeName: {typeName}");
       Logger.LogDebug($"aKeyValuePair.Value: {aKeyValuePair.Value}");
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
-      
+
       object newStateKeyValuePairs = Json.Deserialize<object>(aKeyValuePair.Value.ToString());
 
       // Get the Type

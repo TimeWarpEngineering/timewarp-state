@@ -11,7 +11,7 @@
   using BlazorState.Features.Routing;
   using BlazorState.Services;
   using MediatR;
-  using Microsoft.AspNetCore.Blazor.Services;
+  using Microsoft.AspNetCore.Components.Services;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;

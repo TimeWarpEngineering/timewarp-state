@@ -1,10 +1,10 @@
 ﻿namespace BlazorHosted_CSharp.Client.Layout
 {
   using BlazorState.Services;
-  using Microsoft.AspNetCore.Blazor.Components;
-  using Microsoft.AspNetCore.Blazor.Layouts;
+  using Microsoft.AspNetCore.Components;
+  using Microsoft.AspNetCore.Components.Layouts;
 
-  public class MainLayoutModel : BlazorLayoutComponent
+  public class MainLayoutModel : LayoutComponentBase
   {
     [Inject] public JsRuntimeLocation JsRuntimeLocation { get; set; }
   }

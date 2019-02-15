@@ -4,12 +4,11 @@
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
     <Copyright>(c) TimeWarp Enterprises Limited</Copyright>
-    <PackageLicenseUrl>https://github.com/TimeWarpEngineering/blazor-state/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/assets/Logo.png</PackageIconUrl>
     <PackageTags>Microsoft ASP.NET Core Blazor State MediatR Mediator Pipeline Redux</PackageTags>
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state</RepositoryUrl>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
@@ -27,7 +26,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <TestProjectTargetFramework>netstandard2.0</TestProjectTargetFramework>
   </PropertyGroup>
-
+  
   <Choose>
     <When Condition="'$(OfficialBuild)' != 'true'">
       <!-- On non-official builds we don't burn in a git sha. In large part because it
