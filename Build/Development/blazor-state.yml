@@ -14,6 +14,8 @@ trigger:
   - source/BlazorState/*
   - source/BlazorState.Js/*
 pr: none # will disable PR builds entirely
+
+ 
 jobs:
 - job: MyJob
   timeoutInMinutes: 10
@@ -23,6 +25,8 @@ jobs:
   steps:
   - script: echo Version $(Version)
   - script: echo Building the blazor-state nuget package on MyGet
+  - checkout:
+    clean: true
 
   - task: Npm@1
     inputs:
