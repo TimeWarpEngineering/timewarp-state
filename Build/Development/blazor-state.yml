@@ -8,11 +8,6 @@ trigger:
   - source/BlazorState/*
   - source/BlazorState.Js/*
 
-jobs: 
-- job: Job1
-  workspace:
-    clean: all
-
 # no PR builds
 pr: none
 
@@ -25,6 +20,11 @@ variables:
  Patch: '0'
  Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
  Configuration: debug
+
+jobs: 
+- job: Job1
+  workspace:
+    clean: all
 
 steps:
 - script: echo Version $(Version)
