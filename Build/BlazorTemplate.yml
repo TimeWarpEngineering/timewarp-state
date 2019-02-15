@@ -19,7 +19,7 @@ queue:
 variables:
  Major: '0'
  Minor: '4'
- Patch: '0'
+ Patch: '1'
  Version: "$(Major).$(Minor).$(Patch)"
 
 steps:
