@@ -20,13 +20,10 @@ jobs:
 - job: MyJob
   timeoutInMinutes: 10
   pool: TimeWarpEnterprises
-  workspace:
-    clean: all
+
   steps:
   - script: echo Version $(Version)
   - script: echo Building the blazor-state nuget package on MyGet
-  - checkout: self
-    clean: true
 
   - task: Npm@1
     inputs:
