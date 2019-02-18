@@ -1,8 +1,8 @@
-name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+﻿name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 variables:
   Major: '0'
   Minor: '4'
-  Patch: '0'
+  Patch: '1'
   Version: "$(Major).$(Minor).$(Patch)-beta-$(Build.BuildID)"
   Configuration: debug
 trigger:
