@@ -85,7 +85,7 @@ if the developer chose they could mark the Requests as such. i.e. IRequestWithSi
 
 ## License
 
-The Unlicense [https://choosealicense.com/licenses/unlicense/]
+[The Unlicense](https://choosealicense.com/licenses/unlicense/)
 
 [!include[Contributing](../contributing.md)]
 
