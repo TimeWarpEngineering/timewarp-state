@@ -14,11 +14,10 @@ pr: none
 queue:
   name: TimeWarpEnterprises
 
-
-variables:
-  DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-  GitHubUsername: TimeWarpEngineering
-  RepositoryName: 'blazor-state'
+# variables:
+#   DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+#   GitHubUsername: TimeWarpEngineering
+#   RepositoryName: 'blazor-state'
 
 steps:
 - script: echo Build Blazor-State Docs
