@@ -14,43 +14,38 @@ pr: none
 queue:
   name: TimeWarpEnterprises
 
-
-variables:
-  DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-  GitHubUsername: TimeWarpEngineering
-  RepositoryName: 'blazor-state'
-  CommitMessage: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-
+# variables:
+#   DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+#   GitHubUsername: TimeWarpEngineering
+#   RepositoryName: 'blazor-state'
 
 steps:
 - script: echo Build Blazor-State Docs
 
-- task: DeleteFiles@1
-  displayName: Delete files from 
+- task: DotNetCoreCLI@2
+  displayName: Build BlazorState
   inputs:
-    Contents: ghpages
-  enabled: true
+    command: build
+    projects: 'source/BlazorState/BlazorState.csproj'
+    configuration: debug
 
-- task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
-  displayName: Create DocFx Documentation
+# Command Line
+# Run a command line script using cmd.exe on Windows and bash on macOS and Linux.
+- task: CmdLine@2
   inputs:
-    solution: 'documentation/docfx.json'
-  enabled: true
+    script: 'docfx documentation/docfx.json' 
+    #workingDirectory: # Optional
+    #failOnStderr: false # Optional
 
-- task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
-  displayName: Publishes to GitHub Pages
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: ReleaseScript'
   inputs:
-    docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-    githubusername: TimeWarpEngineering
-    githubemail: '$(GitHubEmail)'
-    githubaccesstoken: $(GitHubAccessToken)
-    repositoryname: 'blazor-state'
-  enabled: false
+    PathtoPublish: 'build\PublishToGitHubPages.ps1'
+    ArtifactName: ReleaseScript
+    publishLocation: Container  
 
-- task: PowerShell@2
-  displayName: 'PowerShell Script'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: documentationSite'
   inputs:
-    targetType: FilePath
-    filePath: Build/PublishToGitHubPages.ps1
-  env: 
-    GitHubAccessTokenSecret: $(GitHubAccessToken)
+    PathtoPublish: 'documentation/_site'
+    ArtifactName: _site

@@ -1,8 +1,8 @@
 ﻿namespace BlazorHosted_CSharp.Client.Layout
 {
-  using Microsoft.AspNetCore.Blazor.Components;
+  using Microsoft.AspNetCore.Components;
 
-  public class NavMenuModel : BlazorComponent
+  public class NavMenuModel : ComponentBase
   {
     protected bool CollapseNavMenu { get; set; }
 

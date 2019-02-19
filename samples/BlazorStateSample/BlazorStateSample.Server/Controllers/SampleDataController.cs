@@ -1,8 +1,9 @@
-﻿using System;
+﻿using BlazorStateSample.Shared;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BlazorStateSample.Shared;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace BlazorStateSample.Server.Controllers
 {

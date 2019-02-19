@@ -14,7 +14,7 @@
       RuleFor(aSetVersionRequest => aSetVersionRequest.Parameter3).LessThanOrEqualTo(10);
     }
 
-    private bool ValidateParameter3GreaterthanParameter2(SampleCommandRequest aSampleCommandRequest) => 
+    private bool ValidateParameter3GreaterthanParameter2(SampleCommandRequest aSampleCommandRequest) =>
       (aSampleCommandRequest.Parameter3 > aSampleCommandRequest.Parameter2);
   }
 }

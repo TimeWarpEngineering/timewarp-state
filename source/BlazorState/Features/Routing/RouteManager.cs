@@ -1,7 +1,7 @@
 ﻿namespace BlazorState.Features.Routing
 {
   using MediatR;
-  using Microsoft.AspNetCore.Blazor.Services;
+  using Microsoft.AspNetCore.Components.Services;
 
   /// <summary>
   /// TODO does this need to be public?

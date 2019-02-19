@@ -6,7 +6,7 @@
   {
     private static IWebAssemblyHostBuilder CreateHostBuilder(string[] aArgumentArray) =>
         BlazorWebAssemblyHost.CreateDefaultBuilder()
-            .UseBlazorStartup<Startup>();
+        .UseBlazorStartup<Startup>();
 
     private static void Main(string[] aArgumentArray) => CreateHostBuilder(aArgumentArray).Build().Run();
   }

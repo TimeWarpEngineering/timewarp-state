@@ -1,30 +1,27 @@
-﻿using BlazorState;
-using BlazorStateSample.Client.Features.Counter.IncrementCount;
-using BlazorStateSample.Client.Features.Counter;
-using MediatR;
-using Microsoft.AspNetCore.Blazor.Components;
-
-namespace BlazorStateSample.Client.Pages
+﻿namespace BlazorStateSample.Client.Pages
 {
-  # region CounterModel
+  using BlazorState;
+  using BlazorStateSample.Client.Features.Counter;
+  using BlazorStateSample.Client.Features.Counter.IncrementCount;
+  using MediatR;
+  using Microsoft.AspNetCore.Components;
 
-  public class CounterModel : BlazorComponent, IBlazorStateComponent
+  #region DocsCounterModel
+  public class CounterModel : ComponentBase, IBlazorStateComponent
   {
     public CounterState CounterState => Store.GetState<CounterState>();
     [Inject] public IMediator Mediator { get; set; }
     [Inject] public IStore Store { get; set; }
+
     public void ReRender() => StateHasChanged();
+    #endregion DocsCounterModel
 
     #region IncrementCount
-
     public void IncrementCount()
     {
-      var incrementCountRequest = new IncrementCountRequest { Amount = 3 };
+      var incrementCountRequest = new IncrementCountAction { Amount = 3 };
       Mediator.Send(incrementCountRequest);
     }
-
     #endregion IncrementCount
   }
-
-  #endregion
 }
