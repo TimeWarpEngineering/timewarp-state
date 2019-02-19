@@ -25,6 +25,13 @@ variables:
 steps:
 - script: echo Build Blazor-State Docs
 
+- task: DotNetCoreCLI@2
+  displayName: Build BlazorState
+  inputs:
+    command: build
+    projects: 'source/BlazorState/BlazorState.csproj'
+    configuration: debug
+
 - task: DeleteFiles@1
   displayName: Delete files from 
   inputs:
