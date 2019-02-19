@@ -50,13 +50,14 @@ steps:
   displayName: Publish Artifact
   inputs:
     PathtoPublish: 'build\PublishToGitHubPages.ps1'
-    ArtifactName: drop
+    ArtifactName: ReleaseScript
     publishLocation: Container  
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
   inputs:
     PathtoPublish: 'documentation/_site'
+    ArtifactName: documentationSite
 
 # - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
 #   displayName: Publishes to GitHub Pages
