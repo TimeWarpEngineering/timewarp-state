@@ -17,7 +17,7 @@ queue:
 variables:
  Major: '0'
  Minor: '0'
- Patch: '3'
+ Patch: '4'
  Version: "$(Major).$(Minor).$(Patch)"
  Configuration: debug
 
@@ -54,9 +54,9 @@ steps:
     ArtifactName: drop
     publishLocation: Container
 
-- task: NuGetCommand@2
-  displayName: Push Nuget to Nuget
-  inputs:
-    command: push
-    nuGetFeedType: external
-    publishFeedCredentials: Nuget.org
+# - task: NuGetCommand@2
+#   displayName: Push Nuget to Nuget
+#   inputs:
+#     command: push
+#     nuGetFeedType: external
+#     publishFeedCredentials: Nuget.org
