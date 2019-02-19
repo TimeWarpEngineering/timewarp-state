@@ -37,20 +37,20 @@ steps:
     solution: 'documentation/docfx.json'
   enabled: true
 
-- task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
-  displayName: Publishes to GitHub Pages
-  inputs:
-    docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-    githubusername: TimeWarpEngineering
-    githubemail: '$(GitHubEmail)'
-    githubaccesstoken: $(GitHubAccessToken)
-    repositoryname: 'blazor-state'
-  enabled: false
+# - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
+#   displayName: Publishes to GitHub Pages
+#   inputs:
+#     docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+#     githubusername: TimeWarpEngineering
+#     githubemail: '$(GitHubEmail)'
+#     githubaccesstoken: $(GitHubAccessToken)
+#     repositoryname: 'blazor-state'
+#   enabled: false
 
-- task: PowerShell@2
-  displayName: 'PowerShell Script'
-  inputs:
-    targetType: FilePath
-    filePath: Build/PublishToGitHubPages.ps1
-  env: 
-    GitHubAccessTokenSecret: $(GitHubAccessToken)
+# - task: PowerShell@2
+#   displayName: 'PowerShell Script'
+#   inputs:
+#     targetType: FilePath
+#     filePath: Build/PublishToGitHubPages.ps1
+#   env: 
+#     GitHubAccessTokenSecret: $(GitHubAccessToken)
