@@ -37,6 +37,13 @@ steps:
     solution: 'documentation/docfx.json'
   enabled: true
 
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)'
+    ArtifactName: drop
+    publishLocation: Container  
+
 # - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
 #   displayName: Publishes to GitHub Pages
 #   inputs:
