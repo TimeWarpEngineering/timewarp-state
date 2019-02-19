@@ -49,7 +49,14 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: 'documentation\_site\*'
+    PathtoPublish: 'build\PublishToGitHubPages.ps1'
+    ArtifactName: drop
+    publishLocation: Container  
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: 'documentation\_site\**'
     ArtifactName: drop
     publishLocation: Container  
 
