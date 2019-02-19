@@ -25,39 +25,36 @@ variables:
 steps:
 - script: echo Build Blazor-State Docs
 
+- task: DotNetCoreCLI@2
+  displayName: Build BlazorState
+  inputs:
+    command: build
+    projects: 'source/BlazorState/BlazorState.csproj'
+    configuration: debug
+
+# Command Line
+# Run a command line script using cmd.exe on Windows and bash on macOS and Linux.
+- task: CmdLine@2
+  inputs:
+    script: 'docfx documentation/docfx.json' 
+    #workingDirectory: # Optional
+    #failOnStderr: false # Optional
+
 - task: DeleteFiles@1
   displayName: Delete files from 
   inputs:
     Contents: ghpages
   enabled: true
 
-- task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
-  displayName: Create DocFx Documentation
-  inputs:
-    solution: 'documentation/docfx.json'
-  enabled: true
-
 - task: PublishBuildArtifacts@1
-  displayName: Publish Artifact
+  displayName: 'Publish Artifact: ReleaseScript'
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: drop
+    PathtoPublish: 'build\PublishToGitHubPages.ps1'
+    ArtifactName: ReleaseScript
     publishLocation: Container  
 
-# - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
-#   displayName: Publishes to GitHub Pages
-#   inputs:
-#     docPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-#     githubusername: TimeWarpEngineering
-#     githubemail: '$(GitHubEmail)'
-#     githubaccesstoken: $(GitHubAccessToken)
-#     repositoryname: 'blazor-state'
-#   enabled: false
-
-# - task: PowerShell@2
-#   displayName: 'PowerShell Script'
-#   inputs:
-#     targetType: FilePath
-#     filePath: Build/PublishToGitHubPages.ps1
-#   env: 
-#     GitHubAccessTokenSecret: $(GitHubAccessToken)
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: documentationSite'
+  inputs:
+    PathtoPublish: 'documentation/_site'
+    ArtifactName: DocumentationSite
