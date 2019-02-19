@@ -57,4 +57,4 @@ steps:
   displayName: 'Publish Artifact: documentationSite'
   inputs:
     PathtoPublish: 'documentation/_site'
-    ArtifactName: DocumentationSite
+    ArtifactName: _site
