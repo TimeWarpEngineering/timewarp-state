@@ -32,16 +32,18 @@ steps:
     projects: 'source/BlazorState/BlazorState.csproj'
     configuration: debug
 
+# Command Line
+# Run a command line script using cmd.exe on Windows and bash on macOS and Linux.
+- task: CmdLine@2
+  inputs:
+    script: 'docfx documentation/docfx.json' 
+    #workingDirectory: # Optional
+    #failOnStderr: false # Optional
+
 - task: DeleteFiles@1
   displayName: Delete files from 
   inputs:
     Contents: ghpages
-  enabled: true
-
-- task: chrismason.vsts-docfxtasks.docfx-extension-build-task.DocFxTask@0
-  displayName: Create DocFx Documentation
-  inputs:
-    solution: 'documentation/docfx.json'
   enabled: true
 
 - task: PublishBuildArtifacts@1
