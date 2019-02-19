@@ -14,13 +14,10 @@ pr: none
 queue:
   name: TimeWarpEnterprises
 
-
-variables:
-  DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
-  GitHubUsername: TimeWarpEngineering
-  RepositoryName: 'blazor-state'
-  CommitMessage: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-
+# variables:
+#   DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+#   GitHubUsername: TimeWarpEngineering
+#   RepositoryName: 'blazor-state'
 
 steps:
 - script: echo Build Blazor-State Docs
@@ -40,12 +37,6 @@ steps:
     #workingDirectory: # Optional
     #failOnStderr: false # Optional
 
-- task: DeleteFiles@1
-  displayName: Delete files from 
-  inputs:
-    Contents: ghpages
-  enabled: true
-
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: ReleaseScript'
   inputs:
@@ -57,4 +48,4 @@ steps:
   displayName: 'Publish Artifact: documentationSite'
   inputs:
     PathtoPublish: 'documentation/_site'
-    ArtifactName: DocumentationSite
+    ArtifactName: _site
