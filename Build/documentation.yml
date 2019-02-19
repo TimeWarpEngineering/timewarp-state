@@ -19,8 +19,6 @@ variables:
   DocPath: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
   GitHubUsername: TimeWarpEngineering
   RepositoryName: 'blazor-state'
-  CommitMessage: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
-
 
 steps:
 - script: echo Build Blazor-State Docs
@@ -39,12 +37,6 @@ steps:
     script: 'docfx documentation/docfx.json' 
     #workingDirectory: # Optional
     #failOnStderr: false # Optional
-
-- task: DeleteFiles@1
-  displayName: Delete files from 
-  inputs:
-    Contents: ghpages
-  enabled: true
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: ReleaseScript'
