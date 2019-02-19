@@ -1,4 +1,4 @@
-﻿# Primary output is a new Nuget Package for TimeWarp Templates
+# Primary output is a new Nuget Package for TimeWarp Templates
 name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
@@ -59,7 +59,7 @@ steps:
     command: publish
     publishWebProjects: false
     projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/Source/BlazorHosted-CSharp.Server/BlazorHosted-CSharp.Server.csproj'
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --self-contained true'
   enabled: true
 
 - task: PublishBuildArtifacts@1
