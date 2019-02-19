@@ -53,12 +53,12 @@ steps:
     ArtifactName: drop
     publishLocation: Container  
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish Artifact
-  inputs:
-    PathtoPublish: 'documentation\_site\**'
-    ArtifactName: drop
-    publishLocation: Container  
+# - task: PublishBuildArtifacts@1
+#   displayName: Publish Artifact
+#   inputs:
+#     PathtoPublish: 'documentation\_site\**'
+#     ArtifactName: drop
+#     publishLocation: Container  
 
 # - task: AccidentalFish.githubpages-publish.AccidentalFish.GitHubPages-Publish.GitHubPagesPublish@0
 #   displayName: Publishes to GitHub Pages
