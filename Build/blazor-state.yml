@@ -18,7 +18,7 @@ queue:
 variables:
  Major: '0'
  Minor: '4'
- Patch: '1'
+ Patch: '2'
  Version: "$(Major).$(Minor).$(Patch)"
 steps:
 - script: echo Version $(Version)
