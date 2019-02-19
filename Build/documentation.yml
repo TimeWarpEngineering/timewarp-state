@@ -49,7 +49,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)\documentation\_site\*'
+    PathtoPublish: 'documentation\_site\*'
     ArtifactName: drop
     publishLocation: Container  
 
