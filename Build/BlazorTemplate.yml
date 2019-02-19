@@ -59,7 +59,7 @@ steps:
     command: publish
     publishWebProjects: false
     projects: 'source/TimeWarp.AspNetCore.Blazor.Templates/content/TimeWarp.BlazorHosted-CSharp/Source/BlazorHosted-CSharp.Server/BlazorHosted-CSharp.Server.csproj'
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --self-contained true'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --self-contained true --runtime win10-x64'
   enabled: true
 
 - task: PublishBuildArtifacts@1
