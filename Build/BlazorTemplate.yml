@@ -53,13 +53,6 @@ steps:
     versioningScheme: byEnvVar
     versionEnvVar: Version
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish Artifact
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: TemplateNuget
-    publishLocation: Container
-
 - task: DotNetCoreCLI@2
   displayName: Publish The template Server project which will be deployed to azure
   inputs:
@@ -73,7 +66,7 @@ steps:
   displayName: Publish Artifact
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: DefaultTemplateSite
+    ArtifactName: TimeWarpBlazorTemplateArtifacts
     publishLocation: Container
 
 
