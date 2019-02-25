@@ -13,7 +13,7 @@
 
     public string Name { get; private set; }
 
-    public string Version => this.GetType().Assembly.;
+    public string Version => GetType().Assembly.GetName().Version.ToString();
 
 
     public override object Clone() => new ApplicationState(this);
