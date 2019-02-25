@@ -5,3 +5,5 @@
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:BlazorStateSample.Server.Program.Main(System.String[])")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>", Scope = "member", Target = "~M:BlazorStateSample.Server.Program.BuildWebHost(System.String[])~Microsoft.AspNetCore.Hosting.IWebHost")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0022:Use expression body for methods", Justification = "<Pending>", Scope = "member", Target = "~M:BlazorStateSample.Server.Program.Main(System.String[])")]
+
