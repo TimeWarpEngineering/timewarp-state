@@ -7,16 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Features\WeatherForecast\GetAll\**" />
-    <EmbeddedResource Remove="Features\WeatherForecast\GetAll\**" />
-    <None Remove="Features\WeatherForecast\GetAll\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Base\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" Version="6.0.0" />
   </ItemGroup>
 

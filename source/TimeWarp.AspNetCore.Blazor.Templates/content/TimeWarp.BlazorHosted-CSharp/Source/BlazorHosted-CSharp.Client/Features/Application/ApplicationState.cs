@@ -13,6 +13,9 @@
 
     public string Name { get; private set; }
 
+    public string Version => GetType().Assembly.GetName().Version.ToString();
+
+
     public override object Clone() => new ApplicationState(this);
 
     protected override void Initialize() => Name = "Blazor State Demo Application";

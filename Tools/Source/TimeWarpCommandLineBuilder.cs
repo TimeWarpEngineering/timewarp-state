@@ -43,7 +43,8 @@
 
       IEnumerable<ServiceDescriptor> serviceDescriptors = ServiceCollection.Where(aServiceDescriptor =>
         aServiceDescriptor.ServiceType.IsConstructedGenericType && aServiceDescriptor.Lifetime == ServiceLifetime.Transient &&
-        aServiceDescriptor.ServiceType.Name.Contains(iRequestHandlerName));
+        aServiceDescriptor.ServiceType.Name.Contains(iRequestHandlerName) &&
+        aServiceDescriptor.ServiceType.IsVisible);
 
       // Add Command for each IRequest Handled
       foreach (ServiceDescriptor serviceDescriptor in serviceDescriptors)

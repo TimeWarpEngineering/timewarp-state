@@ -1,2 +1,7 @@
-- name: Introduction
+﻿# auto-generated
+- name: Grooming Process
+  href: GroomingProcess.md
+- name: Story Template
+  href: StoryTemplate.md
+- name: Templates Introduction
   href: TemplatesIntroduction.md
