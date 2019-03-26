@@ -6,11 +6,16 @@
 
   <ItemGroup>
     <PackageReference Include="Fixie" Version="2.0.3" />
+    <PackageReference Include="Scrutor" Version="3.0.2" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\source\BlazorState\BlazorState.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\JavascriptInterop\" />
   </ItemGroup>
 </Project>
