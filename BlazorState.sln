@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateSample.Shared", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Js", "source\BlazorState.Js\BlazorState.Js.csproj", "{51173297-32B7-473E-BA34-788B8E022536}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Unit.Tests", "test\BlazorState.Unit.Tests\BlazorState.Unit.Tests.csproj", "{F72003E0-EE6F-41F0-9D6F-635A952B94E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState.Tests", "test\BlazorState.Unit.Tests\BlazorState.Tests.csproj", "{F72003E0-EE6F-41F0-9D6F-635A952B94E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2902FDFD-016E-4BF7-8B41-53D674FA53DD}"
 EndProject
