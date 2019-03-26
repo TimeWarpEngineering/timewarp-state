@@ -69,7 +69,7 @@
         // Update some error state so the user knows of the failure.
         // But as a rule if this is an exception it should be unexpected.
         Logger.LogError($"{className}: Error: {aException.Message}");
-        Logger.LogError($"{className}: InnerError: {aException?.InnerException.Message}");
+        Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
         Logger.LogError($"{className}: Restoring State of type: {responseType}");
         if (originalState != null)
           Store.SetState(originalState);
