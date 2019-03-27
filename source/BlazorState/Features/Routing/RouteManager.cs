@@ -4,7 +4,8 @@
   using Microsoft.AspNetCore.Components.Services;
 
   /// <summary>
-  /// TODO does this need to be public?
+  /// When constructed will attach a OnLocationChanged Handler 
+  /// to send ChangeRouteRequest
   /// </summary>
   public class RouteManager
   {
