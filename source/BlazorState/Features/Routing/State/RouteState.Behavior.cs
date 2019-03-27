@@ -6,9 +6,9 @@
   {
     public RouteState() { }
 
-    protected RouteState(RouteState aState) : this()
+    protected RouteState(RouteState aRouteState) : this()
     {
-      Route = aState.Route;
+      Route = aRouteState.Route;
     }
 
     public override object Clone() => new RouteState(this);

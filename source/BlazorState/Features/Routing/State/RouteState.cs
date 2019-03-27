@@ -7,6 +7,6 @@
   /// </summary>
   public partial class RouteState : State<RouteState>
   {
-    public string Route { get; set; }
+    public string Route { get; private set; }
   }
 }
