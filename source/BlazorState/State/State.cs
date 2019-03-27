@@ -25,6 +25,10 @@
     /// <remarks>Implement this if you want to use ReduxDevTools Time Travel</remarks>
     public virtual TState Hydrate(IDictionary<string, object> aKeyValuePairs) => throw new NotImplementedException();
 
+    /// <summary>
+    /// Use this method to prevent running methods from source other than Tests
+    /// </summary>
+    /// <param name="aAssembly"></param>
     public void ThrowIfNotTestAssembly(Assembly aAssembly)
     {
       if (!aAssembly.FullName.Contains("Test"))
@@ -33,6 +37,9 @@
       }
     }
 
+    /// <summary>
+    /// Override this to Set the initail state
+    /// </summary>
     protected abstract void Initialize();
 
   }

@@ -17,6 +17,6 @@
     protected IState State => Store.GetState<TState>();
     protected IStore Store { get; set; }
 
-    public abstract Task<TState> Handle(TRequest request, CancellationToken aCancellationToken);
+    public abstract Task<TState> Handle(TRequest aRequest, CancellationToken aCancellationToken);
   }
 }

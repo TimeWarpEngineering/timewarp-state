@@ -1,4 +1,4 @@
-﻿namespace BlazorState
+﻿namespace BlazorState.Behaviors.ReduxDevTools
 {
   using System;
   using System.Collections.Generic;
