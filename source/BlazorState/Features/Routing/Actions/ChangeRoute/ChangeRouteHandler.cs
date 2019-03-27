@@ -24,9 +24,12 @@
       public override Task<RouteState> Handle(ChangeRouteRequest aChangeRouteRequest, CancellationToken aCancellationToken)
       {
         string newAbsoluteUri = UriHelper.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
+        string absoluteUri = UriHelper.GetAbsoluteUri();
 
-        if (UriHelper.GetAbsoluteUri() != newAbsoluteUri)
+        if (absoluteUri != newAbsoluteUri)
         {
+          // RouteManager OnLocationChanged will fire this ChangeRouteRequest again 
+          // and the second time we will hit the else clause.
           UriHelper.NavigateTo(newAbsoluteUri);
         }
         else if (RouteState.Route != newAbsoluteUri)

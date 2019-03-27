@@ -16,18 +16,16 @@
     public TestFixture(BlazorStateTestServer aBlazorStateTestServer)
     {
       BlazorStateTestServer = aBlazorStateTestServer;
-      IWebAssemblyHostBuilder webAssemblyHostBuilder =
-        BlazorWebAssemblyHost.CreateDefaultBuilder()
-          //.UseBlazorStartup<Startup>()
-          .ConfigureServices(ConfigureServices);
-
-      ServiceProvider = webAssemblyHostBuilder.Build().Services;
+      WebAssemblyHostBuilder = BlazorWebAssemblyHost.CreateDefaultBuilder()
+        .ConfigureServices(ConfigureServices);
     }
+
+    public IWebAssemblyHostBuilder WebAssemblyHostBuilder { get; }
 
     /// <summary>
     /// This is the ServiceProvider that will be used by the Client
     /// </summary>
-    public IServiceProvider ServiceProvider { get; set; }
+    public IServiceProvider ServiceProvider => WebAssemblyHostBuilder.Build().Services;
 
     private BlazorStateTestServer BlazorStateTestServer { get; }
 
