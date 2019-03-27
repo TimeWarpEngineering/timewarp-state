@@ -68,8 +68,13 @@
     /// </summary>
     /// <remarks>Sends an instance of this item to JavaScript side
     /// </remarks>
-    private void InitializeJavascriptInterop() =>
-      JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
+    private void InitializeJavascriptInterop()
+    {
+      // TOOD 0.9.0 we will have to Inject IJSRuntime so this technique won't work for the test.
+      // Maybe we add to the End2EndTests to click a button that invokes a JS interop test.
+      if(!Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests"))
+        JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
+    }
 
     private async Task<object> SendToMediator(Type aRequestType, object aInstance)
     {
