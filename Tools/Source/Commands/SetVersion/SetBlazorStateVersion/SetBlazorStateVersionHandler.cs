@@ -23,7 +23,6 @@
     {
       DirectoryInfo gitDirectory = GitService.GitRootDirectoryInfo();
       BasePath = gitDirectory.FullName;
-      UpdateAzurePipeLinesYml(aSetBlazorStateVersionRequest, @"\Build\Development\blazor-state.yml");
       UpdateAzurePipeLinesYml(aSetBlazorStateVersionRequest, @"\Build\blazor-state.yml");
       UpdateVersionPrefix(aSetBlazorStateVersionRequest);
       UpdatePackageVersion(aSetBlazorStateVersionRequest);

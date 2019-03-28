@@ -1,4 +1,4 @@
-# Primary output is a new Nuget Package for TimeWarp Templates
+﻿# Primary output is a new Nuget Package for TimeWarp Templates
 name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
 trigger:
  branches:
@@ -19,7 +19,7 @@ queue:
 variables:
  Major: '0'
  Minor: '4'
- Patch: '2'
+ Patch: '3'
  Version: "$(Major).$(Minor).$(Patch)"
 
 steps:
