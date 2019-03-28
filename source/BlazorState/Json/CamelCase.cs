@@ -1,4 +1,3 @@
-
 namespace Microsoft.JSInterop
 {
   using System;

@@ -5,7 +5,7 @@
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
-    <PackageIcon>Logo.png</PackageIcon>
+    <PackageIcon>..\..\assets\Logo.png</PackageIcon>
     <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Company>TimeWarp Enterprises Limited</Company>

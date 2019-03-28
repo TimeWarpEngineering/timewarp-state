@@ -1,0 +1,1 @@
+- [x] Update RouteManager to subscribe to Route Change and update the URL if not already there.

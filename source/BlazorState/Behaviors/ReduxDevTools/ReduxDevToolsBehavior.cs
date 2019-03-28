@@ -40,12 +40,12 @@
       CancellationToken aCancellationToken,
       RequestHandlerDelegate<TResponse> aNext)
     {
+      Logger.LogDebug($"{GetType().Name}: Start");
+      Logger.LogDebug($"{GetType().Name}: Call next");
+      TResponse response = await aNext();
+      Logger.LogDebug($"{GetType().Name}: Start Post Processing");
       try
       {
-        Logger.LogDebug($"{GetType().Name}: Start");
-        Logger.LogDebug($"{GetType().Name}: Call next");
-        TResponse response = await aNext();
-        Logger.LogDebug($"{GetType().Name}: Start Post Processing");
         if (!(aRequest is IReduxRequest) && ReduxDevToolsInterop.IsEnabled)
         {
           ReduxDevToolsInterop.Dispatch(aRequest, Store.GetSerializableState());
