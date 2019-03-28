@@ -4,7 +4,6 @@
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
     <Copyright>(c) TimeWarp Enterprises Limited</Copyright>
-    <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>Microsoft ASP.NET Core Blazor State MediatR Mediator Pipeline Redux</PackageTags>
