@@ -13,7 +13,7 @@
     public ReduxDevToolsInterop(
       ILogger<ReduxDevToolsInterop> aLogger,
       IReduxDevToolsStore aStore,
-      JsRuntimeLocation aJsRuntimeLocation)
+      BlazorHostingLocation aJsRuntimeLocation)
     {
       Logger = aLogger;
       Store = aStore;
@@ -21,7 +21,7 @@
     }
 
     public bool IsEnabled { get; set; }
-    private JsRuntimeLocation JsRuntimeLocation { get; }
+    private BlazorHostingLocation JsRuntimeLocation { get; }
     private ILogger Logger { get; }
     private IReduxDevToolsStore Store { get; }
 

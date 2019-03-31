@@ -41,7 +41,7 @@
       // Getting a stack trace doesn't work on mono.
       EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
 
-      aServices.AddScoped<JsRuntimeLocation>();
+      aServices.AddScoped<BlazorHostingLocation>();
       aServices.AddScoped<JsonRequestHandler>();
       if (options.UseCloneStateBehavior)
       {
@@ -65,7 +65,7 @@
 
     private static void EnsureHttpClient(IServiceCollection aServices)
     {
-      var jsRuntimeLocation = new JsRuntimeLocation();
+      var jsRuntimeLocation = new BlazorHostingLocation();
 
       // Server Side Blazor doesn't register HttpClient by default
       if (jsRuntimeLocation.IsServerSide)

@@ -5,6 +5,7 @@
   using System.Reflection;
   using System.Threading;
   using System.Threading.Tasks;
+  using BlazorState.Services;
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
@@ -13,17 +14,20 @@
   {
     public JsonRequestHandler(
       ILogger<JsonRequestHandler> aLogger,
-      IMediator aMediator)
+      IMediator aMediator,
+      BlazorHostingLocation aJsRuntimeLocation)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
+      JsRuntimeLocation = aJsRuntimeLocation;
       InitializeJavascriptInterop();
     }
 
     private ILogger Logger { get; }
 
     private IMediator Mediator { get; }
+    private BlazorHostingLocation JsRuntimeLocation { get; }
 
     /// <summary>
     /// This will handle the Javascript interop
@@ -72,7 +76,7 @@
     {
       // TOOD 0.9.0 we will have to Inject IJSRuntime so this technique won't work for the test.
       // Maybe we add to the End2EndTests to click a button that invokes a JS interop test.
-      if(!Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests"))
+      if (JsRuntimeLocation.IsServerSide && !Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests"))
         JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
     }
 
