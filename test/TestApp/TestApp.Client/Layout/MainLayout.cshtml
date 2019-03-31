@@ -5,14 +5,7 @@
 </div>
 <div class="main">
   <div class="top-row px-4">
-    @if (JsRuntimeLocation.IsClientSide)
-    {
-      <div>ClientSide</div>
-    }
-    else
-    {
-      <div>ServerSide</div>
-    }
+    <BlazorLocation/>
     <a href="https://blazor.net" target="_blank" class="ml-md-auto">About</a>
   </div>
   <div class="content px-4">

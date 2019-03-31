@@ -1,10 +1,9 @@
-﻿namespace TestApp.Client.Layout
+﻿namespace TestApp.Client.Components
 {
   using BlazorState.Services;
   using Microsoft.AspNetCore.Components;
-  using Microsoft.AspNetCore.Components.Layouts;
 
-  public class MainLayoutModel : LayoutComponentBase
+  public class BlazorLocationModel: ComponentBase
   {
     [Inject] public BlazorHostingLocation BlazorHostingLocation { get; set; }
   }

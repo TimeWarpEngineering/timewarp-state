@@ -1,0 +1,10 @@
+﻿@inherits BlazorLocationModel
+
+@if (BlazorHostingLocation.IsClientSide)
+{
+  <div>ClientSide</div>
+}
+else
+{
+  <div>ServerSide</div>
+}
