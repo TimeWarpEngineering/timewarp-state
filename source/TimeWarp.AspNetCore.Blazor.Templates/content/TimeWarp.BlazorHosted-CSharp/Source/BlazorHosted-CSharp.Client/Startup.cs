@@ -12,7 +12,7 @@
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      if (new JsRuntimeLocation().IsClientSide)
+      if (new BlazorHostingLocation().IsClientSide)
       {
         // TODO add this back once Blazor.Extentions.Logging is updated to 0.8.0
         //aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder

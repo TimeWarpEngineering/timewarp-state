@@ -6,6 +6,6 @@
 
   public class MainLayoutModel : LayoutComponentBase
   {
-    [Inject] public JsRuntimeLocation JsRuntimeLocation { get; set; }
+    [Inject] public BlazorHostingLocation BlazorHostingLocation { get; set; }
   }
 }
