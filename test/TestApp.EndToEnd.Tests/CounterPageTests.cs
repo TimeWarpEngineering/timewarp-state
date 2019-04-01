@@ -34,22 +34,29 @@
       WebDriver.FindElement(By.LinkText("Counter")).Click();
       WaitAndAssertEqual
       (
-        aExpected: "Counter",
+        aExpected: "Counter Page",
         aActual: () => WebDriver.FindElement(By.TagName("h1")).Text
       );
 
       // Observe the initial value is 3
-      IWebElement countDisplayElement = WebDriver.FindElement(By.CssSelector("h1 + p"));
-      countDisplayElement.Text.ShouldBe("Current count: 3");
+      IWebElement countDisplayElement1 = WebDriver.FindElement(By.CssSelector("[data-qa='Counter1'] p"));
+      countDisplayElement1.Text.ShouldBe("Current count: 3");
+
+      IWebElement countDisplayElement2 = WebDriver.FindElement(By.CssSelector("[data-qa='Counter2'] p"));
+      countDisplayElement2.Text.ShouldBe("Current count: 3");
 
       // Click the button; see it increment by 5
-      IWebElement button = WebDriver.FindElement(By.CssSelector(".main button"));
-      button.Click();
-      WaitAndAssertEqual("Current count: 8", () => countDisplayElement.Text);
-      button.Click();
-      WaitAndAssertEqual("Current count: 13", () => countDisplayElement.Text);
-      button.Click();
-      WaitAndAssertEqual("Current count: 18", () => countDisplayElement.Text);
+      IWebElement button1 = WebDriver.FindElement(By.CssSelector("[data-qa='Counter1'] button"));
+      IWebElement button2 = WebDriver.FindElement(By.CssSelector("[data-qa='Counter2'] button"));
+      button1.Click();
+      WaitAndAssertEqual("Current count: 8", () => countDisplayElement1.Text);
+      WaitAndAssertEqual("Current count: 8", () => countDisplayElement2.Text);
+      button2.Click();
+      WaitAndAssertEqual("Current count: 13", () => countDisplayElement1.Text);
+      WaitAndAssertEqual("Current count: 13", () => countDisplayElement2.Text);
+      button1.Click();
+      WaitAndAssertEqual("Current count: 18", () => countDisplayElement1.Text);
+      WaitAndAssertEqual("Current count: 18", () => countDisplayElement2.Text);
     }
   }
 }

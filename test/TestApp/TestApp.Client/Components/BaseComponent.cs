@@ -16,8 +16,8 @@
   /// </remarks>
   public class BaseComponent : BlazorStateDevToolsComponent
   {
-    public ApplicationState ApplicationState => Store.GetState<ApplicationState>();
-    public CounterState CounterState => Store.GetState<CounterState>();
-    public WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
+    public ApplicationState ApplicationState => GetState<ApplicationState>();
+    public CounterState CounterState => GetState<CounterState>();
+    public WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
   }
 }

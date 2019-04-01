@@ -4,7 +4,6 @@
   using System.Threading.Tasks;
   using BlazorState;
   using TestApp.Client.Features.Base;
-  using TestApp.Client.Features.Counter.IncrementCount;
 
   public partial class CounterState
   {

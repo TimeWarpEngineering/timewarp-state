@@ -2,9 +2,9 @@
 
 @if (BlazorHostingLocation.IsClientSide)
 {
-  <div>ClientSide</div>
+  <div data-qa="@TestId">ClientSide</div>
 }
 else
 {
-  <div>ServerSide</div>
+  <div data-qa="@TestId">ServerSide</div>
 }

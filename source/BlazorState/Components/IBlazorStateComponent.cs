@@ -14,7 +14,7 @@
   ///    public void ReRender() => StateHasChanged();
   /// }
   /// </example>
-  public interface IBlazorStateComponent
+  public interface IBlazorStateComponent // TODO: evaluate if this interface is even needed
   {
     IMediator Mediator { get; set; }
     IStore Store { get; set; }
