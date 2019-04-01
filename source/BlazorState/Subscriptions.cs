@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools
+﻿namespace BlazorState
 {
   using System;
   using System.Collections.Generic;
@@ -50,8 +50,11 @@
     /// <typeparam name="T"></typeparam>
     public void ReRenderSubscribers(Type aType)
     {
-      if ((BlazorStateComponentReferencesDictionary.TryGetValue(aType, out List<WeakReference<BlazorStateComponent>> blazorStateblazorStateComponentReferencesComponents)))
+      //GC.Collect();  // I added the collect to test that I am not holding strong references and they were collected.
+      bool isAny = BlazorStateComponentReferencesDictionary.TryGetValue(aType, out List<WeakReference<BlazorStateComponent>> blazorStateblazorStateComponentReferencesComponents);
+      if (isAny)
       {
+        Console.WriteLine($"ReRendering {blazorStateblazorStateComponentReferencesComponents.Count} Subscribers for state of type: {aType.GetType().Name}");
         WeakReference<BlazorStateComponent>[] blazorStateComponentReferencesArray = blazorStateblazorStateComponentReferencesComponents.ToArray();
 
         foreach (WeakReference<BlazorStateComponent> aBlazorStateComponentReference in blazorStateComponentReferencesArray)

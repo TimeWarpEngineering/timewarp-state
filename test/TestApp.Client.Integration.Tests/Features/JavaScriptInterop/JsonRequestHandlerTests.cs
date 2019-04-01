@@ -8,7 +8,6 @@
   using Microsoft.JSInterop;
   using Shouldly;
   using TestApp.Client.Features.Counter;
-  using TestApp.Client.Features.Counter.IncrementCount;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
   internal class JsonRequestHandlerTests

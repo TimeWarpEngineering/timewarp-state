@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Counter.IncrementCount
+﻿namespace TestApp.Client.Features.Counter
 {
   using MediatR;
 

@@ -30,7 +30,7 @@
       CounterState.Initialize(aCount: 15);
 
       // Create request
-      var incrementCounterRequest = new Client.Features.Counter.IncrementCount.IncrementCounterAction
+      var incrementCounterRequest = new IncrementCounterAction
       {
         Amount = -2
       };
@@ -50,7 +50,7 @@
       CounterState.Initialize(aCount: 22);
 
       // Create request
-      var incrementCounterRequest = new Client.Features.Counter.IncrementCount.IncrementCounterAction
+      var incrementCounterRequest = new IncrementCounterAction
       {
         Amount = 5
       };

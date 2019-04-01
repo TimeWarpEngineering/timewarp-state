@@ -13,15 +13,15 @@
     public ReduxDevToolsInterop(
       ILogger<ReduxDevToolsInterop> aLogger,
       IReduxDevToolsStore aStore,
-      JsRuntimeLocation aJsRuntimeLocation)
+      BlazorHostingLocation aBlazorHostingLocation)
     {
       Logger = aLogger;
       Store = aStore;
-      JsRuntimeLocation = aJsRuntimeLocation;
+      BlazorHostingLocation = aBlazorHostingLocation;
     }
 
     public bool IsEnabled { get; set; }
-    private JsRuntimeLocation JsRuntimeLocation { get; }
+    private BlazorHostingLocation BlazorHostingLocation { get; }
     private ILogger Logger { get; }
     private IReduxDevToolsStore Store { get; }
 
@@ -45,7 +45,7 @@
     public async Task InitAsync()
     {
       Console.WriteLine("Init ReduxDevToolsInterop");
-      if (JsRuntimeLocation.IsClientSide) // Only init if running in WASM
+      if (BlazorHostingLocation.IsClientSide) // Only init if running in WASM
       {
         Console.WriteLine("Running in WASM");
         const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";

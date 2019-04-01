@@ -13,6 +13,10 @@
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
     [Inject] private RouteManager RouteManager { get; set; }
 
-    protected override async Task OnInitAsync() => await ReduxDevToolsInterop.InitAsync();
+    protected override async Task OnInitAsync()
+    {
+      await JsonRequestHandler.InitAsync();
+      await ReduxDevToolsInterop.InitAsync();
+    }
   }
 }

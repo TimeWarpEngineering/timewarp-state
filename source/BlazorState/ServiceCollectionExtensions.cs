@@ -41,11 +41,12 @@
       // Getting a stack trace doesn't work on mono.
       EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
 
-      aServices.AddScoped<JsRuntimeLocation>();
+      aServices.AddScoped<BlazorHostingLocation>();
       aServices.AddScoped<JsonRequestHandler>();
       if (options.UseCloneStateBehavior)
       {
         aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
+        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
         aServices.AddScoped<IStore, Store>();
       }
       if (options.UseReduxDevToolsBehavior)
@@ -65,10 +66,10 @@
 
     private static void EnsureHttpClient(IServiceCollection aServices)
     {
-      var jsRuntimeLocation = new JsRuntimeLocation();
+      var blazorHostingLocation = new BlazorHostingLocation();
 
       // Server Side Blazor doesn't register HttpClient by default
-      if (jsRuntimeLocation.IsServerSide)
+      if (blazorHostingLocation.IsServerSide)
       {
         // Double check that nothing is registered.
         if (!aServices.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))

@@ -2,7 +2,7 @@
 {
   using System;
 
-  public class JsRuntimeLocation
+  public class BlazorHostingLocation
   {
     public bool IsClientSide => HasMono;
     public bool IsServerSide => !HasMono;
