@@ -21,7 +21,6 @@
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
       BlazorHostingLocation = aBlazorHostingLocation;
-      InitializeJavascriptInterop();
     }
 
     private ILogger Logger { get; }
@@ -72,17 +71,6 @@
     /// </summary>
     /// <remarks>Sends an instance of this item to JavaScript side
     /// </remarks>
-    private void InitializeJavascriptInterop()
-    {
-      // TOOD 0.9.0 we will have to Inject IJSRuntime so this technique won't work for the test.
-      // Maybe we add to the End2EndTests to click a button that invokes a JS interop test.
-      if (BlazorHostingLocation.IsServerSide && !Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests"))
-      {
-        Console.WriteLine("InitializeJavascriptInterop");
-        JSRuntime.Current.InvokeAsync<object>("InitializeJavaScriptInterop", new DotNetObjectRef(this));
-      }
-    }
-
     private async Task<object> SendToMediator(Type aRequestType, object aInstance)
     {
       // return Mediator.Send(aInstance) is what this does but uses generics everywhere.
@@ -107,6 +95,19 @@
       await task.ConfigureAwait(false);
       PropertyInfo resultProperty = task.GetType().GetProperty("Result");
       return resultProperty.GetValue(task);
+    }
+
+    // TOOD 0.9.0 we will have to Inject IJSRuntime so this technique won't work for the test.
+    public async Task InitAsync()
+    {
+      Console.WriteLine("Init JsonRequestHandler");
+      if (BlazorHostingLocation.IsClientSide || // Only init if running in WASM 
+          !Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests")) // or for test case.
+      {
+        Console.WriteLine("InitializeJavaScriptInterop");
+        const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
+        await JSRuntime.Current.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
+      }
     }
   }
 }
