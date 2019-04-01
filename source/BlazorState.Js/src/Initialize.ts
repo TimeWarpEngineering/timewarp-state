@@ -18,6 +18,7 @@ function Initialize() {
 }
 
 function InitializeJavaScriptInterop(JsonRequestHandler) {
+  console.log("InitializeJavaScriptInterop");
   window[JsonRequestHandlerName] = JsonRequestHandler;
 };
 
