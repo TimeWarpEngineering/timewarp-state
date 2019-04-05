@@ -6,6 +6,7 @@
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.Extensions.DependencyInjection;
   using Newtonsoft.Json.Serialization;
+  using BlazorState;
 
   public class Startup
   {
@@ -34,7 +35,10 @@
       aServiceCollection.AddRazorComponents<Client.Startup>();
 
       aServiceCollection.AddResponseCompression();
-      aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+      aServiceCollection.AddBlazorState( (a) => a.Assemblies = 
+        new Assembly[] { typeof(Startup).GetTypeInfo().Assembly, typeof(Client.Startup).GetTypeInfo().Assembly }
+      );
+      //aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         .FromAssemblyOf<Startup>()
         .AddClasses()

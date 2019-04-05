@@ -31,36 +31,44 @@
       this IServiceCollection aServices,
       Action<Options> aConfigure = null)
     {
-      var options = new Options();
-      aConfigure?.Invoke(options);
 
-      EnsureLogger(aServices);
-      EnsureHttpClient(aServices);
+      ServiceDescriptor flagServiceDescriptor = aServices.FirstOrDefault(
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(BlazorHostingLocation));
 
-      // GetCallingAssembly is dangerous.  But seems to be the only one that works for this.
-      // Getting a stack trace doesn't work on mono.
-      EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
-
-      aServices.AddScoped<BlazorHostingLocation>();
-      aServices.AddScoped<JsonRequestHandler>();
-      if (options.UseCloneStateBehavior)
+      if (flagServiceDescriptor == null)
       {
-        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
-        aServices.AddScoped<IStore, Store>();
-      }
-      if (options.UseReduxDevToolsBehavior)
-      {
-        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
-        aServices.AddScoped<ReduxDevToolsInterop>();
-        aServices.AddScoped<Subscriptions>();
-        aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
-      }
-      if (options.UseRouting)
-      {
-        aServices.AddScoped<RouteManager>();
-      }
 
+
+        var options = new Options();
+        aConfigure?.Invoke(options);
+
+        EnsureLogger(aServices);
+        EnsureHttpClient(aServices);
+
+        // GetCallingAssembly is dangerous.  But seems to be the only one that works for this.
+        // Getting a stack trace doesn't work on mono.
+        EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
+
+        aServices.AddScoped<BlazorHostingLocation>();
+        aServices.AddScoped<JsonRequestHandler>();
+        if (options.UseCloneStateBehavior)
+        {
+          aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
+          aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
+          aServices.AddScoped<IStore, Store>();
+        }
+        if (options.UseReduxDevToolsBehavior)
+        {
+          aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
+          aServices.AddScoped<ReduxDevToolsInterop>();
+          aServices.AddScoped<Subscriptions>();
+          aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
+        }
+        if (options.UseRouting)
+        {
+          aServices.AddScoped<RouteManager>();
+        }
+      }
       return aServices;
     }
 
@@ -111,13 +119,20 @@
     /// <param name="aCallingAssembly">The calling assembly</param>
     private static void EnsureMediator(IServiceCollection aServices, Options aOptions, Assembly aCallingAssembly)
     {
-      var assemblies = new List<Assembly>(aOptions.Assemblies)
-      {
-        Assembly.GetAssembly(typeof(ServiceCollectionExtensions)),
-        aCallingAssembly
-      };
+      ServiceDescriptor mediatorServiceDescriptor = aServices.FirstOrDefault(
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(IMediator));
 
-      aServices.AddMediatR(assemblies.ToArray());
+      if (mediatorServiceDescriptor == null)
+      {
+
+        var assemblies = new List<Assembly>(aOptions.Assemblies)
+        {
+          Assembly.GetAssembly(typeof(ServiceCollectionExtensions)),
+          aCallingAssembly
+        };
+
+        aServices.AddMediatR(assemblies.ToArray());
+      }
     }
   }
 
