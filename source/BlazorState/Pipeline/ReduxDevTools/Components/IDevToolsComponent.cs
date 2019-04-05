@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools
+﻿namespace BlazorState.Pipeline.ReduxDevTools
 {
   /// <summary>
   /// Implementation is required to allow DevTools to ReRender components

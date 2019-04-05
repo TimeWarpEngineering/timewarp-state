@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.Commit
+﻿namespace BlazorState.Pipeline.ReduxDevTools.Features.Commit
 {
   using MediatR;
 

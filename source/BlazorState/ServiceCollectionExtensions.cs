@@ -5,8 +5,8 @@
   using System.Linq;
   using System.Net.Http;
   using System.Reflection;
-  using BlazorState.Behaviors.ReduxDevTools;
-  using BlazorState.Behaviors.State;
+  using BlazorState.Pipeline.ReduxDevTools;
+  using BlazorState.Pipeline.State;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
   using BlazorState.Services;

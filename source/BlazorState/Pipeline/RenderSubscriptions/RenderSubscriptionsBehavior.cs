@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.State
+﻿namespace BlazorState.Pipeline.State
 {
   using System;
   using System.Threading;

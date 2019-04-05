@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.JumpToState
+﻿namespace BlazorState.Pipeline.ReduxDevTools.Features.JumpToState
 {
   using BlazorState;
   using MediatR;

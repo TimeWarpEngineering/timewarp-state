@@ -59,8 +59,8 @@ export class ReduxDevTools {
     var dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
-      'JUMP_TO_ACTION': 'BlazorState.Behaviors.ReduxDevTools.Features.JumpToState.JumpToStateRequest',
-      'JUMP_TO_STATE': 'BlazorState.Behaviors.ReduxDevTools.Features.JumpToState.JumpToStateRequest',
+      'JUMP_TO_ACTION': 'BlazorState.Pipeline.ReduxDevTools.Features.JumpToState.JumpToStateRequest',
+      'JUMP_TO_STATE': 'BlazorState.Pipeline.ReduxDevTools.Features.JumpToState.JumpToStateRequest',
       'RESET': undefined,
       'ROLLBACK': undefined,
       'TOGGLE_ACTION': undefined
@@ -68,10 +68,10 @@ export class ReduxDevTools {
     var blazorRequestType;
     switch (message.type) {
       case 'START':
-        blazorRequestType = 'BlazorState.Behaviors.ReduxDevTools.Features.Start.StartRequest';
+        blazorRequestType = 'BlazorState.Pipeline.ReduxDevTools.Features.Start.StartRequest';
         break;
       case 'STOP':
-        //blazorRequestType = 'BlazorState.Behaviors.ReduxDevTools.Features.Stop.StopRequest';
+        //blazorRequestType = 'BlazorState.Pipeline.ReduxDevTools.Features.Stop.StopRequest';
         break;
       case 'DISPATCH':
         blazorRequestType = dispatchRequests[message.payload.type];

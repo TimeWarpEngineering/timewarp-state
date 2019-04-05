@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools
+﻿namespace BlazorState.Pipeline.ReduxDevTools
 {
   using BlazorState;
   using Microsoft.AspNetCore.Components;

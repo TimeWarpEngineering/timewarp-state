@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools.Features
+﻿namespace BlazorState.Pipeline.ReduxDevTools.Features
 {
   /// <summary>
   /// Marker Interface to allow for filtering of Devtools Requests

@@ -1,10 +1,10 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools
+﻿namespace BlazorState.Pipeline.ReduxDevTools
 {
   using System;
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using BlazorState.Behaviors.ReduxDevTools.Features;
+  using BlazorState.Pipeline.ReduxDevTools.Features;
   using MediatR;
   using Microsoft.Extensions.Logging;
 

@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Behaviors.ReduxDevTools.Features.Start
+﻿namespace BlazorState.Pipeline.ReduxDevTools.Features.Start
 {
   using BlazorState;
   using MediatR;
