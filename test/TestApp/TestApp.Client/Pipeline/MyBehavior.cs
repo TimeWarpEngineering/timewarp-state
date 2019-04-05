@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Behaviors
+﻿namespace TestApp.Client.Pipeline
 {
   using System;
   using System.Threading;
