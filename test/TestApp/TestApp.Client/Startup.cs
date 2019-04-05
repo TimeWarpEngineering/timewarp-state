@@ -2,8 +2,10 @@
 {
   using BlazorState;
   using BlazorState.Services;
+  using MediatR;
   using Microsoft.AspNetCore.Components.Builder;
   using Microsoft.Extensions.DependencyInjection;
+  using TestApp.Client.Features.EventStream;
 
   public class Startup
   {
@@ -20,6 +22,7 @@
         //    .SetMinimumLevel(LogLevel.Trace));
       };
       aServiceCollection.AddBlazorState();
+      aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
     }
   }
 }

@@ -1,5 +1,6 @@
-﻿namespace TestApp.Client.Components
+﻿namespace TestApp.Client.Features.Counter.Components
 {
+  using TestApp.Client.Components;
   using TestApp.Client.Features.Counter;
 
   public class CounterModel : BaseComponent

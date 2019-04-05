@@ -49,7 +49,7 @@
       {
         Logger.LogError($"{className}: Error: {aException.Message}");
         Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
-        throw;  // Do you throw or not? for now yes.
+        throw;
       }
     }
   }
