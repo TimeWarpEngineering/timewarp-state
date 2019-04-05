@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Notification
+﻿namespace TestApp.Client.Features.Counter
 {
   using System;
   using System.Threading;
