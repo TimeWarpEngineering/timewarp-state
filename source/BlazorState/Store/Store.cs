@@ -8,16 +8,12 @@
   /// </summary>
   internal partial class Store : IStore
   {
-    public Store(
-      IServiceProvider aServiceProvider
-      , ILogger<Store> aLogger
-    )
+    public Store(ILogger<Store> aLogger)
     {
       Logger = aLogger;
       using (Logger.BeginScope(nameof(Store)))
       {
         Logger.LogInformation($"{GetType().Name}: constructor: {nameof(Guid)}:{Guid}");
-        ServiceProvider = aServiceProvider;
         States = new Dictionary<string, IState>();
       }
     }
@@ -29,7 +25,6 @@
     public Guid Guid { get; } = Guid.NewGuid();
 
     private ILogger Logger { get; }
-    private IServiceProvider ServiceProvider { get; }
     private IDictionary<string, IState> States { get; }
 
     /// <summary>
@@ -42,6 +37,11 @@
       Type stateType = typeof(TState);
       return (TState)GetState(stateType);
     }
+
+    /// <summary>
+    /// Clear all the states
+    /// </summary>
+    public void Reset() => States.Clear();
 
     /// <summary>
     /// Set the state for specific Type
@@ -78,5 +78,7 @@
       Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{aTypeName}: Guid:{newState.Guid}");
       States[aTypeName] = newState;
     }
+
+
   }
 }

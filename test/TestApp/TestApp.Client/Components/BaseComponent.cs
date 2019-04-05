@@ -1,6 +1,6 @@
 ﻿namespace TestApp.Client.Components
 {
-  using BlazorState.Behaviors.ReduxDevTools;
+  using BlazorState.Pipeline.ReduxDevTools;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.WeatherForecast;

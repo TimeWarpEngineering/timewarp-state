@@ -48,7 +48,7 @@ In Program.cs add the following:
   services.AddBlazorState();
   
 Add the following in your App.cshtml if you want to enable ReduxDevTools
-@using BlazorState.Behaviors.ReduxDevTools
+@using BlazorState.Pipeline.ReduxDevTools
 @inherits ReduxDevToolsComponent
 
 The BaseComponent would not be required to inherit from a Blazor-State component, 

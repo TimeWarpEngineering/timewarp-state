@@ -1,7 +1,7 @@
 ﻿namespace TestApp.Client
 {
   using System.Threading.Tasks;
-  using BlazorState.Behaviors.ReduxDevTools;
+  using BlazorState.Pipeline.ReduxDevTools;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
   using Microsoft.AspNetCore.Components;

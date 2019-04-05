@@ -1,5 +1,6 @@
 ﻿namespace TestApp.Client.Features.Counter
 {
+  using System;
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
@@ -7,7 +8,7 @@
 
   public partial class CounterState
   {
-    public class IncrementCounterHandler : BaseHandler<IncrementCounterAction, CounterState>
+    internal class IncrementCounterHandler : BaseHandler<IncrementCounterAction, CounterState>
     {
       public IncrementCounterHandler(IStore aStore) : base(aStore) { }
 
@@ -15,6 +16,7 @@
         IncrementCounterAction aIncrementCounterRequest,
         CancellationToken aCancellationToken)
       {
+        Console.WriteLine("IncrementCounterHandler");
         CounterState.Count += aIncrementCounterRequest.Amount;
         return Task.FromResult(CounterState);
       }

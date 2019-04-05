@@ -9,7 +9,7 @@
     <PackageReference Include="Fixie" Version="2.0.3" />
     <PackageReference Include="Shouldly" Version="3.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview-19075-0444" />
-    <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
+    <DotNetCliToolReference Include="Fixie.Console" Version="2.0.3" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

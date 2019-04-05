@@ -17,5 +17,7 @@
     TState GetState<TState>();
 
     void SetState(IState aState);
+
+    void Reset();
   }
 }
