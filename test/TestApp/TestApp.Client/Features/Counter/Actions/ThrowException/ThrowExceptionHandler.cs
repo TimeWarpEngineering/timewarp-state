@@ -8,7 +8,7 @@
 
   public partial class CounterState
   {
-    public class ThrowExceptionHandler : BaseHandler<ThrowExceptionAction, CounterState>
+    internal class ThrowExceptionHandler : BaseHandler<ThrowExceptionAction, CounterState>
     {
       public ThrowExceptionHandler(IStore aStore) : base(aStore) { }
 
