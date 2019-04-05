@@ -38,10 +38,12 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: Run all Tests in the repo
+  continueOnError: true
   inputs:
     command: test
     projects: "**/*Tests/*.csproj"
     configurationToPack: debug
+  
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack blazor-state
