@@ -37,7 +37,7 @@
     /// <summary>
     /// Allows for the Assigning of a value one can use to select and element during automated testing.
     /// </summary>
-    [Parameter] public string TestId { get; set; }
+    [Parameter] protected string TestId { get; set; }
 
     [Inject] public IMediator Mediator { get; set; }
     [Inject] public IStore Store { get; set; }
