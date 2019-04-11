@@ -27,6 +27,12 @@
     <TestProjectTargetFramework>netstandard2.0</TestProjectTargetFramework>
   </PropertyGroup>
   
+  <PropertyGroup Label="Package Versions">
+    <!--0.8.0-preview-19064-0339-->
+    <TemplateBlazorPackageVersion>3.0.0-preview4-19172-03</TemplateBlazorPackageVersion>
+    <TemplateComponentsPackageVersion>3.0.0-preview4-19172-03</TemplateComponentsPackageVersion>
+  </PropertyGroup>
+    
   <Choose>
     <When Condition="'$(OfficialBuild)' != 'true'">
       <!-- On non-official builds we don't burn in a git sha. In large part because it
