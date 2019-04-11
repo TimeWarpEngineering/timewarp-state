@@ -2,21 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>7.3</LangVersion>
     <OutputType>Exe</OutputType>
     <Description>BlazorState Sample Client Application</Description>
-    <!-- Temporary workaround for a VS build issue -->
-    <BlazorRebuildOnFileChange>false</BlazorRebuildOnFileChange>
+    <RestoreAdditionalProjectSources Condition="'$(IncludeCustomRestoreSourcesSymbol)'=='true'">
+      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
+      https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
+    </RestoreAdditionalProjectSources>
+    <RazorLangVersion>3.0</RazorLangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="0.8.0-preview-19104-04" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.8.0-preview-19104-04" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Counter\Components\" />
-    <Folder Include="Properties\" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="$(TemplateBlazorPackageVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="$(TemplateBlazorPackageVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
