@@ -28,9 +28,8 @@
   </PropertyGroup>
   
   <PropertyGroup Label="Package Versions">
-    <!--0.8.0-preview-19064-0339-->
-    <TemplateBlazorPackageVersion>3.0.0-preview4-19172-03</TemplateBlazorPackageVersion>
-    <TemplateComponentsPackageVersion>3.0.0-preview4-19172-03</TemplateComponentsPackageVersion>
+    <TemplateBlazorPackageVersion>3.0.0-preview4-19213-04</TemplateBlazorPackageVersion>
+    <TemplateComponentsPackageVersion>3.0.0-preview4-19213-04</TemplateComponentsPackageVersion>
   </PropertyGroup>
     
   <Choose>
