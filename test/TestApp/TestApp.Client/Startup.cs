@@ -9,8 +9,8 @@
 
   public class Startup
   {
-    public void Configure(IComponentsApplicationBuilder aBlazorApplicationBuilder) =>
-      aBlazorApplicationBuilder.AddComponent<App>("app");
+    public void Configure(IComponentsApplicationBuilder aComponentsApplicationBuilder) =>
+      aComponentsApplicationBuilder.AddComponent<App>("app");
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
