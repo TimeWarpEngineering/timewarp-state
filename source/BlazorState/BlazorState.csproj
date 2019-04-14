@@ -3,20 +3,19 @@
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/aspnet/AspNetCore/blob/master/src/Components/Blazor/Templates/src/content/BlazorLibrary-CSharp/BlazorLibrary-CSharp.csproj -->
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <IsPackable>true</IsPackable>
     <RestoreAdditionalProjectSources Condition="'$(IncludeCustomRestoreSourcesSymbol)'=='true'">
       https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
       https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
     </RestoreAdditionalProjectSources>
-    <LangVersion>8.0</LangVersion>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(TemplateComponentsPackageVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Build" Version="$(TemplateComponentsPackageVersion)" PrivateAssets="all" />
+    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Build" Version="$(TemplateComponentsPackageVersion)" PrivateAssets="all" />-->
   </ItemGroup>
   <!-- End Blazor Library Template parameters-->
 
@@ -57,7 +56,6 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="6.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
-    <!--<PackageReference Include="Microsoft.AspNetCore.Blazor" Version="3.0.0-preview4-19210-17" />-->
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview4.19210.6" />
   </ItemGroup>
 
