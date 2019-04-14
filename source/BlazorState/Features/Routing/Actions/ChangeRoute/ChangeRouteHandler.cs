@@ -3,7 +3,7 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using Microsoft.AspNetCore.Components.Services;
+  using Microsoft.AspNetCore.Components;
 
   public partial class RouteState
   {
