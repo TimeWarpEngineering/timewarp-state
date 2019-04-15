@@ -1,7 +1,7 @@
 ﻿namespace TestApp.Client.Pages
 {
   using System.Threading.Tasks;
-  using TestApp.Client.Components;
+  using TestApp.Client.Features.Base.Components;
 
   public class WeatherForecastsPageModel : BaseComponent
   {
