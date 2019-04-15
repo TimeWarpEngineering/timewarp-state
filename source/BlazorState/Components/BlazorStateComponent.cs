@@ -35,7 +35,7 @@
     public string Id { get; }
 
     /// <summary>
-    /// Allows for the Assigning of a value one can use to select and element during automated testing.
+    /// Allows for the Assigning of a value one can use to select an element during automated testing.
     /// </summary>
     [Parameter] protected string TestId { get; set; }
 
