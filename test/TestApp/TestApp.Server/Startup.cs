@@ -1,44 +1,59 @@
 ﻿namespace TestApp.Server
 {
-  using System.Reflection;
+  using BlazorState;
   using MediatR;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
+  using Microsoft.AspNetCore.ResponseCompression;
   using Microsoft.Extensions.DependencyInjection;
+  using Microsoft.Extensions.Hosting;
   using Newtonsoft.Json.Serialization;
-  using BlazorState;
+  using System.Linq;
+  using System.Reflection;
 
   public class Startup
   {
-    public void Configure(IApplicationBuilder aApplicationBuilder, IHostingEnvironment aHostingEnvironment)
+    public void Configure(IApplicationBuilder aApplicationBuilder, IWebHostEnvironment aWebHostEnvironment)
     {
       aApplicationBuilder.UseResponseCompression();
 
-      if (aHostingEnvironment.IsDevelopment())
+      if (aWebHostEnvironment.IsDevelopment())
       {
         aApplicationBuilder.UseDeveloperExceptionPage();
+        aApplicationBuilder.UseBlazorDebugging();
       }
 
-      aApplicationBuilder.UseMvc();
-      aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
-      aApplicationBuilder.UseBlazorDebugging();
+      aApplicationBuilder.UseRouting();
+      aApplicationBuilder.UseEndpoints(aEndpointRouteBuilder =>
+      {
+        aEndpointRouteBuilder.MapDefaultControllerRoute();
+      });
+      aApplicationBuilder.UseBlazor<Client.Startup>();
+      //aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
 
     }
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
+      // TODO: why do I need DefaultContractResolver??  I added for some reason is reason still valid now?
       aServiceCollection.AddMvc()
         .AddNewtonsoftJson(aOptions =>
            aOptions.SerializerSettings.ContractResolver =
               new DefaultContractResolver());
 
-      aServiceCollection.AddResponseCompression();
-      aServiceCollection.AddBlazorState( (a) => a.Assemblies = 
-        new Assembly[] { typeof(Startup).GetTypeInfo().Assembly, typeof(Client.Startup).GetTypeInfo().Assembly }
-      );
-      aServiceCollection.AddRazorComponents<Client.Startup>();
+      aServiceCollection.AddResponseCompression(opts =>
+      {
+        opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                  new[] { "application/octet-stream" });
+      });
 
-      //aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+      // TODO get working Client Side first then come back and try dual mode.
+      //aServiceCollection.AddBlazorState((a) => a.Assemblies =
+      // new Assembly[] { typeof(Startup).GetTypeInfo().Assembly, typeof(Client.Startup).GetTypeInfo().Assembly }
+      //);
+      //aServiceCollection.AddRazorComponents<Client.Startup>();
+
+      aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         .FromAssemblyOf<Startup>()
         .AddClasses()
