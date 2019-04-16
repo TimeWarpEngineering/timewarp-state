@@ -54,10 +54,13 @@
       });
 
       // TODO get working Client Side first then come back and try dual mode.
-      //aServiceCollection.AddBlazorState((a) => a.Assemblies =
-      // new Assembly[] { typeof(Startup).GetTypeInfo().Assembly, typeof(Client.Startup).GetTypeInfo().Assembly }
-      //);
-      
+      aServiceCollection.AddBlazorState((a) => a.Assemblies =
+       new Assembly[] {
+         typeof(Startup).GetTypeInfo().Assembly,
+         typeof(Client.Startup).GetTypeInfo().Assembly
+       }
+      );
+
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         .FromAssemblyOf<Startup>()
