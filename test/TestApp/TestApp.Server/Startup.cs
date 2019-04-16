@@ -23,7 +23,7 @@
         aApplicationBuilder.UseBlazorDebugging();
       }
 
-      aApplicationBuilder.UseStaticFiles();
+      //aApplicationBuilder.UseStaticFiles();
       aApplicationBuilder.UseRouting();
       aApplicationBuilder.UseEndpoints(aEndpointRouteBuilder =>
       {
