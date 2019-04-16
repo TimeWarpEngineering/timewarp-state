@@ -23,21 +23,22 @@
         aApplicationBuilder.UseBlazorDebugging();
       }
 
-      //aApplicationBuilder.UseStaticFiles();
+      aApplicationBuilder.UseStaticFiles();
       aApplicationBuilder.UseRouting();
       aApplicationBuilder.UseEndpoints(aEndpointRouteBuilder =>
       {
         aEndpointRouteBuilder.MapControllers(); // We use explicit attribute routing so dont need MapDefaultControllerRoute
         aEndpointRouteBuilder.MapBlazorHub();
-        //aEndpointRouteBuilder.MapFallbackToPage("/_Host");
+        aEndpointRouteBuilder.MapFallbackToPage("/_Host");
       });
-      aApplicationBuilder.UseBlazor<Client.Startup>();
+      //aApplicationBuilder.UseBlazor<Client.Startup>();
       //aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
 
     }
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
+      aServiceCollection.AddRazorPages();
       aServiceCollection.AddServerSideBlazor();
 
       // TODO: why do I need DefaultContractResolver??  I added for some reason is reason still valid now?
@@ -56,8 +57,7 @@
       //aServiceCollection.AddBlazorState((a) => a.Assemblies =
       // new Assembly[] { typeof(Startup).GetTypeInfo().Assembly, typeof(Client.Startup).GetTypeInfo().Assembly }
       //);
-      //aServiceCollection.AddRazorComponents<Client.Startup>();
-
+      
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
         .FromAssemblyOf<Startup>()
