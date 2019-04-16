@@ -23,10 +23,13 @@
         aApplicationBuilder.UseBlazorDebugging();
       }
 
+      //aApplicationBuilder.UseStaticFiles();
       aApplicationBuilder.UseRouting();
       aApplicationBuilder.UseEndpoints(aEndpointRouteBuilder =>
       {
-        aEndpointRouteBuilder.MapDefaultControllerRoute();
+        aEndpointRouteBuilder.MapControllers(); // We use explicit attribute routing so dont need MapDefaultControllerRoute
+        aEndpointRouteBuilder.MapBlazorHub();
+        //aEndpointRouteBuilder.MapFallbackToPage("/_Host");
       });
       aApplicationBuilder.UseBlazor<Client.Startup>();
       //aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
@@ -35,6 +38,8 @@
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
+      aServiceCollection.AddServerSideBlazor();
+
       // TODO: why do I need DefaultContractResolver??  I added for some reason is reason still valid now?
       aServiceCollection.AddMvc()
         .AddNewtonsoftJson(aOptions =>
