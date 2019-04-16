@@ -30,8 +30,7 @@
 //      return aApplicationBuilder.UseBlazorDualMode(new BlazorOptions
 //      {
 //        ClientAssemblyPath = clientAssemblyInServerBinDir.Location,
-//      })
-//      .UseRazorComponents<TProgram>();
+//      });
 //    }
 
 //    /// <summary>

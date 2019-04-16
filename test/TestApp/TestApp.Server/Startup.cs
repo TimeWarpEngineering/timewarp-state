@@ -31,7 +31,7 @@
         aEndpointRouteBuilder.MapBlazorHub();
         aEndpointRouteBuilder.MapFallbackToPage("/_Host");
       });
-      //aApplicationBuilder.UseBlazor<Client.Startup>();
+      aApplicationBuilder.UseBlazor<Client.Startup>();
       //aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
 
     }
@@ -53,13 +53,13 @@
                   new[] { "application/octet-stream" });
       });
 
-      // TODO get working Client Side first then come back and try dual mode.
       aServiceCollection.AddBlazorState((a) => a.Assemblies =
        new Assembly[] {
          typeof(Startup).GetTypeInfo().Assembly,
          typeof(Client.Startup).GetTypeInfo().Assembly
        }
       );
+      new Client.Startup().ConfigureServices(aServiceCollection);
 
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
