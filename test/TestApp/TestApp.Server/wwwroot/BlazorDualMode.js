@@ -14,8 +14,9 @@
   if (executionSideValue === null) {
     localStorage.setItem(window.TimeWarp.executionSideKey, "To force a side set this to client/server");
   }
-  const clientSideBlazorScript = '_framework/components.webassembly.js';
-  const serverSideBlazorScript = '_framework/components.server.js';
+  
+  const clientSideBlazorScript = '_framework/blazor.webassembly.js';
+  const serverSideBlazorScript = '_framework/blazor.server.js';
   if (executionSideValue === 'client') {
     source = clientSideBlazorScript;
   } else if (executionSideValue === 'server') {
