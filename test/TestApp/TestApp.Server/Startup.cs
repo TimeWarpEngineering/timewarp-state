@@ -23,7 +23,6 @@
         aApplicationBuilder.UseBlazorDebugging();
       }
 
-      //aApplicationBuilder.UseStaticFiles();
       aApplicationBuilder.UseRouting();
       aApplicationBuilder.UseEndpoints(aEndpointRouteBuilder =>
       {
@@ -32,8 +31,6 @@
         aEndpointRouteBuilder.MapFallbackToPage("/_Host");
       });
       aApplicationBuilder.UseBlazor<Client.Startup>();
-      //aApplicationBuilder.UseBlazorDualMode<Client.Startup>();
-
     }
 
     public void ConfigureServices(IServiceCollection aServiceCollection)

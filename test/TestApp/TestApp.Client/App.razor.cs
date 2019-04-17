@@ -13,16 +13,11 @@
 
     // Injected so it iscreated by the container even though ide says not used.
     [Inject] private RouteManager RouteManager { get; set; }
-    [Inject] IComponentContext ComponentContext { get; set; }
 
     protected override async Task OnAfterRenderAsync()
     {
-      if (ComponentContext.IsConnected)
-      {
-        await JsonRequestHandler.InitAsync();
-        await ReduxDevToolsInterop.InitAsync();
-      }
+      await JsonRequestHandler.InitAsync();
+      await ReduxDevToolsInterop.InitAsync();
     }
-
   }
 }

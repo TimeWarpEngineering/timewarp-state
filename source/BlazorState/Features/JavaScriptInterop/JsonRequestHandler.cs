@@ -103,13 +103,9 @@
     public async Task InitAsync()
     {
       Console.WriteLine("Init JsonRequestHandler");
-      //if (BlazorHostingLocation.IsClientSide || // Only init if running in WASM 
-      //    !Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests")) // or for test case.
-      {
-        Console.WriteLine("InitializeJavaScriptInterop");
-        const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-        await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
-      }
+      const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
+      Console.WriteLine(InitializeJavaScriptInteropName);
+      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
     }
   }
 }
