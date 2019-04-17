@@ -8,6 +8,7 @@
       https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
     </RestoreAdditionalProjectSources>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,4 +21,15 @@
     <ProjectReference Include="..\..\..\source\BlazorState\BlazorState.csproj" />
     <ProjectReference Include="..\TestApp.Shared\TestApp.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <BlazorStateDistFiles Include="C:\git\blazor-state\blazor-state\source\BlazorState.Js\dist\blazorstate.js" />
+  </ItemGroup>
+
+  <Target Name="CopyFiles" AfterTargets="PostBuildEvent">
+    <Copy SourceFiles="@(BlazorStateDistFiles)"
+          DestinationFolder="C:\git\blazor-state\blazor-state\test\TestApp\TestApp.Client\wwwroot">
+      <Output TaskParameter="CopiedFiles" ItemName="SuccessfullyCopiedFiles" />
+    </Copy>
+  </Target>
 </Project>

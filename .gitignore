@@ -291,3 +291,6 @@ __pycache__/
 /BlazorDefault2018-05-02.Shared/
 /.vscode/
 /source/BlazorState.Js/dist/
+
+/test/BaseTemplateApp/
+/test/BSS/test/TestApp/TestApp.Client/wwwroot/blazorstate.js
