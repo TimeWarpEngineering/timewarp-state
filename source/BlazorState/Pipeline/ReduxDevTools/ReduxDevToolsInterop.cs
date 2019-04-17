@@ -48,14 +48,11 @@
     public async Task InitAsync()
     {
       Console.WriteLine("Init ReduxDevToolsInterop");
-      //if (BlazorHostingLocation.IsClientSide) // Only init if running in WASM
-      {
-        const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
-        IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName);
+      const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
+      IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName);
 
-        if (IsEnabled)
-          DispatchInit(Store.GetSerializableState());
-      }
+      if (IsEnabled)
+        DispatchInit(Store.GetSerializableState());
     }
   }
 }
