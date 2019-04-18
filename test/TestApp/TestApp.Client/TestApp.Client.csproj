@@ -23,12 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <BlazorStateDistFiles Include="C:\git\blazor-state\blazor-state\source\BlazorState.Js\dist\blazorstate.js" />
+    <BlazorStateDistFiles Include="..\..\..\source\BlazorState.Js\dist\blazorstate.js" />
   </ItemGroup>
 
   <Target Name="CopyFiles" AfterTargets="PostBuildEvent">
     <Copy SourceFiles="@(BlazorStateDistFiles)"
-          DestinationFolder="C:\git\blazor-state\blazor-state\test\TestApp\TestApp.Client\wwwroot">
+          DestinationFolder="..\TestApp.Client\wwwroot">
       <Output TaskParameter="CopiedFiles" ItemName="SuccessfullyCopiedFiles" />
     </Copy>
   </Target>
