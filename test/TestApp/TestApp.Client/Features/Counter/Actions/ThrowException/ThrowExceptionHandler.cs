@@ -13,7 +13,7 @@
       public ThrowExceptionHandler(IStore aStore) : base(aStore) { }
 
       public override Task<CounterState> Handle(
-        ThrowExceptionAction aThrowExceptionAction, 
+        ThrowExceptionAction aThrowExceptionAction,
         CancellationToken aCancellationToken)
       {
         // Intentionally throw so we can test exception handling.

@@ -44,7 +44,7 @@
 
     public void LoadsClientSide()
     {
-      JavaScriptExecutor.ExecuteScript("window.localStorage.setItem('executionSide','client');");     
+      JavaScriptExecutor.ExecuteScript("window.localStorage.setItem('executionSide','client');");
 
       Navigate("/", aReload: true);
       WaitUntilLoaded();

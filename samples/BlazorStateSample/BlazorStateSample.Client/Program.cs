@@ -6,7 +6,7 @@ namespace BlazorStateSample.Client
   {
     public static void Main(string[] aArgumentArray) => CreateHostBuilder(aArgumentArray).Build().Run();
 
-    public static IWebAssemblyHostBuilder CreateHostBuilder(string[] aArgumentArray) => 
+    public static IWebAssemblyHostBuilder CreateHostBuilder(string[] aArgumentArray) =>
       BlazorWebAssemblyHost.CreateDefaultBuilder()
         .UseBlazorStartup<Startup>();
   }

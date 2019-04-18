@@ -2,7 +2,7 @@
 {
   using MediatR;
 
-  public class AddEventAction:IRequest<EventStreamState>
+  public class AddEventAction : IRequest<EventStreamState>
   {
     public string Message { get; set; }
   }
