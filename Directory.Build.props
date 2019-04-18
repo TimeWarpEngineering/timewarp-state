@@ -23,13 +23,13 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <TestProjectTargetFramework>netstandard2.0</TestProjectTargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <TestProjectTargetFramework>netstandard2.1</TestProjectTargetFramework>
   </PropertyGroup>
   
   <PropertyGroup Label="Package Versions">
-    <TemplateBlazorPackageVersion>3.0.0-preview4-19213-04</TemplateBlazorPackageVersion>
-    <TemplateComponentsPackageVersion>3.0.0-preview4-19213-04</TemplateComponentsPackageVersion>
+    <TemplateBlazorPackageVersion>3.0.0-preview4-19216-03</TemplateBlazorPackageVersion>
+    <TemplateComponentsPackageVersion>3.0.0-preview4-19216-03</TemplateComponentsPackageVersion>
   </PropertyGroup>
     
   <Choose>
