@@ -7,5 +7,7 @@
   public class BlazorLocationModel: BlazorStateComponent
   {
     [Inject] public BlazorHostingLocation BlazorHostingLocation { get; set; }
+
+    public string LocationName => BlazorHostingLocation.IsClientSide ? "Client Side" : "Server Side";
   }
 }

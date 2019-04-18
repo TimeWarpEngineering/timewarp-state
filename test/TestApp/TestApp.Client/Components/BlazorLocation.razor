@@ -1,10 +1,3 @@
 ﻿@inherits BlazorLocationModel
 
-@if (BlazorHostingLocation.IsClientSide)
-{
-  <div data-qa="@TestId">ClientSide</div>
-}
-else
-{
-  <div data-qa="@TestId">ServerSide</div>
-}
+<div data-qa="@TestId">@LocationName</div>
