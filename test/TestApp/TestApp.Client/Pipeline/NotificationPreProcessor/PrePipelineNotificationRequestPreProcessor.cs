@@ -6,7 +6,7 @@
   using MediatR;
   using MediatR.Pipeline;
 
-  internal class PrePipelineNotificationRequestPreProcessor <TRequest> : IRequestPreProcessor<TRequest>
+  internal class PrePipelineNotificationRequestPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
   {
     public PrePipelineNotificationRequestPreProcessor(IMediator aMediator)
     {

@@ -18,15 +18,12 @@
     public CounterPageTests(IWebDriver aWebDriver, ServerFixture aServerFixture)
       : base(aWebDriver, aServerFixture)
     {
-      WebDriver = aWebDriver;
       aServerFixture.Environment = AspNetEnvironment.Development;
-      aServerFixture.BuildWebHostMethod = Server.Program.BuildWebHost;
+      aServerFixture.CreateHostBuilderDelegate = Server.Program.CreateHostBuilder;
 
       Navigate("/", aReload: true);
       WaitUntilLoaded();
     }
-
-    private IWebDriver WebDriver { get; }
 
     public void HasCounterPage()
     {

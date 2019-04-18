@@ -1,16 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
+  <!-- Blazor Library Template parameters-->
+  <!--https://github.com/aspnet/AspNetCore/blob/master/src/Components/Blazor/Templates/src/content/BlazorLibrary-CSharp/BlazorLibrary-CSharp.csproj -->
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <RestoreAdditionalProjectSources Condition="'$(IncludeCustomRestoreSourcesSymbol)'=='true'">
+      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
+      https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
+    </RestoreAdditionalProjectSources>
+    <RazorLangVersion>3.0</RazorLangVersion>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(MicrosoftAspNetCoreComponentsBrowserVersion)" />
+  </ItemGroup>
+  <!-- End Blazor Library Template parameters-->
+
   <PropertyGroup>
     <Title>Blazor State</Title>
+    <Company>TimeWarp Enterprises Limited</Company>
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
     <PackageIcon>..\..\assets\Logo.png</PackageIcon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Company>TimeWarp Enterprises Limited</Company>
   </PropertyGroup>
+  
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-
   <PropertyGroup>
     <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -31,16 +48,15 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
-    <PackageVersion>0.4.6</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="6.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="0.8.0-preview-19104-04" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview.19074.2" />
+    <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
   </ItemGroup>
 
+  <!-- TypeScript project-->
   <ItemGroup>
     <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
@@ -52,4 +68,5 @@
       <BuildOutputInPackage Include="$(OutputPath)BlazorState.Js.dll" />
     </ItemGroup>
   </Target>
+  <!-- End TypeScript project-->
 </Project>

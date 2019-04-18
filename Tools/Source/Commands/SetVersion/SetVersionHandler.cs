@@ -23,25 +23,7 @@
           Minor = aSetVersionRequest.Minor,
           Patch = aSetVersionRequest.Patch
         });
-      }
-      else if (aSetVersionRequest.Project == SetVersionRequest.ProjectList[1])
-      {
-        Mediator.Send(new SetBlazorTemplateVersionRequest
-        {
-          Major = aSetVersionRequest.Major,
-          Minor = aSetVersionRequest.Minor,
-          Patch = aSetVersionRequest.Patch
-        });
-      }
-      else if (aSetVersionRequest.Project == SetVersionRequest.ProjectList[2])
-      {
-        Mediator.Send(new SetConsoleTemplateVersionRequest
-        {
-          Major = aSetVersionRequest.Major,
-          Minor = aSetVersionRequest.Minor,
-          Patch = aSetVersionRequest.Patch
-        });
-      }
+      };
 
       return Unit.Task;
     }

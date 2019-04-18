@@ -3,7 +3,7 @@
   using System;
   using System.Threading;
   using System.Threading.Tasks;
-  
+
   using MediatR;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Pipeline.NotificationPostProcessor;

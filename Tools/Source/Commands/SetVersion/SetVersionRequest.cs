@@ -10,7 +10,7 @@
     /// <summary>
     /// All Valid projects
     /// </summary>
-    internal static string[] ProjectList { get; } = new string[] { "BlazorState", "BlazorTemplate", "ConsoleTemplate" };
+    internal static string[] ProjectList { get; } = new string[] { "BlazorState"};
 
     /// <summary>
     /// The Project {BlazorState,BlazorTemplate,ConsoleTemplate}

@@ -15,17 +15,20 @@
     public JsonRequestHandler(
       ILogger<JsonRequestHandler> aLogger,
       IMediator aMediator,
+      IJSRuntime aJSRuntime,
       BlazorHostingLocation aBlazorHostingLocation)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
+      JSRuntime = aJSRuntime;
       BlazorHostingLocation = aBlazorHostingLocation;
     }
 
     private ILogger Logger { get; }
 
     private IMediator Mediator { get; }
+    private IJSRuntime JSRuntime { get; }
     private BlazorHostingLocation BlazorHostingLocation { get; }
 
     /// <summary>
@@ -97,17 +100,12 @@
       return resultProperty.GetValue(task);
     }
 
-    // TOOD 0.9.0 we will have to Inject IJSRuntime so this technique won't work for the test.
     public async Task InitAsync()
     {
       Console.WriteLine("Init JsonRequestHandler");
-      if (BlazorHostingLocation.IsClientSide || // Only init if running in WASM 
-          !Assembly.GetEntryAssembly().FullName.Contains("TestApp.Client.Integration.Tests")) // or for test case.
-      {
-        Console.WriteLine("InitializeJavaScriptInterop");
-        const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-        await JSRuntime.Current.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
-      }
+      const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
+      Console.WriteLine(InitializeJavaScriptInteropName);
+      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
     }
   }
 }

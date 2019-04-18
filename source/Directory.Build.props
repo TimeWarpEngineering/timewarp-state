@@ -1,16 +1,23 @@
 ﻿<Project>
-  <!-- Versioning properties -->
-  <PropertyGroup>
-    <VersionPrefix>0.4.6</VersionPrefix>
-    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
-  </PropertyGroup>
-
+  <!--Import Parent props if they exist-->
   <PropertyGroup>
     <_ParentDirectoryBuildPropsPath Condition="'$(_DirectoryBuildPropsFile)' != ''">$([System.IO.Path]::Combine('..', '$(_DirectoryBuildPropsFile)'))</_ParentDirectoryBuildPropsPath>
   </PropertyGroup>
-
+  
   <Import Project="$(_ParentDirectoryBuildPropsPath)"
           Condition="Exists('$(_ParentDirectoryBuildPropsPath)')" />
+  
+  <!-- Versioning properties -->
+  <PropertyGroup>
+    <BlazorStateMajorVersion>1</BlazorStateMajorVersion>
+    <BlazorStateMinorVersion>0</BlazorStateMinorVersion>
+    <BlazorStatePatchVersion>0</BlazorStatePatchVersion>
+    <PreReleaseLabel>$(BlazorPreviewVersion)</PreReleaseLabel>
+    <VersionPrefix>$(BlazorStateMajorVersion).$(BlazorStateMinorVersion).$(BlazorStatePatchVersion)</VersionPrefix>
+    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd-hhmmss))</CurrentDate>
+    <VersionSuffix>$(PreReleaseLabel)-$(CurrentDate)</VersionSuffix>
+    <PackageVersion>$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
+  </PropertyGroup>
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>

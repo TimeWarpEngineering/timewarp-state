@@ -6,13 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fixie" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.0.0-preview-19075-0444" />
+    <PackageReference Include="Fixie" Version="$(FixieVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftAspNetCoreTestHostVersion)" />
     <PackageReference Include="Moq" Version="4.10.1" />
-    <PackageReference Include="Scrutor" Version="3.0.2" />
-    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
+    <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
     <DotNetCliToolReference Include="Fixie.Console" Version="2.0.3" />
-    <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version=" 0.8.0-preview-19104-04" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

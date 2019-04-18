@@ -18,44 +18,39 @@
     public ExecutionSideTests(IWebDriver aWebDriver, ServerFixture aServerFixture)
       : base(aWebDriver, aServerFixture)
     {
-      WebDriver = aWebDriver;
       aServerFixture.Environment = AspNetEnvironment.Development;
-      aServerFixture.BuildWebHostMethod = Server.Program.BuildWebHost;
+      aServerFixture.CreateHostBuilderDelegate = Server.Program.CreateHostBuilder;
 
-      JavaScriptExecutor = WebDriver as IJavaScriptExecutor;
+      Navigate("/", aReload: true);
+      WaitUntilLoaded();
+
       object clientApplication = JavaScriptExecutor.ExecuteScript("return window.localStorage.getItem('clientApplication');");
       clientApplication.ShouldBe("TestApp.Client.0.0.1");
     }
 
-    private IWebDriver WebDriver { get; }
-    private IJavaScriptExecutor JavaScriptExecutor { get; }
+    //private IWebDriver WebDriver { get; }
+    //private IJavaScriptExecutor JavaScriptExecutor { get; }
 
     public void LoadsServerSide()
     {
-      Navigate("/", aReload: true);
-      WaitUntilLoaded();
-
       JavaScriptExecutor.ExecuteScript("window.localStorage.setItem('executionSide','server');");
 
       Navigate("/", aReload: true);
       WaitUntilLoaded();
 
       IWebElement element1 = WebDriver.FindElement(By.CssSelector("[data-qa='BlazorLocation']"));
-      element1.Text.ShouldBe("ServerSide");
+      element1.Text.ShouldBe("Server Side");
     }
 
     public void LoadsClientSide()
     {
-      Navigate("/", aReload: true);
-      WaitUntilLoaded();
-
-      JavaScriptExecutor.ExecuteScript("window.localStorage.setItem('executionSide','client');");     
+      JavaScriptExecutor.ExecuteScript("window.localStorage.setItem('executionSide','client');");
 
       Navigate("/", aReload: true);
       WaitUntilLoaded();
 
       IWebElement element1 = WebDriver.FindElement(By.CssSelector("[data-qa='BlazorLocation']"));
-      element1.Text.ShouldBe("ClientSide");
+      element1.Text.ShouldBe("Client Side");
     }
   }
 }

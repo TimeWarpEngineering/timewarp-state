@@ -3,10 +3,9 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <Copyright>(c) TimeWarp Enterprises Limited</Copyright>
     <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.png</PackageIconUrl>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
-    <PackageTags>Microsoft ASP.NET Core Blazor State MediatR Mediator Pipeline Redux</PackageTags>
+    <PackageTags>Microsoft ASP.NET Core Blazor State Blazor-State MediatR Mediator Pipeline Redux</PackageTags>
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -15,7 +14,7 @@
 
   <!-- Common compile parameters -->
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>preview</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <!-- We use full (Windows PDBs) until cross platform support for source link will get better -->
@@ -23,10 +22,30 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <TestProjectTargetFramework>netstandard2.0</TestProjectTargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <TestProjectTargetFramework>netstandard2.1</TestProjectTargetFramework>
   </PropertyGroup>
   
+  <!--Versions of packages used across the solution-->
+  <PropertyGroup Label="Package Versions">
+    <BlazorPreviewVersion>preview4-19216-03</BlazorPreviewVersion>
+    <MicrosoftAspNetCoreVersion>3.0.0-preview4-19216-03</MicrosoftAspNetCoreVersion>
+    <MicrosoftAspNetCoreBlazorVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreBlazorVersion>
+    <MicrosoftAspNetCoreComponentsBrowserVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsBrowserVersion>
+    <MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>
+    <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview4.19216.2</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview4.19216.2</MicrosoftExtensionsLoggingAbstractionsVersion>
+    
+    <FixieVersion>2.0.4</FixieVersion>
+    <MediatrExtensionsMicrosoftDependencyInjectionVersion>6.0.1</MediatrExtensionsMicrosoftDependencyInjectionVersion>
+    <MediatrVersion>6.0.0</MediatrVersion>
+    <ScrutorVersion>3.0.2</ScrutorVersion>
+    <ShouldlyVersion>3.0.2</ShouldlyVersion>
+
+  </PropertyGroup>
+    
+  <!--Not sure why I added this.-->
   <Choose>
     <When Condition="'$(OfficialBuild)' != 'true'">
       <!-- On non-official builds we don't burn in a git sha. In large part because it

@@ -1,22 +1,24 @@
 ﻿using System;
-using TestApp.EndToEnd.Tests.Infrastructure;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using TestApp.EndToEnd.Tests.Infrastructure;
 
 namespace TestApp.EndToEnd.Tests
 {
   public abstract class BaseTest
   {
-    private readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+    protected IJavaScriptExecutor JavaScriptExecutor { get; }
+    protected TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(1);
+    protected IWebDriver WebDriver { get; }
+
+    private ServerFixture ServerFixture { get; }
 
     public BaseTest(IWebDriver aWebDriver, ServerFixture aServerFixture)
     {
       WebDriver = aWebDriver;
       ServerFixture = aServerFixture;
+      JavaScriptExecutor = WebDriver as IJavaScriptExecutor;
     }
-
-    private ServerFixture ServerFixture { get; }
-    private IWebDriver WebDriver { get; }
 
     protected void Navigate(string aRelativeUrl, bool aReload = true)
     {
@@ -29,8 +31,12 @@ namespace TestApp.EndToEnd.Tests
       WebDriver.Navigate().GoToUrl(absoluteUrl);
     }
 
-    protected void WaitUntilLoaded() =>
-      new WebDriverWait(WebDriver, TimeSpan.FromSeconds(30))
-      .Until(aWebDriver => aWebDriver.FindElement(By.TagName("app")).Text != "Loading...");
+    protected void WaitUntilLoaded()
+    {
+      new WebDriverWait(WebDriver, Timeout)
+        .Until(aWebDriver =>
+          JavaScriptExecutor.ExecuteScript("return window.jsonRequestHandler;") != null
+          );
+    }
   }
 }
