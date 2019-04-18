@@ -5,7 +5,10 @@
   using System.Linq;
   using System.Threading;
   using Microsoft.AspNetCore.Hosting;
+  using Microsoft.AspNetCore.Hosting.Server;
   using Microsoft.AspNetCore.Hosting.Server.Features;
+  using Microsoft.Extensions.DependencyInjection;
+  using Microsoft.Extensions.Hosting;
 
   public class ServerFixture
   {
@@ -17,12 +20,12 @@
         new Uri(StartAndGetRootUri()));
     }
 
-    public delegate IWebHost BuildWebHost(string[] args);
+    public delegate IHostBuilder CreateHostBuilder(string[] args);
 
-    public BuildWebHost BuildWebHostMethod { get; set; }
+    public CreateHostBuilder CreateHostBuilderDelegate { get; set; }
     public AspNetEnvironment Environment { get; set; } = AspNetEnvironment.Production;
     public Uri RootUri => LazyUri.Value;
-    private IWebHost WebHost { get; set; }
+    private IHost Host { get; set; }
 
     /// <summary>
     /// Find the path to the server that you are testing.
@@ -32,7 +35,7 @@
     protected static string FindSitePath(string aProjectName)
     {
       DirectoryInfo gitRootDirectory = new GitService().GitRootDirectoryInfo();
-      return Path.Combine(gitRootDirectory.FullName, "test","TestApp","TestApp.Server");
+      return Path.Combine(gitRootDirectory.FullName, "test", "TestApp", "TestApp.Server");
     }
 
     protected static void RunInBackgroundThread(Action aAction)
@@ -48,34 +51,37 @@
       isDone.WaitOne();
     }
 
-    protected IWebHost CreateWebHost()
+    protected IHost CreateWebHost()
     {
-      if (BuildWebHostMethod == null)
+      if (CreateHostBuilderDelegate == null)
       {
         throw new InvalidOperationException(
-            $"No value was provided for {nameof(BuildWebHostMethod)}");
+            $"No value was provided for {nameof(CreateHostBuilderDelegate)}");
       }
 
       string sitePath = FindSitePath(
-                BuildWebHostMethod.Method.DeclaringType.Assembly.GetName().Name);
+                CreateHostBuilderDelegate.Method.DeclaringType.Assembly.GetName().Name);
 
-      IWebHost webHost = BuildWebHostMethod(new[]
+      IHostBuilder hostBuilder = CreateHostBuilderDelegate(new[]
       {
         "--urls", "http://127.0.0.1:0",
         "--contentroot", sitePath,
         "--environment", Environment.ToString(),
       });
 
-      return webHost;
+      return hostBuilder.Build();
     }
 
     protected string StartAndGetRootUri()
     {
-      WebHost = CreateWebHost();
-      RunInBackgroundThread(WebHost.Start);
-      return WebHost.ServerFeatures
-          .Get<IServerAddressesFeature>()
-          .Addresses.Single();
+      Host = CreateWebHost();
+      RunInBackgroundThread(Host.Start);
+      return Host
+        .Services
+        .GetRequiredService<IServer>()
+        .Features
+        .Get<IServerAddressesFeature>()
+        .Addresses.Single();
     }
 
   }
