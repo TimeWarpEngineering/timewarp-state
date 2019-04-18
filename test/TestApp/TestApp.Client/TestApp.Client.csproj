@@ -12,8 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="$(TemplateBlazorPackageVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="$(TemplateBlazorPackageVersion)" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="$(MicrosoftAspNetCoreBlazorVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="$(MicrosoftAspNetCoreBlazorVersion)" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

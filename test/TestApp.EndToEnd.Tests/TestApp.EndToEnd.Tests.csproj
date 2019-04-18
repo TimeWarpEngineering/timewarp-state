@@ -6,10 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fixie" Version="2.0.3" />
+    <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
-    <PackageReference Include="Shouldly" Version="3.0.2" />
+    <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
     <DotNetCliToolReference Include="Fixie.Console" Version="2.0.1" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>

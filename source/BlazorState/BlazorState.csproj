@@ -3,7 +3,6 @@
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/aspnet/AspNetCore/blob/master/src/Components/Blazor/Templates/src/content/BlazorLibrary-CSharp/BlazorLibrary-CSharp.csproj -->
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
     <IsPackable>true</IsPackable>
     <RestoreAdditionalProjectSources Condition="'$(IncludeCustomRestoreSourcesSymbol)'=='true'">
       https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
@@ -14,8 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(TemplateComponentsPackageVersion)" />
-    <!--<PackageReference Include="Microsoft.AspNetCore.Components.Build" Version="$(TemplateComponentsPackageVersion)" PrivateAssets="all" />-->
+    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(MicrosoftAspNetCoreComponentsBrowserVersion)" />
   </ItemGroup>
   <!-- End Blazor Library Template parameters-->
 
@@ -50,13 +48,12 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
-    <PackageVersion>0.4.6</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="6.0.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-preview4.19210.6" />
+    <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
   </ItemGroup>
 
   <!-- TypeScript project-->
