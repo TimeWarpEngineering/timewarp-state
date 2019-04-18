@@ -11,13 +11,13 @@
     [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 
-    // Injected so it iscreated by the container even though ide says not used.
+    // Injected so it is created by the container even though ide says not used.
     [Inject] private RouteManager RouteManager { get; set; }
 
     protected override async Task OnAfterRenderAsync()
     {
-      await JsonRequestHandler.InitAsync();
       await ReduxDevToolsInterop.InitAsync();
+      await JsonRequestHandler.InitAsync();
     }
   }
 }
