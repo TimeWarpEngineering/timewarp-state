@@ -46,9 +46,8 @@
 
       object instance = Deserialize(aRequestAsJson, requestType);
 
-      object result = await SendToMediator(requestType, instance);
-
       // TODO: We should probably return the result. But I want logic in C# not in js so holding off.
+      await SendToMediator(requestType, instance);
     }
 
     private object Deserialize(string aRequestAsJson, Type aRequestType)

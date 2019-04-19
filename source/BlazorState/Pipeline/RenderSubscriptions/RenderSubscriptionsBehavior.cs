@@ -11,17 +11,14 @@
   {
     public RenderSubscriptionsBehavior(
       ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
-      IStore aStore,
       Subscriptions aSubscriptions)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name} constructor");
-      Store = aStore;
       Subscriptions = aSubscriptions;
     }
 
     private ILogger Logger { get; }
-    private IStore Store { get; }
     private Subscriptions Subscriptions { get; }
 
     public async Task<TResponse> Handle(

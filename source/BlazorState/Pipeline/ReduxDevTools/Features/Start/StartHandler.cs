@@ -7,19 +7,20 @@
   internal class StartHandler : RequestHandler<StartRequest>
   {
     public StartHandler(
-            ILogger<StartHandler> aLogger,
-      IStore aStore,
-      ReduxDevToolsInterop aReduxDevToolsInterop)
+      ILogger<StartHandler> aLogger
+      //IStore aStore,
+      //ReduxDevToolsInterop aReduxDevToolsInterop
+      )
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().FullName} constructor");
-      Store = aStore;
-      ReduxDevToolsInterop = aReduxDevToolsInterop;
+      //Store = aStore;
+      //ReduxDevToolsInterop = aReduxDevToolsInterop;
     }
 
     private ILogger Logger { get; }
-    private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-    private IStore Store { get; }
+    //private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
+    //private IStore Store { get; }
 
     protected override void Handle(StartRequest aRequest)
     {

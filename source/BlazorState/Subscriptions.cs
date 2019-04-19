@@ -10,7 +10,7 @@
       BlazorStateComponentReferencesDictionary = new Dictionary<Type, List<WeakReference<BlazorStateComponent>>>();
     }
 
-    private Dictionary<Type, List<WeakReference<BlazorStateComponent>>> BlazorStateComponentReferencesDictionary;
+    private Dictionary<Type, List<WeakReference<BlazorStateComponent>>> BlazorStateComponentReferencesDictionary { get; }
 
     public Subscriptions Add<T>(BlazorStateComponent aBlazorStateComponent)
     {
@@ -20,11 +20,6 @@
     }
     public Subscriptions Add(Type aType, BlazorStateComponent aBlazorStateComponent)
     {
-
-      //if (!typeof(IState).IsAssignableFrom(aStateType))
-      //{
-      //  throw new ArgumentException("Type must implement IState");
-      //}
 
       if (!(BlazorStateComponentReferencesDictionary.TryGetValue(aType, out List<WeakReference<BlazorStateComponent>> blazorStateComponentReferences)))
       {
@@ -37,17 +32,23 @@
       return this;
     }
 
+    /// <summary>
+    /// Will iterate over all subscriptions for the given type and call ReRender on each.
+    /// If the target component no longer exists it will remove its subscription.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public void ReRenderSubscribers<T>()
     {
       Type type = typeof(T);
 
       ReRenderSubscribers(type);
     }
+
     /// <summary>
     /// Will iterate over all subscriptions for the given type and call ReRender on each.
     /// If the target component no longer exists it will remove its subscription.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <param name="aType"></param>
     public void ReRenderSubscribers(Type aType)
     {
       //GC.Collect();  // I added the collect to test that I am not holding strong references and they were collected.

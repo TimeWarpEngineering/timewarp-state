@@ -13,7 +13,7 @@
   public class BlazorStateComponent : ComponentBase,
      IBlazorStateComponent
   {
-    static ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
+    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
 
     public BlazorStateComponent()
     {

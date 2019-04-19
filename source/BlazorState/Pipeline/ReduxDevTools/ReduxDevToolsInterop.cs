@@ -13,18 +13,15 @@
     public ReduxDevToolsInterop(
       ILogger<ReduxDevToolsInterop> aLogger,
       IReduxDevToolsStore aStore,
-      IJSRuntime aJSRuntime,
-      BlazorHostingLocation aBlazorHostingLocation)
+      IJSRuntime aJSRuntime)
     {
       Logger = aLogger;
       Store = aStore;
       JSRuntime = aJSRuntime;
-      BlazorHostingLocation = aBlazorHostingLocation;
     }
 
     public bool IsEnabled { get; set; }
     private IJSRuntime JSRuntime { get; }
-    private BlazorHostingLocation BlazorHostingLocation { get; }
     private ILogger Logger { get; }
     private IReduxDevToolsStore Store { get; }
 
@@ -47,7 +44,7 @@
 
     public async Task InitAsync()
     {
-      Console.WriteLine("Init ReduxDevToolsInterop");
+      Logger.LogDebug("Init ReduxDevToolsInterop");
       const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
       IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName);
 
