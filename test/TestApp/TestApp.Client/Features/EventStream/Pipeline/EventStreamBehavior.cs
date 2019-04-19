@@ -18,19 +18,16 @@
   {
     public EventStreamBehavior(
       ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
-      IMediator aMediator,
-      IStore aStore)
+      IMediator aMediator)
     {
       Logger = aLogger;
       Mediator = aMediator;
-      Store = aStore;
       Logger.LogDebug($"{GetType().Name}: Constructor");
     }
 
     public Guid Guid { get; } = Guid.NewGuid();
     private ILogger Logger { get; }
     private IMediator Mediator { get; }
-    private IStore Store { get; }
 
     public async Task<TResponse> Handle(
       TRequest aRequest,
