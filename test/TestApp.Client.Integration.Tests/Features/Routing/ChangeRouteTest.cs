@@ -40,7 +40,7 @@
     {
       // Arrange
       RouteState.Initialize("/someplace");
-      var changeRouteRequest = new ChangeRouteRequest
+      var changeRouteRequest = new ChangeRouteAction
       {
         NewRoute = newUrl
       };
