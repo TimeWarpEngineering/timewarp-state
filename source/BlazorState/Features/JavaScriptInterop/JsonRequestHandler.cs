@@ -5,7 +5,6 @@
   using System.Reflection;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Services;
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
@@ -15,21 +14,17 @@
     public JsonRequestHandler(
       ILogger<JsonRequestHandler> aLogger,
       IMediator aMediator,
-      IJSRuntime aJSRuntime,
-      BlazorHostingLocation aBlazorHostingLocation)
+      IJSRuntime aJSRuntime)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
       JSRuntime = aJSRuntime;
-      BlazorHostingLocation = aBlazorHostingLocation;
     }
 
     private ILogger Logger { get; }
-
     private IMediator Mediator { get; }
     private IJSRuntime JSRuntime { get; }
-    private BlazorHostingLocation BlazorHostingLocation { get; }
 
     /// <summary>
     /// This will handle the Javascript interop
@@ -102,9 +97,9 @@
 
     public async Task InitAsync()
     {
-      Console.WriteLine("Init JsonRequestHandler");
+      Logger.LogDebug("Init JsonRequestHandler");
       const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-      Console.WriteLine(InitializeJavaScriptInteropName);
+      Logger.LogDebug(InitializeJavaScriptInteropName);
       await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
     }
   }
