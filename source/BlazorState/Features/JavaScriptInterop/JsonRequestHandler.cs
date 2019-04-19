@@ -65,14 +65,11 @@
     }
 
     /// <summary>
-    /// Sends
+    /// Equivelent to the following code just using generics everywhere and reflection.
+    ///  return await Mediator.Send(aInstance) 
     /// </summary>
-    /// <remarks>Sends an instance of this item to JavaScript side
-    /// </remarks>
     private async Task<object> SendToMediator(Type aRequestType, object aInstance)
     {
-      // return Mediator.Send(aInstance) is what this does but uses generics everywhere.
-
       string genericRequestInterfaceName = typeof(IRequest<int>).Name;
 
       MethodInfo sendMethodInfo = Mediator.GetType().GetMethod(nameof(Mediator.Send));
