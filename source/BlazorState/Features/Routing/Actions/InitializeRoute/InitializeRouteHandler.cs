@@ -7,7 +7,7 @@
 
   public partial class RouteState
   {
-    internal class InitializeRouteHandler : RequestHandler<InitializeRouteRequest, RouteState>
+    internal class InitializeRouteHandler : RequestHandler<InitializeRouteAction, RouteState>
     {
       public InitializeRouteHandler(
         IStore aStore,
@@ -21,7 +21,7 @@
 
       private IUriHelper UriHelper { get; }
 
-      public override Task<RouteState> Handle(InitializeRouteRequest aInitializeRouteRequest, CancellationToken aCancellationToken)
+      public override Task<RouteState> Handle(InitializeRouteAction aInitializeRouteRequest, CancellationToken aCancellationToken)
       {
         RouteState.Route = UriHelper.GetAbsoluteUri().ToString();
         return Task.FromResult(RouteState);

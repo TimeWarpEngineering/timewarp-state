@@ -7,7 +7,7 @@
 
   public partial class RouteState
   {
-    internal class ChangeRouteHandler : RequestHandler<ChangeRouteRequest, RouteState>
+    internal class ChangeRouteHandler : RequestHandler<ChangeRouteAction, RouteState>
     {
       public ChangeRouteHandler(
         IStore aStore,
@@ -21,7 +21,7 @@
 
       private IUriHelper UriHelper { get; }
 
-      public override Task<RouteState> Handle(ChangeRouteRequest aChangeRouteRequest, CancellationToken aCancellationToken)
+      public override Task<RouteState> Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
       {
         string newAbsoluteUri = UriHelper.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
         string absoluteUri = UriHelper.GetAbsoluteUri();

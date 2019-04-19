@@ -5,7 +5,6 @@
   using System.Reflection;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState.Services;
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
@@ -15,21 +14,17 @@
     public JsonRequestHandler(
       ILogger<JsonRequestHandler> aLogger,
       IMediator aMediator,
-      IJSRuntime aJSRuntime,
-      BlazorHostingLocation aBlazorHostingLocation)
+      IJSRuntime aJSRuntime)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
       JSRuntime = aJSRuntime;
-      BlazorHostingLocation = aBlazorHostingLocation;
     }
 
     private ILogger Logger { get; }
-
     private IMediator Mediator { get; }
     private IJSRuntime JSRuntime { get; }
-    private BlazorHostingLocation BlazorHostingLocation { get; }
 
     /// <summary>
     /// This will handle the Javascript interop
@@ -70,14 +65,11 @@
     }
 
     /// <summary>
-    /// Sends
+    /// Equivelent to the following code just using generics everywhere and reflection.
+    ///  return await Mediator.Send(aInstance) 
     /// </summary>
-    /// <remarks>Sends an instance of this item to JavaScript side
-    /// </remarks>
     private async Task<object> SendToMediator(Type aRequestType, object aInstance)
     {
-      // return Mediator.Send(aInstance) is what this does but uses generics everywhere.
-
       string genericRequestInterfaceName = typeof(IRequest<int>).Name;
 
       MethodInfo sendMethodInfo = Mediator.GetType().GetMethod(nameof(Mediator.Send));
@@ -102,9 +94,9 @@
 
     public async Task InitAsync()
     {
-      Console.WriteLine("Init JsonRequestHandler");
+      Logger.LogDebug("Init JsonRequestHandler");
       const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-      Console.WriteLine(InitializeJavaScriptInteropName);
+      Logger.LogDebug(InitializeJavaScriptInteropName);
       await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
     }
   }

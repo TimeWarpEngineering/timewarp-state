@@ -20,7 +20,7 @@
     public Task<Unit> Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
     {
       Store.Reset();
-      Mediator.Send(new ChangeRouteRequest
+      Mediator.Send(new ChangeRouteAction
       {
         NewRoute = "/"
       });
