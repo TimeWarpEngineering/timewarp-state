@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.Counter
+﻿namespace TestApp.Client.Integration.Tests.Pipeline
 {
   using System;
   using System.Threading.Tasks;
