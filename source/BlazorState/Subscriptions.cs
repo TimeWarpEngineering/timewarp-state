@@ -8,6 +8,7 @@
   {
     public Subscriptions(ILogger<Subscriptions> aLogger)
     {
+      Logger = aLogger;
       BlazorStateComponentReferencesDictionary = new Dictionary<Type, List<WeakReference<BlazorStateComponent>>>();
     }
 
