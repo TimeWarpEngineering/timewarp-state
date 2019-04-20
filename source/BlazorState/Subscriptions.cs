@@ -2,14 +2,16 @@
 {
   using System;
   using System.Collections.Generic;
+  using Microsoft.Extensions.Logging;
 
   public class Subscriptions
   {
-    public Subscriptions()
+    public Subscriptions(ILogger<Subscriptions> aLogger)
     {
       BlazorStateComponentReferencesDictionary = new Dictionary<Type, List<WeakReference<BlazorStateComponent>>>();
     }
 
+    private ILogger Logger { get; }
     private Dictionary<Type, List<WeakReference<BlazorStateComponent>>> BlazorStateComponentReferencesDictionary { get; }
 
     public Subscriptions Add<T>(BlazorStateComponent aBlazorStateComponent)
@@ -55,19 +57,19 @@
       bool isAny = BlazorStateComponentReferencesDictionary.TryGetValue(aType, out List<WeakReference<BlazorStateComponent>> blazorStateblazorStateComponentReferencesComponents);
       if (isAny)
       {
-        Console.WriteLine($"ReRendering {blazorStateblazorStateComponentReferencesComponents.Count} Subscribers for state of type: {aType.GetType().Name}");
+        Logger.LogDebug($"ReRendering {blazorStateblazorStateComponentReferencesComponents.Count} Subscribers for state of type: {aType.Name}");
         WeakReference<BlazorStateComponent>[] blazorStateComponentReferencesArray = blazorStateblazorStateComponentReferencesComponents.ToArray();
 
         foreach (WeakReference<BlazorStateComponent> aBlazorStateComponentReference in blazorStateComponentReferencesArray)
         {
           if (aBlazorStateComponentReference.TryGetTarget(out BlazorStateComponent target))
           {
-            Console.WriteLine($"ReRender: {target.GetType().Name}");
+            Logger.LogDebug($"ReRender: {target.GetType().Name}");
             target.ReRender();
           }
           else
           {
-            Console.WriteLine($"Removing subscription to previously destroyed component.");
+            Logger.LogDebug($"Removing subscription to previously destroyed component.");
             blazorStateblazorStateComponentReferencesComponents.Remove(aBlazorStateComponentReference);
           }
         }
