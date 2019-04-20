@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Behaviors
+﻿namespace TestApp.Client.Integration.Tests.Pipeline
 {
   using System;
   using System.Collections.Generic;
