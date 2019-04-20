@@ -38,6 +38,7 @@
     <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview4.19216.2</MicrosoftExtensionsLoggingAbstractionsVersion>
     
     <FixieVersion>2.0.4</FixieVersion>
+    <FixieConsoleVersion>2.0.4</FixieConsoleVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>6.0.1</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>6.0.0</MediatrVersion>
     <ScrutorVersion>3.0.2</ScrutorVersion>

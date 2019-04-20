@@ -4,10 +4,10 @@
 
   public class Program
   {
-    private static IWebAssemblyHostBuilder CreateHostBuilder(string[] aArgumentArray) =>
+    private static IWebAssemblyHostBuilder CreateHostBuilder() =>
         BlazorWebAssemblyHost.CreateDefaultBuilder()
         .UseBlazorStartup<Startup>();
 
-    private static void Main(string[] aArgumentArray) => CreateHostBuilder(aArgumentArray).Build().Run();
+    private static void Main() => CreateHostBuilder().Build().Run();
   }
 }

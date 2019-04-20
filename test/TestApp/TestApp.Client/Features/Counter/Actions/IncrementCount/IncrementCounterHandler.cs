@@ -16,7 +16,6 @@
         IncrementCounterAction aIncrementCounterRequest,
         CancellationToken aCancellationToken)
       {
-        Console.WriteLine("IncrementCounterHandler");
         CounterState.Count += aIncrementCounterRequest.Amount;
         return Task.FromResult(CounterState);
       }

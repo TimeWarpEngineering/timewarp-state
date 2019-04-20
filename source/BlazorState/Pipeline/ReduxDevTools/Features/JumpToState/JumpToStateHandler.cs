@@ -9,19 +9,16 @@
     public JumpToStateHandler(
       ILogger<JumpToStateHandler> aLogger,
       IReduxDevToolsStore aStore,
-      ReduxDevToolsInterop aReduxDevToolsInterop,
       Subscriptions aSubscriptions)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().FullName} constructor");
       Store = aStore;
-      ReduxDevToolsInterop = aReduxDevToolsInterop;
       Subscriptions = aSubscriptions;
     }
 
     private Subscriptions Subscriptions { get; }
     private ILogger Logger { get; }
-    private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
     private IReduxDevToolsStore Store { get; }
 
     protected override void Handle(JumpToStateRequest aRequest)

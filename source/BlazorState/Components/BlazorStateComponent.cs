@@ -13,7 +13,7 @@
   public class BlazorStateComponent : ComponentBase,
      IBlazorStateComponent
   {
-    static ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
+    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
 
     public BlazorStateComponent()
     {
@@ -21,12 +21,6 @@
       int count = s_InstanceCounts.AddOrUpdate(name, 1, (aKey, aValue) => aValue + 1);
 
       Id = $"{name}-{count}";
-    }
-
-    ~BlazorStateComponent()
-    {
-      string name = GetType().Name;
-      Console.WriteLine($"Destroying a {name}");
     }
 
     /// <summary>
