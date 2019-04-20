@@ -23,12 +23,6 @@
       Id = $"{name}-{count}";
     }
 
-    ~BlazorStateComponent()
-    {
-      string name = GetType().Name;
-      Console.WriteLine($"Destroying a {name}");
-    }
-
     /// <summary>
     /// A generated unique Id based on the Class name and number of times they have been created
     /// </summary>
