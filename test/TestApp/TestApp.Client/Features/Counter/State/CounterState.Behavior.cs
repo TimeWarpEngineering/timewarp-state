@@ -11,7 +11,7 @@
     /// </summary>
     /// <remarks>Constructor used for Clone</remarks>
     /// <param name="aState"></param>
-    protected CounterState(CounterState aState) : this()
+    private CounterState(CounterState aState) : this()
     {
       Count = aState.Count;
     }
