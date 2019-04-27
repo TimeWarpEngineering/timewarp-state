@@ -1,9 +1,10 @@
 ﻿namespace TestApp.Client.Features.WeatherForecast
 {
   using System.Collections.Generic;
-  using TestApp.Shared.Features.WeatherForecast;
+  using System.Reflection;
   using BlazorState;
   using Microsoft.JSInterop;
+  using TestApp.Shared.Features.WeatherForecast;
 
   public partial class WeatherForecastsState : State<WeatherForecastsState>
   {
@@ -17,6 +18,13 @@
       };
 
       return newWeatherForecastsState;
+    }
+
+    private void Initialize(List<WeatherForecastDto> aWeatherForecastList)
+    {
+      ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
+      _WeatherForecasts = aWeatherForecastList ??
+        throw new System.ArgumentNullException(nameof(aWeatherForecastList));
     }
   }
 }
