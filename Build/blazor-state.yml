@@ -15,7 +15,6 @@ queue:
   name: TimeWarpEnterprises
 
 steps:
-- script: echo Version $(Version)
 - script: echo Build.SourceVersion $(Build.SourceVersion)
 
 - task: Npm@1
