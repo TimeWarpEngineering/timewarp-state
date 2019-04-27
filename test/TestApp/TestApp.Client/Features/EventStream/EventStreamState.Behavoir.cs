@@ -10,7 +10,7 @@
       Events = new List<string>();
     }
 
-    public EventStreamState(EventStreamState aEventStreamState)
+    private EventStreamState(EventStreamState aEventStreamState)
     {
       Events = new List<string>(aEventStreamState.Events);
     }

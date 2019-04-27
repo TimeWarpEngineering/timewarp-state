@@ -6,7 +6,7 @@
   {
     public ApplicationState() { }
 
-    protected ApplicationState(ApplicationState aState) : this()
+    private ApplicationState(ApplicationState aState) : this()
     {
       Name = aState.Name;
     }
