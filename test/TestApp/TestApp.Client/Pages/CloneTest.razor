@@ -3,9 +3,9 @@
 <h1>Clone Tests</h1>
 
 <button class="btn btn-primary" onclick="@TestClone">Click me</button>
-
-<h6>TestResult</h6>
-<p>@TestResult</p>
+<br/>
+<hr/>
+<h6>TestResult:@TestResult</h6>
 
 @functions {
   string TestResult = "Not run";
@@ -26,7 +26,7 @@
       CloneProviderTests.Should_Clone_CustomCollectionObject();
       CloneProviderTests.Should_Clone_DictionaryObject();
       CloneProviderTests.Should_Clone_InterfacesObject();
-      TestResult = "Passesd";
+      TestResult = "Passed";
     }
     catch (Exception)
     {
