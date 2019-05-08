@@ -36,8 +36,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="3.0.0-preview4-19216-03" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="$(MicrosoftSourceLinkGitHubVersion)" PrivateAssets="All" />
   </ItemGroup>
   <!-- End Source Link -->
 
@@ -50,11 +49,13 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(MicrosoftAspNetCoreComponentsBrowserVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
   </ItemGroup>
 
   <!-- TypeScript project-->
   <ItemGroup>
+    <ProjectReference Include="..\AnyClone\AnyClone.csproj" />
     <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
