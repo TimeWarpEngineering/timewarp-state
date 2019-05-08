@@ -94,14 +94,13 @@ csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
 
 # "Null" checking preferences
 csharp_style_conditional_delegate_call = true:suggestion
-dotnet_style_coalesce_expression = true:suggestion
 
 # Modifier preferences
 csharp_prefer_static_local_function = true:suggestion
 csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:suggestion
 
 # Code-block preferences
-csharp_prefer_braces = true:suggestion
+csharp_prefer_braces = when-multiline:suggestion
 csharp_prefer_simple_using_statement = true:suggestion
 
 # Expression-level preferences
@@ -160,7 +159,7 @@ csharp_space_between_square_brackets = false
 
 # Wrapping preferences
 csharp_preserve_single_line_blocks = true
-csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_statements = true
 
 #### Naming styles ####
 
@@ -190,17 +189,6 @@ dotnet_naming_symbols.types.applicable_accessibilities = public, internal, priva
 dotnet_naming_symbols.types.required_modifiers = 
 
 dotnet_naming_style.types_style.capitalization = pascal_case
-
-# Non Field members should be camel_case
-dotnet_naming_rule.non_field_members_should_be_camel_case.severity = suggestion
-dotnet_naming_rule.non_field_members_should_be_camel_case.symbols = non_field_members
-dotnet_naming_rule.non_field_members_should_be_camel_case.style = non_field_members_style
-
-dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
-dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal
-dotnet_naming_symbols.non_field_members.required_modifiers = 
-
-dotnet_naming_style.non_field_members_style.capitalization = camel_case
 
 # Non-private static fields are PascalCase
 dotnet_naming_rule.non_private_static_fields_should_be_pascal_case.severity = suggestion
@@ -262,11 +250,3 @@ dotnet_naming_symbols.local_functions.applicable_kinds = local_function
 
 dotnet_naming_style.local_function_style.capitalization = pascal_case
 
-# By default, name items with PascalCase
-dotnet_naming_rule.members_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.members_should_be_pascal_case.symbols = all_members
-dotnet_naming_rule.members_should_be_pascal_case.style = pascal_case_style
-
-dotnet_naming_symbols.all_members.applicable_kinds = *
-
-dotnet_naming_style.pascal_case_style.capitalization = pascal_case
