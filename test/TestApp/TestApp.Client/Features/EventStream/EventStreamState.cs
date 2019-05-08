@@ -4,6 +4,14 @@
 
   internal partial class EventStreamState
   {
-    internal List<string> Events { get; set; }
+    public List<string> _Events { get; set; }
+    public IReadOnlyList<string> Events => _Events.AsReadOnly();
+
+    public EventStreamState()
+    {
+      _Events = new List<string>();
+    }
+
+    protected override void Initialize() { }
   }
 }

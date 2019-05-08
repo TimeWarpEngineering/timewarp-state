@@ -1,10 +1,11 @@
 ﻿namespace TestApp.Client.Integration.Tests.Features.Counter
 {
-  using System;
-  using TestApp.Client.Features.Counter;
+  using AnyClone;
   using BlazorState;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
+  using System;
+  using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
   internal class CounterStateCloneTests
@@ -22,7 +23,7 @@
     {
       //Arrange
       CounterState.Initialize(aCount: 15);
-      
+
       //Act
       var clone = CounterState.Clone() as CounterState;
 

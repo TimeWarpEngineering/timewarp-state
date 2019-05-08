@@ -10,11 +10,11 @@
     /// <summary>
     /// Use in Tests ONLY, to initialize the State
     /// </summary>
-    /// <param name="aCount"></param>
+    /// <param name="aEvents"></param>
     public void Initialize(List<string> aEvents)
     {
       ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-      Events = aEvents;
+      _Events = aEvents;
     }
   }
 }
