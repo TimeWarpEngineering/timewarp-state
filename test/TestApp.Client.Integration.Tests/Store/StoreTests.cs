@@ -17,14 +17,7 @@
       ServiceProvider = aTestFixture.ServiceProvider;
       Store = ServiceProvider.GetService<IStore>();
       ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
-      CounterState = Store.GetState<CounterState>();
-      ApplicationState = Store.GetState<ApplicationState>();
-      WeatherForecastState = Store.GetState<WeatherForecastsState>();
     }
-
-    private CounterState CounterState { get; set; }
-    private ApplicationState ApplicationState { get; set; }
-    private WeatherForecastsState WeatherForecastState { get; set; }
 
     private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
