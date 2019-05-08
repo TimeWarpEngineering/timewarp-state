@@ -1,45 +1,48 @@
-﻿using System;
-
-namespace AnyClone.Tests.TestObjects
+﻿namespace AnyClone.Tests.TestObjects
 {
-    public class BasicObject : IEquatable<BasicObject>
-    {
-        private int _privateIntValue;
-        public bool BoolValue { get; set; }
-        public byte ByteValue { get; set; }
-        public int IntValue { get; set; }
-        public long LongValue { get; set; }
-        public string StringValue { get; set; }
+  using System;
 
-        public BasicObject() { }
-        public BasicObject(int privateIntValue)
-        {
-            _privateIntValue = privateIntValue;
-        }
+  public class BasicObject : IEquatable<BasicObject>
+  {
+#pragma warning disable IDE0044 // Add readonly modifier
+    private int _privateIntValue;
+#pragma warning restore IDE0044 // Add readonly modifier
+    public bool BoolValue { get; set; }
+    public byte ByteValue { get; set; }
+    public int IntValue { get; set; }
+    public long LongValue { get; set; }
+    public string StringValue { get; set; }
+
+    public BasicObject() { }
+    public BasicObject(int aPrivateIntValue)
+    {
+      _privateIntValue = aPrivateIntValue;
+    }
 
     public override int GetHashCode() => base.GetHashCode();
 
-    public override bool Equals(object obj)
-        {
-            if (obj == null || obj.GetType() != typeof(BasicObject))
-                return false;
+    public override bool Equals(object aObject)
+    {
+      if (aObject == null || aObject.GetType() != typeof(BasicObject))
+      {
+        return false;
+      }
 
-            var basicObject = (BasicObject)obj;
-            return Equals(basicObject);
-        }
-
-        public bool Equals(BasicObject other)
-        {
-            if (other == null)
-                return false;
-            return 
-                other._privateIntValue == _privateIntValue
-                && other.BoolValue == BoolValue
-                && other.ByteValue == ByteValue
-                && other.IntValue == IntValue
-                && other.LongValue == LongValue
-                && other.StringValue == StringValue
-                ;
-        }
+      var basicObject = (BasicObject)aObject;
+      return Equals(basicObject);
     }
+
+    public bool Equals(BasicObject aBasicObject)
+    {
+      if (aBasicObject == null) return false;
+      return
+          aBasicObject._privateIntValue == _privateIntValue
+          && aBasicObject.BoolValue == BoolValue
+          && aBasicObject.ByteValue == ByteValue
+          && aBasicObject.IntValue == IntValue
+          && aBasicObject.LongValue == LongValue
+          && aBasicObject.StringValue == StringValue
+          ;
+    }
+  }
 }
