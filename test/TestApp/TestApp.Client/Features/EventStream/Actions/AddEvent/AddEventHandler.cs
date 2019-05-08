@@ -1,6 +1,7 @@
 ﻿namespace TestApp.Client.Features.EventStream
 {
   using System;
+  using System.Runtime.Serialization;
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
@@ -17,7 +18,7 @@
         AddEventAction aAddEventAction,
         CancellationToken aCancellationToken)
       {
-        EventStreamState.Events.Add(aAddEventAction.Message);
+        EventStreamState._Events.Add(aAddEventAction.Message);
         return Task.FromResult(EventStreamState);
       }
     }
