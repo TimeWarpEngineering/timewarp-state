@@ -16,17 +16,14 @@
   public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
     public MyBehavior(
-      ILogger<MyBehavior<TRequest, TResponse>> aLogger,
-      IStore aStore)
+      ILogger<MyBehavior<TRequest, TResponse>> aLogger)
     {
       Logger = aLogger;
-      Store = aStore;
       Logger.LogDebug($"{GetType().Name}: Constructor");
     }
 
     public Guid Guid { get; } = Guid.NewGuid();
     private ILogger Logger { get; }
-    private IStore Store { get; }
 
     public async Task<TResponse> Handle(
       TRequest aRequest,
