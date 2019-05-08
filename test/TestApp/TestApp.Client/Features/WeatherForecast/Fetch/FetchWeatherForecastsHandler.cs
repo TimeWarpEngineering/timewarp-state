@@ -8,7 +8,7 @@
   using TestApp.Shared.Features.WeatherForecast;
   using Microsoft.AspNetCore.Components;
 
-  public partial class WeatherForecastsState
+  internal partial class WeatherForecastsState
   {
     public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsRequest, WeatherForecastsState>
     {

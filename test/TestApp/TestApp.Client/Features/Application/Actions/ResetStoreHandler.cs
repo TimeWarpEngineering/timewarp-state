@@ -6,7 +6,7 @@
   using BlazorState.Features.Routing;
   using MediatR;
 
-  public class ResetStoreHandler : IRequestHandler<ResetStoreAction>
+  internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>
   {
     public ResetStoreHandler(IStore aStore, IMediator aMediator)
     {

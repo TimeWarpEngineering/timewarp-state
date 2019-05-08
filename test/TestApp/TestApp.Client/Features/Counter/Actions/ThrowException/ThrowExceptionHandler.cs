@@ -6,7 +6,7 @@
   using System;
   using TestApp.Client.Features.Base;
 
-  public partial class CounterState
+  internal partial class CounterState
   {
     internal class ThrowExceptionHandler : BaseHandler<ThrowExceptionAction, CounterState>
     {
