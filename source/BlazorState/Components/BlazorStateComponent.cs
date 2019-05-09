@@ -47,6 +47,12 @@
     /// </summary>
     public void ReRender() => StateHasChanged();
 
+    /// <summary>
+    /// Place a Subscription for the calling component
+    /// And returns the requested state
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <returns></returns>
     protected T GetState<T>()
     {
       Type stateType = typeof(T);
