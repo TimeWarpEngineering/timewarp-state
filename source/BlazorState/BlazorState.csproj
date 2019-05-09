@@ -47,15 +47,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AnyClone" Version="$(AnyCloneVersion)" />
     <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Browser" Version="$(MicrosoftAspNetCoreComponentsBrowserVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
+    <PackageReference Include="TypeSupport" Version="$(TypeSupportVersion)" />
   </ItemGroup>
 
   <!-- TypeScript project-->
   <ItemGroup>
-    <ProjectReference Include="..\AnyClone\AnyClone.csproj" />
     <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />

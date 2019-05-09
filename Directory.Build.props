@@ -46,6 +46,7 @@
     <MediatrVersion>6.0.0</MediatrVersion>
     <ScrutorVersion>3.0.2</ScrutorVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
+    <TypeSupportVersion>1.0.73</TypeSupportVersion>
 
   </PropertyGroup>
     
