@@ -12,8 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Extensions.Logging" Version="$(BlazorExtensionsLoggingVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor" Version="$(MicrosoftAspNetCoreBlazorVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="$(MicrosoftAspNetCoreBlazorVersion)" PrivateAssets="all" />
+    <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,8 +29,7 @@
   </ItemGroup>
 
   <Target Name="CopyFiles" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="@(BlazorStateDistFiles)"
-          DestinationFolder="..\TestApp.Client\wwwroot">
+    <Copy SourceFiles="@(BlazorStateDistFiles)" DestinationFolder="..\TestApp.Client\wwwroot">
       <Output TaskParameter="CopiedFiles" ItemName="SuccessfullyCopiedFiles" />
     </Copy>
   </Target>
