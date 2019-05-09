@@ -26,6 +26,6 @@
     /// </summary>
     public IServiceProvider ServiceProvider { get; set; }
 
-    private IConfigurationRoot ConfigurationRoot { get; }
+    public IConfigurationRoot ConfigurationRoot { get; }
   }
 }

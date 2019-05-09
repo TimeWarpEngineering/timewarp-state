@@ -15,14 +15,12 @@
     public JsonRequestHandlerTests(TestFixture aTestFixture)
     {
       ServiceProvider = aTestFixture.ServiceProvider;
-      Mediator = ServiceProvider.GetService<IMediator>();
       JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
       Store = ServiceProvider.GetService<IStore>();
       CounterState = Store.GetState<CounterState>();
     }
 
     private CounterState CounterState { get; set; }
-    private IMediator Mediator { get; }
     private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
     private JsonRequestHandler JsonRequestHandler { get; }

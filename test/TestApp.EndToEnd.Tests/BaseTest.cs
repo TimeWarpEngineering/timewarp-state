@@ -8,7 +8,7 @@ namespace TestApp.EndToEnd.Tests
   public abstract class BaseTest
   {
     protected IJavaScriptExecutor JavaScriptExecutor { get; }
-    protected TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(1);
+    protected TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(10);
     protected IWebDriver WebDriver { get; }
 
     private ServerFixture ServerFixture { get; }

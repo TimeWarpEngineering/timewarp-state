@@ -1,20 +1,20 @@
 ﻿namespace BlazorState
 {
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Net.Http;
-  using System.Reflection;
-  using BlazorState.Pipeline.ReduxDevTools;
-  using BlazorState.Pipeline.State;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
+  using BlazorState.Pipeline.ReduxDevTools;
+  using BlazorState.Pipeline.State;
   using BlazorState.Services;
   using MediatR;
   using Microsoft.AspNetCore.Components;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Net.Http;
+  using System.Reflection;
 
   public static class ServiceCollectionExtensions
   {
@@ -31,14 +31,11 @@
       this IServiceCollection aServices,
       Action<Options> aConfigure = null)
     {
-
       ServiceDescriptor flagServiceDescriptor = aServices.FirstOrDefault(
         aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(BlazorHostingLocation));
 
       if (flagServiceDescriptor == null)
       {
-
-
         var options = new Options();
         aConfigure?.Invoke(options);
 
@@ -51,17 +48,18 @@
 
         aServices.AddScoped<BlazorHostingLocation>();
         aServices.AddScoped<JsonRequestHandler>();
+        aServices.AddScoped<Subscriptions>();
+        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
+        aServices.AddScoped<IStore, Store>();
+
         if (options.UseCloneStateBehavior)
         {
           aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-          aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
-          aServices.AddScoped<IStore, Store>();
         }
         if (options.UseReduxDevToolsBehavior)
         {
           aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
           aServices.AddScoped<ReduxDevToolsInterop>();
-          aServices.AddScoped<Subscriptions>();
           aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
         }
         if (options.UseRouting)
@@ -124,7 +122,6 @@
 
       if (mediatorServiceDescriptor == null)
       {
-
         var assemblies = new List<Assembly>(aOptions.Assemblies)
         {
           Assembly.GetAssembly(typeof(ServiceCollectionExtensions)),
@@ -138,18 +135,20 @@
 
   public class Options
   {
-    public Options()
-    {
-      Assemblies = new Assembly[] { };
-    }
-
     ///// <summary>
     ///// Assemblies to be searched for MediatR Requests
     ///// </summary>
     public IEnumerable<Assembly> Assemblies { get; set; }
 
     public bool UseCloneStateBehavior { get; set; } = true;
+
     public bool UseReduxDevToolsBehavior { get; set; } = true;
+
     public bool UseRouting { get; set; } = true;
+
+    public Options()
+    {
+      Assemblies = new Assembly[] { };
+    }
   }
 }

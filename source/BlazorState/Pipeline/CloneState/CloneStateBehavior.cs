@@ -6,6 +6,7 @@
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
+  using AnyClone;
 
   internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
@@ -36,17 +37,16 @@
 
       Type responseType = typeof(TResponse);
 
-      IState originalState = null;
+      var originalState = default(TResponse);
       // Constrain here if not IState then ignore.
       if (typeof(IState).IsAssignableFrom(responseType))
       {
         Logger.LogDebug($"{className}: Clone State of type {responseType}");
-        originalState = (IState)Store.GetState<TResponse>();
-        Logger.LogDebug($"{className}: originalState.Guid:{originalState.Guid}");
-        var newState = (IState)originalState.Clone();
-        Logger.LogDebug($"{className}: newState.Guid:{newState.Guid}");
-
-        Store.SetState(newState);
+        originalState = Store.GetState<TResponse>();
+        Logger.LogDebug($"{className}: originalState.Guid:{((IState)originalState).Guid}");
+        TResponse newState = originalState.Clone();
+        Logger.LogDebug($"{className}: newState.Guid:{((IState)newState).Guid}");
+        Store.SetState(newState as IState);
       }
       else
       {
@@ -72,7 +72,10 @@
         Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
         Logger.LogError($"{className}: Restoring State of type: {responseType}");
         if (originalState != null)
-          Store.SetState(originalState);
+        {
+          Store.SetState(originalState as IState);
+        }
+
         throw;  // Do you throw or not? for now yes.
       }
     }

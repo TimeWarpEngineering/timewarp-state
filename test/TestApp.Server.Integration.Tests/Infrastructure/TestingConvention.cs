@@ -19,13 +19,11 @@
     {
       aTestClass.RunCases(aCase =>
       {
-        using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
-        {
-          object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-          Setup(instance);
+        using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
+        object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
+        Setup(instance);
 
-          aCase.Execute(instance);
-        }
+        aCase.Execute(instance);
       });
     }
 

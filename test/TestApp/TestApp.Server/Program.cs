@@ -7,10 +7,7 @@
   {
     public static IHostBuilder CreateHostBuilder(string[] aArgumentArray) =>
       Host.CreateDefaultBuilder(aArgumentArray)
-        .ConfigureWebHostDefaults(aWebHostBuilder =>
-        {
-          aWebHostBuilder.UseStartup<Startup>();
-        });
+        .ConfigureWebHostDefaults(aWebHostBuilder => aWebHostBuilder.UseStartup<Startup>());
 
     public static void Main(string[] aArgumentArray) => CreateHostBuilder(aArgumentArray).Build().Run();
   }

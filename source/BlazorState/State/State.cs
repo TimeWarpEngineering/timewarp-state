@@ -3,6 +3,7 @@
   using System;
   using System.Collections.Generic;
   using System.Reflection;
+  using System.Runtime.Serialization;
 
   public abstract class State<TState> : IState<TState>
   {
@@ -11,11 +12,10 @@
       Initialize();
     }
 
+    [IgnoreDataMember]
     public Guid Guid { get; protected set; } = Guid.NewGuid();
 
     TState IState<TState>.State { get; }
-
-    public abstract object Clone();
 
     /// <summary>
     /// returns a new instance of type TState

@@ -3,6 +3,7 @@
   using BlazorState.Pipeline.ReduxDevTools;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
+  using TestApp.Client.Features.EventStream;
   using TestApp.Client.Features.WeatherForecast;
 
   /// <summary>
@@ -16,8 +17,9 @@
   /// </remarks>
   public class BaseComponent : BlazorStateDevToolsComponent
   {
-    public ApplicationState ApplicationState => GetState<ApplicationState>();
-    public CounterState CounterState => GetState<CounterState>();
-    public WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
+    internal ApplicationState ApplicationState => GetState<ApplicationState>();
+    internal CounterState CounterState => GetState<CounterState>();
+    internal EventStreamState EventStreamState => GetState<EventStreamState>();
+    internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
   }
 }

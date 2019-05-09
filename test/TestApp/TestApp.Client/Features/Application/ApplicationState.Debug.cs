@@ -4,7 +4,7 @@
   using BlazorState;
   using Microsoft.JSInterop;
 
-  public partial class ApplicationState : State<ApplicationState>
+  internal partial class ApplicationState : State<ApplicationState>
   {
     public override ApplicationState Hydrate(IDictionary<string, object> aKeyValuePairs)
     {

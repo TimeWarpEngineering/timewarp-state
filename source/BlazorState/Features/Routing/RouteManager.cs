@@ -30,7 +30,9 @@
     {
       string absoluteUri = UriHelper.ToAbsoluteUri(aNewLocation).ToString();
       if (RouteState.Route != absoluteUri)
+      {
         Mediator.Send(new ChangeRouteAction { NewRoute = absoluteUri });
+      }
     }
   }
 }

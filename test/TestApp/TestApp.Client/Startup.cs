@@ -1,10 +1,12 @@
 ﻿namespace TestApp.Client
 {
+  using Blazor.Extensions.Logging;
   using BlazorState;
   using BlazorState.Services;
   using MediatR;
   using Microsoft.AspNetCore.Components.Builder;
   using Microsoft.Extensions.DependencyInjection;
+  using Microsoft.Extensions.Logging;
   using TestApp.Client.Features.EventStream;
 
   public class Startup
@@ -16,10 +18,9 @@
     {
       if (new BlazorHostingLocation().IsClientSide)
       {
-        // TODO add this back once Blazor.Extentions.Logging is updated to 0.8.0
-        //aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
-        //    .AddBrowserConsole()
-        //    .SetMinimumLevel(LogLevel.Trace));
+        aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
+            .AddBrowserConsole()
+            .SetMinimumLevel(LogLevel.Trace));
       };
       aServiceCollection.AddBlazorState();
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));

@@ -11,7 +11,7 @@
     {
       var chromeOptions = new ChromeOptions();
 
-      // Comment this out if you want to watch or interact with the browser (e.g., for debugging)
+      // Comment this out if you want to watch or interact with the browser (e.g., for debugging or fun)
       // chromeOptions.AddArgument("--headless");
 
       // Log errors

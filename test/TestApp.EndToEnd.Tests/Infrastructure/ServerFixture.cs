@@ -20,7 +20,7 @@
         new Uri(StartAndGetRootUri()));
     }
 
-    public delegate IHostBuilder CreateHostBuilder(string[] args);
+    public delegate IHostBuilder CreateHostBuilder(string[] aArgumentArray);
 
     public CreateHostBuilder CreateHostBuilderDelegate { get; set; }
     public AspNetEnvironment Environment { get; set; } = AspNetEnvironment.Production;
@@ -30,9 +30,8 @@
     /// <summary>
     /// Find the path to the server that you are testing.
     /// </summary>
-    /// <param name="aProjectName"></param>
     /// <returns>The Path to the project</returns>
-    protected static string FindSitePath(string aProjectName)
+    protected static string FindSitePath()
     {
       DirectoryInfo gitRootDirectory = new GitService().GitRootDirectoryInfo();
       return Path.Combine(gitRootDirectory.FullName, "test", "TestApp", "TestApp.Server");
@@ -59,8 +58,7 @@
             $"No value was provided for {nameof(CreateHostBuilderDelegate)}");
       }
 
-      string sitePath = FindSitePath(
-                CreateHostBuilderDelegate.Method.DeclaringType.Assembly.GetName().Name);
+      string sitePath = FindSitePath();
 
       IHostBuilder hostBuilder = CreateHostBuilderDelegate(new[]
       {

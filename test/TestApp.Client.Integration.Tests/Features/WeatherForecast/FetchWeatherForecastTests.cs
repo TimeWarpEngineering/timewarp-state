@@ -12,8 +12,7 @@
   internal class FetchWeatherForecastTests
   {
     public FetchWeatherForecastTests(
-      TestFixture aTestFixture,
-      BlazorStateTestServer aBlazorStateTestServer)
+      TestFixture aTestFixture)
     {
       ServiceProvider = aTestFixture.ServiceProvider;
       Mediator = ServiceProvider.GetService<IMediator>();
@@ -28,15 +27,14 @@
 
     public async Task Should_Fetch_WeatherForecasts()
     {
+      // Arange
       // Default WeatherForecastsState is an empty list. So no need to initialize it.
-      // We need the server running to respond.
-      // In Memory one hopefully works here with blazor.
-      // will need a way to provide it the WebClient to use.
-
       var fetchWeatherForecastsRequest = new FetchWeatherForecastsRequest();
 
+      // Act
       WeatherForecastsState = await Mediator.Send(fetchWeatherForecastsRequest);
 
+      // Assert
       WeatherForecastsState.WeatherForecasts.Count.ShouldBeGreaterThan(0);
     }
   }
