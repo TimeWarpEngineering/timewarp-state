@@ -9,12 +9,13 @@ This sample shows how to add Blazor-State to a `Blazor (ASP.NET Core hosted)` ap
 
 ## Prerequisites
 
-1. Install the latest .NET Core 3.0 Preview SDK release.
+1. Install the latest [].NET Core 3.0 Preview SDK release](https://dotnet.microsoft.com/download/dotnet-core/3.0).
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
 dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview5-19227-01
 ```
+
 ## Creating the project
 
 1. Create a new project `dotnet new blazorhosted -o Sample`
@@ -84,7 +85,7 @@ namespace Sample.Client.Features.Counter
 
 ## Displaying state in the user interface
 
-1. Edit `Pages\Counter.cshtml` as follows
+1. Edit `Pages\Counter.razor` as follows
 2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
 3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
 4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
@@ -154,7 +155,7 @@ namespace Sample.Client.Features.Counter
 ## Sending the action through the mediator pipeline
 
 To Send the action to the pipeline when the user clicks the `Click me` button,
-In `Pages\Counter.cshtml` update the `IncrementCount` function as follows:
+In `Pages\Counter.razor` update the `IncrementCount` function as follows:
 
 ```csharp
 void IncrementCount()
