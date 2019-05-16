@@ -68,4 +68,11 @@
     </ItemGroup>
   </Target>
   <!-- End TypeScript project-->
+  <!--Add Version-->
+
+  <Target Name="WriteVersionToFile">
+    <WriteLinesToFile File="$(OutputPath)Version.txt" Lines="$(PackageVersion)" Overwrite="true" Encoding="UTF-8" />
+  </Target>
+  <!--End Add Version--> 
+  
 </Project>
