@@ -41,7 +41,7 @@
   <!-- End Source Link -->
 
   <PropertyGroup>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll;WriteVersionToFile</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
   </PropertyGroup>
