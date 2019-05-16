@@ -29,6 +29,13 @@ steps:
     projects: 'source/BlazorState/BlazorState.csproj'
     configuration: debug
 
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(build.artifactstagingdirectory)/Version'
+    ArtifactName: Version
+    publishLocation: Container
+
 - task: DotNetCoreCLI@2
   displayName: Run all Tests in the repo
   continueOnError: false
@@ -48,5 +55,5 @@ steps:
   displayName: Publish Artifact
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
-    ArtifactName: drop
+    ArtifactName: Nuget
     publishLocation: Container
