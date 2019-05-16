@@ -33,7 +33,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: '$(build.defaultworkingdirectory)/bin/Version.txt'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/bin/Version.txt'
     ArtifactName: Version
     publishLocation: Container
 
