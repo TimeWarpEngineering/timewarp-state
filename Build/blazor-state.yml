@@ -16,6 +16,7 @@ queue:
 
 steps:
 - script: echo Build.SourceVersion $(Build.SourceVersion)
+- script: echo Build.SourceVersion $(BuildConfiguration)
 
 - task: Npm@1
   inputs:
@@ -32,7 +33,7 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)/Version.txt'
+    PathtoPublish: '$(build.defaultworkingdirectory)/bin/Version.txt'
     ArtifactName: Version
     publishLocation: Container
 
