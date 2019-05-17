@@ -29,7 +29,7 @@
     {
       // Arange
       // Default WeatherForecastsState is an empty list. So no need to initialize it.
-      var fetchWeatherForecastsRequest = new FetchWeatherForecastsRequest();
+      var fetchWeatherForecastsRequest = new FetchWeatherForecastsAction();
 
       // Act
       WeatherForecastsState = await Mediator.Send(fetchWeatherForecastsRequest);

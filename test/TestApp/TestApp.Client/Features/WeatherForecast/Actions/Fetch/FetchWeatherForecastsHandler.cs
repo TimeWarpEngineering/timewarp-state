@@ -10,7 +10,7 @@
 
   internal partial class WeatherForecastsState
   {
-    public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsRequest, WeatherForecastsState>
+    public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsAction, WeatherForecastsState>
     {
       public FetchWeatherForecastsHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
       {
@@ -21,7 +21,7 @@
       private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 
       public override async Task<WeatherForecastsState> Handle(
-        FetchWeatherForecastsRequest aFetchWeatherForecastsRequest,
+        FetchWeatherForecastsAction aFetchWeatherForecastsRequest,
         CancellationToken aCancellationToken)
       {
         GetWeatherForecastsResponse getWeatherForecastsResponse =
