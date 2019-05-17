@@ -26,7 +26,6 @@
       {
         "src":"../",
         "files":[
-          "samples/**.md",
           "*.md"
         ]
       }
