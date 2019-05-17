@@ -1,6 +1,8 @@
 ﻿namespace TestApp.Client.Features.Counter
 {
-  internal partial class CounterState
+  using BlazorState;
+
+  internal partial class CounterState : State<CounterState>
   {
 
     public int Count { get; private set; }
