@@ -12,7 +12,7 @@ or the [Command Pattern](https://en.wikipedia.org/wiki/Command_pattern)
 you will feel right at home.
 All of the behaviors are written as plug-ins/middle-ware and attached to the MediatR pipeline.
 
-Please see our **[GitHub Site](https://github.com/TimeWarpEngineering/blazor-state)** for source and filing of issues.
+Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/blazor-state)** for source and filing of issues.
 
 ## Installation
 
@@ -24,12 +24,12 @@ dotnet add package Blazor-State
 
 ## Getting Started
 
-After you have completed the [getting started for blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started)
-the easiest way to get started with blazor-state is to follow
-create new application based on the [timewarp-blazor template](../Templates/TimeWarpBlazorTemplate/TemplateOverview.md)
+If you are just beginning with blazor then I recommend you first check out [getting started for blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started)
+
+The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](../Templates/TimeWarpBlazorTemplate/TemplateOverview.md)
 Which gives you a base line for both client, server, and testing.
 
-If you would like a basic step by step then follow this [tutorial](xref:BlazorStateSample:README.md).
+If you would like a basic step by step on adding blazor-state to the `blazorhosted` template then follow this [tutorial](xref:BlazorStateSample:README.md).
 
 ## Architecture
 
@@ -40,7 +40,7 @@ by registering an interface with the DI container.
 ```csharp
 services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
 services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DevToolsBehavior<,>));
-aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
+services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
 ```
 
 The three interfaces available to extend the Pipeline are `IPipelineBehavior`, `IRequestPreProcessor`,
