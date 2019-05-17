@@ -31,7 +31,7 @@ dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview5-19227-01
 
 ## Add Blazor-State
 
-Add the Blazor-State NuGet package to `Sample.Client` project.
+Add the Blazor-State NuGet package to the `Sample.Client` project.
    `dotnet add .\Sample.Client\Sample.Client.csproj package Blazor-State --version 1.0.0-preview5-19227-*`
 
 ## Configure the services
@@ -215,11 +215,11 @@ And when you navigate away from the page and back the value persists.
 This is quite handy for debugging.
 
 > [!NOTE]
-> Support for "TimeTravel" in via ReduxDevTools is being removed from Blazor-State as this feature, although cool for demos, does little to assist in debugging and requires more code to implement.
+> Support for "TimeTravel" via ReduxDevTools is being removed from Blazor-State as this feature, although cool for demos, does little to assist in debugging and requires more code to implement.
 
 ReduxDevTools requires Javascript Interop.
 
-To facilitate Javascript Interop, enable ReduxDevTools and manage RouteState add `App.razor.cs` in the same directory as `App.razor` as follows:
+To facilitate Javascript Interop, enable ReduxDevTools, and manage RouteState, add `App.razor.cs` in the same directory as `App.razor` as follows:
 
 ```csharp
 namespace Sample.Client
