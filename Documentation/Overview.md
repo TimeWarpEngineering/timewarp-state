@@ -24,30 +24,65 @@ dotnet add package Blazor-State
 
 ## Getting Started
 
-If you are just beginning with blazor then I recommend you first check out [getting started for blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started)
+If you are just beginning with blazor then I recommend you first check out [getting started with blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started).
 
-The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](../Templates/TimeWarpBlazorTemplate/TemplateOverview.md)
+The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](./TemplateOverview.md)
 Which gives you a base line for both client, server, and testing.
 
 If you would like a basic step by step on adding blazor-state to the `blazorhosted` template then follow this [tutorial](xref:BlazorStateSample:README.md).
 
 ## Architecture
 
+### Store 1..* State
+
 Blazor-State Implements a single `Store` with a collection of `State`s.
-The MediatR pipeline allows for easy integration
-by registering an interface with the DI container.
+
+To access the state you can either inherit from the BlazorStateComponent and use
 
 ```csharp
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DevToolsBehavior<,>));
-services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
+Store.GetState<YourState>()
 ```
+
+or move the GetState functionality into your component
+
+```csharp
+    protected T GetState<T>()
+    {
+      Type stateType = typeof(T);
+      Subscriptions.Add(stateType, this);
+      return Store.GetState<T>();
+    }
+```
+
+### Pipeline
+Blazor-State utilizes the MediatR pipeline which allows for easy middleware integration
+by registering an interface with the DI container.
+Blazor-State provides the extension method, `AddBlazorState`, which registers behaviors on the pipeline.
 
 The three interfaces available to extend the Pipeline are `IPipelineBehavior`, `IRequestPreProcessor`,
 and `IRequestPostProcessor`;
 
-All of the behaviors in Blazor-State are implemented via one of these interfaces.
 You can integrate into the pipeline as well by implementing and registering one of these interfaces.
+See the timewarp-blazor template `EventStreamBehavior` for an example.
+
+### Behaviors
+
+#### CloneStateBehavior
+
+To ensure your application is in a know good state the `CloneStateBehavior` creates a clone of the `State` prior to processing the `Action`.
+If any exception occurs during process of the `Action` the state is rolled back.
+
+#### RenderSubscriptionsBehavior
+
+When a component accesses `State` we add a subscription.
+The `RenderSubscriptionsBehavior` will iterate over these subscriptions and re-render those components.
+So you don't have to worry about where to call `StateHasChanged`.
+
+#### ReduxDevToolsBehavior
+
+One of the nice features of redux is the
+[developer tools](https://github.com/zalmoxisus/redux-devtools-extension).
+This behavior implements the integration of these developer tools.
 
 ### JavaScript Interop
 
@@ -55,32 +90,11 @@ Blazor-State uses the same "Command Pattern" for JavaScript interoperability.
 The JavaScript creates a request and dispatches it to Blazor where it is added to the pipeline.
 Handlers on the Blazor side can callback to the JavaScript side if needed.
 
-### Behaviors
-
-#### CloneStateBehavior
-
-"Don't mutate state" always return a new state.
-The `CloneStateBehavior` behavior handles that for you by creating a clone of the `State`
-prior to processing the `Request`
-and updating `State` upon completion.  (Single responsibility principle)
-
-#### RenderSubscriptionsBehavior
-
-When a component accesses state we place a subscription.
-The `RenderSubscriptionsBehavior` will iterate over these subscriptions and re-render those components.
-So you don't have to worry about where to call `StateHasChanged`.
-
-#### ReduxDevToolsBehavior
-
-One of the nice features of redux is the 
-[developer tools](https://github.com/zalmoxisus/redux-devtools-extension).
-They allow for the monitoring of State transitions, time travel and more.
-This behavior implements the integration of these developer tools.
-
 [!include[Terminology](Partials/terminology.md)]
 
-### PureFunctions vs NonPureFunctions:
-Blazor-State does not distinguish these.
+### PureFunctions vs NonPureFunctions
+
+Blazor-State does not distinguish between these.
 As they are processed via the pipeline the same.
 Thus, async calls to fetch data, send emails, or just update local state
 are implemented in the same manner. Although the developer **should** be aware that Handlers have side effects and

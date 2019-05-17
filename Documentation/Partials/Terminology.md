@@ -1,7 +1,7 @@
 ## Terminology
 
 The pattern used by Blazor-State and MediatR has been around for many years and goes by different names.
-Given we are using MediatR will use the names associated with it but list other terminology here for clarification.
+Given we are using MediatR we will use the names associated with it but list other terminology here for clarification.
 
 ### Signals/Actions/**Requests**/Commands/
 
