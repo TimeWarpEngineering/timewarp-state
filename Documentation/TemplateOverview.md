@@ -1,23 +1,25 @@
-## TimeWarp-Blazor Template
+# TimeWarp-Blazor Template
 
-### Installation
+## Installation
 
-```
+```console
 dotnet new --install TimeWarp.AspNetCore.Blazor.Templates
 ```
 
-### Usage
+## Usage
 
-```
+```console
 dotnet new timewarp-blazor -n MyBlazorApp
 ```
 
-### Projects
-MyBlazorApp.Client<br/>
-MyBlazorApp.Server<br/>
+## Projects
+
+MyBlazorApp.Client  
+MyBlazorApp.Server  
 MyBlazorApp.Shared
 
-### Test Projects
-MyBlazorApp.Client.Integration.Tests<br/>
-MyBlazorApp.Server.Integration.Tests<br/>
+## Test Projects
+
+MyBlazorApp.Client.Integration.Tests  
+MyBlazorApp.Server.Integration.Tests  
 MyBlazorApp.EndToEnd.Tests
