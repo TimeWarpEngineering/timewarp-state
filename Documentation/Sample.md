@@ -9,7 +9,7 @@ This sample shows how to add Blazor-State to a `Blazor (ASP.NET Core hosted)` ap
 
 ## Prerequisites
 
-1. Install the latest [].NET Core 3.0 Preview SDK release](https://dotnet.microsoft.com/download/dotnet-core/3.0).
+1. Install the latest [.NET Core 3.0 Preview SDK release](https://dotnet.microsoft.com/download/dotnet-core/3.0).
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
