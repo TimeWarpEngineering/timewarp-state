@@ -2,5 +2,5 @@
 {
   using MediatR;
 
-  public class FetchWeatherForecastsRequest : IRequest<WeatherForecastsState> { }
+  public class FetchWeatherForecastsAction : IRequest<WeatherForecastsState> { }
 }

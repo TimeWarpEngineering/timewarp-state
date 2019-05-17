@@ -8,6 +8,12 @@ import {
   ReduxDevToolsName,
 } from './Constants';
 
+function InitializeJavaScriptInterop(JsonRequestHandler) {
+  console.log("InitializeJavaScriptInterop");
+  window[JsonRequestHandlerName] = JsonRequestHandler;
+};
+
+
 function Initialize() {
   console.log("Initialize BlazorState");
   if (typeof window !== 'undefined' && !window[BlazorStateName]) {
@@ -16,11 +22,6 @@ function Initialize() {
     window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   }
 }
-
-function InitializeJavaScriptInterop(JsonRequestHandler) {
-  console.log("InitializeJavaScriptInterop");
-  window[JsonRequestHandlerName] = JsonRequestHandler;
-};
 
 function ReduxDevToolsFactory(): boolean {
   const reduxDevTools = new ReduxDevTools();
