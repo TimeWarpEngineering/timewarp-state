@@ -2,7 +2,7 @@
 {
   using System;
 
-  public class WeatherForecastDto : ICloneable
+  public class WeatherForecastDto
   {
     public WeatherForecastDto() { }
 
@@ -17,7 +17,5 @@
     public string Summary { get; set; }
     public int TemperatureC { get; set; }
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-
-    public object Clone() => new WeatherForecastDto(this);
   }
 }
