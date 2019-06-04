@@ -20,20 +20,10 @@
       public string ComponentId { get; }
       public WeakReference<BlazorStateComponent> BlazorStateComponentReference { get; }
 
-      public override bool Equals(object aObject) => aObject is Subscription subscription && Equals(subscription);
       public bool Equals(Subscription aSubscription) =>
         EqualityComparer<Type>.Default.Equals(StateType, aSubscription.StateType) &&
         ComponentId == aSubscription.ComponentId &&
         EqualityComparer<WeakReference<BlazorStateComponent>>.Default.Equals(BlazorStateComponentReference, aSubscription.BlazorStateComponentReference);
-
-      public override int GetHashCode()
-      {
-        int hashCode = -1827213943;
-        hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(StateType);
-        hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ComponentId);
-        hashCode = hashCode * -1521134295 + EqualityComparer<WeakReference<BlazorStateComponent>>.Default.GetHashCode(BlazorStateComponentReference);
-        return hashCode;
-      }
 
       public static bool operator ==(Subscription aLeftSubscription, Subscription aRightSubscription) => aLeftSubscription.Equals(aRightSubscription);
       public static bool operator !=(Subscription aLeftSubscription, Subscription aRightSubscription) => !(aLeftSubscription == aRightSubscription);
