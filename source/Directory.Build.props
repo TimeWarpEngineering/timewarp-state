@@ -14,7 +14,7 @@
     <BlazorStatePatchVersion>0</BlazorStatePatchVersion>
     <PreReleaseLabel>$(BlazorPreviewVersion)</PreReleaseLabel>
     <VersionPrefix>$(BlazorStateMajorVersion).$(BlazorStateMinorVersion).$(BlazorStatePatchVersion)</VersionPrefix>
-    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd-hhmmss))</CurrentDate>
+    <CurrentDate>$([System.DateTime]::Now.ToString(yyyyMMdd-HHmmss))</CurrentDate>
     <VersionSuffix>$(PreReleaseLabel)-$(CurrentDate)</VersionSuffix>
     <PackageVersion>$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
