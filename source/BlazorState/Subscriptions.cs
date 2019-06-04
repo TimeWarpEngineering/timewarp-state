@@ -2,18 +2,26 @@
 {
   using System;
   using System.Collections.Generic;
+  using System.Linq;
   using Microsoft.Extensions.Logging;
 
   public class Subscriptions
   {
+    struct Subscription
+    {
+      public Type StateType { get; set; }
+      public string ComponentId { get; set; }
+      public WeakReference<BlazorStateComponent> BlazorStateComponentReference { get; set; }
+    }
+
     public Subscriptions(ILogger<Subscriptions> aLogger)
     {
       Logger = aLogger;
-      BlazorStateComponentReferencesDictionary = new Dictionary<Type, List<WeakReference<BlazorStateComponent>>>();
+      BlazorStateComponentReferencesList = new List<Subscription>();
     }
 
     private ILogger Logger { get; }
-    private Dictionary<Type, List<WeakReference<BlazorStateComponent>>> BlazorStateComponentReferencesDictionary { get; }
+    private List<Subscription> BlazorStateComponentReferencesList { get; }
 
     public Subscriptions Add<T>(BlazorStateComponent aBlazorStateComponent)
     {
@@ -23,18 +31,28 @@
     }
     public Subscriptions Add(Type aType, BlazorStateComponent aBlazorStateComponent)
     {
-
-      if (!(BlazorStateComponentReferencesDictionary.TryGetValue(aType, out List<WeakReference<BlazorStateComponent>> blazorStateComponentReferences)))
+      // Add only once.
+      if (!BlazorStateComponentReferencesList.Any(aSubscription => aSubscription.StateType == aType && aSubscription.ComponentId == aBlazorStateComponent.Id))
       {
-        blazorStateComponentReferences = new List<WeakReference<BlazorStateComponent>>();
-        BlazorStateComponentReferencesDictionary.Add(aType, blazorStateComponentReferences);
+        var subscription = new Subscription
+        {
+          ComponentId = aBlazorStateComponent.Id,
+          StateType = aType,
+          BlazorStateComponentReference = new WeakReference<BlazorStateComponent>(aBlazorStateComponent)
+        };
+        BlazorStateComponentReferencesList.Add(subscription);
       }
-
-      blazorStateComponentReferences.Add(new WeakReference<BlazorStateComponent>(aBlazorStateComponent));
 
       return this;
     }
 
+    public Subscriptions Remove(BlazorStateComponent aBlazorStateComponent)
+    {
+      Logger.LogDebug($"Removing Subscription for {aBlazorStateComponent.Id}");
+      BlazorStateComponentReferencesList.RemoveAll(aRecord => aRecord.ComponentId == aBlazorStateComponent.Id);
+
+      return this;
+    }
     /// <summary>
     /// Will iterate over all subscriptions for the given type and call ReRender on each.
     /// If the target component no longer exists it will remove its subscription.
@@ -54,25 +72,19 @@
     /// <param name="aType"></param>
     public void ReRenderSubscribers(Type aType)
     {
-      //GC.Collect();  // I added the collect to test that I am not holding strong references and they were collected.
-      bool isAny = BlazorStateComponentReferencesDictionary.TryGetValue(aType, out List<WeakReference<BlazorStateComponent>> blazorStateblazorStateComponentReferencesComponents);
-      if (isAny)
+      IEnumerable<Subscription> subscriptions = BlazorStateComponentReferencesList.Where(aRecord => aRecord.StateType == aType);
+      foreach (Subscription subscription in subscriptions)
       {
-        Logger.LogDebug($"ReRendering {blazorStateblazorStateComponentReferencesComponents.Count} Subscribers for state of type: {aType.Name}");
-        WeakReference<BlazorStateComponent>[] blazorStateComponentReferencesArray = blazorStateblazorStateComponentReferencesComponents.ToArray();
-
-        foreach (WeakReference<BlazorStateComponent> aBlazorStateComponentReference in blazorStateComponentReferencesArray)
+        if (subscription.BlazorStateComponentReference.TryGetTarget(out BlazorStateComponent target))
         {
-          if (aBlazorStateComponentReference.TryGetTarget(out BlazorStateComponent target))
-          {
-            Logger.LogDebug($"ReRender: {target.GetType().Name}");
-            target.ReRender();
-          }
-          else
-          {
-            Logger.LogDebug($"Removing subscription to previously destroyed component.");
-            blazorStateblazorStateComponentReferencesComponents.Remove(aBlazorStateComponentReference);
-          }
+          Logger.LogDebug($"ReRender: {target.GetType().Name}");
+          target.ReRender();
+        }
+        else
+        {
+          // If Dispose is called will I ever have items in this list that got Garbage collected?
+          // Maybe for those that don't inherit from our BaseComponent.
+          BlazorStateComponentReferencesList.Remove(subscription);
         }
       }
     }
