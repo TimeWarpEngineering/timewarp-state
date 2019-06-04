@@ -87,17 +87,18 @@
     public void ReRenderSubscribers(Type aType)
     {
       IEnumerable<Subscription> subscriptions = BlazorStateComponentReferencesList.Where(aRecord => aRecord.StateType == aType);
-      foreach (Subscription subscription in subscriptions)
+      foreach (Subscription subscription in subscriptions.ToList())
       {
         if (subscription.BlazorStateComponentReference.TryGetTarget(out BlazorStateComponent target))
         {
-          Logger.LogDebug($"ReRender: {target.GetType().Name}");
+          Logger.LogDebug($"ReRender ComponentId:{subscription.ComponentId} StateType.Name:{subscription.StateType.Name}");
           target.ReRender();
         }
         else
         {
           // If Dispose is called will I ever have items in this list that got Garbage collected?
-          // Maybe for those that don't inherit from our BaseComponent.
+          // Maybe for those that don't inherit from our BaseComponent?
+          Logger.LogDebug($"Removing Subscription for ComponentId:{subscription.ComponentId} StateType.Name:{subscription.StateType.Name}");
           BlazorStateComponentReferencesList.Remove(subscription);
         }
       }
