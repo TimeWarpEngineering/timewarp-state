@@ -10,7 +10,7 @@
   /// And exposes StateHasChanged
   /// </summary>
   /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-  public class BlazorStateComponent : ComponentBase,
+  public class BlazorStateComponent : ComponentBase, IDisposable,
      IBlazorStateComponent
   {
     static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
@@ -59,5 +59,7 @@
       Subscriptions.Add(stateType, this);
       return Store.GetState<T>();
     }
+
+    public void Dispose() => Subscriptions.Remove(this);
   }
 }
