@@ -50,3 +50,8 @@ Time is of the essence.  Before developing a Pull Request I recommend opening an
 
 Please feel free to make suggestions and help out with the DocFx documentation.
 Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
+
+## Contact Me.
+
+Sometimes the github notifications get lost in the shuffle.  If you file an Issue and don't hear from me in 24-48 hrs feel free to ping me on twitter(StevenTCramer) or Discord (StevenTCramer#9010).
+
