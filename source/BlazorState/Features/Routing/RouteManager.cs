@@ -1,7 +1,9 @@
 ﻿namespace BlazorState.Features.Routing
 {
+  using System;
   using MediatR;
   using Microsoft.AspNetCore.Components;
+  using Microsoft.AspNetCore.Components.Routing;
 
   /// <summary>
   /// When constructed will attach a OnLocationChanged Handler 
@@ -26,9 +28,9 @@
     private IStore Store { get; }
     private IUriHelper UriHelper { get; }
 
-    private void OnLocationChanged(object aSender, string aNewLocation)
+    private void OnLocationChanged(object aSender, LocationChangedEventArgs aLocationChangedEventArgs)
     {
-      string absoluteUri = UriHelper.ToAbsoluteUri(aNewLocation).ToString();
+      string absoluteUri = UriHelper.ToAbsoluteUri(aLocationChangedEventArgs.Location).ToString();
       if (RouteState.Route != absoluteUri)
       {
         Mediator.Send(new ChangeRouteAction { NewRoute = absoluteUri });
