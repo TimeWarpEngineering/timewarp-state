@@ -11,15 +11,14 @@
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
   using System;
-  using System.Collections.Generic;
   using System.Linq;
   using System.Net.Http;
-  using System.Reflection;
+  using static BlazorState.Features.Routing.RouteState;
 
   public static class ServiceCollectionExtensions
   {
     /// <summary>
-    ///
+    /// Register BlazorState services based on the aConfigure options
     /// </summary>
     /// <param name="aServices"></param>
     /// <param name="aConfigure"></param>
@@ -41,10 +40,7 @@
 
         EnsureLogger(aServices);
         EnsureHttpClient(aServices);
-
-        // GetCallingAssembly is dangerous.  But seems to be the only one that works for this.
-        // Getting a stack trace doesn't work on mono.
-        EnsureMediator(aServices, options, Assembly.GetCallingAssembly());
+        EnsureMediator(aServices, options);
 
         aServices.AddScoped<BlazorHostingLocation>();
         aServices.AddScoped<JsonRequestHandler>();
@@ -60,11 +56,18 @@
         {
           aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
           aServices.AddScoped<ReduxDevToolsInterop>();
+
+          aServices.AddTransient<IRequestHandler<CommitRequest, Unit>, CommitHandler>();
+          aServices.AddTransient<IRequestHandler<JumpToStateRequest, Unit>, JumpToStateHandler>();
+          aServices.AddTransient<IRequestHandler<StartRequest, Unit>, StartHandler>();
           aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
         }
         if (options.UseRouting)
         {
           aServices.AddScoped<RouteManager>();
+
+          aServices.AddTransient<IRequestHandler<ChangeRouteAction, RouteState>, ChangeRouteHandler>();
+          aServices.AddTransient<IRequestHandler<InitializeRouteAction, RouteState>, InitializeRouteHandler>();
         }
       }
       return aServices;
@@ -115,40 +118,15 @@
     /// <param name="aServices"></param>
     /// <param name="aOptions"></param>
     /// <param name="aCallingAssembly">The calling assembly</param>
-    private static void EnsureMediator(IServiceCollection aServices, Options aOptions, Assembly aCallingAssembly)
+    private static void EnsureMediator(IServiceCollection aServices, Options aOptions)
     {
       ServiceDescriptor mediatorServiceDescriptor = aServices.FirstOrDefault(
         aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(IMediator));
 
       if (mediatorServiceDescriptor == null)
       {
-        var assemblies = new List<Assembly>(aOptions.Assemblies)
-        {
-          Assembly.GetAssembly(typeof(ServiceCollectionExtensions)),
-          aCallingAssembly
-        };
-
-        aServices.AddMediatR(assemblies.ToArray());
+        aServices.AddMediatR(aOptions.Assemblies.ToArray());
       }
-    }
-  }
-
-  public class Options
-  {
-    ///// <summary>
-    ///// Assemblies to be searched for MediatR Requests
-    ///// </summary>
-    public IEnumerable<Assembly> Assemblies { get; set; }
-
-    public bool UseCloneStateBehavior { get; set; } = true;
-
-    public bool UseReduxDevToolsBehavior { get; set; } = true;
-
-    public bool UseRouting { get; set; } = true;
-
-    public Options()
-    {
-      Assemblies = new Assembly[] { };
     }
   }
 }

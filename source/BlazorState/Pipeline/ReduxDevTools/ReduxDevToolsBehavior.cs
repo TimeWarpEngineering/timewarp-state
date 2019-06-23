@@ -1,12 +1,11 @@
 ﻿namespace BlazorState.Pipeline.ReduxDevTools
 {
+  using BlazorState;
+  using MediatR;
+  using Microsoft.Extensions.Logging;
   using System;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState;
-  using BlazorState.Pipeline.ReduxDevTools.Features;
-  using MediatR;
-  using Microsoft.Extensions.Logging;
 
   //TODO: this should be a IRequestPostProcessor but I couldn't get it to work.
 
@@ -18,8 +17,15 @@
   internal class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   //public class ReduxDevToolsBehavior<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
+    private ILogger Logger { get; }
+
+    private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
+
+    //private History<TState> History { get; }
+    private IReduxDevToolsStore Store { get; }
+
     public ReduxDevToolsBehavior(
-      ILogger<ReduxDevToolsBehavior<TRequest, TResponse>> aLogger,
+                  ILogger<ReduxDevToolsBehavior<TRequest, TResponse>> aLogger,
       ReduxDevToolsInterop aReduxDevToolsInterop,
       IReduxDevToolsStore aStore)
     {
@@ -28,12 +34,6 @@
       Store = aStore;
       ReduxDevToolsInterop = aReduxDevToolsInterop;
     }
-
-    private ILogger Logger { get; }
-    private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-
-    //private History<TState> History { get; }
-    private IReduxDevToolsStore Store { get; }
 
     public async Task<TResponse> Handle(
       TRequest aRequest,
