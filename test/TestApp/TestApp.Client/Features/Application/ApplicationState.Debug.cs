@@ -8,10 +8,11 @@
   {
     public override ApplicationState Hydrate(IDictionary<string, object> aKeyValuePairs)
     {
+
       return new ApplicationState
       {
-        Guid = new System.Guid((string)aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))]),
-        Name = (string)aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Name))],
+        Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
+        Name = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Name))].ToString(),
       };
     }
   }

@@ -2,11 +2,10 @@
 {
   using System;
   using System.Collections.Generic;
-  using System.Dynamic;
   using System.Linq;
   using BlazorState.Features.Routing;
   using Microsoft.Extensions.Logging;
-  using Microsoft.JSInterop;
+  using System.Text.Json.Serialization;
 
   /// <summary>
   /// The portion of the store that is only needed to support
@@ -21,7 +20,7 @@
     /// <remarks>Used only for ReduxDevTools</remarks>
     public IDictionary<string, object> GetSerializableState()
     {
-      var states = (IDictionary<string, object>)new ExpandoObject();
+      var states = new Dictionary<string, object>();
       foreach (KeyValuePair<string, IState> pair in States.OrderBy(aKeyValuePair => aKeyValuePair.Key))
       {
         states[pair.Key] = pair.Value;
@@ -40,7 +39,7 @@
         throw new ArgumentException("aJsonString was null or white space", nameof(aJsonString));
 
       Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
-      Dictionary<string, object> newStates = Json.Deserialize<Dictionary<string, object>>(aJsonString);
+      Dictionary<string, object> newStates = JsonSerializer.Parse<Dictionary<string, object>>(aJsonString);
       Logger.LogDebug($"newStates.Count: {newStates.Count}");
       foreach (KeyValuePair<string, object> keyValuePair in newStates)
       {
@@ -57,8 +56,8 @@
       Logger.LogDebug($"aKeyValuePair.Value: {aKeyValuePair.Value}");
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
 
-      object newStateKeyValuePairs = Json.Deserialize<object>(aKeyValuePair.Value.ToString());
-
+//      object newStateKeyValuePairs = JsonSerializer.Parse<object>(aKeyValuePair.Value.ToString());
+      Dictionary<string, object> newStateKeyValuePairs = JsonSerializer.Parse<Dictionary<string, object>>(aKeyValuePair.Value.ToString());
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)

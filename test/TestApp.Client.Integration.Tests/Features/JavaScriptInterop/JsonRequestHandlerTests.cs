@@ -3,12 +3,11 @@
   using System;
   using BlazorState;
   using BlazorState.Features.JavaScriptInterop;
-  using MediatR;
   using Microsoft.Extensions.DependencyInjection;
-  using Microsoft.JSInterop;
   using Shouldly;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
+  using System.Text.Json.Serialization;
 
   internal class JsonRequestHandlerTests
   {
@@ -36,7 +35,7 @@
         Amount = 5
       };
 
-      string requestAsJson = Json.Serialize(incrementCounterAction);
+      string requestAsJson = JsonSerializer.ToString(incrementCounterAction);
       int preActionCount = CounterState.Count;
 
       //Act
