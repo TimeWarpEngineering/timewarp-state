@@ -6,21 +6,16 @@
   using Microsoft.JSInterop;
   using TestApp.Shared.Features.WeatherForecast;
   using System.Text.Json.Serialization;
-  using AnySerializer;
 
   internal partial class WeatherForecastsState : State<WeatherForecastsState>
   {
     public override WeatherForecastsState Hydrate(IDictionary<string, object> aKeyValuePairs)
     {
       string json = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(WeatherForecasts))].ToString();
-      List<WeatherForecastDto> newtonList = Newtonsoft.Json.JsonConvert.DeserializeObject<List<WeatherForecastDto>>(json);
-      List<WeatherForecastDto> brokenList = JsonSerializer.Parse<List<WeatherForecastDto>>(json);
 
-      // TODO remove NewtonSoft serializer when JsonSerializer actually works.
-
-      var newWeatherForecastsState = new WeatherForecastsState
+      var newWeatherForecastsState = new WeatherForecastsState()
       {
-        _WeatherForecasts = newtonList,
+        _WeatherForecasts = JsonSerializer.Parse<List<WeatherForecastDto>>(json, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
         Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
       };
 

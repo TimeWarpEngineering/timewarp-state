@@ -3,14 +3,23 @@
   using System;
   using System.Collections.Generic;
   using Microsoft.Extensions.Logging;
+  using Microsoft.Extensions.DependencyInjection.Extensions;
+  using Microsoft.Extensions.DependencyInjection;
 
   /// <summary>
   /// </summary>
   internal partial class Store : IStore
   {
-    public Store(ILogger<Store> aLogger)
+    private readonly IServiceProvider ServiceProvider;
+
+    public Store
+    (
+      ILogger<Store> aLogger,
+      IServiceProvider aServiceProvider
+    )
     {
       Logger = aLogger;
+      ServiceProvider = aServiceProvider;
       using (Logger.BeginScope(nameof(Store)))
       {
         Logger.LogInformation($"{GetType().Name}: constructor: {nameof(Guid)}:{Guid}");
@@ -63,7 +72,9 @@
         if (!States.TryGetValue(typeName, out IState state))
         {
           Logger.LogDebug($"{GetType().Name}: Creating State of type: {typeName}");
-          state = (IState)Activator.CreateInstance(aType);
+          state = (IState) ServiceProvider.GetService(aType);
+          if (state == null) throw new NullReferenceException("state is null");
+          //state = (IState)Activator.CreateInstance(aType);
           States.Add(typeName, state);
         }
         else

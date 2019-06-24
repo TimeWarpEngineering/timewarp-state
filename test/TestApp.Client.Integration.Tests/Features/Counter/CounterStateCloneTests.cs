@@ -28,6 +28,7 @@
       var clone = CounterState.Clone() as CounterState;
 
       //Assert
+      CounterState.ShouldNotBeSameAs(clone);
       CounterState.Count.ShouldBe(clone.Count);
       CounterState.Guid.ShouldNotBe(clone.Guid);
     }

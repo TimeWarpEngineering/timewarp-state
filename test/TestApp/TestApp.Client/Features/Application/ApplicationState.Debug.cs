@@ -1,6 +1,7 @@
 ﻿namespace TestApp.Client.Features.Application
 {
   using System.Collections.Generic;
+  using System.Reflection;
   using BlazorState;
   using Microsoft.JSInterop;
 
@@ -14,6 +15,16 @@
         Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
         Name = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Name))].ToString(),
       };
+    }
+
+    internal void Initialize(string aName)
+    {
+      ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
+      if (string.IsNullOrWhiteSpace(aName))
+      {
+        throw new System.ArgumentException("message", nameof(aName));
+      }
+      Name = aName;
     }
   }
 }

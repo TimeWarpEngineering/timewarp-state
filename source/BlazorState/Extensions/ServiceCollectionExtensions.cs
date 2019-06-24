@@ -65,6 +65,7 @@
         if (options.UseRouting)
         {
           aServices.AddScoped<RouteManager>();
+          aServices.AddScoped<RouteState>();
 
           aServices.AddTransient<IRequestHandler<ChangeRouteAction, RouteState>, ChangeRouteHandler>();
           aServices.AddTransient<IRequestHandler<InitializeRouteAction, RouteState>, InitializeRouteHandler>();
