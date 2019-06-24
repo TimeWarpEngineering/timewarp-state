@@ -7,13 +7,17 @@
   using Microsoft.AspNetCore.ResponseCompression;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Hosting;
-  using Newtonsoft.Json.Serialization;
   using System.Linq;
   using System.Reflection;
+  using System.Text.Json.Serialization;
 
   public class Startup
   {
-    public void Configure(IApplicationBuilder aApplicationBuilder, IWebHostEnvironment aWebHostEnvironment)
+    public void Configure
+    (
+      IApplicationBuilder aApplicationBuilder,
+      IWebHostEnvironment aWebHostEnvironment
+    )
     {
       aApplicationBuilder.UseResponseCompression();
 
@@ -24,43 +28,62 @@
       }
 
       aApplicationBuilder.UseRouting();
-      aApplicationBuilder.UseEndpoints(aEndpointRouteBuilder =>
-      {
-        aEndpointRouteBuilder.MapControllers(); // We use explicit attribute routing so dont need MapDefaultControllerRoute
-        aEndpointRouteBuilder.MapBlazorHub();
-        aEndpointRouteBuilder.MapFallbackToPage("/_Host");
-      });
-      aApplicationBuilder.UseBlazor<Client.Startup>();
+      aApplicationBuilder.UseEndpoints
+      (
+        aEndpointRouteBuilder =>
+        {
+          aEndpointRouteBuilder.MapControllers(); // We use explicit attribute routing so dont need MapDefaultControllerRoute
+          aEndpointRouteBuilder.MapBlazorHub();
+          aEndpointRouteBuilder.MapFallbackToPage("/_Host");
+        }
+      );
+      aApplicationBuilder.UseClientSideBlazorFiles<Client.Startup>();
     }
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
       aServiceCollection.AddRazorPages();
       aServiceCollection.AddServerSideBlazor();
+      aServiceCollection.AddMvc();
 
-      // TODO: why do I need DefaultContractResolver??  I added for some reason is reason still valid now?
-      aServiceCollection.AddMvc()
-        .AddNewtonsoftJson(aOptions =>
-           aOptions.SerializerSettings.ContractResolver =
-              new DefaultContractResolver());
-
-      aServiceCollection.AddResponseCompression(opts => opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                  new[] { "application/octet-stream" }));
-
-      aServiceCollection.AddBlazorState((a) => a.Assemblies =
-       new Assembly[] {
-         typeof(Startup).GetTypeInfo().Assembly,
-         typeof(Client.Startup).GetTypeInfo().Assembly
-       }
+      aServiceCollection.AddResponseCompression
+      (
+        aResponseCompressionOptions =>
+        aResponseCompressionOptions.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat
+        (
+          new[] { "application/octet-stream" }
+        )
       );
+
+      aServiceCollection.AddBlazorState
+      (
+        (aOptions) => aOptions.Assemblies =
+          new Assembly[]
+          {
+            typeof(Startup).GetTypeInfo().Assembly,
+            typeof(Client.Startup).GetTypeInfo().Assembly
+          }
+      );
+
       new Client.Startup().ConfigureServices(aServiceCollection);
 
+      aServiceCollection.AddSingleton
+      (
+        new JsonSerializerOptions
+        {
+          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }
+      );
+
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
-      aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
-        .FromAssemblyOf<Startup>()
-        .AddClasses()
-        .AsSelf()
-        .WithScopedLifetime());
+      aServiceCollection.Scan
+      (
+        aTypeSourceSelector => aTypeSourceSelector
+          .FromAssemblyOf<Startup>()
+          .AddClasses()
+          .AsSelf()
+          .WithScopedLifetime()
+      );
     }
   }
 }
