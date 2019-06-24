@@ -38,7 +38,7 @@
     }
 
     /// <summary>
-    /// Override this to Set the initail state
+    /// Override this to Set the initial state
     /// </summary>
     protected abstract void Initialize();
 
