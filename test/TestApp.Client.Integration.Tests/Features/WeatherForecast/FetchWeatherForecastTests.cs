@@ -27,7 +27,7 @@
 
     public async Task Should_Fetch_WeatherForecasts()
     {
-      // Arange
+      // Arrange
       // Default WeatherForecastsState is an empty list. So no need to initialize it.
       var fetchWeatherForecastsRequest = new FetchWeatherForecastsAction();
 
