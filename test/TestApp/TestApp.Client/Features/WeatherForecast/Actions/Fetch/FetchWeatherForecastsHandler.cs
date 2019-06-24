@@ -12,9 +12,15 @@
   {
     public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsAction, WeatherForecastsState>
     {
-      public FetchWeatherForecastsHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
+      private readonly JsonSerializerOptions JsonSerializerOptions;
+
+      public FetchWeatherForecastsHandler(
+        IStore aStore, 
+        HttpClient aHttpClient,
+        JsonSerializerOptions aJsonSerializerOptions) : base(aStore)
       {
         HttpClient = aHttpClient;
+        JsonSerializerOptions = aJsonSerializerOptions;
       }
 
       private HttpClient HttpClient { get; }
@@ -27,7 +33,7 @@
         HttpResponseMessage httpResponseMessage = await HttpClient.GetAsync(GetWeatherForecastsRequest.Route);
         string content = await httpResponseMessage.Content.ReadAsStringAsync();
         GetWeatherForecastsResponse getWeatherForecastsResponse =
-          JsonSerializer.Parse<GetWeatherForecastsResponse>(content);
+          JsonSerializer.Parse<GetWeatherForecastsResponse>(content, JsonSerializerOptions);
         // TODO: change back in preview 7 if 
         // https://github.com/aspnet/AspNetCore/issues/11144 is fixed
         //await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>
