@@ -64,7 +64,7 @@
       catch (Exception aException)
       {
         // If something fails we restore system to previous state.
-        // One may consider extention point here for error handling.
+        // One may consider extension point here for error handling.
         // Maybe if error occurs on one action we want to launch another action to
         // Update some error state so the user knows of the failure.
         // But as a rule if this is an exception it should be unexpected.
