@@ -7,6 +7,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using System;
   using System.Reflection;
+  using System.Text.Json.Serialization;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
   //using Microsoft.Extensions.Logging;
@@ -35,11 +36,19 @@
             typeof(Startup).GetTypeInfo().Assembly,
           }
       );
+      aServiceCollection.AddSingleton
+      (
+        new JsonSerializerOptions
+        {
+          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }
+      );
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
       aServiceCollection.AddTransient<ApplicationState>();
       aServiceCollection.AddTransient<CounterState>();
       aServiceCollection.AddTransient<EventStreamState>();
       aServiceCollection.AddTransient<WeatherForecastsState>();
+
     }
   }
 }

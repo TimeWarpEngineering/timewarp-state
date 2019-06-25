@@ -67,14 +67,6 @@
 
       new Client.Startup().ConfigureServices(aServiceCollection);
 
-      aServiceCollection.AddSingleton
-      (
-        new JsonSerializerOptions
-        {
-          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        }
-      );
-
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
       aServiceCollection.Scan
       (
