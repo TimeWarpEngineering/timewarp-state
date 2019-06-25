@@ -18,8 +18,8 @@ function Initialize() {
   console.log("Initialize BlazorState");
   if (typeof window !== 'undefined' && !window[BlazorStateName]) {
     window[BlazorStateName] = new BlazorState();
-    window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
     window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
+    window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
   }
 }
 
