@@ -1,13 +1,15 @@
-﻿namespace BlazorState.Pipeline.ReduxDevTools.Features.JumpToState
+﻿namespace BlazorState.Pipeline.ReduxDevTools
 {
   using MediatR;
 
-  internal class JumpToStateRequest : DispatchRequest<Payload>, IRequest, IReduxRequest { }
-
-  internal class Payload
+  internal class JumpToStateRequest : DispatchRequest<JumpToStateRequest.PayloadClass>, IRequest, IReduxRequest
   {
-    public int ActionId { get; set; }
-    public string Type { get; set; }
 
+    internal class PayloadClass
+    {
+      public int ActionId { get; set; }
+      public string Type { get; set; }
+
+    }
   }
 }

@@ -1,10 +1,10 @@
-﻿using AnyClone.Tests.TestObjects;
-using Shouldly;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace AnyClone.Tests
+﻿namespace AnyClone.Tests
 {
+  using AnyClone.Tests.TestObjects;
+  using Shouldly;
+  using System.Collections.Generic;
+  using System.Linq;
+
   public class CloneProviderTests
   {
     public static void Should_Clone_BasicObject()
@@ -216,7 +216,7 @@ namespace AnyClone.Tests
 
     public static void Should_Clone_ComplexObject()
     {
-      var original = new ComplexObject(100);
+      using var original = new ComplexObject(100);
       ComplexObject cloned = original.Clone();
 
       cloned.ShouldBe(original);
@@ -224,7 +224,7 @@ namespace AnyClone.Tests
 
     public static void ModifiedClone_ComplexObject_ShouldNotBeEqual()
     {
-      var original = new ComplexObject(100);
+      using var original = new ComplexObject(100);
       ComplexObject cloned = original.Clone();
       cloned.listOfStrings.Add("new string");
 

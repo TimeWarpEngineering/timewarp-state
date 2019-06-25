@@ -6,6 +6,11 @@
   using BlazorState;
   using Microsoft.AspNetCore.Blazor.Hosting;
   using Microsoft.Extensions.DependencyInjection;
+  using System.Text.Json.Serialization;
+  using TestApp.Client.Features.Application;
+  using TestApp.Client.Features.Counter;
+  using TestApp.Client.Features.EventStream;
+  using TestApp.Client.Features.WeatherForecast;
 
   /// <summary>
   /// A known starting state(baseline) for all tests.
@@ -36,8 +41,25 @@
     private void ConfigureServices(IServiceCollection aServiceCollection)
     {
       aServiceCollection.AddSingleton(BlazorStateTestServer.CreateClient());
-      aServiceCollection.AddBlazorState(aOptions => aOptions.Assemblies =
-        new Assembly[] { typeof(Startup).GetTypeInfo().Assembly });
+      aServiceCollection.AddBlazorState
+      (
+        aOptions => aOptions.Assemblies =
+        new Assembly[] { typeof(Startup).GetTypeInfo().Assembly }
+      );
+
+      aServiceCollection.AddSingleton
+      (
+        new JsonSerializerOptions
+        {
+          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        }
+      );
+
+      aServiceCollection.AddTransient<ApplicationState>();
+      aServiceCollection.AddTransient<CounterState>();
+      aServiceCollection.AddTransient<EventStreamState>();
+      aServiceCollection.AddTransient<WeatherForecastsState>();
+
     }
   }
 }

@@ -3,11 +3,13 @@
   using System;
   using System.Linq;
   using System.Reflection;
+  using System.Text.Json.Serialization;
   using System.Threading;
   using System.Threading.Tasks;
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
+  using Microsoft.AspNetCore.Components;
 
   public class JsonRequestHandler
   {
@@ -44,23 +46,9 @@
       else
         Logger.LogDebug($"{GetType().Name}: Type ({aRequestTypeAssemblyQualifiedName})  was found");
 
-      object instance = Deserialize(aRequestAsJson, requestType);
+      object instance = JsonSerializer.Parse(aRequestAsJson, requestType);
 
-      // TODO: We should probably return the result. But I want logic in C# not in js so holding off.
-      await SendToMediator(requestType, instance);
-    }
-
-    private object Deserialize(string aRequestAsJson, Type aRequestType)
-    {
-      MethodInfo deserializeMethodInfo = typeof(Json).GetMethod(nameof(Json.Deserialize), BindingFlags.Public | BindingFlags.Static);
-      MethodInfo deserializeGenericMethodInfo = deserializeMethodInfo.MakeGenericMethod(aRequestType);
-
-      object instance = deserializeGenericMethodInfo.Invoke(null, new object[] { aRequestAsJson });
-      if (instance == null)
-        throw new Exception($"Could not De-serialize ({aRequestAsJson} into and instance of type {aRequestType.AssemblyQualifiedName})");
-
-      Logger.LogDebug($"{GetType().Name}: request created of type {instance.GetType().FullName}");
-      return instance;
+      _ = await SendToMediator(requestType, instance);
     }
 
     /// <summary>
@@ -96,7 +84,8 @@
       Logger.LogDebug("Init JsonRequestHandler");
       const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
       Logger.LogDebug(InitializeJavaScriptInteropName);
-      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, new DotNetObjectRef(this));
+      Microsoft.JSInterop.JSRuntime.SetCurrentJSRuntime(JSRuntime);
+      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectRef.Create(this));
     }
   }
 }

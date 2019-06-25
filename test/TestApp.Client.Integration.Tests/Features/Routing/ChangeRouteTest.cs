@@ -15,7 +15,7 @@
 
   internal class ChangeRouteTests
   {
-    private const string newUrl = "http://localhost:7169/";
+    private const string NewUrl = "http://localhost:7169/";
     private IMediator Mediator { get; }
 
     private RouteState RouteState => Store.GetState<RouteState>();
@@ -42,7 +42,7 @@
       RouteState.Initialize("/someplace");
       var changeRouteRequest = new ChangeRouteAction
       {
-        NewRoute = newUrl
+        NewRoute = NewUrl
       };
       // Act
       await Mediator.Send(changeRouteRequest);
@@ -53,20 +53,19 @@
 
     /// <summary>
     /// Test specific Service Configuration
+    /// IUrlHelper is used by the handler and would fail because we are not actually in the proper context when running this test
+    /// So we Mock the IUrlHelper and replace the existing registration
     /// </summary>
     /// <param name="aServiceCollection"></param>
     private void ConfigureServices(IServiceCollection aServiceCollection)
     {
       var mock = new Mock<IUriHelper>();
-      mock.Setup(aUriHelper => aUriHelper.ToAbsoluteUri(It.IsAny<string>())).Returns(new Uri(newUrl));
-      mock.Setup(aUriHelper => aUriHelper.GetAbsoluteUri()).Returns(newUrl);
+      mock.Setup(aUriHelper => aUriHelper.ToAbsoluteUri(It.IsAny<string>())).Returns(new Uri(NewUrl));
+      mock.Setup(aUriHelper => aUriHelper.GetAbsoluteUri()).Returns(NewUrl);
       mock.Setup(aUriHelper => aUriHelper.NavigateTo(It.IsAny<string>()));
 
       var descriptor = new ServiceDescriptor(typeof(IUriHelper), mock.Object);
       aServiceCollection.Replace(descriptor);
     }
-
-    // TODO: IUrlHelper is used by the handler and fails because we are not actually in the proper context when running
-    // Should moc the IUrlHelper and add to the Container
   }
 }

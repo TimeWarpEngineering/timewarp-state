@@ -11,8 +11,8 @@
     {
       return new RouteState
       {
-        Guid = new System.Guid((string)aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))]),
-        Route = (string)aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Route))]
+        Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
+        Route = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Route))].ToString()
       };
     }
 

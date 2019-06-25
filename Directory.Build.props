@@ -28,17 +28,17 @@
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <BlazorPreviewVersion>preview5-19227-01</BlazorPreviewVersion>
-    <MicrosoftAspNetCoreVersion>3.0.0-preview5-19227-01</MicrosoftAspNetCoreVersion>
+    <BlazorPreviewVersion>preview6.19307.2</BlazorPreviewVersion>
+    <MicrosoftAspNetCoreVersion>3.0.0-preview6.19307.2</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreBlazorVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreBlazorVersion>
     <MicrosoftAspNetCoreComponentsBrowserVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsBrowserVersion>
     <MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
-    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview5.19227.9</MicrosoftExtensionsFileProvidersEmbeddedVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview5.19227.9</MicrosoftExtensionsLoggingAbstractionsVersion>
-    <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-18618-05</MicrosoftSourceLinkGitHubVersion>
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-19270-01</MicrosoftSourceLinkGitHubVersion>
 
-    <AnyCloneVersion>1.0.31</AnyCloneVersion>
+    <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.1.11</BlazorExtensionsLoggingVersion>
     <FixieVersion>2.0.4</FixieVersion>
     <FixieConsoleVersion>2.0.4</FixieConsoleVersion>
@@ -49,8 +49,7 @@
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
-    <TypeSupportVersion>1.0.73</TypeSupportVersion>
-
+    <TypeSupportVersion>1.0.91-TimeWarp-2019-06-25</TypeSupportVersion>
   </PropertyGroup>
     
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
