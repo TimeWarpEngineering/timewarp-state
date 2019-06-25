@@ -1,6 +1,6 @@
 ﻿namespace TestApp.Client.Pipeline.NotificationPostProcessor
 {
-  using System;
+  using System.Threading;
   using System.Threading.Tasks;
   using MediatR;
   using MediatR.Pipeline;
@@ -19,7 +19,7 @@
     private IMediator Mediator { get; }
     private ILogger Logger { get; }
 
-    public async Task Process(TRequest aRequest, TResponse aResponse)
+    public async Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
     {
       var notification = new PostPipelineNotification<TRequest, TResponse>
       {
