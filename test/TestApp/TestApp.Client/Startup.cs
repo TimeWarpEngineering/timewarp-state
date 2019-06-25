@@ -36,22 +36,10 @@
           }
       );
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
-      // We could allow for direct injection of the State but we still need subscriptions to be set
-      // Thus BaseComponent is still needed so why not just access the State that way.
-      //aServiceCollection.AddScoped<IState<ApplicationState>>(GetState<ApplicationState>);
-      //aServiceCollection.AddScoped<IState<CounterState>>(GetState<CounterState>);
-      //aServiceCollection.AddScoped<IState<EventStreamState>>(GetState<EventStreamState>);
-      //aServiceCollection.AddScoped<IState<WeatherForecastsState>>(GetState<WeatherForecastsState>);
       aServiceCollection.AddTransient<ApplicationState>();
       aServiceCollection.AddTransient<CounterState>();
       aServiceCollection.AddTransient<EventStreamState>();
       aServiceCollection.AddTransient<WeatherForecastsState>();
-    }
-
-    private TState GetState<TState>(IServiceProvider aServiceProvider)
-    {
-      IStore store = aServiceProvider.GetService<IStore>();
-      return store.GetState<TState>();
     }
   }
 }

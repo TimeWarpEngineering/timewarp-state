@@ -31,12 +31,10 @@
 
       aTestClass.RunCases(aCase =>
       {
-        using (IServiceScope serviceScope = ServiceScopeFactory.CreateScope())
-        {
-          object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-          Setup(instance);
-          aCase.Execute(instance);
-        }
+        using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
+        object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
+        Setup(instance);
+        aCase.Execute(instance);
       });
     }
 
@@ -57,7 +55,7 @@
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
       SeleniumStandAlone = new SeleniumStandAlone();
-      BrowserFixture = new BrowserFixture(SeleniumStandAlone);
+      BrowserFixture = new BrowserFixture();
       aServiceCollection.AddSingleton(BrowserFixture.WebDriver);
       aServiceCollection.AddSingleton<ServerFixture>();
       // TODO: should use the same collection as `Classes` here

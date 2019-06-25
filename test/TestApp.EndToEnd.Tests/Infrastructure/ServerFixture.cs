@@ -39,7 +39,7 @@
 
     protected static void RunInBackgroundThread(Action aAction)
     {
-      var isDone = new ManualResetEvent(false);
+      using var isDone = new ManualResetEvent(false);
 
       new Thread(() =>
       {

@@ -30,7 +30,7 @@
         FetchWeatherForecastsAction aFetchWeatherForecastsRequest,
         CancellationToken aCancellationToken)
       {
-        HttpResponseMessage httpResponseMessage = await HttpClient.GetAsync(GetWeatherForecastsRequest.Route);
+        using HttpResponseMessage httpResponseMessage = await HttpClient.GetAsync(GetWeatherForecastsRequest.Route);
         string content = await httpResponseMessage.Content.ReadAsStringAsync();
         GetWeatherForecastsResponse getWeatherForecastsResponse =
           JsonSerializer.Parse<GetWeatherForecastsResponse>(content, JsonSerializerOptions);

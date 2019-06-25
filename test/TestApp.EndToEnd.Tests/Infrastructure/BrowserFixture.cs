@@ -7,7 +7,7 @@
 
   public class BrowserFixture : IDisposable
   {
-    public BrowserFixture(SeleniumStandAlone aSeleniumStandAlone)
+    public BrowserFixture()
     {
       var chromeOptions = new ChromeOptions();
 

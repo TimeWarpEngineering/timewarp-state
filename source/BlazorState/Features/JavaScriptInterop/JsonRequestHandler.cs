@@ -48,7 +48,6 @@
 
       object instance = JsonSerializer.Parse(aRequestAsJson, requestType);
 
-      // TODO: We should probably return the result. But I want logic in C# not in js so holding off.
       _ = await SendToMediator(requestType, instance);
     }
 
