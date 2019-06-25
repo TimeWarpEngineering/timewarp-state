@@ -38,7 +38,7 @@
     <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsLoggingAbstractionsVersion>
     <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-19270-01</MicrosoftSourceLinkGitHubVersion>
 
-    <AnyCloneVersion>1.0.31</AnyCloneVersion>
+    <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.1.11</BlazorExtensionsLoggingVersion>
     <FixieVersion>2.0.4</FixieVersion>
     <FixieConsoleVersion>2.0.4</FixieConsoleVersion>
@@ -49,8 +49,7 @@
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
-    <TypeSupportVersion>1.0.90</TypeSupportVersion>
-
+    <TypeSupportVersion>1.0.91-TimeWarp-2019-06-25</TypeSupportVersion>
   </PropertyGroup>
     
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
