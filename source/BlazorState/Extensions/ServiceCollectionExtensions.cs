@@ -6,6 +6,7 @@
   using BlazorState.Pipeline.State;
   using BlazorState.Services;
   using MediatR;
+  using MediatR.Pipeline;
   using Microsoft.AspNetCore.Components;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
@@ -45,7 +46,7 @@
         aServices.AddScoped<BlazorHostingLocation>();
         aServices.AddScoped<JsonRequestHandler>();
         aServices.AddScoped<Subscriptions>();
-        aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsBehavior<,>));
+        aServices.AddScoped(typeof(IRequestPostProcessor<,>), typeof(RenderSubscriptionsPostProcessor<,>));
         aServices.AddScoped<IStore, Store>();
 
         if (options.UseCloneStateBehavior)
@@ -54,7 +55,7 @@
         }
         if (options.UseReduxDevToolsBehavior)
         {
-          aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
+          aServices.AddScoped(typeof(IRequestPostProcessor<,>), typeof(ReduxDevToolsPostProcessor<,>));
           aServices.AddScoped<ReduxDevToolsInterop>();
 
           aServices.AddTransient<IRequestHandler<CommitRequest, Unit>, CommitHandler>();
