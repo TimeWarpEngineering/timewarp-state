@@ -1,3 +1,8 @@
+---
+uid: blazor-state.Terminology.md
+title: Terminology
+---
+
 ## Terminology
 
 The pattern used by Blazor-State and MediatR has been around for many years and goes by different names.

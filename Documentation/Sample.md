@@ -13,7 +13,7 @@ This sample shows how to add Blazor-State to a `Blazor (ASP.NET Core hosted)` ap
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview5-19227-01
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview6.19307.2
 ```
 
 ## Creating the project
@@ -32,20 +32,7 @@ dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview5-19227-01
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add .\Sample.Client\Sample.Client.csproj package Blazor-State --version 1.0.0-preview5-19227-*`
-
-## Configure the services
-
-1. In the `Sample.Client` project in the `Startup.cs` file.
-2. Add `using BlazorState;`
-3. Change `ConfigureServices` to configure blazor-state.
-
-```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddBlazorState();
-}
-```
+   `dotnet add .\Sample.Client\Sample.Client.csproj package Blazor-State --version 1.0.0-preview6.19307.2-*`
 
 ## Feature File Structure
 
@@ -83,6 +70,28 @@ namespace Sample.Client.Features.Counter
 }
 ```
 
+## Configure the services
+
+1. In the `Sample.Client` project in the `Startup.cs` file.
+2. Change `ConfigureServices` to configure blazor-state as follows:
+3. Add the required usings.
+4. Configure the options passed to AddBlazorState to include the assemblies to scan for Handlers.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddBlazorState
+    (
+      (aOptions) => aOptions.Assemblies =
+        new Assembly[]
+        {
+          typeof(Startup).GetTypeInfo().Assembly,
+        }
+    );
+    services.AddScoped<CounterState>();
+}
+```
+
 ## Displaying state in the user interface
 
 1. Edit `Pages\Counter.razor` as follows
@@ -105,9 +114,9 @@ The code should look as follows:
 
 <p>Current count: @currentCount</p>
 
-<button class="btn btn-primary" onclick="@IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="@IncrementCount">Click me</button>
 
-@functions {
+@code {
     CounterState CounterState => GetState<CounterState>();
 
     int currentCount => CounterState.Count;
@@ -120,7 +129,7 @@ The code should look as follows:
 ```
 
 Run the application and on the Counter Page you should notice the count is being displayed as we initialized.
-The button no longer works.
+Although the button no longer works.
 
 ## Sending requests that will mutate the state
 
@@ -130,7 +139,7 @@ The `Action` is then handled by a `Handler` which can freely mutate the state.
 > [!Warning]
 > State should NOT be mutated by anything other than handlers.
 > All state changes should be done in handlers.
-> This is easily controlled by making state immutable and your handlers a nested class of the state they modify.
+> This can be controlled by making state immutable and your handlers a nested class of the state they modify.
 
 ## Create the `IncrementCounterRequest`
 
