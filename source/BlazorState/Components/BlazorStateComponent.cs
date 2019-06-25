@@ -45,7 +45,7 @@
     /// <summary>
     /// Exposes StateHasChanged
     /// </summary>
-    public void ReRender() => StateHasChanged();
+    public void ReRender() => base.Invoke(StateHasChanged);
 
     /// <summary>
     /// Place a Subscription for the calling component
