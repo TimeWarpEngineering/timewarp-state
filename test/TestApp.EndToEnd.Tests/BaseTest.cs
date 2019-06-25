@@ -1,10 +1,10 @@
-﻿using System;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
-using TestApp.EndToEnd.Tests.Infrastructure;
-
-namespace TestApp.EndToEnd.Tests
+﻿namespace TestApp.EndToEnd.Tests
 {
+  using System;
+  using OpenQA.Selenium;
+  using OpenQA.Selenium.Support.UI;
+  using TestApp.EndToEnd.Tests.Infrastructure;
+
   public abstract class BaseTest
   {
     protected IJavaScriptExecutor JavaScriptExecutor { get; }
