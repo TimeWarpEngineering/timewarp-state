@@ -115,7 +115,7 @@
     }
 
     /// <summary>
-    /// Scan Assemblies for Handlers.  Will add this assembly and the calling assembly.
+    /// Scan Assemblies for Handlers.
     /// </summary>
     /// <param name="aServices"></param>
     /// <param name="aOptions"></param>
