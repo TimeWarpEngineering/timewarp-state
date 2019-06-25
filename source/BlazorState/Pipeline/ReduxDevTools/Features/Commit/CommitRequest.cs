@@ -2,9 +2,9 @@
 {
   using MediatR;
 
-  internal class CommitRequest : DispatchRequest<CommitRequest.Payload>, IRequest, IReduxRequest
+  internal class CommitRequest : DispatchRequest<CommitRequest.PayloadClass>, IRequest, IReduxRequest
   {
-    internal class Payload
+    internal class PayloadClass
     {
       public string Type { get; set; }
     }
