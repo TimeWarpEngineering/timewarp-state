@@ -70,19 +70,19 @@ See the timewarp-blazor template `EventStreamBehavior` for an example.
 #### CloneStateBehavior
 
 To ensure your application is in a know good state the `CloneStateBehavior` creates a clone of the `State` prior to processing the `Action`.
-If any exception occurs during process of the `Action` the state is rolled back.
+If any exception occurs during the processing of the `Action` the state is rolled back.
 
-#### RenderSubscriptionsBehavior
+#### RenderSubscriptionsPostProcessor
 
 When a component accesses `State` we add a subscription.
-The `RenderSubscriptionsBehavior` will iterate over these subscriptions and re-render those components.
+The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components.
 So you don't have to worry about where to call `StateHasChanged`.
 
-#### ReduxDevToolsBehavior
+#### ReduxDevToolsPostProcessor
 
 One of the nice features of redux is the
 [developer tools](https://github.com/zalmoxisus/redux-devtools-extension).
-This behavior implements the integration of these developer tools.
+This processor implements the integration of these developer tools.
 
 ### JavaScript Interop
 

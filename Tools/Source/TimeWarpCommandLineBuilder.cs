@@ -24,7 +24,7 @@
       startup.ConfigureServices(ServiceCollection);
       startup.Configure(this);
 
-      ServiceCollection.AddMediatR();
+      ServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
       ServiceProvider = ServiceCollection.BuildServiceProvider();
 

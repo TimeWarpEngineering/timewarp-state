@@ -36,14 +36,14 @@
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
     <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsFileProvidersEmbeddedVersion>
     <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsLoggingAbstractionsVersion>
-    <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-19270-01</MicrosoftSourceLinkGitHubVersion>
+    <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-19324-01</MicrosoftSourceLinkGitHubVersion>
 
     <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.1.11</BlazorExtensionsLoggingVersion>
     <FixieVersion>2.0.4</FixieVersion>
     <FixieConsoleVersion>2.0.4</FixieConsoleVersion>
-    <MediatrExtensionsMicrosoftDependencyInjectionVersion>6.0.1</MediatrExtensionsMicrosoftDependencyInjectionVersion>
-    <MediatrVersion>6.0.0</MediatrVersion>
+    <MediatrExtensionsMicrosoftDependencyInjectionVersion>7.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
+    <MediatrVersion>7.0.0</MediatrVersion>
     <MoqVersion>4.10.1</MoqVersion>
     <ScrutorVersion>3.0.2</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>

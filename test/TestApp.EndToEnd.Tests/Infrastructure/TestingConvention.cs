@@ -18,8 +18,8 @@
 
     public void Dispose()
     {
-      BrowserFixture.WebDriver.Quit();
-      SeleniumStandAlone.Dispose();
+      BrowserFixture?.WebDriver?.Quit();
+      SeleniumStandAlone?.Dispose();
     }
 
     public void Execute(TestClass aTestClass)

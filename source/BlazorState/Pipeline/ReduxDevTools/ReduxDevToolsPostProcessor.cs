@@ -38,7 +38,7 @@
     }
 
 
-    public Task Process(TRequest aRequest, TResponse aResponse)
+    public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
     {
       try
       {

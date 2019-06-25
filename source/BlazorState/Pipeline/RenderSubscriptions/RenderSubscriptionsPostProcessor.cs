@@ -4,9 +4,8 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using MediatR;
-    using MediatR.Pipeline;
-    using Microsoft.Extensions.Logging;
+  using MediatR.Pipeline;
+  using Microsoft.Extensions.Logging;
 
   internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
@@ -22,36 +21,7 @@
     private ILogger Logger { get; }
     private Subscriptions Subscriptions { get; }
 
-    //public async Task<TResponse> Handle(
-    //  TRequest aRequest,
-    //  CancellationToken aCancellationToken,
-    //  RequestHandlerDelegate<TResponse> aNext)
-    //{
-    //  // logging variables
-    //  string className = GetType().Name;
-    //  className = className.Remove(className.IndexOf('`'));
-
-    //  Logger.LogDebug($"{className}: Start");
-
-    //  try
-    //  {
-    //    Logger.LogDebug($"{className}: Call next");
-    //    TResponse response = await aNext();
-    //    Logger.LogDebug($"{className}: Start Post Processing");
-    //    Logger.LogDebug($"{className}: ReRenderSubscribers");
-    //    Subscriptions.ReRenderSubscribers<TResponse>();
-    //    Logger.LogDebug($"{className}: End Post Processing");
-    //    return response;
-    //  }
-    //  catch (Exception aException)
-    //  {
-    //    Logger.LogError($"{className}: Error: {aException.Message}");
-    //    Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
-    //    throw;
-    //  }
-    //}
-
-    public Task Process(TRequest aRequest, TResponse aResponse)
+    public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
     {
       // logging variables
       string className = GetType().Name;

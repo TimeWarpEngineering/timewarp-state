@@ -1,3 +1,7 @@
+---
+uid: blazor-state.Acknowledgements.md
+title: Acknowledgements
+---
 
 ## Acknowledgements
 

@@ -3,4 +3,8 @@
   The Router component displays whichever component has a @page
   directive matching the current URI.
 *@
-<Router AppAssembly="typeof(Startup).Assembly" />
+  <Router AppAssembly="typeof(Startup).Assembly">
+    <NotFoundContent>
+      <p>Sorry, there's nothing at this address.</p>
+    </NotFoundContent>
+  </Router>

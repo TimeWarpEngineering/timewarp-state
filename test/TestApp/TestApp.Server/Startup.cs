@@ -60,7 +60,6 @@
         (aOptions) => aOptions.Assemblies =
           new Assembly[]
           {
-            typeof(Startup).GetTypeInfo().Assembly,
             typeof(Client.Startup).GetTypeInfo().Assembly
           }
       );
