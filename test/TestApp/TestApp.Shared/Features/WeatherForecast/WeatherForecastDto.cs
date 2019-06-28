@@ -6,16 +6,16 @@
   {
     public WeatherForecastDto() { }
 
-    protected WeatherForecastDto(WeatherForecastDto aWeatherForecast)
+    public WeatherForecastDto(DateTime aDate, string aSummary, int aTemperatureC)
     {
-      Date = new DateTime(aWeatherForecast.Date.Ticks);
-      TemperatureC = aWeatherForecast.TemperatureC;
-      Summary = aWeatherForecast.Summary;
+      Date = aDate;
+      Summary = aSummary;
+      TemperatureC = aTemperatureC;
     }
 
-    public DateTime Date { get; set; }
-    public string Summary { get; set; }
-    public int TemperatureC { get; set; }
+    public DateTime Date { get; }
+    public string Summary { get; }
+    public int TemperatureC { get; }
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
   }
 }
