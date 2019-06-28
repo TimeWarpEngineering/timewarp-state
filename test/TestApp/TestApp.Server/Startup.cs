@@ -9,7 +9,6 @@
   using Microsoft.Extensions.Hosting;
   using System.Linq;
   using System.Reflection;
-  using System.Text.Json.Serialization;
 
   public class Startup
   {
