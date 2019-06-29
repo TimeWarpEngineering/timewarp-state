@@ -26,17 +26,17 @@
       //Arrange
       var weatherForecasts = new List<WeatherForecastDto> {
         new WeatherForecastDto
-        {
-          Date = DateTime.MinValue,
-          Summary = "Summary 1",
-          TemperatureC = 24
-        },
+        (
+          aDate: DateTime.MinValue,
+          aSummary: "Summary 1",
+          aTemperatureC: 24
+        ),
         new WeatherForecastDto
-        {
-          Date = new DateTime(2019,05,17),
-          Summary = "Summary 1",
-          TemperatureC = 24
-        }
+        (
+          aDate: DateTime.MinValue,
+          aSummary: "Summary 1",
+          aTemperatureC: 24
+        ),
       };
       WeatherForecastsState.Initialize(weatherForecasts);
       

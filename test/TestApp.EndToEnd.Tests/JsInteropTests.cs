@@ -66,14 +66,15 @@
       jsonRequestHandler.ShouldNotBeNull();
     }
 
-    public void CanCallCsharpFromJs()
-    {
+    //public void CanCallCsharpFromJs()
+    //{
+    //  // Redux Dev tool use this ability.
+    //  // TODO set up a handler to be launched from JS 
+    //}
 
-    }
-
-    public void CanCallJsFromCsharp()
-    {
-      // If Initialization of jsonRequestHandler worked then this worked becuase it calls js from CS.
-    }
+    //public void CanCallJsFromCsharp()
+    //{
+    //  // If Initialization of jsonRequestHandler worked then this worked becuase it calls js from CS.
+    //}
   }
 }

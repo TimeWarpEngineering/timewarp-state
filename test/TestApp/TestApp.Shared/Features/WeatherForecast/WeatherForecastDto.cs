@@ -2,15 +2,20 @@
 {
   using System;
 
+  /// <summary>
+  /// The object that is passed back and forth from the Server to the client.
+  /// </summary>
+  /// <remarks>TODO: This should be an immutable class 
+  /// but serialization doesn't work with no setter or private setter yet</remarks>
   public class WeatherForecastDto
   {
     public WeatherForecastDto() { }
 
-    protected WeatherForecastDto(WeatherForecastDto aWeatherForecast)
+    public WeatherForecastDto(DateTime aDate, string aSummary, int aTemperatureC)
     {
-      Date = new DateTime(aWeatherForecast.Date.Ticks);
-      TemperatureC = aWeatherForecast.TemperatureC;
-      Summary = aWeatherForecast.Summary;
+      Date = aDate;
+      Summary = aSummary;
+      TemperatureC = aTemperatureC;
     }
 
     public DateTime Date { get; set; }

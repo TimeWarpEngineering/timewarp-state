@@ -21,13 +21,6 @@
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      //if (new BlazorHostingLocation().IsClientSide)
-      //{
-      //  aServiceCollection.AddLogging(aLoggingBuilder => aLoggingBuilder
-      //      .AddBrowserConsole()
-      //      .SetMinimumLevel(LogLevel.Trace));
-      //};
-      //aServiceCollection.AddBlazorState();
       aServiceCollection.AddBlazorState
       (
         (aOptions) => aOptions.Assemblies =

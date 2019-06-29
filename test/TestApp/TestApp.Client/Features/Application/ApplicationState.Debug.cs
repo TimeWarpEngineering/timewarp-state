@@ -20,10 +20,6 @@
     internal void Initialize(string aName)
     {
       ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-      if (string.IsNullOrWhiteSpace(aName))
-      {
-        throw new System.ArgumentException("message", nameof(aName));
-      }
       Name = aName;
     }
   }

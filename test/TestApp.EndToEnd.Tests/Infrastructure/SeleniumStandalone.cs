@@ -32,6 +32,6 @@ namespace TestApp.EndToEnd.Tests.Infrastructure
 
     public Process Process { get; }
 
-    public void Dispose() => Process.CloseMainWindow();
+    public void Dispose() => Process?.CloseMainWindow();
   }
 }
