@@ -44,6 +44,7 @@
       );
 
       string json = JsonSerializer.ToString(weatherForecastDto, jsonSerializerOptions);
+
       //Act
       WeatherForecastDto parsed = JsonSerializer.Parse<WeatherForecastDto>(json, jsonSerializerOptions);
 
