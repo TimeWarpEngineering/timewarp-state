@@ -14,10 +14,12 @@
     {
       private readonly JsonSerializerOptions JsonSerializerOptions;
 
-      public FetchWeatherForecastsHandler(
+      public FetchWeatherForecastsHandler
+      (
         IStore aStore, 
         HttpClient aHttpClient,
-        JsonSerializerOptions aJsonSerializerOptions) : base(aStore)
+        JsonSerializerOptions aJsonSerializerOptions
+      ) : base(aStore)
       {
         HttpClient = aHttpClient;
         JsonSerializerOptions = aJsonSerializerOptions;
