@@ -49,7 +49,7 @@
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
-    <TypeSupportVersion>1.0.91-TimeWarp-2019-06-25</TypeSupportVersion>
+    <TypeSupportVersion>1.0.92</TypeSupportVersion>
   </PropertyGroup>
     
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
