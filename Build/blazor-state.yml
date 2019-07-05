@@ -29,7 +29,6 @@ steps:
   inputs:
     command: build
     projects: 'source/BlazorState/BlazorState.csproj'
-    configuration: debug
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
@@ -39,12 +38,19 @@ steps:
     publishLocation: Container
 
 - task: DotNetCoreCLI@2
-  displayName: Run all Tests in the repo
+  displayName: Run all Tests in the repo gather coverage data
   continueOnError: false
   inputs:
     command: test
+    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
     projects: "**/*Tests/*.csproj"
-    configurationToPack: debug
+
+
+# Upload coverage to codecov.io
+# - script: |
+#    %USERPROFILE%\.nuget\packages\codecov\1.5.0\tools\codecov.exe -f "./test/MyTestProject/coverage.opencover.xml" -t $(CODECOV_TOKEN)
+# displayName: Upload coverage to codecov.io
+
 
 - task: DotNetCoreCLI@2
   displayName: dotnet pack blazor-state
