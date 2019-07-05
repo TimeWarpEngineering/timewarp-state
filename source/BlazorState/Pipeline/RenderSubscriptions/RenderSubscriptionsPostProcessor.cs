@@ -10,7 +10,7 @@
   internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
     public RenderSubscriptionsPostProcessor(
-      ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
+      ILogger<RenderSubscriptionsPostProcessor<TRequest, TResponse>> aLogger,
       Subscriptions aSubscriptions)
     {
       Logger = aLogger;
