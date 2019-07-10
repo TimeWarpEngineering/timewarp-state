@@ -20,7 +20,8 @@
     {
       Logger = aLogger;
       ServiceProvider = aServiceProvider;
-      using (Logger.BeginScope(nameof(Store)))
+      
+      using (Logger.BeginScope(new Dictionary<string, object> { [nameof(Guid)] = Guid }))
       {
         Logger.LogInformation($"{GetType().Name}: constructor: {nameof(Guid)}:{Guid}");
         States = new Dictionary<string, IState>();

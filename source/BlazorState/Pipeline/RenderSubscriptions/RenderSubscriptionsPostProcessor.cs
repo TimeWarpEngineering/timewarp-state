@@ -10,11 +10,11 @@
   internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
     public RenderSubscriptionsPostProcessor(
-      ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
+      ILogger<RenderSubscriptionsPostProcessor<TRequest, TResponse>> aLogger,
       Subscriptions aSubscriptions)
     {
       Logger = aLogger;
-      Logger.LogDebug($"{GetType().Name} constructor");
+      Logger.LogDebug($"{GetType().Name}: constructor with TRequest:{typeof(TRequest).Name} TResponse:{typeof(TResponse).Name}");
       Subscriptions = aSubscriptions;
     }
 
