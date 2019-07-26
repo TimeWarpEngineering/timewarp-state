@@ -17,7 +17,7 @@
     <LangVersion>preview</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <!-- We use full (Windows PDBs) until cross platform support for source link will get better -->
+    <!-- We use full (Windows PDBs) until cross platform support for source link will get better also needed for codecov -->
     <DebugType>full</DebugType>
   </PropertyGroup>
 
