@@ -36,7 +36,7 @@ On the server side we use the same architecture,
 (see sample in Hosted Server), where the Features contain
 `Controller`, `Handler`, `Request`, `Response`, etc...
 Each endpoint has its own controller
-which maps the HTTP Request to the `Request` Object and then sends
+which maps the HTTP Request to the `Request` object and then sends
 on to the mediator pipeline.
 The `Handler` acts on the `Request` and returns a `Response`.
 
