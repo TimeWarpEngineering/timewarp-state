@@ -7,7 +7,7 @@
   using Shouldly;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
 
   internal class JsonRequestHandlerTests
   {
@@ -35,7 +35,7 @@
         Amount = 5
       };
 
-      string requestAsJson = JsonSerializer.ToString(incrementCounterAction);
+      string requestAsJson = JsonSerializer.Serialize(incrementCounterAction);
       int preActionCount = CounterState.Count;
 
       //Act

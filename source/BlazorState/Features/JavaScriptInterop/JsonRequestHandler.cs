@@ -3,13 +3,12 @@
   using System;
   using System.Linq;
   using System.Reflection;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
   using System.Threading;
   using System.Threading.Tasks;
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
-  using Microsoft.AspNetCore.Components;
 
   public class JsonRequestHandler
   {
@@ -46,7 +45,7 @@
       else
         Logger.LogDebug($"{GetType().Name}: Type ({aRequestTypeAssemblyQualifiedName})  was found");
 
-      object instance = JsonSerializer.Parse(aRequestAsJson, requestType);
+      object instance = JsonSerializer.Deserialize(aRequestAsJson, requestType);
 
       _ = await SendToMediator(requestType, instance);
     }

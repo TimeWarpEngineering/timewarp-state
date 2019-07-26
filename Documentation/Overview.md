@@ -56,8 +56,8 @@ or move the GetState functionality into your component
 
 ### Pipeline
 Blazor-State utilizes the MediatR pipeline which allows for easy middleware integration
-by registering an interface with the DI container.
-Blazor-State provides the extension method, `AddBlazorState`, which registers behaviors on the pipeline.
+by registering an interface with the [dependency injection container]((https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection)).
+Blazor-State provides the [extension method](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods), `AddBlazorState`, which registers behaviors on the pipeline.
 
 The three interfaces available to extend the Pipeline are `IPipelineBehavior`, `IRequestPreProcessor`,
 and `IRequestPostProcessor`;
@@ -69,7 +69,7 @@ See the timewarp-blazor template `EventStreamBehavior` for an example.
 
 #### CloneStateBehavior
 
-To ensure your application is in a know good state the `CloneStateBehavior` creates a clone of the `State` prior to processing the `Action`.
+To ensure your application is in a known good state the `CloneStateBehavior` creates a clone of the `State` prior to processing the `Action`.
 If any exception occurs during the processing of the `Action` the state is rolled back.
 
 #### RenderSubscriptionsPostProcessor

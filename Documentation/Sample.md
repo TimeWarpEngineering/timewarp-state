@@ -114,7 +114,7 @@ The code should look as follows:
 
 <p>Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="@IncrementCount">Click me</button>
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
     CounterState CounterState => GetState<CounterState>();

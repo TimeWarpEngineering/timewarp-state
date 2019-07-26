@@ -6,7 +6,7 @@
   using BlazorState;
   using Microsoft.AspNetCore.Blazor.Hosting;
   using Microsoft.Extensions.DependencyInjection;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.EventStream;

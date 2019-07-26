@@ -5,7 +5,7 @@
   using BlazorState;
   using Microsoft.JSInterop;
   using TestApp.Shared.Features.WeatherForecast;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
 
   internal partial class WeatherForecastsState : State<WeatherForecastsState>
   {
@@ -15,7 +15,7 @@
 
       var newWeatherForecastsState = new WeatherForecastsState()
       {
-        _WeatherForecasts = JsonSerializer.Parse<List<WeatherForecastDto>>(json, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
+        _WeatherForecasts = JsonSerializer.Deserialize<List<WeatherForecastDto>>(json, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
         Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
       };
 
