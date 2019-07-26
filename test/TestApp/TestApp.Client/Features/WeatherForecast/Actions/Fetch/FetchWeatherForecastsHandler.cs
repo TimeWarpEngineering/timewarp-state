@@ -13,17 +13,17 @@
   {
     public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsAction, WeatherForecastsState>
     {
-      private readonly JsonSerializerOptions JsonSerializerOptions;
+      //private readonly JsonSerializerOptions JsonSerializerOptions;
 
       public FetchWeatherForecastsHandler
       (
         IStore aStore,
-        HttpClient aHttpClient,
-        JsonSerializerOptions aJsonSerializerOptions
+        HttpClient aHttpClient
+        //JsonSerializerOptions aJsonSerializerOptions
       ) : base(aStore)
       {
         HttpClient = aHttpClient;
-        JsonSerializerOptions = aJsonSerializerOptions;
+        //JsonSerializerOptions = aJsonSerializerOptions;
       }
 
       private HttpClient HttpClient { get; }

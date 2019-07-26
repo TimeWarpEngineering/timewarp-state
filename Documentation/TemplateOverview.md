@@ -37,7 +37,7 @@ info: Microsoft.Hosting.Lifetime[0]
       Content root path: C:\git\temp\MyBlazorApp\Source\MyBlazorApp.Server
 ```
 
-Open up your browser to https://localhost:5001 and confirm you have running site.
+Open up your browser to <https://localhost:5001> and confirm you have running site.
 
 ## Content
 
