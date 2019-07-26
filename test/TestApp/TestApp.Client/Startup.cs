@@ -5,12 +5,10 @@
   using MediatR;
   using Microsoft.AspNetCore.Components.Builder;
   using Microsoft.Extensions.DependencyInjection;
-  using System;
   using System.Reflection;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
-  //using Microsoft.Extensions.Logging;
   using TestApp.Client.Features.EventStream;
   using TestApp.Client.Features.WeatherForecast;
 

@@ -28,15 +28,15 @@
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <BlazorPreviewVersion>preview6.19307.2</BlazorPreviewVersion>
-    <MicrosoftAspNetCoreVersion>3.0.0-preview6.19307.2</MicrosoftAspNetCoreVersion>
+    <BlazorPreviewVersion>preview7.19365.7</BlazorPreviewVersion>
+    <MicrosoftAspNetCoreVersion>3.0.0-preview7.19365.7</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreBlazorVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreBlazorVersion>
     <MicrosoftAspNetCoreComponentsBrowserVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsBrowserVersion>
     <MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
-    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsFileProvidersEmbeddedVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview6.19304.6</MicrosoftExtensionsLoggingAbstractionsVersion>
-    <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-19324-01</MicrosoftSourceLinkGitHubVersion>
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview7.19362.4</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview7.19362.4</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftSourceLinkGitHubVersion>1.0.0-beta2-19367-01</MicrosoftSourceLinkGitHubVersion>
 
     <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.1.11</BlazorExtensionsLoggingVersion>

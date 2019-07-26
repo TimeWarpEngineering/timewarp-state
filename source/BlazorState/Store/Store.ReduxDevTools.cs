@@ -5,7 +5,7 @@
   using System.Linq;
   using BlazorState.Features.Routing;
   using Microsoft.Extensions.Logging;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
 
   /// <summary>
   /// The portion of the store that is only needed to support
@@ -39,7 +39,7 @@
         throw new ArgumentException("aJsonString was null or white space", nameof(aJsonString));
 
       Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
-      Dictionary<string, object> newStates = JsonSerializer.Parse<Dictionary<string, object>>(aJsonString);
+      Dictionary<string, object> newStates = JsonSerializer.Deserialize<Dictionary<string, object>>(aJsonString);
       Logger.LogDebug($"newStates.Count: {newStates.Count}");
       foreach (KeyValuePair<string, object> keyValuePair in newStates)
       {
@@ -57,7 +57,7 @@
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
 
 //      object newStateKeyValuePairs = JsonSerializer.Parse<object>(aKeyValuePair.Value.ToString());
-      Dictionary<string, object> newStateKeyValuePairs = JsonSerializer.Parse<Dictionary<string, object>>(aKeyValuePair.Value.ToString());
+      Dictionary<string, object> newStateKeyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(aKeyValuePair.Value.ToString());
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)

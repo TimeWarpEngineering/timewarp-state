@@ -6,7 +6,8 @@
   using System.Threading.Tasks;
   using BlazorState;
   using TestApp.Shared.Features.WeatherForecast;
-  using System.Text.Json.Serialization;
+  using System.Text.Json;
+  using Microsoft.AspNetCore.Components;
 
   internal partial class WeatherForecastsState
   {
@@ -16,7 +17,7 @@
 
       public FetchWeatherForecastsHandler
       (
-        IStore aStore, 
+        IStore aStore,
         HttpClient aHttpClient,
         JsonSerializerOptions aJsonSerializerOptions
       ) : base(aStore)
@@ -35,11 +36,7 @@
         using HttpResponseMessage httpResponseMessage = await HttpClient.GetAsync(GetWeatherForecastsRequest.Route);
         string content = await httpResponseMessage.Content.ReadAsStringAsync();
         GetWeatherForecastsResponse getWeatherForecastsResponse =
-          JsonSerializer.Parse<GetWeatherForecastsResponse>(content, JsonSerializerOptions);
-        // TODO: change back in preview 7 if 
-        // https://github.com/aspnet/AspNetCore/issues/11144 is fixed
-        //await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>
-        //(GetWeatherForecastsRequest.Route);
+          await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>(GetWeatherForecastsRequest.Route);
         List<WeatherForecastDto> weatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
         WeatherForecastsState._WeatherForecasts = weatherForecasts;
         return WeatherForecastsState;
