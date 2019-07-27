@@ -23,16 +23,20 @@
     <WebpackInputs Remove="src\DotNet.ts" />
   </ItemGroup>
 
-  <Target Name="EnsureNpmRestored" Condition="!Exists('node_modules')">
+  <Target Name="EnsureNpmRestored">
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
     <Exec Command="npm install" />
   </Target>
 
-  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="dist\blazorstate.js" DependsOnTargets="EnsureNpmRestored">
+  <PropertyGroup>
+    <JavascriptOutputFile>blazorstate.js</JavascriptOutputFile>
+  </PropertyGroup>
+  
+  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="dist\$(JavascriptOutputFile)" DependsOnTargets="EnsureNpmRestored">
     <RemoveDir Directories="dist" />
     <Exec Command="npm run build" />
     <ItemGroup>
-      <EmbeddedResource Include="dist\**\*.js" LogicalName="blazor:js:%(RecursiveDir)%(Filename)%(Extension)" />
+      <EmbeddedResource Include="dist\$(JavascriptOutputFile)" LogicalName="blazor:js:$(JavascriptOutputFile)" />
     </ItemGroup>
   </Target>
 </Project>
