@@ -19,10 +19,10 @@ steps:
 - script: echo Build.SourceVersion $(Build.SourceVersion)
 - script: echo Build.SourceVersion $(BuildConfiguration)
 
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: source/BlazorState.Js
+#- task: Npm@1
+#  inputs:
+#    command: 'install'
+#    workingDir: source/BlazorState.Js
 
 - task: DotNetCoreCLI@2
   displayName: Build BlazorState
@@ -49,7 +49,7 @@ steps:
   continueOnError: false
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
+    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
     projects: "**/*Tests/*.csproj"
 
 - task: reportgenerator@4
