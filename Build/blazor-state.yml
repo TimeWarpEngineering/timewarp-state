@@ -37,14 +37,40 @@ steps:
     ArtifactName: Version
     publishLocation: Container
 
+# Delete files
+# Delete folders, or files matching a pattern
+#- task: DeleteFiles@1
+#  inputs: 
+#    sourceFolder: source/BlazorState.Js/bin
+#    contents: \*
+
 - task: DotNetCoreCLI@2
   displayName: Run all Tests in the repo gather coverage data
   continueOnError: false
   inputs:
     command: test
-    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
     projects: "**/*Tests/*.csproj"
+    nobuild: true
 
+- task: reportgenerator@4
+  displayName: ReportGenerator
+  inputs:
+    reports: '$(Build.SourcesDirectory)/test/**/coverage.cobertura.xml'
+    targetdir: $(Build.SourcesDirectory)/CodeCoverage
+    reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
+    historydir: $(Build.SourcesDirectory)/CodeCoverage/History
+    assemblyfilters: '+BlazorState'
+
+# Publish the code coverage result (summary and web site)
+# The summary allows to view the coverage percentage in the summary tab
+# The web site allows to view which lines are covered directly in Azure Pipeline
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
+    reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
 
 # Upload coverage to codecov.io
 # - script: |
