@@ -22,13 +22,4 @@
     <ProjectReference Include="..\TestApp.Shared\TestApp.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <BlazorStateDistFiles Include="..\..\..\source\BlazorState.Js\dist\blazorstate.js" />
-  </ItemGroup>
-
-  <Target Name="CopyFiles" AfterTargets="PostBuildEvent">
-    <Copy SourceFiles="@(BlazorStateDistFiles)" DestinationFolder="..\TestApp.Client\wwwroot">
-      <Output TaskParameter="CopiedFiles" ItemName="SuccessfullyCopiedFiles" />
-    </Copy>
-  </Target>
 </Project>
