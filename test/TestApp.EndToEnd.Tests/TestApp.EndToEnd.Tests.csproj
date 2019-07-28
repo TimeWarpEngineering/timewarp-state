@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="2.6.3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <PackageReference Include="Selenium.Support" Version="$(SeleniumSupportVersion)" />
     <PackageReference Include="Selenium.WebDriver" Version="$(SeleniumSupportVersion)" />

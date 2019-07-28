@@ -49,16 +49,18 @@ steps:
   continueOnError: false
   inputs:
     command: test
-    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
     projects: "**/*Tests/*.csproj"
+    nobuild: true
 
-- task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+- task: reportgenerator@4
   displayName: ReportGenerator
   inputs:
-    reports: 'src\target\reports\coverage\coverage.opencover.xml'
-    targetdir: 'src\target\reports\coverage'
+    reports: '$(Build.SourcesDirectory)/test/**/coverage.cobertura.xml'
+    targetdir: $(Build.SourcesDirectory)/CodeCoverage
     reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
-    assemblyfilters: '-xunit*'
+    historydir: $(Build.SourcesDirectory)/CodeCoverage/History
+    assemblyfilters: '+BlazorState'
 
 # Publish the code coverage result (summary and web site)
 # The summary allows to view the coverage percentage in the summary tab
@@ -69,17 +71,6 @@ steps:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
     reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
-
-# Publish code coverage results
-# Publish Cobertura or JaCoCo code coverage results from a build
-- task: PublishCodeCoverageResults@1
-  inputs:
-    #codeCoverageTool: 'JaCoCo' # Options: cobertura, jaCoCo
-    summaryFileLocation: 
-    #pathToSources: # Optional
-    #reportDirectory: # Optional
-    #additionalCodeCoverageFiles: # Optional
-    #failIfCoverageEmpty: false # Optional
 
 # Upload coverage to codecov.io
 # - script: |
