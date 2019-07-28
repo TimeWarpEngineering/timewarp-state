@@ -49,9 +49,8 @@ steps:
   continueOnError: false
   inputs:
     command: test
-    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
+    arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
     projects: "**/*Tests/*.csproj"
-    nobuild: true
 
 - task: reportgenerator@4
   displayName: ReportGenerator
