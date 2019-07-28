@@ -41,7 +41,7 @@
     <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.1.11</BlazorExtensionsLoggingVersion>
     <FixieVersion>2.1.1</FixieVersion>
-    <FixieConsoleVersion>2.0.4</FixieConsoleVersion>
+    <FixieConsoleVersion>2.1.1</FixieConsoleVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>7.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>7.0.0</MediatrVersion>
     <MoqVersion>4.12.0</MoqVersion>
