@@ -28,6 +28,7 @@ steps:
   displayName: Build BlazorState
   inputs:
     command: build
+    arguments: '-maxcpucount:1'
     projects: 'source/BlazorState/BlazorState.csproj'
 
 - task: PublishBuildArtifacts@1
@@ -39,17 +40,17 @@ steps:
 
 # Delete files
 # Delete folders, or files matching a pattern
-- task: DeleteFiles@1
-  inputs: 
-    sourceFolder: source/BlazorState.Js/bin
-    contents: \*
+#- task: DeleteFiles@1
+#  inputs: 
+#    sourceFolder: $(Build.SourcesDirectory)/source/BlazorState.Js/bin
+#    contents: \*
 
 - task: DotNetCoreCLI@2
   displayName: Run all Tests in the repo gather coverage data
   continueOnError: false
   inputs:
     command: test
-    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
+    arguments: '-maxcpucount:1 /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
     projects: "**/*Tests/*.csproj"
 
 - task: reportgenerator@4
