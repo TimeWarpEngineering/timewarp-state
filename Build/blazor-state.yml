@@ -49,7 +49,7 @@ steps:
   continueOnError: false
   inputs:
     command: test
-    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
+#    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
     projects: "**/*Tests/*.csproj"
 
 - task: reportgenerator@4
