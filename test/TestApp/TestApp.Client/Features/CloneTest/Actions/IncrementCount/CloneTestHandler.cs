@@ -1,6 +1,5 @@
 ﻿namespace TestApp.Client.Features.CloneTest
 {
-  using System;
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
