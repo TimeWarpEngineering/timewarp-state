@@ -11,6 +11,7 @@
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.EventStream;
   using TestApp.Client.Features.WeatherForecast;
+  using TestApp.Client.Features.CloneTest;
 
   /// <summary>
   /// A known starting state(baseline) for all tests.
@@ -56,9 +57,11 @@
       );
 
       aServiceCollection.AddTransient<ApplicationState>();
+      aServiceCollection.AddTransient<CloneTestState>();
       aServiceCollection.AddTransient<CounterState>();
       aServiceCollection.AddTransient<EventStreamState>();
       aServiceCollection.AddTransient<WeatherForecastsState>();
+
 
     }
   }

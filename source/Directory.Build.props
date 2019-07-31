@@ -18,6 +18,7 @@
     <VersionSuffix>$(PreReleaseLabel)-$(CurrentDate)</VersionSuffix>
     <PackageVersion>$(VersionPrefix)-$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
+  <!-- End Versioning properties -->
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>

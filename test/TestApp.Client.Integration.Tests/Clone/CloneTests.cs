@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.WeatherForecast
+﻿namespace TestApp.Client.Integration.Tests.Clone
 {
   using System;
   using BlazorState;
@@ -9,47 +9,57 @@
   using TestApp.Client.Features.WeatherForecast;
   using TestApp.Shared.Features.WeatherForecast;
   using AnyClone;
+  using System.Linq;
 
-  internal class WeatherForecastStateCloneTests
+  public class TestState
   {
-    public WeatherForecastStateCloneTests(TestFixture aTestFixture)
+    public TestState()
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
-      IStore store = serviceProvider.GetService<IStore>();
-      WeatherForecastsState = store.GetState<WeatherForecastsState>();
+      // Create an array of strings to sort.
+      string[] fruits = { "apricot", "orange", "banana", "mango", "apple", "grape", "strawberry" };
+
+      // Sort the strings first by their length and then alphabetically
+      // by passing the identity selector function.
+      SortedFruits = fruits.OrderBy(aFruit => aFruit.Length).ThenBy(aFruit => aFruit);
     }
+    
+    public IOrderedEnumerable<string> SortedFruits { get; set; }
+    //public IOrderedEnumerable<KeyValuePair<string, int>> SomeOrderedData { get; set; }
+  }
 
-    private WeatherForecastsState WeatherForecastsState { get; set; }
+  //public partial class SomeState
+  //{
+  //  public class SomeHandler : RequestHandler<SomeRequest, SomeState>
+  //  {
+  //    public SomeHandler(IStore store) : base(store) { }
 
-    public void ShouldClone()
+  //    public SomeState SomeState => Store.GetState<SomeState>();
+
+  //    public override async Task<SomeState> Handle(SomeRequest req, CancellationToken token)
+  //    {
+  //      var dataSource = ...
+  //             SomeState.SomeData = from entry in dataSource orderby entry.Key select entry;
+  //      return SomeState;
+  //    }
+  //  }
+  //}
+
+
+  internal class CloneTests
+  {
+    public CloneTests(TestFixture aTestFixture)    {    }  
+
+    public void ShouldCloneTestState()
     {
-      //Arrange
-      var weatherForecasts = new List<WeatherForecastDto> {
-        new WeatherForecastDto
-        (
-          aDate: DateTime.MinValue,
-          aSummary: "Summary 1",
-          aTemperatureC: 24
-        ),
-        new WeatherForecastDto
-        (
-          aDate: DateTime.MinValue,
-          aSummary: "Summary 1",
-          aTemperatureC: 24
-        ),
-      };
-      WeatherForecastsState.Initialize(weatherForecasts);
-      
-      //Act
-      var clone = WeatherForecastsState.Clone() as WeatherForecastsState;
 
-      //Assert
-      WeatherForecastsState.ShouldNotBeSameAs(clone);
-      WeatherForecastsState.WeatherForecasts.Count.ShouldBe(clone.WeatherForecasts.Count);
-      WeatherForecastsState.Guid.ShouldNotBe(clone.Guid);
-      WeatherForecastsState.WeatherForecasts[0].TemperatureC.ShouldBe(clone.WeatherForecasts[0].TemperatureC);
-      WeatherForecastsState.WeatherForecasts[0].ShouldNotBe(clone.WeatherForecasts[0]);
+      // Arrange
+      var testState = new TestState();
+
+      // Act
+      TestState clone = testState.Clone();
+
+      // Assert
+      clone.SortedFruits.Count().ShouldBe(7);
     }
-
   }
 }
