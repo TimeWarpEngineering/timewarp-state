@@ -44,7 +44,7 @@
         Logger.LogDebug($"{className}: Clone State of type {responseType}");
         originalState = Store.GetState<TResponse>();
         Logger.LogDebug($"{className}: originalState.Guid:{((IState)originalState).Guid}");
-        TResponse newState = originalState.Clone();
+        TResponse newState = (originalState is ICloneable clonable) ? (TResponse)clonable.Clone() : originalState.Clone();
         Logger.LogDebug($"{className}: newState.Guid:{((IState)newState).Guid}");
         Store.SetState(newState as IState);
       }

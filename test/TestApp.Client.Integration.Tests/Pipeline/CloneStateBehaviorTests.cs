@@ -7,6 +7,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using TestApp.Client.Features.Counter;
+  using TestApp.Client.Features.CloneTest;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
   internal class CloneStateBehaviorTests
@@ -20,6 +21,7 @@
     }
 
     private CounterState CounterState { get; set; }
+    private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
     private IMediator Mediator { get; }
     private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
@@ -64,5 +66,23 @@
       CounterState = Store.GetState<CounterState>();
       CounterState.Guid.Equals(preActionGuid);
     }
+
+    public async Task ShouldCloneStateUsingOverridenClone()
+    {
+      //Arrange
+      CloneTestState.Initialize(aCount: 15);
+      Guid preActionGuid = CloneTestState.Guid;
+
+      // Create request
+      var cloneTestAction = new CloneTestAction { };
+      //Act
+      // Send Request
+      _ = await Mediator.Send(cloneTestAction);
+
+      //Assert
+      CloneTestState.Guid.ShouldNotBe(preActionGuid);
+      CloneTestState.Count.ShouldBe(42);
+    }
+
   }
 }
