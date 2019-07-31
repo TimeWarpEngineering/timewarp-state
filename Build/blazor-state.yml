@@ -7,12 +7,12 @@ trigger:
   - source/BlazorState/*
   - source/BlazorState.Js/*
 
-# no PR builds
 pr:
-- master
-- releases/*
+ branches:
+   include:
+     - master
 
-queue:
+pool:
   name: TimeWarpEnterprises
 
 steps:
