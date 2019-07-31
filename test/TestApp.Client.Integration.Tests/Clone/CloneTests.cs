@@ -10,14 +10,11 @@
     public TestState()
     {
       // Create an array of strings to sort.
-      string[] fruits = { "apricot", "orange", "banana", "mango", "apple", "grape", "strawberry" };
-
-      // Sort the strings first by their length and then alphabetically
-      // by passing the identity selector function.
-      SortedFruits = fruits.OrderBy(aFruit => aFruit.Length).ThenBy(aFruit => aFruit);
+      Fruits = new string[] { "apricot", "orange", "banana", "mango", "apple", "grape", "strawberry" };
     }
-    
-    public IOrderedEnumerable<string> SortedFruits { get; set; }
+
+    public string[] Fruits { get; set; }
+    public IOrderedEnumerable<string> SortedFruits => Fruits.OrderBy(aFruit => aFruit.Length).ThenBy(aFruit => aFruit);
   }
 
   internal class CloneTests
