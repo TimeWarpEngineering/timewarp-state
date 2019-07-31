@@ -10,7 +10,7 @@
   {
     public override CloneTestState Hydrate(IDictionary<string, object> aKeyValuePairs)
     {
-      var counterState = new CloneTestState()
+      var counterState = new CloneTestState
       {
         Count = Convert.ToInt32(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
         Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
