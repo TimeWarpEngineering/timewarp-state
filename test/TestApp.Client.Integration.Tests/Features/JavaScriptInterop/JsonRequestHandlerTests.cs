@@ -17,9 +17,11 @@
       JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
       Store = ServiceProvider.GetService<IStore>();
       CounterState = Store.GetState<CounterState>();
+      JsonSerializerOptions = ServiceProvider.GetService<JsonSerializerOptions>();
     }
 
     private CounterState CounterState { get; set; }
+    private JsonSerializerOptions JsonSerializerOptions { get; }
     private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
     private JsonRequestHandler JsonRequestHandler { get; }
@@ -35,7 +37,7 @@
         Amount = 5
       };
 
-      string requestAsJson = JsonSerializer.Serialize(incrementCounterAction);
+      string requestAsJson = JsonSerializer.Serialize(incrementCounterAction, JsonSerializerOptions);
       int preActionCount = CounterState.Count;
 
       //Act
