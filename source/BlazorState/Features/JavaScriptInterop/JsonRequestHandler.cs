@@ -12,20 +12,25 @@
 
   public class JsonRequestHandler
   {
-    public JsonRequestHandler(
+    public JsonRequestHandler
+    (
       ILogger<JsonRequestHandler> aLogger,
       IMediator aMediator,
-      IJSRuntime aJSRuntime)
+      IJSRuntime aJSRuntime,
+      JsonSerializerOptions aJsonSerializerOptions
+    )
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
       JSRuntime = aJSRuntime;
+      JsonSerializerOptions = aJsonSerializerOptions;
     }
 
     private ILogger Logger { get; }
     private IMediator Mediator { get; }
     private IJSRuntime JSRuntime { get; }
+    private JsonSerializerOptions JsonSerializerOptions { get; }
 
     /// <summary>
     /// This will handle the Javascript interop
@@ -45,7 +50,7 @@
       else
         Logger.LogDebug($"{GetType().Name}: Type ({aRequestTypeAssemblyQualifiedName})  was found");
 
-      object instance = JsonSerializer.Deserialize(aRequestAsJson, requestType);
+      object instance = JsonSerializer.Deserialize(aRequestAsJson, requestType, JsonSerializerOptions);
 
       _ = await SendToMediator(requestType, instance);
     }
