@@ -25,6 +25,8 @@
         ComponentId == aSubscription.ComponentId &&
         EqualityComparer<WeakReference<BlazorStateComponent>>.Default.Equals(BlazorStateComponentReference, aSubscription.BlazorStateComponentReference);
 
+      public override bool Equals(object aObject) => this.Equals((Subscription)aObject);
+      public override int GetHashCode() => ComponentId.GetHashCode();
       public static bool operator ==(Subscription aLeftSubscription, Subscription aRightSubscription) => aLeftSubscription.Equals(aRightSubscription);
       public static bool operator !=(Subscription aLeftSubscription, Subscription aRightSubscription) => !(aLeftSubscription == aRightSubscription);
     }
