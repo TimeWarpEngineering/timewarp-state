@@ -45,13 +45,13 @@ steps:
 #    sourceFolder: $(Build.SourcesDirectory)/source/BlazorState.Js/bin
 #    contents: \*
 
-- task: DotNetCoreCLI@2
-  displayName: Run all Tests in the repo gather coverage data
-  continueOnError: false
-  inputs:
-    command: test
+#- task: DotNetCoreCLI@2
+#  displayName: Run all Tests in the repo gather coverage data
+#  continueOnError: false
+#  inputs:
+#    command: test
 #    arguments: '-maxcpucount:1 /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
-    projects: "**/*Tests/*.csproj"
+#    projects: "**/*Tests/*.csproj"
 
 #- task: reportgenerator@4
 #  displayName: ReportGenerator
