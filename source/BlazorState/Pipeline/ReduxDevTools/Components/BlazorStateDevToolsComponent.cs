@@ -15,6 +15,6 @@
   public class BlazorStateDevToolsComponent : BlazorStateComponent,
     IDevToolsComponent
   {
-    protected override void OnInit() => Subscriptions.Add<IDevToolsComponent>(this);
+    protected override void OnInitialized() => Subscriptions.Add<IDevToolsComponent>(this);
   }
 }

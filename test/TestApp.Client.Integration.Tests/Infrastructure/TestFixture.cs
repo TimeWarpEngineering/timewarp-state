@@ -1,16 +1,8 @@
 ﻿namespace TestApp.Client.Integration.Tests.Infrastructure
 {
-  using System;
-  using System.Reflection;
-  using TestApp.Client;
-  using BlazorState;
   using Microsoft.AspNetCore.Blazor.Hosting;
   using Microsoft.Extensions.DependencyInjection;
-  using System.Text.Json;
-  using TestApp.Client.Features.Application;
-  using TestApp.Client.Features.Counter;
-  using TestApp.Client.Features.EventStream;
-  using TestApp.Client.Features.WeatherForecast;
+  using System;
   using TestApp.Client.Features.CloneTest;
 
   /// <summary>
@@ -19,6 +11,18 @@
   /// </summary>
   public class TestFixture//: IMediatorFixture, IStoreFixture, IServiceProviderFixture
   {
+    /// <summary>
+    /// This is the ServiceProvider that will be used by the Client
+    /// </summary>
+    public IServiceProvider ServiceProvider => WebAssemblyHostBuilder.Build().Services;
+
+    /// <summary>
+    /// This is used to host the Client Side `TesatApp.Client`
+    /// </summary>
+    public IWebAssemblyHostBuilder WebAssemblyHostBuilder { get; }
+
+    private BlazorStateTestServer BlazorStateTestServer { get; }
+
     public TestFixture(BlazorStateTestServer aBlazorStateTestServer)
     {
       BlazorStateTestServer = aBlazorStateTestServer;
@@ -26,43 +30,17 @@
         .ConfigureServices(ConfigureServices);
     }
 
-    public IWebAssemblyHostBuilder WebAssemblyHostBuilder { get; }
-
-    /// <summary>
-    /// This is the ServiceProvider that will be used by the Client
-    /// </summary>
-    public IServiceProvider ServiceProvider => WebAssemblyHostBuilder.Build().Services;
-
-    private BlazorStateTestServer BlazorStateTestServer { get; }
-
     /// <summary>
     /// Special configuration for Testing with the Test Server
     /// </summary>
     /// <param name="aServiceCollection"></param>
     private void ConfigureServices(IServiceCollection aServiceCollection)
     {
+      // The client needs to use the special HttpClient provided by the test Server.
       aServiceCollection.AddSingleton(BlazorStateTestServer.CreateClient());
-      aServiceCollection.AddBlazorState
-      (
-        aOptions => aOptions.Assemblies =
-        new Assembly[] { typeof(Startup).GetTypeInfo().Assembly }
-      );
 
-      aServiceCollection.AddSingleton
-      (
-        new JsonSerializerOptions
-        {
-          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        }
-      );
-
-      aServiceCollection.AddTransient<ApplicationState>();
-      aServiceCollection.AddTransient<CloneTestState>();
-      aServiceCollection.AddTransient<CounterState>();
-      aServiceCollection.AddTransient<EventStreamState>();
-      aServiceCollection.AddTransient<WeatherForecastsState>();
-
-
+      // Use the same configuration that we have in `TestApp.Client`
+      new Client.Startup().ConfigureServices(aServiceCollection);
     }
   }
 }
