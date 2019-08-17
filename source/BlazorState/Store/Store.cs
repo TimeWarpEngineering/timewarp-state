@@ -1,32 +1,18 @@
 ﻿namespace BlazorState
 {
+  using Microsoft.Extensions.Logging;
   using System;
   using System.Collections.Generic;
-  using Microsoft.Extensions.Logging;
-  using Microsoft.Extensions.DependencyInjection.Extensions;
-  using Microsoft.Extensions.DependencyInjection;
+  using System.Text.Json;
 
   /// <summary>
   /// </summary>
   internal partial class Store : IStore
   {
+    private readonly JsonSerializerOptions JsonSerializerOptions;
+    private readonly ILogger Logger;
     private readonly IServiceProvider ServiceProvider;
-
-    public Store
-    (
-      ILogger<Store> aLogger,
-      IServiceProvider aServiceProvider
-    )
-    {
-      Logger = aLogger;
-      ServiceProvider = aServiceProvider;
-      
-      using (Logger.BeginScope(new Dictionary<string, object> { [nameof(Guid)] = Guid }))
-      {
-        Logger.LogInformation($"{GetType().Name}: constructor: {nameof(Guid)}:{Guid}");
-        States = new Dictionary<string, IState>();
-      }
-    }
+    private readonly IDictionary<string, IState> States;
 
     /// <summary>
     /// Unique Guid for the Store.
@@ -34,8 +20,23 @@
     /// <remarks>Useful when logging </remarks>
     public Guid Guid { get; } = Guid.NewGuid();
 
-    private ILogger Logger { get; }
-    private IDictionary<string, IState> States { get; }
+    public Store
+    (
+      ILogger<Store> aLogger,
+      IServiceProvider aServiceProvider,
+      JsonSerializerOptions aJsonSerializerOptions
+    )
+    {
+      Logger = aLogger;
+      ServiceProvider = aServiceProvider;
+      JsonSerializerOptions = aJsonSerializerOptions;
+
+      using (Logger.BeginScope(new Dictionary<string, object> { [nameof(Guid)] = Guid }))
+      {
+        Logger.LogInformation($"{GetType().Name}: constructor: {nameof(Guid)}:{Guid}");
+        States = new Dictionary<string, IState>();
+      }
+    }
 
     /// <summary>
     /// Get the State of the particular type
@@ -73,7 +74,7 @@
         if (!States.TryGetValue(typeName, out IState state))
         {
           Logger.LogDebug($"{GetType().Name}: Creating State of type: {typeName}");
-          state = (IState) ServiceProvider.GetService(aType);
+          state = (IState)ServiceProvider.GetService(aType);
           if (state == null) throw new NullReferenceException("state is null");
           //state = (IState)Activator.CreateInstance(aType);
           States.Add(typeName, state);
@@ -90,7 +91,5 @@
       Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{aTypeName}: Guid:{newState.Guid}");
       States[aTypeName] = newState;
     }
-
-
   }
 }
