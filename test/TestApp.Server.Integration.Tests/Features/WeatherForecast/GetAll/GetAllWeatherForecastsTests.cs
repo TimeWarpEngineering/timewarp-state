@@ -1,23 +1,24 @@
 ﻿namespace TestApp.Server.Integration.Tests.Features.WeatherForecast.GetAll
 {
-  using System;
-  using System.Threading.Tasks;
-  using TestApp.Shared.Features.WeatherForecast;
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
+  using System;
+  using System.Threading.Tasks;
+  using TestApp.Server.Integration.Tests.Infrastructure;
+  using TestApp.Shared.Features.WeatherForecast;
 
-  class GetAllWeatherForecastsTests
+  internal class GetAllWeatherForecastsTests
   {
+    private IMediator Mediator { get; }
+
+    private IServiceProvider ServiceProvider { get; }
 
     public GetAllWeatherForecastsTests(TestFixture aTestFixture)
     {
       ServiceProvider = aTestFixture.ServiceProvider;
       Mediator = ServiceProvider.GetService<IMediator>();
     }
-
-    private IServiceProvider ServiceProvider { get; }
-    private IMediator Mediator { get; }
 
     public async Task ShouldGetAllWeatherForecasts()
     {
@@ -30,7 +31,6 @@
 
       //Assert
       getWeatherForecastsResponse.WeatherForecasts.Count.ShouldBe(5);
-
     }
   }
 }
