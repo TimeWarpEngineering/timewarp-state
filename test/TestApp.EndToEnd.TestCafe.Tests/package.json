@@ -1,0 +1,9 @@
+{
+  "name": "test-app.end-to-end.test-cafe.tests",
+  "scripts": {
+    "test": "testcafe edge tests/"
+  },
+  "devDependencies": {
+    "testcafe": "^1.4.1"
+  }
+}

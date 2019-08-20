@@ -30,11 +30,10 @@
   <PropertyGroup Label="Package Versions">
     <BlazorPreviewVersion>preview8.19405.7</BlazorPreviewVersion>
     <MicrosoftAspNetCoreVersion>3.0.0-preview8.19405.7</MicrosoftAspNetCoreVersion>
-    <MicrosoftAspNetCoreBlazorHttpClientVersion>3.0.0-preview8.19405.7</MicrosoftAspNetCoreBlazorHttpClientVersion>
-    <MicrosoftAspNetCoreBlazorServerVersion>3.0.0-preview8.19405.7</MicrosoftAspNetCoreBlazorServerVersion>
+    <MicrosoftAspNetCoreBlazorHttpClientVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreBlazorHttpClientVersion>
+    <MicrosoftAspNetCoreBlazorServerVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreBlazorServerVersion>
     <MicrosoftAspNetCoreBlazorVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreBlazorVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
-    <MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreMvcNewtonsoftJsonVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
     <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.0.0-preview8.19405.4</MicrosoftExtensionsFileProvidersEmbeddedVersion>
     <MicrosoftExtensionsLoggingAbstractionsVersion>3.0.0-preview8.19405.4</MicrosoftExtensionsLoggingAbstractionsVersion>
