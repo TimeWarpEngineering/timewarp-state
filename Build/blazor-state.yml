@@ -42,7 +42,7 @@ steps:
     projects: '**/*.Integration.Tests/*.csproj'
 
 - script: npm test
-  workingDir: '$(Build.SourcesDirectory)/test/TestApp.EndToEnd.TestCafe.Tests'
+  workingDirectory: '$(Build.SourcesDirectory)/test/TestApp.EndToEnd.TestCafe.Tests'
   displayName: Run TestCafe End to End Tests.
 
 - task: reportgenerator@4
