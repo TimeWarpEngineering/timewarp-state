@@ -1,7 +1,7 @@
-{
+  {
   "name": "test-app.end-to-end.test-cafe.tests",
   "scripts": {
-    "server": "dotnet run --no-build --project ../TestApp/TestApp.Server/TestApp.Server.csproj  --server.urls https://0.0.0.0:5011",
+    "server": "dotnet run --no-build --project ../TestApp/TestApp.Server/TestApp.Server.csproj  --urls https://localhost:5011",
     "test": "testcafe edge tests/ --app \"npm run server\""
 
   },
