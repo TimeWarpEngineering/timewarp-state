@@ -1,7 +1,9 @@
 {
   "name": "test-app.end-to-end.test-cafe.tests",
   "scripts": {
-    "test": "testcafe edge tests/"
+    "server": "dotnet run --no-build --project ../TestApp/TestApp.Server/TestApp.Server.csproj  --server.urls https://0.0.0.0:5011",
+    "test": "testcafe edge tests/ --app \"npm run server\""
+
   },
   "devDependencies": {
     "testcafe": "^1.4.1"
