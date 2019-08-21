@@ -19,7 +19,7 @@ Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/blazor-sta
 Blazor-State is available as a [Nuget Package](https://www.nuget.org/packages/Blazor-State/)
 
 ```console
-dotnet add package Blazor-State
+dotnet add package Blazor-State --version 1.0.0-preview8.*
 ```
 
 ## Getting Started
