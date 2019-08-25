@@ -24,14 +24,15 @@
       private HttpClient HttpClient { get; }
       private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 
-      public override async Task<WeatherForecastsState> Handle(
+      public override async Task<WeatherForecastsState> Handle
+      (
         FetchWeatherForecastsAction aFetchWeatherForecastsRequest,
-        CancellationToken aCancellationToken)
+        CancellationToken aCancellationToken
+      )
       {
-        using HttpResponseMessage httpResponseMessage = await HttpClient.GetAsync(GetWeatherForecastsRequest.Route);
-        string content = await httpResponseMessage.Content.ReadAsStringAsync();
+        var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
         GetWeatherForecastsResponse getWeatherForecastsResponse =
-          await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>(GetWeatherForecastsRequest.Route);
+          await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>(getWeatherForecastsRequest.RouteWithQueryString);
         List<WeatherForecastDto> weatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
         WeatherForecastsState._WeatherForecasts = weatherForecasts;
         return WeatherForecastsState;

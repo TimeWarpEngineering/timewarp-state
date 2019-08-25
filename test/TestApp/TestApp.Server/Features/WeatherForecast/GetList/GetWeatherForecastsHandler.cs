@@ -26,22 +26,22 @@
 
     public async Task<GetWeatherForecastsResponse> Handle
     (
-      GetWeatherForecastsRequest aRequest,
+      GetWeatherForecastsRequest aGetWeatherForecastsRequest,
       CancellationToken aCancellationToken
     )
     {
-      var response = new GetWeatherForecastsResponse(aRequest.Id);
+      var response = new GetWeatherForecastsResponse(aGetWeatherForecastsRequest.Id);
       var random = new Random();
       var weatherForecasts = new List<WeatherForecastDto>();
-      Enumerable.Range(1, 5).ToList().ForEach
+      Enumerable.Range(1, aGetWeatherForecastsRequest.Days).ToList().ForEach
       (
         aIndex => response.WeatherForecasts.Add
         (
           new WeatherForecastDto
           (
             aDate: DateTime.Now.AddDays(aIndex),
-            aTemperatureC: random.Next(-20, 55),
-            aSummary: Summaries[random.Next(Summaries.Length)]
+            aSummary: Summaries[random.Next(Summaries.Length)],
+            aTemperatureC: random.Next(-20, 55)
           )
         )
       );

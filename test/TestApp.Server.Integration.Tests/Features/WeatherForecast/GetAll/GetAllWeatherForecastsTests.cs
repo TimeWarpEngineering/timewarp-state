@@ -10,9 +10,9 @@
 
   internal class GetAllWeatherForecastsTests
   {
-    private IMediator Mediator { get; }
+    private readonly IMediator Mediator;
 
-    private IServiceProvider ServiceProvider { get; }
+    private readonly IServiceProvider ServiceProvider;
 
     public GetAllWeatherForecastsTests(TestFixture aTestFixture)
     {
@@ -23,14 +23,14 @@
     public async Task ShouldGetAllWeatherForecasts()
     {
       // Arrange
-      var getWeatherForecastsRequest = new GetWeatherForecastsRequest();
+      var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
 
       //Act
       GetWeatherForecastsResponse getWeatherForecastsResponse =
         await Mediator.Send(getWeatherForecastsRequest);
 
       //Assert
-      getWeatherForecastsResponse.WeatherForecasts.Count.ShouldBe(5);
+      getWeatherForecastsResponse.WeatherForecasts.Count.ShouldBe(10);
     }
   }
 }
