@@ -8,6 +8,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Hosting;
   using System.Linq;
+  using System.Net.Mime;
   using System.Reflection;
 
   public class Startup
@@ -48,20 +49,12 @@
       aServiceCollection.AddResponseCompression
       (
         aResponseCompressionOptions =>
-        aResponseCompressionOptions.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat
-        (
-          new[] { "application/octet-stream" }
-        )
+          aResponseCompressionOptions.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat
+          (
+            new[] { MediaTypeNames.Application.Octet }
+          )
       );
 
-      aServiceCollection.AddBlazorState
-      (
-        (aOptions) => aOptions.Assemblies =
-          new Assembly[]
-          {
-            typeof(Client.Startup).GetTypeInfo().Assembly
-          }
-      );
 
       new Client.Startup().ConfigureServices(aServiceCollection);
 
