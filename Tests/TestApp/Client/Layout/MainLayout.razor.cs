@@ -3,7 +3,7 @@
   using BlazorState.Services;
   using Microsoft.AspNetCore.Components;
 
-  public class MainLayoutModel : LayoutComponentBase
+  public class MainLayoutBase : LayoutComponentBase
   {
     [Inject] public BlazorHostingLocation BlazorHostingLocation { get; set; }
   }

@@ -2,7 +2,7 @@
 {
   using Microsoft.AspNetCore.Components;
 
-  public class SurveyPromptModel : ComponentBase
+  public class SurveyPromptBase : ComponentBase
   {
     [Parameter]
     public string Title { get; set; } // Demonstrates how a parent component can supply parameters

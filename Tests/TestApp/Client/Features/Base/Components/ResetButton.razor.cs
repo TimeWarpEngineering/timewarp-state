@@ -2,7 +2,7 @@
 {
   using TestApp.Client.Features.Application;
 
-  public class ResetButtonModel : BaseComponent
+  public class ResetButtonBase : BaseComponent
   {
     internal void ButtonClick() => Mediator.Send(new ResetStoreAction());
   }

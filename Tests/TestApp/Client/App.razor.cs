@@ -6,7 +6,7 @@
   using BlazorState.Features.Routing;
   using Microsoft.AspNetCore.Components;
 
-  public class AppModel : ComponentBase
+  public class AppBase : ComponentBase
   {
     [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }

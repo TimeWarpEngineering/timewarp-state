@@ -1,5 +1,5 @@
 ﻿import { BlazorState, } from './BlazorState';
-import { BlazorStateName, ReduxExtentionName, DevToolsName, ReduxDevToolsName } from './Constants';
+import { BlazorStateName, ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants';
 
 export class ReduxDevTools {
   IsEnabled: boolean;
@@ -39,7 +39,7 @@ export class ReduxDevTools {
   }
 
   GetExtension() {
-    const extension = window[ReduxExtentionName];
+    const extension = window[ReduxExtensionName];
 
     if (!extension) {
       console.log('Redux DevTools are not installed.');

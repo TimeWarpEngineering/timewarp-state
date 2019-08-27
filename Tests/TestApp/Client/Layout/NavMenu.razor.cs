@@ -2,7 +2,7 @@
 {
   using Microsoft.AspNetCore.Components;
 
-  public class NavMenuModel : ComponentBase
+  public class NavMenuBase : ComponentBase
   {
     protected bool CollapseNavMenu { get; set; }
 

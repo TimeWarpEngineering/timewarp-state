@@ -3,7 +3,7 @@
   using System.Collections.Generic;
   using TestApp.Client.Features.Base.Components;
 
-  public class EventStreamModel : BaseComponent
+  public class EventStreamBase : BaseComponent
   {
     public IReadOnlyList<string> Events => EventStreamState.Events;
   }
