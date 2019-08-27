@@ -1,0 +1,14 @@
+﻿@inherits MainLayoutBase
+
+<div class="sidebar">
+  <NavMenu />
+</div>
+<div class="main">
+  <div class="top-row px-4">
+    <BlazorLocation TestId="BlazorLocation"/>
+    <a href="https://blazor.net" target="_blank" class="ml-md-auto">About</a>
+  </div>
+  <div class="content px-4">
+    @Body
+  </div>
+</div>

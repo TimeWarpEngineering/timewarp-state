@@ -17,21 +17,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E5536454
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tools", "Tools\Source\Tools.csproj", "{4F2A89FC-EBD8-43F0-8C1E-4DDCEE0B5558}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Client", "test\TestApp\TestApp.Client\TestApp.Client.csproj", "{C98290C5-6C90-4A36-A561-E96FF367727C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Client", "Tests\TestApp\Client\TestApp.Client.csproj", "{C98290C5-6C90-4A36-A561-E96FF367727C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestApp", "TestApp", "{50D398DD-1384-4FF3-9415-E46F5DC2E79F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Shared", "test\TestApp\TestApp.Shared\TestApp.Shared.csproj", "{9C1235D1-6695-4A82-9FC3-3CA3257E5D7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Shared", "Tests\TestApp\Api\TestApp.Api.csproj", "{9C1235D1-6695-4A82-9FC3-3CA3257E5D7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Client.Integration.Tests", "test\TestApp.Client.Integration.Tests\TestApp.Client.Integration.Tests.csproj", "{9F7FD8F4-C4B2-4EB4-819B-0DAB95620C24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Client.Integration.Tests", "Tests\Client.Integration.Tests\TestApp.Client.Integration.Tests.csproj", "{9F7FD8F4-C4B2-4EB4-819B-0DAB95620C24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.EndToEnd.Tests", "test\TestApp.EndToEnd.Tests\TestApp.EndToEnd.Tests.csproj", "{31B84505-71FB-4D89-9840-EB0B33F5FB59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.EndToEnd.Tests", "Tests\EndToEnd.Selenium.Tests\TestApp.EndToEnd.Selenium.Tests.csproj", "{31B84505-71FB-4D89-9840-EB0B33F5FB59}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Server.Integration.Tests", "test\TestApp.Server.Integration.Tests\TestApp.Server.Integration.Tests.csproj", "{37FFCA3B-6533-4262-8913-1E62EC0034CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Server.Integration.Tests", "Tests\Server.Integration.Tests\TestApp.Server.Integration.Tests.csproj", "{37FFCA3B-6533-4262-8913-1E62EC0034CA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Server", "test\TestApp\TestApp.Server\TestApp.Server.csproj", "{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.Server", "Tests\TestApp\Server\TestApp.Server.csproj", "{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9}"
 EndProject
-Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "TestApp.EndToEnd.TestCafe.Tests", "test\TestApp.EndToEnd.TestCafe.Tests\TestApp.EndToEnd.TestCafe.Tests.njsproj", "{11067391-9DFE-4999-B217-122841C31A21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.EndToEnd.TestCafe.Tests", "Tests\EndToEnd.TestCafe.Tests\TestApp.EndToEnd.TestCafe.Tests.csproj", "{1F8DBDA6-780A-414E-8517-E96A1B9536E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +75,10 @@ Global
 		{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{11067391-9DFE-4999-B217-122841C31A21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11067391-9DFE-4999-B217-122841C31A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11067391-9DFE-4999-B217-122841C31A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11067391-9DFE-4999-B217-122841C31A21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -93,7 +93,7 @@ Global
 		{31B84505-71FB-4D89-9840-EB0B33F5FB59} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
 		{37FFCA3B-6533-4262-8913-1E62EC0034CA} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
 		{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9} = {50D398DD-1384-4FF3-9415-E46F5DC2E79F}
-		{11067391-9DFE-4999-B217-122841C31A21} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
+		{1F8DBDA6-780A-414E-8517-E96A1B9536E1} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}
