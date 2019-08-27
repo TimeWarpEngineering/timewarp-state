@@ -7,12 +7,8 @@ namespace AnyClone.Tests.TestObjects
     {
         public IDictionary<int, BasicObject> Collection { get; set; } = new Dictionary<int, BasicObject>();
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-
-        }
-        public override bool Equals(object obj)
+    public override int GetHashCode() => base.GetHashCode();
+    public override bool Equals(object obj)
         {
             var basicObject = (DictionaryObject)obj;
             return Equals(basicObject);

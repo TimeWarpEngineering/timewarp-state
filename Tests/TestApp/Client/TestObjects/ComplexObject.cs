@@ -48,10 +48,7 @@
       // this doesn't do anything
     }
 
-    public override int GetHashCode()
-    {
-      return base.GetHashCode();
-    }
+    public override int GetHashCode() => base.GetHashCode();
     public override bool Equals(object aObject)
     {
       var basicObject = (ComplexObject)aObject;

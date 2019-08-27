@@ -6,10 +6,7 @@ namespace AnyClone.Tests.TestObjects
   {
     public int[,,] Int3DArray { get; set; } = new int[2, 3, 3];
 
-    public override int GetHashCode()
-    {
-      return base.GetHashCode();
-    }
+    public override int GetHashCode() => base.GetHashCode();
 
     public override bool Equals(object obj)
     {
@@ -17,9 +14,6 @@ namespace AnyClone.Tests.TestObjects
       return Equals(basicObject);
     }
 
-    public bool Equals(MultiDimensional3dArrayObject other)
-    {
-      return Int3DArray.EnumerableEqual(other.Int3DArray);
-    }
+    public bool Equals(MultiDimensional3dArrayObject other) => Int3DArray.EnumerableEqual(other.Int3DArray);
   }
 }
