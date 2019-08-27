@@ -8,6 +8,6 @@
   [Route(GetWeatherForecastsRequest.Route)]
   public class GetWeatherForecastsController : BaseController<GetWeatherForecastsRequest, GetWeatherForecastsResponse>
   {
-    public async Task<IActionResult> Get(GetWeatherForecastsRequest aRequest) => await Send(aRequest);
+    public async Task<IActionResult> Process(GetWeatherForecastsRequest aRequest) => await Send(aRequest);
   }
 }
