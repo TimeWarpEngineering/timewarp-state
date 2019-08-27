@@ -12,11 +12,7 @@
   {
     public class FetchWeatherForecastsHandler : RequestHandler<FetchWeatherForecastsAction, WeatherForecastsState>
     {
-      public FetchWeatherForecastsHandler
-      (
-        IStore aStore,
-        HttpClient aHttpClient
-      ) : base(aStore)
+      public FetchWeatherForecastsHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
       {
         HttpClient = aHttpClient;
       }
@@ -32,9 +28,8 @@
       {
         var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
         GetWeatherForecastsResponse getWeatherForecastsResponse =
-          await HttpClient.GetJsonAsync<GetWeatherForecastsResponse>(getWeatherForecastsRequest.RouteWithQueryString);
-        List<WeatherForecastDto> weatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
-        WeatherForecastsState._WeatherForecasts = weatherForecasts;
+          await HttpClient.PostJsonAsync<GetWeatherForecastsResponse>(GetWeatherForecastsRequest.Route, getWeatherForecastsRequest);
+        WeatherForecastsState._WeatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
         return WeatherForecastsState;
       }
     }
