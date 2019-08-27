@@ -18,6 +18,7 @@
     protected virtual async Task<IActionResult> Send(TRequest aRequest)
     {
       TResponse response = await Mediator.Send(aRequest);
+
       return Ok(response);
     }
   }

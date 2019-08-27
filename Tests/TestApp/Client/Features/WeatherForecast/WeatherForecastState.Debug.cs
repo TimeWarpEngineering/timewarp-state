@@ -1,11 +1,11 @@
 ﻿namespace TestApp.Client.Features.WeatherForecast
 {
-  using System.Collections.Generic;
-  using System.Reflection;
   using BlazorState;
   using Microsoft.JSInterop;
-  using TestApp.Api.Features.WeatherForecast;
+  using System.Collections.Generic;
+  using System.Reflection;
   using System.Text.Json;
+  using TestApp.Api.Features.WeatherForecast;
 
   internal partial class WeatherForecastsState : State<WeatherForecastsState>
   {
@@ -15,7 +15,7 @@
 
       var newWeatherForecastsState = new WeatherForecastsState()
       {
-        _WeatherForecasts = JsonSerializer.Deserialize<List<WeatherForecastDto>>(json, new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
+        _WeatherForecasts = JsonSerializer.Deserialize<List<WeatherForecastDto>>(json, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
         Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
       };
 

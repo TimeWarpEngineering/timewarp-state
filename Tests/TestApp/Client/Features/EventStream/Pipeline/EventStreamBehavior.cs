@@ -16,9 +16,11 @@
   /// <remarks>To avoid infinite recursion don't add AddEvent to the event stream</remarks>
   public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
-    public EventStreamBehavior(
+    public EventStreamBehavior
+    (
       ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
-      IMediator aMediator)
+      IMediator aMediator
+    )
     {
       Logger = aLogger;
       Mediator = aMediator;
@@ -29,10 +31,12 @@
     private ILogger Logger { get; }
     private IMediator Mediator { get; }
 
-    public async Task<TResponse> Handle(
+    public async Task<TResponse> Handle
+    (
       TRequest aRequest,
       CancellationToken aCancellationToken,
-      RequestHandlerDelegate<TResponse> aNext)
+      RequestHandlerDelegate<TResponse> aNext
+    )
     {
       await AddEventToStream(aRequest, "Start");
       TResponse newState = await aNext();

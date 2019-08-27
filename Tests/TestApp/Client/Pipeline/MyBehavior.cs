@@ -15,8 +15,10 @@
   /// <remarks>see MediatR for more examples</remarks>
   public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
-    public MyBehavior(
-      ILogger<MyBehavior<TRequest, TResponse>> aLogger)
+    public MyBehavior
+    (
+      ILogger<MyBehavior<TRequest, TResponse>> aLogger
+    )
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: Constructor");
@@ -25,10 +27,12 @@
     public Guid Guid { get; } = Guid.NewGuid();
     private ILogger Logger { get; }
 
-    public async Task<TResponse> Handle(
+    public async Task<TResponse> Handle
+    (
       TRequest aRequest,
       CancellationToken aCancellationToken,
-      RequestHandlerDelegate<TResponse> aNext)
+      RequestHandlerDelegate<TResponse> aNext
+    )
     {
       Logger.LogDebug($"{GetType().Name}: Start");
 

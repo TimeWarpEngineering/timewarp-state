@@ -1,5 +1,5 @@
 ﻿The client and server applications have parallel structures. 
-Both utilize the MediatR Pipeline and the Command pattern of "Model in Model out."
+Both utilize the MediatR Pipeline and the Command pattern of "Object in Object out."
 
 # Client Project Folder Structure
 All folders are optional if nothing will be in them feel free to delete.

@@ -8,9 +8,11 @@
 
   internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
-    public PostPipelineNotificationRequestPostProcessor(
+    public PostPipelineNotificationRequestPostProcessor
+    (
       ILogger<PostPipelineNotificationRequestPostProcessor<TRequest,TResponse>> aLogger,
-      IMediator aMediator)
+      IMediator aMediator
+    )
     {
       Logger = aLogger;
       Mediator = aMediator;
@@ -28,7 +30,7 @@
       };
 
       Logger.LogDebug("PostPipelineNotificationRequestPostProcessor");
-      await Mediator.Publish(notification);
+      await Mediator.Publish(notification, aCancellationToken);
     }
   }
 }

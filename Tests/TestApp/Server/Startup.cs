@@ -54,10 +54,10 @@
           )
       );
 
-
       new Client.Startup().ConfigureServices(aServiceCollection);
 
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+
       aServiceCollection.Scan
       (
         aTypeSourceSelector => aTypeSourceSelector

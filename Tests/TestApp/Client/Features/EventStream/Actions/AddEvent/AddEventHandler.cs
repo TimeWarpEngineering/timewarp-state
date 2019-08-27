@@ -14,9 +14,11 @@
     {
       public AddEventHandler(IStore aStore) : base(aStore) { }
 
-      public override Task<EventStreamState> Handle(
+      public override Task<EventStreamState> Handle
+      (
         AddEventAction aAddEventAction,
-        CancellationToken aCancellationToken)
+        CancellationToken aCancellationToken
+      )
       {
         EventStreamState._Events.Add(aAddEventAction.Message);
         return Task.FromResult(EventStreamState);
