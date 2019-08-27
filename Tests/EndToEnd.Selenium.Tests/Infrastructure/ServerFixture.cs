@@ -34,7 +34,7 @@
     protected static string FindSitePath()
     {
       DirectoryInfo gitRootDirectory = new GitService().GitRootDirectoryInfo();
-      return Path.Combine(gitRootDirectory.FullName, "test", "TestApp", "TestApp.Server");
+      return Path.Combine(gitRootDirectory.FullName, "Tests", "TestApp", "Server");
     }
 
     protected static void RunInBackgroundThread(Action aAction)
