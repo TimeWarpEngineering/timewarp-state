@@ -1,4 +1,4 @@
-﻿namespace TestApp.Shared.Features.WeatherForecast
+﻿namespace TestApp.Api.Features.WeatherForecast
 {
   using System;
 

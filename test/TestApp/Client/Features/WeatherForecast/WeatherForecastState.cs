@@ -2,7 +2,7 @@
 {
   using System.Collections.Generic;
   using BlazorState;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
 
   internal partial class WeatherForecastsState : State<WeatherForecastsState>
   {

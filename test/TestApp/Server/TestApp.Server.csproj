@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestApp.Client\TestApp.Client.csproj" />
-    <ProjectReference Include="..\TestApp.Shared\TestApp.Shared.csproj" />
+    <ProjectReference Include="..\Client\TestApp.Client.csproj" />
+    <ProjectReference Include="..\Api\TestApp.Api.csproj" />
   </ItemGroup>
 </Project>

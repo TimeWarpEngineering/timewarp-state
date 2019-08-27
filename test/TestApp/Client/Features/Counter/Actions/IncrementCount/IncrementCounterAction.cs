@@ -1,7 +1,7 @@
 ﻿namespace TestApp.Client.Features.Counter
 {
   using MediatR;
-  using TestApp.Shared.Features.Base;
+  using TestApp.Api.Features.Base;
 
   public class IncrementCounterAction : BaseRequest, IRequest<CounterState>
   {

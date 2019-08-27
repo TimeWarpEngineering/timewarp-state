@@ -7,7 +7,7 @@
   using System;
   using TestApp.Server.Features.WeatherForecast;
   using TestApp.Server.Integration.Tests.Infrastructure;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
 
   public class DiContainerTests
   {

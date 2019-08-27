@@ -6,7 +6,7 @@
   using System;
   using System.Threading.Tasks;
   using TestApp.Server.Integration.Tests.Infrastructure;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
 
   internal class GetAllWeatherForecastsTests
   {

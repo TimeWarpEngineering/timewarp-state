@@ -5,7 +5,7 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
   using Microsoft.AspNetCore.Components;
 
   internal partial class WeatherForecastsState

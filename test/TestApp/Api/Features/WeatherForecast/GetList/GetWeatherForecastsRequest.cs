@@ -1,6 +1,6 @@
-﻿namespace TestApp.Shared.Features.WeatherForecast
+﻿namespace TestApp.Api.Features.WeatherForecast
 {
-  using TestApp.Shared.Features.Base;
+  using TestApp.Api.Features.Base;
   using MediatR;
 
   public class GetWeatherForecastsRequest : BaseRequest, IRequest<GetWeatherForecastsResponse>

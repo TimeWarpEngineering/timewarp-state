@@ -6,7 +6,7 @@
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
-  using TestApp.Shared.Features.Base;
+  using TestApp.Api.Features.Base;
 
   /// <summary>
   /// Every event that comes through the pipeline adds an object to the EventStreamState

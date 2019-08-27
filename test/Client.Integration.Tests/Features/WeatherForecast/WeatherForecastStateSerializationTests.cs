@@ -7,7 +7,7 @@
   using TestApp.Client.Integration.Tests.Infrastructure;
   using System.Collections.Generic;
   using TestApp.Client.Features.WeatherForecast;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
   using AnyClone;
   using System.Text.Json;
 

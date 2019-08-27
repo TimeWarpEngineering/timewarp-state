@@ -2,7 +2,7 @@
 {
   using System.Threading.Tasks;
   using TestApp.Server.Features.Base;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
   using Microsoft.AspNetCore.Mvc;
 
   [Route(GetWeatherForecastsRequest.Route)]

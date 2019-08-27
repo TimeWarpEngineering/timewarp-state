@@ -4,7 +4,7 @@
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.Extensions.DependencyInjection;
   using System.Threading.Tasks;
-  using TestApp.Shared.Features.Base;
+  using TestApp.Api.Features.Base;
 
   [ApiController]
   public class BaseController<TRequest, TResponse> : ControllerBase

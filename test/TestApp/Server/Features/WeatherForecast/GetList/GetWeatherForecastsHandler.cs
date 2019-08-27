@@ -5,7 +5,7 @@
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
   using MediatR;
 
   public class GetWeatherForecastsHandler : IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>

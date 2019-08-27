@@ -18,6 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TestApp\TestApp.Server\TestApp.Server.csproj" />
+    <ProjectReference Include="..\TestApp\Server\TestApp.Server.csproj" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
-﻿namespace TestApp.Shared.Features.WeatherForecast
+﻿namespace TestApp.Api.Features.WeatherForecast
 {
   using System;
   using System.Collections.Generic;
-  using TestApp.Shared.Features.Base;
+  using TestApp.Api.Features.Base;
 
   public class GetWeatherForecastsResponse : BaseResponse
   {

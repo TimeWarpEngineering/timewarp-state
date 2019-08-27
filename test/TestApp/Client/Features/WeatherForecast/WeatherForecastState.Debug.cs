@@ -4,7 +4,7 @@
   using System.Reflection;
   using BlazorState;
   using Microsoft.JSInterop;
-  using TestApp.Shared.Features.WeatherForecast;
+  using TestApp.Api.Features.WeatherForecast;
   using System.Text.Json;
 
   internal partial class WeatherForecastsState : State<WeatherForecastsState>
