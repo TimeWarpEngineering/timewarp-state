@@ -9,7 +9,7 @@
       if (aRequest == null)
       {
         throw new ArgumentNullException(nameof(aRequest));
-      };
+      }
 
       Type = aRequest.GetType().FullName;
       Payload = aRequest;

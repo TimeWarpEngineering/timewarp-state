@@ -1,4 +1,4 @@
-﻿import { BlazorState, } from './BlazorState';
+﻿import { BlazorState } from './BlazorState';
 import { BlazorStateName, ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants';
 
 export class ReduxDevTools {

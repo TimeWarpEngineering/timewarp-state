@@ -51,12 +51,12 @@
           {
             Console.WriteLine($"No Markdown files in this dir or any child directories so won't generate {TocFileName}");
           }
-        };
+        }
         foreach (DirectoryInfo childDirectory in aDirectoryInfo.GetDirectories())
         {
           BuildTocs(childDirectory);
         }
-      };
+      }
     }
 
     private bool HasManualToc(DirectoryInfo aDirectoryInfo)

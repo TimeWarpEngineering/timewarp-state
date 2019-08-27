@@ -12,12 +12,10 @@
   {
     private readonly IMediator Mediator;
 
-    private readonly IServiceProvider ServiceProvider;
-
     public GetAllWeatherForecastsTests(TestFixture aTestFixture)
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      Mediator = ServiceProvider.GetService<IMediator>();
+      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      Mediator = serviceProvider.GetService<IMediator>();
     }
 
     public async Task ShouldGetAllWeatherForecasts()

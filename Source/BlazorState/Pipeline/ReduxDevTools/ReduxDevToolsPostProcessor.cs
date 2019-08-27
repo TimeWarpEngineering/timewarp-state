@@ -8,8 +8,6 @@
   using System.Threading;
   using System.Threading.Tasks;
 
-  //TODO: this should be a IRequestPostProcessor but I couldn't get it to work.
-
   /// <summary>
   ///
   /// </summary>
@@ -21,7 +19,6 @@
 
     private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
 
-    //private History<TState> History { get; }
     private IReduxDevToolsStore Store { get; }
 
     public ReduxDevToolsPostProcessor
