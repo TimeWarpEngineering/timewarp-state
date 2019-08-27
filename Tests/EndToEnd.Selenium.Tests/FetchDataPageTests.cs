@@ -33,7 +33,7 @@
       WaitAndAssertEqual("Weather forecast", () => WebDriver.FindElement(By.TagName("h1")).Text);
 
       // There should be rows in the table
-      WaitAndAssertNotEmpty(() => WebDriver.FindElements(By.CssSelector("table td")));
+      WaitAndAssertNotEmpty(() => WebDriver.FindElements(By.CssSelector("[data-qa='WeatherForecastTable'] tr")));
     }
   }
 }
