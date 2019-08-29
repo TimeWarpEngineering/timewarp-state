@@ -25,7 +25,12 @@ variables:
  Configuration: debug
 
 steps:
-- script: echo Version $(Version)
+- script: |
+  echo Version $(Version)
+  cleanup -y
+
+- task: dutchworkz.DisplayAllVariables.DisplayAllVariables.DutchWorkzToolsAllVariables@1
+  displayName: 'Show all build variables in build output.'
 
 - task: DotNetCoreCLI@2
   displayName: Build BlazorState
@@ -92,8 +97,8 @@ steps:
 #     configurationToPack: debug
     
 - task: PublishBuildArtifacts@1
-  displayName: Publish Artifact
+  displayName: Publish Nuget Artifact
   inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
+    PathtoPublish: $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Packages
     ArtifactName: Nuget
     publishLocation: Container
