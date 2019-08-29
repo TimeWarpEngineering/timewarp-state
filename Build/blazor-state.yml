@@ -26,8 +26,8 @@ variables:
 
 steps:
 - script: |
-  echo Version $(Version)
-  cleanup -y
+    echo Version $(Version)
+    ./cleanup -y
 
 - task: dutchworkz.DisplayAllVariables.DisplayAllVariables.DutchWorkzToolsAllVariables@1
   displayName: 'Show all build variables in build output.'
