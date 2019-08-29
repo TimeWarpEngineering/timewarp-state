@@ -34,6 +34,20 @@ steps:
     arguments: '-maxcpucount:1 -p:Version=$(Version)'
     projects: 'source/BlazorState/BlazorState.csproj'
 
+steps:
+- powershell: |
+   Write-Host $(Version)
+   New-Item $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt -Force
+   Set-Content $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt $(Version)
+  displayName: 'PowerShell Script'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt'
+    ArtifactName: Version
+    publishLocation: Container
+
 - task: DotNetCoreCLI@2
   displayName: Run all Tests in the repo gather coverage data
   continueOnError: false
