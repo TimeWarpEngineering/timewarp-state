@@ -19,19 +19,21 @@ steps:
 - script: echo Build.SourceVersion $(Build.SourceVersion)
 - script: echo Build.SourceVersion $(BuildConfiguration)
 
+variables:
+ Major: '1'
+ Minor: '0'
+ Patch: '0'
+ DotNetSdkVersion: 3.0.100-preview8-013656
+ PreviewNumber: $[counter(variables.DotNetSdkVersion,100)]
+ Version: "$(Major).$(Minor).$(Patch)-$(DotNetSdkVersion)-$(PreviewNumber)"
+ Configuration: debug
+
 - task: DotNetCoreCLI@2
   displayName: Build BlazorState
   inputs:
     command: build
-    arguments: '-maxcpucount:1'
+    arguments: '-maxcpucount:1 -p:Version=$(Version)'
     projects: 'source/BlazorState/BlazorState.csproj'
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish Artifact
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt'
-    ArtifactName: Version
-    publishLocation: Container
 
 - task: DotNetCoreCLI@2
   displayName: Run all Tests in the repo gather coverage data
@@ -70,12 +72,12 @@ steps:
 # displayName: Upload coverage to codecov.io
 
 
-- task: DotNetCoreCLI@2
-  displayName: dotnet pack blazor-state
-  inputs:
-    command: pack
-    packagesToPack: 'source\BlazorState\BlazorState.csproj'
-    configurationToPack: debug
+# - task: DotNetCoreCLI@2
+#   displayName: dotnet pack blazor-state
+#   inputs:
+#     command: pack
+#     packagesToPack: 'source\BlazorState\BlazorState.csproj'
+#     configurationToPack: debug
     
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
