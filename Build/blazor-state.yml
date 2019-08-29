@@ -34,7 +34,6 @@ steps:
     arguments: '-maxcpucount:1 -p:Version=$(Version)'
     projects: 'source/BlazorState/BlazorState.csproj'
 
-steps:
 - powershell: |
    Write-Host $(Version)
    New-Item $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt -Force
