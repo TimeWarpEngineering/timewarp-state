@@ -15,10 +15,6 @@ pr:
 pool:
   name: TimeWarpEnterprises
 
-steps:
-- script: echo Build.SourceVersion $(Build.SourceVersion)
-- script: echo Build.SourceVersion $(BuildConfiguration)
-
 variables:
  Major: '1'
  Minor: '0'
@@ -27,6 +23,9 @@ variables:
  PreviewNumber: $[counter(variables.DotNetSdkVersion,100)]
  Version: "$(Major).$(Minor).$(Patch)-$(DotNetSdkVersion)-$(PreviewNumber)"
  Configuration: debug
+
+steps:
+- script: echo Version $(Version)
 
 - task: DotNetCoreCLI@2
   displayName: Build BlazorState
