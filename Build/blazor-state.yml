@@ -4,8 +4,8 @@ trigger:
   - master
  paths:
   include:
-  - source/BlazorState/*
-  - source/BlazorState.Js/*
+  - Source/BlazorState/**/*
+  - Source/BlazorState.Js/**/*
 
 pr:
  branches:
@@ -37,18 +37,18 @@ steps:
   inputs:
     command: build
     arguments: '-maxcpucount:1 -p:Version=$(Version)'
-    projects: 'source/BlazorState/BlazorState.csproj'
+    projects: 'Source/BlazorState/BlazorState.csproj'
 
 - powershell: |
    Write-Host $(Version)
-   New-Item $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt -Force
-   Set-Content $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt $(Version)
+   New-Item $(System.DefaultWorkingDirectory)/Source/BlazorState/bin/Version.txt -Force
+   Set-Content $(System.DefaultWorkingDirectory)/Source/BlazorState/bin/Version.txt $(Version)
   displayName: 'PowerShell Script'
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Artifact
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/source/BlazorState/bin/Version.txt'
+    PathtoPublish: '$(System.DefaultWorkingDirectory)/Source/BlazorState/bin/Version.txt'
     ArtifactName: Version
     publishLocation: Container
 
@@ -88,17 +88,9 @@ steps:
 #    %USERPROFILE%\.nuget\packages\codecov\1.5.0\tools\codecov.exe -f "./test/MyTestProject/coverage.opencover.xml" -t $(CODECOV_TOKEN)
 # displayName: Upload coverage to codecov.io
 
-
-# - task: DotNetCoreCLI@2
-#   displayName: dotnet pack blazor-state
-#   inputs:
-#     command: pack
-#     packagesToPack: 'source\BlazorState\BlazorState.csproj'
-#     configurationToPack: debug
-    
 - task: PublishBuildArtifacts@1
   displayName: Publish Nuget Artifact
   inputs:
-    PathtoPublish: $(System.DefaultWorkingDirectory)/source/BlazorState/bin/Packages
+    PathtoPublish: $(System.DefaultWorkingDirectory)/Source/BlazorState/bin/Packages
     ArtifactName: Nuget
     publishLocation: Container
