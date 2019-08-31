@@ -36,7 +36,7 @@ Now listening on: https://localhost:5001
 Application started. Press Ctrl+C to shut down.
 ```
 
-Open a browser and enter `http://localhost:5000`
+Open a browser and enter <http://localhost:5000>
 
 You should see:
 

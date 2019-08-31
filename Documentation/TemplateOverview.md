@@ -3,7 +3,7 @@
 ## Installation
 
 ```console
-dotnet new --install TimeWarp.AspNetCore.Blazor.Templates::1.0.0-3.0.0-preview8.19405.7-5
+dotnet new --install TimeWarp.AspNetCore.Blazor.Templates::1.0.0-3.0.100-preview8-013656-100
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ dotnet new timewarp-blazor -n MyBlazorApp
 To run the new solution change to the directory that contains the startup project.  In our template the startup project is the server project.
 
 ```console
-cd .\MyBlazorApp\Source\MyBlazorApp.Server\
+cd .\MyBlazorApp\Source\Server\
 dotnet run
 ```
 
@@ -34,14 +34,14 @@ info: Microsoft.Hosting.Lifetime[0]
 info: Microsoft.Hosting.Lifetime[0]
       Hosting environment: Production
 info: Microsoft.Hosting.Lifetime[0]
-      Content root path: C:\git\temp\MyBlazorApp\Source\MyBlazorApp.Server
+      Content root path: C:\git\temp\MyBlazorApp\Source\Server
 ```
 
 Open up your browser to <https://localhost:5001> and confirm you have running site.
 
 ## Content
 
-The template creates 3 projects which will be deployed and 3 test projects.
+The template creates 3 projects which will be deployed and 4 test projects.
 
 ### Projects
 
@@ -51,6 +51,7 @@ MyBlazorApp.Shared - This is a library of common code shared between the Client 
 
 ### Test Projects
 
-MyBlazorApp.Client.Integration.Tests - contains integration tests for the SPA
-MyBlazorApp.Server.Integration.Tests - contains integration tests for the web api
-MyBlazorApp.EndToEnd.Tests - contains seleneum based web tests.  (Runs the app and controls a browser to test)
+Client.Integration.Tests - contains integration tests for the SPA
+Server.Integration.Tests - contains integration tests for the web api
+EndToEnd.Selenium.Tests - contains Selenium based web tests.
+EndToEnd.TestCafe.Tests - contains TestCafe based end-to-end tests.
