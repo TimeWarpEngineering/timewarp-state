@@ -24,7 +24,7 @@ dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview8.19405.7
   `dotnet run --project .\Server\Sample.Server.csproj`
 
 You should see something similar to the following:
-```
+```console
 λ  dotnet run --project .\Server\Sample.Server.csproj
 info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[0]
       User profile is available. Using 'C:\Users\StevenTCramer\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
@@ -34,7 +34,7 @@ Now listening on: http://localhost:5000
 Now listening on: https://localhost:5001
 Application started. Press Ctrl+C to shut down.
 ```
-Open a browser and enter http://localhost:5000
+Open a browser and enter `http://localhost:5000`
 
 You should see:
 
