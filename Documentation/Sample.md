@@ -5,7 +5,7 @@ title: Blazor-State Sample Application
 
 # Blazor-State Sample Application
 
-This sample shows how to add Blazor-State to a `Blazor (ASP.NET Core hosted)` application.
+This sample shows how to add Blazor-State to a `Blazor hosted WebAssembly App` application.
 
 ## Prerequisites
 
@@ -13,26 +13,50 @@ This sample shows how to add Blazor-State to a `Blazor (ASP.NET Core hosted)` ap
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview6.19307.2
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview8.19405.7
 ```
 
 ## Creating the project
 
-1. Create a new project `dotnet new blazorhosted -o Sample`
+1. Create a new project `dotnet new blazorwasm --hosted -n Sample`
 2. Change directory to the new project `cd Sample`
 3. Run the default application and confirm it works.  
-  `dotnet run --project .\Sample.Server\Sample.Server.csproj`
+   `dotnet run --project .\Server\Sample.Server.csproj`
+
+You should see something similar to the following:
+
+```console
+λ  dotnet run --project .\Server\Sample.Server.csproj
+info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[0]
+      User profile is available. Using 'C:\Users\StevenTCramer\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+Hosting environment: Production
+Content root path: C:\git\temp\Sample\Server
+Now listening on: http://localhost:5000
+Now listening on: https://localhost:5001
+Application started. Press Ctrl+C to shut down.
+```
+
+Open a browser and enter `http://localhost:5000`
+
+You should see:
+
+Insert Image here.
+
+Go to the Counter page and click the `Click me` button.
+Observe the incrementing of the value.
+Return to the home page. Then back to the counter page.
+
    > [!NOTE]
    > Notice that the counter resets on page changes.
    > There is currently no state being maintained.
-   > When the counter page is no longer rendered it is freed by the `GarbageCollector`.
+   > When the counter page is no longer rendered the component is destroyed.
    > When returning to the counter route a new page is created
    > and therefore the count is back to zero.
 
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add .\Sample.Client\Sample.Client.csproj package Blazor-State --version 1.0.0-preview6.19307.2-*`
+   `dotnet add .\Client\Sample.Client.csproj package Blazor-State --version 1.0.0-3.0.100-preview8-013656-107`
 
 ## Feature File Structure
 
@@ -58,15 +82,15 @@ The only value we want to maintain is a Count.
 The code for the class should be as follows.
 
 ```csharp
-using BlazorState;
-
 namespace Sample.Client.Features.Counter
 {
-    public partial class CounterState : State<CounterState>
-    {
-        public int Count { get; private set; }
-        protected override void Initialize() => Count = 3;
-    }
+  using BlazorState;
+
+  public partial class CounterState : State<CounterState>
+  {
+    public int Count { get; private set; }
+    protected override void Initialize() => Count = 3;
+  }
 }
 ```
 
@@ -78,17 +102,34 @@ namespace Sample.Client.Features.Counter
 4. Configure the options passed to AddBlazorState to include the assemblies to scan for Handlers.
 
 ```csharp
-public void ConfigureServices(IServiceCollection services)
+namespace Sample.Client
 {
-    services.AddBlazorState
-    (
-      (aOptions) => aOptions.Assemblies =
-        new Assembly[]
-        {
-          typeof(Startup).GetTypeInfo().Assembly,
-        }
-    );
-    services.AddScoped<CounterState>();
+  using BlazorState;
+  using Microsoft.AspNetCore.Components.Builder;
+  using Microsoft.Extensions.DependencyInjection;
+  using Sample.Client.Features.Counter;
+  using System.Reflection;
+
+  public class Startup
+  {
+    public void ConfigureServices(IServiceCollection services)
+    {
+      services.AddBlazorState
+      (
+        (aOptions) => aOptions.Assemblies =
+          new Assembly[]
+          {
+                typeof(Startup).GetTypeInfo().Assembly,
+          }
+      );
+      services.AddScoped<CounterState>();
+    }
+
+    public void Configure(IComponentsApplicationBuilder app)
+    {
+      app.AddComponent<App>("app");
+    }
+  }
 }
 ```
 
@@ -98,8 +139,9 @@ public void ConfigureServices(IServiceCollection services)
 2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
 3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
 4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
-5. Notice that inside IncrementCount method the currentCount you can no longer increment. From the outside the state is immutable.
-So lets comment out that line.
+5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented. 
+ From the outside CounterState class the state is immutable.
+ So lets comment out that line.
 
 The code should look as follows:
 
@@ -128,7 +170,7 @@ The code should look as follows:
 }
 ```
 
-Run the application and on the Counter Page you should notice the count is being displayed as we initialized.
+Run the application. On the Counter page, you should notice the count is being displayed as we initialized.
 Although the button no longer works.
 
 ## Sending requests that will mutate the state
@@ -146,19 +188,24 @@ The `Action` is then handled by a `Handler` which can freely mutate the state.
 1. In the Client project ensure the path `Features\Counter\Actions\IncrementCount` folder.
 2. In this folder create a class named `IncrementCountAction.cs`.
 
-* The class should inherit from `IRequest<CounterState>`
+The class should:
+
+* inherit from `IRequest<CounterState>`
+* have namespace Sample.Client.Features.Counter
+* contain the Amount property
 as follows:
 
 ```csharp
-using MediatR;
-
 namespace Sample.Client.Features.Counter
 {
-    public class IncrementCountAction: IRequest<CounterState>
-    {
-        public int Amount { get; set; }
-    }
+  using MediatR;
+
+  public class IncrementCountAction : IRequest<CounterState>
+  {
+    public int Amount { get; set; }
+  }
 }
+
 ```
 
 ## Sending the action through the mediator pipeline
@@ -188,28 +235,26 @@ The Handler should:
 * Override the `Handle` method to mutate state as desired:
 
 ```csharp
-using BlazorState;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace Sample.Client.Features.Counter
 {
-    public partial class CounterState
+  using System.Threading;
+  using System.Threading.Tasks;
+  using BlazorState;
+  public partial class CounterState
+  {
+    public class IncrementCountHandler : RequestHandler<IncrementCountAction, CounterState>
     {
+      public IncrementCountHandler(IStore aStore) : base(aStore) { }
 
-        public class IncrementCountHandler : RequestHandler<IncrementCountAction, CounterState>
-        {
-            public IncrementCountHandler(IStore aStore) : base(aStore) { }
+      CounterState CounterState => Store.GetState<CounterState>();
 
-            CounterState CounterState => Store.GetState<CounterState>();
-
-            public override Task<CounterState> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
-            {
-                CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
-                return Task.FromResult(CounterState);
-            }
-        }
+      public override Task<CounterState> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
+      {
+        CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
+        return Task.FromResult(CounterState);
+      }
     }
+  }
 }
 ```
 
@@ -244,7 +289,7 @@ namespace Sample.Client
         [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
         [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 
-        // Injected so it is created by the container. Even though the ide says it is not used it is.
+        // Injected so it is created by the container. Even though the ide says it is not used, it is.
         [Inject] private RouteManager RouteManager { get; set; }
 
         protected override async Task OnAfterRenderAsync()
