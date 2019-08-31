@@ -4,13 +4,15 @@ trigger:
   - master
  paths:
   include:
-  - Source/BlazorState/**/*
-  - Source/BlazorState.Js/**/*
+  - Source/**/*
 
 pr:
  branches:
    include:
      - master
+ paths:
+  include:
+  - Source/**/*
 
 pool:
   name: TimeWarpEnterprises
