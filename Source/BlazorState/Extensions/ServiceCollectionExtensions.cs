@@ -29,31 +29,32 @@
     /// If the user wants to change they can configure themselves vs using this extension</remarks>
     public static IServiceCollection AddBlazorState(
       this IServiceCollection aServices,
-      Action<Options> aConfigure = null)
+      Action<BlazorStateOptions> aConfigure = null)
     {
       ServiceDescriptor flagServiceDescriptor = aServices.FirstOrDefault(
         aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(BlazorHostingLocation));
 
       if (flagServiceDescriptor == null)
       {
-        var options = new Options();
-        aConfigure?.Invoke(options);
+        var blazorStateOptions = new BlazorStateOptions();
+        aConfigure?.Invoke(blazorStateOptions);
 
         EnsureLogger(aServices);
         EnsureHttpClient(aServices);
-        EnsureMediator(aServices, options);
+        EnsureMediator(aServices, blazorStateOptions);
 
         aServices.AddScoped<BlazorHostingLocation>();
         aServices.AddScoped<JsonRequestHandler>();
         aServices.AddScoped<Subscriptions>();
         aServices.AddScoped(typeof(IRequestPostProcessor<,>), typeof(RenderSubscriptionsPostProcessor<,>));
         aServices.AddScoped<IStore, Store>();
+        aServices.AddSingleton(blazorStateOptions);
 
-        if (options.UseCloneStateBehavior)
+        if (blazorStateOptions.UseCloneStateBehavior)
         {
           aServices.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
         }
-        if (options.UseReduxDevToolsBehavior)
+        if (blazorStateOptions.UseReduxDevToolsBehavior)
         {
           aServices.AddScoped(typeof(IRequestPostProcessor<,>), typeof(ReduxDevToolsPostProcessor<,>));
           aServices.AddScoped<ReduxDevToolsInterop>();
@@ -63,7 +64,7 @@
           aServices.AddTransient<IRequestHandler<StartRequest, Unit>, StartHandler>();
           aServices.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
         }
-        if (options.UseRouting)
+        if (blazorStateOptions.UseRouting)
         {
           aServices.AddScoped<RouteManager>();
           aServices.AddScoped<RouteState>();
@@ -120,7 +121,7 @@
     /// <param name="aServices"></param>
     /// <param name="aOptions"></param>
     /// <param name="aCallingAssembly">The calling assembly</param>
-    private static void EnsureMediator(IServiceCollection aServices, Options aOptions)
+    private static void EnsureMediator(IServiceCollection aServices, BlazorStateOptions aOptions)
     {
       ServiceDescriptor mediatorServiceDescriptor = aServices.FirstOrDefault(
         aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(IMediator));

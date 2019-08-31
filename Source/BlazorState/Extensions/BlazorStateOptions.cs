@@ -2,8 +2,9 @@
 {
   using System.Collections.Generic;
   using System.Reflection;
+  using System.Text.Json;
 
-  public class Options
+  public class BlazorStateOptions
   {
     ///// <summary>
     ///// Assemblies to be searched for MediatR Requests
@@ -16,9 +17,15 @@
 
     public bool UseRouting { get; set; } = true;
 
-    public Options()
+    public JsonSerializerOptions JsonSerializerOptions { get; }
+
+    public BlazorStateOptions()
     {
       Assemblies = new Assembly[] { };
+      JsonSerializerOptions = new JsonSerializerOptions
+      {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+      };
     }
   }
 }

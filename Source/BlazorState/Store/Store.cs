@@ -24,12 +24,12 @@
     (
       ILogger<Store> aLogger,
       IServiceProvider aServiceProvider,
-      JsonSerializerOptions aJsonSerializerOptions
+      BlazorStateOptions aBlazorStateOptions
     )
     {
       Logger = aLogger;
       ServiceProvider = aServiceProvider;
-      JsonSerializerOptions = aJsonSerializerOptions;
+      JsonSerializerOptions = aBlazorStateOptions.JsonSerializerOptions;
 
       using (Logger.BeginScope(new Dictionary<string, object> { [nameof(Guid)] = Guid }))
       {
