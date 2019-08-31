@@ -28,13 +28,6 @@
             typeof(Startup).GetTypeInfo().Assembly,
           }
       );
-      aServiceCollection.AddSingleton
-      (
-        new JsonSerializerOptions
-        {
-          PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        }
-      );
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
       aServiceCollection.AddTransient<ApplicationState>();
       aServiceCollection.AddTransient<CounterState>();

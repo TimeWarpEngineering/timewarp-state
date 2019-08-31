@@ -1,36 +1,36 @@
 ﻿namespace BlazorState.Features.JavaScriptInterop
 {
+  using MediatR;
+  using Microsoft.Extensions.Logging;
+  using Microsoft.JSInterop;
   using System;
   using System.Linq;
   using System.Reflection;
   using System.Text.Json;
   using System.Threading;
   using System.Threading.Tasks;
-  using MediatR;
-  using Microsoft.Extensions.Logging;
-  using Microsoft.JSInterop;
 
   public class JsonRequestHandler
   {
+    private readonly JsonSerializerOptions JsonSerializerOptions;
+    private readonly IJSRuntime JSRuntime;
+    private readonly ILogger Logger;
+    private readonly IMediator Mediator;
+
     public JsonRequestHandler
     (
       ILogger<JsonRequestHandler> aLogger,
       IMediator aMediator,
       IJSRuntime aJSRuntime,
-      JsonSerializerOptions aJsonSerializerOptions
+      BlazorStateOptions aBlazorStateOptions
     )
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name}: constructor");
       Mediator = aMediator;
       JSRuntime = aJSRuntime;
-      JsonSerializerOptions = aJsonSerializerOptions;
+      JsonSerializerOptions = aBlazorStateOptions.JsonSerializerOptions;
     }
-
-    private ILogger Logger { get; }
-    private IMediator Mediator { get; }
-    private IJSRuntime JSRuntime { get; }
-    private JsonSerializerOptions JsonSerializerOptions { get; }
 
     /// <summary>
     /// This will handle the Javascript interop
@@ -55,9 +55,18 @@
       _ = await SendToMediator(requestType, instance);
     }
 
+    public async Task InitAsync()
+    {
+      Logger.LogDebug("Init JsonRequestHandler");
+      const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
+      Logger.LogDebug(InitializeJavaScriptInteropName);
+      Microsoft.JSInterop.JSRuntime.SetCurrentJSRuntime(JSRuntime);
+      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectRef.Create(this));
+    }
+
     /// <summary>
     /// Equivelent to the following code just using generics everywhere and reflection.
-    ///  return await Mediator.Send(aInstance) 
+    ///  return await Mediator.Send(aInstance)
     /// </summary>
     private async Task<object> SendToMediator(Type aRequestType, object aInstance)
     {
@@ -81,15 +90,6 @@
       await task.ConfigureAwait(false);
       PropertyInfo resultProperty = task.GetType().GetProperty("Result");
       return resultProperty.GetValue(task);
-    }
-
-    public async Task InitAsync()
-    {
-      Logger.LogDebug("Init JsonRequestHandler");
-      const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-      Logger.LogDebug(InitializeJavaScriptInteropName);
-      Microsoft.JSInterop.JSRuntime.SetCurrentJSRuntime(JSRuntime);
-      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectRef.Create(this));
     }
   }
 }
