@@ -4,8 +4,8 @@ trigger:
   - master
  paths:
   include:
-  - Source/BlazorState/*
-  - Source/BlazorState.Js/*
+  - Source/BlazorState/**/*
+  - Source/BlazorState.Js/**/*
 
 pr:
  branches:
