@@ -17,7 +17,7 @@
       JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
       Store = ServiceProvider.GetService<IStore>();
       CounterState = Store.GetState<CounterState>();
-      JsonSerializerOptions = ServiceProvider.GetService<JsonSerializerOptions>();
+      JsonSerializerOptions = ServiceProvider.GetService<BlazorStateOptions>().JsonSerializerOptions;
     }
 
     private CounterState CounterState { get; set; }

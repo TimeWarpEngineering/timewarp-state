@@ -4,7 +4,7 @@ trigger:
   - master
  paths:
   include:
-  - documentation/*
+  - Documentation/*
 
 # no PR builds
 pr: none
