@@ -3,7 +3,6 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
-  using Microsoft.JSInterop.Infrastructure;
   using System;
   using System.Linq;
   using System.Reflection;
@@ -61,7 +60,6 @@
       Logger.LogDebug("Init JsonRequestHandler");
       const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
       Logger.LogDebug(InitializeJavaScriptInteropName);
-      //Microsoft.JSInterop.JSRuntime.SetCurrentJSRuntime(JSRuntime);
       await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectReference.Create(this));
     }
 
