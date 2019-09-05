@@ -32,6 +32,6 @@ namespace TestApp.EndToEnd.Tests.Infrastructure
 
     public Process Process { get; }
 
-    public void Dispose() => Process?.Close();
+    public void Dispose() => Process?.Kill();
   }
 }

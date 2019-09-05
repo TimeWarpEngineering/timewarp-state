@@ -12,25 +12,25 @@
   public class RouteManager
   {
     public RouteManager(
-      IUriHelper aUriHelper,
+      NavigationManager aNavigationManager,
       IMediator aMediator,
       IStore aStore)
     {
-      UriHelper = aUriHelper;
+      NavigationManager = aNavigationManager;
       Mediator = aMediator;
       Store = aStore;
-      UriHelper.OnLocationChanged += OnLocationChanged;
+      NavigationManager.LocationChanged += LocationChanged;
       Mediator.Send(new InitializeRouteAction());
     }
 
     private IMediator Mediator { get; }
     private RouteState RouteState => Store.GetState<RouteState>();
     private IStore Store { get; }
-    private IUriHelper UriHelper { get; }
+    private NavigationManager NavigationManager { get; }
 
-    private void OnLocationChanged(object aSender, LocationChangedEventArgs aLocationChangedEventArgs)
+    private void LocationChanged(object aSender, LocationChangedEventArgs aLocationChangedEventArgs)
     {
-      string absoluteUri = UriHelper.ToAbsoluteUri(aLocationChangedEventArgs.Location).ToString();
+      string absoluteUri = NavigationManager.ToAbsoluteUri(aLocationChangedEventArgs.Location).ToString();
       if (RouteState.Route != absoluteUri)
       {
         Mediator.Send(new ChangeRouteAction { NewRoute = absoluteUri });

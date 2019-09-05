@@ -11,26 +11,26 @@
     {
       public ChangeRouteHandler(
         IStore aStore,
-        IUriHelper aUriHelper
+        NavigationManager aNavigationManager
         ) : base(aStore)
       {
-        UriHelper = aUriHelper;
+        NavigationManager = aNavigationManager;
       }
 
       private RouteState RouteState => Store.GetState<RouteState>();
 
-      private IUriHelper UriHelper { get; }
+      private NavigationManager NavigationManager { get; }
 
       public override Task<RouteState> Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
       {
-        string newAbsoluteUri = UriHelper.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
-        string absoluteUri = UriHelper.GetAbsoluteUri();
+        string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
+        string absoluteUri = NavigationManager.Uri;
 
         if (absoluteUri != newAbsoluteUri)
         {
           // RouteManager OnLocationChanged will fire this ChangeRouteRequest again 
           // and the second time we will hit the else clause.
-          UriHelper.NavigateTo(newAbsoluteUri);
+          NavigationManager.NavigateTo(newAbsoluteUri);
         }
         else if (RouteState.Route != newAbsoluteUri)
         {

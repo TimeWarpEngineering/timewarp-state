@@ -15,7 +15,8 @@
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
-    <PackageIcon>..\..\assets\Logo.png</PackageIcon>
+    <PackageIcon>Logo.png</PackageIcon>
+    <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   

@@ -89,11 +89,11 @@
           // Setup HttpClient for server side in a client side compatible fashion
           aServices.AddScoped<HttpClient>(aServiceProvider =>
           {
-            // Creating the URI helper needs to wait until the JS Runtime is initialized, so defer it.
-            IUriHelper uriHelper = aServiceProvider.GetRequiredService<IUriHelper>();
+            // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
+            NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
             return new HttpClient
             {
-              BaseAddress = new Uri(uriHelper.GetBaseUri())
+              BaseAddress = new Uri(navigationManager.BaseUri)
             };
           });
         }
