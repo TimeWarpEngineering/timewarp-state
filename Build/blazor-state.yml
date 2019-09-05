@@ -4,7 +4,7 @@ trigger:
   - master
  paths:
   include:
-  - Source/**/*
+  - Source/*
 
 pr:
  branches:
@@ -12,7 +12,7 @@ pr:
      - master
  paths:
   include:
-  - Source/**/*
+  - Source/*
 
 pool:
   name: TimeWarpEnterprises
