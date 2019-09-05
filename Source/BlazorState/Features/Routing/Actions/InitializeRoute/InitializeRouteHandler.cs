@@ -11,19 +11,19 @@
     {
       public InitializeRouteHandler(
         IStore aStore,
-        IUriHelper aUriHelper
+        NavigationManager aNavigationManager
         ) : base(aStore)
       {
-        UriHelper = aUriHelper;
+        NavigationManager = aNavigationManager;
       }
 
       private RouteState RouteState => Store.GetState<RouteState>();
 
-      private IUriHelper UriHelper { get; }
+      private NavigationManager NavigationManager { get; }
 
       public override Task<RouteState> Handle(InitializeRouteAction aInitializeRouteRequest, CancellationToken aCancellationToken)
       {
-        RouteState.Route = UriHelper.GetAbsoluteUri().ToString();
+        RouteState.Route = NavigationManager.Uri;
         return Task.FromResult(RouteState);
       }
     }

@@ -60,8 +60,7 @@
       Logger.LogDebug("Init JsonRequestHandler");
       const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
       Logger.LogDebug(InitializeJavaScriptInteropName);
-      Microsoft.JSInterop.JSRuntime.SetCurrentJSRuntime(JSRuntime);
-      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectRef.Create(this));
+      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectReference.Create(this));
     }
 
     /// <summary>
