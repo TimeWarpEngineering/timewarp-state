@@ -13,7 +13,7 @@ This sample shows how to add Blazor-State to a `Blazor hosted WebAssembly App` a
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview8.19405.7
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19424.4
 ```
 
 ## Creating the project
@@ -56,7 +56,7 @@ Return to the home page. Then back to the counter page.
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add .\Client\Sample.Client.csproj package Blazor-State --version 1.0.0-3.0.100-preview8-013656-107`
+   `dotnet add .\Client\Sample.Client.csproj package Blazor-State --version 1.0.0-3.0.100-preview9-014004-100`
 
 ## Feature File Structure
 
@@ -278,26 +278,27 @@ To facilitate Javascript Interop, enable ReduxDevTools, and manage RouteState, a
 ```csharp
 namespace Sample.Client
 {
-    using System.Threading.Tasks;
-    using BlazorState.Pipeline.ReduxDevTools;
-    using BlazorState.Features.JavaScriptInterop;
-    using BlazorState.Features.Routing;
-    using Microsoft.AspNetCore.Components;
+  using System.Threading.Tasks;
+  using BlazorState.Pipeline.ReduxDevTools;
+  using BlazorState.Features.JavaScriptInterop;
+  using BlazorState.Features.Routing;
+  using Microsoft.AspNetCore.Components;
 
-    public class AppBase : ComponentBase
+  public class AppBase : ComponentBase
+  {
+    [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
+    [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
+
+    // Injected so it is created by the container. Even though the IDE says it is not used, it is.
+    [Inject] private RouteManager RouteManager { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
-        [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
-
-        // Injected so it is created by the container. Even though the ide says it is not used, it is.
-        [Inject] private RouteManager RouteManager { get; set; }
-
-        protected override async Task OnAfterRenderAsync()
-        {
-            await ReduxDevToolsInterop.InitAsync();
-            await JsonRequestHandler.InitAsync();
-        }
+      await ReduxDevToolsInterop.InitAsync();
+      await JsonRequestHandler.InitAsync();
     }
+
+  }
 }
 ```
 
