@@ -1,9 +1,12 @@
 ﻿namespace TestApp.Client.Features.EventStream
 {
-  using MediatR;
+  using BlazorState;
 
-  public class AddEventAction : IRequest<EventStreamState>
+  internal partial class EventStreamState
   {
-    public string Message { get; set; }
+    public class AddEventAction : IAction
+    {
+      public string Message { get; set; }
+    }
   }
 }

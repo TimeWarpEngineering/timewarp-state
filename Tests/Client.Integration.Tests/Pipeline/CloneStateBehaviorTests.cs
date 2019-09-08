@@ -9,6 +9,8 @@
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.CloneTest;
   using TestApp.Client.Integration.Tests.Infrastructure;
+  using static TestApp.Client.Features.Counter.CounterState;
+  using static TestApp.Client.Features.CloneTest.CloneTestState;
 
   internal class CloneStateBehaviorTests
   {
@@ -17,10 +19,9 @@
       ServiceProvider = aTestFixture.ServiceProvider;
       Mediator = ServiceProvider.GetService<IMediator>();
       Store = ServiceProvider.GetService<IStore>();
-      CounterState = Store.GetState<CounterState>();
     }
 
-    private CounterState CounterState { get; set; }
+    private CounterState CounterState => Store.GetState<CounterState>();
     private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
     private IMediator Mediator { get; }
     private IServiceProvider ServiceProvider { get; }
@@ -39,7 +40,7 @@
       };
       //Act
       // Send Request
-      CounterState = await Mediator.Send(incrementCounterRequest);
+      _ = await Mediator.Send(incrementCounterRequest);
 
       //Assert
       CounterState.Guid.ShouldNotBe(preActionGuid);
@@ -59,11 +60,10 @@
       };
 
       Exception exception = await Should.ThrowAsync<Exception>(async () =>
-      CounterState = await Mediator.Send(throwExceptionAction));
+      _ = await Mediator.Send(throwExceptionAction));
 
       // Assert
       exception.Message.ShouldBe(throwExceptionAction.Message);
-      CounterState = Store.GetState<CounterState>();
       CounterState.Guid.Equals(preActionGuid);
     }
 

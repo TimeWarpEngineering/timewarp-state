@@ -8,6 +8,7 @@
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
   using System.Text.Json;
+  using static TestApp.Client.Features.Counter.CounterState;
 
   internal class JsonRequestHandlerTests
   {
@@ -16,11 +17,10 @@
       ServiceProvider = aTestFixture.ServiceProvider;
       JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
       Store = ServiceProvider.GetService<IStore>();
-      CounterState = Store.GetState<CounterState>();
       JsonSerializerOptions = ServiceProvider.GetService<BlazorStateOptions>().JsonSerializerOptions;
     }
 
-    private CounterState CounterState { get; set; }
+    private CounterState CounterState => Store.GetState<CounterState>();
     private JsonSerializerOptions JsonSerializerOptions { get; }
     private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
@@ -44,7 +44,6 @@
       JsonRequestHandler.Handle(requestTypeAssemblyQualifiedName, requestAsJson);
 
       //Assert
-      CounterState = Store.GetState<CounterState>();
       CounterState.Count.ShouldBe(preActionCount + 5);
     }
 

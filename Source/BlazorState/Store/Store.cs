@@ -64,7 +64,7 @@
       SetState(typeName, aNewState);
     }
 
-    private object GetState(Type aType)
+    public object GetState(Type aType)
     {
       using (Logger.BeginScope(nameof(GetState)))
       {

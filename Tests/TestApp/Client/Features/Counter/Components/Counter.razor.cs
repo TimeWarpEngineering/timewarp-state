@@ -2,7 +2,7 @@
 {
   using System.Threading.Tasks;
   using TestApp.Client.Features.Base.Components;
-  using TestApp.Client.Features.Counter;
+  using static TestApp.Client.Features.Counter.CounterState;
 
   public class CounterBase : BaseComponent
   {

@@ -1,18 +1,19 @@
 ﻿namespace TestApp.Client.Features.Counter
 {
+  using BlazorState;
+  using MediatR;
+  using System;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState;
-  using System;
   using TestApp.Client.Features.Base;
 
   internal partial class CounterState
   {
-    internal class ThrowExceptionHandler : BaseHandler<ThrowExceptionAction, CounterState>
+    internal class ThrowExceptionHandler : BaseHandler<ThrowExceptionAction>
     {
       public ThrowExceptionHandler(IStore aStore) : base(aStore) { }
 
-      public override Task<CounterState> Handle
+      public override Task<Unit> Handle
       (
         ThrowExceptionAction aThrowExceptionAction,
         CancellationToken aCancellationToken

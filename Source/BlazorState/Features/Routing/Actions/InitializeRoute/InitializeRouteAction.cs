@@ -1,6 +1,9 @@
 ﻿namespace BlazorState.Features.Routing
 {
-  using MediatR;
+  using BlazorState;
 
-  internal class InitializeRouteAction : IRequest<RouteState> { }
+  public partial class RouteState
+  {
+    internal class InitializeRouteAction : IAction { }
+  }
 }

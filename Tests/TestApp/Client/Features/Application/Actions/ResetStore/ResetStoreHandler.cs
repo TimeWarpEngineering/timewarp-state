@@ -3,8 +3,8 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
-  using BlazorState.Features.Routing;
   using MediatR;
+  using static BlazorState.Features.Routing.RouteState;
 
   internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>
   {
@@ -17,14 +17,11 @@
     private IMediator Mediator { get; }
     private IStore Store { get; }
 
-    public Task<Unit> Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
+    public async Task<Unit> Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
     {
       Store.Reset();
-      Mediator.Send(new ChangeRouteAction
-      {
-        NewRoute = "/"
-      });
-      return Unit.Task;
+      _ = await Mediator.Send(new ChangeRouteAction { NewRoute = "/" });
+      return Unit.Value;
     }
   }
 }

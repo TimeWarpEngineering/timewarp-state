@@ -1,9 +1,12 @@
 ﻿namespace BlazorState.Features.Routing
 {
-  using MediatR;
+  using BlazorState;
 
-  public class ChangeRouteAction : IRequest<RouteState>
+  public partial class RouteState
   {
-    public string NewRoute { get; set; }
+    public class ChangeRouteAction : IAction
+    {
+      public string NewRoute { get; set; }
+    }
   }
 }

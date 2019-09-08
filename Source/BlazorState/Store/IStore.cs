@@ -16,6 +16,8 @@
 
     TState GetState<TState>();
 
+    object GetState(Type aType);
+
     void SetState(IState aState);
 
     void Reset();
