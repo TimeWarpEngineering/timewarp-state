@@ -7,6 +7,7 @@
   using MediatR;
   using Microsoft.Extensions.Logging;
   using TestApp.Api.Features.Base;
+  using static TestApp.Client.Features.EventStream.EventStreamState;
 
   /// <summary>
   /// Every event that comes through the pipeline adds an object to the EventStreamState

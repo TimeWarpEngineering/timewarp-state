@@ -1,10 +1,12 @@
 ﻿namespace TestApp.Client.Features.Counter
 {
-  using MediatR;
-  using TestApp.Api.Features.Base;
+  using BlazorState;
 
-  public class IncrementCounterAction : BaseRequest, IRequest<CounterState>
+  internal partial class CounterState
   {
-    public int Amount { get; set; }
+    public class IncrementCounterAction : IAction
+    {
+      public int Amount { get; set; }
+    }
   }
 }

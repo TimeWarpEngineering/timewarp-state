@@ -1,6 +1,9 @@
 ﻿namespace TestApp.Client.Features.WeatherForecast
 {
-  using MediatR;
+  using BlazorState;
 
-  public class FetchWeatherForecastsAction : IRequest<WeatherForecastsState> { }
+  internal partial class WeatherForecastsState
+  {
+    public class FetchWeatherForecastsAction : IAction { }
+  }
 }

@@ -1,6 +1,5 @@
 ﻿namespace BlazorState.Features.Routing
 {
-  using System;
   using MediatR;
   using Microsoft.AspNetCore.Components;
   using Microsoft.AspNetCore.Components.Routing;
@@ -20,7 +19,7 @@
       Mediator = aMediator;
       Store = aStore;
       NavigationManager.LocationChanged += LocationChanged;
-      Mediator.Send(new InitializeRouteAction());
+      Mediator.Send(new RouteState.InitializeRouteAction());
     }
 
     private IMediator Mediator { get; }
@@ -33,7 +32,7 @@
       string absoluteUri = NavigationManager.ToAbsoluteUri(aLocationChangedEventArgs.Location).ToString();
       if (RouteState.Route != absoluteUri)
       {
-        Mediator.Send(new ChangeRouteAction { NewRoute = absoluteUri });
+        Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = absoluteUri });
       }
     }
   }

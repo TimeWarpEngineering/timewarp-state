@@ -23,6 +23,8 @@
 
     public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
     {
+      Type declaringType = typeof(TRequest).DeclaringType;
+
       // logging variables
       string className = GetType().Name;
       className = className.Remove(className.IndexOf('`'));
@@ -32,7 +34,7 @@
       try
       {
         Logger.LogDebug($"{className}: ReRenderSubscribers");
-        Subscriptions.ReRenderSubscribers<TResponse>();
+        Subscriptions.ReRenderSubscribers(declaringType);
         Logger.LogDebug($"{className}: End Post Processing");
       }
       catch (Exception aException)

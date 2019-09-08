@@ -1,4 +1,5 @@
 ﻿@page "/counter"
+@inherits CounterPageBase
 
 <h1>Counter Page</h1>
 
@@ -12,7 +13,14 @@
 <hr />
 <h6>Reset button will clear all state in the Store and return you to the home page</h6>
 <ResetButton />
+
+<br />
+<hr />
+<h6>Click below to send a Change Route Request that should take back to home page.</h6>
+<button class="btn btn-primary" data-qa="ChangeRoute" @onclick="ButtonClick">Change Route to Home</button>
+
 <br />
 <hr />
 <h6>EventStream is an example of middleware.  It adds each action to list.</h6>
 <EventStream />
+

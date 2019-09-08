@@ -5,23 +5,24 @@
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
+  using MediatR;
   using TestApp.Client.Features.Base;
 
 
   internal partial class EventStreamState
   {
-    internal class AddEventHandler : BaseHandler<AddEventAction, EventStreamState>
+    internal class AddEventHandler : BaseHandler<AddEventAction>
     {
       public AddEventHandler(IStore aStore) : base(aStore) { }
 
-      public override Task<EventStreamState> Handle
+      public override Task<Unit> Handle
       (
         AddEventAction aAddEventAction,
         CancellationToken aCancellationToken
       )
       {
         EventStreamState._Events.Add(aAddEventAction.Message);
-        return Task.FromResult(EventStreamState);
+        return Unit.Task;
       }
     }
   }

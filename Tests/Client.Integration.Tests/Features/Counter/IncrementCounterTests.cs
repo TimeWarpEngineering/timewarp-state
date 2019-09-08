@@ -8,6 +8,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using TestApp.Client.Integration.Tests.Infrastructure;
+  using static TestApp.Client.Features.Counter.CounterState;
 
   internal class IncrementCounterTests
   {
@@ -16,10 +17,9 @@
       ServiceProvider = aTestFixture.ServiceProvider;
       Mediator = ServiceProvider.GetService<IMediator>();
       Store = ServiceProvider.GetService<IStore>();
-      CounterState = Store.GetState<CounterState>();
     }
 
-    private CounterState CounterState { get; set; }
+    private CounterState CounterState => Store.GetState<CounterState>();
     private IMediator Mediator { get; }
     private IServiceProvider ServiceProvider { get; }
     private IStore Store { get; }
@@ -36,7 +36,7 @@
       };
       //Act
       // Send Request
-      CounterState = await Mediator.Send(incrementCounterRequest);
+      _ = await Mediator.Send(incrementCounterRequest);
 
       //Assert
       CounterState.Count.ShouldBe(13);
@@ -55,7 +55,7 @@
         Amount = 5
       };
       //Act
-      CounterState = await Mediator.Send(incrementCounterRequest);
+      _ = await Mediator.Send(incrementCounterRequest);
 
       //Assert
       CounterState.Count.ShouldBe(27);

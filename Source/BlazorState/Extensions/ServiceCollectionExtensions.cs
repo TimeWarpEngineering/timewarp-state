@@ -69,8 +69,8 @@
           aServices.AddScoped<RouteManager>();
           aServices.AddScoped<RouteState>();
 
-          aServices.AddTransient<IRequestHandler<ChangeRouteAction, RouteState>, ChangeRouteHandler>();
-          aServices.AddTransient<IRequestHandler<InitializeRouteAction, RouteState>, InitializeRouteHandler>();
+          aServices.AddTransient<IRequestHandler<ChangeRouteAction, Unit>, ChangeRouteHandler>();
+          aServices.AddTransient<IRequestHandler<InitializeRouteAction, Unit>, InitializeRouteHandler>();
         }
       }
       return aServices;

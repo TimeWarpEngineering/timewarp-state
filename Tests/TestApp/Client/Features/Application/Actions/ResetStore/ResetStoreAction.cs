@@ -1,6 +1,6 @@
 ﻿namespace TestApp.Client.Features.Application
 {
-  using MediatR;
+  using BlazorState;
 
-  public class ResetStoreAction : IRequest { }
+  public class ResetStoreAction : IAction { }
 }

@@ -1,9 +1,12 @@
 ﻿namespace TestApp.Client.Features.Counter
 {
-  using MediatR;
+  using BlazorState;
 
-  public class ThrowExceptionAction : IRequest<CounterState>
+  internal partial class CounterState
   {
-    public string Message { get; set; }
+    public class ThrowExceptionAction : IAction
+    {
+      public string Message { get; set; }
+    }
   }
 }

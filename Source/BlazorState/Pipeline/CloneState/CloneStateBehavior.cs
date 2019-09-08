@@ -27,6 +27,7 @@
       CancellationToken aCancellationToken,
       RequestHandlerDelegate<TResponse> aNext)
     {
+      Type declaringType = typeof(TRequest).DeclaringType;
       // logging variables
       string className = GetType().Name;
       className = className.Remove(className.IndexOf('`'));
@@ -35,23 +36,22 @@
       Logger.LogDebug($"Pipeline Start: {requestId}");
       Logger.LogDebug($"{className}: Start");
 
-      Type responseType = typeof(TResponse);
-
-      var originalState = default(TResponse);
+      IState originalState = default;
       // Constrain here if not IState then ignore.
-      if (typeof(IState).IsAssignableFrom(responseType))
+      if (typeof(IState).IsAssignableFrom(declaringType))
       {
-        Logger.LogDebug($"{className}: Clone State of type {responseType}");
-        originalState = Store.GetState<TResponse>();
-        Logger.LogDebug($"{className}: originalState.Guid:{((IState)originalState).Guid}");
-        TResponse newState = (originalState is ICloneable clonable) ? (TResponse)clonable.Clone() : originalState.Clone();
-        Logger.LogDebug($"{className}: newState.Guid:{((IState)newState).Guid}");
+        Logger.LogDebug($"{className}: Clone State of type {declaringType}");
+        originalState = Store.GetState(declaringType) as IState;
+        Logger.LogDebug($"{className}: originalState.Guid:{originalState.Guid}");
+        IState newState = (originalState is ICloneable clonable) ? (IState)clonable.Clone() : originalState.Clone();
+        Logger.LogDebug($"{className}: newState.Guid:{newState.Guid}");
         Store.SetState(newState as IState);
       }
       else
       {
-        Logger.LogDebug($"{className}: Not cloning State because {responseType.Name} is not an IState");
+        Logger.LogDebug($"{className}: Not cloning State because {declaringType} is not an IState");
       }
+
       try
       {
         Logger.LogDebug($"{className}: Call next");
@@ -70,7 +70,7 @@
         // But as a rule if this is an exception it should be unexpected.
         Logger.LogError($"{className}: Error: {aException.Message}");
         Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
-        Logger.LogError($"{className}: Restoring State of type: {responseType}");
+        Logger.LogError($"{className}: Restoring State of type: {declaringType}");
         if (originalState != null)
         {
           Store.SetState(originalState as IState);
