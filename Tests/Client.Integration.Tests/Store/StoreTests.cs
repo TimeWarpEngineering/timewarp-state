@@ -13,14 +13,13 @@
   internal class StoreTests
   {
     private readonly IReduxDevToolsStore ReduxDevToolsStore;
-    private readonly IServiceProvider ServiceProvider;
     private readonly IStore Store;
 
     public StoreTests(TestFixture aTestFixture)
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      Store = ServiceProvider.GetService<IStore>();
-      ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
+      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      Store = serviceProvider.GetService<IStore>();
+      ReduxDevToolsStore = serviceProvider.GetService<IReduxDevToolsStore>();
     }
 
     public void ShouldLoadStatesFromJson()

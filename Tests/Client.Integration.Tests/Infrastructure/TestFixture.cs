@@ -19,7 +19,7 @@
     /// <summary>
     /// This is used to host the Client Side `TesatApp.Client`
     /// </summary>
-    public readonly IWebAssemblyHostBuilder WebAssemblyHostBuilder;
+    private readonly IWebAssemblyHostBuilder WebAssemblyHostBuilder;
 
     private readonly BlazorStateTestServer BlazorStateTestServer;
 
