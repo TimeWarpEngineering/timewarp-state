@@ -5,6 +5,8 @@
 
   public class TestingConvention : Discovery, Execution
   {
+    private readonly IServiceScopeFactory ServiceScopeFactory;
+
     public TestingConvention()
     {
       var testServices = new ServiceCollection();
@@ -14,8 +16,6 @@
 
       Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
     }
-
-    private IServiceScopeFactory ServiceScopeFactory { get; }
 
     public void Execute(TestClass aTestClass)
     {

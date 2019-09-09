@@ -1,27 +1,26 @@
 ﻿namespace TestApp.Client.Integration.Tests
 {
+  using BlazorState;
+  using Microsoft.Extensions.DependencyInjection;
+  using Shouldly;
   using System;
   using System.IO;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.WeatherForecast;
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
-  using Shouldly;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  class StoreTests
+  internal class StoreTests
   {
+    private readonly IReduxDevToolsStore ReduxDevToolsStore;
+    private readonly IStore Store;
+
     public StoreTests(TestFixture aTestFixture)
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      Store = ServiceProvider.GetService<IStore>();
-      ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
+      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      Store = serviceProvider.GetService<IStore>();
+      ReduxDevToolsStore = serviceProvider.GetService<IReduxDevToolsStore>();
     }
-
-    private IServiceProvider ServiceProvider { get; }
-    private IStore Store { get; }
-    private IReduxDevToolsStore ReduxDevToolsStore { get; }
 
     public void ShouldLoadStatesFromJson()
     {

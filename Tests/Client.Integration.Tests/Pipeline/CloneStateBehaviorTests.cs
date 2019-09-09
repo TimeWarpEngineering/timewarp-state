@@ -1,31 +1,31 @@
 ﻿namespace TestApp.Client.Integration.Tests.Pipeline
 {
-  using System;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
-  using TestApp.Client.Features.Counter;
+  using System;
+  using System.Threading.Tasks;
   using TestApp.Client.Features.CloneTest;
+  using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
-  using static TestApp.Client.Features.Counter.CounterState;
   using static TestApp.Client.Features.CloneTest.CloneTestState;
+  using static TestApp.Client.Features.Counter.CounterState;
 
   internal class CloneStateBehaviorTests
   {
+    private readonly IMediator Mediator;
+    private readonly IStore Store;
+
+    private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
+    private CounterState CounterState => Store.GetState<CounterState>();
+
     public CloneStateBehaviorTests(TestFixture aTestFixture)
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      Mediator = ServiceProvider.GetService<IMediator>();
-      Store = ServiceProvider.GetService<IStore>();
+      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      Mediator = serviceProvider.GetService<IMediator>();
+      Store = serviceProvider.GetService<IStore>();
     }
-
-    private CounterState CounterState => Store.GetState<CounterState>();
-    private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
-    private IMediator Mediator { get; }
-    private IServiceProvider ServiceProvider { get; }
-    private IStore Store { get; }
 
     public async Task ShouldCloneState()
     {
@@ -44,6 +44,23 @@
 
       //Assert
       CounterState.Guid.ShouldNotBe(preActionGuid);
+    }
+
+    public async Task ShouldCloneStateUsingOverridenClone()
+    {
+      //Arrange
+      CloneTestState.Initialize(aCount: 15);
+      Guid preActionGuid = CloneTestState.Guid;
+
+      // Create request
+      var cloneTestAction = new CloneTestAction { };
+      //Act
+      // Send Request
+      _ = await Mediator.Send(cloneTestAction);
+
+      //Assert
+      CloneTestState.Guid.ShouldNotBe(preActionGuid);
+      CloneTestState.Count.ShouldBe(42);
     }
 
     public async Task ShouldRollBackStateAndThrow()
@@ -66,23 +83,5 @@
       exception.Message.ShouldBe(throwExceptionAction.Message);
       CounterState.Guid.Equals(preActionGuid);
     }
-
-    public async Task ShouldCloneStateUsingOverridenClone()
-    {
-      //Arrange
-      CloneTestState.Initialize(aCount: 15);
-      Guid preActionGuid = CloneTestState.Guid;
-
-      // Create request
-      var cloneTestAction = new CloneTestAction { };
-      //Act
-      // Send Request
-      _ = await Mediator.Send(cloneTestAction);
-
-      //Assert
-      CloneTestState.Guid.ShouldNotBe(preActionGuid);
-      CloneTestState.Count.ShouldBe(42);
-    }
-
   }
 }

@@ -19,8 +19,8 @@
       Store = aStore;
     }
 
-    private ILogger Logger { get; }
-    private IStore Store { get; }
+    private readonly ILogger Logger;
+    private readonly IStore Store;
 
     public async Task<TResponse> Handle(
       TRequest aRequest,

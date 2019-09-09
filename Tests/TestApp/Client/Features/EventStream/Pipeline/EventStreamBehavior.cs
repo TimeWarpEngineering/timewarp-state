@@ -1,11 +1,10 @@
 ﻿namespace TestApp.Client.Features.EventStream
 {
+  using MediatR;
+  using Microsoft.Extensions.Logging;
   using System;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState;
-  using MediatR;
-  using Microsoft.Extensions.Logging;
   using TestApp.Api.Features.Base;
   using static TestApp.Client.Features.EventStream.EventStreamState;
 
@@ -17,6 +16,10 @@
   /// <remarks>To avoid infinite recursion don't add AddEvent to the event stream</remarks>
   public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
+    private readonly ILogger Logger;
+    private readonly IMediator Mediator;
+    public Guid Guid { get; } = Guid.NewGuid();
+
     public EventStreamBehavior
     (
       ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
@@ -28,10 +31,6 @@
       Logger.LogDebug($"{GetType().Name}: Constructor");
     }
 
-    public Guid Guid { get; } = Guid.NewGuid();
-    private ILogger Logger { get; }
-    private IMediator Mediator { get; }
-
     public async Task<TResponse> Handle
     (
       TRequest aRequest,
@@ -39,6 +38,10 @@
       RequestHandlerDelegate<TResponse> aNext
     )
     {
+      if (aNext is null)
+      {
+        throw new ArgumentNullException(nameof(aNext));
+      }
       await AddEventToStream(aRequest, "Start");
       TResponse newState = await aNext();
       await AddEventToStream(aRequest, "Completed");

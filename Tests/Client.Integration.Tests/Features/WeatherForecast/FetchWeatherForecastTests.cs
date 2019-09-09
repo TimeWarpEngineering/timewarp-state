@@ -12,19 +12,16 @@
 
   internal class FetchWeatherForecastTests
   {
-    private IMediator Mediator { get; }
-
-    private IServiceProvider ServiceProvider { get; }
-
-    private IStore Store { get; }
+    private readonly IMediator Mediator;
+    private readonly IStore Store;
 
     private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 
     public FetchWeatherForecastTests(TestFixture aTestFixture)
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      Mediator = ServiceProvider.GetService<IMediator>();
-      Store = ServiceProvider.GetService<IStore>();
+      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      Mediator = serviceProvider.GetService<IMediator>();
+      Store = serviceProvider.GetService<IStore>();
     }
 
     public async Task Should_Fetch_WeatherForecasts()

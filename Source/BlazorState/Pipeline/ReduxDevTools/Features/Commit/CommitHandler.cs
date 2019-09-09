@@ -6,8 +6,14 @@
 
   internal class CommitHandler : RequestHandler<CommitRequest>
   {
+    private readonly ILogger Logger;
+
+    private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
+
+    private readonly IReduxDevToolsStore Store;
+
     public CommitHandler(
-      ILogger<CommitHandler> aLogger,
+                  ILogger<CommitHandler> aLogger,
       IReduxDevToolsStore aStore,
       ReduxDevToolsInterop aReduxDevToolsInterop)
     {
@@ -16,10 +22,6 @@
       Store = aStore;
       ReduxDevToolsInterop = aReduxDevToolsInterop;
     }
-
-    private ILogger Logger { get; }
-    private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-    private IReduxDevToolsStore Store { get; }
 
     protected override void Handle(CommitRequest aRequest)
     {

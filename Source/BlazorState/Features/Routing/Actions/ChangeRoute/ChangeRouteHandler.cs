@@ -1,26 +1,27 @@
 ﻿namespace BlazorState.Features.Routing
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
   using Microsoft.AspNetCore.Components;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   public partial class RouteState
   {
     internal class ChangeRouteHandler : ActionHandler<ChangeRouteAction>
     {
-      public ChangeRouteHandler(
-        IStore aStore,
-        NavigationManager aNavigationManager
-        ) : base(aStore)
-      {
-        NavigationManager = aNavigationManager;
-      }
+      private readonly NavigationManager NavigationManager;
 
       private RouteState RouteState => Store.GetState<RouteState>();
 
-      private NavigationManager NavigationManager { get; }
+      public ChangeRouteHandler
+      (
+        IStore aStore,
+        NavigationManager aNavigationManager
+      ) : base(aStore)
+      {
+        NavigationManager = aNavigationManager;
+      }
 
       public override Task<Unit> Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
       {
@@ -29,7 +30,7 @@
 
         if (absoluteUri != newAbsoluteUri)
         {
-          // RouteManager OnLocationChanged will fire this ChangeRouteRequest again 
+          // RouteManager OnLocationChanged will fire this ChangeRouteRequest again
           // and the second time we will hit the `else` clause.
           NavigationManager.NavigateTo(newAbsoluteUri);
         }

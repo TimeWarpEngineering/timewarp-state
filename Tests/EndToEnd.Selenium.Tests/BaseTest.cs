@@ -1,17 +1,16 @@
 ﻿namespace TestApp.EndToEnd.Tests
 {
-  using System;
   using OpenQA.Selenium;
   using OpenQA.Selenium.Support.UI;
+  using System;
   using TestApp.EndToEnd.Tests.Infrastructure;
 
   public abstract class BaseTest
   {
-    protected IJavaScriptExecutor JavaScriptExecutor { get; }
+    protected readonly IJavaScriptExecutor JavaScriptExecutor;
+    protected readonly IWebDriver WebDriver;
+    private readonly ServerFixture ServerFixture;
     protected TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(10);
-    protected IWebDriver WebDriver { get; }
-
-    private ServerFixture ServerFixture { get; }
 
     public BaseTest(IWebDriver aWebDriver, ServerFixture aServerFixture)
     {

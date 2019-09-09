@@ -10,7 +10,6 @@
   /// Base Handler that makes it easy to access state
   /// </summary>
   /// <typeparam name="TAction"></typeparam>
-  /// <typeparam name="TState"></typeparam>
   internal abstract class BaseHandler<TAction> : ActionHandler<TAction>
     where TAction : IAction
   {

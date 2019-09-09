@@ -1,13 +1,16 @@
 ﻿namespace TestApp.Client.Pipeline.NotificationPreProcessor
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using MediatR;
   using MediatR.Pipeline;
   using Microsoft.Extensions.Logging;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   internal class PrePipelineNotificationRequestPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
   {
+    private readonly ILogger Logger;
+    private readonly IMediator Mediator;
+
     public PrePipelineNotificationRequestPreProcessor
     (
       ILogger<PrePipelineNotificationRequestPreProcessor<TRequest>> aLogger,
@@ -17,9 +20,6 @@
       Logger = aLogger;
       Mediator = aMediator;
     }
-
-    private ILogger Logger { get; }
-    private IMediator Mediator { get; }
 
     public async Task Process(TRequest aRequest, CancellationToken aCancellationToken)
     {

@@ -1,29 +1,28 @@
 ﻿namespace TestApp.Client.Features.WeatherForecast
 {
-  using System.Collections.Generic;
+  using BlazorState;
+  using MediatR;
+  using Microsoft.AspNetCore.Components;
   using System.Net.Http;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState;
   using TestApp.Api.Features.WeatherForecast;
-  using Microsoft.AspNetCore.Components;
-  using MediatR;
+  using TestApp.Client.Features.Base;
 
   internal partial class WeatherForecastsState
   {
-    public class FetchWeatherForecastsHandler : ActionHandler<FetchWeatherForecastsAction>
+    public class FetchWeatherForecastsHandler : BaseHandler<FetchWeatherForecastsAction>
     {
+      private readonly HttpClient HttpClient;
+
       public FetchWeatherForecastsHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
       {
         HttpClient = aHttpClient;
       }
 
-      private HttpClient HttpClient { get; }
-      private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
-
       public override async Task<Unit> Handle
       (
-        FetchWeatherForecastsAction aFetchWeatherForecastsRequest,
+        FetchWeatherForecastsAction aFetchWeatherForecastsAction,
         CancellationToken aCancellationToken
       )
       {

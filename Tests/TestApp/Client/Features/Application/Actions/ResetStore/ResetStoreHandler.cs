@@ -8,14 +8,14 @@
 
   internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>
   {
+    private readonly IMediator Mediator;
+    private readonly IStore Store;
     public ResetStoreHandler(IStore aStore, IMediator aMediator)
     {
       Mediator = aMediator;
       Store = aStore;
     }
 
-    private IMediator Mediator { get; }
-    private IStore Store { get; }
 
     public async Task<Unit> Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
     {
