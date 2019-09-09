@@ -5,13 +5,21 @@
   using Microsoft.AspNetCore.Components.Routing;
 
   /// <summary>
-  /// When constructed will attach a OnLocationChanged Handler 
+  /// When constructed will attach a OnLocationChanged Handler
   /// to send ChangeRouteRequest
   /// </summary>
   public class RouteManager
   {
+    private readonly IMediator Mediator;
+
+    private readonly NavigationManager NavigationManager;
+
+    private readonly IStore Store;
+
+    private RouteState RouteState => Store.GetState<RouteState>();
+
     public RouteManager(
-      NavigationManager aNavigationManager,
+                      NavigationManager aNavigationManager,
       IMediator aMediator,
       IStore aStore)
     {
@@ -21,11 +29,6 @@
       NavigationManager.LocationChanged += LocationChanged;
       Mediator.Send(new RouteState.InitializeRouteAction());
     }
-
-    private IMediator Mediator { get; }
-    private RouteState RouteState => Store.GetState<RouteState>();
-    private IStore Store { get; }
-    private NavigationManager NavigationManager { get; }
 
     private void LocationChanged(object aSender, LocationChangedEventArgs aLocationChangedEventArgs)
     {

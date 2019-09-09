@@ -12,11 +12,11 @@
 
   internal class FetchWeatherForecastTests
   {
-    private IMediator Mediator { get; }
+    private readonly IMediator Mediator;
 
-    private IServiceProvider ServiceProvider { get; }
+    private readonly IServiceProvider ServiceProvider;
 
-    private IStore Store { get; }
+    private readonly IStore Store;
 
     private WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 

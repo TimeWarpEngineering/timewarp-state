@@ -23,9 +23,9 @@
 
     private CounterState CounterState => Store.GetState<CounterState>();
     private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
-    private IMediator Mediator { get; }
-    private IServiceProvider ServiceProvider { get; }
-    private IStore Store { get; }
+    private readonly IMediator Mediator;
+    private readonly IServiceProvider ServiceProvider;
+    private readonly IStore Store;
 
     public async Task ShouldCloneState()
     {

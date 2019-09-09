@@ -6,8 +6,14 @@
 
   internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
   {
+    private readonly ILogger Logger;
+
+    private readonly IReduxDevToolsStore Store;
+
+    private readonly Subscriptions Subscriptions;
+
     public JumpToStateHandler(
-      ILogger<JumpToStateHandler> aLogger,
+                  ILogger<JumpToStateHandler> aLogger,
       IReduxDevToolsStore aStore,
       Subscriptions aSubscriptions)
     {
@@ -16,10 +22,6 @@
       Store = aStore;
       Subscriptions = aSubscriptions;
     }
-
-    private Subscriptions Subscriptions { get; }
-    private ILogger Logger { get; }
-    private IReduxDevToolsStore Store { get; }
 
     protected override void Handle(JumpToStateRequest aRequest)
     {

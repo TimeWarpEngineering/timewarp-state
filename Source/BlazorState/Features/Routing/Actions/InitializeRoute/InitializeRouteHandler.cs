@@ -10,17 +10,18 @@
   {
     internal class InitializeRouteHandler : ActionHandler<InitializeRouteAction>
     {
-      public InitializeRouteHandler(
+      public InitializeRouteHandler
+      (
         IStore aStore,
         NavigationManager aNavigationManager
-        ) : base(aStore)
+      ) : base(aStore)
       {
         NavigationManager = aNavigationManager;
       }
 
       private RouteState RouteState => Store.GetState<RouteState>();
 
-      private NavigationManager NavigationManager { get; }
+      private readonly NavigationManager NavigationManager;
 
       public override Task<Unit> Handle(InitializeRouteAction aInitializeRouteRequest, CancellationToken aCancellationToken)
       {

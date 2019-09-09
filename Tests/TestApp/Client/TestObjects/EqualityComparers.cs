@@ -5,11 +5,11 @@
 
   public class DictionaryComparer<TKey, TValue> : IEqualityComparer<IDictionary<TKey, TValue>>
   {
-    private IEqualityComparer<TValue> valueComparer { get; }
+    private readonly IEqualityComparer<TValue> ValueComparer;
 
     public DictionaryComparer(IEqualityComparer<TValue> aValueComparer = null)
     {
-      valueComparer = aValueComparer ?? EqualityComparer<TValue>.Default;
+      ValueComparer = aValueComparer ?? EqualityComparer<TValue>.Default;
     }
 
     public bool Equals(IDictionary<TKey, TValue> aDictionary1, IDictionary<TKey, TValue> aDictionary2)
@@ -20,7 +20,7 @@
 
       foreach (KeyValuePair<TKey, TValue> pair in aDictionary1)
       {
-        if (!valueComparer.Equals(pair.Value, aDictionary2[pair.Key])) return false;
+        if (!ValueComparer.Equals(pair.Value, aDictionary2[pair.Key])) return false;
       }
 
       return true;

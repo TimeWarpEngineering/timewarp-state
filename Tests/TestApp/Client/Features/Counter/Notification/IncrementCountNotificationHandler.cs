@@ -24,7 +24,7 @@
     {
       Logger.LogDebug(aPostPipelineNotification.Request.GetType().Name);
       Logger.LogDebug($"{nameof(IncrementCountNotificationHandler)} handled");
-      return Task.CompletedTask;
+      return Unit.Task;
     }
   }
 }

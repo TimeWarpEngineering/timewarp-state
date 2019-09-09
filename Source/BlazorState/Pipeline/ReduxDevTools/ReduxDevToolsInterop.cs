@@ -1,17 +1,23 @@
 ﻿namespace BlazorState.Pipeline.ReduxDevTools
 {
-  using System;
-  using System.Threading.Tasks;
-  using BlazorState.Services;
   using Microsoft.Extensions.Logging;
   using Microsoft.JSInterop;
+  using System.Threading.Tasks;
 
   public class ReduxDevToolsInterop
   {
     private const string JsFunctionName = "reduxDevTools.ReduxDevToolsDispatch";
 
+    private readonly IJSRuntime JSRuntime;
+
+    private readonly ILogger Logger;
+
+    private readonly IReduxDevToolsStore Store;
+
+    public bool IsEnabled { get; set; }
+
     public ReduxDevToolsInterop(
-      ILogger<ReduxDevToolsInterop> aLogger,
+                      ILogger<ReduxDevToolsInterop> aLogger,
       IReduxDevToolsStore aStore,
       IJSRuntime aJSRuntime)
     {
@@ -19,11 +25,6 @@
       Store = aStore;
       JSRuntime = aJSRuntime;
     }
-
-    public bool IsEnabled { get; set; }
-    private IJSRuntime JSRuntime { get; }
-    private ILogger Logger { get; }
-    private IReduxDevToolsStore Store { get; }
 
     public void Dispatch<TRequest>(TRequest aRequest, object aState)
     {

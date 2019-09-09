@@ -15,11 +15,11 @@
   /// <typeparam name="TResponse"></typeparam>
   public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
-    private ILogger Logger { get; }
+    private readonly ILogger Logger;
 
-    private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
+    private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
 
-    private IReduxDevToolsStore Store { get; }
+    private readonly IReduxDevToolsStore Store;
 
     public ReduxDevToolsPostProcessor
     (

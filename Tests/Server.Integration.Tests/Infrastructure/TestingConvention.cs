@@ -5,6 +5,8 @@
 
   public class TestingConvention : Discovery, Execution
   {
+    private readonly IServiceScopeFactory ServiceScopeFactory;
+
     public TestingConvention()
     {
       var testServices = new ServiceCollection();
@@ -14,7 +16,6 @@
       Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
     }
 
-    private IServiceScopeFactory ServiceScopeFactory { get; }
     public void Execute(TestClass aTestClass)
     {
       aTestClass.RunCases(aCase =>
@@ -32,6 +33,7 @@
       System.Reflection.MethodInfo method = aInstance.GetType().GetMethod(nameof(Setup));
       method?.Execute(aInstance);
     }
+
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
       aServiceCollection.AddSingleton<BlazorStateTestServer>();

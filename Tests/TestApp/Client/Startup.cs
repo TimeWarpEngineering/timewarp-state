@@ -1,6 +1,5 @@
 ﻿namespace TestApp.Client
 {
-  //using Blazor.Extensions.Logging;
   using BlazorState;
   using MediatR;
   using Microsoft.AspNetCore.Components.Builder;
