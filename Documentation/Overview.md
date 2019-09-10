@@ -24,7 +24,7 @@ dotnet add package Blazor-State --version 1.0.0-3.0.100-preview9-014004-*
 
 If you are just beginning with blazor then I recommend you first check out [getting started with blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started).
 
-The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](https://timewarpengineering.github.io/timewarp-templates/TimeWarp.Blazor.Template/Overview.html)
+The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](https://timewarpengineering.github.io/timewarp-templates/TimeWarpBlazorTemplate/Overview.html)
 Which gives you a base line for both client, server, and testing.
 
 ### Tutorial
