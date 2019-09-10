@@ -5,10 +5,8 @@
 
 Blazor-State is a State Management architecture utilizing the MediatR pipeline.
 
-If you are familiar with
-[MediatR](https://github.com/jbogard/MediatR),
- [Redux](https://redux.js.org/),
-or the [Command Pattern](https://en.wikipedia.org/wiki/Command_pattern)
+If you are familiar with MediatR <sup><a href="#footnotes">1</a></sup>, Redux <sup><a href="#footnotes">2</a></sup>,
+or the Command Pattern <sup><a href="#footnotes">3</a></sup>
 you will feel right at home.
 All of the behaviors are written as plug-ins/middle-ware and attached to the MediatR pipeline.
 
@@ -19,19 +17,19 @@ Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/blazor-sta
 Blazor-State is available as a [Nuget Package](https://www.nuget.org/packages/Blazor-State/)
 
 ```console
-dotnet add package Blazor-State --version 1.0.0-3.0.100-preview9-014004-100
+dotnet add package Blazor-State --version 1.0.0-3.0.100-preview9-014004-*
 ```
 
 ## Getting Started
 
 If you are just beginning with blazor then I recommend you first check out [getting started with blazor](https://docs.microsoft.com/en-us/aspnet/core/blazor/get-started).
 
-The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](./TemplateOverview.md)
+The easiest way to get started with blazor-state is to create a new application based on the [timewarp-blazor template](https://timewarpengineering.github.io/timewarp-templates/TimeWarp.Blazor.Template/Overview.html)
 Which gives you a base line for both client, server, and testing.
 
 ### Tutorial
 
-If you would like a basic step by step on adding blazor-state to the `blazorhosted` template then follow this [tutorial](xref:BlazorStateSample:README.md).
+If you would like a basic step by step on adding blazor-state to the `blazorwasm --hosted` template then follow this [tutorial](xref:BlazorStateSample:README.md).
 
 ## Architecture
 
@@ -39,7 +37,7 @@ If you would like a basic step by step on adding blazor-state to the `blazorhost
 
 Blazor-State Implements a single `Store` with a collection of `State`s.
 
-To access the state you can either inherit from the BlazorStateComponent and use
+To access a state you can either inherit from the BlazorStateComponent and use
 
 ```csharp
 Store.GetState<YourState>()
@@ -58,8 +56,8 @@ or move the GetState functionality into your component
 
 ### Pipeline
 Blazor-State utilizes the MediatR pipeline which allows for easy middleware integration
-by registering an interface with the [dependency injection container]((https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection)).
-Blazor-State provides the [extension method](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods), `AddBlazorState`, which registers behaviors on the pipeline.
+by registering an interface with the dependency injection container <sup><a href="#footnotes">4</a></sup>.
+Blazor-State provides the extension method <sup><a href="#footnotes">5</a></sup> , `AddBlazorState`, which registers behaviors on the pipeline.
 
 The three interfaces available to extend the Pipeline are `IPipelineBehavior`, `IRequestPreProcessor`,
 and `IRequestPostProcessor`;
@@ -76,14 +74,13 @@ If any exception occurs during the processing of the `Action` the state is rolle
 
 #### RenderSubscriptionsPostProcessor
 
-When a component accesses `State` we add a subscription.
+When a component accesses `State` a subscription is added.
 The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components.
 So you don't have to worry about where to call `StateHasChanged`.
 
 #### ReduxDevToolsPostProcessor
 
-One of the nice features of redux is the
-[developer tools](https://github.com/zalmoxisus/redux-devtools-extension).
+One of the nice features of redux is the developer tools <sup><a href="#footnotes">6</a></sup>.
 This processor implements the integration of these developer tools.
 
 ### JavaScript Interop
@@ -109,3 +106,16 @@ if the developer chose they could mark the Requests as such. For example **IActi
 [The Unlicense](https://choosealicense.com/licenses/unlicense/)
 
 [!include[Contributing](Partials/contributing.md)]
+
+#### Footnotes:
+[1] https://github.com/jbogard/MediatR
+
+[2] https://redux.js.org/
+
+[3] https://en.wikipedia.org/wiki/Command_pattern
+
+[4] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection
+
+[5] https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
+
+[6] https://github.com/zalmoxisus/redux-devtools-extension)
