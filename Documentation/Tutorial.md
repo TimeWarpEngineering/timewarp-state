@@ -1,6 +1,6 @@
 ---
-uid: BlazorStateSample:README.md
-title: Blazor-State Sample Application
+uid: BlazorState:Tutorial.md
+title: Blazor-State Tutorial
 ---
 
 # Blazor-State Sample Application
@@ -40,7 +40,7 @@ Open a browser and enter <http://localhost:5000>
 
 You should see:
 
-Insert Image here.
+![BlazorWasm Hosted ScreenShot](Images/BlazorWasmHostedScreenShot.png)
 
 Go to the Counter page and click the `Click me` button.
 Observe the incrementing of the value.
@@ -56,7 +56,7 @@ Return to the home page. Then back to the counter page.
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add .\Client\Sample.Client.csproj package Blazor-State --version 1.0.0-3.0.100-preview9-014004-100`
+   `dotnet add .\Client\Sample.Client.csproj package Blazor-State --version 1.0.0-3.0.100-preview9-014004-*`
 
 ## Feature File Structure
 
@@ -76,7 +76,7 @@ Your class should:
 
 * be a partial class
 * inherit from `State<CounterState>`
-* override the `Initialize()` method. To set the initial values.
+* override the `Initialize()` method. To set the initial `Count` to 3.
 
 The only value we want to maintain is a Count.
 The code for the class should be as follows.
@@ -119,7 +119,7 @@ namespace Sample.Client
         (aOptions) => aOptions.Assemblies =
           new Assembly[]
           {
-                typeof(Startup).GetTypeInfo().Assembly,
+            typeof(Startup).GetTypeInfo().Assembly,
           }
       );
       services.AddScoped<CounterState>();
@@ -139,7 +139,7 @@ namespace Sample.Client
 2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
 3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
 4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
-5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented. 
+5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented.
  From the outside CounterState class the state is immutable.
  So lets comment out that line.
 
@@ -181,16 +181,17 @@ The `Action` is then handled by a `Handler` which can freely mutate the state.
 > [!Warning]
 > State should NOT be mutated by anything other than handlers.
 > All state changes should be done in handlers.
-> This can be controlled by making state immutable and your handlers a nested class of the state they modify.
+> This can be controlled by making the states public interface immutable and your handlers a nested class of the state they modify.
 
-## Create the `IncrementCounterRequest`
+## Create the `IncrementCounterAction`
 
 1. In the Client project ensure the path `Features\Counter\Actions\IncrementCount` folder.
 2. In this folder create a class named `IncrementCountAction.cs`.
 
 The class should:
 
-* inherit from `IRequest<CounterState>`
+* be a nested class of the state it will mutate `CounterState`
+* inherit from `IAction`
 * have namespace Sample.Client.Features.Counter
 * contain the Amount property
 as follows:
@@ -198,14 +199,16 @@ as follows:
 ```csharp
 namespace Sample.Client.Features.Counter
 {
-  using MediatR;
+  using BlazorState;
 
-  public class IncrementCountAction : IRequest<CounterState>
+  public partial class CounterState
   {
-    public int Amount { get; set; }
+    public class IncrementCountAction : IAction
+    {
+      public int Amount { get; set; }
+    }
   }
 }
-
 ```
 
 ## Sending the action through the mediator pipeline
@@ -216,7 +219,7 @@ In `Pages\Counter.razor` update the `IncrementCount` function as follows:
 ```csharp
 void IncrementCount()
 {
-    Mediator.Send(new IncrementCountAction { Amount = 5 });
+    Mediator.Send(new CounterState.IncrementCountAction { Amount = 5 });
 }
 ```
 
@@ -230,8 +233,8 @@ The `Handler` is where we actually mutate the state to complete the `Action`.
 The Handler should:
 
 * be a nested class of the state it will mutate `CounterState`
-* Inherit from `BlazorState.Handlers.RequestHandler`.
-* The generic parameters are the Request Type `IncrementCountRequest` and the state type `CounterState`.
+* Inherit from `BlazorState.Handlers.ActionHandler`.
+* The generic parameters are the Request Type `IncrementCountAction` and the return type `Unit` (which is a MediatR version of void).
 * Override the `Handle` method to mutate state as desired:
 
 ```csharp

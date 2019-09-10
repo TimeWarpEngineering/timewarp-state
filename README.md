@@ -2,7 +2,7 @@
 
 [![Build Status](https://timewarpenterprises.visualstudio.com/Blazor-State/_apis/build/status/Blazor-State-CI-Master-Yaml)](https://timewarpenterprises.visualstudio.com/Blazor-State/_build/latest?definitionId=7)
 [![nuget](https://img.shields.io/nuget/v/Blazor-State.svg)](https://www.nuget.org/packages/Blazor-State/)
-[![nuget](https://img.shields.io/nuget/dt/AnyClone.svg)](https://www.nuget.org/packages/Blazor-State/)
+[![nuget](https://img.shields.io/nuget/dt/Blazor-State.svg)](https://www.nuget.org/packages/Blazor-State/)
 
 Blazor-State is a State Management architecture utilizing the MediatR pipeline.
 

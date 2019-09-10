@@ -1,5 +1,5 @@
 ﻿# auto-generated
 - name: Overview
-  href: Overview.md
+  topicUid: BlazorState:Overview.md
 - name: Tutorial
-  href: Sample.md
+  topicUid: BlazorState:Tutorial.md
