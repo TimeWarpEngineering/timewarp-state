@@ -21,7 +21,7 @@ dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19424.4
 1. Create a new project `dotnet new blazorwasm --hosted -n Sample`
 2. Change directory to the new project `cd Sample`
 3. Run the default application and confirm it works.  
-   `dotnet run --project .\Server\Sample.Server.csproj`
+   `dotnet run --project ./Server/Sample.Server.csproj`
 
 You should see something similar to the following:
 
@@ -56,7 +56,7 @@ Return to the home page. Then back to the counter page.
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add .\Client\Sample.Client.csproj package Blazor-State --version 1.0.0-3.0.100-preview9-014004-*`
+   `dotnet add ./Client/Sample.Client.csproj package Blazor-State --version "1.0.0-3.0.100-preview9-014004-*"`
 
 ## Feature File Structure
 
@@ -243,18 +243,20 @@ namespace Sample.Client.Features.Counter
   using System.Threading;
   using System.Threading.Tasks;
   using BlazorState;
+  using MediatR;
+
   public partial class CounterState
   {
-    public class IncrementCountHandler : RequestHandler<IncrementCountAction, CounterState>
+    public class IncrementCountHandler : ActionHandler<IncrementCountAction>
     {
       public IncrementCountHandler(IStore aStore) : base(aStore) { }
 
       CounterState CounterState => Store.GetState<CounterState>();
 
-      public override Task<CounterState> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
+      public override Task<Unit> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
       {
         CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
-        return Task.FromResult(CounterState);
+        return Unit.Task;
       }
     }
   }
