@@ -6,7 +6,7 @@
   using System.Threading.Tasks;
   using TestApp.Client.Features.Base;
 
-  internal partial class CounterState
+  public partial class CounterState
   {
     internal class IncrementCounterHandler : BaseHandler<IncrementCounterAction>
     {

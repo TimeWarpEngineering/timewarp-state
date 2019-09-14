@@ -46,7 +46,7 @@
 
       var requestType = Type.GetType(aRequestTypeAssemblyQualifiedName);
       if (requestType == null)
-        throw new ArgumentException($"Type not found with name {aRequestTypeAssemblyQualifiedName}", nameof(aRequestTypeAssemblyQualifiedName));
+        throw new ArgumentException($"Type not found with name {aRequestTypeAssemblyQualifiedName}. Make sure the type has public accessibility", nameof(aRequestTypeAssemblyQualifiedName));
       else
         Logger.LogDebug($"{GetType().Name}: Type ({aRequestTypeAssemblyQualifiedName})  was found");
 

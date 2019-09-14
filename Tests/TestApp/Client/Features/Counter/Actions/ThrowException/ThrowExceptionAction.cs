@@ -2,7 +2,7 @@
 {
   using BlazorState;
 
-  internal partial class CounterState
+  public partial class CounterState
   {
     public class ThrowExceptionAction : IAction
     {

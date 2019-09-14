@@ -2,7 +2,7 @@
 {
   using BlazorState;
 
-  internal partial class CounterState : State<CounterState>
+  public partial class CounterState : State<CounterState>
   {
 
     public int Count { get; private set; }

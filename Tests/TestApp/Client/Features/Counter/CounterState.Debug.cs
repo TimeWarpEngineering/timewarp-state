@@ -6,7 +6,7 @@
   using BlazorState;
   using Microsoft.JSInterop;
 
-  internal partial class CounterState : State<CounterState>
+  public partial class CounterState : State<CounterState>
   {
     public override CounterState Hydrate(IDictionary<string, object> aKeyValuePairs)
     {
