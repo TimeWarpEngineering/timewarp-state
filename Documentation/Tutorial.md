@@ -135,7 +135,7 @@ namespace Sample.Client
 
 ## Displaying state in the user interface
 
-1. Edit `Pages\Counter.razor` as follows
+1. Edit `Pages/Counter.razor` as follows
 2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
 3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
 4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
@@ -185,7 +185,7 @@ The `Action` is then handled by a `Handler` which can freely mutate the state.
 
 ## Create the `IncrementCounterAction`
 
-1. In the Client project ensure the path `Features\Counter\Actions\IncrementCount` folder.
+1. In the Client project ensure the path `Features/Counter/Actions/IncrementCount` folder.
 2. In this folder create a class named `IncrementCountAction.cs`.
 
 The class should:
@@ -214,7 +214,7 @@ namespace Sample.Client.Features.Counter
 ## Sending the action through the mediator pipeline
 
 To Send the action to the pipeline when the user clicks the `Click me` button,
-In `Pages\Counter.razor` update the `IncrementCount` function as follows:
+In `Pages/Counter.razor` update the `IncrementCount` function as follows:
 
 ```csharp
 void IncrementCount()
@@ -227,7 +227,7 @@ void IncrementCount()
 
 The `Handler` is where we actually mutate the state to complete the `Action`.  
 
-1. In the `Features\Counter\IncrementCount` folder create a new class file named
+1. In the `Features/Counter/IncrementCount` folder create a new class file named
  `IncrementCountHandler.cs`
 
 The Handler should:
