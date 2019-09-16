@@ -21,7 +21,7 @@ variables:
  Major: '1'
  Minor: '0'
  Patch: '0'
- DotNetSdkVersion: 3.0.100-preview9-014004
+ DotNetSdkVersion: 3.0.100-rc1-014190
  PreviewNumber: $[counter(variables.DotNetSdkVersion,100)]
  Version: "$(Major).$(Minor).$(Patch)-$(DotNetSdkVersion)-$(PreviewNumber)"
  Configuration: debug
