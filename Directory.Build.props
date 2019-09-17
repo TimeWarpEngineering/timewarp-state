@@ -29,7 +29,6 @@
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <BlazorPreviewVersion>3.0.0-rc1.19457.4</BlazorPreviewVersion>
     <MicrosoftAspNetCoreVersion>3.0.0-rc1.19457.4</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreBlazorHttpClientVersion>3.0.0-preview9.19457.4</MicrosoftAspNetCoreBlazorHttpClientVersion>
     <MicrosoftAspNetCoreBlazorServerVersion>3.0.0-preview9.19457.4</MicrosoftAspNetCoreBlazorServerVersion>
