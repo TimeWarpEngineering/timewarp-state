@@ -13,7 +13,7 @@ This sample shows how to add Blazor-State to a `Blazor hosted WebAssembly App` a
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19424.4
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19457.4
 ```
 
 ## Creating the project
@@ -56,7 +56,7 @@ Return to the home page. Then back to the counter page.
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add ./Client/Sample.Client.csproj package Blazor-State --version "1.0.0-3.0.100-preview9-014004-*"`
+   `dotnet add ./Client/Sample.Client.csproj package Blazor-State --version "1.0.0-3.0.100-rc1-014190-*"`
 
 ## Feature File Structure
 
