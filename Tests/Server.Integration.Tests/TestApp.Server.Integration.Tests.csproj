@@ -5,14 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.msbuild" Version="2.6.3">
+    <PackageReference Include="coverlet.msbuild" Version="$(CoverletMsbuildVersion)">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftAspNetCoreTestHostVersion)" />
-    <DotNetCliToolReference Include="Fixie.Console" Version="2.0.3" />
+    <DotNetCliToolReference Include="Fixie.Console" Version="$(FixieConsoleVersion)" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
