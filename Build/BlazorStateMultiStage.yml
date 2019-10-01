@@ -49,7 +49,7 @@ stages:
   - stage: Build_Stage
     variables:
       Patch: 0
-      BuildCounterReset: "12312312432423saxxasdfadf" #$(Major).$(Minor).$(Patch)
+      BuildCounterReset: $(Major).$(Minor).$(Patch)
       BuildCounter: $[counter(variables.BuildCounterReset, 0)]
       Version: '$(Major).$(Minor).$(Patch)-$(BuildCounter)+$(DotNetSdkVersion)'
     jobs:
@@ -95,13 +95,13 @@ stages:
             inputs:
               artifactName: 'NugetPreRelease'
               buildType: current
-              targetPath: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget'
+              targetPath: '$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease'
 
           - task: NuGetCommand@2
             displayName: 'Push NuGet to Azure Devops Nuget feed.'
             inputs:
               command: push
-              packagesToPush: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget/*.nupkg;!$(Pipeline.Workspace)/PipelineArtifacts/Nuget/*.symbols.nupkg'
+              packagesToPush: '$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease/*.nupkg;!$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease/*.symbols.nupkg'
               nuGetFeedType: internal
               publishVstsFeed: 'dfe61826-f0b9-46b3-a391-23626fc363f2'
 
@@ -114,7 +114,7 @@ stages:
             clean: all
         environment: Production
         variables:
-          PatchCounterReset: "anythingdifferent to reset the thing xxx123122343399" #$(Major).$(Minor)
+          PatchCounterReset: $(Major).$(Minor)
           Patch: $[counter(variables.PatchCounterReset, 0)]
           Version: '$(Major).$(Minor).$(Patch)+$(DotNetSdkVersion)'
         strategy:
@@ -155,11 +155,11 @@ stages:
                 displayName: 'GitHub release (create)'
                 inputs:
                   gitHubConnection: 'TimeWarp Enterprises GitHub'
-                  target: '$(Build.SourceVersion)'
+                  target: $(Build.SourceVersion)
                   tagSource: userSpecifiedTag
-                  tag: '$(GitHubReleaseVersion)'
+                  tag: $(GitHubReleaseVersion)
                   repositoryName: 'TimeWarpEngineering/blazor-state'
-                  title: '$(GitHubReleaseVersion)'
+                  title: $(GitHubReleaseVersion)
                   releaseNotesSource: filePath
                   releaseNotesFilePath: 'Documentation/ReleaseNotes.md'
                   addChangeLog: true
