@@ -91,6 +91,12 @@ stages:
             clean: all
         steps:
           - script: echo Staging
+
+          - task: DeleteFiles@1
+            inputs:
+              SourceFolder: '$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease'
+              Contents: '\*'
+
           - task: DownloadPipelineArtifact@2
             inputs:
               artifactName: 'NugetPreRelease'
@@ -128,6 +134,11 @@ stages:
                   echo DotNetSdkVersion:$(DotNetSdkVersion)
                   echo Patch:$(Patch)
                   echo Version:$(Version)
+                  
+              - task: DeleteFiles@1
+                inputs:
+                  SourceFolder: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget'
+                  Contents: '\*'
                   
               - task: DotNetCoreCLI@2
                 displayName: Build BlazorState release
