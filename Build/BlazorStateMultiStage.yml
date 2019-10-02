@@ -170,7 +170,6 @@ stages:
                   tagSource: userSpecifiedTag
                   tag: $(GitHubReleaseVersion)
                   repositoryName: 'TimeWarpEngineering/blazor-state'
-                  title: $(GitHubReleaseVersion)
                   releaseNotesSource: filePath
                   releaseNotesFilePath: 'Documentation/ReleaseNotes.md'
                   addChangeLog: true
