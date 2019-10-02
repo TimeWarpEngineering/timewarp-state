@@ -172,12 +172,11 @@ stages:
                 displayName: 'GitHub release (create)'
                 inputs:
                   gitHubConnection: 'TimeWarp Enterprises GitHub'
-                  target: $(Build.SourceVersion)
-                  tagSource: userSpecifiedTag
-                  tag: v$(Version)
                   repositoryName: 'TimeWarpEngineering/blazor-state'
-                  releaseNotesSource: filePath
-                  releaseNotesFilePath: 'Documentation/ReleaseNotes.md'
-                  addChangeLog: true
+                  action: 'create'
+                  target: '$(Build.SourceVersion)'
+                  tagSource: 'userSpecifiedTag'
+                  tag: 'v$(Version)'
+                  releaseNotesSource: 'inline'
                   changeLogCompareToRelease: 'lastFullRelease'
                   changeLogType: 'commitBased'
