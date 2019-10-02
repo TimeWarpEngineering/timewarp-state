@@ -154,6 +154,12 @@ stages:
                   ArtifactName: Nuget
                   publishLocation: Container
 
+              - task: DownloadPipelineArtifact@2
+                inputs:
+                  artifactName: 'Nuget'
+                  buildType: current
+                  targetPath: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget'
+
               - task: NuGetCommand@2
                 displayName: 'Push NuGet to Nuget.org'
                 inputs:
