@@ -168,7 +168,7 @@ stages:
                   gitHubConnection: 'TimeWarp Enterprises GitHub'
                   target: $(Build.SourceVersion)
                   tagSource: userSpecifiedTag
-                  tag: $(GitHubReleaseVersion)
+                  tag: v$(Version)
                   repositoryName: 'TimeWarpEngineering/blazor-state'
                   releaseNotesSource: filePath
                   releaseNotesFilePath: 'Documentation/ReleaseNotes.md'
