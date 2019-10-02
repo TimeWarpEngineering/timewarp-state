@@ -56,7 +56,7 @@ Return to the home page. Then back to the counter page.
 ## Add Blazor-State
 
 Add the Blazor-State NuGet package to the `Sample.Client` project.
-   `dotnet add ./Client/Sample.Client.csproj package Blazor-State --version "1.0.0-3.0.100-rc1-014190-*"`
+   `dotnet add ./Client/Sample.Client.csproj package Blazor-State`
 
 ## Feature File Structure
 
