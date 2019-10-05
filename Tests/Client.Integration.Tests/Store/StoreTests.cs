@@ -49,5 +49,14 @@
       weatherForecastsState.WeatherForecasts[0].Date.Minute.ShouldBe(29);
       weatherForecastsState.WeatherForecasts[0].Date.Second.ShouldBe(54);
     }
+  
+    public void ShouldCreateStateFromContainer()
+    {
+
+    }
+    public void ShouldInitializeStateAfterConstruction()
+    {
+      Store.GetState<WeatherForecastsState>();
+    }
   }
 }
