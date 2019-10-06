@@ -6,6 +6,7 @@
   public interface IState
   {
     Guid Guid { get; }
+    void Initialize();
   }
 
   public interface IState<TState> : IState
