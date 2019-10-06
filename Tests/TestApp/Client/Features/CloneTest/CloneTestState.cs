@@ -13,7 +13,7 @@
     /// <summary>
     /// Set the Initial State
     /// </summary>
-    protected override void Initialize() => Count = 3;
+    public override void Initialize() => Count = 3;
     public object Clone() => new CloneTestState { Count = 42 };
   }
 }
