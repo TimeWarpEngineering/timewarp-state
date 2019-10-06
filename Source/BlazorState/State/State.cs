@@ -7,10 +7,6 @@
 
   public abstract class State<TState> : IState<TState>
   {
-    public State()
-    {
-      Initialize();
-    }
 
     [IgnoreDataMember]
     public Guid Guid { get; protected set; } = Guid.NewGuid();
@@ -40,7 +36,6 @@
     /// <summary>
     /// Override this to Set the initial state
     /// </summary>
-    protected abstract void Initialize();
-
+    public abstract void Initialize();
   }
 }

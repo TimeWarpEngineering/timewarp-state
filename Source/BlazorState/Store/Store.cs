@@ -76,7 +76,7 @@
           Logger.LogDebug($"{GetType().Name}: Creating State of type: {typeName}");
           state = (IState)ServiceProvider.GetService(aType);
           if (state == null) throw new NullReferenceException("state is null");
-          //state = (IState)Activator.CreateInstance(aType);
+          state.Initialize();
           States.Add(typeName, state);
         }
         else

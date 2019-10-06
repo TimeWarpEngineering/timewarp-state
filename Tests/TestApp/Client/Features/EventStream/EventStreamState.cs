@@ -13,6 +13,6 @@
       _Events = new List<string>();
     }
 
-    protected override void Initialize() { }
+    public override void Initialize() { }
   }
 }

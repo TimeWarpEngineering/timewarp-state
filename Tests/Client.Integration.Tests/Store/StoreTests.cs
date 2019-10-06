@@ -49,5 +49,14 @@
       weatherForecastsState.WeatherForecasts[0].Date.Minute.ShouldBe(29);
       weatherForecastsState.WeatherForecasts[0].Date.Second.ShouldBe(54);
     }
+
+    /// <summary>
+    /// WeatherForecatesState will throw an exception if items initialized in the constructor are null.
+    /// </summary>
+    public void ShouldInitializeStateAfterConstruction()
+    {
+      WeatherForecastsState state = Store.GetState<WeatherForecastsState>();
+      state.ShouldNotBeNull();
+    }
   }
 }

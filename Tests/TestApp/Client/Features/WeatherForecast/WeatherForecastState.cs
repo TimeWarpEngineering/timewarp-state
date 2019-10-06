@@ -15,6 +15,18 @@
       _WeatherForecasts = new List<WeatherForecastDto>();
     }
 
-    protected override void Initialize() { }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>used to test that constructor is complete before Initialize is called</remarks>
+    public override void Initialize() 
+    {
+      if (_WeatherForecasts is null)
+      {
+        throw new System.ArgumentNullException(nameof(_WeatherForecasts));
+      }
+
+    }
   }
 }

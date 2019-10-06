@@ -9,6 +9,6 @@
   {
     public string Route { get; private set; }
 
-    protected override void Initialize() { }
+    public override void Initialize() { }
   }
 }
