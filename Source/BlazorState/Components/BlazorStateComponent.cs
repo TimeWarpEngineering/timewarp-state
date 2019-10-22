@@ -43,9 +43,18 @@
     [Inject] public Subscriptions Subscriptions { get; set; }
 
     /// <summary>
+    /// Notifies subscribe when state has been modified before re-render.
+    /// </summary>
+    public virtual void OnStateSet() {}
+
+    /// <summary>
     /// Exposes StateHasChanged
     /// </summary>
-    public void ReRender() => base.InvokeAsync(StateHasChanged);
+    public void ReRender()
+    {
+      base.InvokeAsync(OnStateSet);
+      base.InvokeAsync(StateHasChanged);
+    }
 
     /// <summary>
     /// Place a Subscription for the calling component

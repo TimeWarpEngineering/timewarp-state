@@ -19,6 +19,7 @@
     IMediator Mediator { get; set; }
     IStore Store { get; set; }
 
+    void OnStateSet();
     void ReRender();
   }
 }
