@@ -43,9 +43,9 @@
         throw new ArgumentNullException(nameof(aNext));
       }
       await AddEventToStream(aRequest, "Start");
-      TResponse newState = await aNext();
+      TResponse response = await aNext();
       await AddEventToStream(aRequest, "Completed");
-      return newState;
+      return response;
     }
 
     private async Task AddEventToStream(TRequest aRequest, string aTag)
