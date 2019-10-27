@@ -28,7 +28,7 @@ stages:
             continueOnError: false
             inputs:
               command: test
-              arguments: '-maxcpucount:1 /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[BlazorState]*"'
+              arguments: '-maxcpucount:1 /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
               projects: '**/*.Integration.Tests/*.csproj'
               configuration: 'DefaultReduxEnabled' # the most code coverage when enabled
 
@@ -155,7 +155,7 @@ stages:
                 displayName: Build BlazorState release
                 inputs:
                   command: build
-                  arguments: '-maxcpucount:1 -p:Version=$(Version) /p:UseSourceLink=true'
+                  arguments: '-maxcpucount:1 -p:Version=$(Version)'
                   projects: 'Source/BlazorState/BlazorState.csproj'
                   configuration: 'Release'
 
