@@ -13,7 +13,7 @@
 
     public bool UseCloneStateBehavior { get; set; } = true;
 
-    public bool UseReduxDevToolsBehavior { get; set; } = true;
+    public bool UseReduxDevToolsBehavior { get; set; } = false;
 
     public bool UseRouting { get; set; } = true;
 

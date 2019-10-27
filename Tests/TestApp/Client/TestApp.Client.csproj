@@ -4,6 +4,11 @@
     <OutputType>Exe</OutputType>
     <RazorLangVersion>3.0</RazorLangVersion>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReduxDevToolsEnabled|AnyCPU'">
+    <DefineConstants>TRACE;ReduxDevToolsEnabled</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
