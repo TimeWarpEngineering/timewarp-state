@@ -56,11 +56,13 @@
       object initializeJavaScriptInterop = JavaScriptExecutor.ExecuteScript("return window.InitializeJavaScriptInterop;");
       initializeJavaScriptInterop.ShouldNotBeNull();
 
+#if ReduxDevToolsEnabled
       object reduxDevToolsFactory = JavaScriptExecutor.ExecuteScript("return window.ReduxDevToolsFactory;");
       reduxDevToolsFactory.ShouldNotBeNull();
 
       object reduxDevTools = JavaScriptExecutor.ExecuteScript("return window.reduxDevTools;");
       reduxDevTools.ShouldNotBeNull();
+#endif
 
       object jsonRequestHandler = JavaScriptExecutor.ExecuteScript("return window.jsonRequestHandler;");
       jsonRequestHandler.ShouldNotBeNull();

@@ -3,17 +3,17 @@ uid: BlazorState:Tutorial.md
 title: Blazor-State Tutorial
 ---
 
-# Blazor-State Sample Application
+# Blazor-State Tutorial
 
-This sample shows how to add Blazor-State to a `Blazor hosted WebAssembly App` application.
+This tutorial shows how to add Blazor-State to a `Blazor hosted WebAssembly App` application.
 
 ## Prerequisites
 
-1. Install the latest [.NET Core 3.0 Preview SDK release](https://dotnet.microsoft.com/download/dotnet-core/3.0).
+1. Install the latest [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) release.
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19457.4
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19465.2
 ```
 
 ## Creating the project
@@ -270,13 +270,26 @@ And when you navigate away from the page and back the value persists.
 
 ## ReduxDevTools Javascipt Interop and RouteState
 
-[ReduxDevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) are a chrome extension that let you view the Actions and State for each action.
-This is quite handy for debugging.
+To [enable ReduxDevTools](xref:BlazorState:AddReduxDevTools.md) update the `ConfigureServices` method in `Startup.cs` as follows:
 
-> [!NOTE]
-> Support for "TimeTravel" via ReduxDevTools is being removed from Blazor-State as this feature, although cool for demos, does little to assist in debugging and requires more code to implement.
-
-ReduxDevTools requires Javascript Interop.
+```
+    public void ConfigureServices(IServiceCollection services)
+    {
+      services.AddBlazorState
+      (
+        (aOptions) => 
+        {
+          aOptions.UseReduxDevToolsBehavior = true;
+          aOptions.Assemblies =
+            new Assembly[]
+            {
+              typeof(Startup).GetTypeInfo().Assembly,
+            }
+        }
+      );
+      services.AddScoped<CounterState>();
+    }
+```
 
 To facilitate Javascript Interop, enable ReduxDevTools, and manage RouteState, add `App.razor.cs` in the same directory as `App.razor` as follows:
 

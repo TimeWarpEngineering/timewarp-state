@@ -6,6 +6,7 @@
     <IsPackable>true</IsPackable>
     <RazorLangVersion>3.0</RazorLangVersion>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
   </PropertyGroup>
   <!-- End Blazor Library Template parameters-->
 
@@ -41,6 +42,10 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
+    <DefineConstants>TRACE; EnableRedux</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

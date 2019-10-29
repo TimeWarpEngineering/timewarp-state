@@ -2,8 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReduxDevToolsEnabled|AnyCPU'">
+    <DefineConstants>TRACE;ReduxDevToolsEnabled</DefineConstants>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="$(CoverletMsbuildVersion)">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

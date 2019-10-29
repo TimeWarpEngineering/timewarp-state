@@ -3,3 +3,9 @@
   topicUid: BlazorState:Overview.md
 - name: Tutorial
   topicUid: BlazorState:Tutorial.md
+- name: Topics
+  href: Topics/
+- name: Release Notes
+  href: ReleaseNotes/
+- name: Migrations
+  href: Migrations/

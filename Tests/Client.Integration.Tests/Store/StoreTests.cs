@@ -22,6 +22,7 @@
       ReduxDevToolsStore = serviceProvider.GetService<IReduxDevToolsStore>();
     }
 
+#if ReduxDevToolsEnabled
     public void ShouldLoadStatesFromJson()
     {
       //Arrange
@@ -49,6 +50,7 @@
       weatherForecastsState.WeatherForecasts[0].Date.Minute.ShouldBe(29);
       weatherForecastsState.WeatherForecasts[0].Date.Second.ShouldBe(54);
     }
+#endif
 
     /// <summary>
     /// WeatherForecatesState will throw an exception if items initialized in the constructor are null.
