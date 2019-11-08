@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.Build.NoTargets/1.0.80">
   <PropertyGroup>
     <!--Even though the TargetFramework is NOT used it is required in order to be able to open in Visual Studio-->
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
   </PropertyGroup>
 
