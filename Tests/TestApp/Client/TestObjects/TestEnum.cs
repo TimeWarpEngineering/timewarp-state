@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace AnyClone.Tests.TestObjects
 {
-    public enum TestEnum
+  using System;
+  using System.Collections.Generic;
+  using System.Text;
+
+  public enum TestEnum
     {
         Test1 = 1,
         Test2 = 2,

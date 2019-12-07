@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace AnyClone.Tests.TestObjects
 {
+  using System;
+  using System.Collections.Generic;
+
   public class InterfaceObject : ITestInterface, IEquatable<InterfaceObject>
   {
     public bool BoolValue { get; set; }
@@ -10,18 +10,18 @@ namespace AnyClone.Tests.TestObjects
     public IDictionary<int, BasicObject> DictionaryValue { get; set; } = new Dictionary<int, BasicObject>();
 
     public override int GetHashCode() => base.GetHashCode();
-    public override bool Equals(object obj)
+    public override bool Equals(object aObj)
     {
-      var basicObject = (InterfaceObject)obj;
+      var basicObject = (InterfaceObject)aObj;
       return Equals(basicObject);
     }
 
-    public bool Equals(InterfaceObject other)
+    public bool Equals(InterfaceObject aOther)
     {
       var collectionComparer = new DictionaryComparer<int, BasicObject>();
-      bool dictionaryIsEqual = collectionComparer.Equals(DictionaryValue, other.DictionaryValue);
+      bool dictionaryIsEqual = collectionComparer.Equals(DictionaryValue, aOther.DictionaryValue);
 
-      return dictionaryIsEqual && BoolValue == other.BoolValue && IntValue == other.IntValue;
+      return dictionaryIsEqual && BoolValue == aOther.BoolValue && IntValue == aOther.IntValue;
     }
   }
 }

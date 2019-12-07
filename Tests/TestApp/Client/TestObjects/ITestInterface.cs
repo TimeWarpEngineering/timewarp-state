@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace AnyClone.Tests.TestObjects
 {
-    public interface ITestInterface
+  using System;
+  using System.Collections.Generic;
+  using System.Text;
+
+  public interface ITestInterface
     {
         bool BoolValue { get; set; }
         int IntValue { get; set; }
