@@ -1,4 +1,4 @@
-﻿namespace BlazorState
+namespace BlazorState
 {
   using Microsoft.Extensions.Logging;
   using System;
@@ -40,15 +40,12 @@
       return this;
     }
 
-    public override bool Equals(object obj) => obj is Subscriptions subscriptions && EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) && EqualityComparer<List<Subscription>>.Default.Equals(BlazorStateComponentReferencesList, subscriptions.BlazorStateComponentReferencesList);
+    public override bool Equals(object aObject) => 
+      aObject is Subscriptions subscriptions && 
+      EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) && 
+      EqualityComparer<List<Subscription>>.Default.Equals(BlazorStateComponentReferencesList, subscriptions.BlazorStateComponentReferencesList);
 
-    public override int GetHashCode()
-    {
-      var hashCode = -914156548;
-      hashCode = hashCode * -1521134295 + EqualityComparer<ILogger>.Default.GetHashCode(Logger);
-      hashCode = hashCode * -1521134295 + EqualityComparer<List<Subscription>>.Default.GetHashCode(BlazorStateComponentReferencesList);
-      return hashCode;
-    }
+    public override int GetHashCode() => HashCode.Combine(Logger, BlazorStateComponentReferencesList);
 
     public Subscriptions Remove(BlazorStateComponent aBlazorStateComponent)
     {
