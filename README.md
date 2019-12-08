@@ -36,10 +36,6 @@ Blazor-State draws on the strengths of a proven pipeline in MediatR where as Flu
 implements its own middle-ware.  
 If Blazor-State does not meet your needs be sure to checkout Fluxor.
 
-Tor Hovland ([Blazor-Redux](https://github.com/torhovland/blazor-redux)).
-I have only know Tor for a short time via the Blazor Gitter channel but he is already stimulating ideas.
-If you use F# and need state management functionality checkout his library.
-
 ## Unlicense
 
 The [Unlicense](https://choosealicense.com/licenses/unlicense/)
