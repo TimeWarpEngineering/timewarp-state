@@ -9,9 +9,9 @@ namespace AnyClone.Tests.TestObjects
     public double[] DoubleArray { get; set; }
     public int[] IntArray { get; set; }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object aObject)
     {
-      var basicObject = (ArrayObject)obj;
+      var basicObject = (ArrayObject)aObject;
       return Equals(basicObject);
     }
 

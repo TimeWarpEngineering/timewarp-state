@@ -135,11 +135,11 @@ namespace Sample.Client
 
 ## Displaying state in the user interface
 
-1. Edit `Pages/Counter.razor` as follows
-2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
-3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
-4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
-5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented.
+ 1. Edit `Pages/Counter.razor` as follows
+ 2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
+ 3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
+ 4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
+ 5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented.
  From the outside CounterState class the state is immutable.
  So lets comment out that line.
 

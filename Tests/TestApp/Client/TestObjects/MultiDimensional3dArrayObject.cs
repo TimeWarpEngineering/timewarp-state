@@ -8,9 +8,9 @@ namespace AnyClone.Tests.TestObjects
 
     public override int GetHashCode() => base.GetHashCode();
 
-    public override bool Equals(object aObj)
+    public override bool Equals(object aObject)
     {
-      var basicObject = (MultiDimensional3dArrayObject)aObj;
+      var basicObject = (MultiDimensional3dArrayObject)aObject;
       return Equals(basicObject);
     }
 

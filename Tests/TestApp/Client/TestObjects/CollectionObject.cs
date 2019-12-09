@@ -1,4 +1,4 @@
-﻿namespace AnyClone.Tests.TestObjects
+namespace AnyClone.Tests.TestObjects
 {
   using System;
   using System.Collections.Generic;
@@ -11,16 +11,16 @@
 
     public override int GetHashCode() => base.GetHashCode();
 
-    public override bool Equals(object obj)
+    public override bool Equals(object aObject)
     {
-      var basicObject = (CollectionObject)obj;
+      var basicObject = (CollectionObject)aObject;
       return Equals(basicObject);
     }
 
-    public bool Equals(CollectionObject other)
+    public bool Equals(CollectionObject aOther)
     {
-      return other.IntCollection.AsEnumerable().SequenceEqual(IntCollection)
-          && other.ObjectCollection.AsEnumerable().SequenceEqual(ObjectCollection)
+      return aOther.IntCollection.AsEnumerable().SequenceEqual(IntCollection)
+          && aOther.ObjectCollection.AsEnumerable().SequenceEqual(ObjectCollection)
           ;
     }
   }
