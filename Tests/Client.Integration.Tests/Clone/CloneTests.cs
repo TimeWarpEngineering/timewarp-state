@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Clone
+namespace TestApp.Client.Integration.Tests.Clone
 {
   using Shouldly;
   using TestApp.Client.Integration.Tests.Infrastructure;
@@ -19,7 +19,6 @@
 
   internal class CloneTests
   {
-    public CloneTests(TestFixture aTestFixture)    {    }  
 
     public void ShouldCloneTestState()
     {

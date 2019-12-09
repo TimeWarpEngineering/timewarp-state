@@ -1,15 +1,15 @@
-﻿using System.Collections.ObjectModel;
-
 namespace AnyClone.Tests.TestObjects
 {
-    public class CustomCollectionObject<T> : Collection<T>
+  using System.Collections.ObjectModel;
+
+  public class CustomCollectionObject<T> : Collection<T>
     {
         public int CustomId { get; set; }
         public string CustomName { get; set; }
-        public CustomCollectionObject(int customId, string customName)
+        public CustomCollectionObject(int aCustomId, string aCustomName)
         {
-            CustomId = customId;
-            CustomName = customName;
+            CustomId = aCustomId;
+            CustomName = aCustomName;
         }
     }
 }

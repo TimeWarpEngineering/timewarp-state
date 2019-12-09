@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server
+namespace TestApp.Server
 {
   using MediatR;
   using Microsoft.AspNetCore.Builder;
@@ -36,6 +36,7 @@
           aEndpointRouteBuilder.MapFallbackToPage("/_Host");
         }
       );
+      aApplicationBuilder.UseStaticFiles();
       aApplicationBuilder.UseClientSideBlazorFiles<Client.Startup>();
     }
 

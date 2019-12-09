@@ -19,7 +19,7 @@ module.exports = {
     "blazorstate": "./src/Initialize.ts"
   },
   output: {
-    path: path.join(__dirname, "/dist"),
+    path: path.join(__dirname, "../BlazorState/wwwroot"),
     filename: "[name].js"
   }
 };

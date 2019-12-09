@@ -8,16 +8,16 @@ namespace TestApp.EndToEnd.Tests.Infrastructure
   {
     public SeleniumStandAlone()
     {
-      Process = new Process()
-      {
-        StartInfo = new ProcessStartInfo
-        {
-          FileName = "selenium-standalone",
-          Arguments = "start",
-          UseShellExecute = true
-        }
-      };
-      Process.Start();
+      //Process = new Process()
+      //{
+      //  StartInfo = new ProcessStartInfo
+      //  {
+      //    FileName = "selenium-standalone",
+      //    Arguments = "start",
+      //    UseShellExecute = true
+      //  }
+      //};
+      //Process.Start();
       WaitForSelenium().Wait();
     }
 

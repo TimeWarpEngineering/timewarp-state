@@ -70,7 +70,7 @@ and `IRequestPostProcessor`;
 You can integrate into the pipeline as well by implementing and registering one of these interfaces.
 See the timewarp-blazor template `EventStreamBehavior` for an example.
 
-### Behaviors
+### Behaviors/Middleware
 
 #### CloneStateBehavior
 
@@ -83,16 +83,19 @@ When a component accesses `State` a subscription is added.
 The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components.
 So you don't have to worry about where to call `StateHasChanged`.
 
-#### ReduxDevToolsPostProcessor
-
-One of the nice features of redux is the developer tools <sup><a href="#footnotes">6</a></sup>.
-This processor implements the integration of these developer tools.
-
 ### JavaScript Interop
 
 Blazor-State uses the same "Command Pattern" for JavaScript interoperability.
 The JavaScript creates a request and dispatches it to Blazor where it is added to the pipeline.
 Handlers on the Blazor side can callback to the JavaScript side if needed.
+
+#### ReduxDevToolsPostProcessor
+
+> [!NOTE]
+> Disabled by default.  This should be disabled in production.
+
+One of the nice features of redux is the developer tools <sup><a href="#footnotes">6</a></sup>.
+This processor implements the integration of these developer tools.
 
 [!include[Terminology](Partials/terminology.md)]
 

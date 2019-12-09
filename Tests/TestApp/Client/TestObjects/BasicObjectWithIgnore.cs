@@ -1,4 +1,4 @@
-﻿namespace AnyClone.Tests.TestObjects
+namespace AnyClone.Tests.TestObjects
 {
   using System;
   using System.Runtime.Serialization;
@@ -14,23 +14,23 @@
 
     public override int GetHashCode() => base.GetHashCode();
 
-    public override bool Equals(object obj)
+    public override bool Equals(object aObject)
     {
-      if (obj == null || obj.GetType() != typeof(BasicObjectWithIgnore))
+      if (aObject == null || aObject.GetType() != typeof(BasicObjectWithIgnore))
         return false;
 
-      var basicObject = (BasicObjectWithIgnore)obj;
+      var basicObject = (BasicObjectWithIgnore)aObject;
       return Equals(basicObject);
     }
 
-    public bool Equals(BasicObjectWithIgnore other)
+    public bool Equals(BasicObjectWithIgnore aOther)
     {
-      if (other == null)
+      if (aOther == null)
         return false;
-      return other.BoolValue == BoolValue
-          && other.ByteValue == ByteValue
-          && other.IntValue == IntValue
-          && other.LongValue == LongValue
+      return aOther.BoolValue == BoolValue
+          && aOther.ByteValue == ByteValue
+          && aOther.IntValue == IntValue
+          && aOther.LongValue == LongValue
           // && other.StringValue == StringValue
           ;
     }

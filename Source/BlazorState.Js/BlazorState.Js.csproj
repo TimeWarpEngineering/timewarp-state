@@ -6,7 +6,7 @@
     <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <DefaultItemExcludes>${DefaultItemExcludes};dist\**;node_modules\**</DefaultItemExcludes>
+    <DefaultItemExcludes>${DefaultItemExcludes};node_modules\**</DefaultItemExcludes>
     <NoWarn>CS2008</NoWarn>
 
     <!-- VS's FastUpToDateCheck doesn't consider .ts file changes, so it's necessary to disable it to get incremental builds to work correctly (albeit not as fast as if FastUpToDateCheck did work for them) -->
@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="$(MicrosoftExtensionsFileProvidersEmbeddedVersion)" />
-    <WebpackInputs Include="**\*.ts" Exclude="dist\**;node_modules\**" />
+    <WebpackInputs Include="**\*.ts" Exclude="node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,11 +33,8 @@
     <JavascriptOutputFile>blazorstate.js</JavascriptOutputFile>
   </PropertyGroup>
   
-  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="dist\$(JavascriptOutputFile)" DependsOnTargets="EnsureNpmRestored">
-    <RemoveDir Directories="dist" />
+  <Target Name="RunWebpack" AfterTargets="ResolveReferences" Inputs="@(WebpackInputs)" Outputs="..\BlazorState\wwwroot\$(JavascriptOutputFile)" DependsOnTargets="EnsureNpmRestored">
+    <Delete Files="..\BlazorState\wwwroot\$(JavascriptOutputFile)" />
     <Exec Command="npm run build" />
-    <ItemGroup>
-      <EmbeddedResource Include="dist\$(JavascriptOutputFile)" LogicalName="blazor:js:$(JavascriptOutputFile)" />
-    </ItemGroup>
   </Target>
 </Project>

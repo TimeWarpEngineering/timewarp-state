@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client
+namespace TestApp.Client
 {
   using BlazorState;
   using MediatR;
@@ -23,7 +23,6 @@
       aServiceCollection.AddBlazorState
       (
         (aOptions) =>
-        {
 
 #if ReduxDevToolsEnabled
           aOptions.UseReduxDevToolsBehavior = true;
@@ -32,9 +31,7 @@
             new Assembly[]
             {
                 typeof(Startup).GetTypeInfo().Assembly,
-            };
-        }
-      );
+            });
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
       aServiceCollection.AddTransient<ApplicationState>();
       aServiceCollection.AddTransient<CounterState>();

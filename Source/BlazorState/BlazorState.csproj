@@ -16,6 +16,7 @@
     <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
+    <AssemblyName>Blazor-State</AssemblyName>
     <!--<PackageIcon>Logo.png</PackageIcon> This works in dotnet and MSBuild but Nuget still doesn't support it.-->
     <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -39,7 +40,7 @@
   <!-- End Source Link -->
 
   <PropertyGroup>
-    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeJsDll</TargetsForTfmSpecificBuildOutput>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
   </PropertyGroup>
@@ -60,16 +61,15 @@
 
   <!-- TypeScript project-->
   <ItemGroup>
-    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
+    <None Include="wwwroot\blazorstate.js" />
   </ItemGroup>
 
-  <Target Name="IncludeJsDll">
-    <ItemGroup>
-      <BuildOutputInPackage Include="$(OutputPath)BlazorState.Js.dll" />
-    </ItemGroup>
-  </Target>
+  <!-- TypeScript project-->
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
+  </ItemGroup>
   <!-- End TypeScript project-->
   
 </Project>

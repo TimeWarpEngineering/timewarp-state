@@ -1,12 +1,9 @@
-﻿namespace TestApp.Client.Integration.Tests
+namespace TestApp.Client.Integration.Tests
 {
   using BlazorState;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using System;
-  using System.IO;
-  using TestApp.Client.Features.Application;
-  using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.WeatherForecast;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
