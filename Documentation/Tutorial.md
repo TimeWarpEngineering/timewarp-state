@@ -9,11 +9,11 @@ This tutorial shows how to add Blazor-State to a `Blazor hosted WebAssembly App`
 
 ## Prerequisites
 
-1. Install the latest [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) release.
+1. Install the latest [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) release.
 2. Install the Blazor templates by running the following command in a command shell:
 
 ```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.0.0-preview9.19465.2
+dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.1.0-preview4.19579.2
 ```
 
 ## Creating the project

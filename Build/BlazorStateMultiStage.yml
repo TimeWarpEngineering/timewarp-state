@@ -4,9 +4,10 @@ trigger:
 pr: none
 
 variables:
-  Major: 2
+  Major: 3
   Minor: 0
-  DotNetSdkVersion: 3.0.100
+  Patch: 0
+  DotNetSdkVersion: 3.1.100
 
 stages:
   - stage: Test_Stage
@@ -59,7 +60,6 @@ stages:
 
   - stage: Build_Stage
     variables:
-      Patch: 0
       BuildCounterReset: $(Major).$(Minor).$(Patch)
       BuildCounter: $[counter(variables.BuildCounterReset, 0)]
       Version: '$(Major).$(Minor).$(Patch)-$(BuildCounter)+$(DotNetSdkVersion)'
@@ -131,8 +131,8 @@ stages:
             clean: all
         environment: Production
         variables:
-          PatchCounterReset: $(Major).$(Minor)
-          Patch: $[counter(variables.PatchCounterReset, 0)]
+          # PatchCounterReset: $(Major).$(Minor)
+          # Patch: $[counter(variables.PatchCounterReset, 0)]
           Version: '$(Major).$(Minor).$(Patch)+$(DotNetSdkVersion)'
         strategy:
           runOnce:

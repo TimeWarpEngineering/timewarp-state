@@ -1,2 +1,4 @@
 - name: From 1.x to 2.x
   topicUid: BlazorState:Migration1-2.md
+- name: From 2.x to 3.x
+  topicUid: BlazorState:Migration2-3.md
