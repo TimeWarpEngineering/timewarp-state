@@ -89,7 +89,7 @@ namespace Sample.Client.Features.Counter
   public partial class CounterState : State<CounterState>
   {
     public int Count { get; private set; }
-    protected override void Initialize() => Count = 3;
+    public override void Initialize() => Count = 3;
   }
 }
 ```
@@ -122,7 +122,7 @@ namespace Sample.Client
             typeof(Startup).GetTypeInfo().Assembly,
           }
       );
-      services.AddScoped<CounterState>();
+      services.AddTransient<CounterState>();
     }
 
     public void Configure(IComponentsApplicationBuilder app)
