@@ -79,30 +79,6 @@ namespace BlazorState
       return aServiceCollection;
     }
 
-    private static void EnusureStates(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
-    {
-      foreach (Assembly assembly in aBlazorStateOptions.Assemblies)
-      {
-        IEnumerable<Type> types = assembly.GetTypes().Where
-        (
-          aType =>
-          !aType.IsAbstract &&
-          !aType.IsInterface &&
-          aType.BaseType != null &&
-          aType.BaseType.IsGenericType &&
-          aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
-        ); 
-
-        foreach (Type type in types)
-        {
-          if (!aServiceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == type))
-          {
-            aServiceCollection.AddTransient(type);
-          }
-        }
-      }
-    }
-
     private static void EnsureHttpClient(IServiceCollection aServiceCollection)
     {
       var blazorHostingLocation = new BlazorHostingLocation();
@@ -155,6 +131,30 @@ namespace BlazorState
       if (mediatorServiceDescriptor == null)
       {
         aServiceCollection.AddMediatR(aBlazorStateOptions.Assemblies.ToArray());
+      }
+    }
+
+    private static void EnusureStates(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
+    {
+      foreach (Assembly assembly in aBlazorStateOptions.Assemblies)
+      {
+        IEnumerable<Type> types = assembly.GetTypes().Where
+        (
+          aType =>
+          !aType.IsAbstract &&
+          !aType.IsInterface &&
+          aType.BaseType != null &&
+          aType.BaseType.IsGenericType &&
+          aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
+        );
+
+        foreach (Type type in types)
+        {
+          if (!aServiceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == type))
+          {
+            aServiceCollection.AddTransient(type);
+          }
+        }
       }
     }
   }
