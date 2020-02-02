@@ -29,12 +29,16 @@ namespace BlazorState
     /// <example></example>
     /// <remarks>The order of registration matters.
     /// If the user wants to change they can configure themselves vs using this extension</remarks>
-    public static IServiceCollection AddBlazorState(
+    public static IServiceCollection AddBlazorState
+    (
       this IServiceCollection aServiceCollection,
-      Action<BlazorStateOptions> aConfigureBlazorStateOptionsAction = null)
+      Action<BlazorStateOptions> aConfigureBlazorStateOptionsAction = null
+    )
     {
-      ServiceDescriptor flagServiceDescriptor = aServiceCollection.FirstOrDefault(
-        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(BlazorHostingLocation));
+      ServiceDescriptor flagServiceDescriptor = aServiceCollection.FirstOrDefault
+      (
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(BlazorHostingLocation)
+      );
 
       if (flagServiceDescriptor == null)
       {
@@ -44,6 +48,7 @@ namespace BlazorState
         EnsureLogger(aServiceCollection);
         EnsureHttpClient(aServiceCollection);
         EnsureMediator(aServiceCollection, blazorStateOptions);
+        EnusureStates(aServiceCollection, blazorStateOptions);
 
         aServiceCollection.AddScoped<BlazorHostingLocation>();
         aServiceCollection.AddScoped<JsonRequestHandler>();
@@ -74,7 +79,7 @@ namespace BlazorState
           aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction, Unit>, ChangeRouteHandler>();
           aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction, Unit>, InitializeRouteHandler>();
         }
-        EnusureStates(aServiceCollection, blazorStateOptions);
+        
       }
       return aServiceCollection;
     }
@@ -90,15 +95,18 @@ namespace BlazorState
         if (!aServiceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))
         {
           // Setup HttpClient for server side in a client side compatible fashion
-          aServiceCollection.AddScoped<HttpClient>(aServiceProvider =>
-          {
-            // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
-            NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
-            return new HttpClient
+          aServiceCollection.AddScoped<HttpClient>
+          (
+            aServiceProvider =>
             {
-              BaseAddress = new Uri(navigationManager.BaseUri)
-            };
-          });
+              // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
+              NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
+              return new HttpClient
+              {
+                BaseAddress = new Uri(navigationManager.BaseUri)
+              };
+            }
+          );
         }
       }
     }
@@ -109,8 +117,10 @@ namespace BlazorState
     /// <param name="aServiceCollection"></param>
     private static void EnsureLogger(IServiceCollection aServiceCollection)
     {
-      ServiceDescriptor loggerServiceDescriptor = aServiceCollection.FirstOrDefault(
-        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>));
+      ServiceDescriptor loggerServiceDescriptor = aServiceCollection.FirstOrDefault
+      (
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>)
+      );
 
       if (loggerServiceDescriptor == null)
       {
@@ -125,8 +135,10 @@ namespace BlazorState
     /// <param name="aBlazorStateOptions"></param>
     private static void EnsureMediator(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
     {
-      ServiceDescriptor mediatorServiceDescriptor = aServiceCollection.FirstOrDefault(
-        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(IMediator));
+      ServiceDescriptor mediatorServiceDescriptor = aServiceCollection.FirstOrDefault
+      (
+        aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(IMediator)
+      );
 
       if (mediatorServiceDescriptor == null)
       {
