@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Features.JavaScriptInterop
+namespace BlazorState.Features.JavaScriptInterop
 {
   using MediatR;
   using Microsoft.Extensions.Logging;
@@ -71,7 +71,12 @@
     {
       string genericRequestInterfaceName = typeof(IRequest<int>).Name;
 
-      MethodInfo sendMethodInfo = Mediator.GetType().GetMethod(nameof(Mediator.Send));
+      MethodInfo sendMethodInfo = Mediator.GetType().GetMethods().First
+      (
+        aMethodInfo => 
+          aMethodInfo.IsGenericMethodDefinition && 
+          aMethodInfo.Name == nameof(Mediator.Send)
+      );
       Type responseType = aRequestType
         .GetInterfaces()
         .FirstOrDefault(aType => aType.Name == genericRequestInterfaceName)

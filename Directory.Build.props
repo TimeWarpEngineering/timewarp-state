@@ -47,8 +47,8 @@
     <CoverletMsbuildVersion>2.7.0</CoverletMsbuildVersion>
     <FixieVersion>2.2.0</FixieVersion>
     <FixieConsoleVersion>2.1.1</FixieConsoleVersion>
-    <MediatrExtensionsMicrosoftDependencyInjectionVersion>7.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
-    <MediatrVersion>7.0.0</MediatrVersion>
+    <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
+    <MediatrVersion>8.0.0</MediatrVersion>
     <MoqVersion>4.13.0</MoqVersion>
     <ScrutorVersion>3.1.0</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
