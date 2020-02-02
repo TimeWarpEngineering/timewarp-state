@@ -99,7 +99,7 @@ namespace Sample.Client.Features.Counter
 1. In the `Sample.Client` project in the `Startup.cs` file.
 2. Change `ConfigureServices` to configure blazor-state as follows:
 3. Add the required usings.
-4. Configure the options passed to AddBlazorState to include the assemblies to scan for Handlers.
+4. Configure the options passed to AddBlazorState to include the assemblies to scan for States and Handlers.
 
 ```csharp
 namespace Sample.Client
@@ -107,7 +107,6 @@ namespace Sample.Client
   using BlazorState;
   using Microsoft.AspNetCore.Components.Builder;
   using Microsoft.Extensions.DependencyInjection;
-  using Sample.Client.Features.Counter;
   using System.Reflection;
 
   public class Startup
@@ -122,7 +121,6 @@ namespace Sample.Client
             typeof(Startup).GetTypeInfo().Assembly,
           }
       );
-      services.AddTransient<CounterState>();
     }
 
     public void Configure(IComponentsApplicationBuilder app)
