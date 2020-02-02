@@ -8,10 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "@types/emscripten": "1.38.0",
+    "@types/emscripten": "1.39.1",
     "ts-loader": "6.2.1",
-    "typescript": "3.7.3",
-    "webpack": "4.41.2",
+    "typescript": "3.7.5",
+    "webpack": "4.41.5",
     "webpack-cli": "3.3.10"
   }
 }
