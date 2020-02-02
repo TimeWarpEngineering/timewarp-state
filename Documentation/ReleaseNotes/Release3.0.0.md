@@ -20,3 +20,5 @@ Update Nuget Production Dependency:  TypeSupport now supports HashTables.
 
 AddBlazorState Extention method has been updated to automatically register all classes that inherit from `State<>`.
    Thus we no longer need to explicitly register States.
+
+Updated Mediator to 8.0 https://jimmybogard.com/mediatr-8-0-released/
