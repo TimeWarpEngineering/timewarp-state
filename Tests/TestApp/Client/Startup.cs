@@ -31,13 +31,9 @@ namespace TestApp.Client
             new Assembly[]
             {
                 typeof(Startup).GetTypeInfo().Assembly,
-            });
+            }
+      );
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
-      aServiceCollection.AddTransient<ApplicationState>();
-      aServiceCollection.AddTransient<CounterState>();
-      aServiceCollection.AddTransient<CloneTestState>();
-      aServiceCollection.AddTransient<EventStreamState>();
-      aServiceCollection.AddTransient<WeatherForecastsState>();
 
     }
   }
