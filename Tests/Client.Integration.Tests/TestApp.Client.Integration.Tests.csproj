@@ -17,7 +17,6 @@
     </PackageReference>
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftAspNetCoreTestHostVersion)" />
-    <PackageReference Include="Moq" Version="$(MoqVersion)" />
     <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
     <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
     <DotNetCliToolReference Include="Fixie.Console" Version="$(FixieConsoleVersion)" />

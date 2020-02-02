@@ -33,28 +33,27 @@
     <MicrosoftAspNetCoreBlazorHttpClientVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorHttpClientVersion>
     <MicrosoftAspNetCoreBlazorServerVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorServerVersion>
     
-    <MicrosoftAspNetCoreVersion>3.1.0</MicrosoftAspNetCoreVersion>
+    <MicrosoftAspNetCoreVersion>3.1.1</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
     
-    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.1.0</MicrosoftExtensionsFileProvidersEmbeddedVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>3.1.0</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsLoggingAbstractionsVersion>
     
     <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
 
     <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
-    <CoverletMsbuildVersion>2.7.0</CoverletMsbuildVersion>
+    <CoverletMsbuildVersion>2.8.0</CoverletMsbuildVersion>
     <FixieVersion>2.2.0</FixieVersion>
     <FixieConsoleVersion>2.1.1</FixieConsoleVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>8.0.0</MediatrVersion>
-    <MoqVersion>4.13.0</MoqVersion>
     <ScrutorVersion>3.1.0</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
-    <TypeSupportVersion>1.0.97</TypeSupportVersion>
+    <TypeSupportVersion>1.0.100</TypeSupportVersion>
   </PropertyGroup>
     
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
