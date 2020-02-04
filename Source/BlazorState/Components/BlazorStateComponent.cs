@@ -26,7 +26,7 @@
     /// <summary>
     /// A generated unique Id based on the Class name and number of times they have been created
     /// </summary>
-    public string Id { get; }
+    public virtual string Id { get; }
 
     /// <summary>
     /// Allows for the Assigning of a value one can use to select an element during automated testing.
@@ -60,6 +60,6 @@
       return Store.GetState<T>();
     }
 
-    public void Dispose() => Subscriptions.Remove(this);
+    public virtual void Dispose() => Subscriptions.Remove(this);
   }
 }
