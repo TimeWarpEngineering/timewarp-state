@@ -54,7 +54,6 @@
     <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreComponentsWebVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="$(MicrosoftAspNetCoreBlazorHttpClientVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
     <PackageReference Include="TypeSupport" Version="$(TypeSupportVersion)" />
   </ItemGroup>
