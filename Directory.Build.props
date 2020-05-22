@@ -29,12 +29,17 @@
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <MicrosoftAspNetCoreBlazorVersion>3.1.0-preview4.19579.2</MicrosoftAspNetCoreBlazorVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
+    <SystemNetHttpJsonVersion>3.2.0</SystemNetHttpJsonVersion>
+    
     <MicrosoftAspNetCoreBlazorHttpClientVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorHttpClientVersion>
     <MicrosoftAspNetCoreBlazorServerVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorServerVersion>
     
-    <MicrosoftAspNetCoreVersion>3.1.1</MicrosoftAspNetCoreVersion>
+    <MicrosoftAspNetCoreVersion>3.1.4</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
+    <MicrosoftAspNetCoreMvcTestingVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreMvcTestingVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
     
     <MicrosoftExtensionsFileProvidersEmbeddedVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsFileProvidersEmbeddedVersion>
@@ -44,9 +49,9 @@
 
     <AnyCloneVersion>1.0.34</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
-    <CoverletMsbuildVersion>2.8.0</CoverletMsbuildVersion>
-    <FixieVersion>2.2.0</FixieVersion>
-    <FixieConsoleVersion>2.1.1</FixieConsoleVersion>
+    <CoverletMsbuildVersion>2.8.1</CoverletMsbuildVersion>
+    <FixieVersion>2.2.1</FixieVersion>
+    <FixieConsoleVersion>2.2.1</FixieConsoleVersion>
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>8.0.0</MediatrVersion>
