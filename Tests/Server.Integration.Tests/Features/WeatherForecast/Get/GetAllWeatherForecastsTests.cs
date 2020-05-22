@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server.Integration.Tests.Features.WeatherForecast.GetAll
+﻿namespace BlazorState.Features.JavaScriptInterop_Tests
 {
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
@@ -8,17 +8,17 @@
   using TestApp.Server.Integration.Tests.Infrastructure;
   using TestApp.Api.Features.WeatherForecast;
 
-  internal class GetAllWeatherForecastsTests
+  internal class JsonRequestHandler_Handle_Returns
   {
     private readonly IMediator Mediator;
 
-    public GetAllWeatherForecastsTests(TestFixture aTestFixture)
+    public JsonRequestHandler_Handle_Returns(TestFixture aTestFixture)
     {
       IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
       Mediator = serviceProvider.GetService<IMediator>();
     }
 
-    public async Task ShouldGetAllWeatherForecasts()
+    public async Task _10WeatherForecasts_Given_10DaysRequested()
     {
       // Arrange
       var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
