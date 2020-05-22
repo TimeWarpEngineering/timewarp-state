@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Infrastructure
+namespace TestApp.Client.Integration.Tests.Infrastructure
 {
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
@@ -19,13 +19,16 @@
 
     public void Execute(TestClass aTestClass)
     {
-      aTestClass.RunCases(aCase =>
-      {
-        using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
-        object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-        Setup(instance);
-        aCase.Execute(instance);
-      });
+      aTestClass.RunCases
+      (
+        aCase =>
+        {
+          using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
+          object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
+          Setup(instance);
+          aCase.Execute(instance);
+        }
+      );
     }
 
     private static void Setup(object aInstance)
