@@ -5,6 +5,8 @@
 
   public class TestingConvention : Discovery, Execution
   {
+    const string TestPostfix = "Tests";
+
     private readonly IServiceScopeFactory ServiceScopeFactory;
 
     public TestingConvention()
@@ -13,6 +15,8 @@
       ConfigureTestServices(testServices);
       ServiceProvider serviceProvider = testServices.BuildServiceProvider();
       ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
+
+      Classes.Where(aType => aType.Namespace.EndsWith(TestPostfix));
       Methods.Where(aMethodExpression => aMethodExpression.Name != nameof(Setup));
     }
 
