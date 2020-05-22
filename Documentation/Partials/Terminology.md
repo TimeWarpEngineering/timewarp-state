@@ -32,9 +32,8 @@ particular [Vertical Slice](https://jimmybogard.com/vertical-slice-architecture/
 of the application.  
 
 On the server side we use the same architecture, where the Features contain
-`Controller`, `Handler`, `Request`, `Response`, etc...
-Each endpoint has its own controller
-which maps the HTTP Request to the `Request` object and then sends the `Request`
+`Endpoint`, `Handler`, `Request`, `Response`, etc...
+Each endpoint maps the HTTP Request to the `Request` object and then sends the `Request`
 on to the mediator pipeline.
 The `Handler` acts on the `Request` and returns a `Response`.
 
