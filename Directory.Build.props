@@ -47,6 +47,7 @@
     <CoverletMsbuildVersion>2.8.0</CoverletMsbuildVersion>
     <FixieVersion>2.2.0</FixieVersion>
     <FixieConsoleVersion>2.1.1</FixieConsoleVersion>
+    <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>8.0.0</MediatrVersion>
     <ScrutorVersion>3.1.0</ScrutorVersion>
