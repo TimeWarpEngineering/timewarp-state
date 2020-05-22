@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Features.JavaScriptInterop_Tests
+﻿namespace BlazorState.Features.JavaScriptInterop.JsonRequestHandler_Tests
 {
   using MediatR;
   using Microsoft.Extensions.DependencyInjection;
@@ -7,12 +7,13 @@
   using System.Threading.Tasks;
   using TestApp.Server.Integration.Tests.Infrastructure;
   using TestApp.Api.Features.WeatherForecast;
+  using FluentAssertions;
 
-  internal class JsonRequestHandler_Handle_Returns
+  internal class Handle_Returns
   {
     private readonly IMediator Mediator;
 
-    public JsonRequestHandler_Handle_Returns(TestFixture aTestFixture)
+    public Handle_Returns(TestFixture aTestFixture)
     {
       IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
       Mediator = serviceProvider.GetService<IMediator>();
@@ -29,6 +30,7 @@
 
       //Assert
       getWeatherForecastsResponse.WeatherForecasts.Count.ShouldBe(10);
+      getWeatherForecastsResponse.WeatherForecasts.Count.Should().Be(10);
     }
   }
 }
