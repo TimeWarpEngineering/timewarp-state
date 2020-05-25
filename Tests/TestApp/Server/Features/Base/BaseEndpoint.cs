@@ -7,7 +7,7 @@
   using TestApp.Api.Features.Base;
 
   [ApiController]
-  public class BaseController<TRequest, TResponse> : ControllerBase
+  public class BaseEndpoint<TRequest, TResponse> : ControllerBase
   where TRequest : IRequest<TResponse>
   where TResponse : BaseResponse
   {
