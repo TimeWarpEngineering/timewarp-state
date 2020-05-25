@@ -2,6 +2,8 @@
 {
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
+  using System.Text.Json;
+
   public class TestingConvention : Discovery, Execution
   {
     const string TestPostfix = "_Tests";
@@ -41,6 +43,7 @@
 
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
+      aServiceCollection.AddSingleton(new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
       aServiceCollection.Scan
       (
         aTypeSourceSelector => aTypeSourceSelector
