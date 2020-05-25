@@ -1,6 +1,6 @@
 ﻿namespace TestApp.Client.Integration.Tests.Infrastructure
 {
-  using Microsoft.AspNetCore.Blazor.Hosting;
+  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
   using Microsoft.Extensions.DependencyInjection;
   using System;
   using TestApp.Client.Features.CloneTest;
@@ -19,15 +19,15 @@
     /// <summary>
     /// This is used to host the Client Side `TesatApp.Client`
     /// </summary>
-    private readonly IWebAssemblyHostBuilder WebAssemblyHostBuilder;
+    private readonly WebAssemblyHostBuilder WebAssemblyHostBuilder;
 
     private readonly BlazorStateTestServer BlazorStateTestServer;
 
     public TestFixture(BlazorStateTestServer aBlazorStateTestServer)
     {
       BlazorStateTestServer = aBlazorStateTestServer;
-      WebAssemblyHostBuilder = BlazorWebAssemblyHost.CreateDefaultBuilder()
-        .ConfigureServices(ConfigureServices);
+      WebAssemblyHostBuilder = WebAssemblyHostBuilder.CreateDefault();
+      ConfigureServices(WebAssemblyHostBuilder.Services);
     }
 
     /// <summary>
@@ -40,7 +40,7 @@
       aServiceCollection.AddSingleton(BlazorStateTestServer.CreateClient());
 
       // Use the same configuration that we have in `TestApp.Client`
-      new Client.Startup().ConfigureServices(aServiceCollection);
+      Client.Program.ConfigureServices(aServiceCollection);
     }
   }
 }
