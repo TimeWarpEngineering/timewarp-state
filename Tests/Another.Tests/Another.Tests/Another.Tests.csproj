@@ -12,4 +12,8 @@
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <DotNetCliToolReference Include="Fixie.Console" Version="$(FixieConsoleVersion)" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\TestApp\Server\TestApp.Server.csproj" />
+  </ItemGroup>
 </Project>
