@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Tests.Features.Counter
+﻿namespace BlazorState.Tests.Features.Counter_Tests
 {
   using BlazorState;
   using BlazorState.Features.JavaScriptInterop;
