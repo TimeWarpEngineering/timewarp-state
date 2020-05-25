@@ -14,6 +14,7 @@
     private readonly IServiceScopeFactory ServiceScopeFactory;
     private HttpClient ServerHttpClient;
     private WebApplicationFactory<TestApp.Server.Startup> ServerWebApplicationFactory;
+
     public TestingConvention()
     {
       var testServices = new ServiceCollection();
@@ -48,7 +49,9 @@
 
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
-      aServiceCollection.AddSingleton(new WebApplicationFactory<TestApp.Server.Startup>());
+      ServerWebApplicationFactory = new WebApplicationFactory<TestApp.Server.Startup>();
+      ServerHttpClient = ServerWebApplicationFactory.CreateClient();
+      //aServiceCollection.AddSingleton();
       aServiceCollection.AddSingleton(new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
       aServiceCollection.Scan
       (
