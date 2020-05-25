@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.png</PackageIconUrl>
+    <!-- <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.png</PackageIconUrl> -->
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>BlazorState Microsoft ASP.NET Core Blazor State Blazor-State MediatR Mediator Pipeline Redux</PackageTags>
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
@@ -32,11 +32,11 @@
     <MicrosoftAspNetCoreComponentsWebAssemblyVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
     <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
     <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
     <SystemNetHttpJsonVersion>3.2.0</SystemNetHttpJsonVersion>
-    
-    <MicrosoftAspNetCoreBlazorHttpClientVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorHttpClientVersion>
-    <MicrosoftAspNetCoreBlazorServerVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorServerVersion>
-    
+    <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
+    <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
+
     <MicrosoftAspNetCoreVersion>3.1.4</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
     <MicrosoftAspNetCoreMvcTestingVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreMvcTestingVersion>
@@ -55,7 +55,7 @@
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>8.0.1</MediatrVersion>
-    <ScrutorVersion>3.1.0</ScrutorVersion>
+    <ScrutorVersion>3.2.1</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
