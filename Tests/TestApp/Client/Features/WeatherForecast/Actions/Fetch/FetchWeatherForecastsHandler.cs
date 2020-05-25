@@ -4,6 +4,7 @@
   using MediatR;
   using Microsoft.AspNetCore.Components;
   using System.Net.Http;
+  using System.Net.Http.Json;
   using System.Threading;
   using System.Threading.Tasks;
   using TestApp.Api.Features.WeatherForecast;
@@ -27,11 +28,14 @@
       )
       {
         var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
+
         GetWeatherForecastsResponse getWeatherForecastsResponse =
-          await HttpClient.PostJsonAsync<GetWeatherForecastsResponse>(GetWeatherForecastsRequest.Route, getWeatherForecastsRequest);
+          await HttpClient.GetFromJsonAsync<GetWeatherForecastsResponse>(getWeatherForecastsRequest.RouteFactory);
+
         WeatherForecastsState._WeatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
         return Unit.Value;
       }
+
     }
   }
 }
