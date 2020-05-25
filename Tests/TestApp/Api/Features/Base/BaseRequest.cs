@@ -4,6 +4,8 @@
 
   public abstract class BaseRequest
   {
+    public Guid Id { get; set; }
+
     /// <summary>
     /// Every request should have unique Id
     /// </summary>
@@ -11,7 +13,5 @@
     {
       Id = Guid.NewGuid();
     }
-
-    public Guid Id { get; }
   }
 }
