@@ -3,6 +3,7 @@ namespace TestApp.Server
   using MediatR;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
+  using Microsoft.AspNetCore.Mvc;
   using Microsoft.AspNetCore.ResponseCompression;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Hosting;
@@ -23,7 +24,7 @@ namespace TestApp.Server
       if (aWebHostEnvironment.IsDevelopment())
       {
         aApplicationBuilder.UseDeveloperExceptionPage();
-        aApplicationBuilder.UseBlazorDebugging();
+        aApplicationBuilder.UseWebAssemblyDebugging();
       }
 
       aApplicationBuilder.UseRouting();
@@ -31,13 +32,13 @@ namespace TestApp.Server
       (
         aEndpointRouteBuilder =>
         {
-          aEndpointRouteBuilder.MapControllers(); // We use explicit attribute routing so dont need MapDefaultControllerRoute
+          aEndpointRouteBuilder.MapControllers();
           aEndpointRouteBuilder.MapBlazorHub();
           aEndpointRouteBuilder.MapFallbackToPage("/_Host");
         }
       );
       aApplicationBuilder.UseStaticFiles();
-      aApplicationBuilder.UseClientSideBlazorFiles<Client.Startup>();
+      aApplicationBuilder.UseBlazorFrameworkFiles();
     }
 
     public void ConfigureServices(IServiceCollection aServiceCollection)
@@ -45,6 +46,13 @@ namespace TestApp.Server
       aServiceCollection.AddRazorPages();
       aServiceCollection.AddServerSideBlazor();
       aServiceCollection.AddMvc();
+      aServiceCollection.Configure<ApiBehaviorOptions>
+      (
+        aApiBehaviorOptions =>
+        {
+          aApiBehaviorOptions.SuppressInferBindingSourcesForParameters = true;
+        }
+      );
 
       aServiceCollection.AddResponseCompression
       (
@@ -55,7 +63,7 @@ namespace TestApp.Server
           )
       );
 
-      new Client.Startup().ConfigureServices(aServiceCollection);
+      Client.Program.ConfigureServices(aServiceCollection);
 
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
