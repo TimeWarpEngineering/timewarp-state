@@ -1,7 +1,9 @@
 ﻿namespace TestApp.Server.Integration.Tests.Infrastructure
 {
   using Fixie;
+  using Microsoft.AspNetCore.Mvc.Testing;
   using Microsoft.Extensions.DependencyInjection;
+  using System.Text.Json;
 
   public class TestingConvention : Discovery, Execution
   {
@@ -22,14 +24,17 @@
 
     public void Execute(TestClass aTestClass)
     {
-      aTestClass.RunCases(aCase =>
-      {
-        using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
-        object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-        Setup(instance);
+      aTestClass.RunCases
+      (
+        aCase =>
+        {
+          using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
+          object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
+          Setup(instance);
 
-        aCase.Execute(instance);
-      });
+          aCase.Execute(instance);
+        }
+      );
     }
 
     private static void Setup(object aInstance)
@@ -40,13 +45,16 @@
 
     private void ConfigureTestServices(ServiceCollection aServiceCollection)
     {
-      aServiceCollection.AddSingleton<BlazorStateTestServer>();
-      aServiceCollection.Scan(aTypeSourceSelector => aTypeSourceSelector
-        // Start with all non abstract types in this assembly
-        .FromAssemblyOf<TestingConvention>()
-        .AddClasses(action: (aClasses) => aClasses.TypeName().EndsWith("Tests"))
-        .AsSelf()
-        .WithScopedLifetime());
+      aServiceCollection.AddSingleton(new WebApplicationFactory<Startup>());
+      aServiceCollection.AddSingleton(new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+      aServiceCollection.Scan
+      (
+        aTypeSourceSelector => aTypeSourceSelector
+          .FromAssemblyOf<TestingConvention>()
+          .AddClasses(action: (aClasses) => aClasses.Where( aClass => aClass.Namespace.EndsWith(TestPostfix)))
+          .AsSelf()
+          .WithScopedLifetime()
+      );
     }
   }
 }
