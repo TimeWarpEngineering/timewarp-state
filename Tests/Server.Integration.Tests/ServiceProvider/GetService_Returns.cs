@@ -8,14 +8,21 @@
   using TestApp.Server.Features.WeatherForecast;
   using TestApp.Server.Integration.Tests.Infrastructure;
   using TestApp.Api.Features.WeatherForecast;
+  using Microsoft.AspNetCore.Mvc.Testing;
+  using System.Text.Json;
+  using System.Threading.Tasks;
 
-  public class GetService_Returns
+  public class GetService_Returns : BaseTest
   {
     private readonly IServiceProvider ServiceProvider;
 
-    public GetService_Returns(TestFixture aTestFixture)
+    public GetService_Returns
+    (
+      WebApplicationFactory<Startup> aWebApplicationFactory,
+      JsonSerializerOptions aJsonSerializerOptions
+    ) : base(aWebApplicationFactory, aJsonSerializerOptions) 
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
+      ServiceProvider = ServiceScopeFactory.CreateScope().ServiceProvider;
     }
     public void IMediator()
     {
