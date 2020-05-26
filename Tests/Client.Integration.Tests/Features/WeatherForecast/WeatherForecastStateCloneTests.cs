@@ -1,8 +1,6 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.WeatherForecast
+﻿namespace TestApp.Client.Integration.Tests.Features.WeatherForecast_Tests
 {
   using System;
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using TestApp.Client.Integration.Tests.Infrastructure;
   using System.Collections.Generic;
@@ -10,13 +8,11 @@
   using TestApp.Api.Features.WeatherForecast;
   using AnyClone;
 
-  internal class WeatherForecastStateCloneTests
+  internal class WeatherForecastStateCloneTests: BaseTest
   {
-    public WeatherForecastStateCloneTests(TestFixture aTestFixture)
+    public WeatherForecastStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
-      IStore store = serviceProvider.GetService<IStore>();
-      WeatherForecastsState = store.GetState<WeatherForecastsState>();
+      WeatherForecastsState = Store.GetState<WeatherForecastsState>();
     }
 
     private WeatherForecastsState WeatherForecastsState { get; set; }
@@ -39,7 +35,7 @@
         ),
       };
       WeatherForecastsState.Initialize(weatherForecasts);
-      
+
       //Act
       var clone = WeatherForecastsState.Clone() as WeatherForecastsState;
 

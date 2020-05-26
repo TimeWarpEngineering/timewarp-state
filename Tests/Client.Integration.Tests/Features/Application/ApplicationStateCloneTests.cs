@@ -8,11 +8,11 @@
   using TestApp.Client.Features.Application;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class ApplicationStateCloneTests
+  internal class ApplicationStateCloneTests: BaseTest
   {
-    public ApplicationStateCloneTests(TestFixture aTestFixture)
+    public ApplicationStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      IServiceProvider serviceProvider = aWebAssemblyHost.ServiceProvider;
       IStore store = serviceProvider.GetService<IStore>();
       ApplicationState = store.GetState<ApplicationState>();
     }
@@ -22,7 +22,7 @@
     public void ShouldClone()
     {
       //Arrange
-      ApplicationState.Initialize(aName:"TestName");
+      ApplicationState.Initialize(aName: "TestName");
 
       //Act
       ApplicationState clone = ApplicationState.Clone();

@@ -15,9 +15,9 @@
     {
       var builder = WebAssemblyHostBuilder.CreateDefault(args);
       builder.RootComponents.Add<App>("app");
-      builder.Services.AddTransient
+      builder.Services.AddSingleton
       (
-        _ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
+        new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
       );
 
       ConfigureServices(builder.Services);

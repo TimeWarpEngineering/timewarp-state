@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.Routing
+﻿namespace TestApp.Client.Integration.Tests.Features.Routing_Tests
 {
   using AnyClone;
   using BlazorState;
@@ -8,11 +8,11 @@
   using System;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class RouteStateCloneTests
+  internal class RouteStateCloneTests : BaseTest
   {
-    public RouteStateCloneTests(TestFixture aTestFixture)
+    public RouteStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      IServiceProvider serviceProvider = aWebAssemblyHost.ServiceProvider;
       IStore store = serviceProvider.GetService<IStore>();
       RouteState = store.GetState<RouteState>();
     }
@@ -22,7 +22,7 @@
     public void ShouldClone()
     {
       //Arrange
-      RouteState.Initialize(aRoute:"SomeRoute");
+      RouteState.Initialize(aRoute: "SomeRoute");
 
       //Act
       RouteState clone = RouteState.Clone();

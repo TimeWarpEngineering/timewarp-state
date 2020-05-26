@@ -1,7 +1,5 @@
-﻿namespace TestApp.Client.Integration.Tests.Subscriptions
+﻿namespace TestApp.Client.Integration.Tests.Subscriptions_Tests
 {
-  using MediatR;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using System;
   using System.Threading.Tasks;
@@ -9,16 +7,9 @@
   using TestApp.Client.Integration.Tests.Infrastructure;
   using static TestApp.Client.Features.Counter.WrongNesting;
 
-  public class NestedActionTests
+  public class NestedActionTests: BaseTest
   {
-    private readonly IMediator Mediator;
-    private readonly IServiceProvider ServiceProvider;
-
-    public NestedActionTests(TestFixture aTestFixture)
-    {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      Mediator = ServiceProvider.GetService<IMediator>();
-    }
+    public NestedActionTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 
     public async Task ShouldThrowExceptionForImproperNestedActions()
     {
@@ -28,7 +19,7 @@
       // Assert
       Exception exception = await Should.ThrowAsync<Exception>
       (
-        async () => _ = await Mediator.Send(improperNestedAction)
+        async () => await Send(improperNestedAction)
       );
     }
 
@@ -40,7 +31,7 @@
       // Assert
       Exception exception = await Should.ThrowAsync<Exception>
       (
-        async () => _ = await Mediator.Send(nonNestedAction)
+        async () => await Send(nonNestedAction)
       );
     }
   }

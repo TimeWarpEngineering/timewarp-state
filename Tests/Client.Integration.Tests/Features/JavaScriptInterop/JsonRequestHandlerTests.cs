@@ -10,7 +10,7 @@
   using TestApp.Client.Integration.Tests.Infrastructure;
   using static TestApp.Client.Features.Counter.CounterState;
 
-  internal class JsonRequestHandlerTests
+  internal class JsonRequestHandlerTests: BaseTest
   {
     private readonly JsonRequestHandler JsonRequestHandler;
 
@@ -22,9 +22,9 @@
 
     private CounterState CounterState => Store.GetState<CounterState>();
 
-    public JsonRequestHandlerTests(TestFixture aTestFixture)
+    public JsonRequestHandlerTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
+      ServiceProvider = aWebAssemblyHost.ServiceProvider;
       JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
       Store = ServiceProvider.GetService<IStore>();
       JsonSerializerOptions = ServiceProvider.GetService<BlazorStateOptions>().JsonSerializerOptions;

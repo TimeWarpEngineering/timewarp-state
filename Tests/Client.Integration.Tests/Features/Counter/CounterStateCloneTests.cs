@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.Counter
+﻿namespace TestApp.Client.Integration.Tests.Features.Counter_Tests
 {
   using AnyClone;
   using BlazorState;
@@ -8,11 +8,11 @@
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class CounterStateCloneTests
+  internal class CounterStateCloneTests : BaseTest
   {
-    public CounterStateCloneTests(TestFixture aTestFixture)
+    public CounterStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      IServiceProvider serviceProvider = aWebAssemblyHost.ServiceProvider;
       IStore store = serviceProvider.GetService<IStore>();
       CounterState = store.GetState<CounterState>();
     }

@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.EventStream
+﻿namespace TestApp.Client.Integration.Tests.Features.EventStream_Tests
 {
   using System;
   using BlazorState;
@@ -9,11 +9,11 @@
   using System.Collections.Generic;
   using AnyClone;
 
-  internal class EventStreamCloneTests
+  internal class EventStreamCloneTests: BaseTest
   {
-    public EventStreamCloneTests(TestFixture aTestFixture)
+    public EventStreamCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
+      IServiceProvider serviceProvider = aWebAssemblyHost.ServiceProvider;
       IStore store = serviceProvider.GetService<IStore>();
       EventStreamState = store.GetState<EventStreamState>();
     }
@@ -25,7 +25,7 @@
       //Arrange
       var events = new List<string> { "Event 1", "Event 2", "Event 3" };
       EventStreamState.Initialize(events);
-      
+
       //Act
       var clone = EventStreamState.Clone() as EventStreamState;
 

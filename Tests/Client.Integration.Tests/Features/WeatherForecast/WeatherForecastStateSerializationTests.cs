@@ -1,30 +1,18 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.WeatherForecast
+﻿namespace TestApp.Client.Integration.Tests.Features.WeatherForecast_Tests
 {
   using System;
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
-  using TestApp.Client.Integration.Tests.Infrastructure;
-  using System.Collections.Generic;
-  using TestApp.Client.Features.WeatherForecast;
   using TestApp.Api.Features.WeatherForecast;
-  using AnyClone;
   using System.Text.Json;
+  using static TestApp.Client.Integration.Tests.Features.WeatherForecast.WeatherForecastStateSerializationTests;
 
-  internal class WeatherForecastStateSerializationTests
+  internal partial class WeatherForecastStateSerializationTests
   {
-
-    public class Person
-    {
-      public string FirstName { get; set; }
-      public string LastName { get; set; }
-      public DateTime? BirthDay { get; set; }
-    }
 
     public void ShouldSerializeAndParseSample()
     {
       var jsonSerializerOptions = new JsonSerializerOptions();
-      Person person = new Person { FirstName = "Steve", LastName = "Cramer", BirthDay = new DateTime(1967, 09, 27) };
+      var person = new Person { FirstName = "Steve", LastName = "Cramer", BirthDay = new DateTime(1967, 09, 27) };
       string json = JsonSerializer.Serialize(person, jsonSerializerOptions);
       Person parsed = JsonSerializer.Deserialize<Person>(json, jsonSerializerOptions);
       parsed.BirthDay.ShouldBe(person.BirthDay);

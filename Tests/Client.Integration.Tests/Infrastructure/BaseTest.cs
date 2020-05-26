@@ -23,10 +23,10 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
     protected readonly IStore Store;
     protected readonly HttpClient HttpClient;
 
-    public BaseTest(WebAssemblyHost aWebAssemblyHost)
+    public BaseTest(ClientHost aWebAssemblyHost)
     {
       Console.WriteLine("BaseTest");
-      ServiceScopeFactory = aWebAssemblyHost.Services.GetService<IServiceScopeFactory>();
+      ServiceScopeFactory = aWebAssemblyHost.ServiceProvider.GetService<IServiceScopeFactory>();
       ServiceScope = ServiceScopeFactory.CreateScope();
       Mediator = ServiceScope.ServiceProvider.GetService<IMediator>();
       Store = ServiceScope.ServiceProvider.GetService<IStore>();
