@@ -1,37 +1,29 @@
-﻿namespace BlazorState.Tests.Features.Counter_Tests
+﻿namespace JsonRequestHandler
 {
   using BlazorState;
   using BlazorState.Features.JavaScriptInterop;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
-  using System;
   using System.Text.Json;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
   using static TestApp.Client.Features.Counter.CounterState;
 
-  internal class JsonRequestHandlerTests: BaseTest
+  public class Handle_Should: BaseTest
   {
     private readonly JsonRequestHandler JsonRequestHandler;
 
     private readonly JsonSerializerOptions JsonSerializerOptions;
 
-    private readonly IServiceProvider ServiceProvider;
-
-    private readonly IStore Store;
-
     private CounterState CounterState => Store.GetState<CounterState>();
 
-    public JsonRequestHandlerTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+    public Handle_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      ServiceProvider = aWebAssemblyHost.ServiceProvider;
       JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
-      Store = ServiceProvider.GetService<IStore>();
       JsonSerializerOptions = ServiceProvider.GetService<BlazorStateOptions>().JsonSerializerOptions;
     }
 
-    //public async Task ShouldPerformAction()
-    public void ShouldPerformAction()
+    public void Handle_Action()
     {
       //Arrange
 

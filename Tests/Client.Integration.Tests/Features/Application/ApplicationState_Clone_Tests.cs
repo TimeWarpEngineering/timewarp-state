@@ -1,25 +1,20 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.Application
+﻿namespace ApplicationState
 {
   using AnyClone;
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
-  using System;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class ApplicationStateCloneTests: BaseTest
+  public class Clone_Should: BaseTest
   {
-    public ApplicationStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+    public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aWebAssemblyHost.ServiceProvider;
-      IStore store = serviceProvider.GetService<IStore>();
-      ApplicationState = store.GetState<ApplicationState>();
+      ApplicationState = Store.GetState<ApplicationState>();
     }
 
     private ApplicationState ApplicationState { get; set; }
 
-    public void ShouldClone()
+    public void Clone()
     {
       //Arrange
       ApplicationState.Initialize(aName: "TestName");

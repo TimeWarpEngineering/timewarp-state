@@ -1,19 +1,19 @@
-﻿namespace TestApp.Features.WeatherForecast.GetWeatherForecastsHandler_Tests
+﻿namespace GetWeatherForecastsEndpoint
 {
-  using Shouldly;
-  using System.Threading.Tasks;
-  using TestApp.Server.Integration.Tests.Infrastructure;
-  using TestApp.Api.Features.WeatherForecast;
   using FluentAssertions;
-  using System.Text.Json;
   using Microsoft.AspNetCore.Mvc.Testing;
+  using Shouldly;
+  using System.Text.Json;
+  using System.Threading.Tasks;
+  using TestApp.Api.Features.WeatherForecast;
+  using TestApp.Server.Integration.Tests.Infrastructure;
   using TestApp.Server;
 
-  internal class Endpoint_Returns : BaseTest
+  public class Returns : BaseTest
   {
     private readonly GetWeatherForecastsRequest GetWeatherForecastsRequest;
 
-    public Endpoint_Returns
+    public Returns
     (
       WebApplicationFactory<Startup> aWebApplicationFactory,
       JsonSerializerOptions aJsonSerializerOptions

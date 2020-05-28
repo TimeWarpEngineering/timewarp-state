@@ -1,14 +1,14 @@
-namespace TestApp.Client.Integration.Tests.Clone_Tests
+namespace TestState
 {
   using Shouldly;
   using AnyClone;
   using System.Linq;
   using TestApp.Client.Integration.Tests.Clone;
 
-  internal class CloneTests
+  public class Clone_Should
   {
 
-    public void ShouldCloneTestState()
+    public void Clone()
     {
 
       // Arrange

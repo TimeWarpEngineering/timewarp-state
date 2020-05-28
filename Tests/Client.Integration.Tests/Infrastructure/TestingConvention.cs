@@ -2,7 +2,6 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
 {
   using BlazorState;
   using Fixie;
-  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
   using Microsoft.AspNetCore.Mvc.Testing;
   using Microsoft.Extensions.DependencyInjection;
   using System;
@@ -11,6 +10,11 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
   using System.Text.Json;
 
 
+  [NotTest]
+  [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+  public class NotTest : Attribute { }
+
+  [NotTest]
   public class TestingConvention : Discovery, Execution, IDisposable
   {
     const string TestPostfix = "Tests";
@@ -20,14 +24,13 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
 
     public TestingConvention()
     {
-      Console.WriteLine("WTF.1");
       var testServices = new ServiceCollection();
       ConfigureTestServices(testServices);
       ServiceProvider serviceProvider = testServices.BuildServiceProvider();
       ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
 
-      Classes.Where(aType => aType.Namespace.EndsWith(TestPostfix));
-      Methods.Where(aMethodInfo => aMethodInfo.Name != nameof(Setup));
+      Classes.Where(aType => aType.IsPublic && !aType.Has<NotTest>());
+      Methods.Where(aMethodInfo => aMethodInfo.Name != nameof(Setup)  && !aMethodInfo.IsSpecialName);
     }
 
     public void Execute(TestClass aTestClass)
@@ -65,7 +68,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
       (
         aTypeSourceSelector => aTypeSourceSelector
           .FromAssemblyOf<TestingConvention>()
-          .AddClasses(action: (aClasses) => aClasses.Where(aClass => aClass.Namespace.EndsWith(TestPostfix)))
+          .AddClasses(action: (aClasses) => aClasses.Where(aType => aType.IsPublic && !aType.Has<NotTest>()))
           .AsSelf()
           .WithScopedLifetime()
       );

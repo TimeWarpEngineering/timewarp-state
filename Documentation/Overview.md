@@ -5,8 +5,11 @@ title: Blazor-State Overview
 
 # Blazor-State
 [![Build Status](https://timewarpenterprises.visualstudio.com/Blazor-State/_apis/build/status/Blazor-State-CI-Master-Yaml)](https://timewarpenterprises.visualstudio.com/Blazor-State/_build/latest?definitionId=7)
-[![nuget](https://img.shields.io/nuget/v/Blazor-State.svg)](https://www.nuget.org/packages/Blazor-State/)
-[![nuget](https://img.shields.io/nuget/dt/Blazor-State.svg)](https://www.nuget.org/packages/Blazor-State/)
+[![nuget](https://img.shields.io/nuget/v/Blazor-State)](https://www.nuget.org/packages/Blazor-State/)
+[![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget&style=flat-square)](https://www.nuget.org/packages/Blazor-State/)
+[![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
+[![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
+[![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
 
 Blazor-State is a State Management architecture utilizing the MediatR pipeline.
 

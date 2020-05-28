@@ -3,6 +3,7 @@
   using Microsoft.Extensions.DependencyInjection;
   using System;
 
+  [NotTest]
   public class ClientHost
   {
 

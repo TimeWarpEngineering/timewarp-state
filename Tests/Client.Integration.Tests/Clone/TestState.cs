@@ -1,7 +1,9 @@
 ﻿namespace TestApp.Client.Integration.Tests.Clone
 {
   using System.Linq;
+  using TestApp.Client.Integration.Tests.Infrastructure;
 
+  [NotTest]
   public class TestState
   {
     public TestState()

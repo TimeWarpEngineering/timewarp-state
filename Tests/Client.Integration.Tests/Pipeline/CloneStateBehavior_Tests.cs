@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Pipeline_Tests
+﻿namespace CloneStateBehavior
 {
   using Shouldly;
   using System;
@@ -9,14 +9,14 @@
   using static TestApp.Client.Features.CloneTest.CloneTestState;
   using static TestApp.Client.Features.Counter.CounterState;
 
-  internal class CloneStateBehaviorTests : BaseTest
+  public class Should : BaseTest
   {
     private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
     private CounterState CounterState => Store.GetState<CounterState>();
 
-    public CloneStateBehaviorTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
+    public Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 
-    public async Task ShouldCloneState()
+    public async Task CloneState()
     {
       //Arrange
       CounterState.Initialize(aCount: 15);
@@ -34,7 +34,7 @@
       CounterState.Guid.ShouldNotBe(preActionGuid);
     }
 
-    public async Task ShouldCloneStateUsingOverridenClone()
+    public async Task CloneStateUsingOverridenClone()
     {
       //Arrange
       CloneTestState.Initialize(aCount: 15);
@@ -49,7 +49,7 @@
       CloneTestState.Count.ShouldBe(42);
     }
 
-    public async Task ShouldRollBackStateAndThrow()
+    public async Task RollBackStateAndThrow_When_Exception()
     {
       // Arrange
       // Setup know state.
@@ -62,7 +62,7 @@
       };
 
       // Act
-      Exception exception = await Should.ThrowAsync<Exception>(async () =>
+      Exception exception = await Shouldly.Should.ThrowAsync<Exception>(async () =>
       await Send(throwExceptionAction));
 
       // Assert

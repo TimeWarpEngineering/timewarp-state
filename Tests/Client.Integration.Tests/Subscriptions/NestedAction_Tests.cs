@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Subscriptions_Tests
+﻿namespace Actions
 {
   using Shouldly;
   using System;
@@ -7,11 +7,11 @@
   using TestApp.Client.Integration.Tests.Infrastructure;
   using static TestApp.Client.Features.Counter.WrongNesting;
 
-  public class NestedActionTests: BaseTest
+  public class Should_ThrowException_For: BaseTest
   {
-    public NestedActionTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
+    public Should_ThrowException_For(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 
-    public async Task ShouldThrowExceptionForImproperNestedActions()
+    public async Task ImproperNestedActions()
     {
       // Arrange
       var improperNestedAction = new ImproperNestedAction();
@@ -23,7 +23,7 @@
       );
     }
 
-    public async Task ShouldThrowExceptionForNonNestedActions()
+    public async Task NonNestedActions()
     {
       // Arrange
       var nonNestedAction = new NonNestedAction();

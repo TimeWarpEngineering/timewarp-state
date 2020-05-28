@@ -1,20 +1,15 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.Routing_Tests
+﻿namespace RouteState
 {
   using AnyClone;
-  using BlazorState;
   using BlazorState.Features.Routing;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
-  using System;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class RouteStateCloneTests : BaseTest
+  public class Clone_Should: BaseTest
   {
-    public RouteStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+    public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aWebAssemblyHost.ServiceProvider;
-      IStore store = serviceProvider.GetService<IStore>();
-      RouteState = store.GetState<RouteState>();
+      RouteState = Store.GetState<RouteState>();
     }
 
     private RouteState RouteState { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.WeatherForecast_Tests
+﻿namespace WeatherForecastsState
 {
   using System;
   using Shouldly;
@@ -8,16 +8,16 @@
   using TestApp.Api.Features.WeatherForecast;
   using AnyClone;
 
-  internal class WeatherForecastStateCloneTests: BaseTest
+  public class Clone_Should: BaseTest
   {
-    public WeatherForecastStateCloneTests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+    public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
       WeatherForecastsState = Store.GetState<WeatherForecastsState>();
     }
 
     private WeatherForecastsState WeatherForecastsState { get; set; }
 
-    public void ShouldClone()
+    public void Clone()
     {
       //Arrange
       var weatherForecasts = new List<WeatherForecastDto> {

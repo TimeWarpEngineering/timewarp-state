@@ -2,7 +2,6 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
 {
   using BlazorState;
   using MediatR;
-  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
   using Microsoft.Extensions.DependencyInjection;
   using System;
   using System.Net.Http;
@@ -28,9 +27,12 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
       Console.WriteLine("BaseTest");
       ServiceScopeFactory = aWebAssemblyHost.ServiceProvider.GetService<IServiceScopeFactory>();
       ServiceScope = ServiceScopeFactory.CreateScope();
-      Mediator = ServiceScope.ServiceProvider.GetService<IMediator>();
-      Store = ServiceScope.ServiceProvider.GetService<IStore>();
+      ServiceProvider = ServiceScope.ServiceProvider;
+      Mediator = ServiceProvider.GetService<IMediator>();
+      Store = ServiceProvider.GetService<IStore>();
     }
+
+    public IServiceProvider ServiceProvider { get; }
 
     protected Task<TResponse> Send<TResponse>(IRequest<TResponse> aRequest) => Send(aRequest);
 

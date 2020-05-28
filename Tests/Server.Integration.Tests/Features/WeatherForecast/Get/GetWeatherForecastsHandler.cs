@@ -1,4 +1,4 @@
-﻿namespace TestApp.Features.WeatherForecast.GetWeatherForecastsHandler_Tests
+﻿namespace GetWeatherForecastsHandler
 {
   using Shouldly;
   using System.Threading.Tasks;
