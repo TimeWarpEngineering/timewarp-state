@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApp.EndToEnd.TestCafe.T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CFD8811F-C0A5-42E0-AF4D-29D3620CBA7D}"
 	ProjectSection(SolutionItems) = preProject
+		Build\BlazorStateMultiStage.yml = Build\BlazorStateMultiStage.yml
 		Directory.Build.props = Directory.Build.props
+		Build\documentation.yml = Build\documentation.yml
 		global.json = global.json
 		NuGet.config = NuGet.config
 		TestCafe.ps1 = TestCafe.ps1
