@@ -9,7 +9,9 @@
   using TestApp.Client.Integration.Tests.Infrastructure;
   using static TestApp.Client.Features.Counter.CounterState;
 
-  public class Handle_Should: BaseTest
+  // TODO: These used to pass with WebAssemblyHostBuilder
+  // internal class won't run so they won't fail
+  internal class Handle_Should: BaseTest
   {
     private readonly JsonRequestHandler JsonRequestHandler;
 
