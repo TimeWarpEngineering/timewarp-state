@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server.ServiceProvider_Tests
+﻿namespace ServiceProvider
 {
   using MediatR;
   using Microsoft.Extensions.Configuration;
@@ -10,7 +10,7 @@
   using TestApp.Api.Features.WeatherForecast;
   using Microsoft.AspNetCore.Mvc.Testing;
   using System.Text.Json;
-  using System.Threading.Tasks;
+  using TestApp.Server;
 
   public class GetService_Returns : BaseTest
   {

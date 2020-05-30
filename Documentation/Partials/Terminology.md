@@ -6,7 +6,7 @@ title: Terminology
 ## Terminology
 
 The pattern used by Blazor-State and MediatR has been around for many years and goes by different names.
-We list various related terms here and Bold indicates the term used in Blazor-State.
+We list various related terms here and **Bold** indicates the term used in Blazor-State.
 
 ### Signals/**Actions**/**Requests**/Commands/
 
