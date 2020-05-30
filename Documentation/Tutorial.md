@@ -9,12 +9,7 @@ This tutorial shows how to add Blazor-State to a `Blazor hosted WebAssembly App`
 
 ## Prerequisites
 
-1. Install the latest [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.1) release.
-2. Install the Blazor templates by running the following command in a command shell:
-
-```console
-dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.1.0-preview4.19579.2
-```
+1. Install the latest [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download) release.
 
 ## Creating the project
 
@@ -26,14 +21,17 @@ dotnet new -i Microsoft.AspNetCore.Blazor.Templates::3.1.0-preview4.19579.2
 You should see something similar to the following:
 
 ```console
-λ  dotnet run --project .\Server\Sample.Server.csproj
-info: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[0]
-      User profile is available. Using 'C:\Users\StevenTCramer\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
-Hosting environment: Production
-Content root path: C:\git\temp\Sample\Server
-Now listening on: http://localhost:5000
-Now listening on: https://localhost:5001
-Application started. Press Ctrl+C to shut down.
+C:\Temp\Sample> dotnet run --project ./Server/Sample.Server.csproj
+info: Microsoft.Hosting.Lifetime[0]
+      Now listening on: https://localhost:5001
+info: Microsoft.Hosting.Lifetime[0]
+      Now listening on: http://localhost:5000
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\Temp\Sample\Server
 ```
 
 Open a browser and enter <http://localhost:5000>
@@ -96,36 +94,52 @@ namespace Sample.Client.Features.Counter
 
 ## Configure the services
 
-1. In the `Sample.Client` project in the `Startup.cs` file.
-2. Change `ConfigureServices` to configure blazor-state as follows:
+1. In the `Sample.Client` project in the `Program.cs` file.
+2. Add a `ConfigureServices` method to configure blazor-state as follows:
 3. Add the required usings.
 4. Configure the options passed to AddBlazorState to include the assemblies to scan for States and Handlers.
 
 ```csharp
 namespace Sample.Client
 {
-  using BlazorState;
-  using Microsoft.AspNetCore.Components.Builder;
+  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
   using Microsoft.Extensions.DependencyInjection;
+  using System;
+  using System.Net.Http;
+  using System.Threading.Tasks;
+  using BlazorState;
   using System.Reflection;
+  using MediatR;
 
-  public class Startup
+  public class Program
   {
-    public void ConfigureServices(IServiceCollection services)
+    public static async Task Main(string[] args)
     {
-      services.AddBlazorState
+      var builder = WebAssemblyHostBuilder.CreateDefault(args);
+      builder.RootComponents.Add<App>("app");
+      builder.Services.AddSingleton
       (
-        (aOptions) => aOptions.Assemblies =
-          new Assembly[]
-          {
-            typeof(Startup).GetTypeInfo().Assembly,
-          }
+        new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
       );
+
+      ConfigureServices(builder.Services);
+
+      await builder.Build().RunAsync();
     }
 
-    public void Configure(IComponentsApplicationBuilder app)
+    public static void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      app.AddComponent<App>("app");
+
+      aServiceCollection.AddBlazorState
+      (
+        (aOptions) =>
+
+          aOptions.Assemblies =
+          new Assembly[]
+          {
+            typeof(Program).GetTypeInfo().Assembly,
+          }
+      );
     }
   }
 }
@@ -137,8 +151,7 @@ namespace Sample.Client
  2. Inherit from BlazorStateComponent `@inherits BlazorStateComponent`, to do that you need to also add `@using BlazorState`
  3. Next add a `CounterState` property that gets the State from the store `GetState<CounterState>()`, this will require you add `@using Sample.Client.Features.Counter` also.
  4. change `currentCount` to pull the Count from state. `int currentCount => CounterState.Count;`
- 5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented.
- From the outside CounterState class the state is immutable.
+ 5. Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented. The `CounterState` class is immutable from the outside.
  So lets comment out that line.
 
 The code should look as follows:
@@ -159,7 +172,7 @@ The code should look as follows:
 @code {
     CounterState CounterState => GetState<CounterState>();
 
-    int currentCount => CounterState.Count;
+    private int currentCount => CounterState.Count;
 
     void IncrementCount()
     {
@@ -179,7 +192,7 @@ The `Action` is then handled by a `Handler` which can freely mutate the state.
 > [!Warning]
 > State should NOT be mutated by anything other than handlers.
 > All state changes should be done in handlers.
-> This can be controlled by making the states public interface immutable and your handlers a nested class of the state they modify.
+> This is controlled by making the states public interface immutable and your handlers a nested class of the state they modify.
 
 ## Create the `IncrementCounterAction`
 
@@ -266,30 +279,29 @@ namespace Sample.Client.Features.Counter
 Execute the app and confirm that the "Click me" button properly increments the value.
 And when you navigate away from the page and back the value persists.
 
-## ReduxDevTools Javascipt Interop and RouteState
+## ReduxDevTools JavaScript Interop and RouteState
 
-To [enable ReduxDevTools](xref:BlazorState:AddReduxDevTools.md) update the `ConfigureServices` method in `Startup.cs` as follows:
+To [enable ReduxDevTools](xref:BlazorState:AddReduxDevTools.md) update the `ConfigureServices` method in `Program.cs` as follows:
 
 ```
-    public void ConfigureServices(IServiceCollection services)
+    public static void ConfigureServices(IServiceCollection aServiceCollection)
     {
-      services.AddBlazorState
+      aServiceCollection.AddBlazorState
       (
-        (aOptions) => 
+        (aOptions) =>
         {
           aOptions.UseReduxDevToolsBehavior = true;
           aOptions.Assemblies =
             new Assembly[]
             {
-              typeof(Startup).GetTypeInfo().Assembly,
-            }
+              typeof(Program).GetTypeInfo().Assembly,
+            };
         }
       );
-      services.AddScoped<CounterState>();
     }
 ```
 
-To facilitate Javascript Interop, enable ReduxDevTools, and manage RouteState, add `App.razor.cs` in the same directory as `App.razor` as follows:
+To facilitate JavaScript Interop, enable ReduxDevTools, and manage RouteState, add `App.razor.cs` in the same directory as `App.razor` as follows:
 
 ```csharp
 namespace Sample.Client
@@ -300,7 +312,7 @@ namespace Sample.Client
   using BlazorState.Features.Routing;
   using Microsoft.AspNetCore.Components;
 
-  public class AppBase : ComponentBase
+  public partial class App : ComponentBase
   {
     [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
@@ -317,11 +329,21 @@ namespace Sample.Client
   }
 }
 ```
+Lastly we need to add the blazor-state JavaScript to the `index.html` file just above the `blazor.webassembly.js` reference:
 
-In your `App.razor` add `@inherits AppBase`
+```
+...
+<script src="_content/Blazor-State/blazorstate.js"></script>
+<script src="_framework/blazor.webassembly.js"></script>
+...
+```
 
 Now run your app again and then Open the Redux Dev Tools (a tab in Chrome Dev Tools) and you should see Actions as they are executed.
 
+![](Images/ReduxDevTools.png)
+
 If you inspect the State in the DevTools you will also notice it maintains the current Route in RouteState.
 
-That is the basics of getting started.
+![ReduxRouteState](Images/ReduxRouteState.png)
+
+Congratulations that is the basics of using getting started with Blazor-State.
