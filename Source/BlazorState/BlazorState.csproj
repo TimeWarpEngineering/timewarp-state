@@ -17,7 +17,7 @@
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
-    <!--<PackageIcon>Logo.png</PackageIcon> This works in dotnet and MSBuild but Nuget still doesn't support it.-->
+    <PackageIcon>Logo.png</PackageIcon> <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
     <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
@@ -54,7 +54,6 @@
     <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreComponentsWebVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="$(MicrosoftAspNetCoreBlazorHttpClientVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
     <PackageReference Include="TypeSupport" Version="$(TypeSupportVersion)" />
   </ItemGroup>

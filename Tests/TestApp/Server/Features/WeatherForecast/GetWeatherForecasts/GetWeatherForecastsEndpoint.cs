@@ -5,9 +5,9 @@
   using TestApp.Api.Features.WeatherForecast;
   using Microsoft.AspNetCore.Mvc;
 
-  [Route(GetWeatherForecastsRequest.Route)]
-  public class GetWeatherForecastsController : BaseController<GetWeatherForecastsRequest, GetWeatherForecastsResponse>
+  public class GetWeatherForecastsEndpoint : BaseEndpoint<GetWeatherForecastsRequest, GetWeatherForecastsResponse>
   {
+    [HttpGet(GetWeatherForecastsRequest.Route)]
     public async Task<IActionResult> Process(GetWeatherForecastsRequest aRequest) => await Send(aRequest);
   }
 }

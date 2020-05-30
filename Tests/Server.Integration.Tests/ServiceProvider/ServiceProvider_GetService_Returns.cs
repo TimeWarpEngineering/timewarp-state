@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server.Integration.Tests.DiContainerTest
+﻿namespace ServiceProvider
 {
   using MediatR;
   using Microsoft.Extensions.Configuration;
@@ -8,34 +8,47 @@
   using TestApp.Server.Features.WeatherForecast;
   using TestApp.Server.Integration.Tests.Infrastructure;
   using TestApp.Api.Features.WeatherForecast;
+  using Microsoft.AspNetCore.Mvc.Testing;
+  using System.Text.Json;
+  using TestApp.Server;
 
-  public class DiContainerTests
+  public class GetService_Returns : BaseTest
   {
     private readonly IServiceProvider ServiceProvider;
 
-    public DiContainerTests(TestFixture aTestFixture)
+    public GetService_Returns
+    (
+      WebApplicationFactory<Startup> aWebApplicationFactory,
+      JsonSerializerOptions aJsonSerializerOptions
+    ) : base(aWebApplicationFactory, aJsonSerializerOptions) 
     {
-      ServiceProvider = aTestFixture.ServiceProvider;
-      
+      ServiceProvider = ServiceScopeFactory.CreateScope().ServiceProvider;
     }
-    public void ShouldGetServiceForMediator()
+    public void IMediator()
     {
       IMediator mediator = ServiceProvider.GetService<IMediator>();
       mediator.ShouldNotBeNull();
+    }
 
+    public void GetWeatherForecastsHandler()
+    {
       GetWeatherForecastsHandler getWeatherForecastsHandler = ServiceProvider.GetService<GetWeatherForecastsHandler>();
       getWeatherForecastsHandler.ShouldNotBeNull();
 
       IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
       handler.ShouldNotBeNull();
-
-      // Something in preview 8 indirectly requires this interface.
-      IConfiguration configuration = ServiceProvider.GetService<IConfiguration>();
-      configuration.ShouldNotBeNull();
-
     }
 
+    public void Generic_IRequestHandler_GetWeatherForecastsRequest_GetWeatherForecastsResponse()
+    {
+      IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
+      handler.ShouldNotBeNull();
+    }
+
+    public void IConfiguration()
+    {
+      IConfiguration configuration = ServiceProvider.GetService<IConfiguration>();
+      configuration.ShouldNotBeNull();
+    }
   }
-
-
 }

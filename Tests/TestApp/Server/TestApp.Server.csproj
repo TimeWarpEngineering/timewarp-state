@@ -8,7 +8,8 @@
   <ItemGroup>
     <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="$(MicrosoftAspNetCoreBlazorServerVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(MicrosoftAspNetCoreComponentsWebAssemblyServerVersion)" />
+    <PackageReference Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
     <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
   </ItemGroup>
 

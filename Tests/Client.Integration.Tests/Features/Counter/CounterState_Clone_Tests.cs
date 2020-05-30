@@ -1,25 +1,20 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.Counter
+﻿namespace CounterState
 {
   using AnyClone;
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
-  using System;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class CounterStateCloneTests
+  public class Clone_Should : BaseTest
   {
-    public CounterStateCloneTests(TestFixture aTestFixture)
+    public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
-      IStore store = serviceProvider.GetService<IStore>();
-      CounterState = store.GetState<CounterState>();
+      CounterState = Store.GetState<CounterState>();
     }
 
     private CounterState CounterState { get; set; }
 
-    public void ShouldClone()
+    public void Clone()
     {
       //Arrange
       CounterState.Initialize(aCount: 15);

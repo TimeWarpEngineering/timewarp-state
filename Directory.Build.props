@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.png</PackageIconUrl>
+    <!-- <PackageIconUrl>https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.png</PackageIconUrl> -->
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>BlazorState Microsoft ASP.NET Core Blazor State Blazor-State MediatR Mediator Pipeline Redux</PackageTags>
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
@@ -29,12 +29,17 @@
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <MicrosoftAspNetCoreBlazorVersion>3.1.0-preview4.19579.2</MicrosoftAspNetCoreBlazorVersion>
-    <MicrosoftAspNetCoreBlazorHttpClientVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorHttpClientVersion>
-    <MicrosoftAspNetCoreBlazorServerVersion>$(MicrosoftAspNetCoreBlazorVersion)</MicrosoftAspNetCoreBlazorServerVersion>
-    
-    <MicrosoftAspNetCoreVersion>3.1.1</MicrosoftAspNetCoreVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
+    <SystemNetHttpJsonVersion>3.2.0</SystemNetHttpJsonVersion>
+    <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
+    <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
+
+    <MicrosoftAspNetCoreVersion>3.1.4</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
+    <MicrosoftAspNetCoreMvcTestingVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreMvcTestingVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
     
     <MicrosoftExtensionsFileProvidersEmbeddedVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsFileProvidersEmbeddedVersion>
@@ -42,18 +47,19 @@
     
     <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
 
-    <AnyCloneVersion>1.0.34</AnyCloneVersion>
+    <AnyCloneVersion>1.0.36</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
-    <CoverletMsbuildVersion>2.8.0</CoverletMsbuildVersion>
+    <CoverletMsbuildVersion>2.8.1</CoverletMsbuildVersion>
     <FixieVersion>2.2.0</FixieVersion>
-    <FixieConsoleVersion>2.1.1</FixieConsoleVersion>
+    <FixieConsoleVersion>2.2.0</FixieConsoleVersion>
+    <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
-    <MediatrVersion>8.0.0</MediatrVersion>
-    <ScrutorVersion>3.1.0</ScrutorVersion>
+    <MediatrVersion>8.0.1</MediatrVersion>
+    <ScrutorVersion>3.2.1</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
-    <TypeSupportVersion>1.0.100</TypeSupportVersion>
+    <TypeSupportVersion>1.0.108</TypeSupportVersion>
   </PropertyGroup>
     
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->

@@ -1,31 +1,26 @@
-﻿namespace TestApp.Client.Integration.Tests.Features.EventStream
+﻿namespace EventStreamState
 {
-  using System;
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using TestApp.Client.Integration.Tests.Infrastructure;
   using TestApp.Client.Features.EventStream;
   using System.Collections.Generic;
   using AnyClone;
 
-  internal class EventStreamCloneTests
+  public class Clone_Should: BaseTest
   {
-    public EventStreamCloneTests(TestFixture aTestFixture)
+    public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      IServiceProvider serviceProvider = aTestFixture.ServiceProvider;
-      IStore store = serviceProvider.GetService<IStore>();
-      EventStreamState = store.GetState<EventStreamState>();
+      EventStreamState = Store.GetState<EventStreamState>();
     }
 
     private EventStreamState EventStreamState { get; set; }
 
-    public void ShouldClone()
+    public void Clone()
     {
       //Arrange
       var events = new List<string> { "Event 1", "Event 2", "Event 3" };
       EventStreamState.Initialize(events);
-      
+
       //Act
       var clone = EventStreamState.Clone() as EventStreamState;
 

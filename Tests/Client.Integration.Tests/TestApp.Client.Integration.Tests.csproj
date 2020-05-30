@@ -17,8 +17,10 @@
     </PackageReference>
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftAspNetCoreTestHostVersion)" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftAspNetCoreMvcTestingVersion)" />
     <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
     <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
+    <PackageReference Include="System.Text.Json" Version="$(SystemTextJsonVersion)" />
     <DotNetCliToolReference Include="Fixie.Console" Version="$(FixieConsoleVersion)" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
