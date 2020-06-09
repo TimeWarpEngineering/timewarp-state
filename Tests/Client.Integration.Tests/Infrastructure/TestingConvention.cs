@@ -117,6 +117,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
       {
         if (aIsDisposing)
         {
+          Console.WriteLine("==== Disposing ====");
           ServerWebApplicationFactory?.Dispose();
         }
 
