@@ -33,15 +33,14 @@
     <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
     <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
     <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
-    <SystemNetHttpJsonVersion>3.2.0</SystemNetHttpJsonVersion>
+    <SystemNetHttpJsonVersion>3.2.1</SystemNetHttpJsonVersion>
     <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
     <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
 
     <MicrosoftAspNetCoreVersion>3.1.5</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
     <MicrosoftAspNetCoreMvcTestingVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreMvcTestingVersion>
-    <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>
-    
+    <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>    
     <MicrosoftExtensionsFileProvidersEmbeddedVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsFileProvidersEmbeddedVersion>
     <MicrosoftExtensionsLoggingAbstractionsVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsLoggingAbstractionsVersion>
     
