@@ -16,10 +16,12 @@
 
     public bool IsEnabled { get; set; }
 
-    public ReduxDevToolsInterop(
-                      ILogger<ReduxDevToolsInterop> aLogger,
+    public ReduxDevToolsInterop
+    (
+      ILogger<ReduxDevToolsInterop> aLogger,
       IReduxDevToolsStore aStore,
-      IJSRuntime aJSRuntime)
+      IJSRuntime aJSRuntime
+    )
     {
       Logger = aLogger;
       Store = aStore;
