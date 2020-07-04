@@ -50,8 +50,8 @@
     <AnyCloneVersion>1.0.36</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
     <CoverletMsbuildVersion>2.8.1</CoverletMsbuildVersion>
-    <FixieVersion>2.2.0</FixieVersion>
-    <FixieConsoleVersion>2.2.0</FixieConsoleVersion>
+    <FixieVersion>2.2.1</FixieVersion>
+    <FixieConsoleVersion>2.2.1</FixieConsoleVersion>
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>8.0.1</MediatrVersion>
