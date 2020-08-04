@@ -12,10 +12,10 @@ namespace BlazorState
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
   using System;
+  using System.Reflection;
   using System.Collections.Generic;
   using System.Linq;
   using System.Net.Http;
-  using System.Reflection;
   using static BlazorState.Features.Routing.RouteState;
 
   public static class ServiceCollectionExtensions
@@ -79,7 +79,6 @@ namespace BlazorState
           aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction, Unit>, ChangeRouteHandler>();
           aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction, Unit>, InitializeRouteHandler>();
         }
-        
       }
       return aServiceCollection;
     }
@@ -150,7 +149,7 @@ namespace BlazorState
     {
       foreach (Assembly assembly in aBlazorStateOptions.Assemblies)
       {
-        IEnumerable<Type> types = assembly.GetTypes().Where
+        IEnumerable<Type> types = assembly.GetLoadedTypes().Where
         (
           aType =>
           !aType.IsAbstract &&

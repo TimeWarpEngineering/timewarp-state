@@ -6,6 +6,7 @@
   using BlazorState.Features.Routing;
   using Microsoft.Extensions.Logging;
   using System.Text.Json;
+  using System.Reflection;
 
   /// <summary>
   /// The portion of the store that is only needed to support
@@ -61,7 +62,7 @@
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)
-          .SelectMany(aAssembly => aAssembly.GetTypes())
+          .SelectMany(aAssembly => aAssembly.GetLoadedTypes())
           .FirstOrDefault(aType => aType.FullName.Equals(typeName));
 
       Logger.LogDebug($"stateType == null{stateType == null}");

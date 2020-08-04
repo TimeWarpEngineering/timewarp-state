@@ -29,15 +29,15 @@
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <MicrosoftAspNetCoreComponentsWebAssemblyVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
-    <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
-    <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
-    <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>3.2.0</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
     <SystemNetHttpJsonVersion>3.2.1</SystemNetHttpJsonVersion>
     <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
     <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
 
-    <MicrosoftAspNetCoreVersion>3.1.5</MicrosoftAspNetCoreVersion>
+    <MicrosoftAspNetCoreVersion>3.1.6</MicrosoftAspNetCoreVersion>
     <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
     <MicrosoftAspNetCoreMvcTestingVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreMvcTestingVersion>
     <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>    
@@ -46,19 +46,19 @@
     
     <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
 
-    <AnyCloneVersion>1.0.36</AnyCloneVersion>
+    <AnyCloneVersion>1.0.39</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
     <CoverletMsbuildVersion>2.9.0</CoverletMsbuildVersion>
     <FixieVersion>2.2.1</FixieVersion>
     <FixieConsoleVersion>2.2.1</FixieConsoleVersion>
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
-    <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.0.1</MediatrExtensionsMicrosoftDependencyInjectionVersion>
-    <MediatrVersion>8.0.2</MediatrVersion>
+    <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.1.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
+    <MediatrVersion>8.1.0</MediatrVersion>
     <ScrutorVersion>3.2.1</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
-    <TypeSupportVersion>1.1.3</TypeSupportVersion>
+    <TypeSupportVersion>1.1.4</TypeSupportVersion>
   </PropertyGroup>
     
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
