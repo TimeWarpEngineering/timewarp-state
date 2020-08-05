@@ -149,7 +149,7 @@ namespace BlazorState
     {
       foreach (Assembly assembly in aBlazorStateOptions.Assemblies)
       {
-        IEnumerable<Type> types = assembly.GetLoadedTypes().Where
+        IEnumerable<Type> types = assembly.GetTypes().Where
         (
           aType =>
           !aType.IsAbstract &&
