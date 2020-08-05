@@ -10,6 +10,8 @@ namespace BlazorState.Pipeline.State
   using System.Threading.Tasks;
 
   internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+    where 
+      TRequest : notnull
   {
     private readonly ILogger Logger;
 

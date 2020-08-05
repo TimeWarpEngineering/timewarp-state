@@ -62,7 +62,7 @@
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()
           .Where(aAssembly => !aAssembly.IsDynamic)
-          .SelectMany(aAssembly => aAssembly.GetLoadedTypes())
+          .SelectMany(aAssembly => aAssembly.GetTypes())
           .FirstOrDefault(aType => aType.FullName.Equals(typeName));
 
       Logger.LogDebug($"stateType == null{stateType == null}");
