@@ -37,12 +37,11 @@
     <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
     <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
 
-    <MicrosoftAspNetCoreVersion>3.1.6</MicrosoftAspNetCoreVersion>
-    <MicrosoftAspNetCoreComponentsWebVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreComponentsWebVersion>
-    <MicrosoftAspNetCoreMvcTestingVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreMvcTestingVersion>
-    <MicrosoftAspNetCoreTestHostVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftAspNetCoreTestHostVersion>    
-    <MicrosoftExtensionsFileProvidersEmbeddedVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsFileProvidersEmbeddedVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>$(MicrosoftAspNetCoreVersion)</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftAspNetCoreComponentsWebVersion>3.1.9</MicrosoftAspNetCoreComponentsWebVersion>
+    <MicrosoftAspNetCoreMvcTestingVersion>3.1.9</MicrosoftAspNetCoreMvcTestingVersion>
+    <MicrosoftAspNetCoreTestHostVersion>3.1.9</MicrosoftAspNetCoreTestHostVersion>    
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.1.9</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>3.1.9</MicrosoftExtensionsLoggingAbstractionsVersion>
     
     <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
 
@@ -54,7 +53,7 @@
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>8.1.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>8.1.0</MediatrVersion>
-    <ScrutorVersion>3.2.1</ScrutorVersion>
+    <ScrutorVersion>3.2.2</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
     <ShouldlyVersion>3.0.2</ShouldlyVersion>
