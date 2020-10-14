@@ -12,6 +12,7 @@
     </PackageReference>
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
     <PackageReference Include="FluentAssertions" Version="$(FluentAssertionsVersion)" />
+    <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
     <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="$(MicrosoftAspNetCoreMvcTestingVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="$(MicrosoftAspNetCoreTestHostVersion)" />
