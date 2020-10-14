@@ -30,15 +30,6 @@
       mediator.ShouldNotBeNull();
     }
 
-    public void GetWeatherForecastsHandler()
-    {
-      GetWeatherForecastsHandler getWeatherForecastsHandler = ServiceProvider.GetService<GetWeatherForecastsHandler>();
-      getWeatherForecastsHandler.ShouldNotBeNull();
-
-      IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
-      handler.ShouldNotBeNull();
-    }
-
     public void Generic_IRequestHandler_GetWeatherForecastsRequest_GetWeatherForecastsResponse()
     {
       IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
