@@ -1,9 +1,9 @@
-﻿namespace TestApp.EndToEnd.Tests
+namespace TestApp.EndToEnd.Tests
 {
-  using System;
-  using TestApp.EndToEnd.Tests.Infrastructure;
   using Fixie;
   using Microsoft.Extensions.DependencyInjection;
+  using System;
+  using TestApp.EndToEnd.Tests.Infrastructure;
 
   public class TestingConvention : Discovery, Execution, IDisposable
   {

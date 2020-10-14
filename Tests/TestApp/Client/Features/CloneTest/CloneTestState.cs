@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.CloneTest
+namespace TestApp.Client.Features.CloneTest
 {
   using BlazorState;
   using System;

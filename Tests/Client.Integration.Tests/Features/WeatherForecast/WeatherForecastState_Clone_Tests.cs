@@ -1,14 +1,14 @@
-﻿namespace WeatherForecastsState
+namespace WeatherForecastsState
 {
-  using System;
-  using Shouldly;
-  using TestApp.Client.Integration.Tests.Infrastructure;
-  using System.Collections.Generic;
-  using TestApp.Client.Features.WeatherForecast;
-  using TestApp.Api.Features.WeatherForecast;
   using AnyClone;
+  using Shouldly;
+  using System;
+  using System.Collections.Generic;
+  using TestApp.Api.Features.WeatherForecast;
+  using TestApp.Client.Features.WeatherForecast;
+  using TestApp.Client.Integration.Tests.Infrastructure;
 
-  public class Clone_Should: BaseTest
+  public class Clone_Should : BaseTest
   {
     public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {

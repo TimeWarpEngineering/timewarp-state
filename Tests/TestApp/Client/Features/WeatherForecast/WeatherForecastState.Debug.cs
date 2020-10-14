@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.WeatherForecast
+namespace TestApp.Client.Features.WeatherForecast
 {
   using BlazorState;
   using Microsoft.JSInterop;

@@ -1,4 +1,4 @@
-﻿namespace CloneStateBehavior
+namespace CloneStateBehavior
 {
   using Shouldly;
   using System;

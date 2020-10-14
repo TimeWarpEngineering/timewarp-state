@@ -1,7 +1,7 @@
-﻿namespace TestApp.EndToEnd.Tests
+namespace TestApp.EndToEnd.Tests
 {
-  using TestApp.EndToEnd.Tests.Infrastructure;
   using OpenQA.Selenium;
+  using TestApp.EndToEnd.Tests.Infrastructure;
   using static Infrastructure.WaitAndAssert;
 
   public class FetchDataPageTests : BaseTest

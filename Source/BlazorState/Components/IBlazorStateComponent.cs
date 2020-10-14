@@ -1,4 +1,4 @@
-﻿namespace BlazorState
+namespace BlazorState
 {
   using MediatR;
 

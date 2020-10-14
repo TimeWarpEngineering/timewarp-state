@@ -1,9 +1,9 @@
-﻿namespace BlazorState.Features.Routing
+namespace BlazorState.Features.Routing
 {
-  using System.Collections.Generic;
-  using System.Reflection;
   using BlazorState;
   using Microsoft.JSInterop;
+  using System.Collections.Generic;
+  using System.Reflection;
 
   public partial class RouteState : State<RouteState>
   {

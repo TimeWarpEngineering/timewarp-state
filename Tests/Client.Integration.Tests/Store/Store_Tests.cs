@@ -3,16 +3,22 @@ namespace TestApp.Client.Integration.Tests
   using BlazorState;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
+  using System.IO;
+  using TestApp.Client.Features.Application;
+  using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.WeatherForecast;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class Store_Tests: BaseTest
+  internal class Store_Tests : BaseTest
   {
+#if ReduxDevToolsEnabled
     private readonly IReduxDevToolsStore ReduxDevToolsStore;
-
+#endif
     public Store_Tests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      //ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
+#if ReduxDevToolsEnabled
+      ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
+#endif
     }
 
 #if ReduxDevToolsEnabled

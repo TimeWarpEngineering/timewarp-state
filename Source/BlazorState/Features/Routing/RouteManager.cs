@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Features.Routing
+namespace BlazorState.Features.Routing
 {
   using MediatR;
   using Microsoft.AspNetCore.Components;
@@ -18,10 +18,12 @@
 
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public RouteManager(
-                      NavigationManager aNavigationManager,
+    public RouteManager
+    (
+      NavigationManager aNavigationManager,
       IMediator aMediator,
-      IStore aStore)
+      IStore aStore
+    )
     {
       NavigationManager = aNavigationManager;
       Mediator = aMediator;

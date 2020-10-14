@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server.Integration.Tests.Infrastructure
+namespace TestApp.Server.Integration.Tests.Infrastructure
 {
   using Fixie;
   using Microsoft.AspNetCore.Mvc.Testing;

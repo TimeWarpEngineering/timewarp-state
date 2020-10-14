@@ -1,4 +1,4 @@
-﻿namespace TestApp.EndToEnd.Tests.Infrastructure
+namespace TestApp.EndToEnd.Tests.Infrastructure
 {
   using System;
   using System.IO;

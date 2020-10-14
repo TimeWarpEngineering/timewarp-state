@@ -1,27 +1,27 @@
-﻿namespace TestApp.Client.Pipeline.NotificationPostProcessor
+namespace TestApp.Client.Pipeline.NotificationPostProcessor
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using MediatR;
   using MediatR.Pipeline;
   using Microsoft.Extensions.Logging;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   {
+    private readonly ILogger Logger;
+    private readonly IPublisher Publisher;
+
     public PostPipelineNotificationRequestPostProcessor
-    (
-      ILogger<PostPipelineNotificationRequestPostProcessor<TRequest,TResponse>> aLogger,
-      IMediator aMediator
+            (
+      ILogger<PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>> aLogger,
+      IPublisher aMediator
     )
     {
       Logger = aLogger;
-      Mediator = aMediator;
+      Publisher = aMediator;
     }
 
-    private IMediator Mediator { get; }
-    private ILogger Logger { get; }
-
-    public async Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
+    public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
     {
       var notification = new PostPipelineNotification<TRequest, TResponse>
       {
@@ -30,7 +30,7 @@
       };
 
       Logger.LogDebug("PostPipelineNotificationRequestPostProcessor");
-      await Mediator.Publish(notification, aCancellationToken);
+      return Publisher.Publish(notification, aCancellationToken);
     }
   }
 }

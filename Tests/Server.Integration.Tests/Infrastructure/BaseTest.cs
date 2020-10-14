@@ -21,6 +21,14 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
       JsonSerializerOptions = aJsonSerializerOptions;
     }
 
+    [
+      System.Diagnostics.CodeAnalysis.SuppressMessage
+      (
+        "AsyncUsage",
+        "AsyncFixer01:Unnecessary async/await usage",
+        Justification = "The serviceScope is disposed to early if not awaited here"
+      )
+    ]
     protected async Task<T> ExecuteInScope<T>(Func<IServiceProvider, Task<T>> aAction)
     {
       using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
@@ -33,9 +41,9 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
       (
         aServiceProvider =>
         {
-          IMediator mediator = aServiceProvider.GetService<IMediator>();
+          ISender sender = aServiceProvider.GetService<ISender>();
 
-          return mediator.Send(aRequest);
+          return sender.Send(aRequest);
         }
       );
     }
@@ -46,9 +54,9 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
       (
         aServiceProvider =>
         {
-          IMediator mediator = aServiceProvider.GetService<IMediator>();
+          ISender sender = aServiceProvider.GetService<ISender>();
 
-          return mediator.Send(aRequest);
+          return sender.Send(aRequest);
         }
       );
     }

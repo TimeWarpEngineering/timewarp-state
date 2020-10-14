@@ -1,12 +1,12 @@
-﻿namespace TestApp.Server.Features.WeatherForecast
+namespace TestApp.Server.Features.WeatherForecast
 {
+  using MediatR;
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
   using TestApp.Api.Features.WeatherForecast;
-  using MediatR;
 
   public class GetWeatherForecastsHandler : IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>
   {
@@ -24,7 +24,7 @@
       "Scorching"
     };
 
-    public async Task<GetWeatherForecastsResponse> Handle
+    public Task<GetWeatherForecastsResponse> Handle
     (
       GetWeatherForecastsRequest aGetWeatherForecastsRequest,
       CancellationToken aCancellationToken
@@ -46,7 +46,7 @@
         )
       );
 
-      return await Task.Run(() => response);
+      return Task.FromResult(response);
     }
   }
 }

@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter
 {
   using MediatR;
   using Microsoft.Extensions.Logging;
@@ -18,7 +18,7 @@
 
     public Task Handle
     (
-      PostPipelineNotification<CounterState.IncrementCounterAction, Unit> aPostPipelineNotification, 
+      PostPipelineNotification<CounterState.IncrementCounterAction, Unit> aPostPipelineNotification,
       CancellationToken aCancellationToken
     )
     {

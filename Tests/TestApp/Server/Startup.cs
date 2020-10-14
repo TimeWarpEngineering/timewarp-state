@@ -48,10 +48,7 @@ namespace TestApp.Server
       aServiceCollection.AddMvc();
       aServiceCollection.Configure<ApiBehaviorOptions>
       (
-        aApiBehaviorOptions =>
-        {
-          aApiBehaviorOptions.SuppressInferBindingSourcesForParameters = true;
-        }
+        aApiBehaviorOptions => aApiBehaviorOptions.SuppressInferBindingSourcesForParameters = true
       );
 
       aServiceCollection.AddResponseCompression
@@ -67,14 +64,6 @@ namespace TestApp.Server
 
       aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
 
-      aServiceCollection.Scan
-      (
-        aTypeSourceSelector => aTypeSourceSelector
-          .FromAssemblyOf<Startup>()
-          .AddClasses()
-          .AsSelf()
-          .WithScopedLifetime()
-      );
     }
   }
 }

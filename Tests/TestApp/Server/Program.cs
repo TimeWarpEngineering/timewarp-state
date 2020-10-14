@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server
+namespace TestApp.Server
 {
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.Extensions.Hosting;

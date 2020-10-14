@@ -1,4 +1,4 @@
-﻿namespace TestApp.Server.Features.Base
+namespace TestApp.Server.Features.Base
 {
   using MediatR;
   using Microsoft.AspNetCore.Mvc;
@@ -11,13 +11,13 @@
   where TRequest : IRequest<TResponse>
   where TResponse : BaseResponse
   {
-    private IMediator _mediator;
+    private ISender sender;
 
-    protected IMediator Mediator => _mediator ?? (_mediator = HttpContext.RequestServices.GetService<IMediator>());
+    protected ISender Sender => sender ??= HttpContext.RequestServices.GetService<ISender>();
 
     protected virtual async Task<IActionResult> Send(TRequest aRequest)
     {
-      TResponse response = await Mediator.Send(aRequest);
+      TResponse response = await Sender.Send(aRequest);
 
       return Ok(response);
     }

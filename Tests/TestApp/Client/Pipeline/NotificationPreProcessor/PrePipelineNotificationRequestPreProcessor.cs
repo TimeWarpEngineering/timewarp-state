@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Pipeline.NotificationPreProcessor
+namespace TestApp.Client.Pipeline.NotificationPreProcessor
 {
   using MediatR;
   using MediatR.Pipeline;
@@ -9,19 +9,19 @@
   internal class PrePipelineNotificationRequestPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
   {
     private readonly ILogger Logger;
-    private readonly IMediator Mediator;
+    private readonly IPublisher Publisher;
 
     public PrePipelineNotificationRequestPreProcessor
     (
       ILogger<PrePipelineNotificationRequestPreProcessor<TRequest>> aLogger,
-      IMediator aMediator
+      IPublisher aPublisher
     )
     {
       Logger = aLogger;
-      Mediator = aMediator;
+      Publisher = aPublisher;
     }
 
-    public async Task Process(TRequest aRequest, CancellationToken aCancellationToken)
+    public Task Process(TRequest aRequest, CancellationToken aCancellationToken)
     {
       var notification = new PrePipelineNotification<TRequest>
       {
@@ -29,7 +29,7 @@
       };
 
       Logger.LogDebug("PrePipelineNotificationRequestPreProcessor");
-      await Mediator.Publish(notification, aCancellationToken);
+      return Publisher.Publish(notification, aCancellationToken);
     }
   }
 }

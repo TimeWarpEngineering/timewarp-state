@@ -1,4 +1,4 @@
-﻿namespace BlazorState
+namespace BlazorState
 {
   using System.Collections.Generic;
   using System.Reflection;

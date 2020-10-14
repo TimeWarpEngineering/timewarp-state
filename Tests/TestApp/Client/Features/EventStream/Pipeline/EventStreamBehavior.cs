@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.EventStream
+namespace TestApp.Client.Features.EventStream
 {
   using MediatR;
   using Microsoft.Extensions.Logging;
@@ -17,17 +17,17 @@
   public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
     private readonly ILogger Logger;
-    private readonly IMediator Mediator;
+    private readonly ISender Sender;
     public Guid Guid { get; } = Guid.NewGuid();
 
     public EventStreamBehavior
     (
       ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
-      IMediator aMediator
+      ISender aSender
     )
     {
       Logger = aLogger;
-      Mediator = aMediator;
+      Sender = aSender;
       Logger.LogDebug($"{GetType().Name}: Constructor");
     }
 
@@ -63,7 +63,7 @@
         {
           addEventAction.Message = $"{aTag}:{requestTypeName}";
         }
-        await Mediator.Send(addEventAction);
+        await Sender.Send(addEventAction);
       }
     }
   }

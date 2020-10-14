@@ -1,4 +1,4 @@
-﻿namespace TestApp.Api.Features.Base
+namespace TestApp.Api.Features.Base
 {
   using System;
 

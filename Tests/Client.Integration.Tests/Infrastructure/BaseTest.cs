@@ -18,7 +18,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
   {
     private readonly IServiceScopeFactory ServiceScopeFactory;
     private readonly IServiceScope ServiceScope;
-    private readonly IMediator Mediator;
+    private readonly ISender Sender;
     protected readonly IStore Store;
     protected readonly HttpClient HttpClient;
 
@@ -28,7 +28,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
       ServiceScopeFactory = aWebAssemblyHost.ServiceProvider.GetService<IServiceScopeFactory>();
       ServiceScope = ServiceScopeFactory.CreateScope();
       ServiceProvider = ServiceScope.ServiceProvider;
-      Mediator = ServiceProvider.GetService<IMediator>();
+      Sender = ServiceProvider.GetService<ISender>();
       Store = ServiceProvider.GetService<IStore>();
     }
 
@@ -36,9 +36,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
 
     protected Task<TResponse> Send<TResponse>(IRequest<TResponse> aRequest) => Send(aRequest);
 
-    protected async Task Send(IRequest aRequest) => await Mediator.Send(aRequest);
+    protected async Task Send(IRequest aRequest) => await Sender.Send(aRequest);
 
   }
 }
-
-

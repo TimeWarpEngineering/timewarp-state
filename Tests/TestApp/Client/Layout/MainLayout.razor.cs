@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Layout
+namespace TestApp.Client.Layout
 {
   using BlazorState.Services;
   using Microsoft.AspNetCore.Components;

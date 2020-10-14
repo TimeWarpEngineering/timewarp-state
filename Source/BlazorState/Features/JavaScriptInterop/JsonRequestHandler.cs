@@ -37,7 +37,7 @@ namespace BlazorState.Features.JavaScriptInterop
     /// </summary>
     /// <param name="aRequestAsJson"></param>
     [JSInvokable]
-    public async void Handle(string aRequestTypeAssemblyQualifiedName, string aRequestAsJson = null)
+    public Task Handle(string aRequestTypeAssemblyQualifiedName, string aRequestAsJson = null)
     {
       if (string.IsNullOrWhiteSpace(aRequestTypeAssemblyQualifiedName))
         throw new ArgumentException("was Null or empty", nameof(aRequestTypeAssemblyQualifiedName));
@@ -52,15 +52,15 @@ namespace BlazorState.Features.JavaScriptInterop
 
       object instance = JsonSerializer.Deserialize(aRequestAsJson, requestType, JsonSerializerOptions);
 
-      _ = await SendToMediator(requestType, instance);
+      return SendToMediator(requestType, instance);
     }
 
-    public async Task InitAsync()
+    public ValueTask<object> InitAsync()
     {
       Logger.LogDebug("Init JsonRequestHandler");
       const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
       Logger.LogDebug(InitializeJavaScriptInteropName);
-      await JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectReference.Create(this));
+      return JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectReference.Create(this));
     }
 
     /// <summary>
@@ -73,8 +73,8 @@ namespace BlazorState.Features.JavaScriptInterop
 
       MethodInfo sendMethodInfo = Mediator.GetType().GetMethods().First
       (
-        aMethodInfo => 
-          aMethodInfo.IsGenericMethodDefinition && 
+        aMethodInfo =>
+          aMethodInfo.IsGenericMethodDefinition &&
           aMethodInfo.Name == nameof(Mediator.Send)
       );
       Type responseType = aRequestType

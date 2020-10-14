@@ -1,12 +1,12 @@
-﻿namespace EventStreamState
+namespace EventStreamState
 {
-  using Shouldly;
-  using TestApp.Client.Integration.Tests.Infrastructure;
-  using TestApp.Client.Features.EventStream;
-  using System.Collections.Generic;
   using AnyClone;
+  using Shouldly;
+  using System.Collections.Generic;
+  using TestApp.Client.Features.EventStream;
+  using TestApp.Client.Integration.Tests.Infrastructure;
 
-  public class Clone_Should: BaseTest
+  public class Clone_Should : BaseTest
   {
     public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {

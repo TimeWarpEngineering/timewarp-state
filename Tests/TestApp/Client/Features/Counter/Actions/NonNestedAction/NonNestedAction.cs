@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter
 {
   using BlazorState;
 

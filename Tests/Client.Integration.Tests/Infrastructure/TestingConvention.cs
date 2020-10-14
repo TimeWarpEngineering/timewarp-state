@@ -30,7 +30,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
       ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
 
       Classes.Where(aType => aType.IsPublic && !aType.Has<NotTest>());
-      Methods.Where(aMethodInfo => aMethodInfo.Name != nameof(Setup)  && !aMethodInfo.IsSpecialName);
+      Methods.Where(aMethodInfo => aMethodInfo.Name != nameof(Setup) && !aMethodInfo.IsSpecialName);
     }
 
     public void Execute(TestClass aTestClass)

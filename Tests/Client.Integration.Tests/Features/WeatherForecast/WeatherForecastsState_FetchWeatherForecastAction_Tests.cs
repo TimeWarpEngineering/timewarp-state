@@ -1,4 +1,4 @@
-﻿namespace WeatherForecastsState
+namespace WeatherForecastsState
 {
   using Shouldly;
   using System.Threading.Tasks;

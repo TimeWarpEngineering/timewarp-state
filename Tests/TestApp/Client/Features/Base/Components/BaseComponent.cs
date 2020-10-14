@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Base.Components
+namespace TestApp.Client.Features.Base.Components
 {
   using BlazorState.Pipeline.ReduxDevTools;
   using TestApp.Client.Features.Application;

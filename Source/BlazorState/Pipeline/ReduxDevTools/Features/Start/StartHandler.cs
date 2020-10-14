@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Pipeline.ReduxDevTools
+namespace BlazorState.Pipeline.ReduxDevTools
 {
   using MediatR;
   using Microsoft.Extensions.Logging;
@@ -10,8 +10,8 @@
     public StartHandler
     (
       ILogger<StartHandler> aLogger
-      //IStore aStore,
-      //ReduxDevToolsInterop aReduxDevToolsInterop
+    //IStore aStore,
+    //ReduxDevToolsInterop aReduxDevToolsInterop
     )
     {
       Logger = aLogger;

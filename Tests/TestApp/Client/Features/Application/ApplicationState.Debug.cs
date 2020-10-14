@@ -1,9 +1,9 @@
-﻿namespace TestApp.Client.Features.Application
+namespace TestApp.Client.Features.Application
 {
-  using System.Collections.Generic;
-  using System.Reflection;
   using BlazorState;
   using Microsoft.JSInterop;
+  using System.Collections.Generic;
+  using System.Reflection;
 
   internal partial class ApplicationState : State<ApplicationState>
   {

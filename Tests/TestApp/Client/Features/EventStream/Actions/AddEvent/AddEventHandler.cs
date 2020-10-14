@@ -1,11 +1,11 @@
-﻿namespace TestApp.Client.Features.EventStream
+namespace TestApp.Client.Features.EventStream
 {
+  using BlazorState;
+  using MediatR;
   using System;
   using System.Runtime.Serialization;
   using System.Threading;
   using System.Threading.Tasks;
-  using BlazorState;
-  using MediatR;
   using TestApp.Client.Features.Base;
 
 

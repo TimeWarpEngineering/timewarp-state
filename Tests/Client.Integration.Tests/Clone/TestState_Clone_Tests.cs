@@ -1,7 +1,7 @@
 namespace TestState
 {
-  using Shouldly;
   using AnyClone;
+  using Shouldly;
   using System.Linq;
   using TestApp.Client.Integration.Tests.Clone;
 

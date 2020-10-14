@@ -1,4 +1,4 @@
-﻿namespace Actions
+namespace Actions
 {
   using Shouldly;
   using System;
@@ -7,7 +7,7 @@
   using TestApp.Client.Integration.Tests.Infrastructure;
   using static TestApp.Client.Features.Counter.WrongNesting;
 
-  public class Should_ThrowException_For: BaseTest
+  public class Should_ThrowException_For : BaseTest
   {
     public Should_ThrowException_For(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 

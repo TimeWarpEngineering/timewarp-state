@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Clone
+namespace TestApp.Client.Integration.Tests.Clone
 {
   using System.Linq;
   using TestApp.Client.Integration.Tests.Infrastructure;

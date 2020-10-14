@@ -16,6 +16,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Fixie" Version="$(FixieVersion)" />
+    <PackageReference Include="Scrutor" Version="$(ScrutorVersion)" />
     <PackageReference Include="Selenium.Support" Version="$(SeleniumSupportVersion)" />
     <PackageReference Include="Selenium.WebDriver" Version="$(SeleniumSupportVersion)" />
     <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />

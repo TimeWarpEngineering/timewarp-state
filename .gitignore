@@ -298,3 +298,5 @@ __pycache__/
 /source/AnyClone/
 /source/TypeSupport/
 /Source/BlazorState/wwwroot/blazorstate.js
+
+/StatiqDocs/output

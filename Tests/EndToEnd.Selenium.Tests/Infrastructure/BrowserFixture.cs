@@ -1,9 +1,9 @@
-﻿namespace TestApp.EndToEnd.Tests.Infrastructure
+namespace TestApp.EndToEnd.Tests.Infrastructure
 {
-  using System;
   using OpenQA.Selenium;
   using OpenQA.Selenium.Chrome;
   using OpenQA.Selenium.Remote;
+  using System;
 
   public class BrowserFixture : IDisposable
   {

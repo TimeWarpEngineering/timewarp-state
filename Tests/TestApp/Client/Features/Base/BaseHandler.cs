@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Base
+namespace TestApp.Client.Features.Base
 {
   using BlazorState;
   using TestApp.Client.Features.Application;
