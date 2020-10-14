@@ -13,15 +13,18 @@
     {
       public ThrowExceptionHandler(IStore aStore) : base(aStore) { }
 
+      /// <summary>
+      /// Intentionally throw so we can test exception handling.
+      /// </summary>
+      /// <param name="aThrowExceptionAction"></param>
+      /// <param name="aCancellationToken"></param>
+      /// <returns></returns>
       public override Task<Unit> Handle
       (
         ThrowExceptionAction aThrowExceptionAction,
         CancellationToken aCancellationToken
-      )
-      {
-        // Intentionally throw so we can test exception handling.
-        throw new Exception(aThrowExceptionAction.Message);
-      }
+      ) => throw new Exception(aThrowExceptionAction.Message);
+      
     }
   }
 }
