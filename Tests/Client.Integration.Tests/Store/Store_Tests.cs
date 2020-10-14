@@ -11,11 +11,14 @@ namespace TestApp.Client.Integration.Tests
 
   internal class Store_Tests: BaseTest
   {
+#if ReduxDevToolsEnabled
     private readonly IReduxDevToolsStore ReduxDevToolsStore;
-
+#endif
     public Store_Tests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {
-      //ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
+#if ReduxDevToolsEnabled
+      ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
+#endif
     }
 
 #if ReduxDevToolsEnabled
