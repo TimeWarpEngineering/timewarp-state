@@ -9,12 +9,12 @@
   internal class PrePipelineNotificationRequestPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
   {
     private readonly ILogger Logger;
-    private readonly IMediator Mediator;
+    private readonly IPublisher Mediator;
 
     public PrePipelineNotificationRequestPreProcessor
     (
       ILogger<PrePipelineNotificationRequestPreProcessor<TRequest>> aLogger,
-      IMediator aMediator
+      IPublisher aMediator
     )
     {
       Logger = aLogger;
