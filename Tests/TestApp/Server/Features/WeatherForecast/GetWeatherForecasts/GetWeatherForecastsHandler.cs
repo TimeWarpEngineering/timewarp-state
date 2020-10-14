@@ -24,7 +24,7 @@
       "Scorching"
     };
 
-    public async Task<GetWeatherForecastsResponse> Handle
+    public Task<GetWeatherForecastsResponse> Handle
     (
       GetWeatherForecastsRequest aGetWeatherForecastsRequest,
       CancellationToken aCancellationToken
@@ -46,7 +46,7 @@
         )
       );
 
-      return await Task.Run(() => response);
+      return Task.FromResult(response);
     }
   }
 }

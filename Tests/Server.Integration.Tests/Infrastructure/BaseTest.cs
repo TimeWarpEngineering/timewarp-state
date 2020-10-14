@@ -21,6 +21,14 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
       JsonSerializerOptions = aJsonSerializerOptions;
     }
 
+    [
+      System.Diagnostics.CodeAnalysis.SuppressMessage
+      (
+        "AsyncUsage", 
+        "AsyncFixer01:Unnecessary async/await usage", 
+        Justification = "The serviceScope is disposed to early if not awaited here"
+      )
+    ]
     protected async Task<T> ExecuteInScope<T>(Func<IServiceProvider, Task<T>> aAction)
     {
       using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();

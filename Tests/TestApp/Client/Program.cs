@@ -11,7 +11,7 @@
 
   public class Program
   {
-    public static async Task Main(string[] args)
+    public static Task Main(string[] args)
     {
       var builder = WebAssemblyHostBuilder.CreateDefault(args);
       builder.RootComponents.Add<App>("app");
@@ -22,7 +22,7 @@
 
       ConfigureServices(builder.Services);
 
-      await builder.Build().RunAsync();
+      return builder.Build().RunAsync();
     }
 
     public static void ConfigureServices(IServiceCollection aServiceCollection)
