@@ -5,6 +5,6 @@
     "test": "testcafe edge tests/ --app \"npm run server > NUL\" --app-init-delay 5000"
   },
   "devDependencies": {
-    "testcafe": "^1.4.1"
+    "testcafe": "1.9.4"
   }
 }
