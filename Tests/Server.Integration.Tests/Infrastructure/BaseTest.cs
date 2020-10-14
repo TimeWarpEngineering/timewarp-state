@@ -41,9 +41,9 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
       (
         aServiceProvider =>
         {
-          IMediator mediator = aServiceProvider.GetService<IMediator>();
+          ISender sender = aServiceProvider.GetService<ISender>();
 
-          return mediator.Send(aRequest);
+          return sender.Send(aRequest);
         }
       );
     }
@@ -54,9 +54,9 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
       (
         aServiceProvider =>
         {
-          IMediator mediator = aServiceProvider.GetService<IMediator>();
+          ISender sender = aServiceProvider.GetService<ISender>();
 
-          return mediator.Send(aRequest);
+          return sender.Send(aRequest);
         }
       );
     }
