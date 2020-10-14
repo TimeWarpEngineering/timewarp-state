@@ -1,11 +1,11 @@
-﻿namespace RouteState
+namespace RouteState
 {
   using AnyClone;
   using BlazorState.Features.Routing;
   using Shouldly;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  public class Clone_Should: BaseTest
+  public class Clone_Should : BaseTest
   {
     public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {

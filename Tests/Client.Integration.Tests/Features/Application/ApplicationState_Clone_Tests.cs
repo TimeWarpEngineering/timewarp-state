@@ -1,11 +1,11 @@
-﻿namespace ApplicationState
+namespace ApplicationState
 {
   using AnyClone;
   using Shouldly;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Integration.Tests.Infrastructure;
 
-  public class Clone_Should: BaseTest
+  public class Clone_Should : BaseTest
   {
     public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
     {

@@ -1,8 +1,8 @@
-﻿namespace TestApp.Client.Features.EventStream
+namespace TestApp.Client.Features.EventStream
 {
+  using BlazorState;
   using System.Collections.Generic;
   using System.Reflection;
-  using BlazorState;
 
   internal partial class EventStreamState : State<EventStreamState>
   {

@@ -1,9 +1,9 @@
-﻿namespace TestApp.Client.Features.CloneTest
+namespace TestApp.Client.Features.CloneTest
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
+  using System.Threading;
+  using System.Threading.Tasks;
   using TestApp.Client.Features.Base;
 
   internal partial class CloneTestState

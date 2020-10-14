@@ -1,4 +1,4 @@
-﻿namespace AnyClone.Tests
+namespace AnyClone.Tests
 {
   using AnyClone.Tests.TestObjects;
   using Shouldly;

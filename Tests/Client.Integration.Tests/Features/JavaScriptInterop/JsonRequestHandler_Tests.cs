@@ -1,4 +1,4 @@
-﻿namespace JsonRequestHandler
+namespace JsonRequestHandler
 {
   using BlazorState;
   using BlazorState.Features.JavaScriptInterop;
@@ -11,7 +11,7 @@
 
   // TODO: These used to pass with WebAssemblyHostBuilder
   // internal class won't run so they won't fail
-  internal class Handle_Should: BaseTest
+  internal class Handle_Should : BaseTest
   {
     private readonly JsonRequestHandler JsonRequestHandler;
 

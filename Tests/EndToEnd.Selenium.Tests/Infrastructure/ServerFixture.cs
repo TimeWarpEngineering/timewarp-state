@@ -1,14 +1,14 @@
-﻿namespace TestApp.EndToEnd.Tests.Infrastructure
+namespace TestApp.EndToEnd.Tests.Infrastructure
 {
-  using System;
-  using System.IO;
-  using System.Linq;
-  using System.Threading;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.AspNetCore.Hosting.Server;
   using Microsoft.AspNetCore.Hosting.Server.Features;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Hosting;
+  using System;
+  using System.IO;
+  using System.Linq;
+  using System.Threading;
 
   public class ServerFixture
   {

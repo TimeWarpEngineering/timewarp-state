@@ -1,4 +1,4 @@
-﻿namespace AnyClone.Tests.TestObjects
+namespace AnyClone.Tests.TestObjects
 {
   using System;
 

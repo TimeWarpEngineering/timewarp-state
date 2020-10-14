@@ -25,7 +25,7 @@ namespace TestApp.EndToEnd.Tests.Infrastructure
     {
       using var httpClient = new HttpClient();
       using HttpResponseMessage response = await httpClient.GetAsync("http://localhost:4444/wd/hub");
-      
+
       response.EnsureSuccessStatusCode();
 
     }

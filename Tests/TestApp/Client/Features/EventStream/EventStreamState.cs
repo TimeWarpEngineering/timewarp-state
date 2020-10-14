@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.EventStream
+namespace TestApp.Client.Features.EventStream
 {
   using BlazorState;
   using System.Collections.Generic;

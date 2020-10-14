@@ -1,8 +1,8 @@
-﻿namespace BlazorState
+namespace BlazorState
 {
+  using MediatR;
   using System.Threading;
   using System.Threading.Tasks;
-  using MediatR;
 
   public abstract class ActionHandler<TAction> : IRequestHandler<TAction>
   where TAction : IAction

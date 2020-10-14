@@ -24,8 +24,8 @@ namespace TestApp.Server.Integration.Tests.Infrastructure
     [
       System.Diagnostics.CodeAnalysis.SuppressMessage
       (
-        "AsyncUsage", 
-        "AsyncFixer01:Unnecessary async/await usage", 
+        "AsyncUsage",
+        "AsyncFixer01:Unnecessary async/await usage",
         Justification = "The serviceScope is disposed to early if not awaited here"
       )
     ]

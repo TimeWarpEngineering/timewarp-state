@@ -1,12 +1,12 @@
-﻿namespace BlazorState.Pipeline.State
+namespace BlazorState.Pipeline.State
 {
-  using System;
-  using System.Threading;
-  using System.Threading.Tasks;
+  using AnyClone;
   using BlazorState;
   using MediatR;
   using Microsoft.Extensions.Logging;
-  using AnyClone;
+  using System;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {

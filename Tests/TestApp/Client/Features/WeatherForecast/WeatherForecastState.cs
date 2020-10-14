@@ -1,7 +1,7 @@
-﻿namespace TestApp.Client.Features.WeatherForecast
+namespace TestApp.Client.Features.WeatherForecast
 {
-  using System.Collections.Generic;
   using BlazorState;
+  using System.Collections.Generic;
   using TestApp.Api.Features.WeatherForecast;
 
   internal partial class WeatherForecastsState : State<WeatherForecastsState>
@@ -20,7 +20,7 @@
     /// 
     /// </summary>
     /// <remarks>used to test that constructor is complete before Initialize is called</remarks>
-    public override void Initialize() 
+    public override void Initialize()
     {
       if (_WeatherForecasts is null)
       {

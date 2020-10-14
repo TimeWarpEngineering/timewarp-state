@@ -73,8 +73,8 @@ namespace BlazorState.Features.JavaScriptInterop
 
       MethodInfo sendMethodInfo = Mediator.GetType().GetMethods().First
       (
-        aMethodInfo => 
-          aMethodInfo.IsGenericMethodDefinition && 
+        aMethodInfo =>
+          aMethodInfo.IsGenericMethodDefinition &&
           aMethodInfo.Name == nameof(Mediator.Send)
       );
       Type responseType = aRequestType

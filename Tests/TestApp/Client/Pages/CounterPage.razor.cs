@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Pages
+namespace TestApp.Client.Pages
 {
   using BlazorState.Features.Routing;
   using System.Threading.Tasks;

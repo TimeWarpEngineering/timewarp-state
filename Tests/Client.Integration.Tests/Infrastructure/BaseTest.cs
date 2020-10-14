@@ -40,5 +40,3 @@ namespace TestApp.Client.Integration.Tests.Infrastructure
 
   }
 }
-
-

@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Pipeline.NotificationPreProcessor
+namespace TestApp.Client.Pipeline.NotificationPreProcessor
 {
   using MediatR;
 

@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Components
+namespace TestApp.Client.Components
 {
   using Microsoft.AspNetCore.Components;
 

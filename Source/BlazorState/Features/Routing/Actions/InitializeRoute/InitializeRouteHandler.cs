@@ -1,10 +1,10 @@
-﻿namespace BlazorState.Features.Routing
+namespace BlazorState.Features.Routing
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
   using Microsoft.AspNetCore.Components;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   public partial class RouteState
   {

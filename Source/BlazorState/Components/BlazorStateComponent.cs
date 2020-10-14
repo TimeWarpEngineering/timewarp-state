@@ -1,9 +1,9 @@
-﻿namespace BlazorState
+namespace BlazorState
 {
-  using System;
-  using System.Collections.Concurrent;
   using MediatR;
   using Microsoft.AspNetCore.Components;
+  using System;
+  using System.Collections.Concurrent;
 
   /// <summary>
   /// A non required Base Class that injects Mediator and Store.

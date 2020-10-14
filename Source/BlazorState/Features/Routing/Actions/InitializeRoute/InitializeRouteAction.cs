@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Features.Routing
+namespace BlazorState.Features.Routing
 {
   using BlazorState;
 

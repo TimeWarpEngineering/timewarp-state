@@ -12,10 +12,10 @@ namespace BlazorState
   using Microsoft.Extensions.Logging;
   using Microsoft.Extensions.Logging.Abstractions;
   using System;
-  using System.Reflection;
   using System.Collections.Generic;
   using System.Linq;
   using System.Net.Http;
+  using System.Reflection;
   using static BlazorState.Features.Routing.RouteState;
 
   public static class ServiceCollectionExtensions

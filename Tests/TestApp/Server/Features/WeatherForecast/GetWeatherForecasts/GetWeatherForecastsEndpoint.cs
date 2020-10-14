@@ -1,9 +1,9 @@
-﻿namespace TestApp.Server.Features.WeatherForecast
+namespace TestApp.Server.Features.WeatherForecast
 {
-  using System.Threading.Tasks;
-  using TestApp.Server.Features.Base;
-  using TestApp.Api.Features.WeatherForecast;
   using Microsoft.AspNetCore.Mvc;
+  using System.Threading.Tasks;
+  using TestApp.Api.Features.WeatherForecast;
+  using TestApp.Server.Features.Base;
 
   public class GetWeatherForecastsEndpoint : BaseEndpoint<GetWeatherForecastsRequest, GetWeatherForecastsResponse>
   {

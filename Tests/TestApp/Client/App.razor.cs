@@ -1,10 +1,10 @@
-﻿namespace TestApp.Client
+namespace TestApp.Client
 {
-  using System.Threading.Tasks;
-  using BlazorState.Pipeline.ReduxDevTools;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
+  using BlazorState.Pipeline.ReduxDevTools;
   using Microsoft.AspNetCore.Components;
+  using System.Threading.Tasks;
 
   public partial class App : ComponentBase
   {
@@ -15,8 +15,8 @@
     [
       System.Diagnostics.CodeAnalysis.SuppressMessage
       (
-        "CodeQuality", 
-        "IDE0051:Remove unused private members", 
+        "CodeQuality",
+        "IDE0051:Remove unused private members",
         Justification = "Injected so it is created by the container. Even though the IDE says it is not used it is."
       )
     ]

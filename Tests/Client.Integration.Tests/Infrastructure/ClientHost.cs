@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Integration.Tests.Infrastructure
+namespace TestApp.Client.Integration.Tests.Infrastructure
 {
   using Microsoft.Extensions.DependencyInjection;
   using System;

@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Counter.Components
+namespace TestApp.Client.Features.Counter.Components
 {
   using System.Threading.Tasks;
   using TestApp.Client.Features.Base.Components;

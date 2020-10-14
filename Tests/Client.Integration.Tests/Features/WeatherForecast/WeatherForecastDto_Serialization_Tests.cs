@@ -1,4 +1,4 @@
-﻿namespace WeatherForecastDto
+namespace WeatherForecastDto
 {
   using Shouldly;
   using System;

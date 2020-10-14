@@ -1,9 +1,9 @@
-﻿namespace TestApp.Client.Features.Application
+namespace TestApp.Client.Features.Application
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
+  using System.Threading;
+  using System.Threading.Tasks;
   using static BlazorState.Features.Routing.RouteState;
 
   internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>

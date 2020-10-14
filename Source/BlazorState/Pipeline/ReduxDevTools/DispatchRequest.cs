@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Pipeline.ReduxDevTools
+namespace BlazorState.Pipeline.ReduxDevTools
 {
   internal class DispatchRequest<TPayload>
   {

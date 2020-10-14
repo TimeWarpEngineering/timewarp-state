@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter
 {
   using BlazorState;
   using MediatR;
@@ -24,7 +24,7 @@
         ThrowExceptionAction aThrowExceptionAction,
         CancellationToken aCancellationToken
       ) => throw new Exception(aThrowExceptionAction.Message);
-      
+
     }
   }
 }

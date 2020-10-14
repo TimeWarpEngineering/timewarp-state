@@ -1,10 +1,10 @@
-﻿namespace TestApp.Client.Features.CloneTest
+namespace TestApp.Client.Features.CloneTest
 {
+  using BlazorState;
+  using Microsoft.JSInterop;
   using System;
   using System.Collections.Generic;
   using System.Reflection;
-  using BlazorState;
-  using Microsoft.JSInterop;
 
   internal partial class CloneTestState : State<CloneTestState>
   {

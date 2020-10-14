@@ -1,12 +1,12 @@
-﻿namespace BlazorState
+namespace BlazorState
 {
+  using BlazorState.Features.Routing;
+  using Microsoft.Extensions.Logging;
   using System;
   using System.Collections.Generic;
   using System.Linq;
-  using BlazorState.Features.Routing;
-  using Microsoft.Extensions.Logging;
-  using System.Text.Json;
   using System.Reflection;
+  using System.Text.Json;
 
   /// <summary>
   /// The portion of the store that is only needed to support
@@ -57,7 +57,7 @@
       Logger.LogDebug($"aKeyValuePair.Value: {aKeyValuePair.Value}");
       Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
 
-      Dictionary<string, object> newStateKeyValuePairs = 
+      Dictionary<string, object> newStateKeyValuePairs =
         JsonSerializer.Deserialize<Dictionary<string, object>>(aKeyValuePair.Value.ToString(), JsonSerializerOptions);
       // Get the Type
       Type stateType = AppDomain.CurrentDomain.GetAssemblies()

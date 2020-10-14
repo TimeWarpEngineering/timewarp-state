@@ -40,9 +40,9 @@ namespace BlazorState
       return this;
     }
 
-    public override bool Equals(object aObject) => 
-      aObject is Subscriptions subscriptions && 
-      EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) && 
+    public override bool Equals(object aObject) =>
+      aObject is Subscriptions subscriptions &&
+      EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) &&
       EqualityComparer<List<Subscription>>.Default.Equals(BlazorStateComponentReferencesList, subscriptions.BlazorStateComponentReferencesList);
 
     public override int GetHashCode() => HashCode.Combine(Logger, BlazorStateComponentReferencesList);

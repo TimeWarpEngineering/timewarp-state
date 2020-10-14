@@ -1,10 +1,10 @@
-﻿namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter
 {
+  using BlazorState;
+  using Microsoft.JSInterop;
   using System;
   using System.Collections.Generic;
   using System.Reflection;
-  using BlazorState;
-  using Microsoft.JSInterop;
 
   public partial class CounterState : State<CounterState>
   {

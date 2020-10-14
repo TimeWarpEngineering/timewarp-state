@@ -1,13 +1,13 @@
-﻿namespace TestApp.Client
+namespace TestApp.Client
 {
+  using BlazorState;
+  using MediatR;
   using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
   using Microsoft.Extensions.DependencyInjection;
   using System;
   using System.Net.Http;
-  using System.Threading.Tasks;
-  using BlazorState;
   using System.Reflection;
-  using MediatR;
+  using System.Threading.Tasks;
 
   public class Program
   {
@@ -32,9 +32,9 @@
       (
         (aOptions) =>
         {
-          #if ReduxDevToolsEnabled
+#if ReduxDevToolsEnabled
           aOptions.UseReduxDevToolsBehavior = true;
-          #endif
+#endif
           aOptions.Assemblies =
           new Assembly[]
           {

@@ -1,16 +1,16 @@
-﻿namespace ServiceProvider
+namespace ServiceProvider
 {
   using MediatR;
+  using Microsoft.AspNetCore.Mvc.Testing;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using System;
+  using System.Text.Json;
+  using TestApp.Api.Features.WeatherForecast;
+  using TestApp.Server;
   using TestApp.Server.Features.WeatherForecast;
   using TestApp.Server.Integration.Tests.Infrastructure;
-  using TestApp.Api.Features.WeatherForecast;
-  using Microsoft.AspNetCore.Mvc.Testing;
-  using System.Text.Json;
-  using TestApp.Server;
 
   public class GetService_Returns : BaseTest
   {
@@ -20,7 +20,7 @@
     (
       WebApplicationFactory<Startup> aWebApplicationFactory,
       JsonSerializerOptions aJsonSerializerOptions
-    ) : base(aWebApplicationFactory, aJsonSerializerOptions) 
+    ) : base(aWebApplicationFactory, aJsonSerializerOptions)
     {
       ServiceProvider = ServiceScopeFactory.CreateScope().ServiceProvider;
     }

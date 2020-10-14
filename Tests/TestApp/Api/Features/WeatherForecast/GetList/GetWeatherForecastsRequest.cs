@@ -1,8 +1,8 @@
-﻿namespace TestApp.Api.Features.WeatherForecast
+namespace TestApp.Api.Features.WeatherForecast
 {
+  using MediatR;
   using System.Text.Json.Serialization;
   using TestApp.Api.Features.Base;
-  using MediatR;
 
   public class GetWeatherForecastsRequest : BaseRequest, IRequest<GetWeatherForecastsResponse>
   {

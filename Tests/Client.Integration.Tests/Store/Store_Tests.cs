@@ -4,12 +4,12 @@ namespace TestApp.Client.Integration.Tests
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
   using System.IO;
-  using TestApp.Client.Features.WeatherForecast;
-  using TestApp.Client.Integration.Tests.Infrastructure;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
+  using TestApp.Client.Features.WeatherForecast;
+  using TestApp.Client.Integration.Tests.Infrastructure;
 
-  internal class Store_Tests: BaseTest
+  internal class Store_Tests : BaseTest
   {
 #if ReduxDevToolsEnabled
     private readonly IReduxDevToolsStore ReduxDevToolsStore;

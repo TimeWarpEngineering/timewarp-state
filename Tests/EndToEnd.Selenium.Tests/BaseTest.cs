@@ -1,4 +1,4 @@
-﻿namespace TestApp.EndToEnd.Tests
+namespace TestApp.EndToEnd.Tests
 {
   using OpenQA.Selenium;
   using OpenQA.Selenium.Support.UI;
