@@ -3,8 +3,11 @@ namespace TestApp.Client.Integration.Tests
   using BlazorState;
   using Microsoft.Extensions.DependencyInjection;
   using Shouldly;
+  using System.IO;
   using TestApp.Client.Features.WeatherForecast;
   using TestApp.Client.Integration.Tests.Infrastructure;
+  using TestApp.Client.Features.Application;
+  using TestApp.Client.Features.Counter;
 
   internal class Store_Tests: BaseTest
   {
