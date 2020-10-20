@@ -71,13 +71,26 @@ namespace BlazorState.Pipeline.State
         Logger.LogError($"{className}: Error: {aException.Message}");
         Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
         Logger.LogError($"{className}: Restoring State of type: {declaringType}");
-        if (originalState != null)
+
+        if (!IsApiCallException(aException) && originalState != null)
         {
           Store.SetState(originalState as IState);
         }
 
         throw;  // Do you throw or not? for now yes.
       }
+    }
+
+    private bool IsApiCallException(Exception aException)
+    {
+      string stackTrace = aException.ToString();
+
+      if (stackTrace.ToLower().Contains("httprequestexception"))
+      {
+        return true;
+      }
+
+      return false;
     }
   }
 }
