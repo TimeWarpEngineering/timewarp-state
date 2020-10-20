@@ -85,7 +85,7 @@ namespace BlazorState.Pipeline.State
     {
       string stackTrace = aException.ToString();
 
-      if (stackTrace.ToLower().Contains("httprequestexception"))
+      if (stackTrace.ToLowerInvariant().Contains("httprequestexception"))
       {
         return true;
       }
