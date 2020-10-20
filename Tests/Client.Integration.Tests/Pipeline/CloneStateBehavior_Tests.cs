@@ -78,7 +78,7 @@ namespace CloneStateBehavior
       CounterState.Initialize(aCount: 22);
       Guid preActionGuid = CounterState.Guid;
 
-      var throwExceptionAction = new ThrowExceptionAction()
+      var throwExceptionAction = new ThrowExceptionAction
       {
         Message = new HttpRequestException(
           "Response status code does not indicate success: 500 (Internal Server Error).").ToString()
