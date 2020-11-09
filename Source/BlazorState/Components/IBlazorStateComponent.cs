@@ -16,6 +16,7 @@ namespace BlazorState
   /// </example>
   public interface IBlazorStateComponent // TODO: evaluate if this interface is even needed
   {
+    string Id { get; }
     IMediator Mediator { get; set; }
     IStore Store { get; set; }
 
