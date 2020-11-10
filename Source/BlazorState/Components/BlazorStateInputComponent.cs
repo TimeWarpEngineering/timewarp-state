@@ -14,7 +14,7 @@ namespace BlazorState
   public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable,
     IBlazorStateComponent
   {
-    protected override bool TryParseValueFromString(string value, out TValue result, out string validationErrorMessage) => TryParseValueFromString(value, out result, out validationErrorMessage);
+    protected override bool TryParseValueFromString(string aValue, out TValue aResult, out string aValidationErrorMessage) => TryParseValueFromString(aValue, out aResult, out aValidationErrorMessage);
 
     static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
 

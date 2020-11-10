@@ -1,17 +1,18 @@
-﻿namespace TestApp.Client.Features.CustomInputSelect.Components
+﻿namespace TestApp.Client.Features.Counter.Components
 {
   using System;
   using System.Globalization;
   using System.Linq.Expressions;
+  using System.Threading.Tasks;
   using Microsoft.AspNetCore.Components;
+  using TestApp.Client.Features.Base.Components;
+  using static TestApp.Client.Features.Counter.CounterState;
 
-  public partial class CustomInputSelect<T>
+  public class CustomInputBase<T>: BaseInputComponent<T>
   {
     [Parameter] public string Id { get; set; }
     [Parameter] public string Label { get; set; }
     [Parameter] public Expression<Func<T>> ValidationFor { get; set; }
-    [Parameter] public RenderFragment ChildContent { get; set; }
-    [Parameter] public bool ShowDefaultOption { get; set; } = true;
 
     protected override bool TryParseValueFromString(string aValue, out T aResult, out string aValidationErrorMessage)
     {
@@ -58,5 +59,9 @@
 
       throw new InvalidOperationException($"{GetType()} does not support the type '{typeof(T)}'.");
     }
+
+    protected async Task ButtonClick() => 
+      _ = await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
+
   }
 }
