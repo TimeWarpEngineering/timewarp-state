@@ -9,7 +9,8 @@
 
   <p>Current count: @CounterState.Count</p>
 
-  <input class="form-control @CssClass" id="@Id" @bind="CurrentValueAsString" />
-
+  <p>
+    <input class="form-control @CssClass" id="@Id" @bind="CurrentValueAsString" />
+  </p>
   <button class="btn btn-primary" @onclick="ButtonClick">Click me</button>
 </div>
