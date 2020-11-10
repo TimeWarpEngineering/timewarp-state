@@ -1,0 +1,19 @@
+﻿@page "/custom-input"
+
+<h1>Custom Input Select Page</h1>
+
+<p>
+  <EditForm Model="RecordForm" OnValidSubmit="HandleValidSubmit">
+    <CustomInputSelect @bind-Value="RecordForm.SelectedPerson"
+                       ValidationFor="@(() => RecordForm.SelectedPerson)"
+                       Label="Select Person">
+      @foreach (var person in People)
+{
+<option value="@person.Id">@person.Name</option>}
+    </CustomInputSelect>
+  </EditForm>
+</p>
+
+<hr />
+
+<p>Selected Person: @RecordForm?.SelectedPerson</p>
