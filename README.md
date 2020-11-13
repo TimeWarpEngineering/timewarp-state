@@ -22,7 +22,7 @@ dotnet add package Blazor-State
 
 Jimmy Bogard ([MediatR](https://github.com/jbogard/MediatR)).
 Jimmy is an amazing developer and a knowledge sharer.  
-Through his course at [11x Engieering](https://11xengineering.com/),
+Through his course at [11x Engineering](https://11xengineering.com/),
 his many blog posts on Los Techies and now [JimmyBogard.com](https://jimmybogard.com/).
 I have learned great amounts.
 
