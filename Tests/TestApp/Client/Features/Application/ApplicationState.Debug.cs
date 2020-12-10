@@ -17,10 +17,11 @@ namespace TestApp.Client.Features.Application
       };
     }
 
-    internal void Initialize(string aName)
+    internal void Initialize(string aName, string aExceptionMessage)
     {
       ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
       Name = aName;
+      ExceptionMessage = aExceptionMessage;
     }
   }
 }
