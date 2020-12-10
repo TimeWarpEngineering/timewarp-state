@@ -5,6 +5,7 @@ namespace TestApp.Client.Features.Application
   using System.Threading;
   using System.Threading.Tasks;
   using static BlazorState.Features.Routing.RouteState;
+  using static TestApp.Client.Features.Application.ApplicationState;
 
   internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>
   {
@@ -20,7 +21,7 @@ namespace TestApp.Client.Features.Application
     public async Task<Unit> Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
     {
       Store.Reset();
-      _ = await Sender.Send(new ChangeRouteAction { NewRoute = "/" });
+      await Sender.Send(new ChangeRouteAction { NewRoute = "/" });
       return Unit.Value;
     }
   }
