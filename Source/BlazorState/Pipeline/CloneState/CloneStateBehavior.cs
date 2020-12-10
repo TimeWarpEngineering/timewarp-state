@@ -75,9 +75,9 @@ namespace BlazorState.Pipeline.State
         // Maybe if error occurs on one action we want to launch another action to
         // Update some error state so the user knows of the failure.
         // But as a rule if this is an exception it should be unexpected.
-        Logger.LogError($"{className}: Error: {aException.Message}");
-        Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
-        Logger.LogError($"{className}: Restoring State of type: {declaringType}");
+        Logger.LogWarning($"{className}: Error: {aException.Message}");
+        Logger.LogWarning($"{className}: InnerError: {aException?.InnerException?.Message}");
+        Logger.LogWarning($"{className}: Restoring State of type: {declaringType}");
 
         if (!IsApiCallException(aException) && originalState != null)
         {
