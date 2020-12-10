@@ -5,7 +5,7 @@ pr: none
 
 variables:
   Major: 3
-  Minor: 3
+  Minor: 4
   Patch: 0
   DotNetSdkVersion: 3.1.402
 
