@@ -17,7 +17,7 @@ namespace ApplicationState
     public void Clone()
     {
       //Arrange
-      ApplicationState.Initialize(aName: "TestName");
+      ApplicationState.Initialize(aName: "TestName", aExceptionMessage: "Some ExceptionMessage");
 
       //Act
       ApplicationState clone = ApplicationState.Clone();
@@ -25,6 +25,7 @@ namespace ApplicationState
       //Assert
       ApplicationState.ShouldNotBeSameAs(clone);
       ApplicationState.Name.ShouldBe(clone.Name);
+      ApplicationState.ExceptionMessage.ShouldBe(clone.ExceptionMessage);
       ApplicationState.Guid.ShouldNotBe(clone.Guid);
     }
 

@@ -5,6 +5,7 @@ namespace TestApp.Client.Features.Application
   internal partial class ApplicationState : State<ApplicationState>
   {
     public string Name { get; private set; }
+    public string ExceptionMessage { get; private set; }
 
     public string Version => GetType().Assembly.GetName().Version.ToString();
 
