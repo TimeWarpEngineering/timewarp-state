@@ -32,7 +32,7 @@ namespace TestApp.Client.Features.Application
         CancellationToken aCancellationToken
       )
       {
-        //Logger.LogDebug(aExceptionNotification.Request.GetType().Name);
+        Logger.LogWarning($"aExceptionNotification.Exception.Message: {aExceptionNotification.Exception.Message}");
         ApplicationState.ExceptionMessage = aExceptionNotification.Exception.Message;
         return Unit.Task;
       }
