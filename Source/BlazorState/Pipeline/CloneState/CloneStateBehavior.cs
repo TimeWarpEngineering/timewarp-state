@@ -10,22 +10,29 @@ namespace BlazorState.Pipeline.State
 
   internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   {
-    public CloneStateBehavior(
+    private readonly ILogger Logger;
+    private readonly IMediator Mediator;
+    private readonly IStore Store;
+
+    public CloneStateBehavior
+                (
       ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
-      IStore aStore)
+      IStore aStore,
+      IMediator aMediator
+    )
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name} constructor");
       Store = aStore;
+      Mediator = aMediator;
     }
 
-    private readonly ILogger Logger;
-    private readonly IStore Store;
-
-    public async Task<TResponse> Handle(
+    public async Task<TResponse> Handle
+    (
       TRequest aRequest,
       CancellationToken aCancellationToken,
-      RequestHandlerDelegate<TResponse> aNext)
+      RequestHandlerDelegate<TResponse> aNext
+    )
     {
       Type declaringType = typeof(TRequest).DeclaringType;
       // logging variables
@@ -75,9 +82,19 @@ namespace BlazorState.Pipeline.State
         if (!IsApiCallException(aException) && originalState != null)
         {
           Store.SetState(originalState as IState);
+
+          var exceptionNotification = new ExceptionNotification
+          {
+            //Request = aRequest,
+            RequestName = className,
+            Exception = aException
+          };
+
+          await Mediator.Publish(exceptionNotification).ConfigureAwait(false);
+          return default;
         }
 
-        throw;  // Do you throw or not? for now yes.
+        throw;
       }
     }
 
