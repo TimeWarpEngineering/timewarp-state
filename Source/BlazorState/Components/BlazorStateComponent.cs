@@ -60,6 +60,6 @@ namespace BlazorState
       return Store.GetState<T>();
     }
 
-    public void Dispose() => Subscriptions.Remove(this);
+    public virtual void Dispose() => Subscriptions.Remove(this);
   }
 }
