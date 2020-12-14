@@ -80,18 +80,17 @@ namespace CloneStateBehavior
       CounterState.Initialize(aCount: 22);
       Guid preActionGuid = CounterState.Guid;
 
-      var throwExceptionAction = new ThrowExceptionAction
+      var throwServerSideExceptionAction = new ThrowServerSideExceptionAction
       {
-        Message = new HttpRequestException(
-          "Response status code does not indicate success: 500 (Internal Server Error).").ToString()
+        Message = "Response status code does not indicate success: 500 (Internal Server Error)."
       };
 
       // Act
       Exception exception = await Shouldly.Should.ThrowAsync<Exception>(async () =>
-        await Send(throwExceptionAction));
+        await Send(throwServerSideExceptionAction));
 
       // Assert
-      exception.Message.ShouldBe(throwExceptionAction.Message);
+      exception.Message.ShouldBe(throwServerSideExceptionAction.Message);
       CounterState.Guid.Equals(preActionGuid).ShouldBeFalse();
     }
   }

@@ -48,7 +48,7 @@ namespace BlazorState
         EnsureLogger(aServiceCollection);
         EnsureHttpClient(aServiceCollection);
         EnsureMediator(aServiceCollection, blazorStateOptions);
-        EnusureStates(aServiceCollection, blazorStateOptions);
+        EnsureStates(aServiceCollection, blazorStateOptions);
 
         aServiceCollection.AddScoped<BlazorHostingLocation>();
         aServiceCollection.AddScoped<JsonRequestHandler>();
@@ -145,7 +145,7 @@ namespace BlazorState
       }
     }
 
-    private static void EnusureStates(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
+    private static void EnsureStates(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
     {
       foreach (Assembly assembly in aBlazorStateOptions.Assemblies)
       {
