@@ -5,6 +5,7 @@ namespace BlazorState.Pipeline.State
   using MediatR;
   using Microsoft.Extensions.Logging;
   using System;
+  using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -12,17 +13,19 @@ namespace BlazorState.Pipeline.State
   {
     private readonly ILogger Logger;
     private readonly IMediator Mediator;
+    private readonly BlazorStateOptions BlazorStateOptions;
     private readonly IStore Store;
 
     public CloneStateBehavior
-                (
+    (
       ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
+      BlazorStateOptions aBlazorStateOptions,
       IStore aStore,
-      IMediator aMediator
-    )
+      IMediator aMediator)
     {
       Logger = aLogger;
       Logger.LogDebug($"{GetType().Name} constructor");
+      BlazorStateOptions = aBlazorStateOptions;
       Store = aStore;
       Mediator = aMediator;
     }
@@ -79,7 +82,7 @@ namespace BlazorState.Pipeline.State
         Logger.LogWarning($"{className}: InnerError: {aException?.InnerException?.Message}");
         Logger.LogWarning($"{className}: Restoring State of type: {declaringType}");
 
-        if (!IsApiCallException(aException) && originalState != null)
+        if (IsClientSideException(aException) && originalState != null)
         {
           Store.SetState(originalState as IState);
 
@@ -98,16 +101,7 @@ namespace BlazorState.Pipeline.State
       }
     }
 
-    private bool IsApiCallException(Exception aException)
-    {
-      string stackTrace = aException.ToString();
-
-      if (stackTrace.ToLowerInvariant().Contains("httprequestexception"))
-      {
-        return true;
-      }
-
-      return false;
-    }
+    private bool IsClientSideException(Exception aException) =>
+      BlazorStateOptions.Assemblies.Any(aAssembly => aAssembly.GetName().Name == aException.Source);
   }
 }
