@@ -5,7 +5,6 @@ namespace BlazorState.Pipeline.State
   using MediatR;
   using Microsoft.Extensions.Logging;
   using System;
-  using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -15,6 +14,7 @@ namespace BlazorState.Pipeline.State
     private readonly IMediator Mediator;
     private readonly BlazorStateOptions BlazorStateOptions;
     private readonly IStore Store;
+    private bool IsClientSide;
 
     public CloneStateBehavior
     (
@@ -50,6 +50,7 @@ namespace BlazorState.Pipeline.State
       // Constrain here if not IState then ignore.
       if (typeof(IState).IsAssignableFrom(declaringType))
       {
+        IsClientSide = true;
         Logger.LogDebug($"{className}: Clone State of type {declaringType}");
         originalState = Store.GetState(declaringType) as IState;
         Logger.LogDebug($"{className}: originalState.Guid:{originalState.Guid}");
@@ -75,14 +76,13 @@ namespace BlazorState.Pipeline.State
       {
         // If something fails we restore system to previous state.
         // One may consider extension point here for error handling.
-        // Maybe if error occurs on one action we want to launch another action to
         // Update some error state so the user knows of the failure.
         // But as a rule if this is an exception it should be unexpected.
         Logger.LogWarning($"{className}: Error: {aException.Message}");
         Logger.LogWarning($"{className}: InnerError: {aException?.InnerException?.Message}");
         Logger.LogWarning($"{className}: Restoring State of type: {declaringType}");
 
-        if (IsClientSideException(aException) && originalState != null)
+        if (IsClientSide && originalState != null)
         {
           Store.SetState(originalState as IState);
 
@@ -100,8 +100,5 @@ namespace BlazorState.Pipeline.State
         throw;
       }
     }
-
-    private bool IsClientSideException(Exception aException) =>
-      BlazorStateOptions.Assemblies.Any(aAssembly => aAssembly.GetName().Name == aException.Source);
   }
 }
