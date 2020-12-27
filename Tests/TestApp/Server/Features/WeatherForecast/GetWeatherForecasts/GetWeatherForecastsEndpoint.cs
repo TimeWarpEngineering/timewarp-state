@@ -8,6 +8,6 @@ namespace TestApp.Server.Features.WeatherForecast
   public class GetWeatherForecastsEndpoint : BaseEndpoint<GetWeatherForecastsRequest, GetWeatherForecastsResponse>
   {
     [HttpGet(GetWeatherForecastsRequest.Route)]
-    public async Task<IActionResult> Process(GetWeatherForecastsRequest aRequest) => await Send(aRequest);
+    public Task<IActionResult> Process(GetWeatherForecastsRequest aRequest) => Send(aRequest);
   }
 }
