@@ -2,7 +2,6 @@ namespace CloneStateBehavior
 {
   using Shouldly;
   using System;
-  using System.Net.Http;
   using System.Threading.Tasks;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.CloneTest;
@@ -73,25 +72,5 @@ namespace CloneStateBehavior
       CounterState.Guid.Equals(preActionGuid).ShouldBeTrue();
     }
 
-    public async Task WillNotRollbackState_When_ExceptionOccursInAnEndpointOnServer()
-    {
-      // Arrange
-      // Setup know state.
-      CounterState.Initialize(aCount: 22);
-      Guid preActionGuid = CounterState.Guid;
-
-      var throwServerSideExceptionAction = new ThrowServerSideExceptionAction
-      {
-        Message = "Response status code does not indicate success: 500 (Internal Server Error)."
-      };
-
-      // Act
-      Exception exception = await Shouldly.Should.ThrowAsync<Exception>(async () =>
-        await Send(throwServerSideExceptionAction));
-
-      // Assert
-      exception.Message.ShouldBe(throwServerSideExceptionAction.Message);
-      CounterState.Guid.Equals(preActionGuid).ShouldBeFalse();
-    }
   }
 }
