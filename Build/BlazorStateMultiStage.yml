@@ -6,7 +6,7 @@ pr: none
 variables:
   Major: 3
   Minor: 4
-  Patch: 3
+  Patch: 4
   DotNetSdkVersion: 3.1.404
 
 stages:

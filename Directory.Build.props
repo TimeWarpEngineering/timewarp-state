@@ -37,18 +37,18 @@
     <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
     <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
 
-    <MicrosoftAspNetCoreComponentsWebVersion>3.1.9</MicrosoftAspNetCoreComponentsWebVersion>
-    <MicrosoftAspNetCoreMvcTestingVersion>3.1.9</MicrosoftAspNetCoreMvcTestingVersion>
-    <MicrosoftAspNetCoreTestHostVersion>3.1.9</MicrosoftAspNetCoreTestHostVersion>    
-    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.1.9</MicrosoftExtensionsFileProvidersEmbeddedVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>3.1.9</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftAspNetCoreComponentsWebVersion>3.1.10</MicrosoftAspNetCoreComponentsWebVersion>
+    <MicrosoftAspNetCoreMvcTestingVersion>3.1.10</MicrosoftAspNetCoreMvcTestingVersion>
+    <MicrosoftAspNetCoreTestHostVersion>3.1.10</MicrosoftAspNetCoreTestHostVersion>    
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.1.10</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>3.1.10</MicrosoftExtensionsLoggingAbstractionsVersion>
     
     <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
 
     <AnyCloneVersion>1.0.39</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
     <CoverletMsbuildVersion>2.9.0</CoverletMsbuildVersion>
-    <FixieVersion>2.2.1</FixieVersion>
+    <FixieVersion>2.2.2</FixieVersion>
     <FixieConsoleVersion>2.2.1</FixieConsoleVersion>
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>9.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>

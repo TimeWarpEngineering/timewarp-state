@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-outdated": {
+      "version": "2.11.0",
+      "commands": [
+        "dotnet-outdated"
+      ]
+    }
+  }
+}
