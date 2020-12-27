@@ -1,4 +1,4 @@
-﻿namespace ThrowServerSideExceptionHandler
+namespace ThrowServerSideExceptionHandler
 {
   using System.Threading.Tasks;
   using System.Text.Json;

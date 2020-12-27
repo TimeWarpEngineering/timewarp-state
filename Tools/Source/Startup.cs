@@ -1,4 +1,4 @@
-﻿namespace Tools
+namespace Tools
 {
   using System.CommandLine.Builder;
   using System.CommandLine.Invocation;

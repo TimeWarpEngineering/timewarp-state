@@ -1,4 +1,4 @@
-﻿namespace ThrowServerSideExceptionRequestValidator
+namespace ThrowServerSideExceptionRequestValidator
 {
   using FluentAssertions;
   using FluentValidation.Results;

@@ -1,4 +1,4 @@
-﻿namespace ThrowServerSideExceptionEndpoint
+namespace ThrowServerSideExceptionEndpoint
 {
   using FluentAssertions;
   using Microsoft.AspNetCore.Mvc.Testing;

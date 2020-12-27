@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.ExceptionHandlings
+namespace TestApp.Client.Features.ExceptionHandlings
 {
   public static class FeatureAnnotations
   {

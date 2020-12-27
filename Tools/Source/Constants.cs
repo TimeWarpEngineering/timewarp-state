@@ -1,4 +1,4 @@
-﻿namespace Tools
+namespace Tools
 {
   internal static class Constants
   {

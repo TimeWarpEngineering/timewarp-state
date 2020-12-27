@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Pipeline.State
+namespace BlazorState.Pipeline.State
 {
   using MediatR;
   using System;
