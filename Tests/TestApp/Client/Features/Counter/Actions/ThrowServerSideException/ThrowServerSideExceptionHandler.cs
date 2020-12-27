@@ -3,15 +3,22 @@ namespace TestApp.Client.Features.Counter
   using BlazorState;
   using MediatR;
   using System.Net.Http;
+  using System.Net.Http.Json;
   using System.Threading;
   using System.Threading.Tasks;
+  using TestApp.Api.Features.ExceptionHandlings;
   using TestApp.Client.Features.Base;
 
   public partial class CounterState
   {
-    internal class ThrowServerSideExceptionHandler : BaseHandler<ThrowServerSideExceptionAction>
+    internal class ThrowServerSideExceptionHandler : BaseActionHandler<ThrowServerSideExceptionAction>
     {
-      public ThrowServerSideExceptionHandler(IStore aStore) : base(aStore) { }
+      private readonly HttpClient HttpClient;
+
+      public ThrowServerSideExceptionHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
+      {
+        HttpClient = aHttpClient;
+      }
 
       /// <summary>
       /// Intentionally throw so we can test exception handling.
@@ -19,14 +26,19 @@ namespace TestApp.Client.Features.Counter
       /// <param name="aThrowServerSideExceptionAction"></param>
       /// <param name="aCancellationToken"></param>
       /// <returns></returns>
-      public override Task<Unit> Handle
+      public override async Task<Unit> Handle
       (
         ThrowServerSideExceptionAction aThrowServerSideExceptionAction,
         CancellationToken aCancellationToken
-      ) => throw new HttpRequestException(aThrowServerSideExceptionAction.Message)
+      )
       {
-        Source = $"{nameof(TestApp)}.Server"
-      };
+        var throwServerSideExceptionRequest = new ThrowServerSideExceptionRequest();
+
+        ThrowServerSideExceptionResponse throwServerSideExceptionResponse =
+          await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>(throwServerSideExceptionRequest.GetRoute());
+
+        return Unit.Value;
+      }
     }
   }
 }

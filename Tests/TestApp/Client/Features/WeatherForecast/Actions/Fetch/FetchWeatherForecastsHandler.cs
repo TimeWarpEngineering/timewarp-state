@@ -11,7 +11,7 @@ namespace TestApp.Client.Features.WeatherForecast
 
   internal partial class WeatherForecastsState
   {
-    public class FetchWeatherForecastsHandler : BaseHandler<FetchWeatherForecastsAction>
+    public class FetchWeatherForecastsHandler : BaseActionHandler<FetchWeatherForecastsAction>
     {
       private readonly HttpClient HttpClient;
 

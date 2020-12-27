@@ -9,7 +9,7 @@ namespace TestApp.Client.Features.Counter
 
   public partial class CounterState
   {
-    internal class ImproperNestedHandler : BaseHandler<ImproperNestedAction>
+    internal class ImproperNestedHandler : BaseActionHandler<ImproperNestedAction>
     {
       public ImproperNestedHandler(IStore aStore) : base(aStore) { }
 

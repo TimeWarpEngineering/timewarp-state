@@ -8,7 +8,7 @@ namespace TestApp.Client.Features.Counter
 
   public partial class CounterState
   {
-    internal class NonNestedHandler : BaseHandler<NonNestedAction>
+    internal class NonNestedHandler : BaseActionHandler<NonNestedAction>
     {
       public NonNestedHandler(IStore aStore) : base(aStore) { }
 
