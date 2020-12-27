@@ -2,8 +2,6 @@ namespace TestApp.Client.Features.EventStream
 {
   using BlazorState;
   using MediatR;
-  using System;
-  using System.Runtime.Serialization;
   using System.Threading;
   using System.Threading.Tasks;
   using TestApp.Client.Features.Base;
@@ -11,7 +9,7 @@ namespace TestApp.Client.Features.EventStream
 
   internal partial class EventStreamState
   {
-    internal class AddEventHandler : BaseHandler<AddEventAction>
+    internal class AddEventHandler : BaseActionHandler<AddEventAction>
     {
       public AddEventHandler(IStore aStore) : base(aStore) { }
 

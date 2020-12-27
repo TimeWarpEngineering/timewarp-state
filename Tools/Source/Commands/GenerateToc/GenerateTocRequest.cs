@@ -1,4 +1,4 @@
-﻿namespace Tools.Commands.GenerateToc
+namespace Tools.Commands.GenerateToc
 {
   using MediatR;
 

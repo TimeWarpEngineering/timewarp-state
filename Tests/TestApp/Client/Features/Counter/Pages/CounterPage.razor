@@ -1,5 +1,6 @@
-﻿@page "/counter"
-@inherits CounterPageBase
+﻿@namespace TestApp.Client.Pages
+@page "/counter"
+@inherits BaseComponent
 
 <h1>Counter Page</h1>
 
@@ -26,8 +27,11 @@
 
 <br />
 <hr />
-<h6>Click below to Throw and exception that will roll back state.</h6>
+<h6>Click below to Throw Client Side.</h6>
 <button class="btn btn-primary" data-qa="ThrowException" @onclick=SendThrowExceptionAction>Send Throw Exception Action</button>
+
+<h6>Click below to Throw Server Side.</h6>
+<button class="btn btn-primary" data-qa="ThrowException" @onclick=SendThrowServerSideExceptionAction>Send Throw Exception Action</button>
 
 <br />
 <hr />

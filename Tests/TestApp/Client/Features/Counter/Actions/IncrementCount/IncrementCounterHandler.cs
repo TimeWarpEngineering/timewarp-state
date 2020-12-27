@@ -8,7 +8,7 @@ namespace TestApp.Client.Features.Counter
 
   public partial class CounterState
   {
-    internal class IncrementCounterHandler : BaseHandler<IncrementCounterAction>
+    internal class IncrementCounterHandler : BaseActionHandler<IncrementCounterAction>
     {
       public IncrementCounterHandler(IStore aStore) : base(aStore) { }
 

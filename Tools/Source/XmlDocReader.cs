@@ -1,4 +1,4 @@
-﻿namespace Tools
+namespace Tools
 {
   using System;
   using System.Collections.Generic;

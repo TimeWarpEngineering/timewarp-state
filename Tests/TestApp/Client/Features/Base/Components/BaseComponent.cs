@@ -1,6 +1,8 @@
 namespace TestApp.Client.Features.Base.Components
 {
   using BlazorState.Pipeline.ReduxDevTools;
+  using MediatR;
+  using System.Threading.Tasks;
   using TestApp.Client.Features.Application;
   using TestApp.Client.Features.Counter;
   using TestApp.Client.Features.EventStream;
@@ -21,5 +23,6 @@ namespace TestApp.Client.Features.Base.Components
     internal CounterState CounterState => GetState<CounterState>();
     internal EventStreamState EventStreamState => GetState<EventStreamState>();
     internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
+    protected Task Send(IRequest aRequest) => Mediator.Send(aRequest);
   }
 }

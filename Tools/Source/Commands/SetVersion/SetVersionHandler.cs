@@ -1,4 +1,4 @@
-﻿namespace Tools.Commands.SetVersion
+namespace Tools.Commands.SetVersion
 {
   using System.Threading;
   using System.Threading.Tasks;

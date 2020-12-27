@@ -8,7 +8,7 @@ namespace TestApp.Client.Features.CloneTest
 
   internal partial class CloneTestState
   {
-    internal class CloneTestHandler : BaseHandler<CloneTestAction>
+    internal class CloneTestHandler : BaseActionHandler<CloneTestAction>
     {
       public CloneTestHandler(IStore aStore) : base(aStore) { }
 

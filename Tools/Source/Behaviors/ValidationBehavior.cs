@@ -1,4 +1,4 @@
-﻿namespace Tools.Behaviors
+namespace Tools.Behaviors
 {
   using System;
   using System.Collections.Generic;

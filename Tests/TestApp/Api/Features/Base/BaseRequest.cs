@@ -4,14 +4,14 @@ namespace TestApp.Api.Features.Base
 
   public abstract class BaseRequest
   {
-    public Guid Id { get; set; }
+    public Guid CorrelationId { get; set; }
 
     /// <summary>
     /// Every request should have unique Id
     /// </summary>
     public BaseRequest()
     {
-      Id = Guid.NewGuid();
+      CorrelationId = Guid.NewGuid();
     }
   }
 }

@@ -9,7 +9,7 @@ namespace TestApp.Client.Features.Counter
 
   public partial class CounterState
   {
-    internal class ThrowExceptionHandler : BaseHandler<ThrowExceptionAction>
+    internal class ThrowExceptionHandler : BaseActionHandler<ThrowExceptionAction>
     {
       public ThrowExceptionHandler(IStore aStore) : base(aStore) { }
 

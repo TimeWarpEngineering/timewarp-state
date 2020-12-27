@@ -1,4 +1,4 @@
-﻿namespace Tools.Services
+namespace Tools.Services
 {
   using System;
   using System.IO;

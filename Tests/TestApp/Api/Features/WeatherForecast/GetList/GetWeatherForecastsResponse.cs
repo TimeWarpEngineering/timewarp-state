@@ -11,10 +11,10 @@ namespace TestApp.Api.Features.WeatherForecast
     /// </summary>
     public GetWeatherForecastsResponse() { }
 
-    public GetWeatherForecastsResponse(Guid aRequestId)
+    public GetWeatherForecastsResponse(Guid aCorrelationId)
     {
       WeatherForecasts = new List<WeatherForecastDto>();
-      RequestId = aRequestId;
+      CorrelationId = aCorrelationId;
     }
 
     public List<WeatherForecastDto> WeatherForecasts { get; set; }

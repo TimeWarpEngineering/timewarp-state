@@ -13,6 +13,6 @@ namespace TestApp.Api.Features.WeatherForecast
     public int Days { get; set; }
 
     [JsonIgnore]
-    public string RouteFactory => $"{Route}?{nameof(Days)}={Days}&{nameof(Id)}={Id}";
+    public string RouteFactory => $"{Route}?{nameof(Days)}={Days}&{nameof(CorrelationId)}={CorrelationId}";
   }
 }

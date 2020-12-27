@@ -1,4 +1,4 @@
-﻿namespace System.CommandLine.Builder
+namespace System.CommandLine.Builder
 {
   using System.Collections.Generic;
   using System.Linq;

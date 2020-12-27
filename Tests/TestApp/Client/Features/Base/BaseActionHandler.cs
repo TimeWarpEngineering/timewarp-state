@@ -10,7 +10,7 @@ namespace TestApp.Client.Features.Base
   /// Base Handler that makes it easy to access state
   /// </summary>
   /// <typeparam name="TAction">The Type of Action to be handled</typeparam>
-  internal abstract class BaseHandler<TAction> : ActionHandler<TAction>
+  internal abstract class BaseActionHandler<TAction> : ActionHandler<TAction>
     where TAction : IAction
   {
     protected ApplicationState ApplicationState => Store.GetState<ApplicationState>();
@@ -18,6 +18,6 @@ namespace TestApp.Client.Features.Base
     protected EventStreamState EventStreamState => Store.GetState<EventStreamState>();
     protected WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
 
-    public BaseHandler(IStore aStore) : base(aStore) { }
+    public BaseActionHandler(IStore aStore) : base(aStore) { }
   }
 }
