@@ -57,7 +57,7 @@ namespace TestApp.Client.Features.EventStream
 
         if (aRequest is BaseRequest request)
         {
-          addEventAction.Message = $"{aTag}:{requestTypeName}:{request.Id}";
+          addEventAction.Message = $"{aTag}:{requestTypeName}:{request.CorrelationId}";
         }
         else
         {

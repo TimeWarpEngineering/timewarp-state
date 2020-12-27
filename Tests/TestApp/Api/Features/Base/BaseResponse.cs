@@ -4,24 +4,13 @@ namespace TestApp.Api.Features.Base
 
   public abstract class BaseResponse
   {
-    public BaseResponse(Guid aRequestId) : this()
+    public Guid CorrelationId { get; set; }
+    public BaseResponse(Guid aCorrelationId) : this()
     {
-      RequestId = aRequestId;
+      CorrelationId = aCorrelationId;
     }
 
-    public BaseResponse()
-    {
-      ResponseId = Guid.NewGuid();
-    }
+    public BaseResponse() { }
 
-    /// <summary>
-    /// Used to correlate request and response
-    /// </summary>
-    public Guid RequestId { get; set; }
-
-    /// <summary>
-    /// Used to correlate request and response
-    /// </summary>
-    public Guid ResponseId { get; }
   }
 }
