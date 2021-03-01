@@ -23,40 +23,39 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <TestProjectTargetFramework>netstandard2.1</TestProjectTargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
+    <TestProjectTargetFramework>net5.0</TestProjectTargetFramework>
   </PropertyGroup>
   
   <!--Versions of packages used across the solution-->
   <PropertyGroup Label="Package Versions">
-    <MicrosoftAspNetCoreComponentsWebAssemblyVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
-    <MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion>
-    <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
-    <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>3.2.1</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
-    <SystemNetHttpJsonVersion>3.2.1</SystemNetHttpJsonVersion>
-    <SystemTextJsonVersion>4.7.2</SystemTextJsonVersion>
-    <SystemConfigurationConfigurationManagerVersion>4.7.0</SystemConfigurationConfigurationManagerVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyVersion>5.0.3</MicrosoftAspNetCoreComponentsWebAssemblyVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>5.0.3</MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion>
+    <MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>5.0.3</MicrosoftAspNetCoreComponentsWebAssemblyServerVersion>
+    <SystemNetHttpJsonVersion>5.0.0</SystemNetHttpJsonVersion>
+    <SystemTextJsonVersion>5.0.1</SystemTextJsonVersion>
+    <SystemConfigurationConfigurationManagerVersion>5.0.0</SystemConfigurationConfigurationManagerVersion>
 
-    <MicrosoftAspNetCoreComponentsWebVersion>3.1.10</MicrosoftAspNetCoreComponentsWebVersion>
-    <MicrosoftAspNetCoreMvcTestingVersion>3.1.10</MicrosoftAspNetCoreMvcTestingVersion>
-    <MicrosoftAspNetCoreTestHostVersion>3.1.10</MicrosoftAspNetCoreTestHostVersion>    
-    <MicrosoftExtensionsFileProvidersEmbeddedVersion>3.1.10</MicrosoftExtensionsFileProvidersEmbeddedVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>3.1.10</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftAspNetCoreComponentsWebVersion>5.0.3</MicrosoftAspNetCoreComponentsWebVersion>
+    <MicrosoftAspNetCoreMvcTestingVersion>5.0.3</MicrosoftAspNetCoreMvcTestingVersion>
+    <MicrosoftAspNetCoreTestHostVersion>5.0.3</MicrosoftAspNetCoreTestHostVersion>    
+    <MicrosoftExtensionsFileProvidersEmbeddedVersion>5.0.3</MicrosoftExtensionsFileProvidersEmbeddedVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>5.0.0</MicrosoftExtensionsLoggingAbstractionsVersion>
     
     <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
 
     <AnyCloneVersion>1.0.39</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
-    <CoverletMsbuildVersion>2.9.0</CoverletMsbuildVersion>
+    <CoverletMsbuildVersion>3.0.3</CoverletMsbuildVersion>
     <FixieVersion>2.2.2</FixieVersion>
     <FixieConsoleVersion>2.2.1</FixieConsoleVersion>
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
     <MediatrExtensionsMicrosoftDependencyInjectionVersion>9.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
     <MediatrVersion>9.0.0</MediatrVersion>
-    <ScrutorVersion>3.2.2</ScrutorVersion>
+    <ScrutorVersion>3.3.0</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
-    <ShouldlyVersion>3.0.2</ShouldlyVersion>
+    <ShouldlyVersion>4.0.3</ShouldlyVersion>
     <TypeSupportVersion>1.1.4</TypeSupportVersion>
   </PropertyGroup>
     
