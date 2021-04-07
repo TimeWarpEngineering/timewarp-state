@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">  
 
   <PropertyGroup>
-    <RazorLangVersion>3.0</RazorLangVersion>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
   </PropertyGroup>
@@ -11,8 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\app.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftAspNetCoreComponentsWebAssemblyVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="$(MicrosoftAspNetCoreComponentsWebAssemblyBuildVersion)" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MicrosoftAspNetCoreComponentsWebAssemblyDevServerVersion)" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="$(SystemNetHttpJsonVersion)" />
     <PackageReference Include="Shouldly" Version="$(ShouldlyVersion)" />

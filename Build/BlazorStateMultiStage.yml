@@ -4,10 +4,10 @@ trigger:
 pr: none
 
 variables:
-  Major: 3
-  Minor: 4
-  Patch: 4
-  DotNetSdkVersion: 3.1.404
+  Major: 4
+  Minor: 0
+  Patch: 0
+  DotNetSdkVersion: 5.0.3
 
 stages:
   - stage: Test_Stage
