@@ -1,9 +1,8 @@
 namespace TestApp.Client.Layout
 {
-  using Microsoft.AspNetCore.Components;
   using TestApp.Client.Features.Base.Components;
 
-  public class NavMenuBase : BaseComponent
+  public partial class NavMenu: BaseComponent
   {
     protected bool CollapseNavMenu { get; set; }
 
