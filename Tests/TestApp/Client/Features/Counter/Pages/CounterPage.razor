@@ -41,9 +41,7 @@
 
 <br />
 <hr />
-<EditForm Model="RecordForm" OnValidSubmit="HandleValidSubmit">
-  <CustomInput @bind-Value="RecordForm.Amount"
-                      ValidationFor="@(() => RecordForm.Amount)"
-                      Label="Custom Input.">
-  </CustomInput>
+<EditForm Model=@RecordForm OnValidSubmit=@HandleValidSubmit>
+    <CustomInput @bind-Value="RecordForm.Amount" ValidationFor="@(() => RecordForm.Amount)" Label="Custom Input.">
+    </CustomInput>
 </EditForm>
