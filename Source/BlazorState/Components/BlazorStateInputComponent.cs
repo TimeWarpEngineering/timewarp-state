@@ -11,12 +11,12 @@ namespace BlazorState
   /// And exposes StateHasChanged
   /// </summary>
   /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-  public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable,
-    IBlazorStateComponent
+  public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable, IBlazorStateComponent
   {
-    protected override bool TryParseValueFromString(string aValue, out TValue aResult, out string aValidationErrorMessage) => TryParseValueFromString(aValue, out aResult, out aValidationErrorMessage);
+    protected override bool TryParseValueFromString(string aValue, out TValue aResult, out string aValidationErrorMessage) => 
+      TryParseValueFromString(aValue, out aResult, out aValidationErrorMessage);
 
-    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
+    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
 
     public BlazorStateInputComponent()
     {
@@ -63,6 +63,10 @@ namespace BlazorState
       return Store.GetState<T>();
     }
 
-    public void Dispose() => Subscriptions.Remove(this);
+    public void Dispose()
+    {
+      Subscriptions.Remove(this);
+      GC.SuppressFinalize(this);
+    }
   }
 }

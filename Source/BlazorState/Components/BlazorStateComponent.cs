@@ -10,10 +10,9 @@ namespace BlazorState
   /// And exposes StateHasChanged
   /// </summary>
   /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-  public class BlazorStateComponent : ComponentBase, IDisposable,
-     IBlazorStateComponent
+  public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
   {
-    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new ConcurrentDictionary<string, int>();
+    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
 
     public BlazorStateComponent()
     {
@@ -60,6 +59,10 @@ namespace BlazorState
       return Store.GetState<T>();
     }
 
-    public virtual void Dispose() => Subscriptions.Remove(this);
+    public virtual void Dispose()
+    {
+      Subscriptions.Remove(this);
+      GC.SuppressFinalize(this);
+    }
   }
 }
