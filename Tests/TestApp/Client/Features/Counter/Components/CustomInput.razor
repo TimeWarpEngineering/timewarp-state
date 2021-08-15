@@ -1,0 +1,16 @@
+﻿@typeparam T
+@inherits CustomInputBase<T>
+
+<div>
+  @if (!string.IsNullOrWhiteSpace(Label))
+  {
+    <label for="@Id">@Label</label>
+  }
+
+  <p>Current count: @CounterState.Count</p>
+
+  <p>
+    <input class="form-control @CssClass" id="@Id" @bind="CurrentValueAsString" />
+  </p>
+  <button class="btn btn-primary" @onclick="ButtonClick">Click me</button>
+</div>
