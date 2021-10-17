@@ -226,9 +226,9 @@ To Send the action to the pipeline when the user clicks the `Click me` button,
 In `Pages/Counter.razor` update the `IncrementCount` function as follows:
 
 ```csharp
-void IncrementCount()
+async Task IncrementCount()
 {
-    Mediator.Send(new CounterState.IncrementCountAction { Amount = 5 });
+  await Mediator.Send(new CounterState.IncrementCountAction { Amount = 5 });
 }
 ```
 
