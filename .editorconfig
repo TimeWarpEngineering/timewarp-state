@@ -10,8 +10,8 @@ root = true
 [*]
 # Indentation and spacing
 indent_size = 2
-indent_style = space
-tab_width = 4
+indent_style =space
+tab_width =2
 
 # New line preferences
 end_of_line = lf

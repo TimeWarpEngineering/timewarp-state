@@ -1,16 +1,8 @@
 ﻿@namespace TestApp.Client.Pages
 @page "/counter"
-@using TestApp.Client.Features.EventStream.Components
 @inherits BaseComponent
 
 <h1>Counter Page</h1>
-
-<br />
-<hr />
-<EditForm Model=@RecordForm OnValidSubmit=@HandleValidSubmit>
-    <CustomInput @bind-Value=RecordForm.Amount ValidationFor=@(() => RecordForm.Amount) Label="Custom Input.">
-    </CustomInput>
-</EditForm>
 
 <h2>Counter Display 1</h2>
 <Counter TestId="Counter1" />

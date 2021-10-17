@@ -1,6 +1,6 @@
 {
   "TestApp.Client.Features.Application.ApplicationState": {
-    "name": "Blazor State Demo Application",
+    "name": "Blazor State Demo",
     "guid": "5a2efcec-6297-4254-a2dc-30e4e567e549"
   },
   "TestApp.Client.Features.Counter.CounterState": {
