@@ -323,7 +323,6 @@ namespace Sample.Client
       await ReduxDevToolsInterop.InitAsync();
       await JsonRequestHandler.InitAsync();
     }
-
   }
 }
 ```

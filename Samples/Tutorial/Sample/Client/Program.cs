@@ -24,16 +24,17 @@ namespace Sample.Client
 
     public static void ConfigureServices(IServiceCollection aServiceCollection)
     {
-
       aServiceCollection.AddBlazorState
       (
         (aOptions) =>
-
+        {
+          aOptions.UseReduxDevToolsBehavior = true;
           aOptions.Assemblies =
-          new Assembly[]
-          {
-            typeof(Program).GetTypeInfo().Assembly,
-          }
+            new Assembly[]
+            {
+              typeof(Program).GetTypeInfo().Assembly,
+            };
+        }
       );
     }
   }
