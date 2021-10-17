@@ -30,7 +30,7 @@ namespace TestApp.Client.Integration.Tests
       ReduxDevToolsStore.LoadStatesFromJson(jsonString);
       // Assert
       ApplicationState applicationState = Store.GetState<ApplicationState>();
-      applicationState.Name.ShouldBe("Blazor State Demo Application");
+      applicationState.Name.ShouldBe("Blazor State Demo");
       applicationState.Guid.ToString().ShouldBe("5a2efcec-6297-4254-a2dc-30e4e567e549");
 
       CounterState counterState = Store.GetState<CounterState>();

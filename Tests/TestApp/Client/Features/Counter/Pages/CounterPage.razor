@@ -1,6 +1,5 @@
 ﻿@namespace TestApp.Client.Pages
 @page "/counter"
-@using TestApp.Client.Features.EventStream.Components
 @inherits BaseComponent
 
 <h1>Counter Page</h1>
@@ -38,10 +37,3 @@
 <hr />
 <h6>EventStream is an example of middleware.  It adds each action to list.</h6>
 <EventStream />
-
-<br />
-<hr />
-<EditForm Model=@RecordForm OnValidSubmit=@HandleValidSubmit>
-    <CustomInput @bind-Value="RecordForm.Amount" ValidationFor="@(() => RecordForm.Amount)" Label="Custom Input.">
-    </CustomInput>
-</EditForm>

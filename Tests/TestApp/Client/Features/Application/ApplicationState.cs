@@ -11,6 +11,6 @@ namespace TestApp.Client.Features.Application
 
     public ApplicationState() { }
 
-    public override void Initialize() => Name = "Blazor State Demo Application";
+    public override void Initialize() => Name = "Blazor State Demo";
   }
 }

@@ -102,25 +102,22 @@ namespace Sample.Client.Features.Counter
 ```csharp
 namespace Sample.Client
 {
-  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-  using Microsoft.Extensions.DependencyInjection;
   using System;
   using System.Net.Http;
   using System.Threading.Tasks;
+  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+  using Microsoft.Extensions.DependencyInjection;
   using BlazorState;
   using System.Reflection;
-  using MediatR;
 
   public class Program
   {
     public static async Task Main(string[] args)
     {
       var builder = WebAssemblyHostBuilder.CreateDefault(args);
-      builder.RootComponents.Add<App>("app");
-      builder.Services.AddSingleton
-      (
-        new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
-      );
+      builder.RootComponents.Add<App>("#app");
+
+      builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
       ConfigureServices(builder.Services);
 
@@ -143,6 +140,7 @@ namespace Sample.Client
     }
   }
 }
+
 ```
 
 ## Displaying state in the user interface
@@ -228,9 +226,9 @@ To Send the action to the pipeline when the user clicks the `Click me` button,
 In `Pages/Counter.razor` update the `IncrementCount` function as follows:
 
 ```csharp
-void IncrementCount()
+async Task IncrementCount()
 {
-    Mediator.Send(new CounterState.IncrementCountAction { Amount = 5 });
+  await Mediator.Send(new CounterState.IncrementCountAction { Amount = 5 });
 }
 ```
 
@@ -325,7 +323,6 @@ namespace Sample.Client
       await ReduxDevToolsInterop.InitAsync();
       await JsonRequestHandler.InitAsync();
     }
-
   }
 }
 ```

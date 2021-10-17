@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Api\TestApp.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Color\Actions\" />
+  </ItemGroup>
+
 </Project>

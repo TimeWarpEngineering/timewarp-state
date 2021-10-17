@@ -1,0 +1,32 @@
+﻿@namespace TestApp.Client.Pages
+@page "/customInput"
+@inherits BaseComponent
+@using System.Drawing
+
+<h1>Custom Input</h1>
+
+<br />
+<hr />
+<EditForm Model=@CurrentPerson OnValidSubmit=@HandleValidSubmit>
+  <CustomInput @bind-Value=CurrentPerson.Amount ValidationFor=@(() => CurrentPerson.Amount) Label="Custom Input.">
+  </CustomInput>
+  <InputColor @bind-Value=CurrentPerson.FavoriteColor />
+</EditForm>
+
+Favorite colour is @CurrentPerson.FavoriteColor
+<div style="width:100px;height:100px;background-color:@ColorAsHex" />
+
+@code {
+  Person CurrentPerson = new Person
+  {
+     FavoriteColor = Color.Green
+  };
+
+  string ColorAsHex => InputColor.ColorToString(CurrentPerson.FavoriteColor);
+
+  class Person
+  {
+    public Color FavoriteColor { get; set; }
+    public int Amount { get; set; }
+  }
+}
