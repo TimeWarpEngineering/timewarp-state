@@ -23,8 +23,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <TestProjectTargetFramework>net5.0</TestProjectTargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <TestProjectTargetFramework>net6.0</TestProjectTargetFramework>
   </PropertyGroup>
   
   <!--Versions of packages used across the solution-->
@@ -42,9 +42,9 @@
     <MicrosoftExtensionsFileProvidersEmbeddedVersion>5.0.3</MicrosoftExtensionsFileProvidersEmbeddedVersion>
     <MicrosoftExtensionsLoggingAbstractionsVersion>5.0.0</MicrosoftExtensionsLoggingAbstractionsVersion>
     
-    <MicrosoftSourceLinkGitHubVersion>1.0.0</MicrosoftSourceLinkGitHubVersion>
+    <MicrosoftSourceLinkGitHubVersion>1.1.1</MicrosoftSourceLinkGitHubVersion>
 
-    <AnyCloneVersion>1.0.39</AnyCloneVersion>
+    <AnyCloneVersion>1.1.2</AnyCloneVersion>
     <BlazorExtensionsLoggingVersion>0.3.0</BlazorExtensionsLoggingVersion>
     <CoverletMsbuildVersion>3.0.3</CoverletMsbuildVersion>
     <FixieVersion>2.2.2</FixieVersion>
