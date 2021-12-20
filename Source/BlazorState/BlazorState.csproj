@@ -3,7 +3,6 @@
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/aspnet/AspNetCore/blob/master/src/Components/Blazor/Templates/src/content/BlazorLibrary-CSharp/BlazorLibrary-CSharp.csproj -->
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
     <IsPackable>true</IsPackable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
@@ -13,7 +12,7 @@
   <PropertyGroup>
     <Title>Blazor State</Title>
     <Company>TimeWarp Enterprises Limited</Company>
-    <Description>blazor-state a MediatR pipeline for Blazor state management</Description>
+    <Description>A MediatR pipeline for Blazor state management</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
@@ -43,6 +42,8 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
@@ -60,6 +61,10 @@
 
   <!-- TypeScript project-->
   <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
     <None Include="wwwroot\blazorstate.js" />

@@ -5,9 +5,10 @@ pr: none
 
 variables:
   Major: 4
-  Minor: 0
-  Patch: 1
-  DotNetSdkVersion: 5.0.3
+  Minor: 1
+  Patch: 0
+  Beta: "-beta.1" # "-beta.X" or ""
+  DotNetSdkVersion: 6.0.101
 
 stages:
   - stage: Test_Stage
@@ -133,7 +134,7 @@ stages:
         variables:
           # PatchCounterReset: $(Major).$(Minor)
           # Patch: $[counter(variables.PatchCounterReset, 0)]
-          Version: '$(Major).$(Minor).$(Patch)+$(DotNetSdkVersion)'
+          Version: '$(Major).$(Minor).$(Patch)$(Beta)+$(DotNetSdkVersion)'
         strategy:
           runOnce:
             deploy:
