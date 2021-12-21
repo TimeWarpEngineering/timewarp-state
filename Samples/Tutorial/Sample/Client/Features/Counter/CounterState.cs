@@ -1,4 +1,4 @@
-﻿namespace Sample.Client.Features.Counter
+namespace Sample.Client.Features.Counter
 {
   using BlazorState;
 

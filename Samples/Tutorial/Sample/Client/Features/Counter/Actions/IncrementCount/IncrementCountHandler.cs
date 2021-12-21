@@ -1,4 +1,4 @@
-﻿namespace Sample.Client.Features.Counter
+namespace Sample.Client.Features.Counter
 {
   using System.Threading;
   using System.Threading.Tasks;

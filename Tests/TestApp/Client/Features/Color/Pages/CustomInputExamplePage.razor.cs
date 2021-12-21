@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Pages
+namespace TestApp.Client.Pages
 {
   using System;
   using TestApp.Client.Features.Base.Components;

@@ -2,7 +2,7 @@ namespace TestApp.Client.Layout
 {
   using TestApp.Client.Features.Base.Components;
 
-  public partial class NavMenu: BaseComponent
+  public partial class NavMenu : BaseComponent
   {
     protected bool CollapseNavMenu { get; set; }
 

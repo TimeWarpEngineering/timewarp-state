@@ -1,4 +1,4 @@
-﻿namespace Sample.Client
+namespace Sample.Client
 {
   using System.Threading.Tasks;
   using BlazorState.Pipeline.ReduxDevTools;

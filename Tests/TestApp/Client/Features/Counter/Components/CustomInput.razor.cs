@@ -1,4 +1,4 @@
-﻿namespace TestApp.Client.Features.Counter.Components
+namespace TestApp.Client.Features.Counter.Components
 {
   using System;
   using System.Globalization;
@@ -7,7 +7,7 @@
   using Microsoft.AspNetCore.Components;
   using TestApp.Client.Features.Base.Components;
 
-  public partial class CustomInput<T>: BaseInputComponent<T>
+  public partial class CustomInput<T> : BaseInputComponent<T>
   {
     [Parameter] public string Label { get; set; }
     [Parameter] public Expression<Func<T>> ValidationFor { get; set; }
@@ -51,7 +51,7 @@
       return canParse;
     }
 
-    protected async Task ButtonClick() => 
+    protected async Task ButtonClick() =>
       _ = await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
 
   }
