@@ -15,7 +15,7 @@
   <!-- Common compile parameters -->
   <PropertyGroup>
     <Nullable>disable</Nullable>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <!-- We use full (Windows PDBs) until cross platform support for source link will get better also needed for codecov -->
@@ -24,7 +24,6 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <TestProjectTargetFramework>net6.0</TestProjectTargetFramework>
   </PropertyGroup>
   
   <!--Versions of packages used across the solution-->
