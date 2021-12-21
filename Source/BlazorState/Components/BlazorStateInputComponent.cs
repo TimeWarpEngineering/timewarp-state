@@ -2,9 +2,9 @@ namespace BlazorState
 {
   using MediatR;
   using Microsoft.AspNetCore.Components;
+  using Microsoft.AspNetCore.Components.Forms;
   using System;
   using System.Collections.Concurrent;
-  using Microsoft.AspNetCore.Components.Forms;
 
   /// <summary>
   /// A non required Base Class that injects Mediator and Store.
@@ -13,7 +13,7 @@ namespace BlazorState
   /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
   public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable, IBlazorStateComponent
   {
-    protected override bool TryParseValueFromString(string aValue, out TValue aResult, out string aValidationErrorMessage) => 
+    protected override bool TryParseValueFromString(string aValue, out TValue aResult, out string aValidationErrorMessage) =>
       TryParseValueFromString(aValue, out aResult, out aValidationErrorMessage);
 
     static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
