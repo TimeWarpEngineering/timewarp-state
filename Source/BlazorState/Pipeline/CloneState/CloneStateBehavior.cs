@@ -93,7 +93,7 @@ internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequ
           Exception = aException
         };
 
-        await Mediator.Publish(exceptionNotification).ConfigureAwait(false);
+        await Mediator.Publish(exceptionNotification);
         return default;
       }
 

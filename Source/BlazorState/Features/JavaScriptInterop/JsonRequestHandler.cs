@@ -91,7 +91,7 @@ public class JsonRequestHandler
 
     // https://stackoverflow.com/questions/39674988/how-to-call-a-generic-async-method-using-reflection
     var task = (Task)sendGenericMethodInfo.Invoke(Mediator, new object[] { aInstance, default(CancellationToken) });
-    await task.ConfigureAwait(false);
+    await task;
     PropertyInfo resultProperty = task.GetType().GetProperty("Result");
     return resultProperty.GetValue(task);
   }

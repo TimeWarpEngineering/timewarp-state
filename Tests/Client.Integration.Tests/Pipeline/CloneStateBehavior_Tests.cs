@@ -65,7 +65,7 @@ public class Should : BaseTest
     };
 
     // Act
-    await Send(throwExceptionAction).ConfigureAwait(false);
+    await Send(throwExceptionAction);
 
     // Assert
     ApplicationState.ExceptionMessage.ShouldBe(throwExceptionAction.Message);
