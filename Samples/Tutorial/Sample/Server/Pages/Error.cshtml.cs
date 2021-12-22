@@ -1,11 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 
 namespace Sample.Server.Pages
 {
@@ -24,9 +24,6 @@ namespace Sample.Server.Pages
       _logger = logger;
     }
 
-    public void OnGet()
-    {
-      RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
-    }
+    public void OnGet() => RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
   }
 }

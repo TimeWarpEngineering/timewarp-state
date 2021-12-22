@@ -1,9 +1,9 @@
 namespace Sample.Client.Features.Counter
 {
-  using System.Threading;
-  using System.Threading.Tasks;
   using BlazorState;
   using MediatR;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   public partial class CounterState
   {

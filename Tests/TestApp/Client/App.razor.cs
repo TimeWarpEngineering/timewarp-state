@@ -23,12 +23,10 @@ namespace TestApp.Client
     [Inject]
     private RouteManager RouteManager { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool aFirstRender)
-    {
+    protected override async Task OnAfterRenderAsync(bool aFirstRender) =>
 #if ReduxDevToolsEnabled
       await ReduxDevToolsInterop.InitAsync();
 #endif
       await JsonRequestHandler.InitAsync();
-    }
   }
 }

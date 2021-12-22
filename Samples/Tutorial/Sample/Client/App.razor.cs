@@ -1,10 +1,10 @@
 namespace Sample.Client
 {
-  using System.Threading.Tasks;
-  using BlazorState.Pipeline.ReduxDevTools;
   using BlazorState.Features.JavaScriptInterop;
   using BlazorState.Features.Routing;
+  using BlazorState.Pipeline.ReduxDevTools;
   using Microsoft.AspNetCore.Components;
+  using System.Threading.Tasks;
 
   public partial class App : ComponentBase
   {

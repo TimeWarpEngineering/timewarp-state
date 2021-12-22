@@ -1,12 +1,12 @@
 namespace Sample.Client
 {
-  using System;
-  using System.Net.Http;
-  using System.Threading.Tasks;
+  using BlazorState;
   using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
   using Microsoft.Extensions.DependencyInjection;
-  using BlazorState;
+  using System;
+  using System.Net.Http;
   using System.Reflection;
+  using System.Threading.Tasks;
 
   public class Program
   {

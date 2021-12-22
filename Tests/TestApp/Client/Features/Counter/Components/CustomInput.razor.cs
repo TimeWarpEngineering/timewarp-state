@@ -1,10 +1,10 @@
 namespace TestApp.Client.Features.Counter.Components
 {
+  using Microsoft.AspNetCore.Components;
   using System;
   using System.Globalization;
   using System.Linq.Expressions;
   using System.Threading.Tasks;
-  using Microsoft.AspNetCore.Components;
   using TestApp.Client.Features.Base.Components;
 
   public partial class CustomInput<T> : BaseInputComponent<T>
