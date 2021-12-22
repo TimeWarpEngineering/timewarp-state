@@ -1,25 +1,25 @@
-namespace TestApp.Client.Integration.Tests
-{
-  using BlazorState;
-  using Microsoft.Extensions.DependencyInjection;
-  using Shouldly;
-  using System.IO;
-  using TestApp.Client.Features.Application;
-  using TestApp.Client.Features.Counter;
-  using TestApp.Client.Features.WeatherForecast;
-  using TestApp.Client.Integration.Tests.Infrastructure;
+namespace TestApp.Client.Integration.Tests;
 
-  internal class Store_Tests : BaseTest
-  {
+using BlazorState;
+using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
+using System.IO;
+using TestApp.Client.Features.Application;
+using TestApp.Client.Features.Counter;
+using TestApp.Client.Features.WeatherForecast;
+using TestApp.Client.Integration.Tests.Infrastructure;
+
+internal class Store_Tests : BaseTest
+{
 #if ReduxDevToolsEnabled
     private readonly IReduxDevToolsStore ReduxDevToolsStore;
 #endif
-    public Store_Tests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
-    {
+  public Store_Tests(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+  {
 #if ReduxDevToolsEnabled
       ReduxDevToolsStore = ServiceProvider.GetService<IReduxDevToolsStore>();
 #endif
-    }
+  }
 
 #if ReduxDevToolsEnabled
     public void ShouldLoadStatesFromJson()
@@ -51,13 +51,12 @@ namespace TestApp.Client.Integration.Tests
     }
 #endif
 
-    /// <summary>
-    /// WeatherForecatesState will throw an exception if items initialized in the constructor are null.
-    /// </summary>
-    public void ShouldInitializeStateAfterConstruction()
-    {
-      WeatherForecastsState state = Store.GetState<WeatherForecastsState>();
-      state.ShouldNotBeNull();
-    }
+  /// <summary>
+  /// WeatherForecatesState will throw an exception if items initialized in the constructor are null.
+  /// </summary>
+  public void ShouldInitializeStateAfterConstruction()
+  {
+    WeatherForecastsState state = Store.GetState<WeatherForecastsState>();
+    state.ShouldNotBeNull();
   }
 }

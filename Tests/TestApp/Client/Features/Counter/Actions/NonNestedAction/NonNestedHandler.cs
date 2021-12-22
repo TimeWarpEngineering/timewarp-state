@@ -1,22 +1,21 @@
-namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter;
+
+using BlazorState;
+using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
+using TestApp.Client.Features.Base;
+
+public partial class CounterState
 {
-  using BlazorState;
-  using MediatR;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using TestApp.Client.Features.Base;
-
-  public partial class CounterState
+  internal class NonNestedHandler : BaseActionHandler<NonNestedAction>
   {
-    internal class NonNestedHandler : BaseActionHandler<NonNestedAction>
-    {
-      public NonNestedHandler(IStore aStore) : base(aStore) { }
+    public NonNestedHandler(IStore aStore) : base(aStore) { }
 
-      public override Task<Unit> Handle
-      (
-        NonNestedAction aNonNestedAction,
-        CancellationToken aCancellationToken
-      ) => Unit.Task;
-    }
+    public override Task<Unit> Handle
+    (
+      NonNestedAction aNonNestedAction,
+      CancellationToken aCancellationToken
+    ) => Unit.Task;
   }
 }

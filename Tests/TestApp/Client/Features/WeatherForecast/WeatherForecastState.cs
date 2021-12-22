@@ -1,32 +1,31 @@
-namespace TestApp.Client.Features.WeatherForecast
+namespace TestApp.Client.Features.WeatherForecast;
+
+using BlazorState;
+using System.Collections.Generic;
+using TestApp.Api.Features.WeatherForecast;
+
+internal partial class WeatherForecastsState : State<WeatherForecastsState>
 {
-  using BlazorState;
-  using System.Collections.Generic;
-  using TestApp.Api.Features.WeatherForecast;
+  private List<WeatherForecastDto> _WeatherForecasts;
 
-  internal partial class WeatherForecastsState : State<WeatherForecastsState>
+  public IReadOnlyList<WeatherForecastDto> WeatherForecasts => _WeatherForecasts.AsReadOnly();
+
+  public WeatherForecastsState()
   {
-    private List<WeatherForecastDto> _WeatherForecasts;
+    _WeatherForecasts = new List<WeatherForecastDto>();
+  }
 
-    public IReadOnlyList<WeatherForecastDto> WeatherForecasts => _WeatherForecasts.AsReadOnly();
 
-    public WeatherForecastsState()
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <remarks>used to test that constructor is complete before Initialize is called</remarks>
+  public override void Initialize()
+  {
+    if (_WeatherForecasts is null)
     {
-      _WeatherForecasts = new List<WeatherForecastDto>();
+      throw new System.ArgumentNullException(nameof(_WeatherForecasts));
     }
 
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <remarks>used to test that constructor is complete before Initialize is called</remarks>
-    public override void Initialize()
-    {
-      if (_WeatherForecasts is null)
-      {
-        throw new System.ArgumentNullException(nameof(_WeatherForecasts));
-      }
-
-    }
   }
 }

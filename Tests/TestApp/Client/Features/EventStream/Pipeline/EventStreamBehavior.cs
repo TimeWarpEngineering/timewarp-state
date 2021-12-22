@@ -1,70 +1,69 @@
-namespace TestApp.Client.Features.EventStream
+namespace TestApp.Client.Features.EventStream;
+
+using MediatR;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using TestApp.Api.Features.Base;
+using static TestApp.Client.Features.EventStream.EventStreamState;
+
+/// <summary>
+/// Every event that comes through the pipeline adds an object to the EventStreamState
+/// </summary>
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
+/// <remarks>To avoid infinite recursion don't add AddEvent to the event stream</remarks>
+public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-  using MediatR;
-  using Microsoft.Extensions.Logging;
-  using System;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using TestApp.Api.Features.Base;
-  using static TestApp.Client.Features.EventStream.EventStreamState;
+  private readonly ILogger Logger;
+  private readonly ISender Sender;
+  public Guid Guid { get; } = Guid.NewGuid();
 
-  /// <summary>
-  /// Every event that comes through the pipeline adds an object to the EventStreamState
-  /// </summary>
-  /// <typeparam name="TRequest"></typeparam>
-  /// <typeparam name="TResponse"></typeparam>
-  /// <remarks>To avoid infinite recursion don't add AddEvent to the event stream</remarks>
-  public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+  public EventStreamBehavior
+  (
+    ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
+    ISender aSender
+  )
   {
-    private readonly ILogger Logger;
-    private readonly ISender Sender;
-    public Guid Guid { get; } = Guid.NewGuid();
+    Logger = aLogger;
+    Sender = aSender;
+    Logger.LogDebug($"{GetType().Name}: Constructor");
+  }
 
-    public EventStreamBehavior
-    (
-      ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
-      ISender aSender
-    )
+  public async Task<TResponse> Handle
+  (
+    TRequest aRequest,
+    CancellationToken aCancellationToken,
+    RequestHandlerDelegate<TResponse> aNext
+  )
+  {
+    if (aNext is null)
     {
-      Logger = aLogger;
-      Sender = aSender;
-      Logger.LogDebug($"{GetType().Name}: Constructor");
+      throw new ArgumentNullException(nameof(aNext));
     }
+    await AddEventToStream(aRequest, "Start");
+    TResponse response = await aNext();
+    await AddEventToStream(aRequest, "Completed");
+    return response;
+  }
 
-    public async Task<TResponse> Handle
-    (
-      TRequest aRequest,
-      CancellationToken aCancellationToken,
-      RequestHandlerDelegate<TResponse> aNext
-    )
+  private async Task AddEventToStream(TRequest aRequest, string aTag)
+  {
+    if (!(aRequest is AddEventAction)) //Skip to avoid recursion
     {
-      if (aNext is null)
-      {
-        throw new ArgumentNullException(nameof(aNext));
-      }
-      await AddEventToStream(aRequest, "Start");
-      TResponse response = await aNext();
-      await AddEventToStream(aRequest, "Completed");
-      return response;
-    }
+      var addEventAction = new AddEventAction();
+      string requestTypeName = aRequest.GetType().Name;
 
-    private async Task AddEventToStream(TRequest aRequest, string aTag)
-    {
-      if (!(aRequest is AddEventAction)) //Skip to avoid recursion
+      if (aRequest is BaseRequest request)
       {
-        var addEventAction = new AddEventAction();
-        string requestTypeName = aRequest.GetType().Name;
-
-        if (aRequest is BaseRequest request)
-        {
-          addEventAction.Message = $"{aTag}:{requestTypeName}:{request.CorrelationId}";
-        }
-        else
-        {
-          addEventAction.Message = $"{aTag}:{requestTypeName}";
-        }
-        await Sender.Send(addEventAction);
+        addEventAction.Message = $"{aTag}:{requestTypeName}:{request.CorrelationId}";
       }
+      else
+      {
+        addEventAction.Message = $"{aTag}:{requestTypeName}";
+      }
+      await Sender.Send(addEventAction);
     }
   }
 }

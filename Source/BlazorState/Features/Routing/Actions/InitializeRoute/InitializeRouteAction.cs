@@ -1,9 +1,8 @@
-namespace BlazorState.Features.Routing
-{
-  using BlazorState;
+namespace BlazorState.Features.Routing;
 
-  public partial class RouteState
-  {
-    internal class InitializeRouteAction : IAction { }
-  }
+using BlazorState;
+
+public partial class RouteState
+{
+  internal class InitializeRouteAction : IAction { }
 }

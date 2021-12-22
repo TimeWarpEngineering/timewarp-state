@@ -1,23 +1,22 @@
-namespace Sample.Client
+namespace Sample.Client;
+
+using BlazorState.Features.JavaScriptInterop;
+using BlazorState.Features.Routing;
+using BlazorState.Pipeline.ReduxDevTools;
+using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
+
+public partial class App : ComponentBase
 {
-  using BlazorState.Features.JavaScriptInterop;
-  using BlazorState.Features.Routing;
-  using BlazorState.Pipeline.ReduxDevTools;
-  using Microsoft.AspNetCore.Components;
-  using System.Threading.Tasks;
+  [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
+  [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 
-  public partial class App : ComponentBase
+  // Injected so it is created by the container. Even though the IDE says it is not used, it is.
+  [Inject] private RouteManager RouteManager { get; set; }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
-    [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
-
-    // Injected so it is created by the container. Even though the IDE says it is not used, it is.
-    [Inject] private RouteManager RouteManager { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-      await ReduxDevToolsInterop.InitAsync();
-      await JsonRequestHandler.InitAsync();
-    }
+    await ReduxDevToolsInterop.InitAsync();
+    await JsonRequestHandler.InitAsync();
   }
 }

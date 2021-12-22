@@ -162,7 +162,7 @@ csharp_preserve_single_line_statements = true
 csharp_using_directive_placement = inside_namespace:suggestion
 
 # Namespace preferences
-csharp_style_namespace_declarations=block_scoped:warning
+csharp_style_namespace_declarations=file_scoped:warning
 
 #### Naming styles ####
 

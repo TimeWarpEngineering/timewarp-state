@@ -1,6 +1,5 @@
-namespace BlazorState
-{
-  using MediatR;
+namespace BlazorState;
 
-  public interface IAction : IRequest { }
-}
+using MediatR;
+
+public interface IAction : IRequest { }

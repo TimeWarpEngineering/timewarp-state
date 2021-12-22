@@ -1,12 +1,11 @@
-namespace TestApp.Client.Features.EventStream
-{
-  using BlazorState;
+namespace TestApp.Client.Features.EventStream;
 
-  internal partial class EventStreamState
+using BlazorState;
+
+internal partial class EventStreamState
+{
+  public class AddEventAction : IAction
   {
-    public class AddEventAction : IAction
-    {
-      public string Message { get; set; }
-    }
+    public string Message { get; set; }
   }
 }

@@ -1,25 +1,24 @@
-namespace BlazorState
+namespace BlazorState;
+
+using System;
+using System.Collections.Generic;
+
+public interface IReduxDevToolsStore
 {
-  using System;
-  using System.Collections.Generic;
+  IDictionary<string, object> GetSerializableState();
 
-  public interface IReduxDevToolsStore
-  {
-    IDictionary<string, object> GetSerializableState();
+  void LoadStatesFromJson(string aJsonString);
+}
 
-    void LoadStatesFromJson(string aJsonString);
-  }
+public interface IStore
+{
+  Guid Guid { get; }
 
-  public interface IStore
-  {
-    Guid Guid { get; }
+  TState GetState<TState>();
 
-    TState GetState<TState>();
+  object GetState(Type aType);
 
-    object GetState(Type aType);
+  void SetState(IState aState);
 
-    void SetState(IState aState);
-
-    void Reset();
-  }
+  void Reset();
 }

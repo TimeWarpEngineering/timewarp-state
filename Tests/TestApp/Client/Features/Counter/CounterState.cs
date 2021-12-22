@@ -1,17 +1,16 @@
-namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter;
+
+using BlazorState;
+
+public partial class CounterState : State<CounterState>
 {
-  using BlazorState;
 
-  public partial class CounterState : State<CounterState>
-  {
+  public int Count { get; private set; }
 
-    public int Count { get; private set; }
+  public CounterState() { }
 
-    public CounterState() { }
-
-    /// <summary>
-    /// Set the Initial State
-    /// </summary>
-    public override void Initialize() => Count = 3;
-  }
+  /// <summary>
+  /// Set the Initial State
+  /// </summary>
+  public override void Initialize() => Count = 3;
 }

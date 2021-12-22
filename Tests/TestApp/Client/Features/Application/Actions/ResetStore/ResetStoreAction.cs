@@ -1,9 +1,8 @@
-namespace TestApp.Client.Features.Application
-{
-  using BlazorState;
+namespace TestApp.Client.Features.Application;
 
-  internal partial class ApplicationState
-  {
-    public class ResetStoreAction : IAction { }
-  }
+using BlazorState;
+
+internal partial class ApplicationState
+{
+  public class ResetStoreAction : IAction { }
 }

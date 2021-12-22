@@ -1,12 +1,11 @@
-namespace BlazorState.Pipeline.ReduxDevTools
-{
-  using MediatR;
+namespace BlazorState.Pipeline.ReduxDevTools;
 
-  internal class CommitRequest : DispatchRequest<CommitRequest.PayloadClass>, IRequest, IReduxRequest
+using MediatR;
+
+internal class CommitRequest : DispatchRequest<CommitRequest.PayloadClass>, IRequest, IReduxRequest
+{
+  internal class PayloadClass
   {
-    internal class PayloadClass
-    {
-      public string Type { get; set; }
-    }
+    public string Type { get; set; }
   }
 }

@@ -1,12 +1,11 @@
-namespace BlazorState.Features.Routing
-{
-  using BlazorState;
+namespace BlazorState.Features.Routing;
 
-  public partial class RouteState
+using BlazorState;
+
+public partial class RouteState
+{
+  public class ChangeRouteAction : IAction
   {
-    public class ChangeRouteAction : IAction
-    {
-      public string NewRoute { get; set; }
-    }
+    public string NewRoute { get; set; }
   }
 }

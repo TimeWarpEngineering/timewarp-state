@@ -1,22 +1,21 @@
-namespace TestApp.Api.Features.WeatherForecast
+namespace TestApp.Api.Features.WeatherForecast;
+
+using System;
+using System.Collections.Generic;
+using TestApp.Api.Features.Base;
+
+public class GetWeatherForecastsResponse : BaseResponse
 {
-  using System;
-  using System.Collections.Generic;
-  using TestApp.Api.Features.Base;
+  /// <summary>
+  /// a default constructor is required for deserialization
+  /// </summary>
+  public GetWeatherForecastsResponse() { }
 
-  public class GetWeatherForecastsResponse : BaseResponse
+  public GetWeatherForecastsResponse(Guid aCorrelationId)
   {
-    /// <summary>
-    /// a default constructor is required for deserialization
-    /// </summary>
-    public GetWeatherForecastsResponse() { }
-
-    public GetWeatherForecastsResponse(Guid aCorrelationId)
-    {
-      WeatherForecasts = new List<WeatherForecastDto>();
-      CorrelationId = aCorrelationId;
-    }
-
-    public List<WeatherForecastDto> WeatherForecasts { get; set; }
+    WeatherForecasts = new List<WeatherForecastDto>();
+    CorrelationId = aCorrelationId;
   }
+
+  public List<WeatherForecastDto> WeatherForecasts { get; set; }
 }

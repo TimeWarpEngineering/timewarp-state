@@ -1,16 +1,15 @@
-namespace TestApp.Api.Features.Base
+namespace TestApp.Api.Features.Base;
+
+using System;
+
+public abstract class BaseResponse
 {
-  using System;
-
-  public abstract class BaseResponse
+  public Guid CorrelationId { get; set; }
+  public BaseResponse(Guid aCorrelationId) : this()
   {
-    public Guid CorrelationId { get; set; }
-    public BaseResponse(Guid aCorrelationId) : this()
-    {
-      CorrelationId = aCorrelationId;
-    }
-
-    public BaseResponse() { }
-
+    CorrelationId = aCorrelationId;
   }
+
+  public BaseResponse() { }
+
 }

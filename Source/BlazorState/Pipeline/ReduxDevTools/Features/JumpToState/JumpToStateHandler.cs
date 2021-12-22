@@ -1,36 +1,35 @@
-namespace BlazorState.Pipeline.ReduxDevTools
+namespace BlazorState.Pipeline.ReduxDevTools;
+
+using BlazorState;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
 {
-  using BlazorState;
-  using MediatR;
-  using Microsoft.Extensions.Logging;
+  private readonly ILogger Logger;
 
-  internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
+  private readonly IReduxDevToolsStore Store;
+
+  private readonly Subscriptions Subscriptions;
+
+  public JumpToStateHandler(
+                ILogger<JumpToStateHandler> aLogger,
+    IReduxDevToolsStore aStore,
+    Subscriptions aSubscriptions)
   {
-    private readonly ILogger Logger;
+    Logger = aLogger;
+    Logger.LogDebug($"{GetType().FullName} constructor");
+    Store = aStore;
+    Subscriptions = aSubscriptions;
+  }
 
-    private readonly IReduxDevToolsStore Store;
-
-    private readonly Subscriptions Subscriptions;
-
-    public JumpToStateHandler(
-                  ILogger<JumpToStateHandler> aLogger,
-      IReduxDevToolsStore aStore,
-      Subscriptions aSubscriptions)
-    {
-      Logger = aLogger;
-      Logger.LogDebug($"{GetType().FullName} constructor");
-      Store = aStore;
-      Subscriptions = aSubscriptions;
-    }
-
-    protected override void Handle(JumpToStateRequest aRequest)
-    {
-      Logger.LogDebug($"Type:{GetType().FullName}");
-      Logger.LogDebug($"State: {aRequest.State}");
-      Store.LoadStatesFromJson(aRequest.State);
-      Logger.LogDebug($"After LoadStatesFromJson");
-      Subscriptions.ReRenderSubscribers<IDevToolsComponent>();
-      Logger.LogDebug($"After ReRenderAll");
-    }
+  protected override void Handle(JumpToStateRequest aRequest)
+  {
+    Logger.LogDebug($"Type:{GetType().FullName}");
+    Logger.LogDebug($"State: {aRequest.State}");
+    Store.LoadStatesFromJson(aRequest.State);
+    Logger.LogDebug($"After LoadStatesFromJson");
+    Subscriptions.ReRenderSubscribers<IDevToolsComponent>();
+    Logger.LogDebug($"After ReRenderAll");
   }
 }
