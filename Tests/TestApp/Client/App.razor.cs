@@ -23,9 +23,12 @@ public partial class App : ComponentBase
   [Inject]
   private RouteManager RouteManager { get; set; }
 
-  protected override async Task OnAfterRenderAsync(bool aFirstRender) =>
+  protected override async Task OnAfterRenderAsync(bool aFirstRender)
+  {
+    ; // Keeps dotner format from thinking it is single line
 #if ReduxDevToolsEnabled
       await ReduxDevToolsInterop.InitAsync();
 #endif
       await JsonRequestHandler.InitAsync();
+  }
 }
