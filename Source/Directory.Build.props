@@ -9,5 +9,7 @@
   
   <PropertyGroup>
     <IsPackable>true</IsPackable>
+    <TargetFramework/>
+    <TargetFrameworks>net5.0</TargetFrameworks>    
   </PropertyGroup>
 </Project>

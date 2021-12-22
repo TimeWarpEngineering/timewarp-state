@@ -5,6 +5,6 @@ export class BlazorState {
     const requestAsJson = JSON.stringify(request);
 
     console.log(`Dispatching request of Type ${requestTypeFullName}: ${requestAsJson}`);
-    await window[JsonRequestHandlerName].invokeMethodAsync(JsonRequestHandlerMethodName, requestTypeFullName, requestAsJson);
+    await (<any>window[<any>JsonRequestHandlerName]).invokeMethodAsync(JsonRequestHandlerMethodName, requestTypeFullName, requestAsJson);
   }
 }
