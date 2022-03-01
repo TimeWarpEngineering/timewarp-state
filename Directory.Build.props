@@ -50,8 +50,8 @@
     <FixieVersion>2.2.2</FixieVersion>
     <FixieConsoleVersion>2.2.1</FixieConsoleVersion>
     <FluentAssertionsVersion>5.10.3</FluentAssertionsVersion>
-    <MediatrExtensionsMicrosoftDependencyInjectionVersion>9.0.0</MediatrExtensionsMicrosoftDependencyInjectionVersion>
-    <MediatrVersion>9.0.0</MediatrVersion>
+    <MediatrExtensionsMicrosoftDependencyInjectionVersion>10.0.1</MediatrExtensionsMicrosoftDependencyInjectionVersion>
+    <MediatrVersion>10.0.1</MediatrVersion>
     <ScrutorVersion>3.3.0</ScrutorVersion>
     <SeleniumSupportVersion>3.141.0</SeleniumSupportVersion>
     <SeleniumWebDriverVersion>3.141.0</SeleniumWebDriverVersion>
