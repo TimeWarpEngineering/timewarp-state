@@ -13,7 +13,8 @@ namespace BlazorState.Pipeline.ReduxDevTools
   /// </summary>
   /// <typeparam name="TRequest"></typeparam>
   /// <typeparam name="TResponse"></typeparam>
-  public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+  public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse> 
+    where TRequest : IRequest<TResponse>
   {
     private readonly ILogger Logger;
 
