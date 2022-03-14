@@ -3,6 +3,7 @@
 namespace BlazorState.Pipeline.State;
 
 using BlazorState;
+  using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   where
-    TRequest : notnull
+    TRequest : IRequest<TResponse>
 {
   private readonly ILogger Logger;
 

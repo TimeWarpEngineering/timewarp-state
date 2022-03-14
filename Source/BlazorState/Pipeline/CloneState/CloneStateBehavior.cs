@@ -8,7 +8,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> 
+  where TRequest : IRequest<TResponse>
 {
   private readonly ILogger Logger;
   private readonly IMediator Mediator;
