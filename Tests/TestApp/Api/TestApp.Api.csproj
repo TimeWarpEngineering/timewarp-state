@@ -5,8 +5,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
-    <PackageReference Include="System.Net.Http.Json" Version="$(SystemNetHttpJsonVersion)" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="System.Net.Http.Json" />
   </ItemGroup>
 
 </Project>

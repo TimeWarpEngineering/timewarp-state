@@ -1,6 +1,5 @@
 namespace CounterState;
-
-using Shouldly;
+  using FluentAssertions;
 using System.Threading.Tasks;
 using TestApp.Client.Features.Counter;
 using TestApp.Client.Integration.Tests.Infrastructure;
@@ -26,7 +25,7 @@ public class IncrementCounterAction_Should : BaseTest
     await Send(incrementCounterAction);
 
     //Assert
-    CounterState.Count.ShouldBe(13);
+    CounterState.Count.Should().Be(13);
   }
 
   public async Task Increment_Count()
@@ -43,6 +42,6 @@ public class IncrementCounterAction_Should : BaseTest
     await Send(incrementCounterRequest);
 
     //Assert
-    CounterState.Count.ShouldBe(27);
+    CounterState.Count.Should().Be(27);
   }
 }

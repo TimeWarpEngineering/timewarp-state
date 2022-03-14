@@ -2,7 +2,7 @@ namespace TestApp.Client.Integration.Tests;
 
 using BlazorState;
 using Microsoft.Extensions.DependencyInjection;
-using Shouldly;
+  using FluentAssertions;
 using System.IO;
 using TestApp.Client.Features.Application;
 using TestApp.Client.Features.Counter;

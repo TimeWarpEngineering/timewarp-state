@@ -1,7 +1,7 @@
 namespace AnyClone.Tests;
 
 using AnyClone.Tests.TestObjects;
-using Shouldly;
+using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -64,7 +64,7 @@ public class CloneProviderTests
     };
     MultiDimensional2dArrayObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void Should_Clone_3dMultidimensionalArrayObject()

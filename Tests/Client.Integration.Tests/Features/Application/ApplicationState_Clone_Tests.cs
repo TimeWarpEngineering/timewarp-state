@@ -1,7 +1,7 @@
 namespace ApplicationState;
 
 using AnyClone;
-using Shouldly;
+  using FluentAssertions;
 using TestApp.Client.Features.Application;
 using TestApp.Client.Integration.Tests.Infrastructure;
 
@@ -23,10 +23,10 @@ public class Clone_Should : BaseTest
     ApplicationState clone = ApplicationState.Clone();
 
     //Assert
-    ApplicationState.ShouldNotBeSameAs(clone);
-    ApplicationState.Name.ShouldBe(clone.Name);
-    ApplicationState.ExceptionMessage.ShouldBe(clone.ExceptionMessage);
-    ApplicationState.Guid.ShouldNotBe(clone.Guid);
+    ApplicationState.Should().NotBeSameAs(clone);
+    ApplicationState.Name.Should().Be(clone.Name);
+    ApplicationState.ExceptionMessage.Should().Be(clone.ExceptionMessage);
+    ApplicationState.Guid.Should().NotBe(clone.Guid);
   }
 
 }

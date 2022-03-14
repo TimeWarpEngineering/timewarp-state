@@ -1,6 +1,5 @@
 namespace WeatherForecastsState;
-
-using Shouldly;
+  using FluentAssertions;
 using System.Threading.Tasks;
 using TestApp.Client.Features.WeatherForecast;
 using TestApp.Client.Integration.Tests.Infrastructure;

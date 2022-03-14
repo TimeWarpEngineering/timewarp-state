@@ -1,7 +1,7 @@
 namespace TestState;
 
 using AnyClone;
-using Shouldly;
+  using FluentAssertions;
 using System.Linq;
 using TestApp.Client.Integration.Tests.Clone;
 
@@ -18,6 +18,6 @@ public class Clone_Should
     TestState clone = testState.Clone();
 
     // Assert
-    clone.SortedFruits.Count().ShouldBe(7);
+    clone.SortedFruits.Count().Should().Be(7);
   }
 }

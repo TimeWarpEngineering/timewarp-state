@@ -2,7 +2,7 @@ namespace GetWeatherForecastsEndpoint;
 
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Shouldly;
+  using FluentAssertions;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TestApp.Api.Features.WeatherForecast;

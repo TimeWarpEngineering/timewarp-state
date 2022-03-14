@@ -3,6 +3,7 @@
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/aspnet/AspNetCore/blob/master/src/Components/Blazor/Templates/src/content/BlazorLibrary-CSharp/BlazorLibrary-CSharp.csproj -->
   <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>true</IsPackable>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
@@ -34,7 +35,7 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="$(MicrosoftSourceLinkGitHubVersion)" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
   <!-- End Source Link -->
 
@@ -51,12 +52,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnyClone" Version="$(AnyCloneVersion)" />
-    <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="$(MicrosoftAspNetCoreComponentsWebVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(MicrosoftExtensionsLoggingAbstractionsVersion)" />
-    <PackageReference Include="TypeSupport" Version="$(TypeSupportVersion)" />
+    <PackageReference Include="AnyClone" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="TypeSupport" />
   </ItemGroup>
 
   <!-- TypeScript project-->
@@ -71,9 +72,6 @@
   </ItemGroup>
 
   <!-- TypeScript project-->
-  <ItemGroup>
-    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
-  </ItemGroup>
   <!-- End TypeScript project-->
   
 </Project>

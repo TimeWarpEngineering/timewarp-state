@@ -1,7 +1,7 @@
 namespace CounterState;
 
 using AnyClone;
-using Shouldly;
+  using FluentAssertions;
 using TestApp.Client.Features.Counter;
 using TestApp.Client.Integration.Tests.Infrastructure;
 
@@ -23,7 +23,7 @@ public class Clone_Should : BaseTest
     var clone = CounterState.Clone() as CounterState;
 
     //Assert
-    CounterState.ShouldNotBeSameAs(clone);
+    CounterState.Should().NotBeSameAs(clone);
     CounterState.Count.ShouldBe(clone.Count);
     CounterState.Guid.ShouldNotBe(clone.Guid);
   }
