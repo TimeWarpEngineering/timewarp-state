@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+  where TRequest : IRequest<TResponse>
 {
   private readonly ILogger Logger;
   private readonly IPublisher Publisher;
