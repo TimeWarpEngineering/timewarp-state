@@ -19,7 +19,7 @@ public class CloneProviderTests
     };
     BasicObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void ModifiedClone_Basic_ShouldNotBeEqual()
@@ -35,7 +35,7 @@ public class CloneProviderTests
     BasicObject cloned = original.Clone();
     cloned.StringValue = "A different string";
 
-    cloned.ShouldNotBe(original);
+    cloned.Should().NotBe(original);
   }
 
   public static void Should_Clone_ArrayObject()
@@ -48,7 +48,7 @@ public class CloneProviderTests
     };
     ArrayObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void Should_Clone_2dMultidimensionalArrayObject()
@@ -80,7 +80,7 @@ public class CloneProviderTests
     };
     MultiDimensional3dArrayObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void ModifiedClone_Array_ShouldNotBeEqual()
@@ -94,7 +94,7 @@ public class CloneProviderTests
     ArrayObject cloned = original.Clone();
     cloned.ByteArray[2] = 0x10;
 
-    cloned.ShouldNotBe(original);
+    cloned.Should().NotBe(original);
   }
 
   public static void Should_Clone_CollectionObject()
@@ -118,7 +118,7 @@ public class CloneProviderTests
     };
     CollectionObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void ModifiedClone_Collection_ShouldNotBeEqual()
@@ -143,7 +143,7 @@ public class CloneProviderTests
     CollectionObject cloned = original.Clone();
     cloned.ObjectCollection.Skip(1).First().BoolValue = true;
 
-    cloned.ShouldNotBe(original);
+    cloned.Should().NotBe(original);
   }
 
   public static void Should_Clone_DictionaryObject()
@@ -158,7 +158,7 @@ public class CloneProviderTests
     };
     DictionaryObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void ModifiedClone_Dictionary_ShouldNotBeEqual()
@@ -174,7 +174,7 @@ public class CloneProviderTests
     DictionaryObject cloned = original.Clone();
     cloned.Collection[2].LongValue = 200;
 
-    cloned.ShouldNotBe(original);
+    cloned.Should().NotBe(original);
   }
 
   public static void Should_Clone_InterfacesObject()
@@ -192,7 +192,7 @@ public class CloneProviderTests
     };
     InterfaceObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void ModifiedClone_InterfaceObject_ShouldNotBeEqual()
@@ -211,7 +211,7 @@ public class CloneProviderTests
     InterfaceObject cloned = original.Clone();
     cloned.DictionaryValue[2].StringValue = "Test string";
 
-    cloned.ShouldNotBe(original);
+    cloned.Should().NotBe(original);
   }
 
   public static void Should_Clone_ComplexObject()
@@ -219,7 +219,7 @@ public class CloneProviderTests
     using var original = new ComplexObject(100);
     ComplexObject cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().Be(original);
   }
 
   public static void ModifiedClone_ComplexObject_ShouldNotBeEqual()
@@ -228,7 +228,7 @@ public class CloneProviderTests
     ComplexObject cloned = original.Clone();
     cloned.listOfStrings.Add("new string");
 
-    cloned.ShouldNotBe(original);
+    cloned.Should().NotBe(original);
   }
 
   public static void Should_Clone_CustomCollectionObject()
@@ -241,6 +241,6 @@ public class CloneProviderTests
             };
     CustomCollectionObject<BasicObject> cloned = original.Clone();
 
-    cloned.ShouldBe(original);
+    cloned.Should().BeEquivalentTo(original);
   }
 }
