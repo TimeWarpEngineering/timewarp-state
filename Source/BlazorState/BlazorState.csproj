@@ -20,9 +20,9 @@
   <!-- End Blazor Library Template parameters-->
 
   <PropertyGroup>
-    <Title>Blazor State</Title>
+    <Title>TimeWarp Blazor State</Title>
     <Company>TimeWarp Enterprises Limited</Company>
-    <Description>TimeWarp State management for Blazor</Description>
+    <Description>State management for Blazor</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>

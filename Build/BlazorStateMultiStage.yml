@@ -4,10 +4,10 @@ trigger:
 pr: none
 
 variables:
-  Major: 4
-  Minor: 1
+  Major: 5
+  Minor: 0
   Patch: 0
-  Beta: "-beta.6" # "-beta.X" or ""
+  Beta: "-beta.0" # "-beta.X" or ""
   DotNetSdkVersion: 6.0.200
 
 stages:
