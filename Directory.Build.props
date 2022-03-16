@@ -9,7 +9,6 @@
     <PackageReleaseNotes>a MediatR pipeline for Blazor state management.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
 
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
