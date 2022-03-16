@@ -1,11 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TypeScriptTarget>ESNext</TypeScriptTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TypeScriptTarget>ESNext</TypeScriptTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='ReduxDevToolsEnabled|AnyCPU'">
+    <TypeScriptTarget>ESNext</TypeScriptTarget>
+  </PropertyGroup>
 
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/aspnet/AspNetCore/blob/master/src/Components/Blazor/Templates/src/content/BlazorLibrary-CSharp/BlazorLibrary-CSharp.csproj -->
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
     <IsPackable>true</IsPackable>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
   </PropertyGroup>
   <!-- End Blazor Library Template parameters-->
@@ -13,14 +22,20 @@
   <PropertyGroup>
     <Title>Blazor State</Title>
     <Company>TimeWarp Enterprises Limited</Company>
-    <Description>A MediatR pipeline for Blazor state management</Description>
+    <Description>TimeWarp State management for Blazor</Description>
     <OutputType>Library</OutputType>
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
-    <PackageIcon>Logo.png</PackageIcon> <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
+    <PackageIcon>Logo.png</PackageIcon>
+    <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
     <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+  
   
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
   <PropertyGroup>
@@ -57,10 +72,13 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="TypeSupport" />
   </ItemGroup>
 
-  <!-- TypeScript project-->
   <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
@@ -68,10 +86,11 @@
     </None>
     <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
-    <None Include="wwwroot\blazorstate.js" />
   </ItemGroup>
 
   <!-- TypeScript project-->
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.csproj" PrivateAssets="All" />
+  </ItemGroup>
   <!-- End TypeScript project-->
-  
 </Project>
