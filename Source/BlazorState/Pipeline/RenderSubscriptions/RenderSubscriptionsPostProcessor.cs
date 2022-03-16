@@ -3,7 +3,7 @@
 namespace BlazorState.Pipeline.RenderSubscriptions;
 
 using BlazorState;
-  using MediatR;
+using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 using System;

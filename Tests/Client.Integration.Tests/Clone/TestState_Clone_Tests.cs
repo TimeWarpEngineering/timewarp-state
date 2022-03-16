@@ -1,7 +1,7 @@
 namespace TestState;
 
 using AnyClone;
-  using FluentAssertions;
+using FluentAssertions;
 using System.Linq;
 using TestApp.Client.Integration.Tests.Clone;
 

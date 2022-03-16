@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-  using FluentAssertions;
+using FluentAssertions;
 using System;
 using System.Text.Json;
 using TestApp.Api.Features.WeatherForecast;

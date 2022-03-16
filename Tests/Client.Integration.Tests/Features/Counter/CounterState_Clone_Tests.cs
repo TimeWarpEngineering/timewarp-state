@@ -1,7 +1,7 @@
 namespace CounterState;
 
 using AnyClone;
-  using FluentAssertions;
+using FluentAssertions;
 using TestApp.Client.Features.Counter;
 using TestApp.Client.Integration.Tests.Infrastructure;
 

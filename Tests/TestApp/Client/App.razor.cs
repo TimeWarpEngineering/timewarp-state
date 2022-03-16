@@ -29,6 +29,6 @@ public partial class App : ComponentBase
 #if ReduxDevToolsEnabled
       await ReduxDevToolsInterop.InitAsync();
 #endif
-      await JsonRequestHandler.InitAsync();
+    await JsonRequestHandler.InitAsync();
   }
 }

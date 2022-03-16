@@ -2,7 +2,7 @@ namespace RouteState;
 
 using AnyClone;
 using BlazorState.Features.Routing;
-  using FluentAssertions;
+using FluentAssertions;
 using TestApp.Client.Integration.Tests.Infrastructure;
 
 public class Clone_Should : BaseTest
