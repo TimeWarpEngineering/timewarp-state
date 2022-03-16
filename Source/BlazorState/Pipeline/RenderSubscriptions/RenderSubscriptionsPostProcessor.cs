@@ -1,6 +1,6 @@
 # nullable enable
 
-namespace BlazorState.Pipeline.State;
+namespace BlazorState.Pipeline.RenderSubscriptions;
 
 using BlazorState;
   using MediatR;
@@ -38,7 +38,7 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
       bool isDeclaringTypeAState = typeof(IState).IsAssignableFrom(declaringType);
       if (declaringType == null || !isDeclaringTypeAState)
       {
-        throw new ArgumentException($"The Action ({requestType.FullName}) is not a nested class of its State", nameof(aRequest));
+        throw new NonNestedClassException($"The Action ({requestType.FullName}) is not a nested class of its State", nameof(aRequest));
       }
 
       // logging variables

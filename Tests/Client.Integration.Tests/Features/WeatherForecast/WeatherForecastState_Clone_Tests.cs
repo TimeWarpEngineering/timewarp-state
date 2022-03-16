@@ -40,11 +40,11 @@ public class Clone_Should : BaseTest
     var clone = WeatherForecastsState.Clone() as WeatherForecastsState;
 
     //Assert
-    WeatherForecastsState.ShouldNotBeSameAs(clone);
-    WeatherForecastsState.WeatherForecasts.Count.ShouldBe(clone.WeatherForecasts.Count);
-    WeatherForecastsState.Guid.ShouldNotBe(clone.Guid);
-    WeatherForecastsState.WeatherForecasts[0].TemperatureC.ShouldBe(clone.WeatherForecasts[0].TemperatureC);
-    WeatherForecastsState.WeatherForecasts[0].ShouldNotBe(clone.WeatherForecasts[0]);
+    WeatherForecastsState.Should().NotBeSameAs(clone);
+    WeatherForecastsState.WeatherForecasts.Count.Should().Be(clone.WeatherForecasts.Count);
+    WeatherForecastsState.Guid.Should().NotBe(clone.Guid);
+    WeatherForecastsState.WeatherForecasts[0].TemperatureC.Should().Be(clone.WeatherForecasts[0].TemperatureC);
+    WeatherForecastsState.WeatherForecasts[0].Should().NotBe(clone.WeatherForecasts[0]);
   }
 
 }

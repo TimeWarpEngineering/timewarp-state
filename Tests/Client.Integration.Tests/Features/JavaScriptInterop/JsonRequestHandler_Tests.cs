@@ -42,6 +42,6 @@ internal class Handle_Should : BaseTest
     JsonRequestHandler.Handle(requestTypeAssemblyQualifiedName, requestAsJson);
 
     //Assert
-    CounterState.Count.ShouldBe(preActionCount + 5);
+    CounterState.Count.Should().Be(preActionCount + 5);
   }
 }

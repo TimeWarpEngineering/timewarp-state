@@ -16,6 +16,7 @@
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="System.Configuration.ConfigurationManager"  />
     <PackageReference Include="System.Text.Json" />
+    <DotNetCliToolReference Include="Fixie.Console" Version="2.2.2" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

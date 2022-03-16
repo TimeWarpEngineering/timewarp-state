@@ -1,5 +1,7 @@
 namespace Actions;
-  using FluentAssertions;
+
+using BlazorState.Pipeline.RenderSubscriptions;
+using FluentAssertions;
 using System;
 using System.Threading.Tasks;
 using TestApp.Client.Features.Counter;
@@ -12,25 +14,15 @@ public class Should_ThrowException_For : BaseTest
 
   public async Task ImproperNestedActions()
   {
-    // Arrange
     var improperNestedAction = new ImproperNestedAction();
-    // Act
-    // Assert
-    Exception exception = await Should.ThrowAsync<Exception>
-    (
-      async () => await Send(improperNestedAction)
-    );
+    Func<Task> act = async () => await Send(improperNestedAction);
+    await act.Should().ThrowAsync<NonNestedClassException>();
   }
 
   public async Task NonNestedActions()
   {
-    // Arrange
     var nonNestedAction = new NonNestedAction();
-    // Act
-    // Assert
-    Exception exception = await Should.ThrowAsync<Exception>
-    (
-      async () => await Send(nonNestedAction)
-    );
+    Func<Task> act = async () => await Send(nonNestedAction);
+    await act.Should().ThrowAsync<NonNestedClassException>();
   }
 }

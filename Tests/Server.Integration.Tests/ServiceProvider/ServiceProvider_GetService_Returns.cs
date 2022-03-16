@@ -27,18 +27,18 @@ public class GetService_Returns : BaseTest
   public void IMediator()
   {
     IMediator mediator = ServiceProvider.GetService<IMediator>();
-    mediator.ShouldNotBeNull();
+    mediator.Should().NotBeNull();
   }
 
   public void Generic_IRequestHandler_GetWeatherForecastsRequest_GetWeatherForecastsResponse()
   {
     IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
-    handler.ShouldNotBeNull();
+    handler.Should().NotBeNull();
   }
 
   public void IConfiguration()
   {
     IConfiguration configuration = ServiceProvider.GetService<IConfiguration>();
-    configuration.ShouldNotBeNull();
+    configuration.Should().NotBeNull();
   }
 }

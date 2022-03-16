@@ -14,12 +14,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Fixie.TestAdapter" />
+    <PackageReference Include="Fixie" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="System.Text.Json"/>
+    <DotNetCliToolReference Include="Fixie.Console" Version="2.2.2" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

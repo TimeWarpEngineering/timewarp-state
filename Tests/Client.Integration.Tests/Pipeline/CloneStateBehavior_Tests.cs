@@ -32,7 +32,7 @@ public class Should : BaseTest
     await Send(incrementCounterRequest);
 
     //Assert
-    CounterState.Guid.ShouldNotBe(preActionGuid);
+    CounterState.Guid.Should().NotBe(preActionGuid);
   }
 
   public async Task CloneStateUsingOverridenClone()
@@ -46,8 +46,8 @@ public class Should : BaseTest
     await Send(cloneTestAction);
 
     //Assert
-    CloneTestState.Guid.ShouldNotBe(preActionGuid);
-    CloneTestState.Count.ShouldBe(42);
+    CloneTestState.Guid.Should().NotBe(preActionGuid);
+    CloneTestState.Count.Should().Be(42);
   }
 
   public async Task RollBackStateAndPublish_When_Exception()
@@ -67,8 +67,8 @@ public class Should : BaseTest
     await Send(throwExceptionAction);
 
     // Assert
-    ApplicationState.ExceptionMessage.ShouldBe(throwExceptionAction.Message);
-    CounterState.Guid.Equals(preActionGuid).ShouldBeTrue();
+    ApplicationState.ExceptionMessage.Should().Be(throwExceptionAction.Message);
+    CounterState.Guid.Equals(preActionGuid).Should().BeTrue();
   }
 
 }

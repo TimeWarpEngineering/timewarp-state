@@ -3,6 +3,7 @@ namespace BlazorState;
 using BlazorState.Features.JavaScriptInterop;
 using BlazorState.Features.Routing;
 using BlazorState.Pipeline.ReduxDevTools;
+using BlazorState.Pipeline.RenderSubscriptions;
 using BlazorState.Pipeline.State;
 using BlazorState.Services;
 using MediatR;

@@ -20,6 +20,6 @@ public class FetchWeatherForecastsAction_Should : BaseTest
     await Send(fetchWeatherForecastsRequest);
 
     // Assert
-    WeatherForecastsState.WeatherForecasts.Count.ShouldBeGreaterThan(0);
+    WeatherForecastsState.WeatherForecasts.Count.Should().BeGreaterThan(0);
   }
 }

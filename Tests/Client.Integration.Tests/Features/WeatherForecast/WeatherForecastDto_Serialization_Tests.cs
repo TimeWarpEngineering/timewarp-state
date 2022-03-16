@@ -23,8 +23,8 @@ public class Should
     WeatherForecastDto parsed = JsonSerializer.Deserialize<WeatherForecastDto>(json, jsonSerializerOptions);
 
     //Assert
-    weatherForecastDto.TemperatureC.ShouldBe(parsed.TemperatureC);
-    weatherForecastDto.Summary.ShouldBe(parsed.Summary);
-    weatherForecastDto.Date.ShouldBe(parsed.Date);
+    weatherForecastDto.TemperatureC.Should().Be(parsed.TemperatureC);
+    weatherForecastDto.Summary.Should().Be(parsed.Summary);
+    weatherForecastDto.Date.Should().Be(parsed.Date);
   }
 }

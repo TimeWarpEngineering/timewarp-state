@@ -23,9 +23,9 @@ public class Clone_Should : BaseTest
     RouteState clone = RouteState.Clone();
 
     //Assert
-    RouteState.ShouldNotBeSameAs(clone);
-    RouteState.Route.ShouldBe(clone.Route);
-    RouteState.Guid.ShouldNotBe(clone.Guid);
+    RouteState.Should().NotBeSameAs(clone);
+    RouteState.Route.Should().Be(clone.Route);
+    RouteState.Guid.Should().NotBe(clone.Guid);
   }
 
 }
