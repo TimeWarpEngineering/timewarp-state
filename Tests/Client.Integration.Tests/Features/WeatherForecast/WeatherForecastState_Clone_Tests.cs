@@ -1,7 +1,7 @@
 namespace WeatherForecastsState;
 
 using AnyClone;
-  using FluentAssertions;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using TestApp.Api.Features.WeatherForecast;

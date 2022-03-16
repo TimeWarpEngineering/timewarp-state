@@ -1,5 +1,5 @@
 namespace WeatherForecastDto;
-  using FluentAssertions;
+using FluentAssertions;
 using System;
 using System.Text.Json;
 using TestApp.Api.Features.WeatherForecast;

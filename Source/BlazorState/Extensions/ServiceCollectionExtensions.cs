@@ -99,8 +99,9 @@ public static class ServiceCollectionExtensions
         (
           aServiceProvider =>
           {
-              // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
-              NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
+            // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
+            NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
+
             return new HttpClient
             {
               BaseAddress = new Uri(navigationManager.BaseUri)

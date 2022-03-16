@@ -1,7 +1,7 @@
 namespace EventStreamState;
 
 using AnyClone;
-  using FluentAssertions;
+using FluentAssertions;
 using System.Collections.Generic;
 using TestApp.Client.Features.EventStream;
 using TestApp.Client.Integration.Tests.Infrastructure;

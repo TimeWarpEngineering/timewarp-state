@@ -35,11 +35,11 @@ public class Program
 #if ReduxDevToolsEnabled
           aOptions.UseReduxDevToolsBehavior = true;
 #endif
-          aOptions.Assemblies =
-        new Assembly[]
-        {
+        aOptions.Assemblies =
+      new Assembly[]
+      {
             typeof(Program).GetTypeInfo().Assembly,
-        };
+      };
       }
     );
     aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));

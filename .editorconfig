@@ -10,12 +10,12 @@ root = true
 [*]
 # Indentation and spacing
 indent_size = 2
-indent_style =space
-tab_width =2
+indent_style = space
+tab_width = 2
 
 # New line preferences
 end_of_line = lf
-insert_final_newline =false
+insert_final_newline = true
 
 # Development files
 [*.{cs,csx,cshtml,csproj,razor,sln,props,targets,json,md,yml,gitignore,}]
@@ -162,7 +162,7 @@ csharp_preserve_single_line_statements = true
 csharp_using_directive_placement = inside_namespace:suggestion
 
 # Namespace preferences
-csharp_style_namespace_declarations=file_scoped:warning
+csharp_style_namespace_declarations=file_scoped:error
 
 #### Naming styles ####
 
