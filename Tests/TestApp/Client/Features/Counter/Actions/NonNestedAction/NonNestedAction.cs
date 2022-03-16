@@ -1,9 +1,8 @@
-namespace TestApp.Client.Features.Counter
-{
-  using BlazorState;
+namespace TestApp.Client.Features.Counter;
 
-  public class NonNestedAction : IAction
-  {
-    public int Amount { get; set; }
-  }
+using BlazorState;
+
+public class NonNestedAction : IAction
+{
+  public int Amount { get; set; }
 }

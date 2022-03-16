@@ -1,9 +1,8 @@
-namespace TestApp.Client.Features.WeatherForecast
-{
-  using BlazorState;
+namespace TestApp.Client.Features.WeatherForecast;
 
-  internal partial class WeatherForecastsState
-  {
-    public class FetchWeatherForecastsAction : IAction { }
-  }
+using BlazorState;
+
+internal partial class WeatherForecastsState
+{
+  public class FetchWeatherForecastsAction : IAction { }
 }

@@ -1,23 +1,22 @@
-﻿namespace Sample.Client.Features.Counter
+namespace Sample.Client.Features.Counter;
+
+using BlazorState;
+using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
+
+public partial class CounterState
 {
-  using System.Threading;
-  using System.Threading.Tasks;
-  using BlazorState;
-  using MediatR;
-
-  public partial class CounterState
+  public class IncrementCountHandler : ActionHandler<IncrementCountAction>
   {
-    public class IncrementCountHandler : ActionHandler<IncrementCountAction>
+    public IncrementCountHandler(IStore aStore) : base(aStore) { }
+
+    CounterState CounterState => Store.GetState<CounterState>();
+
+    public override Task<Unit> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
     {
-      public IncrementCountHandler(IStore aStore) : base(aStore) { }
-
-      CounterState CounterState => Store.GetState<CounterState>();
-
-      public override Task<Unit> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
-      {
-        CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
-        return Unit.Task;
-      }
+      CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
+      return Unit.Task;
     }
   }
 }

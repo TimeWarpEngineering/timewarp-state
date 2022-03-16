@@ -1,30 +1,29 @@
-namespace TestApp.Client.Features.Counter
+namespace TestApp.Client.Features.Counter;
+
+using MediatR;
+using Microsoft.Extensions.Logging;
+using System.Threading;
+using System.Threading.Tasks;
+using TestApp.Client.Pipeline.NotificationPostProcessor;
+
+internal class IncrementCountNotificationHandler
+  : INotificationHandler<PostPipelineNotification<CounterState.IncrementCounterAction, Unit>>
 {
-  using MediatR;
-  using Microsoft.Extensions.Logging;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using TestApp.Client.Pipeline.NotificationPostProcessor;
+  private readonly ILogger Logger;
 
-  internal class IncrementCountNotificationHandler
-    : INotificationHandler<PostPipelineNotification<CounterState.IncrementCounterAction, Unit>>
+  public IncrementCountNotificationHandler(ILogger<IncrementCountNotificationHandler> aLogger)
   {
-    private readonly ILogger Logger;
+    Logger = aLogger;
+  }
 
-    public IncrementCountNotificationHandler(ILogger<IncrementCountNotificationHandler> aLogger)
-    {
-      Logger = aLogger;
-    }
-
-    public Task Handle
-    (
-      PostPipelineNotification<CounterState.IncrementCounterAction, Unit> aPostPipelineNotification,
-      CancellationToken aCancellationToken
-    )
-    {
-      Logger.LogDebug(aPostPipelineNotification.Request.GetType().Name);
-      Logger.LogDebug($"{nameof(IncrementCountNotificationHandler)} handled");
-      return Unit.Task;
-    }
+  public Task Handle
+  (
+    PostPipelineNotification<CounterState.IncrementCounterAction, Unit> aPostPipelineNotification,
+    CancellationToken aCancellationToken
+  )
+  {
+    Logger.LogDebug(aPostPipelineNotification.Request.GetType().Name);
+    Logger.LogDebug($"{nameof(IncrementCountNotificationHandler)} handled");
+    return Unit.Task;
   }
 }

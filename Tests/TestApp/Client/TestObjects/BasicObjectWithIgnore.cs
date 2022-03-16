@@ -1,38 +1,37 @@
-namespace AnyClone.Tests.TestObjects
+namespace AnyClone.Tests.TestObjects;
+
+using System;
+using System.Runtime.Serialization;
+
+public class BasicObjectWithIgnore : IEquatable<BasicObjectWithIgnore>
 {
-  using System;
-  using System.Runtime.Serialization;
+  public bool BoolValue { get; set; }
+  public byte ByteValue { get; set; }
+  public int IntValue { get; set; }
+  public long LongValue { get; set; }
+  [IgnoreDataMember]
+  public string StringValue { get; set; }
 
-  public class BasicObjectWithIgnore : IEquatable<BasicObjectWithIgnore>
+  public override int GetHashCode() => base.GetHashCode();
+
+  public override bool Equals(object aObject)
   {
-    public bool BoolValue { get; set; }
-    public byte ByteValue { get; set; }
-    public int IntValue { get; set; }
-    public long LongValue { get; set; }
-    [IgnoreDataMember]
-    public string StringValue { get; set; }
+    if (aObject == null || aObject.GetType() != typeof(BasicObjectWithIgnore))
+      return false;
 
-    public override int GetHashCode() => base.GetHashCode();
+    var basicObject = (BasicObjectWithIgnore)aObject;
+    return Equals(basicObject);
+  }
 
-    public override bool Equals(object aObject)
-    {
-      if (aObject == null || aObject.GetType() != typeof(BasicObjectWithIgnore))
-        return false;
-
-      var basicObject = (BasicObjectWithIgnore)aObject;
-      return Equals(basicObject);
-    }
-
-    public bool Equals(BasicObjectWithIgnore aOther)
-    {
-      if (aOther == null)
-        return false;
-      return aOther.BoolValue == BoolValue
-          && aOther.ByteValue == ByteValue
-          && aOther.IntValue == IntValue
-          && aOther.LongValue == LongValue
-          // && other.StringValue == StringValue
-          ;
-    }
+  public bool Equals(BasicObjectWithIgnore aOther)
+  {
+    if (aOther == null)
+      return false;
+    return aOther.BoolValue == BoolValue
+        && aOther.ByteValue == ByteValue
+        && aOther.IntValue == IntValue
+        && aOther.LongValue == LongValue
+        // && other.StringValue == StringValue
+        ;
   }
 }

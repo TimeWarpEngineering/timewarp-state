@@ -1,48 +1,47 @@
-namespace JsonRequestHandler
+namespace JsonRequestHandler;
+
+using BlazorState;
+using BlazorState.Features.JavaScriptInterop;
+using Microsoft.Extensions.DependencyInjection;
+  using FluentAssertions;
+using System.Text.Json;
+using TestApp.Client.Features.Counter;
+using TestApp.Client.Integration.Tests.Infrastructure;
+using static TestApp.Client.Features.Counter.CounterState;
+
+// TODO: These used to pass with WebAssemblyHostBuilder
+// internal class won't run so they won't fail
+internal class Handle_Should : BaseTest
 {
-  using BlazorState;
-  using BlazorState.Features.JavaScriptInterop;
-  using Microsoft.Extensions.DependencyInjection;
-  using Shouldly;
-  using System.Text.Json;
-  using TestApp.Client.Features.Counter;
-  using TestApp.Client.Integration.Tests.Infrastructure;
-  using static TestApp.Client.Features.Counter.CounterState;
+  private readonly JsonRequestHandler JsonRequestHandler;
 
-  // TODO: These used to pass with WebAssemblyHostBuilder
-  // internal class won't run so they won't fail
-  internal class Handle_Should : BaseTest
+  private readonly JsonSerializerOptions JsonSerializerOptions;
+
+  private CounterState CounterState => Store.GetState<CounterState>();
+
+  public Handle_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
   {
-    private readonly JsonRequestHandler JsonRequestHandler;
+    JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
+    JsonSerializerOptions = ServiceProvider.GetService<BlazorStateOptions>().JsonSerializerOptions;
+  }
 
-    private readonly JsonSerializerOptions JsonSerializerOptions;
+  public void Handle_Action()
+  {
+    //Arrange
 
-    private CounterState CounterState => Store.GetState<CounterState>();
-
-    public Handle_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+    string requestTypeAssemblyQualifiedName = typeof(IncrementCounterAction).AssemblyQualifiedName;
+    var incrementCounterAction = new IncrementCounterAction
     {
-      JsonRequestHandler = ServiceProvider.GetService<JsonRequestHandler>();
-      JsonSerializerOptions = ServiceProvider.GetService<BlazorStateOptions>().JsonSerializerOptions;
-    }
+      Amount = 5
+    };
 
-    public void Handle_Action()
-    {
-      //Arrange
+    string requestAsJson = JsonSerializer.Serialize(incrementCounterAction, JsonSerializerOptions);
+    int preActionCount = CounterState.Count;
 
-      string requestTypeAssemblyQualifiedName = typeof(IncrementCounterAction).AssemblyQualifiedName;
-      var incrementCounterAction = new IncrementCounterAction
-      {
-        Amount = 5
-      };
+    //Act
+    JsonRequestHandler.Handle(requestTypeAssemblyQualifiedName, requestAsJson);
 
-      string requestAsJson = JsonSerializer.Serialize(incrementCounterAction, JsonSerializerOptions);
-      int preActionCount = CounterState.Count;
-
-      //Act
-      JsonRequestHandler.Handle(requestTypeAssemblyQualifiedName, requestAsJson);
-
-      //Assert
-      CounterState.Count.ShouldBe(preActionCount + 5);
-    }
+    //Assert
+    CounterState.Count.Should().Be(preActionCount + 5);
   }
 }

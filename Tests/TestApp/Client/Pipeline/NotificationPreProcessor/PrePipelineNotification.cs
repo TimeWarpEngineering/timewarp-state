@@ -1,9 +1,8 @@
-namespace TestApp.Client.Pipeline.NotificationPreProcessor
-{
-  using MediatR;
+namespace TestApp.Client.Pipeline.NotificationPreProcessor;
 
-  public class PrePipelineNotification<TRequest> : INotification
-  {
-    public TRequest Request { get; set; }
-  }
+using MediatR;
+
+public class PrePipelineNotification<TRequest> : INotification
+{
+  public TRequest Request { get; set; }
 }

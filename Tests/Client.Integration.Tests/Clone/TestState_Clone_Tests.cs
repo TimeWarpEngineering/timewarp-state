@@ -1,24 +1,23 @@
-namespace TestState
-{
-  using AnyClone;
-  using Shouldly;
-  using System.Linq;
-  using TestApp.Client.Integration.Tests.Clone;
+namespace TestState;
 
-  public class Clone_Should
+using AnyClone;
+  using FluentAssertions;
+using System.Linq;
+using TestApp.Client.Integration.Tests.Clone;
+
+public class Clone_Should
+{
+
+  public void Clone()
   {
 
-    public void Clone()
-    {
+    // Arrange
+    var testState = new TestState();
 
-      // Arrange
-      var testState = new TestState();
+    // Act
+    TestState clone = testState.Clone();
 
-      // Act
-      TestState clone = testState.Clone();
-
-      // Assert
-      clone.SortedFruits.Count().ShouldBe(7);
-    }
+    // Assert
+    clone.SortedFruits.Count().Should().Be(7);
   }
 }

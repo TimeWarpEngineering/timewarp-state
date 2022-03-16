@@ -1,9 +1,8 @@
-namespace TestApp.Client.Features.CloneTest
-{
-  using BlazorState;
+namespace TestApp.Client.Features.CloneTest;
 
-  internal partial class CloneTestState
-  {
-    internal class CloneTestAction : IAction { }
-  }
+using BlazorState;
+
+internal partial class CloneTestState
+{
+  internal class CloneTestAction : IAction { }
 }

@@ -1,31 +1,30 @@
-namespace BlazorState.Pipeline.ReduxDevTools
+namespace BlazorState.Pipeline.ReduxDevTools;
+
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+internal class StartHandler : RequestHandler<StartRequest>
 {
-  using MediatR;
-  using Microsoft.Extensions.Logging;
+  private readonly ILogger Logger;
 
-  internal class StartHandler : RequestHandler<StartRequest>
+  public StartHandler
+  (
+    ILogger<StartHandler> aLogger
+  //IStore aStore,
+  //ReduxDevToolsInterop aReduxDevToolsInterop
+  )
   {
-    private readonly ILogger Logger;
+    Logger = aLogger;
+    Logger.LogDebug($"{GetType().FullName} constructor");
+    //Store = aStore;
+    //ReduxDevToolsInterop = aReduxDevToolsInterop;
+  }
 
-    public StartHandler
-    (
-      ILogger<StartHandler> aLogger
-    //IStore aStore,
-    //ReduxDevToolsInterop aReduxDevToolsInterop
-    )
-    {
-      Logger = aLogger;
-      Logger.LogDebug($"{GetType().FullName} constructor");
-      //Store = aStore;
-      //ReduxDevToolsInterop = aReduxDevToolsInterop;
-    }
+  //private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
+  //private IStore Store { get; }
 
-    //private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-    //private IStore Store { get; }
-
-    protected override void Handle(StartRequest aRequest)
-    {
-      // Does nothing currently
-    }
+  protected override void Handle(StartRequest aRequest)
+  {
+    // Does nothing currently
   }
 }

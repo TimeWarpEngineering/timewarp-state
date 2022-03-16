@@ -1,13 +1,12 @@
-namespace TestApp.Api.Features.ExceptionHandlings
+namespace TestApp.Api.Features.ExceptionHandlings;
+
+using System;
+using TestApp.Api.Features.Base;
+
+
+public class ThrowServerSideExceptionResponse : BaseResponse
 {
-  using System;
-  using TestApp.Api.Features.Base;
+  public ThrowServerSideExceptionResponse() { }
 
-
-  public class ThrowServerSideExceptionResponse : BaseResponse
-  {
-    public ThrowServerSideExceptionResponse() { }
-
-    public ThrowServerSideExceptionResponse(Guid aCorrelationId) : base(aCorrelationId) { }
-  }
+  public ThrowServerSideExceptionResponse(Guid aCorrelationId) : base(aCorrelationId) { }
 }

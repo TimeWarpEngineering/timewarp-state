@@ -1,12 +1,11 @@
-namespace TestApp.Client.Features.Counter
-{
-  using BlazorState;
+namespace TestApp.Client.Features.Counter;
 
-  public partial class CounterState
+using BlazorState;
+
+public partial class CounterState
+{
+  public class ThrowExceptionAction : IAction
   {
-    public class ThrowExceptionAction : IAction
-    {
-      public string Message { get; set; }
-    }
+    public string Message { get; set; }
   }
 }

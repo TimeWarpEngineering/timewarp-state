@@ -1,21 +1,20 @@
-namespace BlazorState.Pipeline.ReduxDevTools
+namespace BlazorState.Pipeline.ReduxDevTools;
+
+using System;
+
+internal class ReduxAction
 {
-  using System;
-
-  internal class ReduxAction
+  public ReduxAction(object aRequest)
   {
-    public ReduxAction(object aRequest)
+    if (aRequest == null)
     {
-      if (aRequest == null)
-      {
-        throw new ArgumentNullException(nameof(aRequest));
-      }
-
-      Type = aRequest.GetType().FullName;
-      Payload = aRequest;
+      throw new ArgumentNullException(nameof(aRequest));
     }
 
-    public object Payload { get; set; }
-    public string Type { get; set; }
+    Type = aRequest.GetType().FullName;
+    Payload = aRequest;
   }
+
+  public object Payload { get; set; }
+  public string Type { get; set; }
 }

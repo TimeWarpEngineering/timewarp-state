@@ -1,26 +1,26 @@
-namespace WeatherForecastsState
+namespace WeatherForecastsState;
+
+using AnyClone;
+  using FluentAssertions;
+using System;
+using System.Collections.Generic;
+using TestApp.Api.Features.WeatherForecast;
+using TestApp.Client.Features.WeatherForecast;
+using TestApp.Client.Integration.Tests.Infrastructure;
+
+public class Clone_Should : BaseTest
 {
-  using AnyClone;
-  using Shouldly;
-  using System;
-  using System.Collections.Generic;
-  using TestApp.Api.Features.WeatherForecast;
-  using TestApp.Client.Features.WeatherForecast;
-  using TestApp.Client.Integration.Tests.Infrastructure;
-
-  public class Clone_Should : BaseTest
+  public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
   {
-    public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
-    {
-      WeatherForecastsState = Store.GetState<WeatherForecastsState>();
-    }
+    WeatherForecastsState = Store.GetState<WeatherForecastsState>();
+  }
 
-    private WeatherForecastsState WeatherForecastsState { get; set; }
+  private WeatherForecastsState WeatherForecastsState { get; set; }
 
-    public void Clone()
-    {
-      //Arrange
-      var weatherForecasts = new List<WeatherForecastDto> {
+  public void Clone()
+  {
+    //Arrange
+    var weatherForecasts = new List<WeatherForecastDto> {
         new WeatherForecastDto
         (
           aDate: DateTime.MinValue,
@@ -34,18 +34,17 @@ namespace WeatherForecastsState
           aTemperatureC: 24
         ),
       };
-      WeatherForecastsState.Initialize(weatherForecasts);
+    WeatherForecastsState.Initialize(weatherForecasts);
 
-      //Act
-      var clone = WeatherForecastsState.Clone() as WeatherForecastsState;
+    //Act
+    var clone = WeatherForecastsState.Clone() as WeatherForecastsState;
 
-      //Assert
-      WeatherForecastsState.ShouldNotBeSameAs(clone);
-      WeatherForecastsState.WeatherForecasts.Count.ShouldBe(clone.WeatherForecasts.Count);
-      WeatherForecastsState.Guid.ShouldNotBe(clone.Guid);
-      WeatherForecastsState.WeatherForecasts[0].TemperatureC.ShouldBe(clone.WeatherForecasts[0].TemperatureC);
-      WeatherForecastsState.WeatherForecasts[0].ShouldNotBe(clone.WeatherForecasts[0]);
-    }
-
+    //Assert
+    WeatherForecastsState.Should().NotBeSameAs(clone);
+    WeatherForecastsState.WeatherForecasts.Count.Should().Be(clone.WeatherForecasts.Count);
+    WeatherForecastsState.Guid.Should().NotBe(clone.Guid);
+    WeatherForecastsState.WeatherForecasts[0].TemperatureC.Should().Be(clone.WeatherForecasts[0].TemperatureC);
+    WeatherForecastsState.WeatherForecasts[0].Should().NotBe(clone.WeatherForecasts[0]);
   }
+
 }

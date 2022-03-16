@@ -29,6 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		Build\BlazorStateMultiStage.yml = Build\BlazorStateMultiStage.yml
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		Build\documentation.yml = Build\documentation.yml
 		global.json = global.json
 		NuGet.config = NuGet.config
@@ -37,13 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{FA456F71-9A99-4869-970E-9D5C9A1E6C9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "Samples\Tutorial\Sample\Client\Sample.Client.csproj", "{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{243A5B2C-5E9D-432B-A258-7BCE33645683}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Samples\Tutorial\Sample\Server\Sample.Server.csproj", "{18004EED-3ACC-4A0E-AC01-753675625C47}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\Tutorial\Sample\Shared\Sample.Shared.csproj", "{892484E4-8C27-461B-8C0D-81122903A27E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,24 +95,6 @@ Global
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.ReduxDevToolsEnabled|Any CPU.Build.0 = ReduxDevToolsEnabled|Any CPU
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{18004EED-3ACC-4A0E-AC01-753675625C47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18004EED-3ACC-4A0E-AC01-753675625C47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18004EED-3ACC-4A0E-AC01-753675625C47}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
-		{18004EED-3ACC-4A0E-AC01-753675625C47}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
-		{18004EED-3ACC-4A0E-AC01-753675625C47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18004EED-3ACC-4A0E-AC01-753675625C47}.Release|Any CPU.Build.0 = Release|Any CPU
-		{892484E4-8C27-461B-8C0D-81122903A27E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{892484E4-8C27-461B-8C0D-81122903A27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{892484E4-8C27-461B-8C0D-81122903A27E}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
-		{892484E4-8C27-461B-8C0D-81122903A27E}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
-		{892484E4-8C27-461B-8C0D-81122903A27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{892484E4-8C27-461B-8C0D-81122903A27E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,10 +107,7 @@ Global
 		{37FFCA3B-6533-4262-8913-1E62EC0034CA} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
 		{26D026AD-762A-4EE9-AC1B-FCE1CF5767E9} = {50D398DD-1384-4FF3-9415-E46F5DC2E79F}
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
-		{EB9B1439-C22F-45CD-AC22-9B003FA1B8BA} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{243A5B2C-5E9D-432B-A258-7BCE33645683} = {FA456F71-9A99-4869-970E-9D5C9A1E6C9F}
-		{18004EED-3ACC-4A0E-AC01-753675625C47} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
-		{892484E4-8C27-461B-8C0D-81122903A27E} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}

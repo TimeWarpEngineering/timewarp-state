@@ -1,12 +1,11 @@
-namespace TestApp.Client.Features.Counter
-{
-  using BlazorState;
+namespace TestApp.Client.Features.Counter;
 
-  public partial class CounterState
+using BlazorState;
+
+public partial class CounterState
+{
+  public class IncrementCounterAction : IAction
   {
-    public class IncrementCounterAction : IAction
-    {
-      public int Amount { get; set; }
-    }
+    public int Amount { get; set; }
   }
 }

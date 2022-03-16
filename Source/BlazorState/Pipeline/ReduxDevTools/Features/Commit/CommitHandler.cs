@@ -1,34 +1,33 @@
-namespace BlazorState.Pipeline.ReduxDevTools
+namespace BlazorState.Pipeline.ReduxDevTools;
+
+using BlazorState;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+internal class CommitHandler : RequestHandler<CommitRequest>
 {
-  using BlazorState;
-  using MediatR;
-  using Microsoft.Extensions.Logging;
+  private readonly ILogger Logger;
 
-  internal class CommitHandler : RequestHandler<CommitRequest>
+  private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
+
+  private readonly IReduxDevToolsStore Store;
+
+  public CommitHandler(
+                ILogger<CommitHandler> aLogger,
+    IReduxDevToolsStore aStore,
+    ReduxDevToolsInterop aReduxDevToolsInterop)
   {
-    private readonly ILogger Logger;
+    Logger = aLogger;
+    Logger.LogDebug($"{GetType().FullName} constructor");
+    Store = aStore;
+    ReduxDevToolsInterop = aReduxDevToolsInterop;
+  }
 
-    private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
+  protected override void Handle(CommitRequest aRequest)
+  {
+    Logger.LogDebug($"{GetType().FullName}");
+    Logger.LogDebug($"{aRequest.Type}");
 
-    private readonly IReduxDevToolsStore Store;
-
-    public CommitHandler(
-                  ILogger<CommitHandler> aLogger,
-      IReduxDevToolsStore aStore,
-      ReduxDevToolsInterop aReduxDevToolsInterop)
-    {
-      Logger = aLogger;
-      Logger.LogDebug($"{GetType().FullName} constructor");
-      Store = aStore;
-      ReduxDevToolsInterop = aReduxDevToolsInterop;
-    }
-
-    protected override void Handle(CommitRequest aRequest)
-    {
-      Logger.LogDebug($"{GetType().FullName}");
-      Logger.LogDebug($"{aRequest.Type}");
-
-      ReduxDevToolsInterop.DispatchInit(Store.GetSerializableState());
-    }
+    ReduxDevToolsInterop.DispatchInit(Store.GetSerializableState());
   }
 }

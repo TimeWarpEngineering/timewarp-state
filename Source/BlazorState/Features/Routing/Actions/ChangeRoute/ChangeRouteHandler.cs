@@ -1,45 +1,44 @@
-namespace BlazorState.Features.Routing
+namespace BlazorState.Features.Routing;
+
+using BlazorState;
+using MediatR;
+using Microsoft.AspNetCore.Components;
+using System.Threading;
+using System.Threading.Tasks;
+
+public partial class RouteState
 {
-  using BlazorState;
-  using MediatR;
-  using Microsoft.AspNetCore.Components;
-  using System.Threading;
-  using System.Threading.Tasks;
-
-  public partial class RouteState
+  internal class ChangeRouteHandler : ActionHandler<ChangeRouteAction>
   {
-    internal class ChangeRouteHandler : ActionHandler<ChangeRouteAction>
+    private readonly NavigationManager NavigationManager;
+
+    private RouteState RouteState => Store.GetState<RouteState>();
+
+    public ChangeRouteHandler
+    (
+      IStore aStore,
+      NavigationManager aNavigationManager
+    ) : base(aStore)
     {
-      private readonly NavigationManager NavigationManager;
+      NavigationManager = aNavigationManager;
+    }
 
-      private RouteState RouteState => Store.GetState<RouteState>();
+    public override Task<Unit> Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
+    {
+      string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
+      string absoluteUri = NavigationManager.Uri;
 
-      public ChangeRouteHandler
-      (
-        IStore aStore,
-        NavigationManager aNavigationManager
-      ) : base(aStore)
+      if (absoluteUri != newAbsoluteUri)
       {
-        NavigationManager = aNavigationManager;
+        // RouteManager OnLocationChanged will fire this ChangeRouteRequest again
+        // and the second time we will hit the `else` clause.
+        NavigationManager.NavigateTo(newAbsoluteUri);
       }
-
-      public override Task<Unit> Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
+      else if (RouteState.Route != newAbsoluteUri)
       {
-        string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
-        string absoluteUri = NavigationManager.Uri;
-
-        if (absoluteUri != newAbsoluteUri)
-        {
-          // RouteManager OnLocationChanged will fire this ChangeRouteRequest again
-          // and the second time we will hit the `else` clause.
-          NavigationManager.NavigateTo(newAbsoluteUri);
-        }
-        else if (RouteState.Route != newAbsoluteUri)
-        {
-          RouteState.Route = newAbsoluteUri;
-        }
-        return Unit.Task;
+        RouteState.Route = newAbsoluteUri;
       }
+      return Unit.Task;
     }
   }
 }

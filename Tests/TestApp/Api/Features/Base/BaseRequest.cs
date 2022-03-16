@@ -1,17 +1,16 @@
-namespace TestApp.Api.Features.Base
+namespace TestApp.Api.Features.Base;
+
+using System;
+
+public abstract class BaseRequest
 {
-  using System;
+  public Guid CorrelationId { get; set; }
 
-  public abstract class BaseRequest
+  /// <summary>
+  /// Every request should have unique Id
+  /// </summary>
+  public BaseRequest()
   {
-    public Guid CorrelationId { get; set; }
-
-    /// <summary>
-    /// Every request should have unique Id
-    /// </summary>
-    public BaseRequest()
-    {
-      CorrelationId = Guid.NewGuid();
-    }
+    CorrelationId = Guid.NewGuid();
   }
 }

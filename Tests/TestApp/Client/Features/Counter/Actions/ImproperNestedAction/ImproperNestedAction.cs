@@ -1,12 +1,11 @@
-namespace TestApp.Client.Features.Counter
-{
-  using BlazorState;
+namespace TestApp.Client.Features.Counter;
 
-  public class WrongNesting
+using BlazorState;
+
+public class WrongNesting
+{
+  public class ImproperNestedAction : IAction
   {
-    public class ImproperNestedAction : IAction
-    {
-      public int Amount { get; set; }
-    }
+    public int Amount { get; set; }
   }
 }

@@ -15,7 +15,7 @@ tab_width =2
 
 # New line preferences
 end_of_line = lf
-insert_final_newline = false
+insert_final_newline =false
 
 # Development files
 [*.{cs,csx,cshtml,csproj,razor,sln,props,targets,json,md,yml,gitignore,}]
@@ -111,9 +111,6 @@ csharp_style_prefer_range_operator = true:suggestion
 csharp_style_unused_value_assignment_preference = discard_variable:suggestion
 csharp_style_unused_value_expression_statement_preference = discard_variable:silent
 
-# 'using' directive preferences
-csharp_using_directive_placement = inside_namespace:suggestion
-
 #### C# Formatting Rules ####
 
 # New line preferences
@@ -160,6 +157,12 @@ csharp_space_between_square_brackets = false
 # Wrapping preferences
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
+
+# Using directive preferences
+csharp_using_directive_placement = inside_namespace:suggestion
+
+# Namespace preferences
+csharp_style_namespace_declarations=file_scoped:warning
 
 #### Naming styles ####
 
@@ -249,4 +252,3 @@ dotnet_naming_rule.local_functions_should_be_pascal_case.style = local_function_
 dotnet_naming_symbols.local_functions.applicable_kinds = local_function
 
 dotnet_naming_style.local_function_style.capitalization = pascal_case
-

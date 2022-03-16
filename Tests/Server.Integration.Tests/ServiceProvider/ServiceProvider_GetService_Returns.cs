@@ -1,45 +1,44 @@
-namespace ServiceProvider
+namespace ServiceProvider;
+
+using MediatR;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+  using FluentAssertions;
+using System;
+using System.Text.Json;
+using TestApp.Api.Features.WeatherForecast;
+using TestApp.Server;
+using TestApp.Server.Features.WeatherForecast;
+using TestApp.Server.Integration.Tests.Infrastructure;
+
+public class GetService_Returns : BaseTest
 {
-  using MediatR;
-  using Microsoft.AspNetCore.Mvc.Testing;
-  using Microsoft.Extensions.Configuration;
-  using Microsoft.Extensions.DependencyInjection;
-  using Shouldly;
-  using System;
-  using System.Text.Json;
-  using TestApp.Api.Features.WeatherForecast;
-  using TestApp.Server;
-  using TestApp.Server.Features.WeatherForecast;
-  using TestApp.Server.Integration.Tests.Infrastructure;
+  private readonly IServiceProvider ServiceProvider;
 
-  public class GetService_Returns : BaseTest
+  public GetService_Returns
+  (
+    WebApplicationFactory<Startup> aWebApplicationFactory,
+    JsonSerializerOptions aJsonSerializerOptions
+  ) : base(aWebApplicationFactory, aJsonSerializerOptions)
   {
-    private readonly IServiceProvider ServiceProvider;
+    ServiceProvider = ServiceScopeFactory.CreateScope().ServiceProvider;
+  }
+  public void IMediator()
+  {
+    IMediator mediator = ServiceProvider.GetService<IMediator>();
+    mediator.Should().NotBeNull();
+  }
 
-    public GetService_Returns
-    (
-      WebApplicationFactory<Startup> aWebApplicationFactory,
-      JsonSerializerOptions aJsonSerializerOptions
-    ) : base(aWebApplicationFactory, aJsonSerializerOptions)
-    {
-      ServiceProvider = ServiceScopeFactory.CreateScope().ServiceProvider;
-    }
-    public void IMediator()
-    {
-      IMediator mediator = ServiceProvider.GetService<IMediator>();
-      mediator.ShouldNotBeNull();
-    }
+  public void Generic_IRequestHandler_GetWeatherForecastsRequest_GetWeatherForecastsResponse()
+  {
+    IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
+    handler.Should().NotBeNull();
+  }
 
-    public void Generic_IRequestHandler_GetWeatherForecastsRequest_GetWeatherForecastsResponse()
-    {
-      IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse> handler = ServiceProvider.GetService<IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecastsResponse>>();
-      handler.ShouldNotBeNull();
-    }
-
-    public void IConfiguration()
-    {
-      IConfiguration configuration = ServiceProvider.GetService<IConfiguration>();
-      configuration.ShouldNotBeNull();
-    }
+  public void IConfiguration()
+  {
+    IConfiguration configuration = ServiceProvider.GetService<IConfiguration>();
+    configuration.Should().NotBeNull();
   }
 }

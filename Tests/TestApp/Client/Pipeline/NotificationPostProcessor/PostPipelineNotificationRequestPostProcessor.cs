@@ -1,36 +1,36 @@
-namespace TestApp.Client.Pipeline.NotificationPostProcessor
+namespace TestApp.Client.Pipeline.NotificationPostProcessor;
+
+using MediatR;
+using MediatR.Pipeline;
+using Microsoft.Extensions.Logging;
+using System.Threading;
+using System.Threading.Tasks;
+
+internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+  where TRequest : IRequest<TResponse>
 {
-  using MediatR;
-  using MediatR.Pipeline;
-  using Microsoft.Extensions.Logging;
-  using System.Threading;
-  using System.Threading.Tasks;
+  private readonly ILogger Logger;
+  private readonly IPublisher Publisher;
 
-  internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+  public PostPipelineNotificationRequestPostProcessor
+          (
+    ILogger<PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>> aLogger,
+    IPublisher aMediator
+  )
   {
-    private readonly ILogger Logger;
-    private readonly IPublisher Publisher;
+    Logger = aLogger;
+    Publisher = aMediator;
+  }
 
-    public PostPipelineNotificationRequestPostProcessor
-            (
-      ILogger<PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>> aLogger,
-      IPublisher aMediator
-    )
+  public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
+  {
+    var notification = new PostPipelineNotification<TRequest, TResponse>
     {
-      Logger = aLogger;
-      Publisher = aMediator;
-    }
+      Request = aRequest,
+      Response = aResponse
+    };
 
-    public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
-    {
-      var notification = new PostPipelineNotification<TRequest, TResponse>
-      {
-        Request = aRequest,
-        Response = aResponse
-      };
-
-      Logger.LogDebug("PostPipelineNotificationRequestPostProcessor");
-      return Publisher.Publish(notification, aCancellationToken);
-    }
+    Logger.LogDebug("PostPipelineNotificationRequestPostProcessor");
+    return Publisher.Publish(notification, aCancellationToken);
   }
 }
