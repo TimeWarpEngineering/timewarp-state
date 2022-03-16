@@ -2,8 +2,8 @@ namespace JsonRequestHandler;
 
 using BlazorState;
 using BlazorState.Features.JavaScriptInterop;
-using Microsoft.Extensions.DependencyInjection;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 using TestApp.Client.Features.Counter;
 using TestApp.Client.Integration.Tests.Infrastructure;
