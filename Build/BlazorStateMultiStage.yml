@@ -119,7 +119,7 @@ stages:
             displayName: 'Push NuGet to Azure Devops Nuget feed.'
             inputs:
               command: push
-              packagesToPush: '$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease/*.nupkg;!$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease/*.symbols.nupkg'
+              packagesToPush: '$(Pipeline.Workspace)/PipelineArtifacts/NugetPreRelease/*.nupkg'
               nuGetFeedType: internal
               publishVstsFeed: 'dfe61826-f0b9-46b3-a391-23626fc363f2'
 
@@ -177,7 +177,7 @@ stages:
                 displayName: 'Push NuGet to Nuget.org'
                 inputs:
                   command: push
-                  packagesToPush: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget/*.nupkg;!$(Pipeline.Workspace)/PipelineArtifacts/Nuget/*.symbols.nupkg'
+                  packagesToPush: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget/*.nupkg;'
                   nuGetFeedType: external
                   publishFeedCredentials: Nuget.org
 
