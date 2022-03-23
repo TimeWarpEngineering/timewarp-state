@@ -302,3 +302,4 @@ __pycache__/
 /StatiqDocs/output
 /Source/BlazorState/wwwroot/*.js
 /Source/BlazorState/wwwroot/*.js.map
+/Source/BlazorState/wwwroot/js/

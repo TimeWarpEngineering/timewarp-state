@@ -9,7 +9,7 @@ This tutorial shows how to add Blazor-State to a `Blazor hosted WebAssembly App`
 
 ## Prerequisites
 
-1. Install the latest [.NET 5.0 SDK](https://dotnet.microsoft.com/download) release.
+1. Install the latest [.NET 6.0 SDK](https://dotnet.microsoft.com/download) release.
 
 ## Creating the project
 
@@ -22,19 +22,20 @@ You should see something similar to the following:
 
 ```console
 C:\Temp\Sample> dotnet run --project ./Server/Sample.Server.csproj
-info: Microsoft.Hosting.Lifetime[0]
-      Now listening on: https://localhost:5001
-info: Microsoft.Hosting.Lifetime[0]
-      Now listening on: http://localhost:5000
+Building...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: https://localhost:7153
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5294
 info: Microsoft.Hosting.Lifetime[0]
       Application started. Press Ctrl+C to shut down.
 info: Microsoft.Hosting.Lifetime[0]
       Hosting environment: Development
 info: Microsoft.Hosting.Lifetime[0]
-      Content root path: C:\Temp\Sample\Server
+      Content root path: C:\Temp\Sample\Server\
 ```
 
-Open a browser and enter <http://localhost:5000>
+Open a browser and enter <https://localhost:7153>
 
 You should see:
 
@@ -80,67 +81,46 @@ The only value we want to maintain is a Count.
 The code for the class should be as follows.
 
 ```csharp
-namespace Sample.Client.Features.Counter
-{
-  using BlazorState;
+namespace Sample.Client.Features.Counter;
 
-  public partial class CounterState : State<CounterState>
-  {
+using BlazorState;
+
+public partial class CounterState : State<CounterState>
+{
     public int Count { get; private set; }
     public override void Initialize() => Count = 3;
-  }
 }
 ```
 
 ## Configure the services
 
 1. In the `Sample.Client` project in the `Program.cs` file.
-2. Add a `ConfigureServices` method to configure blazor-state as follows:
-3. Add the required usings.
-4. Configure the options passed to AddBlazorState to include the assemblies to scan for States and Handlers.
+2. Add the required usings.
+3. Configure the options passed to AddBlazorState to include the assemblies in which to scan for States and Handlers.
 
 ```csharp
-namespace Sample.Client
-{
-  using System;
-  using System.Net.Http;
-  using System.Threading.Tasks;
-  using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-  using Microsoft.Extensions.DependencyInjection;
-  using BlazorState;
-  using System.Reflection;
+using BlazorState;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Sample.Client;
+using System.Reflection;
 
-  public class Program
-  {
-    public static async Task Main(string[] args)
-    {
-      var builder = WebAssemblyHostBuilder.CreateDefault(args);
-      builder.RootComponents.Add<App>("#app");
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-      builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
-      ConfigureServices(builder.Services);
-
-      await builder.Build().RunAsync();
-    }
-
-    public static void ConfigureServices(IServiceCollection aServiceCollection)
-    {
-
-      aServiceCollection.AddBlazorState
-      (
-        (aOptions) =>
-
-          aOptions.Assemblies =
-          new Assembly[]
-          {
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddBlazorState
+(
+    (aOptions) =>
+        aOptions.Assemblies =
+        new Assembly[]
+        {
             typeof(Program).GetTypeInfo().Assembly,
-          }
-      );
-    }
-  }
-}
+        }
+);
 
+await builder.Build().RunAsync();
 ```
 
 ## Displaying state in the user interface
@@ -161,9 +141,11 @@ The code should look as follows:
 
 @inherits BlazorStateComponent
 
+<PageTitle>Counter</PageTitle>
+
 <h1>Counter</h1>
 
-<p>Current count: @currentCount</p>
+<p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
@@ -172,7 +154,7 @@ The code should look as follows:
 
     private int currentCount => CounterState.Count;
 
-    void IncrementCount()
+    private void IncrementCount()
     {
         //currentCount++;
     }
@@ -206,17 +188,16 @@ The class should:
 as follows:
 
 ```csharp
-namespace Sample.Client.Features.Counter
-{
-  using BlazorState;
+namespace Sample.Client.Features.Counter;
 
-  public partial class CounterState
-  {
+using BlazorState;
+
+public partial class CounterState
+{
     public class IncrementCountAction : IAction
     {
-      public int Amount { get; set; }
+        public int Amount { get; set; }
     }
-  }
 }
 ```
 
@@ -247,28 +228,27 @@ The Handler should:
 * Override the `Handle` method to mutate state as desired:
 
 ```csharp
-namespace Sample.Client.Features.Counter
-{
-  using System.Threading;
-  using System.Threading.Tasks;
-  using BlazorState;
-  using MediatR;
+namespace Sample.Client.Features.Counter;
 
-  public partial class CounterState
-  {
+using System.Threading;
+using System.Threading.Tasks;
+using BlazorState;
+using MediatR;
+
+public partial class CounterState
+{
     public class IncrementCountHandler : ActionHandler<IncrementCountAction>
     {
-      public IncrementCountHandler(IStore aStore) : base(aStore) { }
+        public IncrementCountHandler(IStore aStore) : base(aStore) { }
 
-      CounterState CounterState => Store.GetState<CounterState>();
+        CounterState CounterState => Store.GetState<CounterState>();
 
-      public override Task<Unit> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
-      {
-        CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
-        return Unit.Task;
-      }
+        public override Task<Unit> Handle(IncrementCountAction aIncrementCountAction, CancellationToken aCancellationToken)
+        {
+            CounterState.Count = CounterState.Count + aIncrementCountAction.Amount;
+            return Unit.Task;
+        }
     }
-  }
 }
 ```
 
@@ -279,39 +259,49 @@ And when you navigate away from the page and back the value persists.
 
 ## ReduxDevTools JavaScript Interop and RouteState
 
-To [enable ReduxDevTools](xref:BlazorState:AddReduxDevTools.md) update the `ConfigureServices` method in `Program.cs` as follows:
+To [enable ReduxDevTools](xref:BlazorState:AddReduxDevTools.md) update `Program.cs` as follows:
 
-```
-    public static void ConfigureServices(IServiceCollection aServiceCollection)
+```csharp
+using BlazorState;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Sample.Client;
+using System.Reflection;
+
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
+
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddBlazorState
+(
+    (aOptions) =>
     {
-      aServiceCollection.AddBlazorState
-      (
-        (aOptions) =>
+        aOptions.UseReduxDevToolsBehavior = true;
+        aOptions.Assemblies =
+        new Assembly[]
         {
-          aOptions.UseReduxDevToolsBehavior = true;
-          aOptions.Assemblies =
-            new Assembly[]
-            {
-              typeof(Program).GetTypeInfo().Assembly,
-            };
-        }
-      );
+            typeof(Program).GetTypeInfo().Assembly,
+        };
     }
+);
+
+await builder.Build().RunAsync();    
 ```
 
 To facilitate JavaScript Interop, enable ReduxDevTools, and manage RouteState, add `App.razor.cs` in the same directory as `App.razor` as follows:
 
 ```csharp
-namespace Sample.Client
-{
-  using System.Threading.Tasks;
-  using BlazorState.Pipeline.ReduxDevTools;
-  using BlazorState.Features.JavaScriptInterop;
-  using BlazorState.Features.Routing;
-  using Microsoft.AspNetCore.Components;
+namespace Sample.Client;
 
-  public partial class App : ComponentBase
-  {
+using System.Threading.Tasks;
+using BlazorState.Pipeline.ReduxDevTools;
+using BlazorState.Features.JavaScriptInterop;
+using BlazorState.Features.Routing;
+using Microsoft.AspNetCore.Components;
+
+public partial class App : ComponentBase
+{
     [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
     [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 
@@ -320,15 +310,15 @@ namespace Sample.Client
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-      await ReduxDevToolsInterop.InitAsync();
-      await JsonRequestHandler.InitAsync();
+        await ReduxDevToolsInterop.InitAsync();
+        await JsonRequestHandler.InitAsync();
     }
-  }
 }
-```
-Lastly we need to add the blazor-state JavaScript to the `index.html` file just above the `blazor.webassembly.js` reference:
 
 ```
+Lastly we need to add the blazor-state JavaScript to the `index.html` file located in `wwwroot` just above the `blazor.webassembly.js` reference:
+
+```html
 ...
 <script src="_content/Blazor-State/blazorstate.js"></script>
 <script src="_framework/blazor.webassembly.js"></script>
