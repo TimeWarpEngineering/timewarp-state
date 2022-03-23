@@ -1,4 +1,4 @@
-﻿import {  JsonRequestHandlerMethodName, JsonRequestHandlerName } from './Constants';
+﻿import {  JsonRequestHandlerMethodName, JsonRequestHandlerName } from './Constants.js';
 
 export class BlazorState {
   async DispatchRequest(requestTypeFullName: string, request: any ) {

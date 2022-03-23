@@ -1,5 +1,5 @@
-﻿import { BlazorState } from './BlazorState';
-import { BlazorStateName, ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants';
+﻿import { BlazorState } from './BlazorState.js';
+import { BlazorStateName, ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
 
 export class ReduxDevTools {
   IsEnabled: boolean;
