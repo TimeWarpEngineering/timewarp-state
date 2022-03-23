@@ -1,25 +1,15 @@
-﻿import { BlazorState } from './BlazorState.js';
+﻿import { blazorState } from './BlazorState.js';
 import { ReduxDevTools } from './ReduxDevTools.js';
 import {
-  BlazorStateName,
   InitializeJavaScriptInteropName,
-  JsonRequestHandlerName,
   ReduxDevToolsFactoryName,
   ReduxDevToolsName,
 } from './Constants.js';
 
 function InitializeJavaScriptInterop(JsonRequestHandler) {
   console.log("InitializeJavaScriptInterop");
-  window[JsonRequestHandlerName] = JsonRequestHandler;
+  blazorState.jsonRequestHandler = JsonRequestHandler;
 };
-
-function Initialize() {
-  console.log("Initialize BlazorState");
-  if (typeof window !== 'undefined' && !window[BlazorStateName]) {
-    window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
-    window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
-  }
-}
 
 function ReduxDevToolsFactory(): boolean {
   const reduxDevTools = new ReduxDevTools();
@@ -28,8 +18,9 @@ function ReduxDevToolsFactory(): boolean {
 }
 
 export function beforeStart(options, extensions) {
-  Initialize();
   console.log("****beforeStart timewarp-state ****");
+  window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
+  window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
 }
 
 export function afterStarted(blazor) {
