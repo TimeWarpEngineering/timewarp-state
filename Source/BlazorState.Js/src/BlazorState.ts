@@ -1,6 +1,9 @@
 ﻿import {  JsonRequestHandlerMethodName, JsonRequestHandlerName } from './Constants.js';
 
 export class BlazorState {
+
+  jsonRequestHandler: any;
+  
   async DispatchRequest(requestTypeFullName: string, request: any ) {
     const requestAsJson = JSON.stringify(request);
 
@@ -8,3 +11,5 @@ export class BlazorState {
     await (<any>window[<any>JsonRequestHandlerName]).invokeMethodAsync(JsonRequestHandlerMethodName, requestTypeFullName, requestAsJson);
   }
 }
+
+export const blazorState = new BlazorState();

@@ -16,7 +16,6 @@ function InitializeJavaScriptInterop(JsonRequestHandler) {
 function Initialize() {
   console.log("Initialize BlazorState");
   if (typeof window !== 'undefined' && !window[BlazorStateName]) {
-    window[BlazorStateName] = new BlazorState();
     window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
     window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
   }

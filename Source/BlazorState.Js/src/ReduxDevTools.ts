@@ -1,4 +1,4 @@
-﻿import { BlazorState } from './BlazorState.js';
+﻿import { blazorState, BlazorState } from './BlazorState.js';
 import { BlazorStateName, ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
 
 export class ReduxDevTools {
@@ -9,7 +9,7 @@ export class ReduxDevTools {
   BlazorState: BlazorState;
 
   constructor() {
-    this.BlazorState = window[BlazorStateName]; // Depends on this functionality
+    this.BlazorState = blazorState;
     this.Config = {
       name: 'Blazor State',
       features: {
