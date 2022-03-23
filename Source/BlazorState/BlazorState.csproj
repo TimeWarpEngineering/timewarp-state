@@ -74,6 +74,12 @@
   <!-- TypeScript project-->
   <ItemGroup>
     <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.esproj" >
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <!-- End TypeScript project-->
 </Project>
