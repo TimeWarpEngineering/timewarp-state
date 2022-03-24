@@ -4,42 +4,4 @@
     <NoWarn>NU1503;NU1105</NoWarn>
     <BuildCommand>npm run build</BuildCommand>
   </PropertyGroup>
- <!-- <ItemGroup>
-    <Script Include="**"/>
-    <Script Remove="**.d.ts"/>
-  </ItemGroup> -->
-  <!-- <PropertyGroup>
-    <NpmInstallTimeStampFile>node_modules/.install-timestamp</NpmInstallTimeStampFile>
-  </PropertyGroup> -->
-  
-  <!-- <Target 
-    Name="EnsureNpmRestored"
-    Inputs="$(MSBuildThisFileDirectory)package-lock.json"
-    Outputs="$(NpmInstallTimeStampFile)"
-  >
-    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec Command="npm install" />
-    <Touch Files="$(NpmInstallTimeStampFile)" AlwaysCreate="true"/>
-  </Target> -->
-
-  <!-- <PropertyGroup>
-    <JavascriptOutputFile>blazorstate.js</JavascriptOutputFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <WebpackInputs Include="**\*.ts" Exclude="node_modules\**" />
-    <WebpackInputs Remove="src\blazor-state.lib.module.ts" />
-    <WebpackInputs Remove="src\Constants.ts" />
-    <WebpackInputs Remove="src\DotNet.ts" />
-  </ItemGroup>
-  
-  <Target 
-    Name="RunBuild" 
-    AfterTargets="ResolveReferences" 
-    Inputs="@(WebpackInputs)" 
-    Outputs="..\BlazorState\wwwroot\$(JavascriptOutputFile)" 
-    DependsOnTargets="EnsureNpmRestored"
-  >
-    <Delete Files="..\BlazorState\wwwroot\$(JavascriptOutputFile)" />
-    <Exec Command="npm run build" />
-  </Target> -->
 </Project>

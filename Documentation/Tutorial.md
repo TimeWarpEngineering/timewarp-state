@@ -314,15 +314,6 @@ public partial class App : ComponentBase
         await JsonRequestHandler.InitAsync();
     }
 }
-
-```
-Lastly we need to add the blazor-state JavaScript to the `index.html` file located in `wwwroot` just above the `blazor.webassembly.js` reference:
-
-```html
-...
-<script src="_content/Blazor-State/blazorstate.js"></script>
-<script src="_framework/blazor.webassembly.js"></script>
-...
 ```
 
 Now run your app again and then Open the Redux Dev Tools (a tab in Chrome Dev Tools) and you should see Actions as they are executed.
@@ -333,4 +324,4 @@ If you inspect the State in the DevTools you will also notice it maintains the c
 
 ![ReduxRouteState](Images/ReduxRouteState.png)
 
-Congratulations that is the basics of using getting started with Blazor-State.
+Congratulations that is the basics of Blazor-State.
