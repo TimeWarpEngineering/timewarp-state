@@ -7,7 +7,7 @@ variables:
   Major: 5
   Minor: 0
   Patch: 0
-  Beta: "-beta.1" # "-beta.X" or ""
+  Beta: "" # "-beta.X" or ""
   DotNetSdkVersion: 6.0.200
 
 stages:
