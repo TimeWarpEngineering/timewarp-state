@@ -3,6 +3,7 @@
 export class BlazorState {
 
   jsonRequestHandler: any;
+  reduxDevTools: any;
 
   async DispatchRequest(requestTypeFullName: string, request: any ) {
     const requestAsJson = JSON.stringify(request);

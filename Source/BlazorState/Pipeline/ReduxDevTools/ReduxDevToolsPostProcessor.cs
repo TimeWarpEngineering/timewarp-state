@@ -43,7 +43,7 @@ public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProce
       Logger.LogDebug($"{GetType().Name}: Start Post Processing");
       if (!(aRequest is IReduxRequest))
       {
-        ReduxDevToolsInterop.Dispatch(aRequest, Store.GetSerializableState());
+        ReduxDevToolsInterop.DispatchAsync(aRequest, Store.GetSerializableState());
       }
       Logger.LogDebug($"{GetType().Name}: End");
     }

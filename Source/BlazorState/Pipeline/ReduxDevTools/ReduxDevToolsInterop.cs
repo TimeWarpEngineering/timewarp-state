@@ -28,21 +28,21 @@ public class ReduxDevToolsInterop
     JSRuntime = aJSRuntime;
   }
 
-  public void Dispatch<TRequest>(TRequest aRequest, object aState)
+  public async Task DispatchAsync<TRequest>(TRequest aRequest, object aState)
   {
     if (IsEnabled)
     {
-      Logger.LogDebug($"{GetType().Name}: {nameof(this.Dispatch)}");
+      Logger.LogDebug($"{GetType().Name}: {nameof(this.DispatchAsync)}");
       Logger.LogDebug($"{GetType().Name}: aRequest.GetType().FullName:{aRequest.GetType().FullName}");
       var reduxAction = new ReduxAction(aRequest);
-      JSRuntime.InvokeAsync<object>(JsFunctionName, reduxAction, aState);
+      await JSRuntime.InvokeAsync<object>(JsFunctionName, reduxAction, aState);
     }
   }
 
-  public void DispatchInit(object aState)
+  public async Task DispatchInitAsync(object aState)
   {
     if (IsEnabled)
-      JSRuntime.InvokeAsync<object>(JsFunctionName, "init", aState);
+      await JSRuntime.InvokeAsync<object>(JsFunctionName, "init", aState);
   }
 
   public async Task InitAsync()
@@ -52,6 +52,6 @@ public class ReduxDevToolsInterop
     IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName);
 
     if (IsEnabled)
-      DispatchInit(Store.GetSerializableState());
+      await DispatchInitAsync(Store.GetSerializableState());
   }
 }

@@ -28,6 +28,6 @@ internal class CommitHandler : RequestHandler<CommitRequest>
     Logger.LogDebug($"{GetType().FullName}");
     Logger.LogDebug($"{aRequest.Type}");
 
-    ReduxDevToolsInterop.DispatchInit(Store.GetSerializableState());
+    ReduxDevToolsInterop.DispatchInitAsync(Store.GetSerializableState());
   }
 }

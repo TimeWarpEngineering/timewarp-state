@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "build": "tsc --build --verbose",
+    "start": "echo \"Nothing to Start \"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
