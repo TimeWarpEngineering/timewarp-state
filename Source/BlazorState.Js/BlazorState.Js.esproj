@@ -4,4 +4,7 @@
     <NoWarn>NU1503;NU1105</NoWarn>
     <BuildCommand>npm run build</BuildCommand>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupCommand>npm run start</StartupCommand>
+  </PropertyGroup>
 </Project>

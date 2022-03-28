@@ -19,12 +19,6 @@ stages:
           workspace:
             clean: all
         steps:
-          - script: |
-              echo Test_Stage
-              echo Major:$(Major)
-              echo Minor:$(Minor)
-              echo DotNetSdkVersion:$(DotNetSdkVersion)
-
           - task: DotNetCoreCLI@2
             displayName: 'Run all the Integration Tests in the repo and gather coverage data with redux dev tools enabled'
             continueOnError: false
@@ -71,15 +65,6 @@ stages:
           workspace:
             clean: all
         steps:
-          - script: |
-              echo Build_Stage
-              echo Major:$(Major)
-              echo Minor:$(Minor)
-              echo DotNetSdkVersion:$(DotNetSdkVersion)
-              echo Patch:$(Patch)
-              echo BuildCounter:$(BuildCounter)
-              echo Version:$(Version)
-
           - task: DotNetCoreCLI@2
             displayName: Build BlazorState for Pre release
             inputs:
@@ -132,21 +117,11 @@ stages:
             clean: all
         environment: Production
         variables:
-          # PatchCounterReset: $(Major).$(Minor)
-          # Patch: $[counter(variables.PatchCounterReset, 0)]
           Version: '$(Major).$(Minor).$(Patch)$(Beta)+$(DotNetSdkVersion)'
         strategy:
           runOnce:
             deploy:
-              steps:
-              - script: |
-                  echo Production_Stage
-                  echo Major:$(Major)
-                  echo Minor:$(Minor)
-                  echo DotNetSdkVersion:$(DotNetSdkVersion)
-                  echo Patch:$(Patch)
-                  echo Version:$(Version)
-                  
+              steps:                
               - task: DeleteFiles@1
                 inputs:
                   SourceFolder: '$(Pipeline.Workspace)/PipelineArtifacts/Nuget'

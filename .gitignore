@@ -303,3 +303,5 @@ __pycache__/
 /Source/BlazorState/wwwroot/*.js
 /Source/BlazorState/wwwroot/*.js.map
 /Source/BlazorState/wwwroot/js/
+/BlazorState.sln.EasyRun.json
+/Samples/Tutorial/Sample/Sample.sln.EasyRun.json

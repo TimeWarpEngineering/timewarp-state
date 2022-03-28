@@ -13,6 +13,7 @@ function InitializeJavaScriptInterop(JsonRequestHandler) {
 
 function ReduxDevToolsFactory(): boolean {
   const reduxDevTools = new ReduxDevTools();
+  blazorState.reduxDevTools = reduxDevTools;
   window[ReduxDevToolsName] = reduxDevTools;
   return reduxDevTools.IsEnabled;
 }

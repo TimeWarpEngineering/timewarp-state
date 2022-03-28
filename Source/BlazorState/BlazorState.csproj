@@ -16,7 +16,6 @@
     <AssemblyName>Blazor-State</AssemblyName>
     <PackageIcon>Logo.png</PackageIcon>
     <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
-    <PackageLicenseFile>UNLICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
@@ -47,6 +46,7 @@
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
@@ -67,7 +67,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\UNLICENSE.txt" Pack="true" PackagePath="" />
     <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
@@ -77,7 +76,7 @@
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.esproj" >
+    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
