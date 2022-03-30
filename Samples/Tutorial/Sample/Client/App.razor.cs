@@ -1,10 +1,10 @@
 namespace Sample.Client;
 
-using System.Threading.Tasks;
-using BlazorState.Pipeline.ReduxDevTools;
 using BlazorState.Features.JavaScriptInterop;
 using BlazorState.Features.Routing;
+using BlazorState.Pipeline.ReduxDevTools;
 using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 public partial class App : ComponentBase
 {
@@ -14,7 +14,7 @@ public partial class App : ComponentBase
   // Injected so it is created by the container. Even though the IDE says it is not used, it is.
   [Inject] private RouteManager RouteManager { get; set; } = null!;
 
-  protected override async Task OnAfterRenderAsync(bool firstRender)
+  protected override async Task OnAfterRenderAsync(bool aFirstRender)
   {
     await ReduxDevToolsInterop.InitAsync();
     await JsonRequestHandler.InitAsync();
