@@ -2,32 +2,27 @@ namespace BlazorState.Pipeline.ReduxDevTools;
 
 using BlazorState;
 using MediatR;
-using Microsoft.Extensions.Logging;
+using System.Threading;
 
-internal class CommitHandler : RequestHandler<CommitRequest>
+internal class CommitHandler : IRequestHandler<CommitRequest>
 {
-  private readonly ILogger Logger;
-
   private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
 
   private readonly IReduxDevToolsStore Store;
 
-  public CommitHandler(
-                ILogger<CommitHandler> aLogger,
+  public CommitHandler
+  (
     IReduxDevToolsStore aStore,
-    ReduxDevToolsInterop aReduxDevToolsInterop)
+    ReduxDevToolsInterop aReduxDevToolsInterop
+  )
   {
-    Logger = aLogger;
-    Logger.LogDebug($"{GetType().FullName} constructor");
     Store = aStore;
     ReduxDevToolsInterop = aReduxDevToolsInterop;
   }
 
-  protected override void Handle(CommitRequest aRequest)
+  public async Task<Unit> Handle(CommitRequest aRequest, CancellationToken aCancellationToken)
   {
-    Logger.LogDebug($"{GetType().FullName}");
-    Logger.LogDebug($"{aRequest.Type}");
-
-    ReduxDevToolsInterop.DispatchInitAsync(Store.GetSerializableState());
+    await ReduxDevToolsInterop.DispatchInitAsync(Store.GetSerializableState());
+    return Unit.Value;
   }
 }
