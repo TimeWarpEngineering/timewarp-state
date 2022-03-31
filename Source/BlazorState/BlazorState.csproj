@@ -15,6 +15,7 @@
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
     <PackageIcon>Logo.png</PackageIcon>
+    <Version>5.0.1-beta.0</Version>
     <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
@@ -67,7 +68,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\assets\Logo.png" Pack="true" PackagePath="" />
+    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <!-- TypeScript project-->
