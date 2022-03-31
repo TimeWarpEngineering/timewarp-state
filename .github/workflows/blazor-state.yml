@@ -1,0 +1,38 @@
+﻿name: NuGet Generation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
+
+      - name: Pack
+        run: |
+          cd Source/BlazorState/
+          dotnet build -c Release
+      - name: Publish
+        run: dotnet nuget push Source/BlazorState/bin/Release/BlazorState.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
