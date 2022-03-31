@@ -1,6 +1,10 @@
 ﻿name: NuGet Generation
 
-on: [push, workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
 
 jobs:
   Explore-GitHub-Actions:
