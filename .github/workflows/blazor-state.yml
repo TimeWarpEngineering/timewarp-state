@@ -30,6 +30,8 @@ jobs:
           dotnet-version: 6.0.x
         env:
           NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
+      - name: Build
+        run: dotnet build
 
       - name: Pack
         run: |
