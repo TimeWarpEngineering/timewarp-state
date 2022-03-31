@@ -8,12 +8,10 @@
   <!-- End Blazor Library Template parameters-->
 
   <PropertyGroup>
-    <PackageType>DotnetTool</PackageType>
     <Authors>Steven T. Cramer</Authors>
     <PackageTags>blazor-state;aspnet;blazor;timewarp;state-management</PackageTags>
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <TargetFramework>net6.0</TargetFramework>
     <Title>TimeWarp Blazor State</Title>
     <Company>TimeWarp Enterprises Limited</Company>
     <Description>State management for Blazor</Description>
@@ -21,7 +19,7 @@
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
     <PackageIcon>Logo.png</PackageIcon>
-    <Version>5.0.1-beta.0</Version>
+    <Version>5.0.1-beta.1</Version>
     <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
