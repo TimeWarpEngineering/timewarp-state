@@ -1,9 +1,10 @@
 ﻿name: NuGet Generation
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - master
+      - 'master'
 
 jobs:
   Explore-GitHub-Actions:
