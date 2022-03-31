@@ -36,4 +36,4 @@ jobs:
           cd Source/BlazorState/
           dotnet build -c Release
       - name: Publish
-        run: dotnet nuget push Source/BlazorState/bin/Release/BlazorState.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+        run: dotnet nuget push Source/BlazorState/bin/Release/net6.0/BlazorState.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
