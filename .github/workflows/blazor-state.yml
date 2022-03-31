@@ -31,7 +31,9 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
       - name: Build
-        run: dotnet build
+        run: |
+          cd Source/BlazorState/
+          dotnet build
 
       - name: Pack
         run: |
