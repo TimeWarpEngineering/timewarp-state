@@ -19,7 +19,7 @@
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
     <PackageIcon>Logo.png</PackageIcon>
-    <Version>5.0.1-beta.0</Version>
+    <Version>5.0.1-beta.1</Version>
     <!-- This works in dotnet and MSBuild but Nuget still doesn't support it.-->
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
