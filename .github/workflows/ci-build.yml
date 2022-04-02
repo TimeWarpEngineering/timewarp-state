@@ -46,9 +46,11 @@ jobs:
       - name: Build
         run: |
           cd Tests/Client.Integration.Tests/
+          dotnet tool restore
           dotnet fixie --configuration Debug
 
       - name: Build
         run: |
           cd Tests/Server.Integration.Tests/
+          dotnet tool restore
           dotnet fixie --configuration Debug          
