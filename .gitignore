@@ -305,3 +305,4 @@ __pycache__/
 /Source/BlazorState/wwwroot/js/
 /BlazorState.sln.EasyRun.json
 /Samples/Tutorial/Sample/Sample.sln.EasyRun.json
+*.binlog

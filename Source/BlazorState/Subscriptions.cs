@@ -14,21 +14,30 @@ public class Subscriptions
   public Subscriptions(ILogger<Subscriptions> aLogger)
   {
     Logger = aLogger;
+    Logger.LogDebug(EventIds.Subscriptions_Initializing, "constructing");
     BlazorStateComponentReferencesList = new List<Subscription>();
   }
 
   public Subscriptions Add<T>(IBlazorStateComponent aBlazorStateComponent)
   {
     Type type = typeof(T);
-
     return Add(type, aBlazorStateComponent);
   }
 
   public Subscriptions Add(Type aType, IBlazorStateComponent aBlazorStateComponent)
   {
+
     // Add only once.
     if (!BlazorStateComponentReferencesList.Any(aSubscription => aSubscription.StateType == aType && aSubscription.ComponentId == aBlazorStateComponent.Id))
     {
+      Logger.LogDebug
+      (
+        EventIds.Subscriptions_Adding,
+        "adding subscription for Id:{id} Type.Name:{type_name}",
+        aBlazorStateComponent.Id,
+        aType.Name
+      );
+
       var subscription = new Subscription(
         aType,
         aBlazorStateComponent.Id,
@@ -49,7 +58,13 @@ public class Subscriptions
 
   public Subscriptions Remove(IBlazorStateComponent aBlazorStateComponent)
   {
-    Logger.LogDebug($"Removing Subscription for {aBlazorStateComponent.Id}");
+    Logger.LogDebug
+    (
+      EventIds.Subscriptions_RemovingComponentSubscriptions,
+      "Removing Subscription for {aBlazorStateComponent_Id}",
+      aBlazorStateComponent.Id
+    );
+
     BlazorStateComponentReferencesList.RemoveAll(aRecord => aRecord.ComponentId == aBlazorStateComponent.Id);
 
     return this;
@@ -79,14 +94,28 @@ public class Subscriptions
     {
       if (subscription.BlazorStateComponentReference.TryGetTarget(out IBlazorStateComponent target))
       {
-        Logger.LogDebug($"ReRender ComponentId:{subscription.ComponentId} StateType.Name:{subscription.StateType.Name}");
+        Logger.LogDebug
+        (
+          EventIds.Subscriptions_ReRenderingSubscribers,
+          "ReRender ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
+          subscription.ComponentId,
+          subscription.StateType.Name
+        );
+
         target.ReRender();
       }
       else
       {
         // If Dispose is called will I ever have items in this list that got Garbage collected?
         // Maybe for those that don't inherit from our BaseComponent?
-        Logger.LogDebug($"Removing Subscription for ComponentId:{subscription.ComponentId} StateType.Name:{subscription.StateType.Name}");
+        Logger.LogDebug
+        (
+          EventIds.Subscriptions_RemoveSubscription,
+          "Removing Subscription for ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
+          subscription.ComponentId,
+          subscription.StateType.Name
+        );
+
         BlazorStateComponentReferencesList.Remove(subscription);
       }
     }

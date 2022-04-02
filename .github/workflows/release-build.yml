@@ -1,13 +1,19 @@
-﻿name: NuGet Generation
+﻿name: Build and Deploy
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - 'master'
+      - master
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true                     # Disable the .NET logo in the console output
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
+  DOTNET_CLI_TELEMETRY_OPTOUT: true 
+  NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
 
 jobs:
-  Explore-GitHub-Actions:
+  build:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -15,9 +21,8 @@ jobs:
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
       - name: List files in the repository
         run: |
@@ -25,19 +30,29 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 6.0.x
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17.x
+
       - name: Build
         run: |
           cd Source/BlazorState/
-          dotnet build
+          dotnet build --configuration Release
 
-      - name: Pack
-        run: |
-          cd Source/BlazorState/
-          dotnet build -c Release
+      # - name: Pack
+      #   run: |
+      #     cd Source/BlazorState/
+      #     dotnet build --configuration Release
+
       - name: Publish
         run: dotnet nuget push Source/BlazorState/bin/Packages/Blazor-State.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+
+  deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "next we need to publish the docs"

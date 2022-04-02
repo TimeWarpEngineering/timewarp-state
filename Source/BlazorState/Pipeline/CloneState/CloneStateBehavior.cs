@@ -8,25 +8,23 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : IRequest<TResponse>
 {
   private readonly ILogger Logger;
   private readonly IMediator Mediator;
-  private readonly BlazorStateOptions BlazorStateOptions;
   private readonly IStore Store;
   private bool IsClientSide;
 
   public CloneStateBehavior
   (
     ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
-    BlazorStateOptions aBlazorStateOptions,
     IStore aStore,
-    IMediator aMediator)
+    IMediator aMediator
+  )
   {
     Logger = aLogger;
-    Logger.LogDebug($"{GetType().Name} constructor");
-    BlazorStateOptions = aBlazorStateOptions;
+    Logger.LogDebug(EventIds.CloneStateBehavior_Initializing, "constructing");
     Store = aStore;
     Mediator = aMediator;
   }
@@ -39,58 +37,59 @@ internal class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequ
   )
   {
     Type declaringType = typeof(TRequest).DeclaringType;
-    // logging variables
-    string className = GetType().Name;
-    className = className.Remove(className.IndexOf('`'));
-    string requestId = $"{aRequest.GetType().FullName}:{aRequest.GetHashCode()}";
-
-    Logger.LogDebug($"Pipeline Start: {requestId}");
-    Logger.LogDebug($"{className}: Start");
 
     IState originalState = default;
     // Constrain here if not IState then ignore.
     if (typeof(IState).IsAssignableFrom(declaringType))
     {
       IsClientSide = true;
-      Logger.LogDebug($"{className}: Clone State of type {declaringType}");
       originalState = Store.GetState(declaringType) as IState;
-      Logger.LogDebug($"{className}: originalState.Guid:{originalState.Guid}");
       IState newState = (originalState is ICloneable clonable) ? (IState)clonable.Clone() : originalState.Clone();
-      Logger.LogDebug($"{className}: newState.Guid:{newState.Guid}");
+      Logger.LogDebug
+      (
+        EventIds.CloneStateBehavior_Cloning,
+        "Clone State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
+        declaringType,
+        originalState?.Guid,
+        newState.Guid
+      );
+
       Store.SetState(newState as IState);
     }
     else
     {
-      Logger.LogDebug($"{className}: Not cloning State because {declaringType} is not an IState");
+      Logger.LogDebug
+      (
+        EventIds.CloneStateBehavior_Ignoring,
+        "Not cloning State because {declaringType} is not an IState",
+        declaringType
+      );
     }
 
     try
     {
-      Logger.LogDebug($"{className}: Call next");
       TResponse response = await aNext();
-      Logger.LogDebug($"{className}: Start Post Processing");
-      Logger.LogDebug($"{className}: End Post Processing");
-      Logger.LogDebug($"Pipeline End: {requestId}");
       return response;
     }
     catch (Exception aException)
     {
       // If something fails we restore system to previous state.
-      // One may consider extension point here for error handling.
-      // Update some error state so the user knows of the failure.
-      // But as a rule if this is an exception it should be unexpected.
-      Logger.LogWarning($"{className}: Error: {aException.Message}");
-      Logger.LogWarning($"{className}: InnerError: {aException?.InnerException?.Message}");
-      Logger.LogWarning($"{className}: Restoring State of type: {declaringType}");
+      Logger.LogWarning(EventIds.CloneStateBehavior_Exception, aException, "Error cloning State");
 
       if (IsClientSide && originalState != null)
       {
-        Store.SetState(originalState as IState);
+        Store.SetState(originalState);
+
+        Logger.LogWarning
+        (
+          EventIds.CloneStateBehavior_Restored,
+          "Restored State of type: {declaringType}",
+          declaringType
+        );
 
         var exceptionNotification = new ExceptionNotification
         {
-          //Request = aRequest,
-          RequestName = className,
+          RequestName = nameof(CloneStateBehavior<TRequest, TResponse>),
           Exception = aException
         };
 

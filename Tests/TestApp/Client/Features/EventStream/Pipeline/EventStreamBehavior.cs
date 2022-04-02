@@ -29,7 +29,7 @@ public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
   {
     Logger = aLogger;
     Sender = aSender;
-    Logger.LogDebug($"{GetType().Name}: Constructor");
+    Logger.LogDebug("{classname}: Constructor", GetType().Name);
   }
 
   public async Task<TResponse> Handle

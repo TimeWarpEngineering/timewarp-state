@@ -17,9 +17,7 @@ public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProce
   where TRequest : IRequest<TResponse>
 {
   private readonly ILogger Logger;
-
   private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
-
   private readonly IReduxDevToolsStore Store;
 
   public ReduxDevToolsPostProcessor
@@ -30,30 +28,33 @@ public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProce
   )
   {
     Logger = aLogger;
-    Logger.LogDebug($"{GetType().Name} constructor");
+    Logger.LogDebug(EventIds.ReduxDevToolsPostProcessor_Constructing, "constructing");
     Store = aStore;
     ReduxDevToolsInterop = aReduxDevToolsInterop;
   }
 
-
-  public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
+  public async Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
   {
     try
     {
-      Logger.LogDebug($"{GetType().Name}: Start Post Processing");
-      if (!(aRequest is IReduxRequest))
+      Logger.LogDebug(EventIds.ReduxDevToolsPostProcessor_Begin, "Begin Post Processing");
+
+      if (aRequest is not IReduxRequest)
       {
-        ReduxDevToolsInterop.DispatchAsync(aRequest, Store.GetSerializableState());
+        await ReduxDevToolsInterop.DispatchAsync(aRequest, Store.GetSerializableState());
       }
-      Logger.LogDebug($"{GetType().Name}: End");
+      Logger.LogDebug(EventIds.ReduxDevToolsPostProcessor_End, "Post Processing Completed");
     }
-    catch (Exception e)
+    catch (Exception aException)
     {
-      Logger.LogDebug($"{GetType().Name}: Error: {e.Message}");
-      Logger.LogDebug($"{GetType().Name}: InnerException: {e.InnerException?.Message}");
-      Logger.LogDebug($"{GetType().Name}: StackTrace: {e.StackTrace}");
+      Logger.LogDebug
+      (
+        EventIds.ReduxDevToolsPostProcessor_Exception,
+        aException,
+        "Error dispatching Request to Redux DevTools"
+      );
+
       throw;
     }
-    return Task.CompletedTask;
   }
 }

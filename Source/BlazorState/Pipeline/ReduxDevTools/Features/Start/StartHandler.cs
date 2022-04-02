@@ -2,29 +2,31 @@ namespace BlazorState.Pipeline.ReduxDevTools;
 
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
-internal class StartHandler : RequestHandler<StartRequest>
+/// <summary>
+/// Redux Devtools will send the Request once on startup
+/// </summary>
+/// <remarks>currently we do nothing at start up other than log</remarks>
+internal class StartHandler : IRequestHandler<StartRequest>
 {
   private readonly ILogger Logger;
 
   public StartHandler
   (
     ILogger<StartHandler> aLogger
-  //IStore aStore,
-  //ReduxDevToolsInterop aReduxDevToolsInterop
   )
   {
     Logger = aLogger;
-    Logger.LogDebug($"{GetType().FullName} constructor");
-    //Store = aStore;
-    //ReduxDevToolsInterop = aReduxDevToolsInterop;
+    Logger.LogDebug(EventIds.JumpToStateHandler_RequestHandled, "constructing");
   }
 
-  //private ReduxDevToolsInterop ReduxDevToolsInterop { get; }
-  //private IStore Store { get; }
-
-  protected override void Handle(StartRequest aRequest)
-  {
-    // Does nothing currently
-  }
+  /// <summary>
+  /// Currently does nothing
+  /// </summary>
+  /// <param name="aRequest"></param>
+  /// <param name="aCancellationToken"></param>
+  /// <returns></returns>
+  public Task<Unit> Handle(StartRequest aRequest, CancellationToken aCancellationToken) =>
+    Unit.Task;
 }

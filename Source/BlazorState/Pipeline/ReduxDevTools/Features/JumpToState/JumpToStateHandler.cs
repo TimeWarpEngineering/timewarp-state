@@ -7,29 +7,40 @@ using Microsoft.Extensions.Logging;
 internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
 {
   private readonly ILogger Logger;
-
   private readonly IReduxDevToolsStore Store;
-
   private readonly Subscriptions Subscriptions;
 
-  public JumpToStateHandler(
-                ILogger<JumpToStateHandler> aLogger,
+  public JumpToStateHandler
+  (
+    ILogger<JumpToStateHandler> aLogger,
     IReduxDevToolsStore aStore,
-    Subscriptions aSubscriptions)
+    Subscriptions aSubscriptions
+  )
   {
     Logger = aLogger;
-    Logger.LogDebug($"{GetType().FullName} constructor");
+    Logger.LogDebug(EventIds.JumpToStateHandler_Initializing, "constructor");
     Store = aStore;
     Subscriptions = aSubscriptions;
   }
 
-  protected override void Handle(JumpToStateRequest aRequest)
+  protected override void Handle(JumpToStateRequest aJumpToStateRequest)
   {
-    Logger.LogDebug($"Type:{GetType().FullName}");
-    Logger.LogDebug($"State: {aRequest.State}");
-    Store.LoadStatesFromJson(aRequest.State);
-    Logger.LogDebug($"After LoadStatesFromJson");
+    Logger.LogDebug
+    (
+      EventIds.JumpToStateHandler_RequestReceived,
+      "Recieved Id:{aJumpToStateRequest_Id} State:{aRequest_State}",
+      aJumpToStateRequest.Id,
+      aJumpToStateRequest.State
+    );
+
+    Store.LoadStatesFromJson(aJumpToStateRequest.State);
     Subscriptions.ReRenderSubscribers<IDevToolsComponent>();
-    Logger.LogDebug($"After ReRenderAll");
+
+    Logger.LogDebug
+    (
+      EventIds.JumpToStateHandler_RequestHandled,
+      "Handled Id:{aJumpToStateRequest_Id}",
+      aJumpToStateRequest.Id
+    );
   }
 }

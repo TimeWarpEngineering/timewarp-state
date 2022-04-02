@@ -25,7 +25,7 @@ public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResp
   )
   {
     Logger = aLogger;
-    Logger.LogDebug($"{GetType().Name}: Constructor");
+    Logger.LogDebug("{classname}: Constructor", GetType().Name);
   }
 
   public async Task<TResponse> Handle
@@ -35,18 +35,18 @@ public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResp
     RequestHandlerDelegate<TResponse> aNext
   )
   {
-    Logger.LogDebug($"{GetType().Name}: Start");
+    Logger.LogDebug("{classname}: Start", GetType().Name);
 
-    Logger.LogDebug($"{GetType().Name}: Call next");
+    Logger.LogDebug("{classname}: Call next", GetType().Name);
     TResponse newState = await aNext();
-    Logger.LogDebug($"{GetType().Name}: Start Post Processing");
+    Logger.LogDebug("{classname}: Start Post Processing", GetType().Name);
     // Constrain here based on a type or anything you want.
     if (typeof(IState).IsAssignableFrom(typeof(TResponse)))
     {
-      Logger.LogDebug($"{GetType().Name}: Do Constrained Action");
+      Logger.LogDebug("{classname}: Do Constrained Action", GetType().Name);
     }
 
-    Logger.LogDebug($"{GetType().Name}: End");
+    Logger.LogDebug("{classname}: End", GetType().Name);
     return newState;
   }
 }

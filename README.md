@@ -1,6 +1,6 @@
 # Blazor-State
 
-[![Build Status](https://timewarpenterprises.visualstudio.com/Blazor-State/_apis/build/status/TimeWarpEngineering.blazor-state?branchName=master)](https://timewarpenterprises.visualstudio.com/Blazor-State/_build/latest?definitionId=27&branchName=master)
+![example workflow](https://github.com/TimeWarpEngineering/blazor-state/actions/workflows/blazor-state.yml/badge.svg)
 [![nuget](https://img.shields.io/nuget/v/Blazor-State.svg)](https://www.nuget.org/packages/Blazor-State/)
 [![nuget](https://img.shields.io/nuget/dt/Blazor-State.svg)](https://www.nuget.org/packages/Blazor-State/)
 

@@ -32,9 +32,15 @@ public class ReduxDevToolsInterop
   {
     if (IsEnabled)
     {
-      Logger.LogDebug($"{GetType().Name}: {nameof(this.DispatchAsync)}");
-      Logger.LogDebug($"{GetType().Name}: aRequest.GetType().FullName:{aRequest.GetType().FullName}");
       var reduxAction = new ReduxAction(aRequest);
+
+      Logger.LogDebug
+      (
+        EventIds.ReduxDevToolsInterop_DispatchingRequest,
+        "dispatching aRequest.GetType().FullName:{TypeFullName} to ReduxDevTools",
+        aRequest.GetType().FullName
+      );
+
       await JSRuntime.InvokeAsync<object>(JsFunctionName, reduxAction, aState);
     }
   }
@@ -42,12 +48,15 @@ public class ReduxDevToolsInterop
   public async Task DispatchInitAsync(object aState)
   {
     if (IsEnabled)
+    {
+      Logger.LogDebug(EventIds.ReduxDevToolsInterop_DispatchingInit, "dispatching init to ReduxDevTools");
       await JSRuntime.InvokeAsync<object>(JsFunctionName, "init", aState);
+    }
   }
 
   public async Task InitAsync()
   {
-    Logger.LogDebug("Init ReduxDevToolsInterop");
+    Logger.LogDebug(EventIds.ReduxDevToolsInterop_Initializing, "Init ReduxDevToolsInterop");
     const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
     IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName);
 
