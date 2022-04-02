@@ -4,7 +4,7 @@
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
     <VersionPrefix>5.0.1</VersionPrefix>
-    <VersionSuffix>beta.5</VersionSuffix>
+    <VersionSuffix>beta.6</VersionSuffix>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>TimeWarp-State TimeWarpState BlazorState Blazor State Blazor-State MediatR Mediator Pipeline Redux Flux</PackageTags>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
