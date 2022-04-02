@@ -42,8 +42,9 @@ jobs:
       - name: Build esproj
         run: |
           cd Source/BlazorState.Js/
-          dotnet build --configuration Release
-          
+          npm install
+          npm run build
+
       - name: Build
         run: |
           cd Source/BlazorState/
