@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Build and Test
 
 on:
   pull_request:      
@@ -45,10 +45,10 @@ jobs:
 
       - name: Build
         run: |
-          cd Test/Client.Integration.Tests/
+          cd Tests/Client.Integration.Tests/
           dotnet fixie --configuration Debug
 
       - name: Build
         run: |
-          cd Test/Server.Integration.Tests/
+          cd Tests/Server.Integration.Tests/
           dotnet fixie --configuration Debug          
