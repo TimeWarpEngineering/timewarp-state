@@ -19,11 +19,13 @@ function ReduxDevToolsFactory(): boolean {
 }
 
 export function beforeStart(options, extensions) {
-  console.log("****beforeStart timewarp-state ****");
+  console.log("timewarp blazor-state beforeStart");
   window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
 }
 
 export function afterStarted(blazor) {
-  console.log("****afterStarted  timewarp-state ****");
+  console.log("timewarp blazor-state afterStarted");
+  //window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
+  //window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
 }

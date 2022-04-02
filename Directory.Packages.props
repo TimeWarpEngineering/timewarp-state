@@ -4,7 +4,7 @@
     <PackageVersion Include="AutoMapper" Version="11.0.1" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageVersion Include="BlazorComponentUtilities" Version="1.8.0" />
-    <PackageVersion Include="Blazor-State" Version="4.0.1" />
+    <PackageVersion Include="Blazor-State" Version="5.0.1-beta.3" />
     <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
     <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
     <PackageVersion Include="FakeItEasy" Version="7.3.1" />
@@ -38,6 +38,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.3" />
     <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="6.0.3" />
@@ -53,6 +54,8 @@
     <PackageVersion Include="protobuf-net.Grpc.AspNetCore.Reflection" Version="1.0.152" />
     <PackageVersion Include="protobuf-net.Grpc.Reflection" Version="1.0.152" />
     <PackageVersion Include="Scrutor" Version="4.1.0" />
+    <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="1.0.0" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.3.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />

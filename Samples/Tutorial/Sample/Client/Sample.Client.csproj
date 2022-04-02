@@ -7,14 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--<PackageReference Include="Blazor-State" />-->
+    <PackageReference Include="Blazor-State" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\source\BlazorState\BlazorState.csproj" />
+    <!--<ProjectReference Include="..\..\..\..\source\BlazorState\BlazorState.csproj" />-->
     <ProjectReference Include="..\Shared\Sample.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Web.Server.Integration.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

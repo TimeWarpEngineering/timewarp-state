@@ -22,8 +22,8 @@ internal class IncrementCountNotificationHandler
     CancellationToken aCancellationToken
   )
   {
-    Logger.LogDebug(aPostPipelineNotification.Request.GetType().Name);
-    Logger.LogDebug($"{nameof(IncrementCountNotificationHandler)} handled");
+    Logger.LogDebug("{aPostPipelineNotification_Request_Type_Name}", aPostPipelineNotification.Request.GetType().Name);
+    Logger.LogDebug("{methodName} handled", nameof(IncrementCountNotificationHandler));
     return Unit.Task;
   }
 }

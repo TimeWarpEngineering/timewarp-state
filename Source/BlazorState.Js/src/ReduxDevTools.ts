@@ -61,9 +61,15 @@ export class ReduxDevTools {
       'IMPORT_STATE': undefined,
       'JUMP_TO_ACTION': 'BlazorState.Pipeline.ReduxDevTools.JumpToStateRequest',
       'JUMP_TO_STATE': 'BlazorState.Pipeline.ReduxDevTools.JumpToStateRequest',
+      'LOCK_CHANGES': undefined,
+      'PAUSE_RECORDING': undefined,
+      'PERFORM_ACTION': undefined,
       'RESET': undefined,
+      'REORDER_ACTION': undefined,
       'ROLLBACK': undefined,
-      'TOGGLE_ACTION': undefined
+      'SET_ACTIONS_ACTIVE': undefined,
+      'SWEEP': undefined,
+      'TOGGLE_ACTION': undefined,
     };
     var blazorRequestType;
     switch (message.type) {

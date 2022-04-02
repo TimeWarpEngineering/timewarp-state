@@ -1,11 +1,13 @@
 namespace BlazorState;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 
 /// <summary>
+/// 
 /// </summary>
 internal partial class Store : IStore
 {
@@ -28,14 +30,11 @@ internal partial class Store : IStore
   )
   {
     Logger = aLogger;
+    Logger.LogDebug(EventIds.Store_Initializing, "constructing with guid:{Guid}", Guid);
     ServiceProvider = aServiceProvider;
     JsonSerializerOptions = aBlazorStateOptions.JsonSerializerOptions;
 
-    using (Logger.BeginScope(new Dictionary<string, object> { [nameof(Guid)] = Guid }))
-    {
-      Logger.LogInformation($"{GetType().Name}: constructor: {nameof(Guid)}:{Guid}");
-      States = new Dictionary<string, IState>();
-    }
+    States = new Dictionary<string, IState>();
   }
 
   /// <summary>
@@ -68,19 +67,18 @@ internal partial class Store : IStore
   {
     using (Logger.BeginScope(nameof(GetState)))
     {
+      string className = GetType().Name;
       string typeName = aType.FullName;
-      Logger.LogDebug($"{GetType().Name}: {nameof(this.GetState)} typeName:{typeName}");
 
       if (!States.TryGetValue(typeName, out IState state))
       {
-        Logger.LogDebug($"{GetType().Name}: Creating State of type: {typeName}");
-        state = (IState)ServiceProvider.GetService(aType);
-        if (state == null) throw new NullReferenceException("state is null");
+        Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
+        state = (IState)ServiceProvider.GetRequiredService(aType);
         state.Initialize();
         States.Add(typeName, state);
       }
       else
-        Logger.LogDebug($"{GetType().Name}: State exists: {state.Guid}");
+        Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);
       return state;
     }
   }
@@ -88,7 +86,13 @@ internal partial class Store : IStore
   private void SetState(string aTypeName, object aNewState)
   {
     var newState = (IState)aNewState;
-    Logger.LogDebug($"{GetType().Name}: {nameof(SetState)}: typeName:{aTypeName}: Guid:{newState.Guid}");
+    Logger.LogDebug
+    (
+      EventIds.Store_SetState,
+      "Assigning State. Type:{typeName}, Guid:{newState.Guid}",
+      aTypeName,
+      newState.Guid
+    );
     States[aTypeName] = newState;
   }
 }

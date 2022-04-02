@@ -25,7 +25,7 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
   )
   {
     Logger = aLogger;
-    Logger.LogDebug($"{GetType().Name}: constructor with TRequest:{typeof(TRequest).Name} TResponse:{typeof(TResponse).Name}");
+    Logger.LogDebug(EventIds.RenderSubscriptionsPostProcessor_Constructing, "constructing");
     Subscriptions = aSubscriptions;
   }
 
@@ -45,18 +45,21 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
       string className = GetType().Name;
       className = className.Remove(className.IndexOf('`'));
 
-      Logger.LogDebug($"{className}: Start");
+      Logger.LogDebug(EventIds.RenderSubscriptionsPostProcessor_Begin, "Begin Post Processing");
 
       try
       {
-        Logger.LogDebug($"{className}: ReRenderSubscribers");
         Subscriptions.ReRenderSubscribers(declaringType);
-        Logger.LogDebug($"{className}: End Post Processing");
+        Logger.LogDebug(EventIds.RenderSubscriptionsPostProcessor_End, "Post Processing Complete");
       }
       catch (Exception aException)
       {
-        Logger.LogError($"{className}: Error: {aException.Message}");
-        Logger.LogError($"{className}: InnerError: {aException?.InnerException?.Message}");
+        Logger.LogDebug
+        (
+          EventIds.RenderSubscriptionsPostProcessor_Exception,
+          aException,
+          "Error re-rendering subscriptions"
+        );
         throw;
       }
     }

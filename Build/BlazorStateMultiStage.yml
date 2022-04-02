@@ -6,8 +6,8 @@ pr: none
 variables:
   Major: 5
   Minor: 0
-  Patch: 0
-  Beta: "" # "-beta.X" or ""
+  Patch: 1
+  Beta: "-beta.0" # "-beta.X" or ""
   DotNetSdkVersion: 6.0.200
 
 stages:
@@ -23,32 +23,15 @@ stages:
             displayName: 'Run all the Integration Tests in the repo and gather coverage data with redux dev tools enabled'
             continueOnError: false
             inputs:
-              command: test
-              arguments: '-maxcpucount:1 /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:UseSourceLink=true /p:Include="[BlazorState]*"'
+              command: fixie
               projects: '**/*.Integration.Tests/*.csproj'
               configuration: 'DefaultReduxEnabled' # the most code coverage when enabled
-
-          - task: reportgenerator@4
-            displayName: 'Test coverage Report Generator'
-            inputs:
-              reports: '$(Build.SourcesDirectory)/Tests/**/coverage.cobertura.xml'
-              targetdir: '$(Build.SourcesDirectory)/CodeCoverage'
-              reporttypes: 'HtmlInline_AzurePipelines;Cobertura;Badges'
-              historydir: '$(Build.SourcesDirectory)/CodeCoverage/History'
-              assemblyfilters: '+BlazorState'
-
-          - task: PublishCodeCoverageResults@1
-            displayName: 'Publish code coverage'
-            inputs:
-              codeCoverageTool: Cobertura
-              summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Cobertura.xml'
-              reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage'
 
           - task: DotNetCoreCLI@2
             displayName: 'Run all the Integration Tests in the repo with default options'
             continueOnError: false
             inputs:
-              command: test
+              command: fixie
               arguments: '-maxcpucount:1'
               projects: '**/*.Integration.Tests/*.csproj'
               configuration: 'Debug' # We don't gather code coverage here but want to make sure all tests pass.

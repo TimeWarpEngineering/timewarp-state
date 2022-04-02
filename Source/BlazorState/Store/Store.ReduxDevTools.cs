@@ -39,13 +39,17 @@ internal partial class Store : IReduxDevToolsStore
     if (string.IsNullOrWhiteSpace(aJsonString))
       throw new ArgumentException("aJsonString was null or white space", nameof(aJsonString));
 
-    Logger.LogDebug($"{GetType().Name}:{nameof(LoadStatesFromJson)}: {nameof(aJsonString)}:{aJsonString}");
+    Logger.LogDebug
+    (
+      EventIds.LoadStatesFromJson,
+      "jsonString:{aJsonString}",
+      aJsonString
+    );
+
     Dictionary<string, object> newStates = JsonSerializer.Deserialize<Dictionary<string, object>>(aJsonString, JsonSerializerOptions);
-    Logger.LogDebug($"newStates.Count: {newStates.Count}");
+
     foreach (KeyValuePair<string, object> keyValuePair in newStates)
     {
-      Logger.LogDebug($"keyValuePair.Key:{keyValuePair.Key}");
-      Logger.LogDebug($"keyValuePair.Value:{keyValuePair.Value}");
       LoadStateFromJson(keyValuePair);
     }
   }
@@ -53,9 +57,14 @@ internal partial class Store : IReduxDevToolsStore
   private void LoadStateFromJson(KeyValuePair<string, object> aKeyValuePair)
   {
     string typeName = aKeyValuePair.Key;
-    Logger.LogDebug($"{GetType().Name}:{nameof(LoadStateFromJson)}:typeName: {typeName}");
-    Logger.LogDebug($"aKeyValuePair.Value: {aKeyValuePair.Value}");
-    Logger.LogDebug($"aKeyValuePair.Value.GetType().Name: {aKeyValuePair.Value.GetType().Name}");
+    Logger.LogDebug
+    (
+      EventIds.LoadStateFromJson,
+      "typename:{TypeName} aKeyValuePair.Value: {aKeyValuePair_Value} aKeyValuePair.Value.GetType().Name: {aKeyValuePair_Value_Type_Name}",
+      typeName,
+      aKeyValuePair.Value,
+      aKeyValuePair.Value.GetType().Name
+    );
 
     Dictionary<string, object> newStateKeyValuePairs =
       JsonSerializer.Deserialize<Dictionary<string, object>>(aKeyValuePair.Value.ToString(), JsonSerializerOptions);
@@ -65,18 +74,20 @@ internal partial class Store : IReduxDevToolsStore
         .SelectMany(aAssembly => aAssembly.GetTypes())
         .FirstOrDefault(aType => aType.FullName.Equals(typeName));
 
-    Logger.LogDebug($"stateType == null{stateType == null}");
-
     // Get the Hydrate Method
     // I am only trying to get the name of "Hydrate" without magic string.
     // I use RouteState as a type because it is in this project
-    System.Reflection.MethodInfo hydrateMethodInfo = stateType?.GetMethod(nameof(State<RouteState>.Hydrate));
-    Logger.LogDebug($"hydrateMethodInfo == null: {hydrateMethodInfo == null}");
+    MethodInfo hydrateMethodInfo = stateType?.GetMethod(nameof(State<RouteState>.Hydrate));
+
+    if (hydrateMethodInfo == null)
+    {
+      throw new NotImplementedException($"The Hydrate Method was not found for the type:{typeName}");
+    }
 
     // Call Hydrate on the Type
     object[] parameters = new object[] { newStateKeyValuePairs };
     object currentState = GetState(stateType);
-    Logger.LogDebug("call hydrate method");
+
     var newState = (IState)hydrateMethodInfo.Invoke(currentState, parameters);
 
     // reassign
