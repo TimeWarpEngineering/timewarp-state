@@ -43,14 +43,16 @@ jobs:
           npm install
           npm run build
 
-      - name: Build
+      - name: Client.Integration.Tests
         run: |
           cd Tests/Client.Integration.Tests/
-          dotnet tool restore
+          dotnet tool restore fixie
+          dotnet restore
           dotnet fixie --configuration Debug
 
-      - name: Build
+      - name: Server.Integration.Tests
         run: |
           cd Tests/Server.Integration.Tests/
-          dotnet tool restore
+          dotnet tool restore fixie
+          dotnet restore
           dotnet fixie --configuration Debug          
