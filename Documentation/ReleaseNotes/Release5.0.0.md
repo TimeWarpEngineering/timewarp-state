@@ -29,3 +29,7 @@ See [Migrations](xref:BlazorState:Migration4-5.md) for how to migrate existing p
 * Updated Logging to utilize ILogger Structured Logging.
 * Use EventIds for all LogMessages this makes filtering better and also requires developer to think about logging vs just throwing them everywhere or nowhere.
 * Moved from Azure Pipelines to Github Actions.
+
+## Release 5.0.2
+
+* Fixed duplicate EventIds
