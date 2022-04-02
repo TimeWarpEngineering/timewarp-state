@@ -4,7 +4,7 @@
     <PackageVersion Include="AutoMapper" Version="11.0.1" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageVersion Include="BlazorComponentUtilities" Version="1.8.0" />
-    <PackageVersion Include="Blazor-State" Version="5.0.1-beta.3" />
+    <PackageVersion Include="Blazor-State" Version="5.0.1-beta.5" />
     <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
     <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
     <PackageVersion Include="FakeItEasy" Version="7.3.1" />
@@ -37,6 +37,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.3" />
     <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="6.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0" />
@@ -62,6 +63,7 @@
     <PackageVersion Include="Swashbuckle.AspNetCore.Swagger" Version="6.3.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.0" />
+    <PackageVersion Include="System.CommandLine.Experimental" Version="0.1.0-alpha-63625-01" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="6.0.0" />
     <PackageVersion Include="System.ServiceModel.Primitives" Version="4.9.0" />
