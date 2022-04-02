@@ -13,7 +13,6 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
 {
   private readonly ILogger Logger;
   private readonly IMediator Mediator;
-  private readonly BlazorStateOptions BlazorStateOptions;
   private readonly IStore Store;
   private bool IsClientSide;
 

@@ -40,6 +40,7 @@ public class JsonRequestHandler
   /// <summary>
   /// This will handle the Javascript interop
   /// </summary>
+  /// <param name="aRequestTypeAssemblyQualifiedName"></param>
   /// <param name="aRequestAsJson"></param>
   [JSInvokable]
   public Task Handle(string aRequestTypeAssemblyQualifiedName, string aRequestAsJson = null)

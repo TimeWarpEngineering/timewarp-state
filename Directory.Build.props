@@ -3,7 +3,8 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <Version>5.0.1-beta.4</Version>
+    <VersionPrefix>5.0.1</VersionPrefix>
+    <VersionSuffix>-beta.4</VersionSuffix>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>TimeWarp-State TimeWarpState BlazorState Blazor State Blazor-State MediatR Mediator Pipeline Redux Flux</PackageTags>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
@@ -25,6 +26,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>10.0</LangVersion>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <NoWarn>CS7035;NU1503;1503</NoWarn>
     <Nullable>disable</Nullable>
     <TargetFramework>net6.0</TargetFramework>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>

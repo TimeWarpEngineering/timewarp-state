@@ -18,6 +18,7 @@ internal class CommitHandler : IRequestHandler<CommitRequest>
     ReduxDevToolsInterop aReduxDevToolsInterop
   )
   {
+    Logger = aLogger;
     Logger.LogDebug(EventIds.CommitHandler_Initializing, "constructor");
     Store = aStore;
     ReduxDevToolsInterop = aReduxDevToolsInterop;
