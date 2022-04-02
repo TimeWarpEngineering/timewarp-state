@@ -39,6 +39,11 @@ jobs:
         with:
           node-version: 17.x
 
+      - name: Build esproj
+        run: |
+          cd Source/BlazorState.Js/
+          dotnet build --configuration Release
+          
       - name: Build
         run: |
           cd Source/BlazorState/
