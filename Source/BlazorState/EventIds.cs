@@ -25,10 +25,6 @@ internal class EventIds
   public static readonly EventId StartHandler_RequestReceived = new(501, nameof(StartHandler_RequestReceived));
   public static readonly EventId StartHandler_RequestHandled = new(502, nameof(StartHandler_RequestHandled));
 
-  public static readonly EventId CommitHandler_Initializing = new(500, nameof(CommitHandler_Initializing));
-  public static readonly EventId CommitHandler_RequestReceived = new(501, nameof(CommitHandler_RequestReceived));
-  public static readonly EventId CommitHandler_RequestHandled = new(502, nameof(CommitHandler_RequestHandled));
-
   public static readonly EventId JumpToStateHandler_Initializing = new(510, nameof(JumpToStateHandler_Initializing));
   public static readonly EventId JumpToStateHandler_RequestReceived = new(511, nameof(JumpToStateHandler_RequestReceived));
   public static readonly EventId JumpToStateHandler_RequestHandled = new(512, nameof(JumpToStateHandler_RequestHandled));
@@ -41,6 +37,10 @@ internal class EventIds
   public static readonly EventId ReduxDevToolsPostProcessor_Begin = new(531, nameof(ReduxDevToolsPostProcessor_Begin));
   public static readonly EventId ReduxDevToolsPostProcessor_End = new(532, nameof(ReduxDevToolsPostProcessor_End));
   public static readonly EventId ReduxDevToolsPostProcessor_Exception = new(533, nameof(ReduxDevToolsPostProcessor_Exception));
+
+  public static readonly EventId CommitHandler_Initializing = new(540, nameof(CommitHandler_Initializing));
+  public static readonly EventId CommitHandler_RequestReceived = new(541, nameof(CommitHandler_RequestReceived));
+  public static readonly EventId CommitHandler_RequestHandled = new(542, nameof(CommitHandler_RequestHandled));
 
   //   RenderSubscriptions
   public static readonly EventId RenderSubscriptionsPostProcessor_Constructing = new(600, nameof(ReduxDevToolsPostProcessor_Constructing));
@@ -56,7 +56,7 @@ internal class EventIds
 
   //Store.ReduxDevTools
   public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
-  public static readonly EventId LoadStateFromJson = new(104, nameof(LoadStateFromJson));
+  public static readonly EventId LoadStateFromJson = new(105, nameof(LoadStateFromJson));
 
   // Subscriptions - Blazor State Specific
   public static readonly EventId Subscriptions_Initializing = new(300, nameof(Subscriptions_Initializing));
