@@ -1,4 +1,10 @@
-- name: Release 2.0.0
-  topicUid: BlazorState:Release.2.0.0.md
+- name: Release 5.0.0
+  topicUid: BlazorState:Release.5.0.0.md
+- name: Release 4.0.0
+  topicUid: BlazorState:Release.4.0.0.md
 - name: Release 3.0.0
   topicUid: BlazorState:Release.3.0.0.md
+- name: Release 2.0.0
+  topicUid: BlazorState:Release.2.0.0.md
+- name: Release 1.0.0
+  topicUid: BlazorState:Release.1.0.0.md

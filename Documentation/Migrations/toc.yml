@@ -1,4 +1,8 @@
-- name: From 1.x to 2.x
-  topicUid: BlazorState:Migration1-2.md
+- name: From 4.x to 5.x
+  topicUid: BlazorState:Migration4-5.md
+- name: From 3.x to 4.x
+  topicUid: BlazorState:Migration3-4.md
 - name: From 2.x to 3.x
   topicUid: BlazorState:Migration2-3.md
+- name: From 1.x to 2.x
+  topicUid: BlazorState:Migration1-2.md

@@ -3,18 +3,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <OutputPath>..\bin</OutputPath>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
     <DocumentationFile>..\bin\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="8.2.3" />
-    <PackageReference Include="MediatR" Version="$(MediatrVersion)" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="$(MediatrExtensionsMicrosoftDependencyInjectionVersion)" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="System.CommandLine.Experimental" Version="0.1.0-alpha-63625-01" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection"  />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="System.CommandLine.Experimental" />
   </ItemGroup>
 
 </Project>

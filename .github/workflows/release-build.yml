@@ -39,20 +39,28 @@ jobs:
         with:
           node-version: 17.x
 
+      - name: Build esproj
+        run: |
+          cd Source/BlazorState.Js/
+          npm install
+          npm run build
+
       - name: Build
         run: |
           cd Source/BlazorState/
           dotnet build --configuration Release
 
-      # - name: Pack
-      #   run: |
-      #     cd Source/BlazorState/
-      #     dotnet build --configuration Release
-
       - name: Publish
         run: dotnet nuget push Source/BlazorState/bin/Packages/Blazor-State.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
 
-  deploy-docs:
-    runs-on: ubuntu-latest
-    steps:
-    - run: echo "next we need to publish the docs"
+      - name: Build Documentation
+        uses: nikeee/docfx-action@v1.0.0
+        with:
+          args: Documentation/docfx.json
+
+      # Publish generated site using GitHub Pages
+      - name: Publish Documentation on GitHub Pages
+        uses: maxheld83/ghpages@master
+        env:
+          BUILD_DIR: Documentation/_site # docfx's default output directory is _site
+          GH_PAT: ${{ secrets.GH_PAT }} # See https://github.com/maxheld83/ghpages
