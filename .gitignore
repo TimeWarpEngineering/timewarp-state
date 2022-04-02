@@ -306,3 +306,4 @@ __pycache__/
 /BlazorState.sln.EasyRun.json
 /Samples/Tutorial/Sample/Sample.sln.EasyRun.json
 *.binlog
+/Documentation/Blazor-State/

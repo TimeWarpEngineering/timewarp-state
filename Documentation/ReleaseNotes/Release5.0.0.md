@@ -7,7 +7,7 @@ title: Release 5.0.0
 
 ### Breaking Changes
 * Blazor-State has moved to net6.0
-* <script src="_content/Blazor-State/blazorstate.js"></script> is no longer needed and should be removed.
+* `<script src="_content/Blazor-State/blazorstate.js"></script>` is no longer needed and should be removed.
 * Updated Mediator to 10.0.1 https://jimmybogard.com/mediatr-10-0-released/
 * Requires Browsers that support module import.  [CanIUse](https://caniuse.com/?search=module)
 

@@ -18,7 +18,7 @@ This is quite handy for debugging.
 
 Redux Dev Tools are disabled by default.  Update the options passed to the `AddBlazorState` extension method to set `UseReduxDevToolsBehavior` to true, as show here in the test application:
 
-[!code-csharp[Startup](../../Tests/TestApp/Client/Startup.cs?highlight=29 "Code Link")]
+[!code-csharp[Startup](../../Tests/TestApp/Client/Program.cs?highlight=49 "Code Link")]
 
 ### Initialize in App Component
 

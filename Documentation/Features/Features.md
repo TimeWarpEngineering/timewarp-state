@@ -1,3 +1,8 @@
+---
+uid: BlazorState:Features.md
+title: Features
+---
+
 * Oneway Data Flow
 * Automatic Subscriptions
 * Encapsulated State. Each State exposes its API. Like a micro-site

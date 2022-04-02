@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            
+            "Source/BlazorState/BlazorState.csproj"
           ],
           "src": "../"
         }
@@ -58,7 +58,7 @@
     "dest": "_site",
     "globalMetadata": {
       "_appFaviconPath": "assets/Logo.png",
-      "_appLogoPath":"assets/Logo.svg"
+      "_appLogoPath":"assets/Logo.png"
     },
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
@@ -67,6 +67,11 @@
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
+    "markdownEngineProperties": {
+      "markdigExtensions": [
+        "footnotes"
+      ]
+    },    
     "noLangKeyword": false,
     "keepFileLink": false,
     "cleanupCacheHistory": false,
