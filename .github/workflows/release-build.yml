@@ -53,4 +53,6 @@ jobs:
         run: dotnet nuget push Source/BlazorState/bin/Packages/Blazor-State.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
 
   deploy-docs:
+    runs-on: ubuntu-latest
+    steps:
     - run: echo "next we need to publish the docs"
