@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\source\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\..\..\Source\BlazorState\BlazorState.csproj" />
     <ProjectReference Include="..\Api\TestApp.Api.csproj" />
   </ItemGroup>
 
