@@ -21,7 +21,7 @@
           "**/**.md",
           "**/**.yml"
         ],
-        "exclude": [ "images/**", "**/Model**", "_site/**" ]
+        "exclude": [ "Images/**", "**/Model**", "_site/**" ]
       },
       {
         "src":"../",
@@ -33,13 +33,13 @@
     "resource": [
       {
         "files": [
-          "images/**"
+          "Images/**"
         ]
       },
       {
         "src": "../",
         "files": [
-          "assets/**"
+          "Assets/**"
         ]
       }
 
