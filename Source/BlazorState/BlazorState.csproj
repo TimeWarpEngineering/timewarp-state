@@ -12,7 +12,7 @@
 
   <PropertyGroup>
     <Title>TimeWarp Blazor State</Title>
-    <Description>State management for Blazor</Description>
+    <Description>A Blazor state management library by TimeWarp</Description>
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
     <PackageIcon>Logo.png</PackageIcon>
