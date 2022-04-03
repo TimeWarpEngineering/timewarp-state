@@ -19,7 +19,7 @@ title: Blazor-State Overview
 
 # Blazor-State
 
-![TimeWarp Logo](../Assets/Logo.png)
+![TimeWarp Logo](Assets/Logo.png)
 
 Blazor-State is a State Management architecture utilizing the MediatR pipeline.
 
