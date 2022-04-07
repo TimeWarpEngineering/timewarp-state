@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~P:TestApp.Client.AppBase.RouteManager")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~M:TestApp.Client.Features.WeatherForecast.WeatherForecastsState.Initialize(System.Collections.Generic.List{TestApp.Api.Features.WeatherForecast.WeatherForecastDto})")]
+[assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~P:TestApp.Client.AppBase.RouteManager")]
+[assembly: SuppressMessage("Code Quality", "IDE0051:Remove unused private members", Justification = "<Pending>", Scope = "member", Target = "~M:TestApp.Client.Features.WeatherForecast.WeatherForecastsState.Initialize(System.Collections.Generic.List{TestApp.Api.Features.WeatherForecast.WeatherForecastDto})")]
 [assembly: SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "don't need for discard", Scope = "member", Target = "~M:TestApp.Client.Program.Main(System.String[])~System.Threading.Tasks.Task")]
 [assembly: SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Injected so it is created by the container.", Scope = "member", Target = "~P:TestApp.Client.App.RouteManager")]
 
