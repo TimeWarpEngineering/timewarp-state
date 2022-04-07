@@ -1,6 +1,7 @@
 ﻿import { blazorState } from './BlazorState.js';
 import { ReduxDevTools } from './ReduxDevTools.js';
 import {
+  BlazorStateName,
   InitializeJavaScriptInteropName,
   ReduxDevToolsFactoryName,
   ReduxDevToolsName,
@@ -22,10 +23,9 @@ export function beforeStart(options, extensions) {
   console.log("timewarp blazor-state beforeStart");
   window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
+  window[BlazorStateName] = blazorState;
 }
 
 export function afterStarted(blazor) {
   console.log("timewarp blazor-state afterStarted");
-  //window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
-  //window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
 }
