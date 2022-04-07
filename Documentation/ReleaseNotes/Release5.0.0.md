@@ -33,3 +33,7 @@ See [Migrations](xref:BlazorState:Migration4-5.md) for how to migrate existing p
 ## Release 5.0.2
 
 * Fixed duplicate EventIds
+
+## Release 5.0.3
+
+* Expose the BlazorState Javascript object via js `window`
