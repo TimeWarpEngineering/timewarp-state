@@ -5,7 +5,8 @@ export class ReduxDevTools {
   IsEnabled: boolean;
   DevTools: any;
   Extension: any;
-  Config: { name: string; features: { pause: boolean; lock: boolean; persist: boolean; export: boolean; import: boolean; jump: boolean; skip: boolean; reorder: boolean; dispatch: boolean; test: boolean; }; };
+  Config: { name: string; trace: any; features: { pause: boolean; lock: boolean; persist: boolean; export: boolean; import: boolean; jump: boolean; skip: boolean; reorder: boolean; dispatch: boolean; test: boolean; }; };
+  //Config: { name: string; features: { pause: boolean; lock: boolean; persist: boolean; export: boolean; import: boolean; jump: boolean; skip: boolean; reorder: boolean; dispatch: boolean; test: boolean; }; };
   BlazorState: BlazorState;
 
   constructor() {
@@ -23,7 +24,8 @@ export class ReduxDevTools {
         reorder: false, // drag and drop actions in the history list
         dispatch: false, // dispatch custom actions or action creators
         test: false // generate tests for the selected actions
-      }
+      },
+      trace: this.Trace()
     };
     this.Extension = this.GetExtension();
     this.DevTools = this.GetDevTools();
@@ -36,6 +38,10 @@ export class ReduxDevTools {
       this.DevTools.subscribe(this.MessageHandler);
       window[DevToolsName] = this.DevTools;
     }
+  }
+
+  Trace() {
+   return "Sample StackTrace";
   }
 
   GetExtension() {
