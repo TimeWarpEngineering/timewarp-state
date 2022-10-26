@@ -8,7 +8,7 @@ export class ReduxDevTools {
   Extension: any;
   Config: {
     name: string;
-    trace: bool | 
+    trace: boolean;
     features: {
       pause: boolean;
       lock: boolean;
