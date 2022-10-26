@@ -1,17 +1,34 @@
 ﻿import { blazorState, BlazorState } from './BlazorState.js';
 import { ReduxExtensionName, DevToolsName} from './Constants.js';
 
+//see reduxjs/redux-devtools/packages/redux-devtools-extension/src/index.ts for types
 export class ReduxDevTools {
   IsEnabled: boolean;
   DevTools: any;
   Extension: any;
-  Config: { name: string; features: { pause: boolean; lock: boolean; persist: boolean; export: boolean; import: boolean; jump: boolean; skip: boolean; reorder: boolean; dispatch: boolean; test: boolean; }; };
+  Config: {
+    name: string;
+    trace: bool | 
+    features: {
+      pause: boolean;
+      lock: boolean;
+      persist: boolean;
+      export: boolean;
+      import: boolean;
+      jump: boolean;
+      skip: boolean;
+      reorder: boolean;
+      dispatch: boolean;
+      test: boolean;
+    };
+  };
   BlazorState: BlazorState;
 
   constructor() {
     this.BlazorState = blazorState;
     this.Config = {
       name: 'Blazor State',
+      trace: true,
       features: {
         pause: false, // start/pause recording of dispatched actions
         lock: false, // lock/unlock dispatching actions and side effects
