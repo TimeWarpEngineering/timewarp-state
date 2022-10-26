@@ -5,7 +5,7 @@
     <Product>Blazor State</Product>
     <PackageVersion>5.0.3+6.0.201</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
-    <PackageTags>TimeWarp-State TimeWarpState BlazorState Blazor State Blazor-State MediatR Mediator Pipeline Redux Flux</PackageTags>
+    <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
