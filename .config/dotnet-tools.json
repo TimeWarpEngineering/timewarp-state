@@ -13,6 +13,12 @@
       "commands": [
         "dotnet-outdated"
       ]
+    },
+    "dotnet-cleanup": {
+      "version": "0.6.1",
+      "commands": [
+        "cleanup"
+      ]
     }
   }
 }
