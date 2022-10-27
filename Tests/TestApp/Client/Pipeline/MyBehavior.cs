@@ -31,8 +31,8 @@ public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResp
   public async Task<TResponse> Handle
   (
     TRequest aRequest,
-    CancellationToken aCancellationToken,
-    RequestHandlerDelegate<TResponse> aNext
+    RequestHandlerDelegate<TResponse> aNext,
+    CancellationToken aCancellationToken
   )
   {
     Logger.LogDebug("{classname}: Start", GetType().Name);

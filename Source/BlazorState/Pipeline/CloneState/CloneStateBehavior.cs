@@ -32,8 +32,8 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
   public async Task<TResponse> Handle
   (
     TRequest aRequest,
-    CancellationToken aCancellationToken,
-    RequestHandlerDelegate<TResponse> aNext
+    RequestHandlerDelegate<TResponse> aNext,
+    CancellationToken aCancellationToken
   )
   {
     Type declaringType = typeof(TRequest).DeclaringType;
