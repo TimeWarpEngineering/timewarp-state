@@ -1,78 +1,39 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="AnyClone" Version="1.1.6" />
-    <PackageVersion Include="AutoMapper" Version="11.0.1" />
-    <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageVersion Include="BlazorComponentUtilities" Version="1.8.0" />
     <PackageVersion Include="Blazor-State" Version="5.0.3" />
     <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
     <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
     <PackageVersion Include="FakeItEasy" Version="7.3.1" />
     <PackageVersion Include="Fixie" Version="3.2.0" />
-    <PackageVersion Include="Fixie.Console" Version="2.2.2" />
     <PackageVersion Include="Fixie.TestAdapter" Version="3.2.0" />
     <PackageVersion Include="FluentAssertions" Version="6.8.0" />
-    <PackageVersion Include="FluentValidation" Version="10.4.0" />
-    <PackageVersion Include="FluentValidation.AspNetCore" Version="10.4.0" />
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.43.0" />
-    <PackageVersion Include="Grpc.AspNetCore.Server.Reflection" Version="2.43.0" />
-    <PackageVersion Include="Grpc.AspNetCore.Web" Version="2.43.0" />
-    <PackageVersion Include="Grpc.Net.Client" Version="2.43.0" />
-    <PackageVersion Include="Grpc.Net.Client.Web" Version="2.43.0" />
     <PackageVersion Include="MediatR" Version="11.0.0" />
     <PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageVersion Include="MicroElements.Swashbuckle.FluentValidation" Version="5.4.0" />       
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.10" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="6.0.10" />
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.1.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.1.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.3" />
-    <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="6.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="6.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="6.0.3" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.19.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <PackageVersion Include="Microsoft.Tye.Extensions.Configuration" Version="0.10.0-alpha.21420.1" />
-    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="4.6.2" />
-    <PackageVersion Include="Oakton" Version="4.1.0" />
-    <PackageVersion Include="PeterLeslieMorris.Blazor.FluentValidation" Version="1.7.0" />
-    <PackageVersion Include="protobuf-net.Grpc" Version="1.0.152" />
-    <PackageVersion Include="protobuf-net.Grpc.AspNetCore" Version="1.0.152" />
-    <PackageVersion Include="protobuf-net.Grpc.AspNetCore.Reflection" Version="1.0.152" />
-    <PackageVersion Include="protobuf-net.Grpc.Reflection" Version="1.0.152" />
+    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="4.8.4" />
     <PackageVersion Include="Scrutor" Version="4.2.0" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="1.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.3.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="6.3.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.Swagger" Version="6.3.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.0" />
-    <PackageVersion Include="System.CommandLine.Experimental" Version="0.1.0-alpha-63625-01" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="6.0.1" />
     <PackageVersion Include="System.Net.Http.Json" Version="6.0.0" />
-    <PackageVersion Include="System.ServiceModel.Primitives" Version="4.9.0" />
     <PackageVersion Include="System.Text.Json" Version="6.0.6" />
     <PackageVersion Include="TypeSupport" Version="1.1.12" />
     <PackageVersion Include="TimeWarp.Fixie" Version ="1.0.1" />
-    <PackageVersion Include="Yarp.ReverseProxy" Version="1.0.0"/>
-
-    <PackageVersion Include="Selenium.Support" Version="3.141.0" />
-    <PackageVersion Include="Selenium.WebDriver" Version="3.141.0" />
   </ItemGroup>
 </Project>
