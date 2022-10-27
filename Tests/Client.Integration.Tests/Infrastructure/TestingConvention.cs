@@ -1,99 +1,40 @@
 namespace TestApp.Client.Integration.Tests.Infrastructure;
 
-using BlazorState;
-using Fixie;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 
-
 [NotTest]
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class NotTest : Attribute { }
+public class TestingConvention : TimeWarp.Fixie.TestingConvention
+{ 
+  public TestingConvention():base(ConfigureTestServices)  {  }
 
-[NotTest]
-public class TestingConvention : Discovery, Execution, IDisposable
-{
-  const string TestPostfix = "Tests";
-  private readonly IServiceScopeFactory ServiceScopeFactory;
-  private HttpClient ServerHttpClient;
-  private WebApplicationFactory<TestApp.Server.Startup> ServerWebApplicationFactory;
 
-  public TestingConvention()
+  private static void ConfigureTestServices(ServiceCollection aServiceCollection)
   {
-    var testServices = new ServiceCollection();
-    ConfigureTestServices(testServices);
-    ServiceProvider serviceProvider = testServices.BuildServiceProvider();
-    ServiceScopeFactory = serviceProvider.GetService<IServiceScopeFactory>();
+    var serverWebApplicationFactory = new WebApplicationFactory<TestApp.Server.Startup>();
+    HttpClient serverHttpClient = serverWebApplicationFactory.CreateClient();
 
-    Classes.Where(aType => aType.IsPublic && !aType.Has<NotTest>());
-    Methods.Where(aMethodInfo => aMethodInfo.Name != nameof(Setup) && !aMethodInfo.IsSpecialName);
-  }
-
-  public void Execute(TestClass aTestClass)
-  {
-    aTestClass.RunCases
-    (
-      aCase =>
-      {
-        using IServiceScope serviceScope = ServiceScopeFactory.CreateScope();
-        object instance = serviceScope.ServiceProvider.GetService(aTestClass.Type);
-        Setup(instance);
-        aCase.Execute(instance);
-        instance.Dispose();
-      }
-     );
-  }
-
-  private static void Setup(object aInstance)
-  {
-    MethodInfo methodInfo = aInstance.GetType().GetMethod(nameof(Setup));
-    methodInfo?.Execute(aInstance);
-  }
-
-  private void ConfigureTestServices(ServiceCollection aServiceCollection)
-  {
-    ServerWebApplicationFactory = new WebApplicationFactory<TestApp.Server.Startup>();
-    ServerHttpClient = ServerWebApplicationFactory.CreateClient();
-
-    ConfigureWebAssemblyHost(aServiceCollection);
+    ConfigureWebAssemblyHost(aServiceCollection, serverHttpClient);
 
     aServiceCollection.AddSingleton(new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-
-
-    aServiceCollection.Scan
-    (
-      aTypeSourceSelector => aTypeSourceSelector
-        .FromAssemblyOf<TestingConvention>()
-        .AddClasses(action: (aClasses) => aClasses.Where(aType => aType.IsPublic && !aType.Has<NotTest>()))
-        .AsSelf()
-        .WithScopedLifetime()
-    );
   }
 
-  private void ConfigureWebAssemblyHost(ServiceCollection aServiceCollection)
+  private static void ConfigureWebAssemblyHost(ServiceCollection aServiceCollection, HttpClient serverHttpClient)
   {
-    //var webAssemblyHostBuilder = WebAssemblyHostBuilder.CreateDefault();
-    //ConfigureServices(webAssemblyHostBuilder.Services);
-
-    //WebAssemblyHost webAssemblyHost = webAssemblyHostBuilder.Build();
-    //aServiceCollection.AddSingleton(webAssemblyHost);
-
     var clientHostBuilder = ClientHostBuilder.CreateDefault();
-    ConfigureServices(clientHostBuilder.Services);
+    ConfigureServices(clientHostBuilder.Services, serverHttpClient);
 
     ClientHost clientHost = clientHostBuilder.Build();
     aServiceCollection.AddSingleton(clientHost);
-
   }
 
-  private void ConfigureServices(IServiceCollection aServiceCollection)
+  private static void ConfigureServices(IServiceCollection aServiceCollection, HttpClient serverHttpClient)
   {
     // Need an HttpClient to talk to the Server side configured before calling AddBlazorState.
-    aServiceCollection.AddSingleton(ServerHttpClient);
+    aServiceCollection.AddSingleton(serverHttpClient);
     aServiceCollection.AddBlazorState
     (
       aOptions => aOptions.Assemblies =
@@ -109,21 +50,21 @@ public class TestingConvention : Discovery, Execution, IDisposable
     );
   }
 
-  private bool DisposedValue;
+  //private bool DisposedValue;
 
-  protected virtual void Dispose(bool aIsDisposing)
-  {
-    if (!DisposedValue)
-    {
-      if (aIsDisposing)
-      {
-        Console.WriteLine("==== Disposing ====");
-        ServerWebApplicationFactory?.Dispose();
-      }
+  //protected virtual void Dispose(bool aIsDisposing)
+  //{
+  //  if (!DisposedValue)
+  //  {
+  //    if (aIsDisposing)
+  //    {
+  //      Console.WriteLine("==== Disposing ====");
+  //      ServerWebApplicationFactory?.Dispose();
+  //    }
 
-      DisposedValue = true;
-    }
-  }
+  //    DisposedValue = true;
+  //  }
+  //}
 
-  public void Dispose() => Dispose(true);
+  //public void Dispose() => Dispose(true);
 }

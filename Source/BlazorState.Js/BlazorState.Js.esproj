@@ -7,4 +7,12 @@
   <PropertyGroup>
     <StartupCommand>npm run start</StartupCommand>
   </PropertyGroup>
+  <!-- prevents NU1503 -->
+  <Target Name="_IsProjectRestoreSupported"
+          Returns="@(_ValidProjectsForRestore)">
+    <ItemGroup>
+      <_ValidProjectsForRestore Include="$(MSBuildProjectFullPath)" />
+    </ItemGroup>
+  </Target>
+  <Target Name="Restore" />
 </Project>

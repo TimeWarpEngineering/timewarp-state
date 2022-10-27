@@ -80,11 +80,6 @@
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <!-- End TypeScript project-->
   <!--
       1. Install npm packages
@@ -102,7 +97,7 @@
         </PropertyGroup>
     <Exec Command="npm ci"      Condition="$(RestorePackagesWithLockFile) == 'true'" />
      -->
-    <Exec Command="npm install" WorkingDirectory="..\BlazorState.Js\"/>
+    <Exec Command="npm install" WorkingDirectory="..\BlazorState.Js\" />
 
     <!-- Write the stamp file, so incremental builds work -->
     <Touch Files="../BlazorState.Js/node_modules/.install-stamp" AlwaysCreate="true" />
@@ -113,6 +108,6 @@
       MSBuild runs NpmInstall before this task because of the DependsOnTargets attribute.
    -->
   <Target Name="NpmRunBuild" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
-    <Exec Command="npm run build" WorkingDirectory="..\BlazorState.Js\"/>
+    <Exec Command="npm run build" WorkingDirectory="..\BlazorState.Js\" />
   </Target>  
 </Project>
