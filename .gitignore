@@ -300,9 +300,8 @@ __pycache__/
 /Source/BlazorState/wwwroot/blazorstate.js
 
 /StatiqDocs/output
-/Source/BlazorState/wwwroot/*.js
-/Source/BlazorState/wwwroot/*.js.map
-/Source/BlazorState/wwwroot/js/
+/Source/BlazorState/wwwroot/js/*.js
+/Source/BlazorState/wwwroot/js/*.js.map
 /BlazorState.sln.EasyRun.json
 /Samples/Tutorial/Sample/Sample.sln.EasyRun.json
 *.binlog
