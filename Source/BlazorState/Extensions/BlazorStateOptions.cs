@@ -21,7 +21,7 @@ public class BlazorStateOptions
 
   public BlazorStateOptions()
   {
-    Assemblies = new Assembly[] { };
+    Assemblies = Array.Empty<Assembly>();
     JsonSerializerOptions = new JsonSerializerOptions
     {
       PropertyNamingPolicy = JsonNamingPolicy.CamelCase
