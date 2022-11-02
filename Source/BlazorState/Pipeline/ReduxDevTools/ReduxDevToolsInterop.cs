@@ -14,17 +14,21 @@ public class ReduxDevToolsInterop
 
   private readonly IReduxDevToolsStore Store;
 
+  private readonly ReduxDevToolsOptions ReduxDevToolsOptions;
+
   public bool IsEnabled { get; set; }
 
   public ReduxDevToolsInterop
   (
     ILogger<ReduxDevToolsInterop> aLogger,
     IReduxDevToolsStore aStore,
+    ReduxDevToolsOptions aReduxDevToolsOptions,
     IJSRuntime aJSRuntime
   )
   {
     Logger = aLogger;
     Store = aStore;
+    ReduxDevToolsOptions = aReduxDevToolsOptions;
     JSRuntime = aJSRuntime;
   }
 
@@ -58,7 +62,7 @@ public class ReduxDevToolsInterop
   {
     Logger.LogDebug(EventIds.ReduxDevToolsInterop_Initializing, "Init ReduxDevToolsInterop");
     const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
-    IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName);
+    IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName, ReduxDevToolsOptions);
 
     if (IsEnabled)
       await DispatchInitAsync(Store.GetSerializableState());

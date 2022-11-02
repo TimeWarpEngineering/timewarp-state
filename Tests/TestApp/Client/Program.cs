@@ -43,16 +43,16 @@ public class Program
   {
     aServiceCollection.AddBlazorState
     (
-      (aOptions) =>
+      aOptions =>
       {
-#if ReduxDevToolsEnabled
-        aOptions.UseReduxDevTools();
-#endif
-        aOptions.Assemblies =
-      new Assembly[]
-      {
-            typeof(Program).GetTypeInfo().Assembly,
-      };
+  #if ReduxDevToolsEnabled
+          aOptions.UseReduxDevTools( o => o.Name = "YoYo");
+  #endif
+          aOptions.Assemblies =
+            new Assembly[]
+            {
+                  typeof(Program).GetTypeInfo().Assembly,
+            };
       }
     );
     aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));

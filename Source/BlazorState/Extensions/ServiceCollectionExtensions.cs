@@ -176,7 +176,7 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddTransient<IRequestHandler<StartRequest, Unit>, StartHandler>();
       serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
 
-      serviceCollection.AddScoped<ReduxDevToolsOptions>();
+      serviceCollection.AddSingleton<ReduxDevToolsOptions>(reduxDevToolsOptions);
     }
 
     return aBlazorStateOptions;
