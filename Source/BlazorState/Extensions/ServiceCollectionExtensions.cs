@@ -10,6 +10,7 @@ using MediatR;
 using MediatR.Pipeline;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
@@ -28,20 +29,18 @@ public static class ServiceCollectionExtensions
   /// <param name="aConfigureBlazorStateOptionsAction"></param>
   /// <returns></returns>
   /// <example></example>
-  /// <remarks>The order of registration matters.
-  /// If the user wants to change they can configure themselves vs using this extension</remarks>
+  /// <remarks>
+  /// The order of registration matters.
+  /// If the user wants to change the order they can configure themselves vs using this extension
+  /// </remarks>
   public static IServiceCollection AddBlazorState
   (
     this IServiceCollection aServiceCollection,
     Action<BlazorStateOptions> aConfigureBlazorStateOptionsAction = null
   )
   {
-    ServiceDescriptor flagServiceDescriptor = aServiceCollection.FirstOrDefault
-    (
-      aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(BlazorHostingLocation)
-    );
-
-    if (flagServiceDescriptor == null)
+    // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
+    if (!aServiceCollection.HasRegistrationFor(typeof(Subscriptions)))
     {
       var blazorStateOptions = new BlazorStateOptions();
       aConfigureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
@@ -92,7 +91,7 @@ public static class ServiceCollectionExtensions
     if (blazorHostingLocation.IsServerSide)
     {
       // Double check that nothing is registered.
-      if (!aServiceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(HttpClient)))
+      if (!aServiceCollection.HasRegistrationFor(typeof(HttpClient)))
       {
         // Setup HttpClient for server side in a client side compatible fashion
         aServiceCollection.AddScoped<HttpClient>
@@ -118,12 +117,7 @@ public static class ServiceCollectionExtensions
   /// <param name="aServiceCollection"></param>
   private static void EnsureLogger(IServiceCollection aServiceCollection)
   {
-    ServiceDescriptor loggerServiceDescriptor = aServiceCollection.FirstOrDefault
-    (
-      aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(ILogger<>)
-    );
-
-    if (loggerServiceDescriptor == null)
+    if(!aServiceCollection.HasRegistrationFor(typeof(ILogger<>)))
     {
       aServiceCollection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
     }
@@ -136,12 +130,7 @@ public static class ServiceCollectionExtensions
   /// <param name="aBlazorStateOptions"></param>
   private static void EnsureMediator(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
   {
-    ServiceDescriptor mediatorServiceDescriptor = aServiceCollection.FirstOrDefault
-    (
-      aServiceDescriptor => aServiceDescriptor.ServiceType == typeof(IMediator)
-    );
-
-    if (mediatorServiceDescriptor == null)
+    if(!aServiceCollection.HasRegistrationFor(typeof(IMediator)))
     {
       aServiceCollection.AddMediatR(aBlazorStateOptions.Assemblies.ToArray());
     }
@@ -154,20 +143,25 @@ public static class ServiceCollectionExtensions
       IEnumerable<Type> types = assembly.GetTypes().Where
       (
         aType =>
-        !aType.IsAbstract &&
-        !aType.IsInterface &&
-        aType.BaseType != null &&
-        aType.BaseType.IsGenericType &&
-        aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
+          !aType.IsAbstract &&
+          !aType.IsInterface &&
+          aType.BaseType != null &&
+          aType.BaseType.IsGenericType &&
+          aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
       );
 
       foreach (Type type in types)
       {
-        if (!aServiceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == type))
-        {
-          aServiceCollection.AddTransient(type);
-        }
+        aServiceCollection.TryAddTransient(type);
       }
     }
+  }
+
+  private static bool HasRegistrationFor(this IServiceCollection aServiceCollection, Type aType)
+  {
+    return aServiceCollection.Any
+    (
+      aServiceDescriptor => aServiceDescriptor.ServiceType == aType
+    );
   }
 }
