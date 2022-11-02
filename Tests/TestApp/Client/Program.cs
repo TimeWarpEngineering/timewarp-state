@@ -46,7 +46,7 @@ public class Program
       (aOptions) =>
       {
 #if ReduxDevToolsEnabled
-        aOptions.UseReduxDevToolsBehavior = true;
+        aOptions.UseReduxDevTools();
 #endif
         aOptions.Assemblies =
       new Assembly[]

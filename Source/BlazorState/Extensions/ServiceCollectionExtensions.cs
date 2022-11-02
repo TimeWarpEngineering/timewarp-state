@@ -42,7 +42,7 @@ public static class ServiceCollectionExtensions
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
     if (!aServiceCollection.HasRegistrationFor(typeof(Subscriptions)))
     {
-      var blazorStateOptions = new BlazorStateOptions();
+      var blazorStateOptions = new BlazorStateOptions(aServiceCollection);
       aConfigureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
 
       EnsureLogger(aServiceCollection);
@@ -61,16 +61,7 @@ public static class ServiceCollectionExtensions
       {
         aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
       }
-      if (blazorStateOptions.UseReduxDevToolsBehavior)
-      {
-        aServiceCollection.AddScoped(typeof(IRequestPostProcessor<,>), typeof(ReduxDevToolsPostProcessor<,>));
-        aServiceCollection.AddScoped<ReduxDevToolsInterop>();
 
-        aServiceCollection.AddTransient<IRequestHandler<CommitRequest, Unit>, CommitHandler>();
-        aServiceCollection.AddTransient<IRequestHandler<JumpToStateRequest, Unit>, JumpToStateHandler>();
-        aServiceCollection.AddTransient<IRequestHandler<StartRequest, Unit>, StartHandler>();
-        aServiceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
-      }
       if (blazorStateOptions.UseRouting)
       {
         aServiceCollection.AddScoped<RouteManager>();
@@ -163,5 +154,31 @@ public static class ServiceCollectionExtensions
     (
       aServiceDescriptor => aServiceDescriptor.ServiceType == aType
     );
+  }
+
+  public static BlazorStateOptions UseReduxDevTools
+  (
+    this BlazorStateOptions aBlazorStateOptions,
+    Action<ReduxDevToolsOptions> aReduxDevToolsOptionsAction = null
+  )
+  {
+    IServiceCollection serviceCollection = aBlazorStateOptions.ServiceCollection;
+    if(!serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions)))
+    {
+      var reduxDevToolsOptions = new ReduxDevToolsOptions();
+      aReduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
+
+      serviceCollection.AddScoped(typeof(IRequestPostProcessor<,>), typeof(ReduxDevToolsPostProcessor<,>));
+      serviceCollection.AddScoped<ReduxDevToolsInterop>();
+
+      serviceCollection.AddTransient<IRequestHandler<CommitRequest, Unit>, CommitHandler>();
+      serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest, Unit>, JumpToStateHandler>();
+      serviceCollection.AddTransient<IRequestHandler<StartRequest, Unit>, StartHandler>();
+      serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
+
+      serviceCollection.AddScoped<ReduxDevToolsOptions>();
+    }
+
+    return aBlazorStateOptions;
   }
 }

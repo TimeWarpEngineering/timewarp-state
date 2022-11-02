@@ -1,5 +1,6 @@
 namespace BlazorState;
 
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
@@ -13,14 +14,15 @@ public class BlazorStateOptions
 
   public bool UseCloneStateBehavior { get; set; } = true;
 
-  public bool UseReduxDevToolsBehavior { get; set; } = false;
-
   public bool UseRouting { get; set; } = true;
 
   public JsonSerializerOptions JsonSerializerOptions { get; }
+  
+  public readonly IServiceCollection ServiceCollection;
 
-  public BlazorStateOptions()
+  public BlazorStateOptions(IServiceCollection aServiceCollection)
   {
+    ServiceCollection = aServiceCollection;
     Assemblies = Array.Empty<Assembly>();
     JsonSerializerOptions = new JsonSerializerOptions
     {
