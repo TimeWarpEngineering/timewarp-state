@@ -24,7 +24,7 @@ export class ReduxDevTools {
   };
   BlazorState: BlazorState;
 
-  constructor() {
+  constructor( ) {
     this.BlazorState = blazorState;
     this.Config = {
       name: 'Blazor State',
