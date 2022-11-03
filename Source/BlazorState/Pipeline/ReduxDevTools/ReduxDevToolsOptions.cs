@@ -33,7 +33,20 @@ public sealed class ReduxDevToolsOptions
   // shouldStartLocked
   // shouldHotReload
   // shouldCatchErrors
-  public TFeatures Features {get; set;}
+  public TFeatures Features {get; set;} = 
+    new TFeatures
+    (
+      Pause: false,
+      Lock: false,
+      Persist: false,
+      Export: false,
+      Import: null,
+      Jump: false,
+      Skip: false,
+      Reorder: false,
+      Dispatch: false,
+      Test: false
+    );
 
   /// <summary>
   /// 
