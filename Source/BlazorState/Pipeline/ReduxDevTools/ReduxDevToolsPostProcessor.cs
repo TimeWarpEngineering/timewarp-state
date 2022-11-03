@@ -1,3 +1,4 @@
+#nullable enable
 namespace BlazorState.Pipeline.ReduxDevTools;
 
 using BlazorState;
@@ -5,8 +6,10 @@ using MediatR;
 using MediatR.Pipeline;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +19,7 @@ using System.Threading.Tasks;
 /// </summary>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
-public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : IRequest<TResponse>
 {
   private readonly ILogger Logger;
@@ -25,9 +28,9 @@ public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProce
   private readonly IReduxDevToolsStore Store;
   private readonly Regex TraceFilterRegex;
 
-  public ReduxDevToolsPostProcessor
+  public ReduxDevToolsBehavior
   (
-    ILogger<ReduxDevToolsPostProcessor<TRequest, TResponse>> aLogger,
+    ILogger<ReduxDevToolsBehavior<TRequest, TResponse>> aLogger,
     ReduxDevToolsInterop aReduxDevToolsInterop,
     ReduxDevToolsOptions aReduxDevToolsOptions,
     IReduxDevToolsStore aStore
@@ -41,26 +44,60 @@ public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProce
     TraceFilterRegex = new Regex(aReduxDevToolsOptions.TraceFilterExpression);
   }
 
-  public async Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
+  public async Task<TResponse> Handle
+  (
+    TRequest aRequest,
+    RequestHandlerDelegate<TResponse> aNext,
+    CancellationToken aCancellationToken
+  )
   {
+    Logger.LogDebug("{classname}: Start", GetType().Name);
+
+    string? stackTrace = null;
+    int maxItems = ReduxDevToolsOptions.TraceLimit == 0 ? int.MaxValue : ReduxDevToolsOptions.TraceLimit;
+    StringBuilder stringBuilder = new();
+    if (ReduxDevToolsOptions.Trace)
+      stackTrace =
+        string.Join
+        (
+          "\r\n",
+          new StackTrace(fNeedFileInfo: true)
+            .GetFrames()
+            .Select
+            (
+              aStackFrame =>
+              {
+                stringBuilder.Clear();
+                stringBuilder.Append("at ");
+                stringBuilder.Append(aStackFrame.GetMethod()?.DeclaringType?.FullName);
+                stringBuilder.Append('.');
+                stringBuilder.Append(aStackFrame.GetMethod()?.Name);
+                stringBuilder.Append(' ');
+                if (aStackFrame.GetFileName() is not null)
+                {
+                  stringBuilder.Append('(');
+                  stringBuilder.Append(aStackFrame.GetFileName());
+                  stringBuilder.Append(':');
+                  stringBuilder.Append(aStackFrame.GetFileLineNumber());
+                  stringBuilder.Append(':');
+                  stringBuilder.Append(aStackFrame.GetFileColumnNumber());
+                  stringBuilder.Append(')');
+                }
+                return stringBuilder.ToString();                
+              }
+            )
+            .Where(x => TraceFilterRegex?.IsMatch(x) != false)
+            .Take(maxItems)
+        );
+
+    Logger.LogDebug("{classname}: Call next", GetType().Name);
+    TResponse response = await aNext();
+
     try
     {
-      Logger.LogDebug(EventIds.ReduxDevToolsPostProcessor_Begin, "Begin Post Processing");
-
+      Logger.LogDebug("{classname}: Start", GetType().Name);
       if (aRequest is not IReduxRequest)
       {
-        string fakeStack = "YoYo\nat someplace (filename:10:11)";
-        string stackTrace = fakeStack;
-        int maxItems = ReduxDevToolsOptions.TraceLimit == 0 ? int.MaxValue : ReduxDevToolsOptions.TraceLimit;
-        if (ReduxDevToolsOptions.Trace)
-          stackTrace =
-            string.Join("\r\n",
-              new StackTrace(fNeedFileInfo: true)
-                .GetFrames()
-                .Select(x => $"at {x.GetMethod().DeclaringType.FullName}.{x.GetMethod().Name} ({x.GetFileName()}:{x.GetFileLineNumber()}:{x.GetFileColumnNumber()})")
-                .Where(x => TraceFilterRegex?.IsMatch(x) != false)
-                .Take(maxItems));
-
         await ReduxDevToolsInterop.DispatchAsync(aRequest, Store.GetSerializableState(), stackTrace);
       }
       Logger.LogDebug(EventIds.ReduxDevToolsPostProcessor_End, "Post Processing Completed");
@@ -76,5 +113,6 @@ public class ReduxDevToolsPostProcessor<TRequest, TResponse> : IRequestPostProce
 
       throw;
     }
+    return response;
   }
 }
