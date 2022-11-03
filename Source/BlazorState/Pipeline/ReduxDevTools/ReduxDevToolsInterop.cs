@@ -32,7 +32,7 @@ public class ReduxDevToolsInterop
     JSRuntime = aJSRuntime;
   }
 
-  public async Task DispatchAsync<TRequest>(TRequest aRequest, object aState)
+  public async Task DispatchAsync<TRequest>(TRequest aRequest, object aState, string aStackTrace)
   {
     if (IsEnabled)
     {
@@ -45,7 +45,7 @@ public class ReduxDevToolsInterop
         aRequest.GetType().FullName
       );
 
-      await JSRuntime.InvokeAsync<object>(JsFunctionName, reduxAction, aState);
+      await JSRuntime.InvokeAsync<object>(JsFunctionName, reduxAction, aState, aStackTrace);
     }
   }
 
