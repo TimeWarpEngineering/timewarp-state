@@ -1,6 +1,7 @@
 namespace TestApp.Client;
 
 using BlazorState;
+using BlazorState.Pipeline.ReduxDevTools;
 using MediatR;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,14 +46,22 @@ public class Program
     (
       aOptions =>
       {
-  #if ReduxDevToolsEnabled
-          aOptions.UseReduxDevTools( o => o.Name = "YoYo");
-  #endif
-          aOptions.Assemblies =
-            new Assembly[]
+#if ReduxDevToolsEnabled
+        aOptions
+        .UseReduxDevTools
+        (
+          aReduxDevToolsOptions => 
             {
-                  typeof(Program).GetTypeInfo().Assembly,
-            };
+              aReduxDevToolsOptions.Name = "Test App";
+              aReduxDevToolsOptions.Trace = true; 
+            }
+        );
+#endif
+        aOptions.Assemblies =
+          new Assembly[]
+          {
+                typeof(Program).GetTypeInfo().Assembly,
+          };
       }
     );
     aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));
