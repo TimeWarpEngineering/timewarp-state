@@ -14,6 +14,13 @@ public sealed class ReduxDevToolsOptions
   public int MaxAge { get; set; }
   public bool Trace { get; set; }
   public int TraceLimit { get; set; }
+  public string TraceFilterExpression { get; set; } =
+        @"^(?:(?!\b" +
+        @"System" +
+        @"|Microsoft" +
+        @"|MediatR" +
+        @"|ReduxDevTools" +
+        @"\b).)*$";
   // serialize is not implemented thus will use JSON.stringy
   // actionSanitizer
   // stateSanitizer
