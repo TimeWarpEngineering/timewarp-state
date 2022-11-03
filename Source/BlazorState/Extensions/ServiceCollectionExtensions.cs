@@ -168,7 +168,7 @@ public static class ServiceCollectionExtensions
       var reduxDevToolsOptions = new ReduxDevToolsOptions();
       aReduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
 
-      serviceCollection.AddScoped(typeof(IRequestPostProcessor<,>), typeof(ReduxDevToolsPostProcessor<,>));
+      serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
       serviceCollection.AddScoped<ReduxDevToolsInterop>();
 
       serviceCollection.AddTransient<IRequestHandler<CommitRequest, Unit>, CommitHandler>();
