@@ -1,6 +1,7 @@
 ﻿import { blazorState, BlazorState } from './BlazorState.js';
-import { ReduxExtensionName, DevToolsName} from './Constants.js';
+import { ReduxExtensionName, DevToolsName, ReduxDevToolsName} from './Constants.js';
 
+type traceType = (action) => string;
 //see reduxjs/redux-devtools/packages/redux-devtools-extension/src/index.ts for types
 export class ReduxDevTools {
   IsEnabled: boolean;
@@ -8,7 +9,7 @@ export class ReduxDevTools {
   Extension: any;
   Config: {
     name: string;
-    trace: boolean;
+    trace: boolean | traceType;
     features: {
       pause: boolean;
       lock: boolean;
@@ -23,12 +24,17 @@ export class ReduxDevTools {
     };
   };
   BlazorState: BlazorState;
+  StackTrace: string | undefined;
 
   constructor(reduxDevToolsOptions) {
-    console.log("constructing ReduxDevTools")
+    console.log("constructing ReduxDevTools with the following options")
     console.log(reduxDevToolsOptions);
+    
     this.BlazorState = blazorState;
     this.Config = reduxDevToolsOptions;
+    if (this.Config.trace) {
+      this.Config.trace = this.GetStackTraceForAction;
+    }
     this.Extension = this.GetExtension();
     this.DevTools = this.GetDevTools();
     this.IsEnabled = this.DevTools ? true : false;
@@ -110,12 +116,17 @@ export class ReduxDevTools {
       console.log(`messages of this type are currently not supported`);
   }
 
-  ReduxDevToolsDispatch(action, state) {
+  ReduxDevToolsDispatch(action, state, stackTrace) {
     if (action === 'init') {
       return window[DevToolsName].init(state);
     }
     else {
+      window[ReduxDevToolsName].StackTrace = stackTrace;
       return window[DevToolsName].send(action, state);
     }
+  }
+
+  GetStackTraceForAction(action): string {
+    return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (nofile:0:0)";
   }
 }
