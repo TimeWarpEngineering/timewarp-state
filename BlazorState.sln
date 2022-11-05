@@ -37,8 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{FA45
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{243A5B2C-5E9D-432B-A258-7BCE33645683}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "BlazorState.Js", "Source\BlazorState.Js\BlazorState.Js.esproj", "{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Samples\Tutorial\Sample\Server\Sample.Server.csproj", "{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\Tutorial\Sample\Shared\Sample.Shared.csproj", "{845B863B-C1DB-4C17-8975-FBD380FBD1EC}"
@@ -94,15 +92,6 @@ Global
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.ReduxDevToolsEnabled|Any CPU.Build.0 = ReduxDevToolsEnabled|Any CPU
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F8DBDA6-780A-414E-8517-E96A1B9536E1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.ReduxDevToolsEnabled|Any CPU.Deploy.0 = Release|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A63F7FA-E718-4C0E-8548-76A2B7B41EDF}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU

@@ -35,8 +35,8 @@ public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
   public async Task<TResponse> Handle
   (
     TRequest aRequest,
-    CancellationToken aCancellationToken,
-    RequestHandlerDelegate<TResponse> aNext
+    RequestHandlerDelegate<TResponse> aNext,
+    CancellationToken aCancellationToken
   )
   {
     if (aNext is null)

@@ -14,19 +14,24 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Fixie" />
+    <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="System.Text.Json"/>
-    <DotNetCliToolReference Include="Fixie.Console" Version="2.2.2" />
+    <PackageReference Include="TimeWarp.Fixie" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TestApp\Client\TestApp.Client.csproj" />
     <ProjectReference Include="..\TestApp\Server\TestApp.Server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="TimeWarp.Fixie"/>
+    <Using Include="BlazorState"/>
   </ItemGroup>
 
   <ItemGroup>

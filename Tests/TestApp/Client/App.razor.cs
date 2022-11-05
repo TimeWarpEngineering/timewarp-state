@@ -17,7 +17,6 @@ public partial class App : ComponentBase
 
   protected override async Task OnAfterRenderAsync(bool aFirstRender)
   {
-    ; // Keeps dotner format from thinking it is single line
 #if ReduxDevToolsEnabled
     await ReduxDevToolsInterop.InitAsync();
 #endif

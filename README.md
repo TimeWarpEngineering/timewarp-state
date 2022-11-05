@@ -16,7 +16,7 @@
 
 ![TimeWarp Logo](Assets/Logo.png)
 
-Blazor-State is a State Management architecture utilizing the MediatR pipeline.
+Blazor-State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
 
 ## Give a Star! :star:
 
@@ -24,17 +24,21 @@ If you like or are using this project please give it a star. Thank you!
 
 ## Getting started
 
-To quickly get started I recommend the [tutorial](https://timewarpengineering.github.io/blazor-state/Tutorial.html) section of the full [Documentation](https://timewarpengineering.github.io/blazor-state/)
+To quickly get started I recommend the [tutorial](https://timewarpengineering.github.io/blazor-state/Tutorial.html) section of the full [Documentation](https://timewarpengineering.github.io/blazor-state/).
 
 ## Installation
+
+```console
+dotnet add package Blazor-State
+```
 
 You can see the latest NuGet packages from the official [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
 * [Blazor-State](https://www.nuget.org/packages/Blazor-State/) [![nuget](https://img.shields.io/nuget/v/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 
-```console
-dotnet add package Blazor-State
-```
+## Releases
+
+See the [Release Notes](https://timewarpengineering.github.io/blazor-state/ReleaseNotes/Release5.0.0.html)
 
 ## Unlicense
 
@@ -42,7 +46,7 @@ dotnet add package Blazor-State
 
 ## Contributing
 
-Time is of the essence.  Before developing a Pull Request I recommend opening an [discussion](https://github.com/TimeWarpEngineering/blazor-state/discussions).
+Time is of the essence.  Before developing a Pull Request I recommend opening a [discussion](https://github.com/TimeWarpEngineering/blazor-state/discussions).
 
 Please feel free to make suggestions and help out with the [documentation](https://timewarpengineering.github.io/blazor-state/).
 Please refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.

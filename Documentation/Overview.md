@@ -54,7 +54,6 @@ If you would like a basic step by step on adding blazor-state to the `blazorwasm
 
 To create a distributed application that utilizes blazor-state see the [timewarp-architecture template.](https://timewarpengineering.github.io/timewarp-architecture/TimeWarpBlazorTemplate/Overview.html)
 
-
 ## The Blazor-State Architecture
 
 ### Store 1..* State
@@ -70,12 +69,12 @@ Store.GetState<YourState>()
 or move the GetState functionality into your component
 
 ```csharp
-    protected T GetState<T>()
-    {
-      Type stateType = typeof(T);
-      Subscriptions.Add(stateType, this);
-      return Store.GetState<T>();
-    }
+  protected T GetState<T>()
+  {
+    Type stateType = typeof(T);
+    Subscriptions.Add(stateType, this);
+    return Store.GetState<T>();
+  }
 ```
 
 ### Pipeline
@@ -142,6 +141,7 @@ if the developer chose they could mark the Requests as such. For example **IActi
 [!include[Contributing](Partials/contributing.md)]
 
 #### Footnotes:
+
 [^1]: https://github.com/jbogard/MediatR
 
 [^2]: https://redux.js.org/
@@ -152,4 +152,4 @@ if the developer chose they could mark the Requests as such. For example **IActi
 
 [^5]: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 
-[^6]: https://github.com/zalmoxisus/redux-devtools-extension)
+[^6]: https://github.com/reduxjs/redux-devtools

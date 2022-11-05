@@ -35,6 +35,12 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     -->
   </PropertyGroup>
+  <ItemGroup>
+    <TypeScriptCompile Remove="wwwroot\js\blazor-state.lib.module.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\BlazorState.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\Constants.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\ReduxDevTools.ts" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
@@ -60,6 +66,7 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" />
     <PackageReference Include="TypeSupport" />
   </ItemGroup>
 
@@ -73,18 +80,9 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+    <None Include="wwwroot\js\blazor-state.lib.module.ts" />
+    <None Include="wwwroot\js\BlazorState.ts" />
+    <None Include="wwwroot\js\Constants.ts" />
+    <None Include="wwwroot\js\ReduxDevTools.ts" />
   </ItemGroup>
-
-  <!-- TypeScript project-->
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-    <Folder Include="wwwroot\js\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <!-- End TypeScript project-->
-  
 </Project>
