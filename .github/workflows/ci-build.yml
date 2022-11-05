@@ -25,7 +25,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -45,3 +44,5 @@ jobs:
           dotnet tool restore
           dotnet restore
           dotnet fixie --configuration Debug          
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."
