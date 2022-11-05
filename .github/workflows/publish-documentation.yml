@@ -33,25 +33,25 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Setup DocFX
-        uses: crazy-max/ghaction-chocolatey@v1
-        with:
-          args: install docfx
+      # - name: Setup DocFX
+      #   uses: crazy-max/ghaction-chocolatey@v1
+      #   with:
+      #     args: install docfx
 
       - name: Build
         run: |
           cd Source/BlazorState/
           dotnet build --configuration Release
 
-      - name: DocFX Build
-        working-directory: Documentation
-        run: docfx docfx.json
-        continue-on-error: false
+      # - name: DocFX Build
+      #   working-directory: Documentation
+      #   run: docfx docfx.json
+      #   continue-on-error: false
 
-      # - name: Build Documentation
-      #   uses: nikeee/docfx-action@v1.0.0
-      #   with:
-      #     args: Documentation/docfx.json
+      - name: Build Documentation
+        uses: nikeee/docfx-action@v1.0.0
+        with:
+          args: Documentation/docfx.json
 
       # Publish generated site using GitHub Pages
       - name: Publish Documentation on GitHub Pages
