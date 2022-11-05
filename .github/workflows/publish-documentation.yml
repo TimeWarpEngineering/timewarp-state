@@ -1,9 +1,11 @@
 ﻿name: Publish Documentation
 
 on:
+  # Runs on pushes targeting the default branch
   push:
     branches:
       - master
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
@@ -11,8 +13,22 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
   DOTNET_CLI_TELEMETRY_OPTOUT: true 
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  build:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}  
     runs-on: windows-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -48,14 +64,14 @@ jobs:
         run: docfx docfx.json
         continue-on-error: false
 
-      # - name: Build Documentation
-      #   uses: nikeee/docfx-action@v1.0.0
-      #   with:
-      #     args: Documentation/docfx.json
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: './Documentation/_site'
 
-      # Publish generated site using GitHub Pages
-      - name: Publish Documentation on GitHub Pages
-        uses: maxheld83/ghpages@master
-        env:
-          BUILD_DIR: Documentation/_site # docfx's default output directory is _site
-          GH_PAT: ${{ secrets.GH_PAT }} # See https://github.com/maxheld83/ghpages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
