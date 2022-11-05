@@ -13,13 +13,13 @@ builder.Services.AddBlazorState
 (
     (aOptions) =>
     {
-        aOptions.UseReduxDevToolsBehavior = true;
-        aOptions.Assemblies =
-        new Assembly[]
-        {
+      aOptions.UseReduxDevTools();
+      aOptions.Assemblies =
+      new Assembly[]
+      {
             typeof(Program).GetTypeInfo().Assembly,
-        };
+      };
     }
 );
 
-await builder.Build().RunAsync();    
+await builder.Build().RunAsync();

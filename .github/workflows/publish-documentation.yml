@@ -42,7 +42,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -75,3 +74,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."

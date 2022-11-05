@@ -62,7 +62,7 @@ Add the Blazor-State NuGet package to the `Sample.Client` project.
 With the mediator pattern for each `Request/Action` there is an associated `Handler`
 and possibly other items like a `Validator`, `Mapper` etc...
 These associated items are what we call a `Feature`.
-Let's organize the Features by the State they act upon.
+Let's organize the `Features` by the `State` they act upon.
 
 1. In the Client project add a folder named `Features`.
 
@@ -277,7 +277,7 @@ builder.Services.AddBlazorState
 (
     (aOptions) =>
     {
-        aOptions.UseReduxDevToolsBehavior = true;
+        aOptions.UseReduxDevTools();
         aOptions.Assemblies =
         new Assembly[]
         {
