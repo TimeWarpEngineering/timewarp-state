@@ -8,8 +8,8 @@ title: Release 6.0.0
 ### Breaking Changes
 
 * Blazor-State has moved from MediatR 10 to 11
-* UseReduxDevToolsBehavior changes from bool to a function that uses the options pattern.
-  This now gives us the ability to enable stack traces in ReduxDevTools
+* UseReduxDevToolsBehavior changes from a boolean to a function that uses the options pattern.
+  This now gives the ability to enable stack traces in ReduxDevTools.
 
 See [Migrations](xref:BlazorState:Migration5-6.md) for how to migrate existing projects from 5.0 to 6.0.
 

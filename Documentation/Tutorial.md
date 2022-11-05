@@ -35,7 +35,7 @@ info: Microsoft.Hosting.Lifetime[0]
       Content root path: C:\Temp\Sample\Server\
 ```
 
-Open a browser and enter <https://localhost:7153>
+Open a browser and enter the https URL from the above step. <https://localhost:7153>
 
 You should see:
 
