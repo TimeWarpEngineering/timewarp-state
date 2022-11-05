@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageVersion Include="AnyClone" Version="1.1.6" />
     <PackageVersion Include="Blazor-State" Version="5.0.3" />
-    <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
+    <PackageVersion Include="coverlet.msbuild" Version="3.2.0" />
     <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
     <PackageVersion Include="FakeItEasy" Version="7.3.1" />
     <PackageVersion Include="Fixie" Version="3.2.0" />
