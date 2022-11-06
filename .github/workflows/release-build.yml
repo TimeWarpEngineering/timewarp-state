@@ -39,6 +39,12 @@ jobs:
         with:
           node-version: 17.x
 
+      - name: Build esproj
+        run: |
+          cd Source/BlazorState.Js/
+          npm install
+          npm run build
+
       - name: Build
         run: |
           cd Source/BlazorState/

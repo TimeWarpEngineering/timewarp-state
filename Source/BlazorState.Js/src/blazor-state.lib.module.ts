@@ -12,8 +12,8 @@ function InitializeJavaScriptInterop(JsonRequestHandler) {
   blazorState.jsonRequestHandler = JsonRequestHandler;
 };
 
-function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
-  const reduxDevTools = new ReduxDevTools(reduxDevToolsOptions);
+function ReduxDevToolsFactory(): boolean {
+  const reduxDevTools = new ReduxDevTools();
   blazorState.reduxDevTools = reduxDevTools;
   window[ReduxDevToolsName] = reduxDevTools;
   return reduxDevTools.IsEnabled;

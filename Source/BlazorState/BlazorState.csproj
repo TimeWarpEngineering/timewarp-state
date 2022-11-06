@@ -2,7 +2,7 @@
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/RazorClassLibrary-CSharp.csproj.in -->
   <PropertyGroup>
-    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <IsPackable>true</IsPackable>
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>true</IncludeBuildOutput>
@@ -35,12 +35,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     -->
   </PropertyGroup>
-  <ItemGroup>
-    <TypeScriptCompile Remove="wwwroot\js\blazor-state.lib.module.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\BlazorState.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\Constants.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\ReduxDevTools.ts" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
@@ -50,8 +44,6 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
-    <TypescriptOutDir>wwwroot/js</TypescriptOutDir>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
@@ -68,10 +60,13 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" />
     <PackageReference Include="TypeSupport" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+  
   <ItemGroup>
     <InternalsVisibleTo Include="TestApp.Client.Integration.Tests" />
   </ItemGroup>
@@ -82,9 +77,18 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
-    <None Include="wwwroot\js\blazor-state.lib.module.ts" />
-    <None Include="wwwroot\js\BlazorState.ts" />
-    <None Include="wwwroot\js\Constants.ts" />
-    <None Include="wwwroot\js\ReduxDevTools.ts" />
   </ItemGroup>
+
+  <!-- TypeScript project-->
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorState.Js\BlazorState.Js.esproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <!-- End TypeScript project-->
+ 
 </Project>
