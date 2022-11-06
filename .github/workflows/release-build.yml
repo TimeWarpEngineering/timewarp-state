@@ -44,6 +44,8 @@ jobs:
           dotnet build --configuration Release
 
       - name: Publish
-        run: dotnet nuget push Source/BlazorState/bin/Packages/Blazor-State.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+        run: |
+          cd Source/BlazorState/bin/Packages
+          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
