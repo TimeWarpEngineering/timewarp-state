@@ -44,24 +44,21 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
   </PropertyGroup>
 
-  <ItemGroup>
-    <TypeScriptCompile Remove="wwwroot\js\blazor-state.lib.module.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\BlazorState.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\Constants.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\ReduxDevTools.ts" />
-  </ItemGroup>
+  <!--<ItemGroup>
+    <TypeScriptCompile Remove="wwwroot/**/*" />
+  </ItemGroup>-->
 
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <TypeScriptTarget>ES2022</TypeScriptTarget>
     <TypeScriptModuleKind>ES2022</TypeScriptModuleKind>
-    <TypeScriptSourceMap>true</TypeScriptSourceMap>
-    
+    <TypeScriptSourceMap>false</TypeScriptSourceMap>
     <TypeScriptOutDir>wwwroot/js</TypeScriptOutDir>
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
     <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
@@ -74,12 +71,19 @@
     <TypeScriptNoImplicitThis>false</TypeScriptNoImplicitThis>
     <TypeScriptAlwaysStrict>false</TypeScriptAlwaysStrict>
     <TypeScriptSkipLibCheck>false</TypeScriptSkipLibCheck>
-  </PropertyGroup>
+  </PropertyGroup>-->
     
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
     <DefineConstants>TRACE; EnableRedux</DefineConstants>
   </PropertyGroup>
+
+  <!--<ItemGroup>
+    <Content Remove="wwwroot\js\blazor-state.lib.module.js" />
+    <Content Remove="wwwroot\js\BlazorState.js" />
+    <Content Remove="wwwroot\js\Constants.js" />
+    <Content Remove="wwwroot\js\ReduxDevTools.js" />
+  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="AnyClone" />
@@ -111,9 +115,24 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+    <!--<None Include="wwwroot\js\blazor-state.lib.module.js" />
+    <None Include="wwwroot\js\Constants.js" />
+    <None Include="wwwroot\js\ReduxDevTools.js" />-->
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\js\" />
   </ItemGroup>
+  
+  <!--<Target Name="BeforeBuild">
+    <ItemGroup>
+      <FilesToClean Include="wwwroot\js\**\*.*" />
+
+      --><!-- Bit of .Net to get all folders and subfolders --><!--
+      <FoldersToClean Include="$([System.IO.Directory]::GetDirectories(&quot;wwwroot\js&quot;))" />
+    </ItemGroup>
+
+    <Delete Files="@(FilesToClean)" />
+    <RemoveDir Directories="@(FoldersToClean)" />
+  </Target>-->
 </Project>
