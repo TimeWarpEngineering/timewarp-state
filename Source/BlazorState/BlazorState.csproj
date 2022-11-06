@@ -2,7 +2,7 @@
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/RazorClassLibrary-CSharp.csproj.in -->
   <PropertyGroup>
-    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <IsPackable>true</IsPackable>
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>true</IncludeBuildOutput>
@@ -35,12 +35,6 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     -->
   </PropertyGroup>
-  <ItemGroup>
-    <TypeScriptCompile Remove="wwwroot\js\blazor-state.lib.module.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\BlazorState.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\Constants.ts" />
-    <TypeScriptCompile Remove="wwwroot\js\ReduxDevTools.ts" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
@@ -50,13 +44,39 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
-    <TypescriptOutDir>wwwroot/js</TypescriptOutDir>
+    <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>    
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Remove="wwwroot\js\blazor-state.lib.module.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\BlazorState.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\Constants.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\ReduxDevTools.ts" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TypeScriptTarget>ES2022</TypeScriptTarget>
+    <TypeScriptModuleKind>ES2022</TypeScriptModuleKind>
+    <TypeScriptSourceMap>true</TypeScriptSourceMap>
+    
+    <TypeScriptOutDir>wwwroot/js</TypeScriptOutDir>
+    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
+    <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
+    <TypeScriptForceConsistentCasingInFileNames>true</TypeScriptForceConsistentCasingInFileNames>
+    <TypeScriptStrict>false</TypeScriptStrict>
+    <TypeScriptNoImplicitAny>false</TypeScriptNoImplicitAny>
+    <TypeScriptStrictNullChecks>false</TypeScriptStrictNullChecks>
+    <TypeScriptStrictFunctionTypes>false</TypeScriptStrictFunctionTypes>
+    <TypeScriptStrictBindCallApply>false</TypeScriptStrictBindCallApply>
+    <TypeScriptNoImplicitThis>false</TypeScriptNoImplicitThis>
+    <TypeScriptAlwaysStrict>false</TypeScriptAlwaysStrict>
+    <TypeScriptSkipLibCheck>false</TypeScriptSkipLibCheck>
+  </PropertyGroup>
+    
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
     <DefineConstants>TRACE; EnableRedux</DefineConstants>
@@ -68,10 +88,20 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" />
     <PackageReference Include="TypeSupport" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+  
   <ItemGroup>
     <InternalsVisibleTo Include="TestApp.Client.Integration.Tests" />
   </ItemGroup>
@@ -82,9 +112,9 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
-    <None Include="wwwroot\js\blazor-state.lib.module.ts" />
-    <None Include="wwwroot\js\BlazorState.ts" />
-    <None Include="wwwroot\js\Constants.ts" />
-    <None Include="wwwroot\js\ReduxDevTools.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 </Project>
