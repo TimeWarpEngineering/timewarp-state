@@ -27,6 +27,7 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+        shell: pwsh
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -42,10 +43,12 @@ jobs:
         run: |
           cd Source/BlazorState/
           dotnet build --configuration Release
+        shell: pwsh
 
       - name: Publish
         run: |
           cd Source/BlazorState/bin/Packages
-          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --no-symbols --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+        shell: pwsh
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
