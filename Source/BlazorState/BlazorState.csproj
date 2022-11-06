@@ -18,7 +18,7 @@
     <PackageIcon>Logo.png</PackageIcon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-  
+
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
   <PropertyGroup>
     <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
@@ -29,7 +29,7 @@
 
     <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
     <DebugType>embedded</DebugType>
-    
+
     <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -75,7 +75,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="TestApp.Client.Integration.Tests" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
