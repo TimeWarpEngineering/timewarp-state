@@ -44,7 +44,6 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>    
     <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
