@@ -36,11 +36,11 @@ jobs:
         with:
           node-version: 17.x
 
-      - name: Build esproj
+      - name: Build
         run: |
-          cd Source/BlazorState.Js/
-          npm install
-          npm run build
+          cd Source/BlazorState/
+          dotnet build --configuration Debug
+        shell: pwsh
 
       - name: Client.Integration.Tests
         run: |
@@ -48,12 +48,14 @@ jobs:
           dotnet tool restore
           dotnet restore
           dotnet fixie --configuration Debug
+        shell: pwsh
 
       - name: Server.Integration.Tests
         run: |
           cd Tests/Server.Integration.Tests/
           dotnet tool restore
           dotnet restore
-          dotnet fixie --configuration Debug          
+          dotnet fixie --configuration Debug
+        shell: pwsh
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

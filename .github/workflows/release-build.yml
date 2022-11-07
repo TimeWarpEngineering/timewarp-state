@@ -34,21 +34,11 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 17.x
-
-      - name: Build esproj
-        run: |
-          cd Source/BlazorState.Js/
-          npm install
-          npm run build
-
-      - name: Build
+      - name: Pack
         run: |
           cd Source/BlazorState/
-          dotnet build --configuration Release
+          dotnet clean
+          dotnet pack --configuration Release
         shell: pwsh
 
       - name: Publish
