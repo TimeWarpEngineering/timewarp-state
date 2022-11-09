@@ -38,7 +38,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" >
+    <PackageReference Include="Microsoft.TypeScript.MSBuild">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -70,6 +70,10 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\**\*" />
+  </ItemGroup>
   
   <ItemGroup>
     <InternalsVisibleTo Include="TestApp.Client.Integration.Tests" />
@@ -81,6 +85,10 @@
       <PackagePath>\</PackagePath>
     </None>
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
   
   <PropertyGroup>
