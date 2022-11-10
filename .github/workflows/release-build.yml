@@ -38,6 +38,7 @@ jobs:
         run: |
           cd Source/BlazorState/
           dotnet clean
+          dotnet build --configuration Release
           dotnet pack --configuration Release
         shell: pwsh
 
