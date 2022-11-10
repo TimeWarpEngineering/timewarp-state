@@ -1,30 +1,40 @@
 ﻿import { blazorState, BlazorState } from './BlazorState.js';
-import { ReduxExtensionName, DevToolsName} from './Constants.js';
+import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
 
+type traceType = (action) => string;
+//see reduxjs/redux-devtools/packages/redux-devtools-extension/src/index.ts for types
 export class ReduxDevTools {
   IsEnabled: boolean;
   DevTools: any;
   Extension: any;
-  Config: { name: string; features: { pause: boolean; lock: boolean; persist: boolean; export: boolean; import: boolean; jump: boolean; skip: boolean; reorder: boolean; dispatch: boolean; test: boolean; }; };
-  BlazorState: BlazorState;
-
-  constructor() {
-    this.BlazorState = blazorState;
-    this.Config = {
-      name: 'Blazor State',
-      features: {
-        pause: false, // start/pause recording of dispatched actions
-        lock: false, // lock/unlock dispatching actions and side effects
-        persist: false, // persist states on page reloading
-        export: false, // export history of actions in a file
-        import: false, // import history of actions from a file
-        jump: false, // jump back and forth (time traveling)
-        skip: false, // skip (cancel) actions
-        reorder: false, // drag and drop actions in the history list
-        dispatch: false, // dispatch custom actions or action creators
-        test: false // generate tests for the selected actions
-      }
+  Config: {
+    name: string;
+    trace: boolean | traceType;
+    features: {
+      pause: boolean;
+      lock: boolean;
+      persist: boolean;
+      export: boolean;
+      import: boolean;
+      jump: boolean;
+      skip: boolean;
+      reorder: boolean;
+      dispatch: boolean;
+      test: boolean;
     };
+  };
+  BlazorState: BlazorState;
+  StackTrace: string | undefined;
+
+  constructor(reduxDevToolsOptions) {
+    console.log("constructing ReduxDevTools with the following options")
+    console.log(reduxDevToolsOptions);
+
+    this.BlazorState = blazorState;
+    this.Config = reduxDevToolsOptions;
+    if (this.Config.trace) {
+      this.Config.trace = this.GetStackTraceForAction;
+    }
     this.Extension = this.GetExtension();
     this.DevTools = this.GetDevTools();
     this.IsEnabled = this.DevTools ? true : false;
@@ -106,12 +116,17 @@ export class ReduxDevTools {
       console.log(`messages of this type are currently not supported`);
   }
 
-  ReduxDevToolsDispatch(action, state) {
+  ReduxDevToolsDispatch(action, state, stackTrace) {
     if (action === 'init') {
       return window[DevToolsName].init(state);
     }
     else {
+      window[ReduxDevToolsName].StackTrace = stackTrace;
       return window[DevToolsName].send(action, state);
     }
+  }
+
+  GetStackTraceForAction(action): string {
+    return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (nofile:0:0)";
   }
 }
