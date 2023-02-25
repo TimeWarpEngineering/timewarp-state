@@ -19,7 +19,7 @@ public partial class CounterState
     )
     {
       CounterState.Count += aIncrementCounterAction.Amount;
-      return Unit.Task;
+      return Task.CompletedTask;
     }
   }
 }

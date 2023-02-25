@@ -24,6 +24,6 @@ internal class IncrementCountNotificationHandler
   {
     Logger.LogDebug("{aPostPipelineNotification_Request_Type_Name}", aPostPipelineNotification.Request.GetType().Name);
     Logger.LogDebug("{methodName} handled", nameof(IncrementCountNotificationHandler));
-    return Unit.Task;
+    return Task.CompletedTask;
   }
 }
