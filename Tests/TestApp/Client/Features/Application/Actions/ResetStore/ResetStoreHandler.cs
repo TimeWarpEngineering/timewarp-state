@@ -18,10 +18,9 @@ internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>
   }
 
 
-  public async Task<Unit> Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
+  public async Task Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
   {
     Store.Reset();
-    await Sender.Send(new ChangeRouteAction { NewRoute = "/" });
-    return Unit.Value;
+    await Sender.Send(new ChangeRouteAction { NewRoute = "/" }, aCancellationToken);
   }
 }

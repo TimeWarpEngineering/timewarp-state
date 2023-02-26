@@ -1,3 +1,0 @@
-# TestApp.EndToEnd.TestCafe.Tests
-
-

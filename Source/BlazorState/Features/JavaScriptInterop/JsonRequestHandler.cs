@@ -70,7 +70,7 @@ public class JsonRequestHandler
 
     object instance = JsonSerializer.Deserialize(aRequestAsJson, requestType, JsonSerializerOptions);
 
-    Task<object> result = SendToMediator(requestType, instance);
+    Task<object> result = Mediator.Send(instance);
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
   }
@@ -80,31 +80,5 @@ public class JsonRequestHandler
     Logger.LogDebug(EventIds.JsonRequestHandler_Initializing, "Initializing");
     const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
     return JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectReference.Create(this));
-  }
-
-  /// <summary>
-  /// Equivelent to the following code just using generics everywhere and reflection.
-  ///  return await Mediator.Send(aInstance)
-  /// </summary>
-  private Task<object> SendToMediator(Type aRequestType, object aInstance)
-  {
-    string genericRequestInterfaceName = typeof(IRequest<int>).Name;
-
-    MethodInfo sendMethodInfo = Mediator.GetType().GetMethods().First
-    (
-      aMethodInfo =>
-        aMethodInfo.IsGenericMethodDefinition &&
-        aMethodInfo.Name == nameof(Mediator.Send)
-    );
-
-    Type responseType = aRequestType
-      .GetInterfaces()
-      .FirstOrDefault(aType => aType.Name == genericRequestInterfaceName)
-      .GenericTypeArguments
-      .First();
-
-    MethodInfo sendGenericMethodInfo = sendMethodInfo.MakeGenericMethod(responseType);
-
-    return sendGenericMethodInfo.InvokeAsync(Mediator, new[] { aInstance, default(CancellationToken) });
   }
 }

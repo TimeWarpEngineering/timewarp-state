@@ -14,5 +14,5 @@ where TAction : IAction
 
   protected IStore Store { get; set; }
 
-  public abstract Task<Unit> Handle(TAction aAction, CancellationToken aCancellationToken);
+  public abstract Task Handle(TAction aAction, CancellationToken aCancellationToken);
 }

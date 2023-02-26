@@ -34,7 +34,7 @@ internal partial class ApplicationState
     {
       Logger.LogWarning($"aExceptionNotification.Exception.Message: {aExceptionNotification.Exception.Message}");
       ApplicationState.ExceptionMessage = aExceptionNotification.Exception.Message;
-      return Unit.Task;
+      return Task.CompletedTask;
     }
   }
 }

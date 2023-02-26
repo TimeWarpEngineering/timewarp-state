@@ -20,7 +20,7 @@ internal partial class WeatherForecastsState
       HttpClient = aHttpClient;
     }
 
-    public override async Task<Unit> Handle
+    public override async Task Handle
     (
       FetchWeatherForecastsAction aFetchWeatherForecastsAction,
       CancellationToken aCancellationToken
@@ -29,11 +29,13 @@ internal partial class WeatherForecastsState
       var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
 
       GetWeatherForecastsResponse getWeatherForecastsResponse =
-        await HttpClient.GetFromJsonAsync<GetWeatherForecastsResponse>(getWeatherForecastsRequest.RouteFactory);
+        await HttpClient.GetFromJsonAsync<GetWeatherForecastsResponse>
+        (
+          getWeatherForecastsRequest.RouteFactory, 
+          cancellationToken: aCancellationToken
+        );
 
       WeatherForecastsState._WeatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
-      return Unit.Value;
     }
-
   }
 }

@@ -27,6 +27,6 @@ internal class StartHandler : IRequestHandler<StartRequest>
   /// <param name="aRequest"></param>
   /// <param name="aCancellationToken"></param>
   /// <returns></returns>
-  public Task<Unit> Handle(StartRequest aRequest, CancellationToken aCancellationToken) =>
-    Unit.Task;
+  public Task Handle(StartRequest aRequest, CancellationToken aCancellationToken) =>
+    Task.CompletedTask;
 }

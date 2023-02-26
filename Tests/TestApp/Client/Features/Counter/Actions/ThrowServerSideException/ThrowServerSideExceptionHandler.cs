@@ -26,7 +26,7 @@ public partial class CounterState
     /// <param name="aThrowServerSideExceptionAction"></param>
     /// <param name="aCancellationToken"></param>
     /// <returns></returns>
-    public override async Task<Unit> Handle
+    public override async Task Handle
     (
       ThrowServerSideExceptionAction aThrowServerSideExceptionAction,
       CancellationToken aCancellationToken
@@ -35,9 +35,11 @@ public partial class CounterState
       var throwServerSideExceptionRequest = new ThrowServerSideExceptionRequest();
 
       ThrowServerSideExceptionResponse throwServerSideExceptionResponse =
-        await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>(throwServerSideExceptionRequest.GetRoute());
-
-      return Unit.Value;
+        await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>
+        (
+          throwServerSideExceptionRequest.GetRoute()
+          , cancellationToken: aCancellationToken
+        );
     }
   }
 }

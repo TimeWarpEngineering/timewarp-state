@@ -6,14 +6,15 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
-  where TRequest : IRequest<TResponse>
+internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : 
+  IRequestPostProcessor<TRequest, TResponse>
+  where TRequest : notnull
 {
   private readonly ILogger Logger;
   private readonly IPublisher Publisher;
 
   public PostPipelineNotificationRequestPostProcessor
-          (
+  (
     ILogger<PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>> aLogger,
     IPublisher aMediator
   )

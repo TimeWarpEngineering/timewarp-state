@@ -62,7 +62,12 @@ public class Startup
 
     Client.Program.ConfigureServices(aServiceCollection);
 
-    aServiceCollection.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+    aServiceCollection
+      .AddMediatR
+      (
+        aMediatRServiceConfiguration => 
+          aMediatRServiceConfiguration.RegisterServicesFromAssembly(typeof(Startup).GetTypeInfo().Assembly)
+      );
 
   }
 }

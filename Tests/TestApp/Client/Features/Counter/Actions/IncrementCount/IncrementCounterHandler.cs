@@ -12,14 +12,14 @@ public partial class CounterState
   {
     public IncrementCounterHandler(IStore aStore) : base(aStore) { }
 
-    public override Task<Unit> Handle
+    public override Task Handle
     (
       IncrementCounterAction aIncrementCounterAction,
       CancellationToken aCancellationToken
     )
     {
       CounterState.Count += aIncrementCounterAction.Amount;
-      return Unit.Task;
+      return Task.CompletedTask;
     }
   }
 }
