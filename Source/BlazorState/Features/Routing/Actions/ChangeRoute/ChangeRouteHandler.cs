@@ -23,7 +23,7 @@ public partial class RouteState
       NavigationManager = aNavigationManager;
     }
 
-    public override Task<Unit> Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
+    public override Task Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
     {
       string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
       string absoluteUri = NavigationManager.Uri;
@@ -38,7 +38,7 @@ public partial class RouteState
       {
         RouteState.Route = newAbsoluteUri;
       }
-      return Unit.Task;
+      return Task.CompletedTask;
     }
   }
 }

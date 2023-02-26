@@ -35,18 +35,6 @@ public abstract class BaseTest
     return await aAction(serviceScope.ServiceProvider);
   }
 
-  protected Task Send(IRequest aRequest)
-  {
-    return ExecuteInScope
-    (
-      aServiceProvider =>
-      {
-        ISender sender = aServiceProvider.GetService<ISender>();
-
-        return sender.Send(aRequest);
-      }
-    );
-  }
 
   protected Task<TResponse> Send<TResponse>(IRequest<TResponse> aRequest)
   {

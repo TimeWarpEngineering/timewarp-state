@@ -4,7 +4,7 @@ using BlazorState;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
+internal class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
 {
   private readonly ILogger Logger;
   private readonly IReduxDevToolsStore Store;
@@ -23,7 +23,7 @@ internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
     Subscriptions = aSubscriptions;
   }
 
-  protected override void Handle(JumpToStateRequest aJumpToStateRequest)
+  public Task Handle(JumpToStateRequest aJumpToStateRequest, CancellationToken aCancellationToken)
   {
     Logger.LogDebug
     (
@@ -42,5 +42,6 @@ internal class JumpToStateHandler : RequestHandler<JumpToStateRequest>
       "Handled Id:{aJumpToStateRequest_Id}",
       aJumpToStateRequest.Id
     );
+    return Task.CompletedTask;
   }
 }

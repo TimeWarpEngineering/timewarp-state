@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IRequest<TResponse>
+  where TRequest : notnull
 {
   private readonly ILogger Logger;
   private readonly IMediator Mediator;

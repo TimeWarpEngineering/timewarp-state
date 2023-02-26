@@ -67,8 +67,8 @@ public static class ServiceCollectionExtensions
         aServiceCollection.AddScoped<RouteManager>();
         aServiceCollection.AddScoped<RouteState>();
 
-        aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction, Unit>, ChangeRouteHandler>();
-        aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction, Unit>, InitializeRouteHandler>();
+        aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction>, ChangeRouteHandler>();
+        aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction>, InitializeRouteHandler>();
       }
     }
     return aServiceCollection;
@@ -123,7 +123,12 @@ public static class ServiceCollectionExtensions
   {
     if(!aServiceCollection.HasRegistrationFor(typeof(IMediator)))
     {
-      aServiceCollection.AddMediatR(aBlazorStateOptions.Assemblies.ToArray());
+      aServiceCollection
+        .AddMediatR
+        (
+          aMediatRServiceConfiguration =>
+            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(aBlazorStateOptions.Assemblies.ToArray())
+        );
     }
   }
 
@@ -171,9 +176,9 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
       serviceCollection.AddScoped<ReduxDevToolsInterop>();
 
-      serviceCollection.AddTransient<IRequestHandler<CommitRequest, Unit>, CommitHandler>();
-      serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest, Unit>, JumpToStateHandler>();
-      serviceCollection.AddTransient<IRequestHandler<StartRequest, Unit>, StartHandler>();
+      serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
+      serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest>, JumpToStateHandler>();
+      serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
       serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
 
       serviceCollection.AddSingleton<ReduxDevToolsOptions>(reduxDevToolsOptions);

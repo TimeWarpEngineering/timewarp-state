@@ -23,10 +23,10 @@ public partial class RouteState
 
     private readonly NavigationManager NavigationManager;
 
-    public override Task<Unit> Handle(InitializeRouteAction aInitializeRouteRequest, CancellationToken aCancellationToken)
+    public override Task Handle(InitializeRouteAction aInitializeRouteRequest, CancellationToken aCancellationToken)
     {
       RouteState.Route = NavigationManager.Uri;
-      return Unit.Task;
+      return Task.CompletedTask;
     }
   }
 }

@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IRequest<TResponse>
+  where TRequest : notnull
 {
   private readonly ILogger Logger;
   private readonly ReduxDevToolsInterop ReduxDevToolsInterop;

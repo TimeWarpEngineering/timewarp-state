@@ -24,12 +24,12 @@ internal class CommitHandler : IRequestHandler<CommitRequest>
     ReduxDevToolsInterop = aReduxDevToolsInterop;
   }
 
-  public async Task<Unit> Handle(CommitRequest aCommitRequest, CancellationToken aCancellationToken)
+  public async Task Handle(CommitRequest aCommitRequest, CancellationToken aCancellationToken)
   {
     Logger.LogDebug
     (
       EventIds.CommitHandler_RequestReceived,
-      "Recieved Id:{aJumpToStateRequest_Id} State:{aRequest_State}",
+      "Received Id:{aJumpToStateRequest_Id} State:{aRequest_State}",
       aCommitRequest.Id,
       aCommitRequest.State
     );
@@ -39,10 +39,8 @@ internal class CommitHandler : IRequestHandler<CommitRequest>
     Logger.LogDebug
     (
       EventIds.JumpToStateHandler_RequestReceived,
-      "Recieved Id:{aJumpToStateRequest_Id}",
+      "Received Id:{aJumpToStateRequest_Id}",
       aCommitRequest.Id
     );
-
-    return Unit.Value;
   }
 }
