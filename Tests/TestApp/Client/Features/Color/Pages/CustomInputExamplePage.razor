@@ -10,10 +10,11 @@
 <EditForm Model=@CurrentPerson OnValidSubmit=@HandleValidSubmit>
   <CustomInput @bind-Value=CurrentPerson.Amount ValidationFor=@(() => CurrentPerson.Amount) Label="Custom Input.">
   </CustomInput>
+  <br/>
   <InputColor @bind-Value=CurrentPerson.FavoriteColor />
 </EditForm>
 
-Favorite colour is @CurrentPerson.FavoriteColor
+Favorite color is @CurrentPerson.FavoriteColor
 <div style="width:100px;height:100px;background-color:@ColorAsHex" />
 
 @code {
