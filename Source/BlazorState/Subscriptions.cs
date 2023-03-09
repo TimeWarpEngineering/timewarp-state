@@ -141,7 +141,7 @@ public class Subscriptions
     public static bool operator ==(Subscription aLeftSubscription, Subscription aRightSubscription) => aLeftSubscription.Equals(aRightSubscription);
 
     public bool Equals(Subscription aSubscription) =>
-                  EqualityComparer<Type>.Default.Equals(StateType, aSubscription.StateType) &&
+      EqualityComparer<Type>.Default.Equals(StateType, aSubscription.StateType) &&
       ComponentId == aSubscription.ComponentId &&
       EqualityComparer<WeakReference<IBlazorStateComponent>>.Default.Equals(BlazorStateComponentReference, aSubscription.BlazorStateComponentReference);
 
