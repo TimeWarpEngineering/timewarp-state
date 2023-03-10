@@ -65,6 +65,7 @@ public class Program
       }
     );
     aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));
+    aServiceCollection.AddSingleton(aServiceCollection);
 
   }
 }

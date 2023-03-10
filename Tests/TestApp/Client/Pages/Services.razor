@@ -1,0 +1,26 @@
+﻿@page "/services"
+
+<h1>Registered Services</h1>
+<div class="row">
+    @for (var i = 0; i < ServiceCollection.Count; i++)
+    {
+        var service = ServiceCollection[i];
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">@(i + 1) - @service.ServiceType</h6>
+                </div>
+                <div class="m-1">
+                    <div class="card-text"><span class="text-muted">Lifetime:</span> <span class="fw-bold">@service.Lifetime</span></div>
+                    <div class="card-text"><span class="text-muted">Implementation Type:</span> <span class="fw-bold">@service.ImplementationType</span></div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code
+{
+    [Inject]
+    private IServiceCollection ServiceCollection { get; set; } = null!;
+}
