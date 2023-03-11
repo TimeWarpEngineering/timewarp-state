@@ -21,6 +21,5 @@ builder.Services.AddBlazorState
       };
     }
 );
-builder.Services.AddSingleton(builder.Services);
 
 await builder.Build().RunAsync();
