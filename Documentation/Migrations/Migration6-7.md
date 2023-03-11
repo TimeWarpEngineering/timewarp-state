@@ -1,6 +1,6 @@
 ---
-uid: BlazorState:Migration5-6.md
-title: Migrate From 5.X to 6.X
+uid: BlazorState:Migration6-7.md
+title: Migrate From 6.X to 7.X
 ---
 
 # Migration
