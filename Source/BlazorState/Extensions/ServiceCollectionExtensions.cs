@@ -45,17 +45,17 @@ public static class ServiceCollectionExtensions
       var blazorStateOptions = new BlazorStateOptions(aServiceCollection);
       aConfigureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
 
-      EnsureLogger(aServiceCollection);
-      EnsureHttpClient(aServiceCollection);
-      EnsureMediator(aServiceCollection, blazorStateOptions);
-      EnsureStates(aServiceCollection, blazorStateOptions);
-
       aServiceCollection.AddScoped<BlazorHostingLocation>();
       aServiceCollection.AddScoped<JsonRequestHandler>();
       aServiceCollection.AddScoped<Subscriptions>();
       aServiceCollection.AddScoped(typeof(IRequestPostProcessor<,>), typeof(RenderSubscriptionsPostProcessor<,>));
       aServiceCollection.AddScoped<IStore, Store>();
       aServiceCollection.AddSingleton(blazorStateOptions);
+      
+      EnsureLogger(aServiceCollection);
+      EnsureHttpClient(aServiceCollection);
+      EnsureStates(aServiceCollection, blazorStateOptions);
+      EnsureMediator(aServiceCollection, blazorStateOptions);
 
       if (blazorStateOptions.UseCloneStateBehavior)
       {
@@ -123,13 +123,11 @@ public static class ServiceCollectionExtensions
   {
     if(!aServiceCollection.HasRegistrationFor(typeof(IMediator)))
     {
-      var assemblies = aBlazorStateOptions.Assemblies.ToList();
-      assemblies.Add(Assembly.GetExecutingAssembly());
       aServiceCollection
         .AddMediatR
         (
           aMediatRServiceConfiguration =>
-            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(assemblies.ToArray())
+            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(aBlazorStateOptions.Assemblies.ToArray())
         );
     }
   }
