@@ -1,5 +1,7 @@
+- name: From 7.x to 8.x
+  topicUid: BlazorState:Migration7-8.md
 - name: From 6.x to 7.x
-  topicUid: BlazorState:Migration6-7.md
+  topicUid: BlazorState:Migration6-7.md  
 - name: From 5.x to 6.x
   topicUid: BlazorState:Migration5-6.md
 - name: From 4.x to 5.x
