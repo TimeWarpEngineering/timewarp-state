@@ -123,11 +123,13 @@ public static class ServiceCollectionExtensions
   {
     if(!aServiceCollection.HasRegistrationFor(typeof(IMediator)))
     {
+      var assemblies = aBlazorStateOptions.Assemblies.ToList();
+      assemblies.Add(Assembly.GetExecutingAssembly());
       aServiceCollection
         .AddMediatR
         (
           aMediatRServiceConfiguration =>
-            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(aBlazorStateOptions.Assemblies.ToArray())
+            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(assemblies.ToArray())
         );
     }
   }
