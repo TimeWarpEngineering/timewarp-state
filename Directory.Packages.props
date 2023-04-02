@@ -25,7 +25,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.19.1" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="4.9.5" />
+    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.0.3" />
     <PackageVersion Include="Scrutor" Version="4.2.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="1.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />

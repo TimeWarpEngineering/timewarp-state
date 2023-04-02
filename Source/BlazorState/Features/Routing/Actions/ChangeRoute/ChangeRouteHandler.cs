@@ -36,6 +36,7 @@ public partial class RouteState
       }
       else if (RouteState.Route != newAbsoluteUri)
       {
+        RouteState.History.Push(newAbsoluteUri);
         RouteState.Route = newAbsoluteUri;
       }
       return Task.CompletedTask;

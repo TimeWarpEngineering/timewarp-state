@@ -24,3 +24,10 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 ## Release 8.0.1
 
 * [Issue 332](https://github.com/TimeWarpEngineering/blazor-state/issues/332) Upgrading to 8.0.0 breaks viewer components updating 
+
+## Release 8.1.0
+
+* [Issue 334](https://github.com/TimeWarpEngineering/blazor-state/issues/334) Add Go Back
+
+* Added Go Back to Route state which allows accessing the navigation history.
+* Updated the version of the Microsoft.TypeScript.MSBuild package to 5.0.3.

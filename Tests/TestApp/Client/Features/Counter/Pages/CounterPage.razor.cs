@@ -10,6 +10,9 @@ public partial class CounterPage : BaseComponent
   protected async Task ChangeRouteToHome() =>
     await Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = "/" });
 
+  protected async Task GoBack() =>
+      await Mediator.Send(new RouteState.GoBackRouteAction());
+
   protected async Task SendThrowExceptionAction() =>
     await Mediator.Send(new ThrowExceptionAction());
 
