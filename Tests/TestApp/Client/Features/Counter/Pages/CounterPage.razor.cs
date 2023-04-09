@@ -11,7 +11,7 @@ public partial class CounterPage : BaseComponent
     await Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = "/" });
 
   protected async Task GoBack() =>
-      await Mediator.Send(new RouteState.GoBackRouteAction());
+      await Mediator.Send(new RouteState.GoBackAction());
 
   protected async Task SendThrowExceptionAction() =>
     await Mediator.Send(new ThrowExceptionAction());
