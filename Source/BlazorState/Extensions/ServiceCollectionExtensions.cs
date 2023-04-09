@@ -68,6 +68,7 @@ public static class ServiceCollectionExtensions
         aServiceCollection.AddScoped<RouteState>();
 
         aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction>, ChangeRouteHandler>();
+        aServiceCollection.AddTransient<IRequestHandler<GoBackRouteAction>, GoBackRouteHandler>();
         aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction>, InitializeRouteHandler>();
       }
     }

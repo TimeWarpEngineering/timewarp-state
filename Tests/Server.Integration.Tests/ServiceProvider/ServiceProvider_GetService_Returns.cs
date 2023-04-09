@@ -8,8 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text.Json;
 using TestApp.Api.Features.WeatherForecast;
-using TestApp.Server;
-using TestApp.Server.Features.WeatherForecast;
 using TestApp.Server.Integration.Tests.Infrastructure;
 
 public class GetService_Returns : BaseTest
