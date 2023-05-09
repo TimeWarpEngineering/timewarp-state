@@ -16,7 +16,7 @@ public class GetService_Returns : BaseTest
 
   public GetService_Returns
   (
-    WebApplicationFactory<Startup> aWebApplicationFactory,
+    WebApplicationFactory<TestApp.Server.Startup> aWebApplicationFactory,
     JsonSerializerOptions aJsonSerializerOptions
   ) : base(aWebApplicationFactory, aJsonSerializerOptions)
   {
