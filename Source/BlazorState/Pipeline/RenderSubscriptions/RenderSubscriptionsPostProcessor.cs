@@ -22,11 +22,11 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
   public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
   {
     Type requestType = typeof(TRequest);
-    Type? declaringType = requestType.DeclaringType;
+    Type enclosingStateType = requestType.GetEnclosingStateType();
 
     try
     {
-      Subscriptions.ReRenderSubscribers(declaringType);
+      Subscriptions.ReRenderSubscribers(enclosingStateType);
     }
     catch (Exception aException)
     {

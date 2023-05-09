@@ -1,6 +1,5 @@
 ﻿namespace BlazorState;
 
-using Microsoft.Extensions.Logging;
 
 internal class EventIds
 {
@@ -33,20 +32,20 @@ internal class EventIds
   public static readonly EventId ReduxDevToolsInterop_DispatchingInit = new(521, nameof(ReduxDevToolsInterop_DispatchingInit));
   public static readonly EventId ReduxDevToolsInterop_DispatchingRequest = new(522, nameof(ReduxDevToolsInterop_DispatchingRequest));
 
-  public static readonly EventId ReduxDevToolsPostProcessor_Constructing = new(530, nameof(ReduxDevToolsPostProcessor_Constructing));
-  public static readonly EventId ReduxDevToolsPostProcessor_Begin = new(531, nameof(ReduxDevToolsPostProcessor_Begin));
-  public static readonly EventId ReduxDevToolsPostProcessor_End = new(532, nameof(ReduxDevToolsPostProcessor_End));
-  public static readonly EventId ReduxDevToolsPostProcessor_Exception = new(533, nameof(ReduxDevToolsPostProcessor_Exception));
+  public static readonly EventId ReduxDevToolsBehavior_Constructing = new(530, nameof(ReduxDevToolsBehavior_Constructing));
+  public static readonly EventId ReduxDevToolsBehavior_Begin = new(531, nameof(ReduxDevToolsBehavior_Begin));
+  public static readonly EventId ReduxDevToolsBehavior_End = new(532, nameof(ReduxDevToolsBehavior_End));
+  public static readonly EventId ReduxDevToolsBehavior_Exception = new(533, nameof(ReduxDevToolsBehavior_Exception));
 
   public static readonly EventId CommitHandler_Initializing = new(540, nameof(CommitHandler_Initializing));
   public static readonly EventId CommitHandler_RequestReceived = new(541, nameof(CommitHandler_RequestReceived));
   public static readonly EventId CommitHandler_RequestHandled = new(542, nameof(CommitHandler_RequestHandled));
 
   //   RenderSubscriptions
-  public static readonly EventId RenderSubscriptionsPostProcessor_Constructing = new(600, nameof(ReduxDevToolsPostProcessor_Constructing));
-  public static readonly EventId RenderSubscriptionsPostProcessor_Begin = new(601, nameof(ReduxDevToolsPostProcessor_Constructing));
-  public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(ReduxDevToolsPostProcessor_Constructing));
-  public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsPostProcessor_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_Constructing = new(600, nameof(ReduxDevToolsBehavior_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_Begin = new(601, nameof(ReduxDevToolsBehavior_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(ReduxDevToolsBehavior_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
 
   // Store - Blazor State Specific
   public static readonly EventId Store_Initializing = new(100, nameof(Store_Initializing));

@@ -1,32 +1,26 @@
+#nullable enable
 namespace BlazorState.Pipeline.State;
 
-using AnyClone;
-using BlazorState;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using BlazorState.Extensions;
 
 internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull
+  where TRequest : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly IMediator Mediator;
+  private readonly IPublisher Publisher;
   private readonly IStore Store;
-  private bool IsClientSide;
 
   public CloneStateBehavior
   (
-    ILogger<CloneStateBehavior<TRequest, TResponse>> aLogger,
-    IStore aStore,
-    IMediator aMediator
+    ILogger<CloneStateBehavior<TRequest, TResponse>> logger,
+    IStore store,
+    IPublisher publisher
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug(EventIds.CloneStateBehavior_Initializing, "constructing");
-    Store = aStore;
-    Mediator = aMediator;
+    Store = store;
+    Publisher = publisher;
   }
 
   public async Task<TResponse> Handle
@@ -36,68 +30,52 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
     CancellationToken aCancellationToken
   )
   {
-    Type declaringType = typeof(TRequest).DeclaringType;
+    // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
+    Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
+    IState originalState = (IState)Store.GetState(enclosingStateType)!; // Not null because of Analyzer
+    IState newState = (originalState is ICloneable clonable) ? (IState)clonable.Clone() : originalState.Clone();
 
-    IState originalState = default;
-    // Constrain here if not IState then ignore.
-    if (typeof(IState).IsAssignableFrom(declaringType))
-    {
-      IsClientSide = true;
-      originalState = Store.GetState(declaringType) as IState;
-      IState newState = (originalState is ICloneable clonable) ? (IState)clonable.Clone() : originalState.Clone();
-      Logger.LogDebug
-      (
-        EventIds.CloneStateBehavior_Cloning,
-        "Clone State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
-        declaringType,
-        originalState?.Guid,
-        newState.Guid
-      );
+    Logger.LogDebug
+    (
+      EventIds.CloneStateBehavior_Cloning,
+      "Clone State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
+      enclosingStateType,
+      originalState.Guid,
+      newState.Guid
+    );
 
-      Store.SetState(newState as IState);
-    }
-    else
-    {
-      Logger.LogDebug
-      (
-        EventIds.CloneStateBehavior_Ignoring,
-        "Not cloning State because {declaringType} is not an IState",
-        declaringType
-      );
-    }
+    Store.SetState(newState);
 
     try
     {
       TResponse response = await aNext();
       return response;
     }
-    catch (Exception aException)
+    catch (Exception exception)
     {
       // If something fails we restore system to previous state.
-      Logger.LogWarning(EventIds.CloneStateBehavior_Exception, aException, "Error cloning State");
+      Logger.LogWarning(EventIds.CloneStateBehavior_Exception, exception, "Error cloning State");
 
-      if (IsClientSide && originalState != null)
+      Store.SetState(originalState);
+
+      Logger.LogWarning
+      (
+        EventIds.CloneStateBehavior_Restored,
+        "Restored State of type: {enclosingStateType}",
+        enclosingStateType
+      );
+
+      var exceptionNotification = new ExceptionNotification
       {
-        Store.SetState(originalState);
+        RequestName = nameof(CloneStateBehavior<TRequest, TResponse>),
+        Exception = exception
+      };
 
-        Logger.LogWarning
-        (
-          EventIds.CloneStateBehavior_Restored,
-          "Restored State of type: {declaringType}",
-          declaringType
-        );
-
-        var exceptionNotification = new ExceptionNotification
-        {
-          RequestName = nameof(CloneStateBehavior<TRequest, TResponse>),
-          Exception = aException
-        };
-
-        await Mediator.Publish(exceptionNotification);
-        return default;
-      }
-
-      throw;
+      await Publisher.Publish(exceptionNotification, aCancellationToken);
+      return default!; // It can be null, but we don't care since MediatR handles null values gracefully.
     }
   }
+
+
+
 }

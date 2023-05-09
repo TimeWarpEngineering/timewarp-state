@@ -1,4 +1,9 @@
-﻿global using BlazorState;
+﻿global using AnyClone;
+global using BlazorState;
+global using BlazorState.Extensions;
 global using MediatR;
 global using MediatR.Pipeline;
 global using Microsoft.Extensions.Logging;
+global using System.Diagnostics;
+global using System.Text;
+global using System.Text.RegularExpressions;
