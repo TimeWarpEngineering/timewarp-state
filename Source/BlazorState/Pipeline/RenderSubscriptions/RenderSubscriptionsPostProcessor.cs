@@ -16,7 +16,6 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
   )
   {
     Logger = aLogger;
-    Logger.LogDebug(EventIds.RenderSubscriptionsPostProcessor_Constructing, "constructing");
     Subscriptions = aSubscriptions;
   }
 
@@ -24,22 +23,10 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
   {
     Type requestType = typeof(TRequest);
     Type? declaringType = requestType.DeclaringType;
-    bool isDeclaringTypeAState = typeof(IState).IsAssignableFrom(declaringType);
-    if (declaringType == null || !isDeclaringTypeAState)
-    {
-      throw new NonNestedClassException($"The Action ({requestType.FullName}) is not a nested class of its State", nameof(aRequest));
-    }
-
-    // logging variables
-    string className = GetType().Name;
-    className = className.Remove(className.IndexOf('`'));
-
-    Logger.LogDebug(EventIds.RenderSubscriptionsPostProcessor_Begin, "Begin Post Processing");
 
     try
     {
       Subscriptions.ReRenderSubscribers(declaringType);
-      Logger.LogDebug(EventIds.RenderSubscriptionsPostProcessor_End, "Post Processing Complete");
     }
     catch (Exception aException)
     {

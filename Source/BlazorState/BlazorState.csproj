@@ -85,6 +85,10 @@
     </None>
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorStateAnalyzer\BlazorStateAnalyzer.csproj" />
+  </ItemGroup>
   
   <PropertyGroup>
     <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>

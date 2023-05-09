@@ -40,6 +40,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\Tu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "Samples\Tutorial\Sample\Client\Sample.Client.csproj", "{A9C096EC-DE7B-4E61-8D8C-854037C214A4}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzerTest", "Tests\BlazorStateAnalyzerTest\BlazorStateAnalyzerTest.csproj", "{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzer", "Source\BlazorStateAnalyzer\BlazorStateAnalyzer.csproj", "{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +105,18 @@ Global
 		{A9C096EC-DE7B-4E61-8D8C-854037C214A4}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
 		{A9C096EC-DE7B-4E61-8D8C-854037C214A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9C096EC-DE7B-4E61-8D8C-854037C214A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
+		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
+		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +132,7 @@ Global
 		{0A6F5973-2DFD-4B46-8B2F-13556B5103A0} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{845B863B-C1DB-4C17-8975-FBD380FBD1EC} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{A9C096EC-DE7B-4E61-8D8C-854037C214A4} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
+		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}
