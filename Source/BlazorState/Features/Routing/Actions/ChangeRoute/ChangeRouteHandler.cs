@@ -1,11 +1,5 @@
 namespace BlazorState.Features.Routing;
 
-using BlazorState;
-using MediatR;
-using Microsoft.AspNetCore.Components;
-using System.Threading;
-using System.Threading.Tasks;
-
 public partial class RouteState
 {
   internal class ChangeRouteHandler : ActionHandler<ChangeRouteAction>

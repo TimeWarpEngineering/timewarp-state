@@ -1,9 +1,5 @@
 namespace BlazorState.Features.Routing;
 
-using MediatR;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
-
 /// <summary>
 /// When constructed will attach a OnLocationChanged Handler
 /// to send ChangeRouteRequest

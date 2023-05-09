@@ -1,7 +1,5 @@
 namespace BlazorState.Pipeline.ReduxDevTools;
 
-using System;
-
 internal class ReduxAction
 {
   public ReduxAction(object aRequest)

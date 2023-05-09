@@ -1,23 +1,5 @@
 namespace BlazorState;
 
-using BlazorState.Features.JavaScriptInterop;
-using BlazorState.Features.Routing;
-using BlazorState.Pipeline.ReduxDevTools;
-using BlazorState.Pipeline.RenderSubscriptions;
-using BlazorState.Pipeline.State;
-using BlazorState.Services;
-using MediatR;
-using MediatR.Pipeline;
-using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using static BlazorState.Features.Routing.RouteState;
 
 public static class ServiceCollectionExtensions

@@ -1,9 +1,5 @@
 namespace BlazorState.Pipeline.ReduxDevTools;
 
-using BlazorState;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 internal class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
 {
   private readonly ILogger Logger;

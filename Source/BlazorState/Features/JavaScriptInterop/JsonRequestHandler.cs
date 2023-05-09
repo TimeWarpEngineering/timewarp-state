@@ -1,14 +1,5 @@
 namespace BlazorState.Features.JavaScriptInterop;
 
-using MediatR;
-using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Text.Json;
-using System.Threading.Tasks;
-
 public class JsonRequestHandler
 {
   private readonly JsonSerializerOptions JsonSerializerOptions;

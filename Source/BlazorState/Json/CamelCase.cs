@@ -1,6 +1,5 @@
 namespace Microsoft.JSInterop;
 
-using System;
 public static class CamelCase
 {
   public static string MemberNameToCamelCase(string aMembername)

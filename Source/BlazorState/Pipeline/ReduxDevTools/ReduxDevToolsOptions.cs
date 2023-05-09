@@ -1,6 +1,5 @@
 ﻿namespace BlazorState.Pipeline.ReduxDevTools;
 
-
 /// <summary>
 /// Redux Dev Tools Options (see docs)
 /// </summary>

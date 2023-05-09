@@ -1,8 +1,6 @@
 ﻿#nullable enable
 
 namespace BlazorState.Features.JavaScriptInterop;
-using System;
-using System.Runtime.Serialization;
 
 [Serializable]
 public class InvalidRequestTypeException : Exception, ISerializable

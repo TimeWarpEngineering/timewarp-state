@@ -1,9 +1,5 @@
 namespace BlazorState.Pipeline.ReduxDevTools;
 
-using MediatR;
-using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-
 /// <summary>
 /// Redux Devtools will send the Request once on startup
 /// </summary>

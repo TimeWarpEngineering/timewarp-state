@@ -1,8 +1,5 @@
 namespace BlazorState.Pipeline.ReduxDevTools;
 
-using BlazorState;
-using Microsoft.AspNetCore.Components;
-
 /// <summary>
 /// Base implementation of IDevToolsComponent. Required for TimeTravel in ReduxDevTools
 /// </summary>

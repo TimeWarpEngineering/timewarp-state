@@ -1,6 +1,5 @@
 ﻿namespace BlazorState;
 
-
 internal class EventIds
 {
   // Features - Normal
