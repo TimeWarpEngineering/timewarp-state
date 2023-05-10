@@ -14,7 +14,8 @@
 
 # Blazor-State
 
-![TimeWarp Logo](Assets/Logo.png)
+
+![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.svg)
 
 Blazor-State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
 
