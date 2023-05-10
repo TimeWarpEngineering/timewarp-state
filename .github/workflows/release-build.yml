@@ -37,10 +37,10 @@ jobs:
       - name: Pack
         run: |
           cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
-          dotnet clean
+          dotnet clean --configuration Release
           dotnet build --configuration Release
           cd ${{ github.workspace }}/Source/BlazorState/
-          dotnet clean
+          dotnet clean  --configuration Release
           dotnet build --configuration Release
           dotnet pack --configuration Release
         shell: pwsh
