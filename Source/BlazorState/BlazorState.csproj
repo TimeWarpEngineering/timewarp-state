@@ -89,7 +89,11 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorStateAnalyzer\BlazorStateAnalyzer.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <None Include="..\BlazorStateAnalyzer\bin\release\netstandard2.0\BlazorStateAnalyzer.dll" Pack="true" PackagePath="analyzers\cs" />
+  </ItemGroup>
+
   <PropertyGroup>
     <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
     <TypeScriptTarget>ES2022</TypeScriptTarget>
