@@ -33,5 +33,6 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 * Updated the version of the Microsoft.TypeScript.MSBuild package to 5.0.3.
 
 ## Release 8.2.0
-* Included BlazorStateAnalyzer, which replaces runtime checking of IActions nesting with compile-time checking for better performance.
+
+* Included BlazorStateAnalyzer, which replaces runtime checking of the IActions nesting with compile-time checking for better performance.
 * [Issue 342](https://github.com/TimeWarpEngineering/blazor-state/issues/342) Doubly nested IActions throw an error.
