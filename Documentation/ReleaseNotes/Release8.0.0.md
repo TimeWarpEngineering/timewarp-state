@@ -36,3 +36,8 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 
 * Included BlazorStateAnalyzer, which replaces runtime checking of the IActions nesting with compile-time checking for better performance.
 * [Issue 342](https://github.com/TimeWarpEngineering/blazor-state/issues/342) Doubly nested IActions throw an error.
+
+
+## Release 8.2.1
+
+* move the Analyzer from `analyzers/cs` to `analyzers/dotnet/cs` so it will be automatically found.
