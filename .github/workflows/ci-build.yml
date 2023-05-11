@@ -38,8 +38,13 @@ jobs:
 
       - name: Build
         run: |
-          cd Source/BlazorState/
+          cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
+          dotnet clean --configuration Debug
           dotnet build --configuration Debug
+          cd ${{ github.workspace }}/Source/BlazorState/
+          dotnet clean  --configuration Debug
+          dotnet build --configuration Debug
+          dotnet pack --configuration Debug
         shell: pwsh
 
       - name: Client.Integration.Tests
