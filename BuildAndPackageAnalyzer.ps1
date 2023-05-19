@@ -51,7 +51,7 @@ try {
     Move-Item -Path $packageName.FullName -Destination $localSourcePath -Force
 
     # Build the sample and make sure no compiler errors
-    dotnet build $tutorialPath -v d --configuration Release /p:UseSharedCompilation=false 
+    dotnet build $tutorialPath --configuration Release /p:UseSharedCompilation=false 
 }
 finally {
     Pop-Location

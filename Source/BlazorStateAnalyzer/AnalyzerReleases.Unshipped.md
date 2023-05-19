@@ -5,4 +5,5 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-BlazorStateAction | BlazorState | Error | BlazorStateActionAnalyzer
+TW0001 | BlazorState | Error | BlazorStateActionAnalyzer
+TWD002 | Debug | Warning | BlazorStateActionAnalyzer
