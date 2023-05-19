@@ -28,24 +28,51 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
       description: Description
     );
 
-  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+  private static readonly DiagnosticDescriptor DebugRule = 
+    new DiagnosticDescriptor
+    (
+        id: "TW0001",
+        title: "BlazorStateAnalyzerDebug",
+        messageFormat: "BlazorStateAnalyzerDebug: {0}",
+        category: "Debug",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics 
+  { 
+      get 
+      {
+          return ImmutableArray.Create(Rule, DebugRule); 
+      } 
+  }
 
   public override void Initialize(AnalysisContext context)
   {
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
     context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
+  }
+
+  private void ReportDebugInformation(SyntaxNodeAnalysisContext context, string message)
+  {
+      var debugDiagnostic = Diagnostic.Create(DebugRule, context.Node.GetLocation(), message);
+      context.ReportDiagnostic(debugDiagnostic);
   }
 
   private void AnalyzeNode(SyntaxNodeAnalysisContext context)
   {
-    var classDeclaration = (ClassDeclarationSyntax)context.Node;
+    var typeDeclaration = (TypeDeclarationSyntax)context.Node;
 
     // Check if the class implements IAction
     bool implementsIAction = false;
-    foreach (var baseType in classDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
+    foreach (var baseType in typeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
     {
       var typeSymbol = context.SemanticModel.GetTypeInfo(baseType.Type).Type;
+      ReportDebugInformation(context, "BlazorStateAnalyzerDebug: " + (typeSymbol?.ToDisplayString() ?? "null"));
+
       if (typeSymbol?.ToDisplayString() == "BlazorState.IAction")
       {
         implementsIAction = true;
@@ -58,16 +85,16 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
       return;
     }
 
-    // Check if the class is nested within a class implementing IState
-    var parentClassDeclaration = classDeclaration.Parent as ClassDeclarationSyntax;
-    if (parentClassDeclaration == null)
+    // Check if the type is nested within a type implementing IState
+    var parentTypeDeclaration = typeDeclaration.Parent as TypeDeclarationSyntax;
+    if (parentTypeDeclaration == null)
     {
-      ReportDiagnostic(context, classDeclaration.Identifier);
+      ReportDiagnostic(context, typeDeclaration.Identifier);
       return;
     }
 
     bool parentImplementsIState = false;
-    foreach (var baseType in parentClassDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
+    foreach (var baseType in parentTypeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
     {
       var typeSymbol = context.SemanticModel.GetTypeInfo(baseType.Type).Type;
       if (typeSymbol?.ToDisplayString() == "BlazorState.IState")
@@ -79,7 +106,7 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
     if (!parentImplementsIState)
     {
-      ReportDiagnostic(context, classDeclaration.Identifier);
+      ReportDiagnostic(context, typeDeclaration.Identifier);
     }
   }
 
