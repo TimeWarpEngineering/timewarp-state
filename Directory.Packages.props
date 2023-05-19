@@ -1,7 +1,7 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="AnyClone" Version="1.1.6" />
-    <PackageVersion Include="Blazor-State" Version="8.0.0" />
+    <PackageVersion Include="Blazor-State" Version="8.2.2" />
     <PackageVersion Include="coverlet.msbuild" Version="3.2.0" />
     <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
     <PackageVersion Include="FakeItEasy" Version="7.3.1" />
@@ -35,6 +35,7 @@
     <PackageVersion Include="Scrutor" Version="4.2.1" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="1.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="7.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="7.0.0" />
     <PackageVersion Include="System.Text.Json" Version="7.0.2" />

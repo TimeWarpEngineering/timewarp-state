@@ -41,3 +41,8 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 ## Release 8.2.1
 
 * move the Analyzer from `analyzers/cs` to `analyzers/dotnet/cs` so it will be automatically found.
+
+## Release 8.2.2
+
+* Fix issue #347  The analyzer will now work with class record or structs
+* Added some testing and scipts to locally deploy to nuget etc.

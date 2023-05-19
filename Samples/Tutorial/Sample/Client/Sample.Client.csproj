@@ -6,12 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor-State" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Source\BlazorState\BlazorState.csproj" />
+    
+    <!--<ProjectReference Include="..\..\..\..\Source\BlazorState\BlazorState.csproj" />-->
+    
     <ProjectReference Include="..\Shared\Sample.Shared.csproj" />
   </ItemGroup>
 

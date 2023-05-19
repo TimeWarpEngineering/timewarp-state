@@ -223,7 +223,6 @@ dotnet_naming_symbols.static_fields.applicable_kinds = field
 dotnet_naming_symbols.static_fields.required_modifiers = static
 
 dotnet_naming_style.static_field_style.capitalization = pascal_case
-dotnet_naming_style.static_field_style.required_prefix = s_
 
 # local variables should be camelCase
 dotnet_naming_rule.camel_case_for_local_variables.severity = suggestion
@@ -233,16 +232,6 @@ dotnet_naming_rule.camel_case_for_local_variables.style    = local_variables_sty
 dotnet_naming_symbols.local_variables.applicable_kinds = local
 
 dotnet_naming_style.local_variables_style.capitalization = camel_case
-
-# Parameters should be prefixed with an 'a'
-dotnet_naming_rule.parameters_should_be_prefixed.severity         = suggestion
-dotnet_naming_rule.parameters_should_be_prefixed.symbols          = parameters
-dotnet_naming_rule.parameters_should_be_prefixed.style            = parameter_style
-
-dotnet_naming_symbols.parameters.applicable_kinds = parameter
-
-dotnet_naming_style.parameter_style.required_prefix = a
-dotnet_naming_style.parameter_style.capitalization = pascal_case
 
 # Local functions are PascalCase
 dotnet_naming_rule.local_functions_should_be_pascal_case.severity = suggestion
@@ -255,3 +244,4 @@ dotnet_naming_style.local_function_style.capitalization = pascal_case
 
 # diagnoistic options
 dotnet_diagnostic.CS1591.severity = none
+dotnet_diagnostic.TW0001.severity = warning

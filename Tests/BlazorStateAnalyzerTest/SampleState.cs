@@ -8,7 +8,13 @@ public class SampleState : IState
 
   public void Initialize() => throw new NotImplementedException();
 
-  public class SampleAction : IAction { }
+  public class SampleClassAction : IAction { }
+
+  public class SampleRecordAction : IAction { }
+
+  public struct SampleStructAction: IAction {}
 }
 
-public class InvalidSampleAction : IAction { }
+public record SampleInvalidRecordAction : IAction { }
+public class SampleInvalidClassAction : IAction { }
+public struct SampleInvalidStructAction : IAction { }

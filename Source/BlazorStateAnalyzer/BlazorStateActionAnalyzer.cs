@@ -9,81 +9,103 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 {
-  public const string DiagnosticId = "BlazorStateAction";
+  public const string NestActionInStateDiagnosticId = "TW0001";
+  public const string DebugDiagnosticId = "TWD002";
 
   private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
   private static readonly LocalizableString Description = "Blazor State Actions should be nested types of their corresponding States.";
   private const string Category = "BlazorState";
 
-  private static readonly DiagnosticDescriptor Rule = 
-    new DiagnosticDescriptor
+  private static readonly DiagnosticDescriptor Rule =
+    new
     (
-      DiagnosticId, 
-      Title, 
-      MessageFormat, 
-      Category, 
-      DiagnosticSeverity.Error, 
-      isEnabledByDefault: true, 
+      NestActionInStateDiagnosticId,
+      Title,
+      MessageFormat,
+      Category,
+      DiagnosticSeverity.Error,
+      isEnabledByDefault: true,
       description: Description
     );
 
-  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+  private static readonly DiagnosticDescriptor DebugRule =
+    new
+    (
+        id: DebugDiagnosticId,
+        title: "BlazorStateAnalyzerDebug",
+        messageFormat: "BlazorStateAnalyzerDebug: {0}",
+        category: "Debug",
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true
+    );
+
+  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule, DebugRule);
 
   public override void Initialize(AnalysisContext context)
   {
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
     context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
+  }
+
+  private static void ReportDebugInformation(SyntaxNodeAnalysisContext context, string message)
+  {
+    var debugDiagnostic = Diagnostic.Create(DebugRule, context.Node.GetLocation(), message);
+    context.ReportDiagnostic(debugDiagnostic);
   }
 
   private void AnalyzeNode(SyntaxNodeAnalysisContext context)
   {
-    var classDeclaration = (ClassDeclarationSyntax)context.Node;
+    var typeDeclaration = (TypeDeclarationSyntax)context.Node;
 
-    // Check if the class implements IAction
-    bool implementsIAction = false;
-    foreach (var baseType in classDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
-    {
-      var typeSymbol = context.SemanticModel.GetTypeInfo(baseType.Type).Type;
-      if (typeSymbol?.ToDisplayString() == "BlazorState.IAction")
-      {
-        implementsIAction = true;
-        break;
-      }
-    }
-
-    if (!implementsIAction)
+    if (!ImplementsIAction(context, typeDeclaration))
     {
       return;
     }
 
-    // Check if the class is nested within a class implementing IState
-    var parentClassDeclaration = classDeclaration.Parent as ClassDeclarationSyntax;
-    if (parentClassDeclaration == null)
-    {
-      ReportDiagnostic(context, classDeclaration.Identifier);
-      return;
-    }
-
-    bool parentImplementsIState = false;
-    foreach (var baseType in parentClassDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
-    {
-      var typeSymbol = context.SemanticModel.GetTypeInfo(baseType.Type).Type;
-      if (typeSymbol?.ToDisplayString() == "BlazorState.IState")
-      {
-        parentImplementsIState = true;
-        break;
-      }
-    }
-
-    if (!parentImplementsIState)
-    {
-      ReportDiagnostic(context, classDeclaration.Identifier);
-    }
+    CheckAndReportIfNotNestedInIState(context, typeDeclaration);
   }
 
-  private void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
+  private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
+  {
+    foreach (BaseTypeSyntax baseType in typeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
+    {
+      var typeSymbol = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
+      ReportDebugInformation(context, "BlazorStateAnalyzerDebug: " + (typeSymbol?.ToDisplayString() ?? "null"));
+
+      if (typeSymbol?.OriginalDefinition.ToString() == "BlazorState.IAction")
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static void CheckAndReportIfNotNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
+  {
+    if (typeDeclaration.Parent is not TypeDeclarationSyntax parentTypeDeclaration)
+    {
+      ReportDiagnostic(context, typeDeclaration.Identifier);
+      return;
+    }
+
+    foreach (BaseTypeSyntax baseType in parentTypeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
+    {
+      var typeSymbol = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
+      if (typeSymbol?.OriginalDefinition.ToString() == "BlazorState.IState")
+      {
+        return;
+      }
+    }
+
+    ReportDiagnostic(context, typeDeclaration.Identifier);
+  }
+
+  private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
   {
     var diagnostic = Diagnostic.Create(Rule, identifier.GetLocation(), identifier.Text);
     context.ReportDiagnostic(diagnostic);
