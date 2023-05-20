@@ -46,3 +46,7 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 
 * Fix issue #347  The analyzer will now work with class record or structs
 * Added some testing and scipts to locally deploy to nuget etc.
+
+## Release 8.2.3
+
+* Change BlazorStateAnalyzerDebug DiagnosticSeverity from warning to info
