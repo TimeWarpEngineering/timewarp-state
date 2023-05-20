@@ -16,7 +16,8 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
   private static readonly LocalizableString Description = "Blazor State Actions should be nested types of their corresponding States.";
   private const string Category = "BlazorState";
-
+  private const string IActionDefinition = "BlazorState.IAction";
+  private const string IStateDefinition = "BlazorState.IState";
   private static readonly DiagnosticDescriptor Rule =
     new
     (
@@ -34,9 +35,9 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     (
         id: DebugDiagnosticId,
         title: "BlazorStateAnalyzerDebug",
-        messageFormat: "BlazorStateAnalyzerDebug: {0}",
+        messageFormat: "{0}",
         category: "Debug",
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Info,
         isEnabledByDefault: true
     );
 
@@ -73,10 +74,11 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
   {
     foreach (BaseTypeSyntax baseType in typeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
     {
-      var typeSymbol = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
-      ReportDebugInformation(context, "BlazorStateAnalyzerDebug: " + (typeSymbol?.ToDisplayString() ?? "null"));
+      var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
+      string? originalDefintion = symbolInfo?.OriginalDefinition.ToString();
+      ReportDebugInformation(context, originalDefintion ?? "null");
 
-      if (typeSymbol?.OriginalDefinition.ToString() == "BlazorState.IAction")
+      if (originalDefintion == IActionDefinition)
       {
         return true;
       }
@@ -95,8 +97,8 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
     foreach (BaseTypeSyntax baseType in parentTypeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
     {
-      var typeSymbol = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
-      if (typeSymbol?.OriginalDefinition.ToString() == "BlazorState.IState")
+      var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
+      if (symbolInfo?.OriginalDefinition.ToString() == IStateDefinition)
       {
         return;
       }
