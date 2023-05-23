@@ -11,13 +11,14 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
   public const string DebugDiagnosticId = "TWD001";
+  public const string IActionDefinition = "BlazorState.IAction";
+  public const string IStateDefinition = "BlazorState.IState";
 
   private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
   private static readonly LocalizableString Description = "Blazor State Actions should be nested types of their corresponding States.";
   private const string Category = "BlazorState";
-  private const string IActionDefinition = "BlazorState.IAction";
-  private const string IStateDefinition = "BlazorState.IState";
+  
   private static readonly DiagnosticDescriptor Rule =
     new
     (
@@ -68,7 +69,10 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   private void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
   {
-    var typeDeclaration = (TypeDeclarationSyntax)context.Node;
+    if (!(context.Node is TypeDeclarationSyntax typeDeclaration))
+    {
+        return;
+    }
 
     if (!ImplementsIAction(context, typeDeclaration))
     {
@@ -103,17 +107,14 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
       INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
       if (classSymbol == null)
       {
-        // This shouldn't happen in normal circumstances, but it's good to be safe.
+        // Log error or throw an exception
         continue;
       }
 
       // Look at the interfaces the class implements. If it implements IState, return true.
-      foreach (INamedTypeSymbol interfaceSymbol in classSymbol.AllInterfaces)
+      if (classSymbol.AllInterfaces.Any(interfaceSymbol => interfaceSymbol.ToDisplayString() == IStateDefinition))
       {
-        if (interfaceSymbol.ToDisplayString() == IStateDefinition)
-        {
-          return;
-        }
+        return;
       }
     }
 
