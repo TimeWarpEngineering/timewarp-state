@@ -11,10 +11,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    
-    <!--<ProjectReference Include="..\..\..\..\Source\BlazorState\BlazorState.csproj" />-->
-    
+  <ItemGroup>    
+    <!--<ProjectReference Include="..\..\..\..\Source\BlazorStateAnalyzer\BlazorStateAnalyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\..\Source\BlazorState\BlazorState.csproj" />-->    
     <ProjectReference Include="..\Shared\Sample.Shared.csproj" />
   </ItemGroup>
 
