@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
-  public const string DebugDiagnosticId = "TWD002";
+  public const string DebugDiagnosticId = "TWD001";
 
   private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
@@ -45,14 +45,19 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   public override void Initialize(AnalysisContext context)
   {
-    if (!System.Diagnostics.Debugger.IsAttached)
-      System.Diagnostics.Debugger.Launch();
+    // LaunchDebugger();
 
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
-    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordDeclaration);
-    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.ClassDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.RecordDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.StructDeclaration);
+  }
+
+  private static void LaunchDebugger()
+  {
+    if (!System.Diagnostics.Debugger.IsAttached)
+      System.Diagnostics.Debugger.Launch();
   }
 
   private static void ReportDebugInformation(SyntaxNodeAnalysisContext context, string message)
@@ -61,26 +66,16 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     context.ReportDiagnostic(debugDiagnostic);
   }
 
-  private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+  private void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
   {
-    if (!System.Diagnostics.Debugger.IsAttached)
-      System.Diagnostics.Debugger.Launch();
-
-    ReportDebugInformation(context, $"Starting AnalyzeNode for node {context.Node}");
-
     var typeDeclaration = (TypeDeclarationSyntax)context.Node;
 
     if (!ImplementsIAction(context, typeDeclaration))
     {
-      // Log the early return
-      ReportDebugInformation(context, $"Early return from AnalyzeNode for node {context.Node}");
       return;
     }
 
     CheckAndReportIfNotNestedInIState(context, typeDeclaration);
-
-    // Log the end of the method
-    ReportDebugInformation(context, $"Finished AnalyzeNode for node {context.Node}");
   }
 
   private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
@@ -89,7 +84,6 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     {
       var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
       string? originalDefintion = symbolInfo?.OriginalDefinition.ToString();
-      ReportDebugInformation(context, originalDefintion ?? "null");
 
       if (originalDefintion == IActionDefinition)
       {
@@ -116,7 +110,7 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
       // Look at the interfaces the class implements. If it implements IState, return true.
       foreach (INamedTypeSymbol interfaceSymbol in classSymbol.AllInterfaces)
       {
-        if (interfaceSymbol.ToDisplayString() == "BlazorState.IState")
+        if (interfaceSymbol.ToDisplayString() == IStateDefinition)
         {
           return;
         }
