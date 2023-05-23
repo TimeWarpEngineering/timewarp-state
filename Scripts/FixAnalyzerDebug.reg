@@ -1,0 +1,22 @@
+Windows Registry Editor Version 5.00
+ 
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Notify]
+ 
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\Notify\SensLogn]
+"DLLName"="WlNotify.dll"
+"Lock"="SensLockEvent"
+"Logon"="SensLogonEvent"
+"Logoff"="SensLogoffEvent"
+"Safe"=dword:00000001
+"MaxWait"=dword:00000258
+"StartScreenSaver"="SensStartScreenSaverEvent"
+"StopScreenSaver"="SensStopScreenSaverEvent"
+"Startup"="SensStartupEvent"
+"Shutdown"="SensShutdownEvent"
+"StartShell"="SensStartShellEvent"
+"PostShell"="SensPostShellEvent"
+"Disconnect"="SensDisconnectEvent"
+"Reconnect"="SensReconnectEvent"
+"Unlock"="SensUnlockEvent"
+"Impersonate"=dword:00000001
+"Asynchronous"=dword:00000001
