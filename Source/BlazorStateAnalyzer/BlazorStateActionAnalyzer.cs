@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
-  public const string DebugDiagnosticId = "TWD001"; // TWD = TimeWarp Debug
+  public const string DebugDiagnosticId = "TWD002";
 
   private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
@@ -102,18 +102,24 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   private static void CheckAndReportIfNotNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
-    if (typeDeclaration.Parent is not TypeDeclarationSyntax parentTypeDeclaration)
+    // Check all ancestor classes.
+    IEnumerable<ClassDeclarationSyntax> classDeclarations = typeDeclaration.Ancestors().OfType<ClassDeclarationSyntax>();
+    foreach (ClassDeclarationSyntax classDeclaration in classDeclarations)
     {
-      ReportDiagnostic(context, typeDeclaration.Identifier);
-      return;
-    }
-
-    foreach (BaseTypeSyntax baseType in parentTypeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
-    {
-      var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
-      if (symbolInfo?.OriginalDefinition.ToString() == IStateDefinition)
+      INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
+      if (classSymbol == null)
       {
-        return;
+        // This shouldn't happen in normal circumstances, but it's good to be safe.
+        continue;
+      }
+
+      // Look at the interfaces the class implements. If it implements IState, return true.
+      foreach (INamedTypeSymbol interfaceSymbol in classSymbol.AllInterfaces)
+      {
+        if (interfaceSymbol.ToDisplayString() == "BlazorState.IState")
+        {
+          return;
+        }
       }
     }
 
