@@ -10,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
-  public const string DebugDiagnosticId = "TWD002";
+  public const string DebugDiagnosticId = "TWD001"; // TWD = TimeWarp Debug
 
   private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
@@ -45,6 +45,9 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   public override void Initialize(AnalysisContext context)
   {
+    if (!System.Diagnostics.Debugger.IsAttached)
+      System.Diagnostics.Debugger.Launch();
+
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
     context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
@@ -60,14 +63,24 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   private void AnalyzeNode(SyntaxNodeAnalysisContext context)
   {
+    if (!System.Diagnostics.Debugger.IsAttached)
+      System.Diagnostics.Debugger.Launch();
+
+    ReportDebugInformation(context, $"Starting AnalyzeNode for node {context.Node}");
+
     var typeDeclaration = (TypeDeclarationSyntax)context.Node;
 
     if (!ImplementsIAction(context, typeDeclaration))
     {
+      // Log the early return
+      ReportDebugInformation(context, $"Early return from AnalyzeNode for node {context.Node}");
       return;
     }
 
     CheckAndReportIfNotNestedInIState(context, typeDeclaration);
+
+    // Log the end of the method
+    ReportDebugInformation(context, $"Finished AnalyzeNode for node {context.Node}");
   }
 
   private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
