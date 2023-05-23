@@ -4,6 +4,7 @@ try {
     $analyzerPath = "./Source/BlazorStateAnalyzer/BlazorStateAnalyzer.csproj"
     $projectPath = "./Source/BlazorState/BlazorState.csproj" # <path to your .csproj file>
     $tutorialPath = "./Samples/Tutorial/Sample/Sample.sln"
+    $analyzerTestPath = "./Tests/BlazorStateAnalyzerTest/BlazorStateAnalyzerTest.csproj"
     $packageOutputPath = "./Nuget" # <path where you want the .nupkg file to go>
     $localSourcePath = "C:\LocalNugetFeed" # <path to your local NuGet source>
     $nugetConfigPath = "./Samples/Tutorial/Sample/nuget.config"
@@ -17,11 +18,10 @@ try {
     # remove everything
     dotnet cleanup -y
     dotnet clean
-
-    dotnet restore 
+    dotnet restore /p:UseSharedCompilation=false
 
     # Build the analyzer.
-    dotnet build $analyzerPath --configuration Release
+    dotnet build $analyzerPath --configuration Release /p:UseSharedCompilation=false
 
     Start-Sleep -Seconds 5
 
@@ -51,7 +51,13 @@ try {
     Move-Item -Path $packageName.FullName -Destination $localSourcePath -Force
 
     # Build the sample and make sure no compiler errors
+    Write-Host "#### Building Sample should be no compiler errors."
     dotnet build $tutorialPath --configuration Release /p:UseSharedCompilation=false 
+
+    # Build the BlazorStateAnalyzerTest App and we should have 3 errors
+    Write-Host "#### Build the BlazorStateAnalyzerTest App and we should have 3 errors"
+    dotnet build $analyzerTestPath --configuration Release /p:UseSharedCompilation=false
+
 }
 finally {
     Pop-Location
