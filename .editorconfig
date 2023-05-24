@@ -245,4 +245,4 @@ dotnet_naming_style.local_function_style.capitalization = pascal_case
 # diagnoistic options
 dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.TW0001.severity = error
-# dotnet_diagnostic.TWD002.severity = warning
+dotnet_diagnostic.TWD001.severity = warning

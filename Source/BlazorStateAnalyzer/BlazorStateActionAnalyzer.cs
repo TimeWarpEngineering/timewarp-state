@@ -10,14 +10,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
-  public const string DebugDiagnosticId = "TWD002";
+  public const string DebugDiagnosticId = "TWD001";
+  public const string IActionDefinition = "BlazorState.IAction";
+  public const string IStateDefinition = "BlazorState.IState";
 
   private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
   private static readonly LocalizableString Description = "Blazor State Actions should be nested types of their corresponding States.";
   private const string Category = "BlazorState";
-  private const string IActionDefinition = "BlazorState.IAction";
-  private const string IStateDefinition = "BlazorState.IState";
+
   private static readonly DiagnosticDescriptor Rule =
     new
     (
@@ -45,11 +46,19 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   public override void Initialize(AnalysisContext context)
   {
+    // LaunchDebugger();
+
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
-    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
-    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.RecordDeclaration);
-    context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.StructDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.ClassDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.RecordDeclaration);
+    context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.StructDeclaration);
+  }
+
+  private static void LaunchDebugger()
+  {
+    if (!System.Diagnostics.Debugger.IsAttached)
+      System.Diagnostics.Debugger.Launch();
   }
 
   private static void ReportDebugInformation(SyntaxNodeAnalysisContext context, string message)
@@ -58,16 +67,17 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     context.ReportDiagnostic(debugDiagnostic);
   }
 
-  private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+  private void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
   {
-    var typeDeclaration = (TypeDeclarationSyntax)context.Node;
+    // This analyzer only concerns itself with type declarations (classes, structs, records).
+    if (!(context.Node is TypeDeclarationSyntax typeDeclaration)) return;
 
-    if (!ImplementsIAction(context, typeDeclaration))
+    if (!ImplementsIAction(context, typeDeclaration)) return;
+
+    if (!IsNestedInIState(context, typeDeclaration))
     {
-      return;
+      ReportDiagnostic(context, typeDeclaration.Identifier);
     }
-
-    CheckAndReportIfNotNestedInIState(context, typeDeclaration);
   }
 
   private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
@@ -76,7 +86,6 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     {
       var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
       string? originalDefintion = symbolInfo?.OriginalDefinition.ToString();
-      ReportDebugInformation(context, originalDefintion ?? "null");
 
       if (originalDefintion == IActionDefinition)
       {
@@ -87,24 +96,21 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     return false;
   }
 
-  private static void CheckAndReportIfNotNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
+  private static bool IsNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
-    if (typeDeclaration.Parent is not TypeDeclarationSyntax parentTypeDeclaration)
+    // Check all ancestor classes.
+    IEnumerable<ClassDeclarationSyntax> classDeclarations = typeDeclaration.Ancestors().OfType<ClassDeclarationSyntax>();
+    foreach (ClassDeclarationSyntax classDeclaration in classDeclarations)
     {
-      ReportDiagnostic(context, typeDeclaration.Identifier);
-      return;
+      INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
+      if (classSymbol == null) continue;
+
+      // Look at the interfaces the class implements. If it implements IState, return true.
+      if (classSymbol.AllInterfaces.Any(interfaceSymbol => interfaceSymbol.ToDisplayString() == IStateDefinition))
+        return true;
     }
 
-    foreach (BaseTypeSyntax baseType in parentTypeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
-    {
-      var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
-      if (symbolInfo?.OriginalDefinition.ToString() == IStateDefinition)
-      {
-        return;
-      }
-    }
-
-    ReportDiagnostic(context, typeDeclaration.Identifier);
+    return false;
   }
 
   private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)

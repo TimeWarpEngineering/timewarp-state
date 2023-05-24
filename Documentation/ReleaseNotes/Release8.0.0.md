@@ -50,3 +50,6 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 ## Release 8.2.3
 
 * Change BlazorStateAnalyzerDebug DiagnosticSeverity from warning to info
+
+## Release 8.2.4
+* Really fix the Analyzer this time.  And remove BlazorStateAnalyzerDebug (don't need it now)
