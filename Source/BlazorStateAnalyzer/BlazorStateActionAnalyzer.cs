@@ -18,7 +18,7 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
   private static readonly LocalizableString Description = "Blazor State Actions should be nested types of their corresponding States.";
   private const string Category = "BlazorState";
-  
+
   private static readonly DiagnosticDescriptor Rule =
     new
     (
@@ -69,17 +69,15 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   private void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
   {
-    if (!(context.Node is TypeDeclarationSyntax typeDeclaration))
-    {
-        return;
-    }
+    // This analyzer only concerns itself with type declarations (classes, structs, records).
+    if (!(context.Node is TypeDeclarationSyntax typeDeclaration)) return;
 
-    if (!ImplementsIAction(context, typeDeclaration))
-    {
-      return;
-    }
+    if (!ImplementsIAction(context, typeDeclaration)) return;
 
-    CheckAndReportIfNotNestedInIState(context, typeDeclaration);
+    if (!IsNestedInIState(context, typeDeclaration))
+    {
+      ReportDiagnostic(context, typeDeclaration.Identifier);
+    }
   }
 
   private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
@@ -98,27 +96,21 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     return false;
   }
 
-  private static void CheckAndReportIfNotNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
+  private static bool IsNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
     // Check all ancestor classes.
     IEnumerable<ClassDeclarationSyntax> classDeclarations = typeDeclaration.Ancestors().OfType<ClassDeclarationSyntax>();
     foreach (ClassDeclarationSyntax classDeclaration in classDeclarations)
     {
       INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
-      if (classSymbol == null)
-      {
-        // Log error or throw an exception
-        continue;
-      }
+      if (classSymbol == null) continue;
 
       // Look at the interfaces the class implements. If it implements IState, return true.
       if (classSymbol.AllInterfaces.Any(interfaceSymbol => interfaceSymbol.ToDisplayString() == IStateDefinition))
-      {
-        return;
-      }
+        return true;
     }
 
-    ReportDiagnostic(context, typeDeclaration.Identifier);
+    return false;
   }
 
   private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
