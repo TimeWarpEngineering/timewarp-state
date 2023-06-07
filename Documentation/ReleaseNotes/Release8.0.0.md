@@ -53,3 +53,6 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 
 ## Release 8.2.4
 * Really fix the Analyzer this time.  And remove BlazorStateAnalyzerDebug (don't need it now)
+
+## Release 8.2.5
+* Drop the dependency down one to the LTS level
