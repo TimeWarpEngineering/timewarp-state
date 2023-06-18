@@ -14,7 +14,10 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -27,7 +30,6 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-        shell: pwsh
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
@@ -43,12 +45,10 @@ jobs:
           dotnet clean  --configuration Release
           dotnet build --configuration Release
           dotnet pack --configuration Release
-        shell: pwsh
 
       - name: Publish
         run: |
           cd Source/BlazorState/bin/Packages
           dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
-        shell: pwsh
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

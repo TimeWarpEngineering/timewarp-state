@@ -26,6 +26,9 @@ concurrency:
 
 jobs:
   deploy:
+    defaults:
+      run:
+        shell: pwsh
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}  
@@ -55,7 +58,11 @@ jobs:
 
       - name: Build
         run: |
-          cd Source/BlazorState/
+          cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
+          dotnet clean --configuration Release
+          dotnet build --configuration Release
+          cd ${{ github.workspace }}/Source/BlazorState/
+          dotnet clean  --configuration Release
           dotnet build --configuration Release
 
       - name: DocFX Build
