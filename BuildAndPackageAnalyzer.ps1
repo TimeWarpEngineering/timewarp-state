@@ -3,11 +3,11 @@ try {
     # Define the project, package, and source paths.
     $analyzerPath = "./Source/BlazorStateAnalyzer/BlazorStateAnalyzer.csproj"
     $projectPath = "./Source/BlazorState/BlazorState.csproj" # <path to your .csproj file>
-    $tutorialPath = "./Samples/Tutorial/Sample/Sample.sln"
+    $tutorialPath = "./Samples/01-StateActionsHandlers/Sample/Sample.sln"
     $analyzerTestPath = "./Tests/BlazorStateAnalyzerTest/BlazorStateAnalyzerTest.csproj"
     $packageOutputPath = "./Nuget" # <path where you want the .nupkg file to go>
     $localSourcePath = "C:\LocalNugetFeed" # <path to your local NuGet source>
-    $nugetConfigPath = "./Samples/Tutorial/Sample/nuget.config"
+    $nugetConfigPath = "./Samples/01-StateActionsHandlers/Sample/nuget.config"
     $sourceName = "LocalFeed"
 
     # Ensure the local NuGet source directory exists.

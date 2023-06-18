@@ -37,11 +37,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{FA45
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{243A5B2C-5E9D-432B-A258-7BCE33645683}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Samples\Tutorial\Sample\Server\Sample.Server.csproj", "{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}"
+
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Samples\01-StateActionsHandlers\Sample\Server\Sample.Server.csproj", "{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\Tutorial\Sample\Shared\Sample.Shared.csproj", "{845B863B-C1DB-4C17-8975-FBD380FBD1EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\01-StateActionsHandlers\Sample\Shared\Sample.Shared.csproj", "{845B863B-C1DB-4C17-8975-FBD380FBD1EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "Samples\Tutorial\Sample\Client\Sample.Client.csproj", "{A9C096EC-DE7B-4E61-8D8C-854037C214A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Client", "Samples\01-StateActionsHandlers\Sample\Client\Sample.Client.csproj", "{A9C096EC-DE7B-4E61-8D8C-854037C214A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzerTest", "Tests\BlazorStateAnalyzerTest\BlazorStateAnalyzerTest.csproj", "{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}"
 EndProject

@@ -27,7 +27,7 @@ If you like or are using this project please give it a star. Thank you!
 
 To quickly get started I recommend the [tutorial](https://timewarpengineering.github.io/blazor-state/Samples/01-StateActionsHandlers/Readme.html) section of the full [Documentation](https://timewarpengineering.github.io/blazor-state/).
 
-![TimeWarpBlazorStateOneWayFlow.drawio.svg](Documentation%2FImages%2FTimeWarpBlazorStateOneWayFlow.drawio.svg)
+![TimeWarpBlazorStateOneWayFlow.drawio.svg](/Documentation/Images/TimeWarpBlazorStateOneWayFlow.drawio.svg)
 
 ## Installation
 
