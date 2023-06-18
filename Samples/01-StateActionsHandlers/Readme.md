@@ -39,7 +39,7 @@ Open a browser and enter the https URL from the above step. <https://localhost:7
 
 You should see:
 
-![BlazorWasm Hosted ScreenShot](Images/BlazorWasmHostedScreenShot.png)
+![BlazorWasm Hosted ScreenShot](/Samples/01-StateActionsHandlers/Images/BlazorWasmHostedScreenShot.png)
 
 Go to the Counter page and click the `Click me` button.
 Observe the incrementing of the value.
@@ -318,10 +318,10 @@ public partial class App : ComponentBase
 
 Now run your app again and then Open the Redux Dev Tools (a tab in Chrome Dev Tools) and you should see Actions as they are executed.
 
-![](Images/ReduxDevTools.png)
+![](/Samples/01-StateActionsHandlers/Images/ReduxDevTools.png)
 
 If you inspect the State in the DevTools you will also notice it maintains the current Route in RouteState.
 
-![ReduxRouteState](Images/ReduxRouteState.png)
+![ReduxRouteState](/Samples/01-StateActionsHandlers/Images/ReduxRouteState.png)
 
 Congratulations that is the basics of Blazor-State.
