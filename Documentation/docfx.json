@@ -33,13 +33,14 @@
     "resource": [
       {
         "files": [
-          "**/Images/**"
+          "Images/**"
         ]
       },
       {
         "src": "../",
         "files": [
-          "Assets/**"
+          "Assets/**",
+          "Samples/**/Images/**"
         ]
       }
 
