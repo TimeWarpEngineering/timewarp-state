@@ -74,6 +74,8 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
     if (!ImplementsIAction(context, typeDeclaration)) return;
 
+    if (typeDeclaration.Modifiers.Any(SyntaxKind.AbstractKeyword)) return;
+
     if (!IsNestedInIState(context, typeDeclaration))
     {
       ReportDiagnostic(context, typeDeclaration.Identifier);
@@ -82,27 +84,38 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
-    foreach (BaseTypeSyntax baseType in typeDeclaration.BaseList?.Types ?? new SeparatedSyntaxList<BaseTypeSyntax>())
-    {
-      var symbolInfo = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
-      string? originalDefintion = symbolInfo?.OriginalDefinition.ToString();
+    var symbolInfo = context.SemanticModel.GetDeclaredSymbol(typeDeclaration) as INamedTypeSymbol;
 
-      if (originalDefintion == IActionDefinition)
+    return ImplementsIAction(symbolInfo);
+  }
+
+  private static bool ImplementsIAction(INamedTypeSymbol? symbolInfo)
+  {
+    if (symbolInfo == null)
+    {
+      return false;
+    }
+
+    foreach (var iface in symbolInfo.Interfaces)
+    {
+      if (iface.OriginalDefinition.ToString() == IActionDefinition)
       {
         return true;
       }
     }
 
-    return false;
+    // Recursively check if any base class implements IAction
+    return ImplementsIAction(symbolInfo.BaseType);
   }
+
 
   private static bool IsNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
     // Check all ancestor classes.
-    IEnumerable<ClassDeclarationSyntax> classDeclarations = typeDeclaration.Ancestors().OfType<ClassDeclarationSyntax>();
-    foreach (ClassDeclarationSyntax classDeclaration in classDeclarations)
+    IEnumerable<TypeDeclarationSyntax> typeDeclarations = typeDeclaration.Ancestors().OfType<TypeDeclarationSyntax>();
+    foreach (TypeDeclarationSyntax ancestorTypeDeclaration in typeDeclarations)
     {
-      INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);
+      INamedTypeSymbol? classSymbol = context.SemanticModel.GetDeclaredSymbol(ancestorTypeDeclaration);
       if (classSymbol == null) continue;
 
       // Look at the interfaces the class implements. If it implements IState, return true.
@@ -112,6 +125,7 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
     return false;
   }
+
 
   private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
   {
