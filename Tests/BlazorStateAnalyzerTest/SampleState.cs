@@ -13,8 +13,12 @@ public class SampleState : IState
   public class SampleRecordAction : IAction { }
 
   public struct SampleStructAction: IAction {}
+
+  public class SampleDescendantClassAction : AbstractAction { }
 }
 
+public abstract class AbstractAction: IAction { }
 public record SampleInvalidRecordAction : IAction { }
 public class SampleInvalidClassAction : IAction { }
 public struct SampleInvalidStructAction : IAction { }
+public class SampleInvalidDescendantClassAction : AbstractAction { }
