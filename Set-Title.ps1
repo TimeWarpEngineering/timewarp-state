@@ -1,1 +1,0 @@
-$Host.UI.RawUI.WindowTitle = "blazor-state"
