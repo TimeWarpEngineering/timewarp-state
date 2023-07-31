@@ -1,0 +1,25 @@
+@page "/Application"
+
+@using BlazorState;
+@using Middleware.Client.Features.Application
+
+@inherits BlazorStateComponent
+
+@if(ApplicationState.IsProcessing)
+{
+    <p> Loading... </p>
+}
+
+<button class="btn btn-primary" @onclick="FiveSecondTaskAction">Five Second Task</button>
+
+
+@code {
+    ApplicationState ApplicationState => GetState<ApplicationState>();
+
+    async Task FiveSecondTaskAction()
+    {
+        await Mediator.Send(
+            new ApplicationState.FiveSecondTaskAction()
+        );
+    }
+}

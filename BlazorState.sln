@@ -37,7 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{FA45
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{243A5B2C-5E9D-432B-A258-7BCE33645683}"
 EndProject
-
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Samples\01-StateActionsHandlers\Sample\Server\Sample.Server.csproj", "{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\01-StateActionsHandlers\Sample\Shared\Sample.Shared.csproj", "{845B863B-C1DB-4C17-8975-FBD380FBD1EC}"
@@ -47,6 +46,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzerTest", "Tests\BlazorStateAnalyzerTest\BlazorStateAnalyzerTest.csproj", "{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzer", "Source\BlazorStateAnalyzer\BlazorStateAnalyzer.csproj", "{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Middleware", "Middleware", "{6845F81D-1A81-4965-BCA0-BEC012B7ED76}"
+	ProjectSection(SolutionItems) = preProject
+		TextFile1.txt = TextFile1.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +141,7 @@ Global
 		{845B863B-C1DB-4C17-8975-FBD380FBD1EC} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{A9C096EC-DE7B-4E61-8D8C-854037C214A4} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
+		{6845F81D-1A81-4965-BCA0-BEC012B7ED76} = {FA456F71-9A99-4869-970E-9D5C9A1E6C9F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}
