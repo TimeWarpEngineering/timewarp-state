@@ -125,9 +125,21 @@ public static class ServiceCollectionExtensions
           !aType.IsAbstract &&
           !aType.IsInterface &&
           aType.BaseType != null &&
-          aType.BaseType.IsGenericType &&
-          aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
+          IsSubclassOfRawGeneric(typeof(State<>),aType)
       );
+      
+      // https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class
+      // performance? startup-code less important, and also while loop breaks early.
+      static bool IsSubclassOfRawGeneric(Type generic, Type? toCheck) {
+        while (toCheck != null && toCheck != typeof(object)) {
+          Type cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+          if (generic == cur) {
+            return true;
+          }
+          toCheck = toCheck.BaseType;
+        }
+        return false;
+      }
 
       foreach (Type type in types)
       {
