@@ -59,3 +59,6 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 
 ## Release 8.2.6
 * Analyzer won't check abstract classes of IAction are nested in IState.
+
+## Release 8.2.7
+* BlazorStateAnalyzer needs to target netstandard2.0 Fixes 355 
