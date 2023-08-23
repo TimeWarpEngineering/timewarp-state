@@ -30,7 +30,6 @@ public static class ServiceCollectionExtensions
       aServiceCollection.AddScoped<BlazorHostingLocation>();
       aServiceCollection.AddScoped<JsonRequestHandler>();
       aServiceCollection.AddScoped<Subscriptions>();
-      aServiceCollection.AddScoped(typeof(IRequestPostProcessor<,>), typeof(RenderSubscriptionsPostProcessor<,>));
       aServiceCollection.AddScoped<IStore, Store>();
       aServiceCollection.AddSingleton(blazorStateOptions);
       
@@ -110,8 +109,11 @@ public static class ServiceCollectionExtensions
         .AddMediatR
         (
           aMediatRServiceConfiguration =>
-            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(aBlazorStateOptions.Assemblies.ToArray())
+            aMediatRServiceConfiguration
+            .RegisterServicesFromAssemblies(aBlazorStateOptions.Assemblies.ToArray())
+            .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
         );
+      aServiceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>), ServiceLifetime.Transient));
     }
   }
 

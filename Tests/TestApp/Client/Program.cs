@@ -3,6 +3,7 @@ namespace TestApp.Client;
 using BlazorState;
 using BlazorState.Pipeline.ReduxDevTools;
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,8 @@ using System;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using TestApp.Client.Pipeline.NotificationPostProcessor;
+using TestApp.Client.Pipeline.NotificationPreProcessor;
 
 public class Program
 {
@@ -64,6 +67,8 @@ public class Program
           };
       }
     );
+    aServiceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(PrePipelineNotificationRequestPreProcessor<>));
+    aServiceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PostPipelineNotificationRequestPostProcessor<,>));
     aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));
     aServiceCollection.AddSingleton(aServiceCollection);
 
