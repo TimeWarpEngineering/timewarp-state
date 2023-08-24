@@ -17,3 +17,8 @@ See [Migrations](xref:BlazorState:Migration8-9.md) for instructions on how to mi
 * Update Microsoft.CodeAnalysis.Common 4.6.0 -> 4.7.0
 * Update Microsoft.CodeAnalysis.CSharp.Workspaces 4.6.0 -> 4.7.0
 * Updates other development dependencies
+
+
+## Release 9.0.1
+
+* Added InvalidCloneException to assist in detecting when the clone did not work as expected.

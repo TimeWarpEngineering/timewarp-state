@@ -1,6 +1,8 @@
 #nullable enable
 namespace BlazorState.Pipeline.State;
 
+using BlazorState.Pipeline.CloneState;
+
 internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : notnull, IAction
 {
@@ -31,7 +33,15 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
     IState originalState = (IState)Store.GetState(enclosingStateType)!; // Not null because of Analyzer
-    IState newState = (originalState is ICloneable clonable) ? (IState)clonable.Clone() : originalState.Clone();
+    IState newState = 
+      (originalState is ICloneable clonable) ? 
+      (IState)clonable.Clone() : 
+      originalState.Clone();
+
+    if (newState.Guid == Guid.Empty || originalState.Guid == newState.Guid)
+    {
+      throw new InvalidCloneException(enclosingStateType);
+    }
 
     Logger.LogDebug
     (
