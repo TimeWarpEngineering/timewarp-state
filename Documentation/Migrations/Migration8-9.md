@@ -1,6 +1,6 @@
 ---
-uid: BlazorState:Migration7-8.md
-title: Migrate From 7.X to 8.X
+uid: BlazorState:Migration8-9.md
+title: Migrate From 8.X to 9.X
 ---
 
 # Migration

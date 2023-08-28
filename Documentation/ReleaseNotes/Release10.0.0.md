@@ -1,6 +1,6 @@
 ---
-uid: BlazorState:Release.9.0.0.md
-title: Release 9.0.0
+uid: BlazorState:Release.10.0.0.md
+title: Release 10.0.0
 ---
 
 ## Release 10.0.0
