@@ -33,7 +33,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   [Parameter] public string TestId { get; set; }
 
   [Inject] public IMediator Mediator { get; set; }
-  [Inject] public IStore Store { get; set; }
+  [Inject] private IStore Store { get; set; }
 
   /// <summary>
   /// Maintains all components that subscribe to a State.
