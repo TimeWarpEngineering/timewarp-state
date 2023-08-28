@@ -9,7 +9,7 @@ title: Release 9.0.0
 
 * Blazor-State now requires MediatR version 12.1.1 which actually should have been a breaking change on MediatR.
 
-See [Migrations](xref:BlazorState:Migration8-9.md) for instructions on how to migrate from version 7.0.0 to 8.0.0.
+See [Migrations](xref:BlazorState:Migration8-9.md) for instructions on how to migrate from version 8.0 to 9.0.
 
 ### Other Changes
 

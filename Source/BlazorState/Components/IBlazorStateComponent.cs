@@ -6,19 +6,23 @@ using MediatR;
 /// Minimum implementation needed for BlazorState to function
 /// </summary>
 /// <example>
-///   public class BlazorStateComponent : BlazorComponent,
+///   public class YourBaseComponent : BlazorComponent,
 ///     IBlazorStateComponent
 ///  {
-///    [Inject] public IMediator Mediator { get; set; }
-///    [Inject] public IStore Store { get; set; }
+///    static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
+///    public BlazorStateComponent()
+///    {
+///      string name = GetType().Name;
+///      int count = s_InstanceCounts.AddOrUpdate(name, 1, (aKey, aValue) => aValue + 1);
+///      Id = $"{name}-{count}";
+///    }
+///    public string Id { get; }
 ///    public void ReRender() => StateHasChanged();
 /// }
 /// </example>
 public interface IBlazorStateComponent
 {
   string Id { get; }
-  IMediator Mediator { get; set; }
-  IStore Store { get; set; }
-
+  
   void ReRender();
 }
