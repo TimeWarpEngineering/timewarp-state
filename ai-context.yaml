@@ -1,44 +1,49 @@
 ai-context:
-  project:
+  repository_info:
     name: Blazor-State
     description: A library for managing state in Blazor applications.
     pattern: Mediator Pattern
-    conventions:
-      - When generating code give the code per file with filename in comment at top of code block. eg. // Filename.cs
-  repo_structure:
-    - Source
-      - BlazorState
-        - Base
-          - Action
-          - ActionHandler
-        - Components
-          - BlazorStateComponent
-        - Features
-          - JavaScriptInterop
-          - Routing
-        - Pipeline
-          - ReduxDevTools
-        - State
+    repo_structure:
+      - Source
+        - BlazorState
+          - Base
+            - Action
+            - ActionHandler
+          - Components
+            - BlazorStateComponent
+          - Features
+            - JavaScriptInterop
+            - Routing
+          - Pipeline
+            - ReduxDevTools
           - State
-        - Store
+            - State
           - Store
-        - Subscriptions
-  usage_structure:
-    - Features
-      - FeatureName
-        - FeatureState.cs  
-          - # Contains the state definition in a partial class
-          - Override the Initialize method to set the initial state.
-        - FeatureState.Debug.cs  # Optional, for debug-specific code
-        - Actions
-          - FeatureState.ActionName.cs  
-            - # Contains both the Action and Handler as nested classes within a static class named after the Action.
-            - # Example: CompleteProcessing.Action and CompleteProcessing.Handler are nested within CompleteProcessing static class.
-            - # The file should follow the pattern shown in the example `ProcessingState.CompleteProcessing.cs`.
-            - # It should contain a static class named after the Action (e.g., CompleteProcessing).
-            - # Within this static class, nest an internal record named 'Action' that inherits from BaseAction.
-            - # Also nest an internal class named 'Handler' that inherits from BaseHandler<Action>.
-            - # The Handler should override the Handle method to mutate the state.
+            - Store
+          - Subscriptions
+  usage_guidelines:
+    project_structure:
+      - Features
+        - FeatureName
+          - FeatureState.cs  # Contains the state definition in a partial class
+          - FeatureState.Debug.cs  # Optional, for debug-specific code
+          - Actions
+            - FeatureState.ActionName.cs  
+              - # Contains both the Action and Handler as nested classes within a static class named after the Action.
+              - # Example: CompleteProcessing.Action and CompleteProcessing.Handler are nested within CompleteProcessing static class.
+              - # The file should follow the pattern shown in the example `ProcessingState.CompleteProcessing.cs`.
+              - # It should contain a static class named after the Action (e.g., CompleteProcessing).
+              - # Within this static class, nest an internal record named 'Action' that inherits from BaseAction.
+              - # Also nest an internal class named 'Handler' that inherits from BaseHandler<Action>.
+              - # The Handler should override the Handle method to mutate the state.
+    conventions:
+      - State is in a separate file and defined in its own partial class.
+      - Action and Handler are grouped together in a single file, nested within the same partial class as the State.
+      - Actions are nested classes within the State they mutate.
+      - State should NOT be mutated by anything other than handlers.
+      - Handlers are nested classes within the State they mutate.
+      - State classes should override the Initialize() method.
+      - Handlers should inherit from BlazorState.Handlers.ActionHandler.
   documentation:
     - Overview.md
     - Features/Features.md
