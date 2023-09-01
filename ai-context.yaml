@@ -3,6 +3,8 @@ ai-context:
     name: Blazor-State
     description: A library for managing state in Blazor applications.
     pattern: Mediator Pattern
+    conventions:
+      - Actions are nested classes within the State they mutate
     structure:
       - Source
         - BlazorState
