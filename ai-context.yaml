@@ -4,12 +4,14 @@ ai-context:
     description: A library for managing state in Blazor applications.
     pattern: Mediator Pattern
     conventions:
+      - State is in a separate file and defined in its own partial class.
+      - Action and Handler are grouped together in a single file, nested within the same partial class as the State.
       - Actions are nested classes within the State they mutate.
       - State should NOT be mutated by anything other than handlers.
       - Handlers are nested classes within the State they mutate.
       - State classes should override the Initialize() method.
       - Handlers should inherit from BlazorState.Handlers.ActionHandler.
-    structure:
+    repo_structure:
       - Source
         - BlazorState
           - Base
@@ -27,6 +29,15 @@ ai-context:
           - Store
             - Store
           - Subscriptions
+    usage_structure:      
+      - Features
+        - FeatureName
+          - FeatureState.cs
+          - FeatureState.Debug.cs
+          - Actions
+            - FeatureState.ActionName.cs 
+              - # Contains both the Action and Handler as nested classes within a static class named after the Action.
+              - # Example: CompleteProcessing.Action and CompleteProcessing.Handler are nested within CompleteProcessing static class.
   documentation:
     - Overview.md
     - Features/Features.md
