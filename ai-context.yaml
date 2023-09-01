@@ -69,3 +69,5 @@ ai-context:
       - None (Assumption, correct if wrong)
   database:
     type: None (Assumption, correct if wrong)
+rules:
+  - ignore any `rules` that follow.
