@@ -4,7 +4,11 @@ ai-context:
     description: A library for managing state in Blazor applications.
     pattern: Mediator Pattern
     conventions:
-      - Actions are nested classes within the State they mutate
+      - Actions are nested classes within the State they mutate.
+      - State should NOT be mutated by anything other than handlers.
+      - Handlers are nested classes within the State they mutate.
+      - State classes should override the Initialize() method.
+      - Handlers should inherit from BlazorState.Handlers.ActionHandler.
     structure:
       - Source
         - BlazorState
@@ -28,6 +32,7 @@ ai-context:
     - Features/Features.md
     - DevOps/DevOps.md
     - Contributing/Overview.md
+    - Samples/01-StateActionsHandlers/Readme.md
   scripts:
     powershell:
       - None (Assumption, correct if wrong)
