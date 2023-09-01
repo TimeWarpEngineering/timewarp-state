@@ -1,0 +1,65 @@
+repository:
+  name: "Blazor-State"
+  url: "https://github.com/TimeWarpEngineering/blazor-state"
+  description: "A library for managing state in Blazor applications."
+  language: "C#"
+  dotnetVersion: "7"
+
+workflows:
+  - name: "CI Build"
+    file: ".github/workflows/ci-build.yml"
+  - name: "Publish Documentation"
+    file: ".github/workflows/publish-documentation.yml"
+  - name: "Release Build"
+    file: ".github/workflows/release-build.yml"
+
+coreComponents:
+  - name: "Action"
+    file: "Source/BlazorState/Base/Action.cs"
+  - name: "ActionHandler"
+    file: "Source/BlazorState/Base/ActionHandler.cs"
+  - name: "BlazorStateComponent"
+    file: "Source/BlazorState/Components/BlazorStateComponent.cs"
+
+features:
+  - name: "JavaScript Interop"
+    files:
+      - "Source/BlazorState/Features/JavaScriptInterop/JsonRequest.cs"
+      - "Source/BlazorState/Features/JavaScriptInterop/JsonRequestHandler.cs"
+  - name: "Routing"
+    files:
+      - "Source/BlazorState/Features/Routing/RouteManager.cs"
+
+pipeline:
+  - name: "CloneStateBehavior"
+    file: "Source/BlazorState/Pipeline/CloneState/CloneStateBehavior.cs"
+  - name: "ReduxDevToolsBehavior"
+    file: "Source/BlazorState/Pipeline/ReduxDevTools/ReduxDevToolsBehavior.cs"
+
+stateManagement:
+  - name: "IState"
+    file: "Source/BlazorState/State/IState.cs"
+  - name: "State"
+    file: "Source/BlazorState/State/State.cs"
+
+store:
+  - name: "IStore"
+    file: "Source/BlazorState/Store/IStore.cs"
+  - name: "Store"
+    file: "Source/BlazorState/Store/Store.cs"
+
+subscriptions:
+  - name: "Subscriptions"
+    file: "Source/BlazorState/Subscriptions.cs"
+
+documentation:
+  - name: "README"
+    file: "README.md"
+
+buildConfiguration:
+  - name: "Directory.Build.props"
+    file: "Directory.Build.props"
+  - name: "Directory.Build.targets"
+    file: "Directory.Build.targets"
+  - name: "Directory.Packages.props"
+    file: "Directory.Packages.props"
