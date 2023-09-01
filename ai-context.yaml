@@ -11,33 +11,38 @@ ai-context:
       - Handlers are nested classes within the State they mutate.
       - State classes should override the Initialize() method.
       - Handlers should inherit from BlazorState.Handlers.ActionHandler.
-    repo_structure:
-      - Source
-        - BlazorState
-          - Base
-            - Action
-            - ActionHandler
-          - Components
-            - BlazorStateComponent
-          - Features
-            - JavaScriptInterop
-            - Routing
-          - Pipeline
-            - ReduxDevTools
+  repo_structure:
+    - Source
+      - BlazorState
+        - Base
+          - Action
+          - ActionHandler
+        - Components
+          - BlazorStateComponent
+        - Features
+          - JavaScriptInterop
+          - Routing
+        - Pipeline
+          - ReduxDevTools
+        - State
           - State
-            - State
+        - Store
           - Store
-            - Store
-          - Subscriptions
-    usage_structure:      
-      - Features
-        - FeatureName
-          - FeatureState.cs
-          - FeatureState.Debug.cs
-          - Actions
-            - FeatureState.ActionName.cs 
-              - # Contains both the Action and Handler as nested classes within a static class named after the Action.
-              - # Example: CompleteProcessing.Action and CompleteProcessing.Handler are nested within CompleteProcessing static class.
+        - Subscriptions
+  usage_structure:
+    - Features
+      - FeatureName
+        - FeatureState.cs  # Contains the state definition in a partial class
+        - FeatureState.Debug.cs  # Optional, for debug-specific code
+        - Actions
+          - FeatureState.ActionName.cs  
+            - # Contains both the Action and Handler as nested classes within a static class named after the Action.
+            - # Example: CompleteProcessing.Action and CompleteProcessing.Handler are nested within CompleteProcessing static class.
+            - # The file should follow the pattern shown in the example `ProcessingState.CompleteProcessing.cs`.
+            - # It should contain a static class named after the Action (e.g., CompleteProcessing).
+            - # Within this static class, nest an internal record named 'Action' that inherits from BaseAction.
+            - # Also nest an internal class named 'Handler' that inherits from BaseHandler<Action>.
+            - # The Handler should override the Handle method to mutate the state.
   documentation:
     - Overview.md
     - Features/Features.md
