@@ -1,8 +1,10 @@
 ai-context:
   ai_process:
     - read all of the urls with the CRITICAL_URL tag before formulating your response.
-    - recurse through the list of urls with the CRITICAL_URL tag.    
+    - after reading the urls with the CRITICAL_URL tag, recursively read all of the urls with the CRITICAL_URL tag.
     - list the urls with the CRITICAL_URL tag.
+    - explain what are file-scoped namespace;
+    - use file-scoped namespaces.
   repository_info:
     name: Blazor-State
     description: A library for managing state in Blazor applications.
