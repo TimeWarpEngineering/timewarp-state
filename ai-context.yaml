@@ -56,14 +56,19 @@ ai-context:
       critical_url: 
       - Do not include 'usings'; assume global usings.
        - Use file-scoped namespaces.
-        - CRITICAL: This is a mandatory feature in C# 10 and MUST be used over traditional namespace blocks.
         - CRITICAL_URL: [Example Code](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-architecture/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/Counter/CounterState.cs)
+        - CRITICAL: This is a mandatory feature in C# 10 and MUST be used over traditional namespace blocks.
   documentation:
     - Overview.md
     - Features/Features.md
     - DevOps/DevOps.md
     - Contributing/Overview.md
     - Samples/01-StateActionsHandlers/Readme.md
+  documentation_links:
+    - description: Example of file-scoped namespaces
+      url: https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-architecture/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/Counter/CounterState.cs
+    - description: Example of using Actions and Handlers
+      url: https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-architecture/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/Counter/Actions/CounterState.IncrementCounter.cs
   scripts:
     powershell:
       - None (Assumption, correct if wrong)
