@@ -8,7 +8,7 @@
     <PackageVersion Include="Fixie" Version="3.3.0" />
     <PackageVersion Include="Fixie.TestAdapter" Version="3.3.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
-    <PackageVersion Include="MediatR" Version="12.1.1" />
+    <PackageVersion Include="MediatR" Version="12.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="7.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.10" />
