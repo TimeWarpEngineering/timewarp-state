@@ -3,7 +3,7 @@
 namespace BlazorState.Features.JavaScriptInterop;
 
 [Serializable]
-public class InvalidRequestTypeException : Exception, ISerializable
+public class InvalidRequestTypeException : Exception
 {
   public string? RequestedTypeAssemblyQualifiedName { get; set; }
   public InvalidRequestTypeException() : base() { }
@@ -12,12 +12,6 @@ public class InvalidRequestTypeException : Exception, ISerializable
   public InvalidRequestTypeException(string? message, string requestedTypeAssemblyQualifiedName) : base(message)
   {
     RequestedTypeAssemblyQualifiedName = requestedTypeAssemblyQualifiedName;
-  }
-
-  public override void GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
-  {
-    base.GetObjectData(serializationInfo, streamingContext);
-    serializationInfo.AddValue("RequestedTypeAssemblyQualifiedName", RequestedTypeAssemblyQualifiedName);
   }
 
   public override string Message =>
@@ -31,5 +25,5 @@ public class InvalidRequestTypeException : Exception, ISerializable
   (
     SerializationInfo serializationInfo,
     StreamingContext streamingContext
-  ) : base(serializationInfo, streamingContext) { }
+  ) { }
 }
