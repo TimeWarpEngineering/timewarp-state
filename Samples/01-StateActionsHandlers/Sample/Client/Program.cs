@@ -8,18 +8,19 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
 builder.Services.AddBlazorState
 (
-    (aOptions) =>
+  options =>
+  {
+    options.UseReduxDevTools();
+    options.Assemblies =
+    new Assembly[]
     {
-      aOptions.UseReduxDevTools();
-      aOptions.Assemblies =
-      new Assembly[]
-      {
-            typeof(Program).GetTypeInfo().Assembly,
-      };
-    }
+      typeof(Program).GetTypeInfo().Assembly,
+    };
+  }
 );
 
 await builder.Build().RunAsync();
