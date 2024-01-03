@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
 
       if (blazorStateOptions.UseRouting)
       {
-        aServiceCollection.AddScoped<RouteManager>();
+        aServiceCollection.AddScoped<TimeWarpNavigationManager>();
         aServiceCollection.AddScoped<RouteState>();
 
         aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction>, ChangeRouteHandler>();
@@ -102,7 +102,7 @@ public static class ServiceCollectionExtensions
   /// <param name="aServiceCollection"></param>
   /// <param name="aBlazorStateOptions"></param>
   private static void EnsureMediator(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
-  {
+ {
     if(!aServiceCollection.HasRegistrationFor(typeof(IMediator)))
     {
       aServiceCollection

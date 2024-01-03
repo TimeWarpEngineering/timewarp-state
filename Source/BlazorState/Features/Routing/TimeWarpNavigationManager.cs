@@ -4,7 +4,7 @@ namespace BlazorState.Features.Routing;
 /// When constructed will attach a OnLocationChanged Handler
 /// to send ChangeRouteRequest
 /// </summary>
-public class RouteManager
+public class TimeWarpNavigationManager
 {
   private readonly IMediator Mediator;
 
@@ -12,9 +12,9 @@ public class RouteManager
 
   private readonly IStore Store;
 
-  private RouteState RouteState => Store.GetState<RouteState>();
+  private RouteState RouteState => await Store.GetStateAsync<RouteState>();
 
-  public RouteManager
+  public TimeWarpNavigationManager
   (
     NavigationManager aNavigationManager,
     IMediator aMediator,

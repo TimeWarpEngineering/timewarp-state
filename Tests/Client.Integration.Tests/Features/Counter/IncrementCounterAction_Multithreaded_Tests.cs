@@ -7,7 +7,7 @@ using static TestApp.Client.Features.Counter.CounterState;
 
 public class IncrementCounterAction_Multithreaded_Should : BaseTest
 {
-  private CounterState CounterState => Store.GetState<CounterState>();
+  private CounterState CounterState => Store.GetStateAsync<CounterState>();
   private readonly ManualResetEvent StartEvent = new(false);
   private const int NumberOfThreads = 10;
   private const int NumberOfIncrementsPerThread = 1000;

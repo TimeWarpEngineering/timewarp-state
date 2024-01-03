@@ -6,7 +6,7 @@ public partial class RouteState
   {
     private readonly NavigationManager NavigationManager;
 
-    private RouteState RouteState => Store.GetState<RouteState>();
+    private RouteState RouteState => Store.GetStateAsync<RouteState>();
 
     public ChangeRouteHandler
     (

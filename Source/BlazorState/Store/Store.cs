@@ -1,4 +1,9 @@
+#nullable enable
 namespace BlazorState;
+
+using BlazorState.Features.Persistence.Abstractions;
+using BlazorState.Features.Persistence.Attributes;
+using System.Threading.Tasks;
 
 /// <summary>
 /// 
@@ -36,12 +41,12 @@ internal partial class Store : IStore
   /// </summary>
   /// <typeparam name="TState"></typeparam>
   /// <returns>The specific IState</returns>
-  public TState GetState<TState>()
+  public async Task<TState> GetStateAsync<TState>()
   {
     Type stateType = typeof(TState);
-    return (TState)GetState(stateType);
+    return (TState) (await GetStateAsync(stateType));
   }
-
+  
   /// <summary>
   /// Clear all the states
   /// </summary>
@@ -57,22 +62,36 @@ internal partial class Store : IStore
     SetState(typeName, aNewState);
   }
 
-  public object GetState(Type aType)
+  public async Task<object> GetStateAsync(Type type)
   {
-    using (Logger.BeginScope(nameof(GetState)))
+    using (Logger.BeginScope(nameof(GetStateAsync)))
     {
-      string className = GetType().Name;
-      string typeName = aType.FullName;
+      string typeName = type.FullName;
 
       if (!States.TryGetValue(typeName, out IState state))
       {
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
-        state = (IState)ServiceProvider.GetRequiredService(aType);
-        state.Initialize();
+
+        PersistentStateAttribute? persistentStateAttribute = type.GetCustomAttribute<PersistentStateAttribute>();
+        if (persistentStateAttribute != null)
+        {
+          IPersistenceService persistenceService = ServiceProvider.GetRequiredService<IPersistenceService>();
+          object? loadedState = await persistenceService.LoadStateAsync(type, persistentStateAttribute.PersistentStateMethod);
+          state = loadedState as IState ?? (IState)ServiceProvider.GetRequiredService(type);
+        }
+
+        if (state == null)
+        {
+          state = (IState)ServiceProvider.GetRequiredService(type);
+          state.Initialize();
+        }
+
         States.Add(typeName, state);
       }
       else
+      {
         Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);
+      }
       return state;
     }
   }

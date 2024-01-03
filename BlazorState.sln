@@ -37,7 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{FA45
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tutorial", "Tutorial", "{243A5B2C-5E9D-432B-A258-7BCE33645683}"
 EndProject
-
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Server", "Samples\01-StateActionsHandlers\Sample\Server\Sample.Server.csproj", "{0A6F5973-2DFD-4B46-8B2F-13556B5103A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Shared", "Samples\01-StateActionsHandlers\Sample\Shared\Sample.Shared.csproj", "{845B863B-C1DB-4C17-8975-FBD380FBD1EC}"
@@ -47,6 +46,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzerTest", "Tests\BlazorStateAnalyzerTest\BlazorStateAnalyzerTest.csproj", "{36B4BF0D-3612-439F-9897-F8C7BCA04BFC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzer", "Source\BlazorStateAnalyzer\BlazorStateAnalyzer.csproj", "{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleDotNet8", "SampleDotNet8", "{038C74C2-EECC-4EA2-AF48-A8A85E942EC4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleDotNet8", "Samples\01-StateActionsHandlers\SampleDotNet8\SampleDotNet8\SampleDotNet8.csproj", "{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleDotNet8.Client", "Samples\01-StateActionsHandlers\SampleDotNet8\SampleDotNet8.Client\SampleDotNet8.Client.csproj", "{5CB54165-1F46-448A-9827-2C4F03E28A0D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarpState.Middleware", "Source\TimeWarpState.Middleware\TimeWarpState.Middleware.csproj", "{6ED520FE-F6F0-4349-92BD-86C66A48A39E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +128,24 @@ Global
 		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
 		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ED520FE-F6F0-4349-92BD-86C66A48A39E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ED520FE-F6F0-4349-92BD-86C66A48A39E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ED520FE-F6F0-4349-92BD-86C66A48A39E}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Release|Any CPU
+		{6ED520FE-F6F0-4349-92BD-86C66A48A39E}.ReduxDevToolsEnabled|Any CPU.Build.0 = Release|Any CPU
+		{6ED520FE-F6F0-4349-92BD-86C66A48A39E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ED520FE-F6F0-4349-92BD-86C66A48A39E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -137,6 +162,9 @@ Global
 		{845B863B-C1DB-4C17-8975-FBD380FBD1EC} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{A9C096EC-DE7B-4E61-8D8C-854037C214A4} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
 		{36B4BF0D-3612-439F-9897-F8C7BCA04BFC} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
+		{038C74C2-EECC-4EA2-AF48-A8A85E942EC4} = {243A5B2C-5E9D-432B-A258-7BCE33645683}
+		{32E31AA5-71A0-4B61-8D29-5CF9C63893FE} = {038C74C2-EECC-4EA2-AF48-A8A85E942EC4}
+		{5CB54165-1F46-448A-9827-2C4F03E28A0D} = {038C74C2-EECC-4EA2-AF48-A8A85E942EC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}

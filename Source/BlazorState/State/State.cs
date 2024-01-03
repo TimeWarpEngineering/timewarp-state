@@ -1,5 +1,7 @@
 namespace BlazorState;
 
+using BlazorState.Features.Persistence.Abstractions;
+
 public abstract class State<TState> : IState<TState>
 {
 
@@ -32,4 +34,14 @@ public abstract class State<TState> : IState<TState>
   /// Override this to Set the initial state
   /// </summary>
   public abstract void Initialize();
+
+  public virtual async Task InitializeFromStorage(IPersistenceService persistenceService)
+  {
+    string typeName = typeof(TState).Name;
+    if (await persistenceService.ContainKeyAsync(typeName))
+    {
+      var storedState = await persistenceService.GetItemAsync<TState>(typeName);
+      ApplyState(deserializedState);
+    }
+  }
 }

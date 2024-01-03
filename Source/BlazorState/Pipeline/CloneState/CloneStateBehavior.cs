@@ -32,7 +32,7 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
   {
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
-    IState originalState = (IState)Store.GetState(enclosingStateType)!; // Not null because of Analyzer
+    IState originalState = (IState)Store.GetStateAsync(enclosingStateType)!; // Not null because of Analyzer
     IState newState = 
       (originalState is ICloneable clonable) ? 
       (IState)clonable.Clone() : 

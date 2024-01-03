@@ -13,10 +13,10 @@ using TestApp.Client.Features.WeatherForecast;
 internal abstract class BaseActionHandler<TAction> : ActionHandler<TAction>
   where TAction : IAction
 {
-  protected ApplicationState ApplicationState => Store.GetState<ApplicationState>();
-  protected CounterState CounterState => Store.GetState<CounterState>();
-  protected EventStreamState EventStreamState => Store.GetState<EventStreamState>();
-  protected WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
+  protected ApplicationState ApplicationState => Store.GetStateAsync<ApplicationState>();
+  protected CounterState CounterState => Store.GetStateAsync<CounterState>();
+  protected EventStreamState EventStreamState => Store.GetStateAsync<EventStreamState>();
+  protected WeatherForecastsState WeatherForecastsState => Store.GetStateAsync<WeatherForecastsState>();
 
   public BaseActionHandler(IStore aStore) : base(aStore) { }
 }

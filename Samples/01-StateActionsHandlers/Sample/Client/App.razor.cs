@@ -19,10 +19,11 @@ public partial class App : ComponentBase
       Justification = "It is used, the constructor has side effects "
     )
   ]
-  private RouteManager RouteManager { get; set; } = null!;
+  private TimeWarpNavigationManager RouteManager { get; set; } = null!;
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
+    throw new Exception("do I hit?");
     await ReduxDevToolsInterop.InitAsync();
     await JsonRequestHandler.InitAsync();
   }

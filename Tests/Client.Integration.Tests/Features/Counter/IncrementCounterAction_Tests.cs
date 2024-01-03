@@ -7,7 +7,7 @@ using static TestApp.Client.Features.Counter.CounterState;
 
 public class IncrementCounterAction_Should : BaseTest
 {
-  private CounterState CounterState => Store.GetState<CounterState>();
+  private CounterState CounterState => Store.GetStateAsync<CounterState>();
 
   public IncrementCounterAction_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 

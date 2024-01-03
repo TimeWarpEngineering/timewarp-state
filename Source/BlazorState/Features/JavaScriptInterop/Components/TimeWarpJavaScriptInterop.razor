@@ -1,0 +1,13 @@
+﻿@rendermode InteractiveAuto
+@using BlazorState.Features.JavaScriptInterop;
+
+@code {
+
+  [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    await JsonRequestHandler.InitAsync();
+    await base.OnAfterRenderAsync(firstRender);
+  }
+}

@@ -9,7 +9,7 @@ public class Clone_Should : BaseTest
 {
   public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
   {
-    RouteState = Store.GetState<RouteState>();
+    RouteState = Store.GetStateAsync<RouteState>();
   }
 
   private RouteState RouteState { get; set; }

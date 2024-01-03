@@ -12,7 +12,7 @@ public class Clone_Should : BaseTest
 {
   public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
   {
-    WeatherForecastsState = Store.GetState<WeatherForecastsState>();
+    WeatherForecastsState = Store.GetStateAsync<WeatherForecastsState>();
   }
 
   private WeatherForecastsState WeatherForecastsState { get; set; }

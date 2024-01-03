@@ -16,7 +16,7 @@ public partial class CounterState
     {
       public Handler(IStore aStore) : base(aStore) { }
       
-      CounterState CounterState => Store.GetState<CounterState>();
+      CounterState CounterState => Store.GetStateAsync<CounterState>();
 
       public override Task Handle(Action aAction, CancellationToken aCancellationToken)
       {

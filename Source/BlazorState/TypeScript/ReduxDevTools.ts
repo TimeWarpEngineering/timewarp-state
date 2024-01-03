@@ -26,6 +26,8 @@ export class ReduxDevTools {
   BlazorState: BlazorState;
   StackTrace: string | undefined;
 
+  private IsInitialized: boolean = false;
+
   constructor(reduxDevToolsOptions) {
     console.log("constructing ReduxDevTools with the following options")
     console.log(reduxDevToolsOptions);
@@ -118,13 +120,18 @@ export class ReduxDevTools {
 
   ReduxDevToolsDispatch(action, state, stackTrace) {
     if (action === 'init') {
-      return window[DevToolsName].init(state);
+      if (!this.IsInitialized) {
+        this.IsInitialized = true;
+        return window[DevToolsName].init(state);
+      }
+      return;
     }
-    else {
-      window[ReduxDevToolsName].StackTrace = stackTrace;
-      return window[DevToolsName].send(action, state);
-    }
+
+    // Handle other actions
+    window[ReduxDevToolsName].StackTrace = stackTrace;
+    return window[DevToolsName].send(action, state);
   }
+
 
   GetStackTraceForAction(action): string {
     return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (nofile:0:0)";

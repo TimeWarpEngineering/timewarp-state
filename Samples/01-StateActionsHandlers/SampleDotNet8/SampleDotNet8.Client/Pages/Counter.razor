@@ -1,0 +1,31 @@
+﻿@rendermode InteractiveAuto
+@page "/counter"
+@using SampleDotNet8.Client.Features.Counter
+@using BlazorState
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+
+@inherits BlazorStateComponent
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @CounterState.Count</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+
+@if (System.OperatingSystem.IsBrowser())
+{
+  <p>Render Mode: WebAssembly</p>
+}
+else
+{
+  <p>Render Mode: Server (Not Wasm)</p>
+}
+
+<BlazorState.Features.ReduxDevTools.Components.ReduxDevTools />
+<BlazorState.Features.JavaScriptInterop.Components.TimeWarpJavaScriptInterop />
+<BlazorState.Features.Routing.Components.TimeWarpNavigation />
+

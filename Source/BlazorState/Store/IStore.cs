@@ -11,9 +11,9 @@ public interface IStore
 {
   Guid Guid { get; }
 
-  TState GetState<TState>();
+  Task<TState> GetStateAsync<TState>();
 
-  object GetState(Type aType);
+  Task<object> GetStateAsync(Type aType);
 
   void SetState(IState aState);
 

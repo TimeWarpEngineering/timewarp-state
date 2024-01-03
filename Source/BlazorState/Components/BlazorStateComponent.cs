@@ -56,7 +56,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   {
     Type stateType = typeof(T);
     Subscriptions.Add(stateType, this);
-    return Store.GetState<T>();
+    return Store.GetStateAsync<T>();
   }
 
   public virtual void Dispose()

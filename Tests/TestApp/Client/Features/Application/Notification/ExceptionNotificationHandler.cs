@@ -14,7 +14,7 @@ internal partial class ApplicationState
   {
     private readonly ILogger Logger;
     private readonly IStore Store;
-    private ApplicationState ApplicationState => Store.GetState<ApplicationState>();
+    private ApplicationState ApplicationState => Store.GetStateAsync<ApplicationState>();
 
     public ExceptionNotificationHandler
     (

@@ -86,7 +86,7 @@ internal partial class Store : IReduxDevToolsStore
 
     // Call Hydrate on the Type
     object[] parameters = new object[] { newStateKeyValuePairs };
-    object currentState = GetState(stateType);
+    object currentState = GetStateAsync(stateType);
 
     var newState = (IState)hydrateMethodInfo.Invoke(currentState, parameters);
 

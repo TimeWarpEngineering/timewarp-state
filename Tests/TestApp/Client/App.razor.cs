@@ -13,7 +13,7 @@ public partial class App : ComponentBase
   [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
 #endif
 
-  [Inject] private RouteManager RouteManager { get; set; }
+  [Inject] private TimeWarpNavigationManager RouteManager { get; set; }
 
   protected override async Task OnAfterRenderAsync(bool aFirstRender)
   {
