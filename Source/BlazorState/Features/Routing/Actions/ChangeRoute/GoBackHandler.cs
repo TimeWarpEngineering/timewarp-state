@@ -5,9 +5,7 @@ public partial class RouteState
   internal class GoBackHandler : ActionHandler<GoBackAction>
   {
     private readonly NavigationManager NavigationManager;
-
-    private RouteState RouteState => Store.GetStateAsync<RouteState>();
-
+    
     public GoBackHandler
     (
       IStore aStore,
@@ -16,10 +14,10 @@ public partial class RouteState
     {
       NavigationManager = aNavigationManager;
     }
-    public override Task Handle(GoBackAction aAction, CancellationToken aCancellationToken)
+    public override async Task Handle(GoBackAction aAction, CancellationToken aCancellationToken)
     {
-      NavigationManager.NavigateTo(RouteState.History.Pop());
-      return Task.CompletedTask;
+      RouteState routeState = await Store.GetStateAsync<RouteState>();
+      NavigationManager.NavigateTo(routeState.History.Pop());
     }
   }
 }
