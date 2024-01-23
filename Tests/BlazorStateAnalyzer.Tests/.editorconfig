@@ -1,0 +1,12 @@
+# C# files in test projects
+[*Tests.cs]
+
+# Naming styles for test classes
+dotnet_naming_rule.test_classes_should_allow_underscore.symbols  = test_classes
+dotnet_naming_rule.test_classes_should_allow_underscore.style    = underscore_allowed_style
+dotnet_naming_rule.test_classes_should_allow_underscore.severity = suggestion
+
+dotnet_naming_symbols.test_classes.applicable_kinds           = class
+dotnet_naming_symbols.test_classes.applicable_accessibilities = public
+
+dotnet_naming_style.underscore_allowed_style.capitalization = pascal_case

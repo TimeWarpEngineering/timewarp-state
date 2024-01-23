@@ -1,3 +1,4 @@
+// ReSharper disable InconsistentNaming
 namespace BlazorStateActionAnalyzer_;
 
 using BlazorStateAnalyzer;
@@ -5,7 +6,7 @@ using BlazorStateAnalyzer.Tests;
 
 public class Should_Trigger_TW0001
 {
-  public async Task Given_InvalidRecord()
+  public static async Task Given_InvalidRecord()
   {
     const string TestCode = 
       """
@@ -13,12 +14,6 @@ public class Should_Trigger_TW0001
 
       public record SampleInvalidRecordAction : IAction { }
       """;
-
-    DiagnosticResult[] expectedDiagnostics = new[]
-    {
-      // Replace with the appropriate line and column numbers
-      new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(3, 15, 3, 40)
-    };
     
     DiagnosticResult expectedDiagnostic = new DiagnosticResult("TW0001", DiagnosticSeverity.Error)
       .WithSpan(3, 15, 3, 40) // Assuming the error is at the record declaration
@@ -40,7 +35,7 @@ public class Should_Trigger_TW0001
     await analyzerTest.RunAsync();
   }
   
-  public async Task Given_InvalidClass()
+  public static async Task Given_InvalidClass()
   {
     const string TestCode = 
       """
@@ -69,7 +64,7 @@ public class Should_Trigger_TW0001
     await analyzerTest.RunAsync();
   }
 
-  public async Task Given_InvalidStruct()
+  public static async Task Given_InvalidStruct()
   {
     const string TestCode = 
       """
@@ -98,7 +93,7 @@ public class Should_Trigger_TW0001
     await analyzerTest.RunAsync();
   }
 
-  public async Task Given_InvalidDescendantClass()
+  public static async Task Given_InvalidDescendantClass()
   {
     const string TestCode = 
       """
