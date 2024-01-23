@@ -1,16 +1,8 @@
 namespace BlazorStateAnalyzer.Tests;
 
 // FixieVerifier is a basic implementation since Fixie doesn't have a verifier like xUnit or NUnit.
-class FixieVerifier : IVerifier
+internal class FixieVerifier : IVerifier
 {
-  public Task Verify(string actual, string expected, string message = null, string path = null, int? line = null, int? column = null)
-  {
-    if (actual != expected)
-    {
-      throw new Exception($"Verification Failed: {message}\nExpected: {expected}\nActual: {actual}\nPath: {path}\nLine: {line}\nColumn: {column}");
-    }
-    return Task.CompletedTask;
-  }
   public void Empty<T>(string collectionName, IEnumerable<T> collection)
   {
     if (collection.Any())
@@ -43,10 +35,8 @@ class FixieVerifier : IVerifier
     }
   }
 
-  public void Fail(string message = null)
-  {
-    throw new Exception($"Fail: {message}");
-  }
+  [DoesNotReturn]
+  public void Fail(string? message = null) => throw new Exception($"Fail: {message}");
 
   public void LanguageIsSupported(string language)
   {
@@ -63,24 +53,34 @@ class FixieVerifier : IVerifier
     }
   }
 
-  public void SequenceEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual, IEqualityComparer<T> equalityComparer = null, string message = null)
+  public void SequenceEqual<T>(IEnumerable<T> expected, IEnumerable<T> actual, IEqualityComparer<T>? equalityComparer = null, string? message = null)
   {
-    if (equalityComparer == null)
-    {
-      equalityComparer = EqualityComparer<T>.Default;
-    }
+    equalityComparer ??= EqualityComparer<T>.Default;
 
-    bool areEqual = expected.SequenceEqual(actual, equalityComparer);
+    IEnumerable<T> expectedArray = expected as T[] ?? expected.ToArray();
+    IEnumerable<T> actualArray = actual as T[] ?? actual.ToArray();
+
+    bool areEqual = expectedArray.SequenceEqual(actualArray, equalityComparer);
 
     if (!areEqual)
     {
-      throw new Exception($"SequenceEqual Assertion Failed: {message}\nExpected: {string.Join(", ", expected)}\nActual: {string.Join(", ", actual)}");
+      throw new Exception
+      (
+      $"SequenceEqual Assertion Failed: {message}\nExpected: {string.Join(", ", expectedArray)}\nActual: {string.Join(", ", actualArray)}"
+      );
     }
   }
-
-  public IVerifier PushContext(string context)
+  
+  public IVerifier PushContext(string context) => this; // No operation. Context information is not used.
+  
+  // ReSharper disable once UnusedMember.Global
+  [SuppressMessage("Performance", "CA1822:Mark members as static")]
+  public Task Verify(string actual, string expected, string? message = null, string? path = null, int? line = null, int? column = null)
   {
-    // No operation. Context information is not used.
-    return this;
+    if (actual != expected)
+    {
+      throw new Exception($"Verification Failed: {message}\nExpected: {expected}\nActual: {actual}\nPath: {path}\nLine: {line}\nColumn: {column}");
+    }
+    return Task.CompletedTask;
   }
 }
