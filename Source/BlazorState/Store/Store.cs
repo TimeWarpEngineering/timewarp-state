@@ -58,7 +58,7 @@ internal partial class Store : IStore
   /// <param name="aNewState"></param>
   public void SetState(IState aNewState)
   {
-    string typeName = aNewState.GetType().FullName;
+    string typeName = aNewState.GetType().FullName ?? throw new InvalidOperationException();
     SetState(typeName, aNewState);
   }
 
@@ -66,7 +66,7 @@ internal partial class Store : IStore
   {
     using (Logger.BeginScope(nameof(GetStateAsync)))
     {
-      string typeName = type.FullName;
+      string typeName = type.FullName ?? throw new InvalidOperationException();
 
       if (!States.TryGetValue(typeName, out IState state))
       {
@@ -76,7 +76,7 @@ internal partial class Store : IStore
         if (persistentStateAttribute != null)
         {
           IPersistenceService persistenceService = ServiceProvider.GetRequiredService<IPersistenceService>();
-          object? loadedState = await persistenceService.LoadStateAsync(type, persistentStateAttribute.PersistentStateMethod);
+          object? loadedState = await persistenceService.LoadState(type, persistentStateAttribute.PersistentStateMethod);
           state = loadedState as IState ?? (IState)ServiceProvider.GetRequiredService(type);
         }
 
@@ -84,6 +84,7 @@ internal partial class Store : IStore
         {
           state = (IState)ServiceProvider.GetRequiredService(type);
           state.Initialize();
+          // Publish Notification that State has been Initialized here using Mediatr.
         }
 
         States.Add(typeName, state);
