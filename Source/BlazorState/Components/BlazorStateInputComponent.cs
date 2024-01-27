@@ -60,7 +60,7 @@ public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable,
   {
     Type stateType = typeof(T);
     Subscriptions.Add(stateType, this);
-    return Store.GetStateAsync<T>();
+    return Store.GetState<T>();
   }
 
   public void Dispose()
