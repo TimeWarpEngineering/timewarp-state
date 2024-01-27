@@ -12,7 +12,7 @@ public class TimeWarpNavigationManager
 
   private readonly IStore Store;
 
-  private RouteState RouteState => await Store.GetStateAsync<RouteState>();
+  private RouteState RouteState => Store.GetState<RouteState>();
 
   public TimeWarpNavigationManager
   (
