@@ -15,7 +15,7 @@ public partial class CounterState
   {
     private readonly HttpClient HttpClient;
 
-    public ThrowServerSideExceptionHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
+    public ThrowServerSideExceptionHandler(IStore store, HttpClient aHttpClient) : base(store)
     {
       HttpClient = aHttpClient;
     }

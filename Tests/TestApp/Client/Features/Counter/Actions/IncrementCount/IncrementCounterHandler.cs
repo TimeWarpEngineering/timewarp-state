@@ -10,7 +10,7 @@ public partial class CounterState
 {
   internal class IncrementCounterHandler : BaseActionHandler<IncrementCounterAction>
   {
-    public IncrementCounterHandler(IStore aStore) : base(aStore) { }
+    public IncrementCounterHandler(IStore store) : base(store) { }
 
     public override Task Handle
     (

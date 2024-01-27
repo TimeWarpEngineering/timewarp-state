@@ -15,7 +15,7 @@ internal partial class WeatherForecastsState
   {
     private readonly HttpClient HttpClient;
 
-    public FetchWeatherForecastsHandler(IStore aStore, HttpClient aHttpClient) : base(aStore)
+    public FetchWeatherForecastsHandler(IStore store, HttpClient aHttpClient) : base(store)
     {
       HttpClient = aHttpClient;
     }

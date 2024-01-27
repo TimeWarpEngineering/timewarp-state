@@ -11,7 +11,7 @@ internal partial class EventStreamState
 {
   internal class AddEventHandler : BaseActionHandler<AddEventAction>
   {
-    public AddEventHandler(IStore aStore) : base(aStore) { }
+    public AddEventHandler(IStore store) : base(store) { }
 
     public override Task Handle
     (

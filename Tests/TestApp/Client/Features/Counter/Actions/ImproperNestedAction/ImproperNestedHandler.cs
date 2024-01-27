@@ -11,7 +11,7 @@ public partial class CounterState
 {
   internal class ImproperNestedHandler : BaseActionHandler<ImproperNestedAction>
   {
-    public ImproperNestedHandler(IStore aStore) : base(aStore) { }
+    public ImproperNestedHandler(IStore store) : base(store) { }
 
     public override Task<Unit> Handle
     (
