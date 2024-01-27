@@ -1,11 +1,25 @@
 ﻿namespace SampleDotNet8.Client.Features.Counter;
 
-using BlazorState;
 using BlazorState.Features.Persistence.Attributes;
+using System.Text.Json.Serialization;
 
-[PersistentState(PersistentStateMethod.SessionStorage)]
+[PersistentState(PersistentStateMethod.LocalStorage)]
 public partial class CounterState : State<CounterState>
 {
   public int Count { get; private set; }
-  public override void Initialize() => Count = 3;
+
+  public CounterState() { }
+
+  [JsonConstructor]
+  public CounterState(Guid guid, int count, bool isStateLoading)
+  {
+    Guid = guid;
+    Count = count;
+  }
+
+  public override void Initialize()
+  {
+    Console.WriteLine("CounterState.Initialize");
+    Count = 3;
+  }
 }
