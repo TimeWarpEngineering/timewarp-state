@@ -1,20 +1,14 @@
 namespace SampleDotNet8.Client;
 
-using Blazored.SessionStorage;
-using BlazorState;
-using MediatR;
-using MediatR.Pipeline;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SampleDotNet8.Client.Pipeline.PersistentState;
-using System.Reflection;
-
+using Blazored.LocalStorage;
+using TimeWarpState.Middleware.PersistentState;
+using BlazorState.Features.Persistence.Abstractions;
 public class Program
 {
   private static async Task Main(string[] args)
   {
-    Console.WriteLine("Hello, World!");
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
+    
     ConfigureServices(builder.Services);
 
     await builder.Build().RunAsync();
@@ -22,21 +16,23 @@ public class Program
   }
   public static void ConfigureServices(IServiceCollection serviceCollection)
   {
-    //serviceCollection.AddSessionStorageServices();
     serviceCollection.AddBlazoredSessionStorage();
+    serviceCollection.AddBlazoredLocalStorage();
     serviceCollection.AddBlazorState
     (
       options =>
       {
         options.UseReduxDevTools();
         options.Assemblies =
-        new Assembly[]
+        new[]
         {
           typeof(Program).GetTypeInfo().Assembly,
+          typeof(StateInitializedNotificationHandler).GetTypeInfo().Assembly
         };
       }
     );
 
+    serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PersistentStatePostProcessor<,>));
   }
 }
