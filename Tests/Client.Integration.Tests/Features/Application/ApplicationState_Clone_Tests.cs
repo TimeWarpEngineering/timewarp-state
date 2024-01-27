@@ -9,7 +9,7 @@ public class Clone_Should : BaseTest
 {
   public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
   {
-    ApplicationState = Store.GetStateAsync<ApplicationState>();
+    ApplicationState = Store.GetState<ApplicationState>();
   }
 
   private ApplicationState ApplicationState { get; set; }

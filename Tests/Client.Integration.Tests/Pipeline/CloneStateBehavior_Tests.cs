@@ -11,9 +11,9 @@ using static TestApp.Client.Features.Counter.CounterState;
 
 public class Should : BaseTest
 {
-  private CloneTestState CloneTestState => Store.GetStateAsync<CloneTestState>();
-  private CounterState CounterState => Store.GetStateAsync<CounterState>();
-  private ApplicationState ApplicationState => Store.GetStateAsync<ApplicationState>();
+  private CloneTestState CloneTestState => Store.GetState<CloneTestState>();
+  private CounterState CounterState => Store.GetState<CounterState>();
+  private ApplicationState ApplicationState => Store.GetState<ApplicationState>();
 
   public Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 

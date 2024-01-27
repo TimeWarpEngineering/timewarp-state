@@ -17,7 +17,7 @@ internal class Handle_Should : BaseTest
 
   private readonly JsonSerializerOptions JsonSerializerOptions;
 
-  private CounterState CounterState => Store.GetStateAsync<CounterState>();
+  private CounterState CounterState => Store.GetState<CounterState>();
 
   public Handle_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
   {
