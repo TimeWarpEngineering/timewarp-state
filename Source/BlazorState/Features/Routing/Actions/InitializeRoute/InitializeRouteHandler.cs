@@ -12,7 +12,7 @@ public partial class RouteState
       NavigationManager = aNavigationManager;
     }
 
-    private RouteState RouteState => Store.GetStateAsync<RouteState>();
+    private RouteState RouteState => Store.GetState<RouteState>();
 
     private readonly NavigationManager NavigationManager;
 
