@@ -2,20 +2,19 @@
 
 public class PersistenceService
 (
-  ISessionStorageService sessionStorageService,
-  ILocalStorageService localStorageService,
-  JsonSerializerOptions jsonSerializerOptions
+  ISessionStorageService SessionStorageService,
+  ILocalStorageService LocalStorageService
 ) : IPersistenceService
 {
-  private readonly ISessionStorageService SessionStorageService = sessionStorageService;
-  private readonly ILocalStorageService LocalStorageService = localStorageService;
-  private readonly JsonSerializerOptions JsonSerializerOptions = jsonSerializerOptions;
-
-  public async Task<object?> LoadStateAsync(Type stateType, PersistentStateMethod persistentStateMethod)
+  private readonly JsonSerializerOptions JsonSerializerOptions = new();
+  public async Task<object?> LoadState(Type stateType, PersistentStateMethod persistentStateMethod)
   {
     string typeName = 
-      stateType.FullName ?? 
+      stateType.Name ?? 
       throw new InvalidOperationException("The type provided has a null full name, which is not supported for persistence operations.");
+
+    // TODO: Remove these comments potentially add Debug Logging.
+    Console.WriteLine($"PersistenceService.LoadState Loading State for {stateType}");
 
     string? serializedState = persistentStateMethod switch
     {
@@ -24,10 +23,16 @@ public class PersistenceService
       PersistentStateMethod.Server => null,// TODO
       _ => null,
     };
+    
+    Console.WriteLine($"PersistenceService.LoadState serializedState: {serializedState}");
 
-    return 
+    object? result = 
       serializedState != null ?
       JsonSerializer.Deserialize(serializedState, stateType, JsonSerializerOptions) :
       null;
+
+    Console.WriteLine($"PersistenceService.LoadState serializedState: {serializedState}");
+
+    return result;
   }
 }
