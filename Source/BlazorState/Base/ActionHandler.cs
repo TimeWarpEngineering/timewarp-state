@@ -1,14 +1,11 @@
 namespace BlazorState;
 
-public abstract class ActionHandler<TAction> : IRequestHandler<TAction>
-where TAction : IAction
+public abstract class ActionHandler<TAction>
+(
+  IStore store
+) : IRequestHandler<TAction> where TAction : IAction
 {
-  public ActionHandler(IStore aStore)
-  {
-    Store = aStore;
-  }
-
-  protected IStore Store { get; set; }
+  protected IStore Store { get; set; } = store;
 
   public abstract Task Handle(TAction aAction, CancellationToken aCancellationToken);
 }
