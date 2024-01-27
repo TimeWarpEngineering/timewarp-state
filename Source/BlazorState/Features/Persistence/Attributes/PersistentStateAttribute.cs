@@ -12,6 +12,7 @@ public class PersistentStateAttribute : Attribute
 
 public enum PersistentStateMethod
 {
+  PreRender,
   Server,
   SessionStorage,
   LocalStorage
