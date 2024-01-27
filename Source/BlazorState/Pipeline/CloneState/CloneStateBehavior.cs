@@ -32,10 +32,10 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
   {
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
-    IState originalState = (IState)Store.GetStateAsync(enclosingStateType)!; // Not null because of Analyzer
+    var originalState = (IState)Store.GetState(enclosingStateType)!; // Not null because of Analyzer
     IState newState = 
-      (originalState is ICloneable clonable) ? 
-      (IState)clonable.Clone() : 
+      (originalState is ICloneable cloneable) ? 
+      (IState)cloneable.Clone() : 
       originalState.Clone();
 
     if (newState.Guid == Guid.Empty || originalState.Guid == newState.Guid)
@@ -83,7 +83,4 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
       return default!; // It can be null, but we don't care since MediatR handles null values gracefully.
     }
   }
-
-
-
 }
