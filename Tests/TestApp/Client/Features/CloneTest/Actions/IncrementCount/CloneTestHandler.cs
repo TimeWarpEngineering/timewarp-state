@@ -12,7 +12,7 @@ internal partial class CloneTestState
   {
     public CloneTestHandler(IStore aStore) : base(aStore) { }
 
-    protected CloneTestState CloneTestState => Store.GetStateAsync<CloneTestState>();
+    protected CloneTestState CloneTestState => Store.GetState<CloneTestState>();
 
     public override Task<Unit> Handle
     (

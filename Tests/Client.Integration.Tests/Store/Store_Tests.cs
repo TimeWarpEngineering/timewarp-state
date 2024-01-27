@@ -56,7 +56,7 @@ internal class Store_Tests : BaseTest
   /// </summary>
   public void ShouldInitializeStateAfterConstruction()
   {
-    WeatherForecastsState state = Store.GetStateAsync<WeatherForecastsState>();
+    WeatherForecastsState state = Store.GetState<WeatherForecastsState>();
     state.Should().NotBeNull();
   }
 }
