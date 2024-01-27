@@ -11,11 +11,11 @@ public interface IStore
 {
   Guid Guid { get; }
 
-  Task<TState> GetStateAsync<TState>();
+  TState GetState<TState>();
 
-  Task<object> GetStateAsync(Type aType);
+  object GetState(Type stateType);
 
-  void SetState(IState aState);
+  void SetState(IState newState);
 
   void Reset();
 }
