@@ -30,7 +30,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// </summary>
   public string Id { get; }
   
-  public bool IsPreRenderComplete { get; private set; } = false;
+  public bool IsPreRendering { get; private set; } = true;
 
   /// <summary>
   /// Allows for the Assigning of a value one can use to select an element during automated testing.
@@ -76,7 +76,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     bool foundInState =
       PersistentComponentState.TryTakeFromJson<bool>(IsPreRenderCompleteKey, out bool _);
     
-    if (foundInState) { IsPreRenderComplete = true; }
+    if (foundInState) { IsPreRendering = false; }
     
   }
 

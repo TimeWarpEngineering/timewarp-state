@@ -13,16 +13,16 @@
 
 <h1>Counter</h1>
 
-@if(IsPreRenderComplete)
-{
-  <p>PreRender Complete</p>
-}
-else
+@if(IsPreRendering)
 {
   <p>PreRender Incomplete</p>
 }
+else
+{
+  <p>PreRender Complete</p>
+}
 
-@if (!IsPreRenderComplete)
+@if (IsPreRendering)
 {
   <p role="status">CounterState.Guid: </p>
   <p role="status">Current count: </p>
@@ -40,7 +40,7 @@ else
 {
   <p>Render Mode: Wasm</p>
 }
-else if (!IsPreRenderComplete)
+else if (IsPreRendering)
 {
   <p>Render Mode: PreRendering</p>
 }
