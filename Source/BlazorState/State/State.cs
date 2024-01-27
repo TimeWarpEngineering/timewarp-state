@@ -21,10 +21,13 @@ public abstract class State<TState> : IState<TState>
   /// <summary>
   /// Use this method to prevent running methods from source other than Tests
   /// </summary>
-  /// <param name="aAssembly"></param>
-  public void ThrowIfNotTestAssembly(Assembly aAssembly)
+  /// <param name="assembly"></param>
+  protected void ThrowIfNotTestAssembly(Assembly assembly)
   {
-    if (!aAssembly.FullName.Contains("Test"))
+    ArgumentNullException.ThrowIfNull(assembly);
+    ArgumentNullException.ThrowIfNull(assembly.FullName);
+    
+    if (!assembly.FullName.Contains("Test"))
     {
       throw new FieldAccessException("Do not use this in production. This method is intended for Test access only!");
     }
@@ -34,14 +37,4 @@ public abstract class State<TState> : IState<TState>
   /// Override this to Set the initial state
   /// </summary>
   public abstract void Initialize();
-
-  public virtual async Task InitializeFromStorage(IPersistenceService persistenceService)
-  {
-    string typeName = typeof(TState).Name;
-    if (await persistenceService.ContainKeyAsync(typeName))
-    {
-      var storedState = await persistenceService.GetItemAsync<TState>(typeName);
-      ApplyState(deserializedState);
-    }
-  }
 }
