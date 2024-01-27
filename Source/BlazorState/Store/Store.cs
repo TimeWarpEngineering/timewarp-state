@@ -1,9 +1,4 @@
-#nullable enable
 namespace BlazorState;
-
-using BlazorState.Features.Persistence.Abstractions;
-using BlazorState.Features.Persistence.Attributes;
-using System.Threading.Tasks;
 
 /// <summary>
 /// 
@@ -14,6 +9,7 @@ internal partial class Store : IStore
   private readonly ILogger Logger;
   private readonly IServiceProvider ServiceProvider;
   private readonly IDictionary<string, IState> States;
+  private readonly IPublisher Publisher;
 
   /// <summary>
   /// Unique Guid for the Store.
@@ -23,15 +19,17 @@ internal partial class Store : IStore
 
   public Store
   (
-    ILogger<Store> aLogger,
-    IServiceProvider aServiceProvider,
-    BlazorStateOptions aBlazorStateOptions
+    ILogger<Store> logger,
+    IServiceProvider serviceProvider,
+    BlazorStateOptions blazorStateOptions,
+    IPublisher publisher
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug(EventIds.Store_Initializing, "constructing with guid:{Guid}", Guid);
-    ServiceProvider = aServiceProvider;
-    JsonSerializerOptions = aBlazorStateOptions.JsonSerializerOptions;
+    ServiceProvider = serviceProvider;
+    Publisher = publisher;
+    JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
 
     States = new Dictionary<string, IState>();
   }
@@ -41,12 +39,12 @@ internal partial class Store : IStore
   /// </summary>
   /// <typeparam name="TState"></typeparam>
   /// <returns>The specific IState</returns>
-  public async Task<TState> GetStateAsync<TState>()
+  public TState GetState<TState>()
   {
     Type stateType = typeof(TState);
-    return (TState) (await GetStateAsync(stateType));
+    return (TState)GetState(stateType);
   }
-  
+
   /// <summary>
   /// Clear all the states
   /// </summary>
@@ -55,44 +53,30 @@ internal partial class Store : IStore
   /// <summary>
   /// Set the state for specific Type
   /// </summary>
-  /// <param name="aNewState"></param>
-  public void SetState(IState aNewState)
+  /// <param name="newState"></param>
+  public void SetState(IState newState)
   {
-    string typeName = aNewState.GetType().FullName ?? throw new InvalidOperationException();
-    SetState(typeName, aNewState);
+    string typeName = newState.GetType().FullName ?? throw new InvalidOperationException();
+    SetState(typeName, newState);
   }
 
-  public async Task<object> GetStateAsync(Type type)
+  public object GetState(Type stateType)
   {
-    using (Logger.BeginScope(nameof(GetStateAsync)))
+    using (Logger.BeginScope(nameof(GetState)))
     {
-      string typeName = type.FullName ?? throw new InvalidOperationException();
+      string className = GetType().Name;
+      string typeName = stateType.FullName ?? throw new InvalidOperationException();
 
       if (!States.TryGetValue(typeName, out IState state))
       {
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
-
-        PersistentStateAttribute? persistentStateAttribute = type.GetCustomAttribute<PersistentStateAttribute>();
-        if (persistentStateAttribute != null)
-        {
-          IPersistenceService persistenceService = ServiceProvider.GetRequiredService<IPersistenceService>();
-          object? loadedState = await persistenceService.LoadState(type, persistentStateAttribute.PersistentStateMethod);
-          state = loadedState as IState ?? (IState)ServiceProvider.GetRequiredService(type);
-        }
-
-        if (state == null)
-        {
-          state = (IState)ServiceProvider.GetRequiredService(type);
-          state.Initialize();
-          // Publish Notification that State has been Initialized here using Mediatr.
-        }
-
+        state = (IState)ServiceProvider.GetRequiredService(stateType);
+        state.Initialize();
         States.Add(typeName, state);
+        Publisher.Publish(new StateInitializedNotification(stateType)); // TODO: This is NOT await by intention, double check this is good idea.  I don't want this method async.
       }
       else
-      {
         Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);
-      }
       return state;
     }
   }
