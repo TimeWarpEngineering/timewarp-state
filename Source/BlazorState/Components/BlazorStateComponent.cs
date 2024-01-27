@@ -12,8 +12,11 @@ using System.Collections.Concurrent;
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
+  const string IsPreRenderCompleteKey = "IsPreRenderComplete"; 
   static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
 
+  private PersistingComponentStateSubscription PersistingComponentStateSubscription;
+  
   public BlazorStateComponent()
   {
     string name = GetType().Name;
@@ -26,14 +29,19 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// A generated unique Id based on the Class name and number of times they have been created
   /// </summary>
   public string Id { get; }
+  
+  public bool IsPreRenderComplete { get; private set; } = false;
 
   /// <summary>
   /// Allows for the Assigning of a value one can use to select an element during automated testing.
   /// </summary>
   [Parameter] public string TestId { get; set; }
 
-  [Inject] public IMediator Mediator { get; set; }
-  [Inject] private IStore Store { get; set; }
+  [Inject] public IMediator Mediator { get; set; } = null!;
+  [Inject] private IStore Store { get; set; } = null!;
+  [Inject] private RenderPhaseService RenderPhaseService { get; set; } = null!;
+  
+  [Inject] PersistentComponentState PersistentComponentState { get; set; } = null!;
 
   /// <summary>
   /// Maintains all components that subscribe to a State.
@@ -56,11 +64,40 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   {
     Type stateType = typeof(T);
     Subscriptions.Add(stateType, this);
-    return Store.GetStateAsync<T>();
+    return Store.GetState<T>();
   }
 
+  protected override async Task OnInitializedAsync()
+  {
+    await base.OnInitializedAsync();
+    
+    PersistingComponentStateSubscription = PersistentComponentState.RegisterOnPersisting(Persist);
+    
+    bool foundInState =
+      PersistentComponentState.TryTakeFromJson<bool>(IsPreRenderCompleteKey, out bool _);
+    
+    if (foundInState) { IsPreRenderComplete = true; }
+    
+  }
+
+  private Task Persist()
+  {
+    // This will fire only once just prior to transitioning to wasm. 
+    PersistentComponentState.PersistAsJson("IsPreRenderComplete", true);
+    return Task.CompletedTask;    
+  }
+  
+  protected override void OnAfterRender(bool firstRender)
+  {
+    base.OnAfterRender(firstRender);
+    if (firstRender)
+    {
+      RenderPhaseService.SetInteractive();
+    }
+  }
   public virtual void Dispose()
   {
+    PersistingComponentStateSubscription.Dispose();
     Subscriptions.Remove(this);
     GC.SuppressFinalize(this);
   }
