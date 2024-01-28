@@ -11,7 +11,7 @@ public partial class CounterState : State<CounterState>
   public CounterState() { }
 
   [JsonConstructor]
-  public CounterState(Guid guid, int count, bool isStateLoading)
+  public CounterState(Guid guid, int count)
   {
     Guid = guid;
     Count = count;
