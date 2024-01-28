@@ -1,7 +1,5 @@
 namespace BlazorState;
 
-using MediatR;
-
 public class StateInitializedNotification
 (
   Type stateType
