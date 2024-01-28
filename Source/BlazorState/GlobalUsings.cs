@@ -12,6 +12,7 @@ global using MediatR.Pipeline;
 global using MediatR;
 global using Microsoft.AspNetCore.Components.Routing;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
