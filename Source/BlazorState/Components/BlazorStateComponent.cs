@@ -1,7 +1,5 @@
 namespace BlazorState;
 
-using System.Collections.Concurrent;
-
 /// <summary>
 ///   A non required Base Class that injects Mediator and Store.
 ///   And exposes StateHasChanged
@@ -11,7 +9,6 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
 {
   private const string IsPreRenderCompleteKey = "IsPreRenderComplete";
   private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-
   private PersistingComponentStateSubscription PersistingComponentStateSubscription;
 
   public BlazorStateComponent()
@@ -23,15 +20,15 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   }
 
   /// <summary>
-  ///   Indicates if the component is being prerendered.
-  /// </summary>
-  protected bool IsPreRendering { get; private set; } = true;
-
-  /// <summary>
   ///   Allows for the Assigning of a value one can use to select an element during automated testing.
   /// </summary>
   [Parameter] public string TestId { get; set; }
-
+  
+  /// <summary>
+  ///   A generated unique Id based on the Class name and number of times they have been created
+  /// </summary>
+  public string Id { get; }
+  
   [Inject] private IStore Store { get; set; } = null!;
   [Inject] private RenderPhaseService RenderPhaseService { get; set; } = null!;
   [Inject] private PersistentComponentState PersistentComponentState { get; set; } = null!;
@@ -42,22 +39,16 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   ///   Is updated by using the GetState method
   /// </summary>
   [Inject] public Subscriptions Subscriptions { get; set; }
-
+  
   /// <summary>
-  ///   A generated unique Id based on the Class name and number of times they have been created
+  ///   Indicates if the component is being prerendered.
   /// </summary>
-  public string Id { get; }
-
+  protected bool IsPreRendering { get; private set; } = true;
+  
   /// <summary>
   ///   Exposes StateHasChanged
   /// </summary>
   public void ReRender() => InvokeAsync(StateHasChanged);
-  public virtual void Dispose()
-  {
-    PersistingComponentStateSubscription.Dispose();
-    Subscriptions.Remove(this);
-    GC.SuppressFinalize(this);
-  }
 
   /// <summary>
   ///   Place a Subscription for the calling component
@@ -104,5 +95,12 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     {
       RenderPhaseService.SetInteractive();
     }
+  }
+  
+  public virtual void Dispose()
+  {
+    PersistingComponentStateSubscription.Dispose();
+    Subscriptions.Remove(this);
+    GC.SuppressFinalize(this);
   }
 }

@@ -17,6 +17,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.JSInterop;
+global using System.Collections.Concurrent;
 global using static Microsoft.AspNetCore.Components.Web.RenderMode;
 global using System.Collections.Generic;
 global using System.Diagnostics;
