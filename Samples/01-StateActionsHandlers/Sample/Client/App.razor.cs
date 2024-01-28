@@ -23,7 +23,8 @@ public partial class App : ComponentBase
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
-    throw new Exception("do I hit?");
+    // TODO:
+    throw new Exception("do I hit?"); 
     await ReduxDevToolsInterop.InitAsync();
     await JsonRequestHandler.InitAsync();
   }
