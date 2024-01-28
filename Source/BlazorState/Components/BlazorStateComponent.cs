@@ -44,6 +44,26 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   ///   Indicates if the component is being prerendered.
   /// </summary>
   protected bool IsPreRendering { get; private set; } = true;
+
+  private CurrentRenderMode Mode => GetCurrentRenderMode();
+
+  private CurrentRenderMode GetCurrentRenderMode()
+  {
+    if (OperatingSystem.IsBrowser())
+    {
+      return CurrentRenderMode.Wasm;
+    }
+    else if (IsPreRendering)
+    {
+      return CurrentRenderMode.PreRendering;
+    }
+    else
+    {
+      return CurrentRenderMode.Server;
+    }
+  }
+
+  protected string RenderModeString => Mode.ToString();
   
   /// <summary>
   ///   Exposes StateHasChanged
@@ -103,4 +123,11 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     Subscriptions.Remove(this);
     GC.SuppressFinalize(this);
   }
+}
+
+public enum CurrentRenderMode
+{
+  Wasm,
+  PreRendering,
+  Server
 }
