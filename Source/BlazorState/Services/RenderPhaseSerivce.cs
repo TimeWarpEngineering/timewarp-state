@@ -9,6 +9,9 @@ namespace BlazorState.Services;
 /// </remarks>
 public class RenderPhaseService
 {
+  // I need an Id property of type GUID
+  public Guid Guid { get; set; } = Guid.NewGuid();
+    
   /// <summary>
   /// 
   /// </summary>
@@ -20,7 +23,7 @@ public class RenderPhaseService
 
   public void SetInteractive()
   {
-    Console.WriteLine("Interactive");
+    if(IsPreRendering) Console.WriteLine("Interactive");
     IsPreRendering = false;
   }
 }
