@@ -23,6 +23,7 @@ public partial class CounterState
       public override async Task Handle(Action aAction, CancellationToken aCancellationToken)
       {
         Console.WriteLine("Entering CounterState.Load.Handler: CounterState.Count: {0} CounterState.Guid {1} ", CounterState.Count, CounterState.Guid);
+        Console.WriteLine("CounterState RenderPhaseService.Guid: {0}, IsPreRendering{1}", RenderPhaseService.Guid, RenderPhaseService.IsPreRendering );
         
         if (RenderPhaseService.IsPreRendering)
         {
