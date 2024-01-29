@@ -12,12 +12,12 @@
     <PackageVersion Include="Fixie.TestAdapter" Version="3.3.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -41,7 +41,7 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
-    <PackageVersion Include="System.Text.Json" Version="8.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.1" />
     <PackageVersion Include="TypeSupport" Version="1.2.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="1.0.2" />
   </ItemGroup>
