@@ -1,0 +1,15 @@
+﻿@rendermode InteractiveServer
+<h3>StaticComponent</h3>
+
+@if (System.OperatingSystem.IsBrowser())
+{
+  <p>Render Mode: WebAssembly</p>
+}
+else
+{
+  <p>Render Mode: Server (Not Wasm)</p>
+}
+
+@code {
+
+}

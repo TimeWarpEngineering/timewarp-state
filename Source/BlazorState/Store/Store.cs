@@ -9,6 +9,7 @@ internal partial class Store : IStore
   private readonly ILogger Logger;
   private readonly IServiceProvider ServiceProvider;
   private readonly IDictionary<string, IState> States;
+  private readonly IPublisher Publisher;
 
   /// <summary>
   /// Unique Guid for the Store.
@@ -18,15 +19,17 @@ internal partial class Store : IStore
 
   public Store
   (
-    ILogger<Store> aLogger,
-    IServiceProvider aServiceProvider,
-    BlazorStateOptions aBlazorStateOptions
+    ILogger<Store> logger,
+    IServiceProvider serviceProvider,
+    BlazorStateOptions blazorStateOptions,
+    IPublisher publisher
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug(EventIds.Store_Initializing, "constructing with guid:{Guid}", Guid);
-    ServiceProvider = aServiceProvider;
-    JsonSerializerOptions = aBlazorStateOptions.JsonSerializerOptions;
+    ServiceProvider = serviceProvider;
+    Publisher = publisher;
+    JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
 
     States = new Dictionary<string, IState>();
   }
@@ -50,26 +53,27 @@ internal partial class Store : IStore
   /// <summary>
   /// Set the state for specific Type
   /// </summary>
-  /// <param name="aNewState"></param>
-  public void SetState(IState aNewState)
+  /// <param name="newState"></param>
+  public void SetState(IState newState)
   {
-    string typeName = aNewState.GetType().FullName;
-    SetState(typeName, aNewState);
+    string typeName = newState.GetType().FullName ?? throw new InvalidOperationException();
+    SetState(typeName, newState);
   }
 
-  public object GetState(Type aType)
+  public object GetState(Type stateType)
   {
     using (Logger.BeginScope(nameof(GetState)))
     {
       string className = GetType().Name;
-      string typeName = aType.FullName;
+      string typeName = stateType.FullName ?? throw new InvalidOperationException();
 
       if (!States.TryGetValue(typeName, out IState state))
       {
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
-        state = (IState)ServiceProvider.GetRequiredService(aType);
+        state = (IState)ServiceProvider.GetRequiredService(stateType);
         state.Initialize();
         States.Add(typeName, state);
+        Publisher.Publish(new StateInitializedNotification(stateType)); // TODO: This is NOT await by intention, double check this is good idea.  I don't want this method async.
       }
       else
         Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);

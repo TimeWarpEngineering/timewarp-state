@@ -10,7 +10,7 @@ public partial class CounterState
 {
   internal class NonNestedHandler : BaseActionHandler<NonNestedAction>
   {
-    public NonNestedHandler(IStore aStore) : base(aStore) { }
+    public NonNestedHandler(IStore store) : base(store) { }
 
     public override Task<Unit> Handle
     (

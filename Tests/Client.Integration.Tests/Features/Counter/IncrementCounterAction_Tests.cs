@@ -5,11 +5,12 @@ using TestApp.Client.Features.Counter;
 using TestApp.Client.Integration.Tests.Infrastructure;
 using static TestApp.Client.Features.Counter.CounterState;
 
-public class IncrementCounterAction_Should : BaseTest
+public class IncrementCounterAction_Should
+(
+  ClientHost aWebAssemblyHost
+) : BaseTest(aWebAssemblyHost)
 {
   private CounterState CounterState => Store.GetState<CounterState>();
-
-  public IncrementCounterAction_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost) { }
 
   public async Task Decrement_Count_Given_NegativeAmount()
   {

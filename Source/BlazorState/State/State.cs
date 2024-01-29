@@ -1,5 +1,7 @@
 namespace BlazorState;
 
+using BlazorState.Features.Persistence.Abstractions;
+
 public abstract class State<TState> : IState<TState>
 {
 
@@ -19,10 +21,13 @@ public abstract class State<TState> : IState<TState>
   /// <summary>
   /// Use this method to prevent running methods from source other than Tests
   /// </summary>
-  /// <param name="aAssembly"></param>
-  public void ThrowIfNotTestAssembly(Assembly aAssembly)
+  /// <param name="assembly"></param>
+  protected void ThrowIfNotTestAssembly(Assembly assembly)
   {
-    if (!aAssembly.FullName.Contains("Test"))
+    ArgumentNullException.ThrowIfNull(assembly);
+    ArgumentNullException.ThrowIfNull(assembly.FullName);
+    
+    if (!assembly.FullName.Contains("Test"))
     {
       throw new FieldAccessException("Do not use this in production. This method is intended for Test access only!");
     }

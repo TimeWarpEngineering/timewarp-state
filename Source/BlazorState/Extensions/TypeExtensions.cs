@@ -1,8 +1,6 @@
 ﻿#nullable enable
 namespace BlazorState.Extensions;
 
-using MediatR;
-
 public static class TypeExtensions
 {
   public static Type GetEnclosingStateType(this Type type)

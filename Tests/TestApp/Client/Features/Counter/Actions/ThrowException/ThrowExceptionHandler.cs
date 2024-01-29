@@ -11,7 +11,7 @@ public partial class CounterState
 {
   internal class ThrowExceptionHandler : BaseActionHandler<ThrowExceptionAction>
   {
-    public ThrowExceptionHandler(IStore aStore) : base(aStore) { }
+    public ThrowExceptionHandler(IStore store) : base(store) { }
 
     /// <summary>
     /// Intentionally throw so we can test exception handling.

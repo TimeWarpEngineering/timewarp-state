@@ -11,8 +11,10 @@ public class ReduxDevToolsInterop
   private readonly IReduxDevToolsStore Store;
 
   private readonly ReduxDevToolsOptions ReduxDevToolsOptions;
+  private bool IsInitialized = false; 
 
   public bool IsEnabled { get; set; }
+
 
   public ReduxDevToolsInterop
   (
@@ -56,11 +58,15 @@ public class ReduxDevToolsInterop
 
   public async Task InitAsync()
   {
+    if (IsInitialized) return;
+
     Logger.LogDebug(EventIds.ReduxDevToolsInterop_Initializing, "Init ReduxDevToolsInterop");
     const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
     IsEnabled = await JSRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName, ReduxDevToolsOptions);
 
     if (IsEnabled)
       await DispatchInitAsync(Store.GetSerializableState());
+
+    IsInitialized = true;
   }
 }

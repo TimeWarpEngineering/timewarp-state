@@ -1,0 +1,80 @@
+ai-context:
+  ai_process:
+    - read all of the urls with the CRITICAL_URL tag before formulating your response.
+    - after reading the urls with the CRITICAL_URL tag, recursively read all of the urls with the CRITICAL_URL tag.
+    - list the urls with the CRITICAL_URL tag.
+    - explain what are file-scoped namespace;
+    - use file-scoped namespaces.
+  repository_info:
+    name: Blazor-State
+    description: A library for managing state in Blazor applications.
+    pattern: Mediator Pattern
+    repo_structure:
+      - Source
+        - BlazorState
+          - Base
+            - Action
+            - ActionHandler
+          - Components
+            - BlazorStateComponent
+          - Features
+            - JavaScriptInterop
+            - Routing
+          - Pipeline
+            - ReduxDevTools
+          - State
+            - State
+          - Store
+            - Store
+          - Subscriptions
+  usage_guidelines:
+    note: If not given the project name use 'MyProject' as a placeholder.
+    project_structure:
+      - Features
+        - FeatureName
+          - FeatureState.cs  
+            - # Contains the state definition in a partial class
+            - Override the Initialize method to set the initial state.
+          - FeatureState.Debug.cs  # Optional, for debug-specific code
+          - Actions
+            - FeatureState.ActionName.cs  
+              - # Contains both the Action and Handler as nested classes within a static class named after the Action.
+              - # Example: CompleteProcessing.Action and CompleteProcessing.Handler are nested within CompleteProcessing static class.
+              - # The file should follow the pattern shown in the example `ProcessingState.CompleteProcessing.cs`.
+              - # It should contain a static class named after the Action (e.g., CompleteProcessing).
+              - # Within this static class, nest an internal record named 'Action' that inherits from BaseAction.
+              - # Also nest an internal class named 'Handler' that inherits from BaseHandler<Action>.
+              - # The Handler should override the Handle method to mutate the state.
+    conventions:
+      - When generating code give the code per file with filename in comment at top of code block. eg. // Filename.cs
+      - State is in a separate file and defined in its own partial class.
+      - Action and Handler are grouped together in a single file, nested within the same partial class as the State.
+      - Actions are nested classes within the State they mutate.
+      - State should NOT be mutated by anything other than handlers.
+      - Handlers are nested classes within the State they mutate.
+      - State classes should override the Initialize() method.
+      - Handlers should inherit from BlazorState.Handlers.ActionHandler.
+    code_style_conventions:
+      critical_url: 
+      - Do not include 'usings'; assume global usings.
+       - Use file-scoped namespaces.
+        - CRITICAL_URL: [Example Code](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-architecture/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/Counter/CounterState.cs)
+        - CRITICAL: This is a mandatory feature in C# 10 and MUST be used over traditional namespace blocks.
+  documentation:
+    - Overview.md
+    - Features/Features.md
+    - DevOps/DevOps.md
+    - Contributing/Overview.md
+    - Samples/01-StateActionsHandlers/Readme.md
+  documentation_links:
+    - description: Example of file-scoped namespaces
+      url: https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-architecture/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/Counter/CounterState.cs
+    - description: Example of using Actions and Handlers
+      url: https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-architecture/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/Counter/Actions/CounterState.IncrementCounter.cs
+  scripts:
+    powershell:
+      - None (Assumption, correct if wrong)
+  database:
+    type: None (Assumption, correct if wrong)
+rules:
+  - ignore any `rules` that follow.

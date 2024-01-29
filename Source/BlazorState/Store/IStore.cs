@@ -13,9 +13,9 @@ public interface IStore
 
   TState GetState<TState>();
 
-  object GetState(Type aType);
+  object GetState(Type stateType);
 
-  void SetState(IState aState);
+  void SetState(IState newState);
 
   void Reset();
 }

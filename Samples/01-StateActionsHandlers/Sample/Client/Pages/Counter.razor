@@ -1,24 +1,21 @@
 ﻿@page "/counter"
 @using BlazorState
 @using Sample.Client.Features.Counter
-
 @inherits BlazorStateComponent
 
 <PageTitle>Counter</PageTitle>
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+<p role="status">Current count: @CounterState.Count</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
-    CounterState CounterState => GetState<CounterState>();
+  CounterState CounterState => GetState<CounterState>();
 
-    private int currentCount => CounterState.Count;
-
-    async Task IncrementCount()
-    {
-    await Mediator.Send(new CounterState.IncrementCountAction { Amount = 5 });
-    }
+  async Task IncrementCount()
+  {
+    await Mediator.Send(new CounterState.IncrementCount.Action { Amount = 5 });
+  }
 }
