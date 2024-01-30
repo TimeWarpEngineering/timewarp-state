@@ -28,39 +28,51 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+          
+      - name: Restore Dotnet Tools
+        run: dotnet tool restore          
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 8.0.x
 
-      # - name: Setup Node
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
-
-      - name: Build
+      - name: Build BlazorStateAnalyzer
         run: |
           cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
           dotnet clean --configuration Debug
           dotnet build --configuration Debug
+
+      - name: Build and Pack BlazorState
+        run: |
           cd ${{ github.workspace }}/Source/BlazorState/
-          dotnet clean  --configuration Debug
+          dotnet clean --configuration Debug
           dotnet build --configuration Debug
           dotnet pack --configuration Debug
+
+      - name: Build and Pack TimeWarp.State.Middleware
+        run: |
+          cd ${{ github.workspace }}/Source/TimeWarp.State.Middleware/
+          dotnet clean --configuration Debug
+          dotnet build --configuration Debug
+          dotnet pack --configuration Debug          
 
       - name: Client.Integration.Tests
         run: |
           cd Tests/Client.Integration.Tests/
-          dotnet tool restore
           dotnet restore
           dotnet fixie --configuration Debug
 
       - name: Server.Integration.Tests
         run: |
           cd Tests/Server.Integration.Tests/
-          dotnet tool restore
           dotnet restore
           dotnet fixie --configuration Debug
+
+      - name: BlazorStateAnalyzer.Tests
+        run: |
+            cd Tests/BlazorStateAnalyzer.Tests/
+            dotnet restore
+            dotnet fixie --configuration Debug          
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
