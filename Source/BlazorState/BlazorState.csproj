@@ -30,10 +30,9 @@
     <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
     <DebugType>embedded</DebugType>
 
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link 
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link --> 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -44,7 +43,6 @@
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageOutputPath>./bin/Packages</PackageOutputPath>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
