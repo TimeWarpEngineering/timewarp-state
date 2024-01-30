@@ -14,8 +14,7 @@ public partial class CounterState
     public class Action : IAction { }
 
     public class Handler(IStore store,
-      IPersistenceService PersistenceService,
-      RenderPhaseService RenderPhaseService
+      IPersistenceService PersistenceService
     ) : ActionHandler<Action>(store)
     {
       CounterState CounterState => Store.GetState<CounterState>();
@@ -23,14 +22,6 @@ public partial class CounterState
       public override async Task Handle(Action aAction, CancellationToken aCancellationToken)
       {
         Console.WriteLine("Entering CounterState.Load.Handler: CounterState.Count: {0} CounterState.Guid {1} ", CounterState.Count, CounterState.Guid);
-        Console.WriteLine("CounterState RenderPhaseService.Guid: {0}, IsPreRendering{1}", RenderPhaseService.Guid, RenderPhaseService.IsPreRendering );
-        
-        if (RenderPhaseService.IsPreRendering)
-        {
-          Console.WriteLine("Skipping Load as we are prerendering");
-          return;
-        }
-        
         Console.WriteLine("CounterState.Load.Handler: Loading CounterState");
         
         object? state = await PersistenceService.LoadState(typeof(CounterState), PersistentStateMethod.LocalStorage);
