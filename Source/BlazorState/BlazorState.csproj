@@ -33,6 +33,7 @@
     <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link --> 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
