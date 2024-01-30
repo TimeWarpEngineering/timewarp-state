@@ -22,7 +22,6 @@ public partial class Counter2State
       public override async Task Handle(Action aAction, CancellationToken aCancellationToken)
       {
         Console.WriteLine("Entering Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1} ", Counter2State.Count, Counter2State.Guid);
-        Console.WriteLine("Counter2State RenderPhaseService.Guid: {0}, IsPreRendering{1}", RenderPhaseService.Guid, RenderPhaseService.IsPreRendering );
         
         try
         {
