@@ -36,19 +36,36 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Pack
+      - name: Build BlazorStateAnalyzer
         run: |
           cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
           dotnet clean --configuration Release
           dotnet build --configuration Release
+  
+      - name: Build and Pack BlazorState
+        run: |
           cd ${{ github.workspace }}/Source/BlazorState/
           dotnet clean  --configuration Release
           dotnet build --configuration Release
           dotnet pack --configuration Release
-
-      - name: Publish
+  
+      - name: Build and Pack TimeWarp.State.Middleware
         run: |
-          cd Source/BlazorState/bin/Packages
-          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          cd ${{ github.workspace }}/Source/TimeWarp.State.Middleware/
+          dotnet clean --configuration Release
+          dotnet build --configuration Release
+          dotnet pack --configuration Release
 
+      - name: Publish BlazorState
+        run: |
+          cd Source/BlazorState/bin/Release
+          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          # Assuming snupkg files are in the same directory and are named correspondingly
+
+      - name: Publish TimeWarp.State.Middleware
+        run: |
+          cd Source/TimeWarp.State.Middleware/bin/Release
+          dotnet nuget push TimeWarp.State.Middleware.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          # Assuming snupkg files are in the same directory and are named correspondingly
+  
       - run: echo "🍏 This job's status is ${{ job.status }}."

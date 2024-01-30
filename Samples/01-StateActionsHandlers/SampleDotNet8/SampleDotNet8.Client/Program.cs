@@ -1,7 +1,7 @@
 namespace SampleDotNet8.Client;
 
 using Blazored.LocalStorage;
-using TimeWarpState.Middleware.PersistentState;
+using TimeWarp.State.Middleware.PersistentState;
 using BlazorState.Features.Persistence.Abstractions;
 public class Program
 {

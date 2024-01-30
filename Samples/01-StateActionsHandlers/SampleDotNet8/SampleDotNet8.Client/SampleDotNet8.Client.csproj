@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\BlazorState\BlazorState.csproj" />
-    <ProjectReference Include="..\..\..\..\Source\TimeWarpState.Middleware\TimeWarpState.Middleware.csproj" />
+    <ProjectReference Include="..\..\..\..\Source\TimeWarp.State.Middleware\TimeWarp.State.Middleware.csproj" />
   </ItemGroup>
 
   <ItemGroup>

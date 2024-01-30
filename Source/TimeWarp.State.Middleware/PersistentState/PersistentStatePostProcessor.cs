@@ -1,4 +1,4 @@
-namespace TimeWarpState.Middleware;
+namespace TimeWarp.State.Middleware;
 
 using Blazored.SessionStorage;
 using BlazorState;
