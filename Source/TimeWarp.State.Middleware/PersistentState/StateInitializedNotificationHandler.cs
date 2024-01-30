@@ -1,4 +1,4 @@
-namespace TimeWarpState.Middleware.PersistentState;
+namespace TimeWarp.State.Middleware.PersistentState;
 
 using BlazorState;
 using MediatR;
