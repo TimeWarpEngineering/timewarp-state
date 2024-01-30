@@ -1,9 +1,12 @@
 ﻿namespace TimeWarpState.Middleware.PersistentState;
 
+using Microsoft.Extensions.Logging;
+
 public class PersistenceService
 (
   ISessionStorageService SessionStorageService,
-  ILocalStorageService LocalStorageService
+  ILocalStorageService LocalStorageService,
+  ILogger<PersistenceService> Logger
 ) : IPersistenceService
 {
   private readonly JsonSerializerOptions JsonSerializerOptions = new();
@@ -14,7 +17,7 @@ public class PersistenceService
       throw new InvalidOperationException("The type provided has a null full name, which is not supported for persistence operations.");
 
     // TODO: Remove these comments potentially add Debug Logging.
-    Console.WriteLine($"PersistenceService.LoadState Loading State for {stateType}");
+    Logger.LogInformation($"PersistenceService.LoadState Loading State for {stateType}");
 
     string? serializedState = persistentStateMethod switch
     {
