@@ -7,14 +7,14 @@ namespace BlazorState;
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
-  private const string IsPreRenderCompleteKey = "IsPreRenderComplete";
   private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-  private PersistingComponentStateSubscription PersistingComponentStateSubscription;
+  private bool IsJsInteropAvailable => OperatingSystem.IsBrowser() || HasRendered;
+  private bool HasRendered = false;
 
   public BlazorStateComponent()
   {
     string name = GetType().Name;
-    int count = s_InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (aKey, aValue) => aValue + 1);
+    int count = s_InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
 
     Id = $"{name}-{count}";
   }
@@ -30,8 +30,6 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   public string Id { get; }
   
   [Inject] private IStore Store { get; set; } = null!;
-  [Inject] private RenderPhaseService RenderPhaseService { get; set; } = null!;
-  [Inject] private PersistentComponentState PersistentComponentState { get; set; } = null!;
   [Inject] protected IMediator Mediator { get; set; } = null!;
   
   /// <summary>
@@ -43,9 +41,9 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// <summary>
   ///   Indicates if the component is being prerendered.
   /// </summary>
-  protected bool IsPreRendering { get; private set; } = true;
+  protected bool IsPreRendering => GetCurrentRenderMode() == CurrentRenderMode.PreRendering;
 
-  private CurrentRenderMode Mode => GetCurrentRenderMode();
+  private CurrentRenderMode CurrentRenderMode => GetCurrentRenderMode();
 
   private CurrentRenderMode GetCurrentRenderMode()
   {
@@ -53,7 +51,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     {
       return CurrentRenderMode.Wasm;
     }
-    else if (IsPreRendering)
+    else if (!HasRendered)
     {
       return CurrentRenderMode.PreRendering;
     }
@@ -63,7 +61,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     }
   }
 
-  protected string RenderModeString => Mode.ToString();
+  protected string RenderModeString => CurrentRenderMode.ToString();
   
   /// <summary>
   ///   Exposes StateHasChanged
@@ -82,44 +80,17 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     Subscriptions.Add(stateType, this);
     return Store.GetState<T>();
   }
-
-  protected override async Task OnInitializedAsync()
-  {
-    await base.OnInitializedAsync();
-    if (OperatingSystem.IsBrowser())
-    {
-      IsPreRendering = false;
-    }
-    else
-    {
-      PersistingComponentStateSubscription = PersistentComponentState.RegisterOnPersisting(Persist);
-
-      bool foundInState =
-        PersistentComponentState.TryTakeFromJson(IsPreRenderCompleteKey, out bool _);
-
-      if (foundInState) { IsPreRendering = false; }
-    }
-  }
-
-  private Task Persist()
-  {
-    // This will fire only once just prior to transitioning to wasm. 
-    PersistentComponentState.PersistAsJson("IsPreRenderComplete", true);
-    return Task.CompletedTask;
-  }
-
+  
   protected override void OnAfterRender(bool firstRender)
   {
     base.OnAfterRender(firstRender);
-    if (firstRender)
-    {
-      RenderPhaseService.SetInteractive();
-    }
+    if (!firstRender) return;
+    HasRendered = true;
+    StateHasChanged();
   }
   
   public virtual void Dispose()
   {
-    PersistingComponentStateSubscription.Dispose();
     Subscriptions.Remove(this);
     GC.SuppressFinalize(this);
   }
