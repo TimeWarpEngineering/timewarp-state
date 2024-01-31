@@ -17,23 +17,7 @@
 
 ![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.svg)
 
-TimeWarp.State.Middleware is a powerful extension of the Blazor-State library, specifically designed to enhance state management capabilities in Blazor applications. This middleware package focuses on state persistence, offering a straightforward way to persist state across browser sessions.
-
-## Key Features
-
-- **Persistent State Management**: Utilize the `PersistentStatePostProcessor` to automatically persist states in the browser's storage.
-- **Easy Configuration**: Simply annotate your state classes with the `[PersistentState]` attribute to enable persistence.
-- **Storage Options**: Supports both `LocalStorage` and `SessionStorage` for state persistence, allowing you to choose based on your application's needs.
-- **Seamless Integration**: Designed to work smoothly with the existing Blazor-State architecture, ensuring a consistent and familiar developer experience.
-
-Example Usage:
-
-```csharp
-[PersistentState(PersistentStateMethod.LocalStorage)]
-public partial class Counter2State : State<Counter2State>
-{
-    // State implementation
-}
+Blazor-State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
 
 ## Give a Star! :star:
 
