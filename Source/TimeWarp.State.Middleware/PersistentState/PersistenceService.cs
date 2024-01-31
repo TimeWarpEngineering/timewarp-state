@@ -1,7 +1,5 @@
 ﻿namespace TimeWarp.State.Middleware.PersistentState;
 
-using Microsoft.Extensions.Logging;
-
 public class PersistenceService
 (
   ISessionStorageService SessionStorageService,

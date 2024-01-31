@@ -1,9 +1,5 @@
 namespace TimeWarp.State.Middleware.PersistentState;
 
-using BlazorState;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class StateInitializedNotificationHandler
 (
   ISender Sender
