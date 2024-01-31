@@ -30,11 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="TimeWarp.Fixie"/>
-    <Using Include="BlazorState"/>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Store\Store.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1,13 +1,4 @@
-namespace JsonRequestHandler;
-
-using BlazorState;
-using BlazorState.Features.JavaScriptInterop;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
-using TestApp.Client.Features.Counter;
-using TestApp.Client.Integration.Tests.Infrastructure;
-using static TestApp.Client.Features.Counter.CounterState;
+namespace JsonRequestHandler_;
 
 // TODO: These used to pass with WebAssemblyHostBuilder
 // internal class won't run so they won't fail
@@ -16,7 +7,7 @@ internal class Handle_Should : BaseTest
   private readonly JsonRequestHandler JsonRequestHandler;
 
   private readonly JsonSerializerOptions JsonSerializerOptions;
-
+  
   private CounterState CounterState => Store.GetState<CounterState>();
 
   public Handle_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)

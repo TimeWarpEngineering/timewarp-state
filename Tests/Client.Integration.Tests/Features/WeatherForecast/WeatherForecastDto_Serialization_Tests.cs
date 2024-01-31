@@ -1,8 +1,4 @@
-namespace WeatherForecastDto;
-using FluentAssertions;
-using System;
-using System.Text.Json;
-using TestApp.Api.Features.WeatherForecast;
+namespace WeatherForecastDto_;
 
 public class Should
 {

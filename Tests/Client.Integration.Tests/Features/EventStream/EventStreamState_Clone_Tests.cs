@@ -1,10 +1,4 @@
-namespace EventStreamState;
-
-using AnyClone;
-using FluentAssertions;
-using System.Collections.Generic;
-using TestApp.Client.Features.EventStream;
-using TestApp.Client.Integration.Tests.Infrastructure;
+namespace EventStreamState_;
 
 public class Clone_Should : BaseTest
 {
@@ -29,5 +23,4 @@ public class Clone_Should : BaseTest
     EventStreamState.Guid.Should().NotBe(clone.Guid);
     EventStreamState.Events[0].Should().Be(clone.Events[0]);
   }
-
 }

@@ -1,12 +1,5 @@
 namespace TestApp.Client.Integration.Tests.Infrastructure;
 
-using BlazorState;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 /// <summary>
 /// 
 /// </summary>

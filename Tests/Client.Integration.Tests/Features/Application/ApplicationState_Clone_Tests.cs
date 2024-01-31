@@ -1,9 +1,4 @@
-namespace ApplicationState;
-
-using AnyClone;
-using FluentAssertions;
-using TestApp.Client.Features.Application;
-using TestApp.Client.Integration.Tests.Infrastructure;
+namespace ApplicationState_;
 
 public class Clone_Should : BaseTest
 {
@@ -28,5 +23,4 @@ public class Clone_Should : BaseTest
     ApplicationState.ExceptionMessage.Should().Be(clone.ExceptionMessage);
     ApplicationState.Guid.Should().NotBe(clone.Guid);
   }
-
 }

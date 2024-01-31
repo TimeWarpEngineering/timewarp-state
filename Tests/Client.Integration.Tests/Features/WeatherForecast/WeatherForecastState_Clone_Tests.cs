@@ -1,12 +1,4 @@
-namespace WeatherForecastsState;
-
-using AnyClone;
-using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using TestApp.Api.Features.WeatherForecast;
-using TestApp.Client.Features.WeatherForecast;
-using TestApp.Client.Integration.Tests.Infrastructure;
+namespace WeatherForecastsState_;
 
 public class Clone_Should : BaseTest
 {

@@ -1,8 +1,5 @@
-namespace WeatherForecastsState;
-using FluentAssertions;
-using System.Threading.Tasks;
-using TestApp.Client.Features.WeatherForecast;
-using TestApp.Client.Integration.Tests.Infrastructure;
+namespace WeatherForecastsState_;
+
 using static TestApp.Client.Features.WeatherForecast.WeatherForecastsState;
 
 public class FetchWeatherForecastsAction_Should : BaseTest

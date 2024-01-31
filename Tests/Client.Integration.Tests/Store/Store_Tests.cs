@@ -1,14 +1,5 @@
 namespace TestApp.Client.Integration.Tests;
 
-using BlazorState;
-using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using System.IO;
-using TestApp.Client.Features.Application;
-using TestApp.Client.Features.Counter;
-using TestApp.Client.Features.WeatherForecast;
-using TestApp.Client.Integration.Tests.Infrastructure;
-
 internal class Store_Tests : BaseTest
 {
 #if ReduxDevToolsEnabled

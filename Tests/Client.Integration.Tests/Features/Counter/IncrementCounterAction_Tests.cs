@@ -1,9 +1,4 @@
-namespace CounterState;
-using FluentAssertions;
-using System.Threading.Tasks;
-using TestApp.Client.Features.Counter;
-using TestApp.Client.Integration.Tests.Infrastructure;
-using static TestApp.Client.Features.Counter.CounterState;
+namespace CounterState_;
 
 public class IncrementCounterAction_Should
 (

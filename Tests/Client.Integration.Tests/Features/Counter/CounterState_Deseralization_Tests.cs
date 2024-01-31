@@ -1,10 +1,4 @@
-﻿namespace CounterState;
-
-using FluentAssertions;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using TestApp.Client.Features.Counter;
-using TestApp.Client.Integration.Tests.Infrastructure;
+﻿namespace CounterState_;
 
 public class JsonSerializer_Should : BaseTest
 {

@@ -1,13 +1,4 @@
-namespace CloneStateBehavior;
-using FluentAssertions;
-using System;
-using System.Threading.Tasks;
-using TestApp.Client.Features.Application;
-using TestApp.Client.Features.CloneTest;
-using TestApp.Client.Features.Counter;
-using TestApp.Client.Integration.Tests.Infrastructure;
-using static TestApp.Client.Features.CloneTest.CloneTestState;
-using static TestApp.Client.Features.Counter.CounterState;
+namespace CloneStateBehavior_;
 
 public class Should : BaseTest
 {
@@ -70,5 +61,4 @@ public class Should : BaseTest
     ApplicationState.ExceptionMessage.Should().Be(throwExceptionAction.Message);
     CounterState.Guid.Equals(preActionGuid).Should().BeTrue();
   }
-
 }

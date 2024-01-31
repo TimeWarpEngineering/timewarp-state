@@ -1,9 +1,4 @@
-namespace TestState;
-
-using AnyClone;
-using FluentAssertions;
-using System.Linq;
-using TestApp.Client.Integration.Tests.Clone;
+namespace TestState_;
 
 public class Clone_Should
 {

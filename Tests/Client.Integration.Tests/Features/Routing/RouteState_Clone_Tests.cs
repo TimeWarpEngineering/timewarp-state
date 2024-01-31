@@ -1,9 +1,4 @@
-namespace RouteState;
-
-using AnyClone;
-using BlazorState.Features.Routing;
-using FluentAssertions;
-using TestApp.Client.Integration.Tests.Infrastructure;
+namespace RouteState_;
 
 public class Clone_Should : BaseTest
 {
@@ -27,5 +22,4 @@ public class Clone_Should : BaseTest
     RouteState.Route.Should().Be(clone.Route);
     RouteState.Guid.Should().NotBe(clone.Guid);
   }
-
 }
