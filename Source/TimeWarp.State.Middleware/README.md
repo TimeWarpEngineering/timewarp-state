@@ -2,8 +2,8 @@
 [![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/blazor-state?logo=github)](https://github.com/TimeWarpEngineering/blazor-state)
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![workflow](https://github.com/TimeWarpEngineering/blazor-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/blazor-state/actions)
-[![nuget](https://img.shields.io/nuget/v/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
-[![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
+[![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Middleware?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Middleware/)
+[![nuget](https://img.shields.io/nuget/dt/TimeWarp.State.Middleware?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Middleware/)
 [![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/blazor-state.svg?logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
 [![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/blazor-state)](https://github.com/TimeWarpEngineering/blazor-state)
 [![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
@@ -12,38 +12,52 @@
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
 [![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
 
-# Blazor-State
-
+# TimeWarp.State.Middleware
 
 ![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.svg)
 
-Blazor-State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
+TimeWarp.State.Middleware is a versatile extension of the Blazor-State library, designed to enhance state management in Blazor applications with a suite of middleware capabilities.
+
+## Available Middleware
+
+- **PersistentState**
+  - **Key Feature**: Automates the persistence of state in browser storage.
+  - **Usage**: Annotate state classes with `[PersistentState]` to enable.
+  - **Storage Options**: Supports both `LocalStorage` and `SessionStorage`.
+
+Example:
+
+```csharp
+[PersistentState(PersistentStateMethod.LocalStorage)]
+public partial class Counter2State : State<Counter2State>
+{
+// State implementation
+}
+```
 
 ## Give a Star! :star:
 
 If you find this project useful, please give it a star. Thanks!
 
-## Getting started
+## Getting Started
 
-To quickly get started I recommend the [tutorial](https://timewarpengineering.github.io/blazor-state/Samples/01-StateActionsHandlers/Readme.html) section of the full [Documentation](https://timewarpengineering.github.io/blazor-state/).
-
-![TimeWarpBlazorStateOneWayFlow.drawio.svg](/Documentation/Images/TimeWarpBlazorStateOneWayFlow.drawio.svg)
+For a quick start, refer to the [middleware section](https://timewarpengineering.github.io/blazor-state/Documentation/Middleware) in the full [Documentation](https://timewarpengineering.github.io/blazor-state/).
 
 ## Installation
 
 ```console
-dotnet add package Blazor-State
+dotnet add package TimeWarp.State.Middleware
 ```
 
 Check out the latest NuGet packages on the [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
-* [Blazor-State](https://www.nuget.org/packages/Blazor-State/) [![nuget](https://img.shields.io/nuget/v/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
+* [TimeWarp.State.Middleware](https://www.nuget.org/packages/TimeWarp.State.Middleware/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Middleware?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Middleware/)
 
 ## Releases
 
 View the [Release Notes](https://timewarpengineering.github.io/blazor-state/ReleaseNotes/Release11.0.0.html) for detailed information on each release.
 
-## Unlicense
+## UnLicense
 
 [![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://unlicense.org)  
 This project is licensed under the [Unlicense](https://unlicense.org).

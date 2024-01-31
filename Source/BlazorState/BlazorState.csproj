@@ -15,7 +15,6 @@
     <Description>A Blazor state management library by TimeWarp</Description>
     <PackageId>Blazor-State</PackageId>
     <AssemblyName>Blazor-State</AssemblyName>
-    <PackageIcon>Logo.png</PackageIcon>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

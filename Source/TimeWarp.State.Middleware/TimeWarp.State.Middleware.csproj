@@ -42,4 +42,12 @@
     <ProjectReference Include="..\BlazorState\BlazorState.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+  </ItemGroup>
+
 </Project>
