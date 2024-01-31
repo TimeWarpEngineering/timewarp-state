@@ -1,4 +1,4 @@
-[![Dotnet](https://img.shields.io/badge/dotnet-6.0-blue)](https://dotnet.microsoft.com)
+[![Dotnet](https://img.shields.io/badge/dotnet-8.0-blue)](https://dotnet.microsoft.com)
 [![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/blazor-state?logo=github)](https://github.com/TimeWarpEngineering/blazor-state)
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![workflow](https://github.com/TimeWarpEngineering/blazor-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/blazor-state/actions)
@@ -21,7 +21,7 @@ Blazor-State is a State Management architecture utilizing the MediatR pipeline t
 
 ## Give a Star! :star:
 
-If you like or are using this project please give it a star. Thank you!
+If you find this project useful, please give it a star. Thanks!
 
 ## Getting started
 
@@ -35,27 +35,27 @@ To quickly get started I recommend the [tutorial](https://timewarpengineering.gi
 dotnet add package Blazor-State
 ```
 
-You can see the latest NuGet packages from the official [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
+Check out the latest NuGet packages on the [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
 * [Blazor-State](https://www.nuget.org/packages/Blazor-State/) [![nuget](https://img.shields.io/nuget/v/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 
 ## Releases
 
-See the [Release Notes](https://timewarpengineering.github.io/blazor-state/ReleaseNotes/Release5.0.0.html)
+View the [Release Notes](https://timewarpengineering.github.io/blazor-state/ReleaseNotes/Release11.0.0.html) for detailed information on each release.
 
 ## Unlicense
 
-[![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://unlicense.org)
+[![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://unlicense.org)  
+This project is licensed under the [Unlicense](https://unlicense.org).
 
 ## Contributing
 
-Time is of the essence.  Before developing a Pull Request I recommend opening a [discussion](https://github.com/TimeWarpEngineering/blazor-state/discussions).
+Your contributions are welcome! Before starting any work, please open a [discussion](https://github.com/TimeWarpEngineering/blazor-state/discussions).
 
-Please feel free to make suggestions and help out with the [documentation](https://timewarpengineering.github.io/blazor-state/).
-Please refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to write markdown files.
+Help with the [documentation](https://timewarpengineering.github.io/blazor-state/) is also greatly appreciated.
 
 ## Contact
 
-Sometimes the github notifications get lost in the shuffle.  If you file an [issue](https://github.com/TimeWarpEngineering/blazor-state/issues) and don't get a response in a timely manner feel free to ping on our [Discord server](https://discord.gg/A55JARGKKP).
+If you have an issue and don't receive a timely response, feel free to reach out on our [Discord server](https://discord.gg/A55JARGKKP).
 
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
