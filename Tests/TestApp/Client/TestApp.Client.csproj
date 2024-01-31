@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReduxDevToolsEnabled|AnyCPU'">
