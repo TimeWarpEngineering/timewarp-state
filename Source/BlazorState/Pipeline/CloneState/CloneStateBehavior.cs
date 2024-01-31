@@ -1,8 +1,6 @@
 #nullable enable
 namespace BlazorState.Pipeline.State;
 
-using BlazorState.Pipeline.CloneState;
-
 internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : notnull, IAction
 {

@@ -1,10 +1,5 @@
 namespace BlazorState.Features.Routing;
 
-using BlazorState;
-using Microsoft.JSInterop;
-using System.Collections.Generic;
-using System.Reflection;
-
 public partial class RouteState : State<RouteState>
 {
   public override RouteState Hydrate(IDictionary<string, object> aKeyValuePairs)

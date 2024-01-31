@@ -1,7 +1,5 @@
 namespace BlazorState;
 
-using BlazorState.Features.Persistence.Abstractions;
-
 public abstract class State<TState> : IState<TState>
 {
 
