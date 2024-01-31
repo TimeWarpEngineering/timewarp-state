@@ -1,15 +1,5 @@
 namespace ServiceProvider;
 
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Text.Json;
-using TestApp.Api.Features.WeatherForecast;
-using TestApp.Server.Integration.Tests.Infrastructure;
-
 public class GetService_Returns : BaseTest
 {
   private readonly IServiceProvider ServiceProvider;

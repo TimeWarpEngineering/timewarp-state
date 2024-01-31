@@ -1,13 +1,5 @@
 namespace TestApp.Server.Integration.Tests.Infrastructure;
 
-using MediatR;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-
 public abstract class BaseTest
 {
   private readonly JsonSerializerOptions JsonSerializerOptions;
@@ -61,5 +53,4 @@ public abstract class BaseTest
 
     return response;
   }
-
 }

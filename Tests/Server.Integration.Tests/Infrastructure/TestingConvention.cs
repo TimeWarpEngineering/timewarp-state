@@ -1,9 +1,5 @@
 namespace TestApp.Server.Integration.Tests.Infrastructure;
 
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
-
 [NotTest]
 public class TestingConvention : TimeWarp.Fixie.TestingConvention 
 {

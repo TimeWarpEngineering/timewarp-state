@@ -1,12 +1,4 @@
-namespace GetWeatherForecastsHandler;
-
-using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using System.Text.Json;
-using System.Threading.Tasks;
-using TestApp.Api.Features.WeatherForecast;
-using TestApp.Server;
-using TestApp.Server.Integration.Tests.Infrastructure;
+namespace GetWeatherForecastsHandler_;
 
 public class Handle_Returns : BaseTest
 {
