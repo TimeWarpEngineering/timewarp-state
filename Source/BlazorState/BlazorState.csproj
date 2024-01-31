@@ -45,7 +45,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
