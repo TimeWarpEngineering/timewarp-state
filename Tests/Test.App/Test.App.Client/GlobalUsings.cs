@@ -1,0 +1,9 @@
+global using BlazorState;
+global using MediatR;
+global using MediatR.Pipeline;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using System;
+global using System.Reflection;
+global using Test.App.Client.Features.Base.Components;
+global using Test.App.Client.Pipeline.NotificationPostProcessor;
+global using Test.App.Client.Pipeline.NotificationPreProcessor;

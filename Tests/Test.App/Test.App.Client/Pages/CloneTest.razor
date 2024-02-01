@@ -1,0 +1,36 @@
+﻿@page "/cloneTest"
+@using AnyClone.Tests
+<h1>Clone Tests</h1>
+
+<button class="btn btn-primary" @onclick="TestClone">Click me</button>
+<br/>
+<hr/>
+<h6>TestResult:@TestResult</h6>
+
+@code {
+  string TestResult = "Not run";
+
+  void TestClone()
+  {
+    try
+    {
+      CloneProviderTests.ModifiedClone_Array_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Basic_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Collection_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_ComplexObject_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Dictionary_ShouldNotBeEqual();
+      CloneProviderTests.Should_Clone_ArrayObject();
+      CloneProviderTests.Should_Clone_BasicObject();
+      CloneProviderTests.Should_Clone_CollectionObject();
+      CloneProviderTests.Should_Clone_ComplexObject();
+      CloneProviderTests.Should_Clone_CustomCollectionObject();
+      CloneProviderTests.Should_Clone_DictionaryObject();
+      CloneProviderTests.Should_Clone_InterfacesObject();
+      TestResult = "Passed";
+    }
+    catch (Exception)
+    {
+      TestResult = "Failed";
+    }
+  }
+}
