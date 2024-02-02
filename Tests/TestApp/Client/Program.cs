@@ -49,7 +49,6 @@ public class Program
     (
       aOptions =>
       {
-#if ReduxDevToolsEnabled
         aOptions
         .UseReduxDevTools
         (
@@ -59,7 +58,7 @@ public class Program
               aReduxDevToolsOptions.Trace = true; 
             }
         );
-#endif
+
         aOptions.Assemblies =
           new Assembly[]
           {
