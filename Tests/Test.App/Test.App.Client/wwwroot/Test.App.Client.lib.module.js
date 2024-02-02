@@ -1,5 +1,5 @@
 ﻿import { blazorState } from '/_content/Blazor-State/js/BlazorState.js'
-import { log } from '/_content/Blazor-State/js/Logger.js'
+import { log,LogAction } from '/_content/Blazor-State/js/Logger.js'
 
 const dispatchIncrementCountAction = () => {
   log("dispatchIncrementCountAction", "Dispatching IncrementCountAction", "function");
@@ -7,27 +7,36 @@ const dispatchIncrementCountAction = () => {
   blazorState.DispatchRequest(IncrementCountActionName, { amount: 7 });
 };
 
-export function beforeStart(options, extensions) {
-  log("Interop Lifecycle", "Test.App.Client beforeStart", "info");
+// export function beforeStart(options, extensions) {
+//   log("Interop Lifecycle", "Test.App.Client beforeStart", "info", LogAction.Begin);
+//   window["InteropTest"] = dispatchIncrementCountAction;
+// }
+//
+// export function afterStarted(blazor) {
+//   log("Interop Lifecycle", "Test.App.Client afterStarted", "success", LogAction.End);
+// }
+
+export function beforeWebStart(blazor) {
+  log("Interop Lifecycle Web", "Test.App.Client beforeWebStart", "info", LogAction.Begin);
   window["InteropTest"] = dispatchIncrementCountAction;
 }
 
-export function afterStarted(blazor) {
-  log("Interop Lifecycle", "Test.App.Client afterStarted", "success");
-}
-
 export function afterWebStarted(blazor) {
-  log("Interop Lifecycle", "Test.App.Client afterWebStarted", "success");
+  log("Interop Lifecycle Web", "Test.App.Client afterWebStarted", "success", LogAction.End);
 }
 
 export function beforeWebAssemblyStart(options, extensions) {
-  log("Interop Lifecycle", "Test.App.Client beforeWebAssemblyStart", "warning");
+  log("Interop Lifecycle WebAssembly", "Test.App.Client beforeWebAssemblyStart", "info", LogAction.Begin);
 }
 
 export function afterWebAssemblyStarted(blazor) {
-  log("Interop Lifecycle", "Test.App.Client afterWebAssemblyStarted", "success");
+  log("Interop Lifecycle WebAssembly", "Test.App.Client afterWebAssemblyStarted", "success", LogAction.End);
 }
 
 export function beforeServerStart(options, extensions) {
-  log("Interop Lifecycle", "Test.App.Client beforeServerStart", "warning");
+  log("Interop Lifecycle Server", "Test.App.Client beforeServerStart", "info", LogAction.Begin);
+}
+
+export function afterServerStarted(blazor) {
+  log("Interop Lifecycle Server", "Test.App.Client afterServerStarted", "success", LogAction.End);
 }

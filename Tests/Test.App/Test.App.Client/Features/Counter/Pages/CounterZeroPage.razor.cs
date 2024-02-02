@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Test.App.Client.Features.Base.Components;
 using static Test.App.Client.Features.Counter.CounterState;
 
-public partial class CounterPage : BaseComponent
+public partial class CounterZeroPage : BaseComponent
 {
   protected async Task ChangeRouteToHome() =>
     await Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = "/" });

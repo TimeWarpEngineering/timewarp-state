@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.Counter;
 
-public partial class CounterState
+public partial class CounterZeroState
 {
   public class IncrementCounterAction : IAction
   {

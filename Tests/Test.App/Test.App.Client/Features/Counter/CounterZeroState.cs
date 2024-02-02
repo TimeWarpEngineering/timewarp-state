@@ -2,15 +2,15 @@ namespace Test.App.Client.Features.Counter;
 
 using System.Text.Json.Serialization;
 
-public partial class CounterState : State<CounterState>
+public partial class CounterZeroState : State<CounterZeroState>
 {
 
   public int Count { get; private set; }
 
-  public CounterState() { }
+  public CounterZeroState() { }
 
   [JsonConstructor]
-  public CounterState(Guid guid, int count)
+  public CounterZeroState(Guid guid, int count)
   {
     Guid = guid;
     Count = count;

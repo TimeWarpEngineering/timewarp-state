@@ -1,0 +1,35 @@
+﻿@namespace Test.App.Client.Pages
+@rendermode InteractiveAuto
+@page "/twodiffcounters"
+@using BlazorState
+
+@inherits BlazorStateComponent
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+<p>Render Mode: @RenderModeString</p>
+
+@if (IsPreRendering)
+{
+  <p role="status">CounterState.Guid: </p>
+  <p role="status">Counter 1 count: </p>
+}
+else
+{
+  <p role="status">CounterState.Guid: @CounterOneState.Guid</p>
+  <p role="status">Counter 1 count: @CounterOneState.Count</p>
+  <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+}
+
+@if (IsPreRendering)
+{
+  <p role="status">Counter2State.Guid: </p>
+  <p role="status">Counter 2 count: </p>
+}
+else
+{
+  <p role="status">Counter2State.Guid: @Counter2State.Guid</p>
+  <p role="status">Counter 2 count: @Counter2State.Count</p>
+  <button class="btn btn-primary" @onclick="IncrementCount2">Click me</button>
+}

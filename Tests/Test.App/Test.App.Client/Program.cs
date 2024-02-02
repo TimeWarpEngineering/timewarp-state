@@ -15,7 +15,6 @@ public class Program
     (
       options =>
       {
-#if ReduxDevToolsEnabled
         options
         .UseReduxDevTools
         (
@@ -25,7 +24,6 @@ public class Program
               reduxDevToolsOptions.Trace = true; 
             }
         );
-#endif
         options.Assemblies =
           new Assembly[]
           {

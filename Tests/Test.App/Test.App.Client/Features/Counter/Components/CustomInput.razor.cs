@@ -51,6 +51,6 @@ public partial class CustomInput<T> : BaseInputComponent<T>
   }
 
   protected async Task ButtonClick() =>
-    await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
+    await Mediator.Send(new CounterZeroState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
 
 }

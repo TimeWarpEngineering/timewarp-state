@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Test.App.Client.Features.Base.Components;
 using static Test.App.Client.Features.Counter.CounterState;
 
-public partial class Counter : BaseComponent
+public partial class CounterZero : BaseComponent
 {
   protected async Task ButtonClick() =>
-    await Mediator.Send(new IncrementCounterAction { Amount = 5 });
+    await Mediator.Send(new CounterZeroState.IncrementCounterAction { Amount = 5 });
 }

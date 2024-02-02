@@ -18,7 +18,7 @@ using Test.App.Client.Features.WeatherForecast;
 public class BaseInputComponent<T> : BlazorStateDevToolsInputComponent<T>
 {
   internal ApplicationState ApplicationState => GetState<ApplicationState>();
-  internal CounterState CounterState => GetState<CounterState>();
+  internal CounterZeroState CounterZeroState => GetState<CounterZeroState>();
   internal EventStreamState EventStreamState => GetState<EventStreamState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
 }

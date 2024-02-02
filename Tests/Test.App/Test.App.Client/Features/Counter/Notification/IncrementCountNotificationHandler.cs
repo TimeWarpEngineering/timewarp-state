@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 internal class IncrementCountNotificationHandler
-  : INotificationHandler<PostPipelineNotification<CounterState.IncrementCounterAction, Unit>>
+  : INotificationHandler<PostPipelineNotification<CounterZeroState.IncrementCounterAction, Unit>>
 {
   private readonly ILogger Logger;
 
@@ -16,7 +16,7 @@ internal class IncrementCountNotificationHandler
 
   public Task Handle
   (
-    PostPipelineNotification<CounterState.IncrementCounterAction, Unit> aPostPipelineNotification,
+    PostPipelineNotification<CounterZeroState.IncrementCounterAction, Unit> aPostPipelineNotification,
     CancellationToken aCancellationToken
   )
   {

@@ -19,7 +19,7 @@ using Test.App.Client.Features.WeatherForecast;
 public class BaseComponent : BlazorStateDevToolsComponent
 {
   public ApplicationState ApplicationState => GetState<ApplicationState>();
-  internal CounterState CounterState => GetState<CounterState>();
+  internal CounterZeroState CounterZeroState => GetState<CounterZeroState>();
   internal EventStreamState EventStreamState => GetState<EventStreamState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
   protected Task Send(IRequest aRequest) => Mediator.Send(aRequest);

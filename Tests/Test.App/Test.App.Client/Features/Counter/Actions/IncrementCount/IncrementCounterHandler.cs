@@ -1,10 +1,8 @@
 namespace Test.App.Client.Features.Counter;
 
-using System.Threading;
-using System.Threading.Tasks;
 using Test.App.Client.Features.Base;
 
-public partial class CounterState
+public partial class CounterZeroState
 {
   internal class IncrementCounterHandler : BaseActionHandler<IncrementCounterAction>
   {
@@ -16,7 +14,7 @@ public partial class CounterState
       CancellationToken aCancellationToken
     )
     {
-      CounterState.Count += aIncrementCounterAction.Amount;
+      CounterZeroState.Count += aIncrementCounterAction.Amount;
       return Task.CompletedTask;
     }
   }
