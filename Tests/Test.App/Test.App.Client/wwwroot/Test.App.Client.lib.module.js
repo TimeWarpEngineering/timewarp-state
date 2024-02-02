@@ -1,18 +1,5 @@
-﻿const logStyle = {
-  info: "color: blue; font-weight: bold;",
-  success: "color: green; font-weight: bold;",
-  warning: "color: orange; font-weight: bold;",
-  error: "color: red; font-weight: bold;",
-  function: "color: darkorchid; font-weight: bold;",
-};
-
-const logTag = (tag) => `%c${tag}:`;
-
-const log = (tag, message, level = "info") => {
-  console.log(logTag(tag) + `%c ${message}`, logStyle[level], "color: black;");
-};
-
-import { blazorState } from '/_content/Blazor-State/js/BlazorState.js'
+﻿import { blazorState } from '/_content/Blazor-State/js/BlazorState.js'
+import { log } from '/_content/Blazor-State/js/Logger.js'
 
 const dispatchIncrementCountAction = () => {
   log("dispatchIncrementCountAction", "Dispatching IncrementCountAction", "function");
