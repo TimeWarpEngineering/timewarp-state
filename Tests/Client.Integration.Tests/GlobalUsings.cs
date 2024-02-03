@@ -23,5 +23,3 @@ global using TestApp.Client.Features.WeatherForecast;
 global using TestApp.Client.Integration.Tests.Clone;
 global using TestApp.Client.Integration.Tests.Infrastructure;
 global using TimeWarp.Fixie;
-global using static TestApp.Client.Features.CloneTest.CloneTestState;
-global using static TestApp.Client.Features.Counter.CounterState;
