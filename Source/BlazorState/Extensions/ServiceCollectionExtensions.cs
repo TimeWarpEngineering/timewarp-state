@@ -29,7 +29,6 @@ public static class ServiceCollectionExtensions
 
     aServiceCollection.AddScoped<BlazorHostingLocation>();
     aServiceCollection.AddScoped<JsonRequestHandler>();
-    aServiceCollection.AddScoped<RenderPhaseService>();
     aServiceCollection.AddScoped<Subscriptions>();
     aServiceCollection.AddScoped<IStore, Store>();
     aServiceCollection.AddSingleton(blazorStateOptions);
@@ -60,7 +59,7 @@ public static class ServiceCollectionExtensions
   {
     var blazorHostingLocation = new BlazorHostingLocation();
 
-    // Server Side Blazor doesn't register HttpClient by default
+    // Test.App.Server Side Blazor doesn't register HttpClient by default
     if (!blazorHostingLocation.IsServerSide) return;
     
     // Double check that nothing is registered.
