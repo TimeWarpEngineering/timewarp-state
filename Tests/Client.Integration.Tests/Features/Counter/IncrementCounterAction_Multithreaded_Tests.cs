@@ -1,5 +1,7 @@
 namespace CounterState_;
 
+using static CounterState;
+
 public class IncrementCounterAction_Multithreaded_Should : BaseTest
 {
   private CounterState CounterState => Store.GetState<CounterState>();

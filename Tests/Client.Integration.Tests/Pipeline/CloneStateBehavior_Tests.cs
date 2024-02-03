@@ -1,5 +1,7 @@
 namespace CloneStateBehavior_;
 
+using static CounterState;
+using static CloneTestState;
 public class Should : BaseTest
 {
   private CloneTestState CloneTestState => Store.GetState<CloneTestState>();

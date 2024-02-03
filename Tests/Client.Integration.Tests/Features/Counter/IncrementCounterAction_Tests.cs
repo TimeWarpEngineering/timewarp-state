@@ -12,7 +12,7 @@ public class IncrementCounterAction_Should
     //Arrange 
     CounterState.Initialize(aCount: 15);
 
-    var incrementCounterAction = new IncrementCounterAction
+    var incrementCounterAction = new CounterState.IncrementCounterAction
     {
       Amount = -2
     };
@@ -29,7 +29,7 @@ public class IncrementCounterAction_Should
     //Arrange
     CounterState.Initialize(aCount: 22);
 
-    var incrementCounterRequest = new IncrementCounterAction
+    var incrementCounterRequest = new CounterState.IncrementCounterAction
     {
       Amount = 5
     };
