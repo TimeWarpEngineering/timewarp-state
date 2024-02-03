@@ -1,5 +1,6 @@
-﻿import { blazorState } from './BlazorState.js';
-import { ReduxDevTools } from './ReduxDevTools.js';
+﻿import {blazorState} from './BlazorState.js';
+import {ReduxDevTools} from './ReduxDevTools.js';
+import {log, LogAction} from './Logger.js'
 import {
   BlazorStateName,
   InitializeJavaScriptInteropName,
@@ -8,12 +9,12 @@ import {
 } from './Constants.js';
 
 function InitializeJavaScriptInterop(JsonRequestHandler) {
-  console.log("timewarp blazor-state InitializeJavaScriptInterop");
+  log("TimeWarp.State","InitializeJavaScriptInterop","info");
   blazorState.jsonRequestHandler = JsonRequestHandler;
 };
 
 function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
-  console.log("timewarp blazor-state ReduxDevToolsFactory");
+  log("TimeWarp.State","ReduxDevToolsFactory","info");
 
   if (!window[ReduxDevToolsName]) {
     const reduxDevTools = new ReduxDevTools(reduxDevToolsOptions);
@@ -25,42 +26,39 @@ function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
 }
 
 // These will be used by dotnet 7
-//export function beforeStart(options, extensions) {
-// console.log("timewarp blazor-state beforeStart");
-// window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
-// window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
-// window[BlazorStateName] = blazorState;
-//}
-
-//export function afterStarted(blazor) {
-// console.log("timewarp blazor-state afterStarted");
-//}
+// export function beforeStart(options, extensions) {
+// log("TimeWarp.State","beforeStart","info", LogAction.Begin);
+// }
+//
+// export function afterStarted(blazor) {
+//   log("TimeWarp.State","afterStarted","info", LogAction.End);
+// }
 
 // ====================
 
 export function beforeWebStart(options, extensions) {
-  console.log("timewarp blazor-state beforeWebStart 2");
+  log("TimeWarp.State Web","beforeWebStart","info", LogAction.Begin);
   window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
   window[BlazorStateName] = blazorState;
 }
 
-//export function afterWebStarted(blazor) {
-//  console.log("timewarp blazor-state afterWebStarted");
-//}
+export function afterWebStarted(blazor) {
+  log("TimeWarp.State Web","afterWebStarted","info", LogAction.End);
+}
 
-//export function beforeWebAssemblyStart(options, extensions) {
-//  console.log("timewarp blazor-state beforeWebAssemblyStart");
-//}
+export function beforeWebAssemblyStart(options, extensions) {
+  log("TimeWarp.State WebAssembly","beforeWebAssemblyStart","info", LogAction.Begin);
+}
 
-//export function afterWebAssemblyStarted(blazor) {
-//  console.log("timewarp blazor-state afterWebAssemblyStarted");
-//}
+export function afterWebAssemblyStarted(blazor) {
+  log("TimeWarp.State WebAssembly","afterWebAssemblyStarted","info", LogAction.End);
+}
 
-//export function beforeServerStart(options, extensions) {
-//  console.log("timewarp blazor-state beforeServerStart");
-//}
+export function beforeServerStart(options, extensions) {
+  log("TimeWarp.State Server","beforeServerStart","info", LogAction.Begin);
+}
 
-//export function afterServerStarted(blazor) {
-//  console.log("timewarp blazor-state afterServerStarted");
-//}
+export function afterServerStarted(blazor) {
+  log("TimeWarp.State Server","afterServerStarted","info", LogAction.End);
+}
