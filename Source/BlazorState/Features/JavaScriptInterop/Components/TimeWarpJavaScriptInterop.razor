@@ -5,6 +5,7 @@
 
   [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
 
+  /// <inheritdoc/>
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     await JsonRequestHandler.InitAsync();
