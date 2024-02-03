@@ -1,8 +1,6 @@
 namespace Test.App.Client.Features.Counter2;
 
-using BlazorState.Features.Persistence.Abstractions;
 using BlazorState.Features.Persistence.Attributes;
-using BlazorState.Services;
 using System.Diagnostics.CodeAnalysis;
 
 public partial class Counter2State
