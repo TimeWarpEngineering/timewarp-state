@@ -1,4 +1,13 @@
-export const logStyle = {
+// Logger.ts
+export interface LogStyles {
+  info: string;
+  success: string;
+  warning: string;
+  error: string;
+  function: string;
+}
+
+export const logStyles: LogStyles = {
   info: "color: deepskyblue; font-weight: bold;",
   success: "color: limegreen; font-weight: bold;",
   warning: "color: darkorange; font-weight: bold;",
@@ -6,8 +15,23 @@ export const logStyle = {
   function: "color: mediumorchid; font-weight: bold;",
 };
 
-export const logTag = (tag) => `%c${tag}`;
+export type LogLevel = keyof LogStyles;
 
-export const log = (tag, message, level = "info") => {
-  console.log(`${logTag(tag)}: %c${message}`, logStyle[level] || "", logStyle[level] ? "color: inherit;" : "");
+export enum LogAction {
+  Begin, 
+  End    
+}
+
+export const log = (tag: string, message: string, level: LogLevel = 'info', action?: LogAction): void => {
+  const style = logStyles[level];
+
+  if (action === LogAction.Begin) {
+    console.group(`%c${tag}`, style);
+  }
+
+  console.log(`%c${tag} ${message}`, style);
+
+  if (action === LogAction.End) {
+    console.groupEnd();
+  }
 };
