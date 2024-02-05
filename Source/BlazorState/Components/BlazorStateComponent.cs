@@ -9,17 +9,6 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
 {
   private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
   
-  // Static member to hold the availability of the _PrivateComponentRenderModeAttribute
-  private static readonly bool HasRenderAttribute;
-
-  static BlazorStateComponent()
-  {
-    // Use reflection to get all custom attributes on BlazorStateComponent as strings
-    HasRenderAttribute = typeof(BlazorStateComponent)
-      .GetCustomAttributes(true)
-      .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute"));
-  }
-  
   private bool HasRendered = false;
 
   public BlazorStateComponent()
@@ -54,7 +43,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// </summary>
   protected bool IsPreRendering => GetCurrentRenderMode() == CurrentRenderMode.PreRendering;
 
-  private CurrentRenderMode CurrentRenderMode => GetCurrentRenderMode();
+  private static readonly ConcurrentDictionary<Type, bool> s_TypeRenderAttributeCache = new();
 
   private CurrentRenderMode GetCurrentRenderMode()
   {
@@ -64,8 +53,12 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     }
     else if (!HasRendered)
     {
-      return HasRenderAttribute 
-        ? CurrentRenderMode.PreRendering 
+      bool hasRenderAttribute = s_TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
+        type.GetCustomAttributes(true)
+          .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
+
+      return hasRenderAttribute
+        ? CurrentRenderMode.PreRendering
         : CurrentRenderMode.Static;
     }
     else
@@ -74,8 +67,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     }
   }
 
-
-  protected string RenderModeString => CurrentRenderMode.ToString();
+  protected string RenderModeString => GetCurrentRenderMode().ToString();
   
   /// <summary>
   ///   Exposes StateHasChanged
