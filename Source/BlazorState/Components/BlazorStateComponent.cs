@@ -8,7 +8,18 @@ namespace BlazorState;
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
   private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-  private bool IsJsInteropAvailable => OperatingSystem.IsBrowser() || HasRendered;
+  
+  // Static member to hold the availability of the _PrivateComponentRenderModeAttribute
+  private static readonly bool HasRenderAttribute;
+
+  static BlazorStateComponent()
+  {
+    // Use reflection to get all custom attributes on BlazorStateComponent as strings
+    HasRenderAttribute = typeof(BlazorStateComponent)
+      .GetCustomAttributes(true)
+      .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute"));
+  }
+  
   private bool HasRendered = false;
 
   public BlazorStateComponent()
@@ -53,13 +64,16 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     }
     else if (!HasRendered)
     {
-      return CurrentRenderMode.PreRendering;
+      return HasRenderAttribute 
+        ? CurrentRenderMode.PreRendering 
+        : CurrentRenderMode.Static;
     }
     else
     {
       return CurrentRenderMode.Server;
     }
   }
+
 
   protected string RenderModeString => CurrentRenderMode.ToString();
   
@@ -98,7 +112,8 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
 
 public enum CurrentRenderMode
 {
-  Wasm,
+  Static,
   PreRendering,
-  Server
+  Server,
+  Wasm,
 }
