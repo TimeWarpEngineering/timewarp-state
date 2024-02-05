@@ -8,7 +8,35 @@ namespace BlazorState;
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
   private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-  
+
+  private static readonly ConcurrentDictionary<Type, IComponentRenderMode> ConfiguredRenderModeCache = new();
+
+  public IComponentRenderMode ConfiguredRenderMode =>
+    ConfiguredRenderModeCache.GetOrAdd(this.GetType(), (type) =>
+    {
+      // Use reflection to get all attributes on the current component type.
+      object[] attributes = type.GetCustomAttributes(true);
+
+      foreach (object attribute in attributes)
+      {
+        // Check if the type name of the attribute contains the expected name.
+        if (attribute.GetType().Name.Contains("PrivateComponentRenderModeAttribute"))
+        {
+          // Try to get the 'Mode' property value of the attribute.
+          PropertyInfo modeProperty = attribute.GetType().GetProperty("Mode");
+          if (modeProperty != null)
+          {
+            // Return the value of the 'Mode' property.
+            return modeProperty.GetValue(attribute) as IComponentRenderMode;
+          }
+        }
+      }
+
+      // If no matching attribute is found, return null or a default value.
+      return null; // Or some default instance, depending on your requirements.
+    });
+
+
   private bool HasRendered = false;
 
   public BlazorStateComponent()
