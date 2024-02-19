@@ -2,21 +2,16 @@ namespace Test.App.Client.Features.Counter;
 
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Test.App.Contracts.Features.ExceptionHandlings;
-using Test.App.Client.Features.Base;
 
 public partial class CounterState
 {
-  internal class ThrowServerSideExceptionHandler : BaseActionHandler<ThrowServerSideExceptionAction>
+  internal class ThrowServerSideExceptionHandler
+  (
+    IStore store,
+    HttpClient HttpClient
+  ) : BaseActionHandler<ThrowServerSideExceptionAction>(store)
   {
-    private readonly HttpClient HttpClient;
-
-    public ThrowServerSideExceptionHandler(IStore store, HttpClient aHttpClient) : base(store)
-    {
-      HttpClient = aHttpClient;
-    }
 
     /// <summary>
     /// Intentionally throw so we can test exception handling.
@@ -32,7 +27,7 @@ public partial class CounterState
     {
       var throwServerSideExceptionRequest = new ThrowServerSideExceptionRequest();
 
-      ThrowServerSideExceptionResponse throwServerSideExceptionResponse =
+      ThrowServerSideExceptionResponse? throwServerSideExceptionResponse =
         await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>
         (
           throwServerSideExceptionRequest.GetRoute()
