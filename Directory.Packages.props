@@ -43,7 +43,8 @@
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
     <PackageVersion Include="System.Text.Json" Version="8.0.1" />
-    <PackageVersion Include="TypeSupport" Version="1.2.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="1.0.2" />
+    <PackageVersion Include="timewarp-heroicons" Version="2.0.19" />
+    <PackageVersion Include="TypeSupport" Version="1.2.0" />
   </ItemGroup>
 </Project>
