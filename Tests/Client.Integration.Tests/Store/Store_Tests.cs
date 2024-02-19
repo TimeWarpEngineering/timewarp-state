@@ -21,7 +21,7 @@ internal class Store_Tests : BaseTest
     ReduxDevToolsStore.LoadStatesFromJson(jsonString);
     // Assert
     ApplicationState applicationState = Store.GetState<ApplicationState>();
-    applicationState.Name.Should().Be("Blazor State Demo");
+    applicationState.Name.Should().Be("TimeWarp State Test App");
     applicationState.Guid.ToString().Should().Be("5a2efcec-6297-4254-a2dc-30e4e567e549");
 
     CounterState counterState = Store.GetState<CounterState>();
