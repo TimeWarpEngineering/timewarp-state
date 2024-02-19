@@ -3,11 +3,11 @@ namespace Test.App.Client.Features.Counter;
 using Microsoft.JSInterop;
 using System.Collections.Generic;
 
-public partial class CounterZeroState : State<CounterZeroState>
+public partial class CounterState : State<CounterState>
 {
-  public override CounterZeroState Hydrate(IDictionary<string, object> aKeyValuePairs)
+  public override CounterState Hydrate(IDictionary<string, object> aKeyValuePairs)
   {
-    var counterState = new CounterZeroState()
+    var counterState = new CounterState()
     {
       Count = Convert.ToInt32(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
       Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),

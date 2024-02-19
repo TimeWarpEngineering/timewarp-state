@@ -3,8 +3,6 @@ namespace Test.App.Client.Features.Counter.Components;
 using Microsoft.AspNetCore.Components;
 using System.Globalization;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Test.App.Client.Features.Base.Components;
 
 public partial class CustomInput<T> : BaseInputComponent<T>
 {
@@ -51,6 +49,6 @@ public partial class CustomInput<T> : BaseInputComponent<T>
   }
 
   protected async Task ButtonClick() =>
-    await Mediator.Send(new CounterZeroState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
+    await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
 
 }

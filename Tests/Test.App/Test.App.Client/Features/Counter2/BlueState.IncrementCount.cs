@@ -1,6 +1,6 @@
-﻿namespace Test.App.Client.Features.Counter;
+﻿namespace Test.App.Client.Features.Counter2;
 
-public partial class CounterOneState
+public partial class BlueState
 {
   public static class IncrementCount
   {
@@ -15,11 +15,11 @@ public partial class CounterOneState
     ) : ActionHandler<Action>(store)
     {
 
-      CounterOneState CounterState => Store.GetState<CounterOneState>();
+      BlueState BlueState => Store.GetState<BlueState>();
 
       public override Task Handle(Action aAction, CancellationToken aCancellationToken)
       {
-        CounterState.Count += aAction.Amount;
+        BlueState.Count += aAction.Amount;
         return Task.CompletedTask;
       }
     }

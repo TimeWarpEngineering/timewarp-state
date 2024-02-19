@@ -1,0 +1,142 @@
+﻿@rendermode InteractiveAuto
+@using Test.App.Client.Pages
+@inherits BaseComponent
+
+<div class="top-row ps-3 navbar navbar-dark">
+  <div class="container-fluid" title=@RenderModeDisplayString>
+    <a class="navbar-brand" href="">Test.App.Server</a>
+    <button class="btn btn-primary" data-qa="GoBack" @onclick=GoBack style="width: 40px; height: 40px;">
+      <TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon class="icon-size"/>
+    </button>
+  </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+  <nav class="flex-column">
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@CounterPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@CounterPage.Title
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@JavaScriptInteropPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> JS Interop Page
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link icon-size" href="throwexception">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>
+        @* <TimeWarp.HeroIcons.Mini.Solid.ExclamationCircleIcon class="icon-size"/> *@
+        Exception Page
+      </NavLink>
+    </div>
+
+    <div class="nav-section-divider">
+      <hr class="nav-divider">
+      <div class="nav-divider-label">Internal Functionality</div>
+      <hr class="nav-divider">
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="ResetStorePage">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Reset Store Page
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="ChangeRoutePage">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Change Route Page
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="goback">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Go Back Page
+      </NavLink>
+    </div>
+
+    <div class="nav-section-divider">
+      <hr class="nav-divider">
+      <div class="nav-divider-label">Middleware</div>
+      <hr class="nav-divider">
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="eventstream">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Event Stream
+      </NavLink>
+    </div>
+
+    <div class="nav-section-divider">
+      <hr class="nav-divider">
+      <div class="nav-divider-label">Persistence</div>
+      <hr class="nav-divider">
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@ChildCountersPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ChildCountersPage.Title
+      </NavLink>
+    </div>
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@PurpleAndBluePage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @PurpleAndBluePage.Title
+      </NavLink>
+    </div>
+
+    <div class="nav-section-divider">
+      <hr class="nav-divider">
+      <div class="nav-divider-label">Render Modes</div>
+      <hr class="nav-divider">
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="weather">
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather (Server)
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="weatherforecasts">
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather (Client)
+      </NavLink>
+    </div>
+
+    <div class="nav-section-divider">
+      <hr class="nav-divider">
+      <div class="nav-divider-label">Misc</div>
+      <hr class="nav-divider">
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href="cloneTest">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Clone Tests
+      </NavLink>
+    </div>
+  </nav>
+
+  <div class="nav-item px-3">
+    <NavLink class="nav-link" href="services">
+      <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Services
+    </NavLink>
+  </div>
+
+</div>
+
+@code
+{
+  private async Task GoBack()
+  {
+    await Mediator.Send(new RouteState.GoBackAction());
+  }
+}

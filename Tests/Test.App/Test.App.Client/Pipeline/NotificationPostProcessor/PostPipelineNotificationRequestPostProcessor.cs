@@ -1,9 +1,5 @@
 namespace Test.App.Client.Pipeline.NotificationPostProcessor;
 
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
-
 internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse> : 
   IRequestPostProcessor<TRequest, TResponse>
   where TRequest : notnull

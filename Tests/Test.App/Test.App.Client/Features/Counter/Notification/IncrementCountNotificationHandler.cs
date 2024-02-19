@@ -1,11 +1,7 @@
 namespace Test.App.Client.Features.Counter;
 
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
-
 internal class IncrementCountNotificationHandler
-  : INotificationHandler<PostPipelineNotification<CounterZeroState.IncrementCounterAction, Unit>>
+  : INotificationHandler<PostPipelineNotification<CounterState.IncrementCounterAction, Unit>>
 {
   private readonly ILogger Logger;
 
@@ -16,7 +12,7 @@ internal class IncrementCountNotificationHandler
 
   public Task Handle
   (
-    PostPipelineNotification<CounterZeroState.IncrementCounterAction, Unit> aPostPipelineNotification,
+    PostPipelineNotification<CounterState.IncrementCounterAction, Unit> aPostPipelineNotification,
     CancellationToken aCancellationToken
   )
   {

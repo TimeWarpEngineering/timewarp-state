@@ -1,10 +1,5 @@
 namespace Test.App.Client.Features.EventStream;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Test.App.Client.Features.Base;
-
-
 internal partial class EventStreamState
 {
   internal class AddEventHandler : BaseActionHandler<AddEventAction>

@@ -1,9 +1,5 @@
 namespace Test.App.Client.Features.EventStream;
 
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
-using Test.App.Contracts.Features.Base;
 using static Test.App.Client.Features.EventStream.EventStreamState;
 
 /// <summary>
@@ -13,7 +9,7 @@ using static Test.App.Client.Features.EventStream.EventStreamState;
 /// <typeparam name="TResponse"></typeparam>
 /// <remarks>To avoid infinite recursion don't add AddEvent to the event stream</remarks>
 public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull
+  where TRequest : notnull, IAction
 {
   private readonly ILogger Logger;
   private readonly ISender Sender;
@@ -21,12 +17,12 @@ public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
   public EventStreamBehavior
   (
-    ILogger<EventStreamBehavior<TRequest, TResponse>> aLogger,
-    ISender aSender
+    ILogger<EventStreamBehavior<TRequest, TResponse>> logger,
+    ISender sender
   )
   {
-    Logger = aLogger;
-    Sender = aSender;
+    Logger = logger;
+    Sender = sender;
     Logger.LogDebug("{classname}: Constructor", GetType().Name);
   }
 
@@ -37,10 +33,8 @@ public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
     CancellationToken aCancellationToken
   )
   {
-    if (aNext is null)
-    {
-      throw new ArgumentNullException(nameof(aNext));
-    }
+    Logger.LogDebug("{classname}: Handle", GetType().Name);
+    ArgumentNullException.ThrowIfNull(aNext);
     await AddEventToStream(aRequest, "Start");
     TResponse response = await aNext();
     await AddEventToStream(aRequest, "Completed");
@@ -49,19 +43,11 @@ public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
 
   private async Task AddEventToStream(TRequest aRequest, string aTag)
   {
-    if (!(aRequest is AddEventAction)) //Skip to avoid recursion
+    if (aRequest is not AddEventAction)//Skip to avoid recursion
     {
       var addEventAction = new AddEventAction();
       string requestTypeName = aRequest.GetType().Name;
-
-      if (aRequest is BaseRequest request)
-      {
-        addEventAction.Message = $"{aTag}:{requestTypeName}:{request.CorrelationId}";
-      }
-      else
-      {
-        addEventAction.Message = $"{aTag}:{requestTypeName}";
-      }
+      addEventAction.Message = $"{aTag}:{requestTypeName}";
       await Sender.Send(addEventAction);
     }
   }

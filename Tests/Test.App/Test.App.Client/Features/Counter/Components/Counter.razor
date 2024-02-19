@@ -1,0 +1,8 @@
+﻿@namespace Test.App.Client.Features.Counter.Components
+@inherits BaseComponent
+
+<div data-qa="@TestId">
+  <p>CounterState.Count: @CounterState.Count</p>
+
+  <button class="btn btn-primary" @onclick="ButtonClick">Increment CounterState.Count</button>
+</div>

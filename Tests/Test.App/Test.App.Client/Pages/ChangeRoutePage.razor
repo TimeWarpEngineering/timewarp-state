@@ -1,0 +1,20 @@
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<br/>
+<div>The button should return you to the home page</div>
+<br/>
+<button class="btn btn-primary" data-qa="ChangeRoute" @onclick=ChangeRouteToHome>Change Route to Home</button>
+
+@code
+{
+  public const string Title = "Change Route Page";
+  public const string Route = "/ChangeRoutePage";
+  
+  private async Task ChangeRouteToHome() =>
+    await Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = "/" });
+}

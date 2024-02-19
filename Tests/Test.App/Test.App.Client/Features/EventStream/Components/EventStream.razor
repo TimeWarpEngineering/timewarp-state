@@ -1,9 +1,9 @@
 ﻿@namespace Test.App.Client.Features.EventStream.Components
 @inherits BaseComponent
 
-<h6>Event Stream</h6>
+<h6>Events</h6>
 <ul>
-  @foreach(var item in Events)
+  @foreach(string item in Events)
   {
    <li>@item</li>
   }

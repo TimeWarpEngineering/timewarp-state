@@ -1,0 +1,17 @@
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+<br/>
+@RenderModeDisplay
+<br/>
+<div>Reset button should clear all state in the Store and return you to the home page</div>
+<br/>
+<ResetButton />
+
+@code
+{
+  public const string Title = "Reset Store Page";
+  public const string Route = "/ResetStorePage";
+}

@@ -1,0 +1,24 @@
+﻿@rendermode InteractiveAuto
+@namespace Test.App.Client.Pages
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+
+@RenderModeDisplay
+<br/>
+<div>Two Counter Components that display and increment the same state</div>
+<br/>
+<h2>Counter Component 1</h2>
+<Counter TestId="Counter1"/>
+<br/>
+
+<h2>Counter Component 2</h2>
+<Counter TestId="Counter2"/>
+
+@code
+{
+  public const string Title = "Counter Page";
+  public const string Route = "/counter";
+}

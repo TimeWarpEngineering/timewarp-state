@@ -2,9 +2,9 @@
 
 <h1>Registered Services</h1>
 <div class="row">
-    @for (var i = 0; i < ServiceCollection.Count; i++)
+    @for (int i = 0; i < ServiceCollection.Count; i++)
     {
-        var service = ServiceCollection[i];
+        ServiceDescriptor service = ServiceCollection[i];
         <div class="col-12 mb-3">
             <div class="card">
                 <div class="card-header">
@@ -24,3 +24,10 @@
     [Inject]
     private IServiceCollection ServiceCollection { get; set; } = null!;
 }
+
+<style>
+    .card-text, .card-title {
+        overflow-wrap: break-word;
+        word-break: break-word;
+    }
+</style>

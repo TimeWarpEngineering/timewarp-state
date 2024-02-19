@@ -1,9 +1,6 @@
 namespace Test.App.Contracts.Features.ExceptionHandlings;
 
-using MediatR;
-using Test.App.Contracts.Features.Base;
-
-public class ThrowServerSideExceptionRequest : BaseRequest, IRequest<ThrowServerSideExceptionResponse>
+public class ThrowServerSideExceptionRequest : IRequest<ThrowServerSideExceptionResponse>
 {
   public const string RouteTemplate = "api/ExceptionHandlings/ThrowServerSideException";
 
@@ -13,5 +10,5 @@ public class ThrowServerSideExceptionRequest : BaseRequest, IRequest<ThrowServer
   /// <example>TODO</example>
   public string SampleProperty { get; set; }
 
-  public string GetRoute() => $"{RouteTemplate}?{nameof(SampleProperty)}={SampleProperty}&{nameof(CorrelationId)}={CorrelationId}";
+  public string GetRoute() => $"{RouteTemplate}?{nameof(SampleProperty)}={SampleProperty}";
 }

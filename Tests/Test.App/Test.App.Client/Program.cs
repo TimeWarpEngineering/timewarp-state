@@ -6,11 +6,14 @@ public class Program
   {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
     ConfigureServices(builder.Services);
-
+    
     await builder.Build().RunAsync();
   }
   public static void ConfigureServices(IServiceCollection serviceCollection)
   {
+    serviceCollection.AddBlazoredSessionStorage();
+    serviceCollection.AddBlazoredLocalStorage();
+
     serviceCollection.AddBlazorState
     (
       options =>
@@ -35,6 +38,7 @@ public class Program
     serviceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(PrePipelineNotificationRequestPreProcessor<>));
     serviceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PostPipelineNotificationRequestPostProcessor<,>));
     serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));
+    serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddSingleton(serviceCollection);
   }
 }

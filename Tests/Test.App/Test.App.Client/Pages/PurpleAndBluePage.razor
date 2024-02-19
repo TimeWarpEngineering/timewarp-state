@@ -1,0 +1,53 @@
+﻿@rendermode InteractiveAuto
+@namespace Test.App.Client.Pages
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+
+@RenderModeDisplay
+<br/>
+<div>
+  The purpose of this page is two show two different persistent states.
+</div>
+<div>
+  Why? 
+  It had to do with proper transitioning through render modes. In previous version I was setting some global state and this would fail now not.
+  Probably not needed anymore. Maybe we transition to show one persistent state and one non persistent.
+</div>
+<br/>
+<h1>Purple</h1>
+
+@if (IsPreRendering)
+{
+  <div role="status">PurpleState.Guid: </div>
+  <div role="status">Purple Count: </div>
+}
+else
+{
+  <div role="status">PurpleState.Guid: @PurpleState.Guid</div>
+  <div role="status">Purple Count: @PurpleState.Count</div>
+  <button class="btn btn-primary" @onclick="IncrementPurpleCount">Increment Purple Count</button>
+}
+<br/>
+<br/>
+
+<h1>Blue</h1>
+@if (IsPreRendering)
+{
+  <div role="status">BlueState.Guid: </div>
+  <div role="status">Blue Count: </div>
+}
+else
+{
+  <div role="status">BlueState.Guid: @BlueState.Guid</div>
+  <div role="status">Blue Count: @BlueState.Count</div>
+  <button class="btn btn-primary" @onclick="IncrementCount2">Increment Blue Count</button>
+}
+
+@code
+{
+  public const string Title = "Purple and Blue";
+  public const string Route = "/twodiffcounters";
+}

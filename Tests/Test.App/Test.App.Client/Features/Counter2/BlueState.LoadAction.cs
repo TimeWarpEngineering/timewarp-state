@@ -3,7 +3,7 @@ namespace Test.App.Client.Features.Counter2;
 using BlazorState.Features.Persistence.Attributes;
 using System.Diagnostics.CodeAnalysis;
 
-public partial class Counter2State
+public partial class BlueState
 {
   public static class Load
   {
@@ -15,20 +15,20 @@ public partial class Counter2State
       IPersistenceService PersistenceService
     ) : ActionHandler<Action>(store)
     {
-      Counter2State Counter2State => Store.GetState<Counter2State>();
+      BlueState BlueState => Store.GetState<BlueState>();
       
       public override async Task Handle(Action aAction, CancellationToken aCancellationToken)
       {
-        Console.WriteLine("Entering Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1} ", Counter2State.Count, Counter2State.Guid);
+        Console.WriteLine("Entering Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1} ", BlueState.Count, BlueState.Guid);
         
         try
         {
-          object? state = await PersistenceService.LoadState(typeof(Counter2State), PersistentStateMethod.LocalStorage);
-          if (state is Counter2State counter2State)
+          object? state = await PersistenceService.LoadState(typeof(BlueState), PersistentStateMethod.LocalStorage);
+          if (state is BlueState counter2State)
           {
             Console.WriteLine("Loaded Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1}", counter2State.Count, counter2State.Guid);
             Store.SetState(counter2State);
-            Console.WriteLine("Loaded Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1}", Counter2State.Count, Counter2State.Guid);
+            Console.WriteLine("Loaded Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1}", BlueState.Count, BlueState.Guid);
           }
         }
         catch (Exception e)

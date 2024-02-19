@@ -1,9 +1,5 @@
 namespace Test.App.Client.Pipeline.NotificationPreProcessor;
 
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
-
 internal class PrePipelineNotificationRequestPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
 {
   private readonly ILogger Logger;

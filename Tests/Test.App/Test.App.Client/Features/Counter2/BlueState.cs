@@ -1,17 +1,17 @@
-﻿namespace Test.App.Client.Features.Counter;
+﻿namespace Test.App.Client.Features.Counter2;
 
 using BlazorState.Features.Persistence.Attributes;
 using System.Text.Json.Serialization;
 
 [PersistentState(PersistentStateMethod.LocalStorage)]
-public partial class CounterOneState : State<CounterOneState>
+public partial class BlueState : State<BlueState>
 {
   public int Count { get; private set; }
 
-  public CounterOneState() { }
+  public BlueState() { }
 
   [JsonConstructor]
-  public CounterOneState(Guid guid, int count)
+  public BlueState(Guid guid, int count)
   {
     Guid = guid;
     Count = count;
@@ -19,7 +19,7 @@ public partial class CounterOneState : State<CounterOneState>
 
   public override void Initialize()
   {
-    Console.WriteLine("CounterState.Initialize");
-    Count = 1;
+    Console.WriteLine("Counter2State.Initialize");
+    Count = 2;
   }
 }

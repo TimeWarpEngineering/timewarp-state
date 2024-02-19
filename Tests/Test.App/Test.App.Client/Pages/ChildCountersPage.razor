@@ -1,13 +1,20 @@
 ﻿@rendermode InteractiveAuto
-@page "/childcounters"
-@using BlazorState
+@attribute [Route(Route)]
+@inherits BaseComponent
 
-@inherits BlazorStateComponent
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
 
-<PageTitle>Counter</PageTitle>
+@RenderModeDisplay
+<br/>
+<div>Testing two of the same component on a page.</div>
+<br/>
+<Counter/>
+<br/>
+<Counter/>
 
-<h1>Child Counter Page</h1>
-<p>Render Mode: @RenderModeString</p>
-
-<CounterOne/>
-<CounterOne/>
+@code
+{
+  public const string Title = "Duplicate Counter Page";
+  public const string Route = "/childcounters";
+}

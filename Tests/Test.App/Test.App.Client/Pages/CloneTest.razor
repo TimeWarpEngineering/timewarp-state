@@ -1,11 +1,17 @@
-﻿@page "/cloneTest"
+﻿@rendermode InteractiveAuto
+@page "/cloneTest"
 @using AnyClone.Tests
+@inherits BaseComponent
+
 <h1>Clone Tests</h1>
 
+@RenderModeDisplay
+<div>Testing ability to clone various Types.</div>
+<div>The button should set TestResult to Passed</div>
+
 <button class="btn btn-primary" @onclick="TestClone">Click me</button>
-<br/>
 <hr/>
-<h6>TestResult:@TestResult</h6>
+<h6 data-qa="TestResult">TestResult:@TestResult</h6>
 
 @code {
   string TestResult = "Not run";

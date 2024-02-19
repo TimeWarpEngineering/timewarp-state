@@ -11,16 +11,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="FluentAssertions" />    
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="timewarp-heroicons" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State.Middleware\TimeWarp.State.Middleware.csproj" />
     <ProjectReference Include="..\Test.App.Contracts\Test.App.Contracts.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\" />
   </ItemGroup>
 
   <ItemGroup>

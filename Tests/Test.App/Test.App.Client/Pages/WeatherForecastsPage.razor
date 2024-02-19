@@ -1,11 +1,17 @@
 ﻿@rendermode InteractiveAuto
 @namespace TestApp.Client.Pages
-@page "/weatherforecasts"
+@attribute [Route(Route)]
+@using Test.App.Client.Features.WeatherForecast
+@using Test.App.Contracts.Features.WeatherForecast
 @inherits BaseComponent
 
+<PageTitle>@Title</PageTitle>
 <h1>Weather forecast</h1>
+@RenderModeDisplay
+<br/>
+<div>This component demonstrates fetching data from the server.</div>
 
-<p>This component demonstrates fetching data from the server. rendermode InteractiveAuto</p>
+// Won't ever be null, so how can I tell when loading?
 
 @if (@WeatherForecastsState.WeatherForecasts == null)
 {
@@ -23,7 +29,7 @@ else
       </tr>
     </thead>
     <tbody>
-      @foreach (var forecast in @WeatherForecastsState.WeatherForecasts)
+      @foreach (WeatherForecastDto forecast in @WeatherForecastsState.WeatherForecasts)
       {
         <tr>
           <td>@forecast.Date.ToShortDateString()</td>
@@ -34,4 +40,13 @@ else
       }
     </tbody>
   </table>
+}
+
+@code
+{
+  public const string Title = "Weather forecast";
+  public const string Route = "/weatherforecasts";
+  
+  protected override async Task OnInitializedAsync() =>
+    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecastsAction());
 }

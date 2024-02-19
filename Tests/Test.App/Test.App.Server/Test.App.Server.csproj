@@ -15,4 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Source\BlazorState\BlazorState.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\" />
+  </ItemGroup>
 </Project>

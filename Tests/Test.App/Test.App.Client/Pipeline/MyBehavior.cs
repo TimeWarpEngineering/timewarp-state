@@ -1,10 +1,7 @@
 namespace Test.App.Client.Pipeline;
 
 using BlazorState;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Sample Pipeline Behavior AKA Middle-ware
