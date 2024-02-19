@@ -1,14 +1,12 @@
 namespace Test.App.Client.Features.CloneTest;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Test.App.Client.Features.Base;
-
 internal partial class CloneTestState
 {
-  internal class CloneTestHandler : BaseActionHandler<CloneTestAction>
+  internal class CloneTestHandler
+  (
+    IStore store
+  ) : BaseActionHandler<CloneTestAction>(store)
   {
-    public CloneTestHandler(IStore aStore) : base(aStore) { }
 
     protected CloneTestState CloneTestState => Store.GetState<CloneTestState>();
 
