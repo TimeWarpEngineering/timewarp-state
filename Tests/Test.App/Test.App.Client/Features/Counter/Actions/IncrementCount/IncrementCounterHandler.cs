@@ -1,12 +1,12 @@
 namespace Test.App.Client.Features.Counter;
 
-using Test.App.Client.Features.Base;
-
-public partial class CounterZeroState
+public partial class CounterState
 {
-  internal class IncrementCounterHandler : BaseActionHandler<IncrementCounterAction>
+  internal class IncrementCounterHandler
+  (
+    IStore store
+  ) : BaseActionHandler<IncrementCounterAction>(store)
   {
-    public IncrementCounterHandler(IStore store) : base(store) { }
 
     public override Task Handle
     (
@@ -14,7 +14,7 @@ public partial class CounterZeroState
       CancellationToken aCancellationToken
     )
     {
-      CounterZeroState.Count += aIncrementCounterAction.Amount;
+      CounterState.Count += aIncrementCounterAction.Amount;
       return Task.CompletedTask;
     }
   }

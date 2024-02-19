@@ -1,15 +1,14 @@
 namespace Test.App.Client.Features.Counter;
 
-using System.Threading;
-using System.Threading.Tasks;
-using Test.App.Client.Features.Base;
 using static Test.App.Client.Features.Counter.WrongNesting;
 
 public partial class CounterState
 {
-  internal class ImproperNestedHandler : BaseActionHandler<ImproperNestedAction>
+  internal class ImproperNestedHandler
+  (
+    IStore store
+  ) : BaseActionHandler<ImproperNestedAction>(store)
   {
-    public ImproperNestedHandler(IStore store) : base(store) { }
 
     public override Task<Unit> Handle
     (
