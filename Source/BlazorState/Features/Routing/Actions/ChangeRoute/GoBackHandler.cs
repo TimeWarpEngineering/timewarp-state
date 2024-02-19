@@ -15,7 +15,8 @@ public partial class RouteState
     {
       if (RouteState.History.Count != 0)
       {
-        NavigationManager.NavigateTo(RouteState.History.Pop());
+        RouteState.GoingBack = true;
+        NavigationManager.NavigateTo(RouteState.HistoryStack.Pop());
       }
       return Task.CompletedTask;
     }
