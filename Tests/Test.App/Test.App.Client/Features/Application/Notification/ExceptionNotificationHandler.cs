@@ -1,28 +1,17 @@
 namespace Test.App.Client.Features.Application;
 
 using BlazorState.Pipeline.State;
-using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
 
 public partial class ApplicationState
 {
   internal class ExceptionNotificationHandler
-    : INotificationHandler<ExceptionNotification>
+  (
+    ILogger<ExceptionNotificationHandler> Logger,
+    IStore Store
+  ) : INotificationHandler<ExceptionNotification>
   {
-    private readonly ILogger Logger;
-    private readonly IStore Store;
+    private readonly ILogger Logger = Logger;
     private ApplicationState ApplicationState => Store.GetState<ApplicationState>();
-
-    public ExceptionNotificationHandler
-    (
-      ILogger<ExceptionNotificationHandler> aLogger,
-      IStore aStore
-    )
-    {
-      Logger = aLogger;
-      Store = aStore;
-    }
 
     public Task Handle
     (

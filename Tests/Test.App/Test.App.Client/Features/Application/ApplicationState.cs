@@ -2,12 +2,10 @@ namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState : State<ApplicationState>
 {
-  public string Name { get; private set; }
-  public string ExceptionMessage { get; private set; }
+  public string Name { get; private set; } = null!;
+  public string? ExceptionMessage { get; private set; }
 
-  public string Version => GetType().Assembly.GetName().Version.ToString();
+  public string? Version => GetType().Assembly.GetName().Version?.ToString();
 
-  public ApplicationState() { }
-
-  public override void Initialize() => Name = "Blazor State Demo";
+  public override void Initialize() => Name = "TimeWarp State Test App";
 }
