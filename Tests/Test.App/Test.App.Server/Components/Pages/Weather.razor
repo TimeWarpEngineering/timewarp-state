@@ -1,12 +1,14 @@
-﻿@page "/weather"
+﻿@attribute [Route(Route)]
 @attribute [StreamRendering]
+@inherits BaseComponent
 
-<PageTitle>Weather</PageTitle>
+<PageTitle>@Title</PageTitle>
 
-<h1>Weather</h1>
-
-<p>This component demonstrates showing data. StreamRendering</p>
-
+<h1>@Title</h1>
+@RenderModeDisplay
+<br/>
+<div>This component demonstrates showing StreamRendering data. </div>
+<br/>
 @if (forecasts == null)
 {
     <p><em>Loading...</em></p>
@@ -37,6 +39,8 @@ else
 }
 
 @code {
+    public const string Title = "Weather";
+    public const string Route = "/weather";
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()
