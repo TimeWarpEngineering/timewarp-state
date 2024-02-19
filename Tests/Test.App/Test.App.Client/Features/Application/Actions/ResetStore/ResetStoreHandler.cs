@@ -1,19 +1,14 @@
 namespace Test.App.Client.Features.Application;
 
-using System.Threading;
-using System.Threading.Tasks;
 using static BlazorState.Features.Routing.RouteState;
 using static Test.App.Client.Features.Application.ApplicationState;
 
-internal class ResetStoreHandler : IRequestHandler<ResetStoreAction>
+internal class ResetStoreHandler
+(
+  IStore Store,
+  ISender Sender
+) : IRequestHandler<ResetStoreAction>
 {
-  private readonly ISender Sender;
-  private readonly IStore Store;
-  public ResetStoreHandler(IStore aStore, ISender aSender)
-  {
-    Sender = aSender;
-    Store = aStore;
-  }
 
 
   public async Task Handle(ResetStoreAction aResetStoreAction, CancellationToken aCancellationToken)
