@@ -19,6 +19,7 @@ public class BlazorStateDevToolsComponent : BlazorStateComponent,
     Subscriptions.Add<IDevToolsComponent>(this);
   }
   
+  protected string RenderModeDisplayString => $"CurrentRenderMode: {CurrentRenderMode}\nConfiguredRenderMode: {ConfiguredRenderMode}";
   protected BlazorStateDevToolsComponent()
   {
     RenderModeDisplay = builder =>
