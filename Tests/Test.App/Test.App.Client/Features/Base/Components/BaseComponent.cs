@@ -1,12 +1,5 @@
 namespace Test.App.Client.Features.Base.Components;
 
-using BlazorState.Pipeline.ReduxDevTools;
-using System.Threading.Tasks;
-using Test.App.Client.Features.Application;
-using Test.App.Client.Features.Counter;
-using Test.App.Client.Features.EventStream;
-using Test.App.Client.Features.WeatherForecast;
-
 /// <summary>
 /// Makes access to the State a little easier and by inheriting from
 /// BlazorStateDevToolsComponent it allows for ReduxDevTools operation.
@@ -18,8 +11,9 @@ using Test.App.Client.Features.WeatherForecast;
 /// </remarks>
 public class BaseComponent : BlazorStateDevToolsComponent
 {
+  internal RouteState RouteState => GetState<RouteState>();
   public ApplicationState ApplicationState => GetState<ApplicationState>();
-  internal CounterZeroState CounterZeroState => GetState<CounterZeroState>();
+  internal CounterState CounterState => GetState<CounterState>();
   internal EventStreamState EventStreamState => GetState<EventStreamState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
   protected Task Send(IRequest aRequest) => Mediator.Send(aRequest);
