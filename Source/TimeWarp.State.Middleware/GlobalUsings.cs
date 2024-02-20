@@ -1,6 +1,7 @@
 ﻿global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
 global using BlazorState;
+global using BlazorState.Features.Persistence;
 global using BlazorState.Features.Persistence.Abstractions;
 global using BlazorState.Features.Persistence.Attributes;
 global using MediatR;
