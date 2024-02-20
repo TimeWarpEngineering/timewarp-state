@@ -32,7 +32,7 @@ global using Test.App.Client.Features.Application;
 global using Test.App.Client.Features.Base;
 global using Test.App.Client.Features.Base.Components;
 global using Test.App.Client.Features.Counter;
-global using Test.App.Client.Features.Counter2;
+global using Test.App.Client.Features.Blue;
 global using Test.App.Client.Features.EventStream;
 global using Test.App.Client.Features.Purple;
 global using Test.App.Client.Features.WeatherForecast;
