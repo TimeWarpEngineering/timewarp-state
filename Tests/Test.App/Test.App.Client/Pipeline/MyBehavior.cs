@@ -1,8 +1,5 @@
 namespace Test.App.Client.Pipeline;
 
-using BlazorState;
-using System;
-
 /// <summary>
 /// Sample Pipeline Behavior AKA Middle-ware
 /// </summary>
