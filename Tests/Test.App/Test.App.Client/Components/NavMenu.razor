@@ -34,10 +34,8 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link icon-size" href="throwexception">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>
-        @* <TimeWarp.HeroIcons.Mini.Solid.ExclamationCircleIcon class="icon-size"/> *@
-        Exception Page
+      <NavLink class="nav-link icon-size" href=@ThrowExceptionPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@ThrowExceptionPage.Title
       </NavLink>
     </div>
 
@@ -48,20 +46,20 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="ResetStorePage">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Reset Store Page
+      <NavLink class="nav-link" href=@ResetStorePage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@ResetStorePage.Title
       </NavLink>
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="ChangeRoutePage">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Change Route Page
+      <NavLink class="nav-link" href=@ChangeRoutePage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@ChangeRoutePage.Title
       </NavLink>
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="goback">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Go Back Page
+      <NavLink class="nav-link" href=@GoBackPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @GoBackPage.Title
       </NavLink>
     </div>
 
@@ -72,8 +70,8 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="eventstream">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Event Stream
+      <NavLink class="nav-link" href=@EventStreamPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @EventStreamPage.Title
       </NavLink>
     </div>
 
@@ -107,8 +105,8 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="weatherforecasts">
-        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather (Client)
+      <NavLink class="nav-link" href=@WeatherForecastsPage.Route>
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @WeatherForecastsPage.Title
       </NavLink>
     </div>
 
@@ -119,15 +117,15 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="cloneTest">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Clone Tests
+      <NavLink class="nav-link" href=@CloneTestPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@CloneTestPage.Title
       </NavLink>
     </div>
   </nav>
 
   <div class="nav-item px-3">
-    <NavLink class="nav-link" href="services">
-      <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Services
+    <NavLink class="nav-link" href=@ServicesPage.Route>
+      <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ServicesPage.Title
     </NavLink>
   </div>
 
