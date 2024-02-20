@@ -2,23 +2,23 @@ namespace Microsoft.JSInterop;
 
 public static class CamelCase
 {
-  public static string MemberNameToCamelCase(string aMembername)
+  public static string MemberNameToCamelCase(string memberName)
   {
-    if (string.IsNullOrEmpty(aMembername))
+    if (string.IsNullOrEmpty(memberName))
     {
       throw new ArgumentException(
-          $"The value '{aMembername ?? "null"}' is not a valid member name.",
-          nameof(aMembername));
+          $"The value '{memberName ?? "null"}' is not a valid member name.",
+          nameof(memberName));
     }
 
     // If we don't need to modify the value, bail out without creating a char array
-    if (!char.IsUpper(aMembername[0]))
+    if (!char.IsUpper(memberName[0]))
     {
-      return aMembername;
+      return memberName;
     }
 
     // We have to modify at least one character
-    char[] chars = aMembername.ToCharArray();
+    char[] chars = memberName.ToCharArray();
 
     int length = chars.Length;
     if (length < 2 || !char.IsUpper(chars[1]))
