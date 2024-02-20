@@ -8,21 +8,19 @@ using System.Text;
 [Generator]
 public class PersistenceStateSourceGenerator : ISourceGenerator
 {
-  public void Initialize(GeneratorInitializationContext context)
-  {
+  public void Initialize(GeneratorInitializationContext context) =>
     // Register a syntax receiver that will be called for each syntax tree in the compilation
     context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-  }
 
   public void Execute(GeneratorExecutionContext context)
   {
-    
+
     context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("SG001", "Debug", "{0}", "Debug", DiagnosticSeverity.Warning, true), Location.None, "****** Your debug message here ******"));
 
     // System.Diagnostics.Debugger.Launch();
 
     // Retrieve the populated receiver from the context
-    if (!(context.SyntaxReceiver is SyntaxReceiver receiver)) return;
+    if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
 
     foreach (ClassDeclarationSyntax classDeclaration in receiver.CandidateClasses)
     {
@@ -30,37 +28,97 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
       string className = classDeclaration.Identifier.Text;
       string generatedCode = GenerateCode(namespaceName, className);
 
-      // string uniqueHintName = $"{className}_Persistence.g.cs";
-      // string uniqueHintName = $"{namespaceName}.{className}_Persistence.g.cs";
-      string uniqueHintName = $"{className}_Persistence_{Guid.NewGuid()}.g.cs";
+      //string uniqueHintName = $"{className}_Persistence.g.cs";
+      string uniqueHintName = $"{namespaceName}.{className}_Persistence.g.cs";
+      ReportUniqueHintNameDiagnostic(context, uniqueHintName);
+      // string uniqueHintName = $"{className}_Persistence_{Guid.NewGuid()}.g.cs";
 
       context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
-
     }
   }
-
-  private string GenerateCode(string namespaceName, string className)
+  private static void ReportUniqueHintNameDiagnostic(GeneratorExecutionContext context, string uniqueHintName)
   {
-    return $@"
-namespace {namespaceName};
+    var diagnostic = Diagnostic.Create(
+    new DiagnosticDescriptor(
+    id: "SG001",
+    title: "Unique Hint Name",
+    messageFormat: "Unique hint name for generated file: {0}",
+    category: "SourceGeneratorDebug",
+    defaultSeverity: DiagnosticSeverity.Warning,
+    isEnabledByDefault: true
+    ),
+    location: Location.None,
+    uniqueHintName
+    );
 
-public partial class {className}
-{{
-    // Generated persistence handling code
-}}
-";
+    context.ReportDiagnostic(diagnostic);
   }
+  
+  private static string GenerateCode(string namespaceName, string className) =>
+    $$"""
+    #pragma warning disable CS1591
+    namespace {{namespaceName}};
+
+    public partial class {{className}}
+    {
+        // Generated persistence handling code
+    }
+
+    """;
 
   class SyntaxReceiver : ISyntaxReceiver
   {
-    public List<ClassDeclarationSyntax> CandidateClasses { get; } = [];
+    public HashSet<ClassDeclarationSyntax> CandidateClasses { get; } = new(new ClassDeclarationSyntaxComparer());
 
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
       // Look for class declarations with the [PersistentState] attribute
-      if (syntaxNode is ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax)
+      if (syntaxNode is not ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax) return;
+      bool hasPersistentStateAttribute = classDeclarationSyntax.AttributeLists
+        .SelectMany(attrList => attrList.Attributes)
+        .Any(attr => attr.Name.ToString() == "PersistentState" || attr.Name.ToString().EndsWith(".PersistentState"));
+
+      if (hasPersistentStateAttribute)
       {
         CandidateClasses.Add(classDeclarationSyntax);
+      }
+    }
+
+    class ClassDeclarationSyntaxComparer : IEqualityComparer<ClassDeclarationSyntax>
+    {
+      public bool Equals(ClassDeclarationSyntax? x, ClassDeclarationSyntax? y)
+      {
+        if (ReferenceEquals(x, y)) return true;
+        if (ReferenceEquals(x, null) || ReferenceEquals(y, null)) return false;
+
+        // Consider classes equal if they have the same name and namespace
+        string xNamespace = GetNamespace(x);
+        string yNamespace = GetNamespace(y);
+        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace;
+      }
+
+      public int GetHashCode(ClassDeclarationSyntax obj)
+      {
+        if (ReferenceEquals(obj, null)) return 0;
+
+        // Use the hash code of the class name and namespace
+        int hashClassName = obj.Identifier.ValueText.GetHashCode();
+        int hashNamespace = GetNamespace(obj).GetHashCode();
+
+        // Calculate a combined hash code
+        return hashClassName ^ hashNamespace;
+      }
+
+      private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
+      {
+        // Walk the syntax tree to find the namespace declaration
+        SyntaxNode? namespaceDeclaration = classDeclaration.Parent;
+        while (namespaceDeclaration != null && !(namespaceDeclaration is NamespaceDeclarationSyntax))
+        {
+          namespaceDeclaration = namespaceDeclaration.Parent;
+        }
+
+        return namespaceDeclaration is NamespaceDeclarationSyntax namespaceSyntax ? namespaceSyntax.Name.ToString() : string.Empty;
       }
     }
   }
