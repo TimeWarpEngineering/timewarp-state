@@ -1,24 +1,24 @@
 namespace Test.App.Client.Features.Application;
 
-using Microsoft.JSInterop;
-using System.Collections.Generic;
-
-public partial class ApplicationState : State<ApplicationState>
+public partial class ApplicationState
 {
-  public override ApplicationState Hydrate(IDictionary<string, object> aKeyValuePairs)
+  public override ApplicationState Hydrate(IDictionary<string, object> keyValuePairs) => new()
   {
+    Guid =
+      new Guid
+      (
+        keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ??
+        throw new InvalidOperationException("Guid is required.")
+      ),
+    Name =
+      keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Name))].ToString() ??
+      throw new InvalidOperationException("Name is required.")
+  };
 
-    return new ApplicationState
-    {
-      Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
-      Name = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Name))].ToString(),
-    };
-  }
-
-  internal void Initialize(string aName, string aExceptionMessage)
+  internal void Initialize(string name, string exceptionMessage)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    Name = aName;
-    ExceptionMessage = aExceptionMessage;
+    Name = name;
+    ExceptionMessage = exceptionMessage;
   }
 }
