@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.EventStream;
 
-using static Test.App.Client.Features.EventStream.EventStreamState;
+using static EventStreamState;
 
 /// <summary>
 /// Every event that comes through the pipeline adds an object to the EventStreamState
@@ -8,23 +8,14 @@ using static Test.App.Client.Features.EventStream.EventStreamState;
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 /// <remarks>To avoid infinite recursion don't add AddEvent to the event stream</remarks>
-public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull, IAction
+public class EventStreamBehavior<TRequest, TResponse>
+(
+  ILogger<EventStreamBehavior<TRequest, TResponse>> logger,
+  ISender Sender
+) : IPipelineBehavior<TRequest, TResponse>
+  where TRequest : IAction
 {
-  private readonly ILogger Logger;
-  private readonly ISender Sender;
-  public Guid Guid { get; } = Guid.NewGuid();
-
-  public EventStreamBehavior
-  (
-    ILogger<EventStreamBehavior<TRequest, TResponse>> logger,
-    ISender sender
-  )
-  {
-    Logger = logger;
-    Sender = sender;
-    Logger.LogDebug("{classname}: Constructor", GetType().Name);
-  }
+  private readonly ILogger Logger = logger;
 
   public async Task<TResponse> Handle
   (
@@ -45,9 +36,11 @@ public class EventStreamBehavior<TRequest, TResponse> : IPipelineBehavior<TReque
   {
     if (aRequest is not AddEventAction)//Skip to avoid recursion
     {
-      var addEventAction = new AddEventAction();
       string requestTypeName = aRequest.GetType().Name;
-      addEventAction.Message = $"{aTag}:{requestTypeName}";
+      var addEventAction = new AddEventAction
+      {
+        Message = $"{aTag}:{requestTypeName}"
+      };
       await Sender.Send(addEventAction);
     }
   }
