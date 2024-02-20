@@ -9,7 +9,7 @@ namespace BlazorState.Pipeline.ReduxDevTools;
 /// They won't be forced to use this one.
 /// C# 8 with default implementations of interfaces will be quite tempting to solve this.
 /// </remarks>
-public class BlazorStateDevToolsInputComponent<T> : BlazorStateInputComponent<T>,
+public abstract class BlazorStateDevToolsInputComponent<T> : BlazorStateInputComponent<T>,
   IDevToolsComponent
 {
   protected override void OnInitialized() => Subscriptions.Add<IDevToolsComponent>(this);
