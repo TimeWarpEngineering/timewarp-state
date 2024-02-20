@@ -4,9 +4,6 @@
 #pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
 namespace AnyClone.Tests.TestObjects;
 
-using System.Collections.Generic;
-using System.Linq;
-
 public class DictionaryComparer<TKey, TValue> : IEqualityComparer<IDictionary<TKey, TValue>>
 {
   private readonly IEqualityComparer<TValue> ValueComparer;

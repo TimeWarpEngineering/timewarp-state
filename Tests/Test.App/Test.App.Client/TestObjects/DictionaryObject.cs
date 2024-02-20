@@ -3,9 +3,6 @@
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
 namespace AnyClone.Tests.TestObjects;
 
-using System;
-using System.Collections.Generic;
-
 public class DictionaryObject : IEquatable<DictionaryObject>
 {
   public IDictionary<int, BasicObject> Collection { get; set; } = new Dictionary<int, BasicObject>();

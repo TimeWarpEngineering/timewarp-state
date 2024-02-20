@@ -6,10 +6,6 @@
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 namespace AnyClone.Tests.TestObjects;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 public class CollectionObject : IEquatable<CollectionObject>
 {
   public ICollection<int> IntCollection { get; set; }
