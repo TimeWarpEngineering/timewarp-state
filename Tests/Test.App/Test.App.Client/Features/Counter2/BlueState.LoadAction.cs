@@ -1,8 +1,5 @@
 namespace Test.App.Client.Features.Counter2;
 
-using BlazorState.Features.Persistence.Attributes;
-using System.Diagnostics.CodeAnalysis;
-
 public partial class BlueState
 {
   public static class Load

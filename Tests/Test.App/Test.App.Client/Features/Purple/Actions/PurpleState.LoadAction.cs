@@ -1,8 +1,6 @@
 namespace Test.App.Client.Features.Purple;
 
-using BlazorState.Features.Persistence.Attributes;
 using BlazorState.Services;
-using System.Diagnostics.CodeAnalysis;
 
 public partial class PurpleState
 {

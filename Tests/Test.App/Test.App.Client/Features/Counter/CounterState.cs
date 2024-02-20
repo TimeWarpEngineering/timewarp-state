@@ -1,7 +1,5 @@
 namespace Test.App.Client.Features.Counter;
 
-using System.Text.Json.Serialization;
-
 public partial class CounterState : State<CounterState>
 {
 

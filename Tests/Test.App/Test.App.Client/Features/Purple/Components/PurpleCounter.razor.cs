@@ -1,8 +1,5 @@
 namespace Test.App.Client.Features.Purple.Components;
 
-using Microsoft.AspNetCore.Components;
-using Purple;
-
 public partial class PurpleCounter
 {
   [Inject] private IStore Store { get; set; } = null!;

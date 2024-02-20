@@ -1,8 +1,5 @@
 ﻿namespace Test.App.Client.Features.Purple;
 
-using BlazorState.Features.Persistence.Attributes;
-using System.Text.Json.Serialization;
-
 [PersistentState(PersistentStateMethod.LocalStorage)]
 public partial class PurpleState : State<PurpleState>
 {
