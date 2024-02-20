@@ -1,10 +1,5 @@
 namespace AnyClone.Tests.Extensions;
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
 public static class CollectionExtensions
 {
   /// <summary>
@@ -27,13 +22,20 @@ public static class CollectionExtensions
         linearList.Add((int)enumerator.Current);
         otherLinearList.Add((int)secondEnumerator.Current);
       }
+
       enumerator.Reset();
       secondEnumerator.Reset();
+
       return linearList.SequenceEqual(otherLinearList);
     }
     catch (Exception)
     {
       return false;
+    }
+    finally
+    {
+      (enumerator as IDisposable)?.Dispose();
+      (secondEnumerator as IDisposable)?.Dispose();
     }
   }
 }
