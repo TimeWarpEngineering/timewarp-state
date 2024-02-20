@@ -1,11 +1,6 @@
 namespace AnyClone.Tests;
 
-using AnyClone.Tests.TestObjects;
-using FluentAssertions;
-using System.Collections.Generic;
-using System.Linq;
-
-public class CloneProviderTests
+public static class CloneProviderTests
 {
   public static void Should_Clone_BasicObject()
   {
@@ -42,20 +37,21 @@ public class CloneProviderTests
   {
     var original = new ArrayObject
     {
-      ByteArray = new byte[] { 0x01, 0x02, 0x03, 0x04 },
-      IntArray = new int[] { 1, 2, 3, 4 },
-      DoubleArray = new double[] { 1.0, 2.0, 3.0, 4.0, 5.0 },
+      ByteArray = [0x01, 0x02, 0x03, 0x04],
+      IntArray = [1, 2, 3, 4],
+      DoubleArray = [1.0, 2.0, 3.0, 4.0, 5.0],
     };
     ArrayObject cloned = original.Clone();
 
     cloned.Should().Be(original);
   }
 
+  // ReSharper disable once UnusedMember.Global
   public static void Should_Clone_2dMultidimensionalArrayObject()
   {
     var original = new MultiDimensional2dArrayObject
     {
-      Int2DArray = new int[4, 2] {
+      Int2DArray = new[,] {
                 { 1, 2 },
                 { 3, 4 },
                 { 5, 6 },
@@ -67,14 +63,13 @@ public class CloneProviderTests
     cloned.Should().Be(original);
   }
 
+  // ReSharper disable once UnusedMember.Global
   public static void Should_Clone_3dMultidimensionalArrayObject()
   {
     var original = new MultiDimensional3dArrayObject
     {
-      Int3DArray = new int[2, 3, 3] {
-                // row 1
+      Int3DArray = new[,,] {
                 { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } },
-                // row 2
                 { { 10, 11, 12 }, { 13, 14, 15 }, { 16, 17, 18 } }
             }
     };
@@ -195,6 +190,7 @@ public class CloneProviderTests
     cloned.Should().Be(original);
   }
 
+  // ReSharper disable once UnusedMember.Global
   public static void ModifiedClone_InterfaceObject_ShouldNotBeEqual()
   {
     var original = new InterfaceObject()
