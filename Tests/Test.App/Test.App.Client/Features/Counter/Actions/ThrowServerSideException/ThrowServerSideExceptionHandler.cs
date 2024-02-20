@@ -1,9 +1,5 @@
 namespace Test.App.Client.Features.Counter;
 
-using System.Net.Http;
-using System.Net.Http.Json;
-using Test.App.Contracts.Features.ExceptionHandlings;
-
 public partial class CounterState
 {
   internal class ThrowServerSideExceptionHandler
@@ -27,12 +23,11 @@ public partial class CounterState
     {
       var throwServerSideExceptionRequest = new ThrowServerSideExceptionRequest();
 
-      ThrowServerSideExceptionResponse? throwServerSideExceptionResponse =
-        await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>
-        (
-          throwServerSideExceptionRequest.GetRoute()
-          , cancellationToken: aCancellationToken
-        );
+      await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>
+      (
+      throwServerSideExceptionRequest.GetRoute()
+      , cancellationToken: aCancellationToken
+      );
     }
   }
 }
