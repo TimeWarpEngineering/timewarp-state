@@ -1,39 +1,40 @@
 namespace Test.App.Client.Features.Counter.Components;
 
-using Microsoft.AspNetCore.Components;
-using System.Globalization;
-using System.Linq.Expressions;
-
 public partial class CustomInput<T> : BaseInputComponent<T>
 {
-  [Parameter] public string Label { get; set; }
-  [Parameter] public Expression<Func<T>> ValidationFor { get; set; }
+  [Parameter] [EditorRequired] public required string Label { get; set; }
+  [Parameter] [EditorRequired] public required Expression<Func<T>> ValidationFor { get; set; }
 
-  protected override bool TryParseValueFromString(string aValue, out T aResult, out string aValidationErrorMessage)
+  protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out T result, [NotNullWhen(false)] out string? validationErrorMessage)
   {
     bool canParse;
-    aValidationErrorMessage = null;
-    aResult = default;
+    validationErrorMessage = null;
+    result = default;
 
-    if (typeof(T) == typeof(string))
+    if (value is null)
     {
-      aResult = (T)(object)aValue;
+      validationErrorMessage = $"The {FieldIdentifier.FieldName} field is required.";
+      canParse = false;
+    }
+    else if (typeof(T) == typeof(string))
+    {
+      result = (T)(object)value;
       canParse = true;
     }
     else if (typeof(T) == typeof(int))
     {
-      canParse = int.TryParse(aValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedValue);
-      if (canParse) aResult = (T)(object)parsedValue;
+      canParse = int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedValue);
+      if (canParse) result = (T)(object)parsedValue;
     }
     else if (typeof(T) == typeof(Guid))
     {
-      canParse = Guid.TryParse(aValue, out Guid parsedValue);
-      if (canParse) aResult = (T)(object)parsedValue; ;
+      canParse = Guid.TryParse(value, out Guid parsedValue);
+      if (canParse) result = (T)(object)parsedValue;
     }
     else if (typeof(T).IsEnum)
     {
-      canParse = Enum.TryParse(typeof(T), aValue, out object parsedValue);
-      if (canParse) aResult = (T)(object)parsedValue;
+      canParse = Enum.TryParse(typeof(T), value, out object? parsedValue);
+      result = canParse ? (T)parsedValue! : default;
     }
     else
     {
@@ -42,13 +43,13 @@ public partial class CustomInput<T> : BaseInputComponent<T>
 
     if (!canParse)
     {
-      aValidationErrorMessage = $"The {FieldIdentifier.FieldName} field is not valid.";
+      validationErrorMessage = $"The {FieldIdentifier.FieldName} field is not valid.";
     }
 
     return canParse;
   }
 
-  protected async Task ButtonClick() =>
-    await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString) });
+  private async Task ButtonClick() =>
+    await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString ?? "1") });
 
 }
