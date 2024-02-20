@@ -19,15 +19,11 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
     foreach (ClassDeclarationSyntax classDeclaration in receiver.CandidateClasses)
     {
-      string namespaceName = (classDeclaration.Parent as NamespaceDeclarationSyntax)?.Name.ToString() ?? "DefaultNamespace";
+      string namespaceName = GetNamespace(classDeclaration);
       string className = classDeclaration.Identifier.Text;
       string generatedCode = GenerateCode(namespaceName, className);
-
-      //string uniqueHintName = $"{className}_Persistence.g.cs";
       string uniqueHintName = $"{namespaceName}.{className}_Persistence.g.cs";
       ReportUniqueHintNameDiagnostic(context, uniqueHintName);
-      // string uniqueHintName = $"{className}_Persistence_{Guid.NewGuid()}.g.cs";
-
       context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
     }
   }
@@ -60,6 +56,27 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
     }
 
     """;
+
+  private static string GetNamespace(SyntaxNode? node)
+  {
+    // Traverse up to find the NamespaceDeclarationSyntax, if any
+    while 
+    (
+      node != null && 
+      node is not NamespaceDeclarationSyntax &&
+      node is not FileScopedNamespaceDeclarationSyntax
+    )
+    {
+      node = node.Parent;
+    }
+
+    return node switch
+    {
+      NamespaceDeclarationSyntax namespaceDeclaration => namespaceDeclaration.Name.ToString(),
+      FileScopedNamespaceDeclarationSyntax fileScopedNamespace => fileScopedNamespace.Name.ToString(),
+      _ => "Global"
+    };
+  }
 
   class SyntaxReceiver : ISyntaxReceiver
   {
