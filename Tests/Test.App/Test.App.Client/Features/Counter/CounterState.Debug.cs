@@ -1,16 +1,18 @@
 namespace Test.App.Client.Features.Counter;
 
-using Microsoft.JSInterop;
-using System.Collections.Generic;
-
-public partial class CounterState : State<CounterState>
+public partial class CounterState
 {
-  public override CounterState Hydrate(IDictionary<string, object> aKeyValuePairs)
+  public override CounterState Hydrate(IDictionary<string, object> keyValuePairs)
   {
     var counterState = new CounterState()
     {
-      Count = Convert.ToInt32(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
-      Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
+      Count = Convert.ToInt32(keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
+      Guid = 
+        new Guid
+        (
+          keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ?? 
+          throw new InvalidOperationException()
+        ),
     };
 
     return counterState;
@@ -19,10 +21,10 @@ public partial class CounterState : State<CounterState>
   /// <summary>
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
-  /// <param name="aCount"></param>
-  public void Initialize(int aCount)
+  /// <param name="count"></param>
+  public void Initialize(int count)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    Count = aCount;
+    Count = count;
   }
 }
