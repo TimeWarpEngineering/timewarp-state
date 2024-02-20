@@ -4,6 +4,6 @@ public partial class CounterState
 {
   public class ThrowExceptionAction : IAction
   {
-    public string Message { get; set; }
+    public required string Message { get; init; }
   }
 }
