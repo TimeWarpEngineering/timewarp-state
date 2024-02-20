@@ -1,9 +1,5 @@
 namespace Test.App.Client.Features.WeatherForecast;
 
-using System.Net.Http;
-using System.Net.Http.Json;
-using Test.App.Contracts.Features.WeatherForecast;
-
 internal partial class WeatherForecastsState
 {
   public class FetchWeatherForecastsHandler
@@ -28,11 +24,9 @@ internal partial class WeatherForecastsState
           cancellationToken: aCancellationToken
         );
       
-      if (getWeatherForecastsResponse is null)
-      {
-        throw new System.ArgumentNullException(null, nameof(getWeatherForecastsResponse));
-      }
-      WeatherForecastsState._WeatherForecasts = getWeatherForecastsResponse.WeatherForecasts;
+      ArgumentNullException.ThrowIfNull(getWeatherForecastsResponse);
+      
+      WeatherForecastsState.WeatherForecastList = getWeatherForecastsResponse.WeatherForecasts;
     }
   }
 }
