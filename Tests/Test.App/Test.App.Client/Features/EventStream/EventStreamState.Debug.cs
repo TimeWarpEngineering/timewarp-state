@@ -1,7 +1,5 @@
 namespace Test.App.Client.Features.EventStream;
 
-using System.Collections.Generic;
-
 internal partial class EventStreamState : State<EventStreamState>
 {
 
@@ -12,6 +10,6 @@ internal partial class EventStreamState : State<EventStreamState>
   public void Initialize(List<string> aEvents)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    _Events = aEvents;
+    EventList = aEvents;
   }
 }
