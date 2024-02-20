@@ -1,6 +1,10 @@
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable BaseObjectGetHashCodeCallInGetHashCode
+#pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
 namespace AnyClone.Tests.TestObjects;
 
-using AnyClone.Tests.Extensions;
+using Extensions;
 
 public class MultiDimensional3dArrayObject
 {

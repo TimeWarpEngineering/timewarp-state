@@ -1,3 +1,4 @@
+// ReSharper disable ConvertToPrimaryConstructor
 namespace AnyClone.Tests.TestObjects;
 
 using System.Collections.ObjectModel;

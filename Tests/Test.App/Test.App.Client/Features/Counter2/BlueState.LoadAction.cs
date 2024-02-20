@@ -33,7 +33,7 @@ public partial class BlueState
         }
         catch (Exception e)
         {
-          // if this is a JavaScript not avaailable exception then we are prerendering and just ignore it
+          // if this is a JavaScript not available exception then we are prerendering and just ignore it
           Console.WriteLine("**********************************");
           Console.WriteLine(e);
           Console.WriteLine("**********************************");
