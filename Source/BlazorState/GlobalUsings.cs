@@ -25,6 +25,7 @@ global using System.Collections.Concurrent;
 global using static Microsoft.AspNetCore.Components.Web.RenderMode;
 global using System.Collections.Generic;
 global using System.Diagnostics;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Linq;
 global using System.Reflection;
 global using System.Runtime.Serialization;
