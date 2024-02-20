@@ -7,7 +7,7 @@ namespace BlazorState;
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
-  private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
+  private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
 
   private static readonly ConcurrentDictionary<Type, string> ConfiguredRenderModeCache = new();
 
@@ -38,12 +38,12 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
       return "None"; // Adjust as needed for your default case.
     });
 
-  private bool HasRendered = false;
+  private bool HasRendered;
 
   public BlazorStateComponent()
   {
     string name = GetType().Name;
-    int count = s_InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
+    int count = InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
 
     Id = $"{name}-{count}";
   }
@@ -72,7 +72,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// </summary>
   protected bool IsPreRendering => GetCurrentRenderMode() == BlazorState.CurrentRenderMode.PreRendering;
 
-  private static readonly ConcurrentDictionary<Type, bool> s_TypeRenderAttributeCache = new();
+  private static readonly ConcurrentDictionary<Type, bool> TypeRenderAttributeCache = new();
 
   private CurrentRenderMode GetCurrentRenderMode()
   {
@@ -82,7 +82,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
     }
     else if (!HasRendered)
     {
-      bool hasRenderAttribute = s_TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
+      bool hasRenderAttribute = TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
         type.GetCustomAttributes(true)
           .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
 
