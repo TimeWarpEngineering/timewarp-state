@@ -1,10 +1,5 @@
 ﻿namespace TimeWarp.State.SourceGenerator;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using System.Text;
-
 [Generator]
 public class PersistenceStateSourceGenerator : ISourceGenerator
 {
