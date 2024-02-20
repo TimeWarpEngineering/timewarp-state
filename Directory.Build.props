@@ -17,19 +17,19 @@
   
   <!-- Complier Generated files https://andrewlock.net/creating-a-source-generator-part-6-saving-source-generator-output-in-source-control/ -->
 
-  <PropertyGroup>
-    <!-- Persist the source generator (and other) files to disk -->
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <!-- 👇 The "base" path for the source generators -->
-<!--    <GeneratedFolder>Generated</GeneratedFolder>-->
-    <!-- 👇 Write the output for each target framework to a different sub-folder -->
+<!--  <PropertyGroup>-->
+<!--    &lt;!&ndash; Persist the source generator (and other) files to disk &ndash;&gt;-->
+<!--    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
+<!--    &lt;!&ndash; 👇 The "base" path for the source generators &ndash;&gt;-->
+<!--    <GeneratedFolder>D:\Temp\Generated</GeneratedFolder>-->
+<!--    &lt;!&ndash; 👇 Write the output for each target framework to a different sub-folder &ndash;&gt;-->
 <!--    <CompilerGeneratedFilesOutputPath>$(GeneratedFolder)\$(TargetFramework)</CompilerGeneratedFilesOutputPath>-->
-  </PropertyGroup>
+<!--  </PropertyGroup>-->
 
-  <ItemGroup>
-    <!-- 👇 Exclude everything in the base folder -->
+<!--  <ItemGroup>-->
+<!--    &lt;!&ndash; 👇 Exclude everything in the base folder &ndash;&gt;-->
 <!--    <Compile Remove="$(GeneratedFolder)/**/*.cs" />-->
-  </ItemGroup>
+<!--  </ItemGroup>-->
 
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
