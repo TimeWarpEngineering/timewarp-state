@@ -1,4 +1,4 @@
-﻿namespace Test.App.Client.Features.Counter2;
+﻿namespace Test.App.Client.Features.Blue;
 
 [PersistentState(PersistentStateMethod.LocalStorage)]
 public partial class BlueState : State<BlueState>
@@ -14,9 +14,5 @@ public partial class BlueState : State<BlueState>
     Count = count;
   }
 
-  public override void Initialize()
-  {
-    Console.WriteLine("Counter2State.Initialize");
-    Count = 2;
-  }
+  public override void Initialize() => Count = 2;
 }

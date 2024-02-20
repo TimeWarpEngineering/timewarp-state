@@ -1,4 +1,4 @@
-﻿namespace Test.App.Client.Features.Counter2;
+﻿namespace Test.App.Client.Features.Blue;
 
 public partial class BlueState
 {
