@@ -2,9 +2,11 @@ namespace Test.App.Client.Features.EventStream;
 
 internal partial class EventStreamState
 {
-  internal class AddEventHandler : BaseActionHandler<AddEventAction>
+  internal class AddEventHandler
+  (
+    IStore store
+  ) : BaseActionHandler<AddEventAction>(store)
   {
-    public AddEventHandler(IStore store) : base(store) { }
 
     public override Task Handle
     (
@@ -12,7 +14,7 @@ internal partial class EventStreamState
       CancellationToken aCancellationToken
     )
     {
-      EventStreamState._Events.Add(aAddEventAction.Message);
+      EventStreamState.EventList.Add(aAddEventAction.Message);
       return Task.CompletedTask;
     }
   }
