@@ -27,12 +27,26 @@
 
 @code
 {
+  
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
   public const string Title = "Exception Page";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
   public const string Route = "/throwexception";
   
   private async Task SendThrowExceptionAction() =>
-    await Mediator.Send(new CounterState.ThrowExceptionAction());
+    await Mediator.Send(new CounterState.ThrowExceptionAction
+    {
+      Message = "This is a client side exception"
+    });
 
   private async Task SendThrowServerSideExceptionAction() =>
-    await Mediator.Send(new CounterState.ThrowServerSideExceptionAction());
+    await Mediator.Send(new CounterState.ThrowServerSideExceptionAction
+    {
+      Message = "This is a server side exception"
+    });
 }
