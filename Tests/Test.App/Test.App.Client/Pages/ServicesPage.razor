@@ -1,4 +1,4 @@
-﻿@page "/services"
+﻿@attribute [Route(Route)]
 
 <h1>Registered Services</h1>
 <div class="row">
@@ -21,6 +21,16 @@
 
 @code
 {
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Services Page";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/services";
+  
     [Inject]
     private IServiceCollection ServiceCollection { get; set; } = null!;
 }

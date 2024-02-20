@@ -1,5 +1,5 @@
 ﻿@rendermode InteractiveAuto
-@page "/cloneTest"
+@attribute [Route(Route)]
 @using AnyClone.Tests
 @inherits BaseComponent
 
@@ -14,6 +14,16 @@
 <h6 data-qa="TestResult">TestResult:@TestResult</h6>
 
 @code {
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Clone Test Page";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/cloneTest";
+  
   string TestResult = "Not run";
 
   void TestClone()
