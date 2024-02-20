@@ -16,7 +16,7 @@ internal class PrePipelineNotificationRequestPreProcessor<TRequest>
       Request = aRequest,
     };
 
-    Logger.LogDebug("PrePipelineNotificationRequestPreProcessor");
+    Logger.LogDebug(nameof(PrePipelineNotificationRequestPreProcessor<TRequest>));
     return Publisher.Publish(notification, aCancellationToken);
   }
 }
