@@ -12,7 +12,7 @@ public class Clone_Should : BaseTest
   public void ShouldClone()
   {
     //Arrange
-    RouteState.Initialize(aRoute: "SomeRoute");
+    RouteState.Initialize(route: "SomeRoute");
 
     //Act
     RouteState clone = RouteState.Clone();
