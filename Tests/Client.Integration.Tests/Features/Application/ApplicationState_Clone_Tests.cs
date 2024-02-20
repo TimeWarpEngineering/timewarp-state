@@ -1,5 +1,7 @@
 namespace ApplicationState_;
 
+// ReSharper disable once UnusedType.Global
+// ReSharper disable once InconsistentNaming
 public class Clone_Should : BaseTest
 {
   public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
@@ -7,12 +9,13 @@ public class Clone_Should : BaseTest
     ApplicationState = Store.GetState<ApplicationState>();
   }
 
-  private ApplicationState ApplicationState { get; set; }
+  private ApplicationState ApplicationState { get; }
 
+  // ReSharper disable once UnusedMember.Global
   public void Clone()
   {
     //Arrange
-    ApplicationState.Initialize(aName: "TestName", aExceptionMessage: "Some ExceptionMessage");
+    ApplicationState.Initialize(name: "TestName", exceptionMessage: "Some ExceptionMessage");
 
     //Act
     ApplicationState clone = ApplicationState.Clone();
