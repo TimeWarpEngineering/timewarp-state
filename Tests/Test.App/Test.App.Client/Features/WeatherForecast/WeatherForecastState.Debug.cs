@@ -1,20 +1,26 @@
 namespace Test.App.Client.Features.WeatherForecast;
 
-using Microsoft.JSInterop;
-using System.Collections.Generic;
 using System.Text.Json;
-using Test.App.Contracts.Features.WeatherForecast;
 
-internal partial class WeatherForecastsState : State<WeatherForecastsState>
+internal partial class WeatherForecastsState 
 {
-  public override WeatherForecastsState Hydrate(IDictionary<string, object> aKeyValuePairs)
+  private static readonly JsonSerializerOptions JsonSerializerOptions = new()
+    { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+  
+  public override WeatherForecastsState Hydrate(IDictionary<string, object> keyValuePairs)
   {
-    string json = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(WeatherForecasts))].ToString();
+    string json = keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(WeatherForecasts))].ToString() ?? throw new InvalidOperationException();
 
     var newWeatherForecastsState = new WeatherForecastsState()
     {
-      _WeatherForecasts = JsonSerializer.Deserialize<List<WeatherForecastDto>>(json, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
-      Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
+      WeatherForecastList = 
+        JsonSerializer.Deserialize<List<WeatherForecastDto>>(json, JsonSerializerOptions) ??
+        throw new InvalidOperationException(),
+      Guid = new Guid
+      (
+        keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ??
+        throw new InvalidOperationException()
+      ),
     };
 
     return newWeatherForecastsState;
@@ -23,7 +29,6 @@ internal partial class WeatherForecastsState : State<WeatherForecastsState>
   internal void Initialize(List<WeatherForecastDto> aWeatherForecastList)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    _WeatherForecasts = aWeatherForecastList ??
-      throw new System.ArgumentNullException(nameof(aWeatherForecastList));
+    ArgumentNullException.ThrowIfNull(aWeatherForecastList);
   }
 }

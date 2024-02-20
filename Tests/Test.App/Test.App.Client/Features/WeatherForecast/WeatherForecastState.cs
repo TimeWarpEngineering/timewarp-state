@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.WeatherForecast;
 
-internal partial class WeatherForecastsState
+internal partial class WeatherForecastsState: State<WeatherForecastsState>
 {
   private List<WeatherForecastDto> WeatherForecastList = [];
 
