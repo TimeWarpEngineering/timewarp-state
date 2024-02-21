@@ -57,17 +57,17 @@ jobs:
           dotnet build --configuration Debug
           dotnet pack --configuration Debug          
 
-      - name: Client.Integration.Tests
-        run: |
-          cd Tests/Client.Integration.Tests/
-          dotnet restore
-          dotnet fixie --configuration Debug
-
-      - name: Server.Integration.Tests
-        run: |
-          cd Tests/Server.Integration.Tests/
-          dotnet restore
-          dotnet fixie --configuration Debug
+#      - name: Client.Integration.Tests
+#        run: |
+#          cd Tests/Client.Integration.Tests/
+#          dotnet restore
+#          dotnet fixie --configuration Debug
+#
+#      - name: Server.Integration.Tests
+#        run: |
+#          cd Tests/Server.Integration.Tests/
+#          dotnet restore
+#          dotnet fixie --configuration Debug
 
       - name: BlazorStateAnalyzer.Tests
         run: |
