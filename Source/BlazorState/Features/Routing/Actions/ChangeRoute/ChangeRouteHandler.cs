@@ -7,13 +7,13 @@ public partial class RouteState
     IStore store,
     NavigationManager NavigationManager,
     ILogger<ChangeRouteHandler> logger
-  ) : ActionHandler<ChangeRouteAction>(store)
+  ) : ActionHandler<ChangeRoute.Action>(store)
   {
     private readonly ILogger Logger = logger;
 
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public override Task Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
+    public override Task Handle(ChangeRoute.Action aChangeRouteRequest, CancellationToken aCancellationToken)
     {
       Logger.LogDebug("ChangeRouteAction.Handle-NewRoute:{NewRoute}", aChangeRouteRequest.NewRoute);
       string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();

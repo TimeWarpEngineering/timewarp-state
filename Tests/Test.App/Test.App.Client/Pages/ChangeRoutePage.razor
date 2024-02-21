@@ -12,9 +12,18 @@
 
 @code
 {
+  
+  /// <summary>
+  /// The title of the page
+  /// </summary>
   public const string Title = "Change Route Page";
+  
+  
+  /// <summary>
+  /// The route to this page
+  /// </summary>
   public const string Route = "/ChangeRoutePage";
   
   private async Task ChangeRouteToHome() =>
-    await Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = "/" });
+    await Mediator.Send(new RouteState.ChangeRoute.Action { NewRoute = "/" });
 }

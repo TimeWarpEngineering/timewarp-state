@@ -33,7 +33,7 @@ public class TimeWarpNavigationManager
     string absoluteUri = NavigationManager.ToAbsoluteUri(aLocationChangedEventArgs.Location).ToString();
     if (RouteState.Route != absoluteUri)
     {
-      Mediator.Send(new RouteState.ChangeRouteAction { NewRoute = absoluteUri });
+      Mediator.Send(new RouteState.ChangeRoute.Action { NewRoute = absoluteUri });
     }
   }
 }

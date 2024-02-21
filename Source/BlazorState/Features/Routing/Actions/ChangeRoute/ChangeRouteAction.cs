@@ -2,8 +2,11 @@ namespace BlazorState.Features.Routing;
 
 public partial class RouteState
 {
-  public class ChangeRouteAction : IAction
+  public static class ChangeRoute
   {
-    public string NewRoute { get; init; }
+    public class Action : IAction
+    {
+      public string NewRoute { get; init; }
+    }
   }
 }
