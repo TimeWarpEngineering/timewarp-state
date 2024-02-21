@@ -9,14 +9,12 @@
 @RenderModeDisplay
 <br/>
 <div>
-  The purpose of this page is two show two different persistent states.
+  The purpose of this page is two show two different persistent states, LocalStorage and SessionStorage.
+  <br/>
+  The two counters are independent of each other and will persist across page refreshes.
+  Opening a new tab will share the state of the Purple counter (LocalStorage), but not the Blue counter (SessionStorage).
+  <br/>
 </div>
-<div>
-  Why? 
-  It had to do with proper transitioning through render modes. In previous version I was setting some global state and this would fail now not.
-  Probably not needed anymore. Maybe we transition to show one persistent state and one non persistent.
-</div>
-<br/>
 <h1>Purple</h1>
 
 @if (IsPreRendering)
