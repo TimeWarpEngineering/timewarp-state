@@ -51,16 +51,18 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
       #pragma warning disable CS1591
       namespace {{namespaceName}};
+      
+      using JetBrains.Annotations;
 
       public partial class {{className}}
       {
-          // ReSharper disable once UnusedType.Global
+          [UsedImplicitly]
           public static class Load
           {
-              // ReSharper disable once UnusedType.Global
+              [UsedImplicitly]
               public class Action : IAction { }
       
-              // ReSharper disable once UnusedType.Global
+              [UsedImplicitly]
               public class Handler
               (
                 IStore store,
