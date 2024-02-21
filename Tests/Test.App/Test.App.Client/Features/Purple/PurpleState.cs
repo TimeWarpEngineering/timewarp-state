@@ -14,9 +14,5 @@ public partial class PurpleState : State<PurpleState>
     Count = count;
   }
 
-  public override void Initialize()
-  {
-    Console.WriteLine("PurpleState.Initialize");
-    Count = 1;
-  }
+  public override void Initialize() => Count = 1;
 }
