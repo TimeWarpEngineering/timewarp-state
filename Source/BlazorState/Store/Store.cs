@@ -31,7 +31,7 @@ internal partial class Store : IStore
     Publisher = publisher;
     JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
 
-    States = new Dictionary<string, IState>();
+    States = new ConcurrentDictionary<string, IState>();
   }
 
   /// <summary>
