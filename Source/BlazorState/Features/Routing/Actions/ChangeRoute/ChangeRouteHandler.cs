@@ -2,24 +2,20 @@ namespace BlazorState.Features.Routing;
 
 public partial class RouteState
 {
-  internal class ChangeRouteHandler : ActionHandler<ChangeRouteAction>
+  internal class ChangeRouteHandler
+  (
+    IStore store,
+    NavigationManager NavigationManager,
+    ILogger<ChangeRouteHandler> logger
+  ) : ActionHandler<ChangeRouteAction>(store)
   {
-    private readonly NavigationManager NavigationManager;
+    private readonly ILogger Logger = logger;
 
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public ChangeRouteHandler
-    (
-      IStore aStore,
-      NavigationManager aNavigationManager
-    ) : base(aStore)
-    {
-      NavigationManager = aNavigationManager;
-    }
-
     public override Task Handle(ChangeRouteAction aChangeRouteRequest, CancellationToken aCancellationToken)
     {
-      Console.WriteLine("ChangeRouteAction.Handle-NewRoute:" + aChangeRouteRequest.NewRoute);
+      Logger.LogDebug("ChangeRouteAction.Handle-NewRoute:{NewRoute}", aChangeRouteRequest.NewRoute);
       string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
       string absoluteUri = NavigationManager.Uri;
 
