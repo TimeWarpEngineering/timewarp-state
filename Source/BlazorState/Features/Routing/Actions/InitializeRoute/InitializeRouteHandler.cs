@@ -1,22 +1,15 @@
 namespace BlazorState.Features.Routing;
 public partial class RouteState
 {
-  internal class InitializeRouteHandler : ActionHandler<InitializeRouteAction>
+  internal class InitializeRouteHandler
+  (
+    IStore store,
+    NavigationManager NavigationManager
+  ) : ActionHandler<InitializeRoute.Action>(store)
   {
-    public InitializeRouteHandler
-    (
-      IStore aStore,
-      NavigationManager aNavigationManager
-    ) : base(aStore)
-    {
-      NavigationManager = aNavigationManager;
-    }
-
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    private readonly NavigationManager NavigationManager;
-
-    public override Task Handle(InitializeRouteAction aInitializeRouteRequest, CancellationToken aCancellationToken)
+    public override Task Handle(InitializeRoute.Action aInitializeRouteRequest, CancellationToken aCancellationToken)
     {
       RouteState.Route = NavigationManager.Uri;
       return Task.CompletedTask;

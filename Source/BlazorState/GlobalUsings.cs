@@ -10,6 +10,7 @@ global using BlazorState.Services;
 global using BlazorState;
 global using BlazorState.Features.Debug.Components;
 global using BlazorState.Pipeline.CloneState;
+global using JetBrains.Annotations;
 global using MediatR.Pipeline;
 global using MediatR;
 global using Microsoft.AspNetCore.Components.Routing;

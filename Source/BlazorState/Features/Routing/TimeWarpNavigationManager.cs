@@ -7,25 +7,23 @@ namespace BlazorState.Features.Routing;
 public class TimeWarpNavigationManager
 {
   private readonly IMediator Mediator;
-
   private readonly NavigationManager NavigationManager;
-
   private readonly IStore Store;
 
   private RouteState RouteState => Store.GetState<RouteState>();
 
   public TimeWarpNavigationManager
   (
-    NavigationManager aNavigationManager,
-    IMediator aMediator,
-    IStore aStore
+    NavigationManager navigationManager,
+    IMediator mediator,
+    IStore store
   )
   {
-    NavigationManager = aNavigationManager;
-    Mediator = aMediator;
-    Store = aStore;
+    NavigationManager = navigationManager;
+    Mediator = mediator;
+    Store = store;
     NavigationManager.LocationChanged += LocationChanged;
-    Mediator.Send(new RouteState.InitializeRouteAction());
+    Mediator.Send(new RouteState.InitializeRoute.Action());
   }
 
   private void LocationChanged(object aSender, LocationChangedEventArgs aLocationChangedEventArgs)

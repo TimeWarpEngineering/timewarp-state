@@ -2,5 +2,9 @@
 
 public partial class RouteState
 {
-  public class GoBackAction : IAction { }
+  public static class GoBack
+  {
+    [UsedImplicitly]
+    public class Action : IAction { }
+  }
 }
