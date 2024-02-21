@@ -19,9 +19,16 @@
 
 @code
 {
+  /// <summary>
+  /// The title of the page
+  /// </summary>
   public const string Title = "Go Back Page";
+  
+  /// <summary>
+  /// The route for the page
+  /// </summary>
   public const string Route = "/goback";
   
   private async Task GoBack() =>
-    await Mediator.Send(new RouteState.GoBackAction());
+    await Mediator.Send(new RouteState.GoBack.Action());
 }
