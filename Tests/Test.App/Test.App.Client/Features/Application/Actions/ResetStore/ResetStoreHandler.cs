@@ -3,7 +3,7 @@ namespace Test.App.Client.Features.Application;
 using static RouteState;
 using static ApplicationState;
 
-// ReSharper disable once UnusedType.Global
+[UsedImplicitly]
 internal class ResetStoreHandler
 (
   IStore Store,

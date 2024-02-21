@@ -80,12 +80,7 @@
       <div class="nav-divider-label">Persistence</div>
       <hr class="nav-divider">
     </div>
-
-    <div class="nav-item px-3">
-      <NavLink class="nav-link" href=@ChildCountersPage.Route>
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ChildCountersPage.Title
-      </NavLink>
-    </div>
+    
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@PurpleAndBluePage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @PurpleAndBluePage.Title
@@ -135,6 +130,6 @@
 {
   private async Task GoBack()
   {
-    await Mediator.Send(new RouteState.GoBackAction());
+    await Mediator.Send(new RouteState.GoBack.Action());
   }
 }
