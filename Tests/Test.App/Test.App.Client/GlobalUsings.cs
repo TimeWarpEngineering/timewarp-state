@@ -8,6 +8,7 @@ global using BlazorState.Features.Persistence.Attributes;
 global using BlazorState.Features.Routing;
 global using BlazorState.Pipeline.ReduxDevTools;
 global using FluentAssertions;
+global using JetBrains.Annotations;
 global using MediatR;
 global using MediatR.Pipeline;
 global using Microsoft.AspNetCore.Components;
