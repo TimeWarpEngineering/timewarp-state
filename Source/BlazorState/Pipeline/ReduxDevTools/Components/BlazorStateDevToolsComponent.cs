@@ -25,8 +25,8 @@ public class BlazorStateDevToolsComponent : BlazorStateComponent,
     RenderModeDisplay = builder =>
     {
       builder.OpenComponent<RenderModeDisplay>(0);
-      builder.AddComponentParameter(0, nameof(BlazorState.Features.Debug.Components.RenderModeDisplay.CurrentRenderMode), CurrentRenderMode);
-      builder.AddComponentParameter(0, nameof(BlazorState.Features.Debug.Components.RenderModeDisplay.ConfiguredRenderMode), ConfiguredRenderMode);
+      builder.AddComponentParameter(0, nameof(BlazorState.Features.Developer.Components.RenderModeDisplay.CurrentRenderMode), CurrentRenderMode);
+      builder.AddComponentParameter(0, nameof(BlazorState.Features.Developer.Components.RenderModeDisplay.ConfiguredRenderMode), ConfiguredRenderMode);
       builder.CloseComponent();
     };
   }
