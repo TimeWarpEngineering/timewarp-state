@@ -9,11 +9,6 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
   public void Execute(GeneratorExecutionContext context)
   {
-
-    context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("SG001", "Debug", "{0}", "Debug", DiagnosticSeverity.Warning, true), Location.None, "****** Your debug message here ******"));
-
-    // System.Diagnostics.Debugger.Launch();
-
     // Retrieve the populated receiver from the context
     if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
 
@@ -21,12 +16,14 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
     {
       string namespaceName = GetNamespace(classDeclaration);
       string className = classDeclaration.Identifier.Text;
-      string generatedCode = GenerateCode(namespaceName, className);
+      string method = GetPersistentStateMethod(classDeclaration);
+      string generatedCode = GenerateLoadClassCode(namespaceName, className, method);
       string uniqueHintName = $"{namespaceName}.{className}_Persistence.g.cs";
       ReportUniqueHintNameDiagnostic(context, uniqueHintName);
       context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
     }
   }
+
   private static void ReportUniqueHintNameDiagnostic(GeneratorExecutionContext context, string uniqueHintName)
   {
     var diagnostic = Diagnostic.Create(
@@ -44,25 +41,67 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
     context.ReportDiagnostic(diagnostic);
   }
-  
-  private static string GenerateCode(string namespaceName, string className) =>
-    $$"""
-    #pragma warning disable CS1591
-    namespace {{namespaceName}};
 
-    public partial class {{className}}
+  private static string GenerateLoadClassCode(string namespaceName, string className, string persistentStateMethod)
+  {
+    string camelCaseClassName = ToCamelCase(className);
+
+    return $$"""
+      #nullable enable
+
+      #pragma warning disable CS1591
+      namespace {{namespaceName}};
+
+      public partial class {{className}}
+      {
+          // ReSharper disable once UnusedType.Global
+          public static class Load
+          {
+              // ReSharper disable once UnusedType.Global
+              public class Action : IAction { }
+      
+              // ReSharper disable once UnusedType.Global
+              public class Handler
+              (
+                IStore store,
+                IPersistenceService PersistenceService
+              ): ActionHandler<Action>(store)
+              {
+                  public override async System.Threading.Tasks.Task Handle(Action aAction, System.Threading.CancellationToken aCancellationToken)
+                  {
+                      try
+                      {
+                          object? state = await PersistenceService.LoadState(typeof({{className}}), PersistentStateMethod.{{persistentStateMethod}});
+                          if (state is {{className}} {{camelCaseClassName}}) Store.SetState({{camelCaseClassName}});
+                      }
+                      catch (Exception)
+                      {
+                          // if this is a JavaScript not available exception then we are prerendering and just swallow it
+                      }
+                  }
+              }
+          }
+      }
+      #pragma warning restore CS1591
+
+      """;
+  }
+
+  private static string ToCamelCase(string str)
+  {
+    if (!string.IsNullOrEmpty(str) && char.IsUpper(str[0]))
     {
-        // Generated persistence handling code
+      return char.ToLower(str[0]) + str.Substring(1);
     }
-
-    """;
+    return str;
+  }
 
   private static string GetNamespace(SyntaxNode? node)
   {
     // Traverse up to find the NamespaceDeclarationSyntax, if any
-    while 
+    while
     (
-      node != null && 
+      node != null &&
       node is not NamespaceDeclarationSyntax &&
       node is not FileScopedNamespaceDeclarationSyntax
     )
@@ -76,6 +115,30 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
       FileScopedNamespaceDeclarationSyntax fileScopedNamespace => fileScopedNamespace.Name.ToString(),
       _ => "Global"
     };
+  }
+
+  private static string GetPersistentStateMethod(MemberDeclarationSyntax classDeclaration)
+  {
+    foreach (AttributeListSyntax attributeList in classDeclaration.AttributeLists)
+    {
+      foreach (AttributeSyntax attribute in attributeList.Attributes)
+      {
+        if (!attribute.Name.ToString().EndsWith("PersistentState")) continue;
+        AttributeArgumentSyntax? argument = attribute.ArgumentList?.Arguments.FirstOrDefault();
+        if (argument?.Expression is not null)
+        {
+          // Directly use the string representation of the argument
+          string methodArgument = argument.Expression.ToString();
+          // Assuming the argument is an enum member access, extract the member name
+          string? method = methodArgument.Split('.').LastOrDefault();
+          return method ?? "SessionStorage";// Default to "SessionStorage" if not specified
+        }
+        break;// Break after finding the PersistentState attribute, assuming one attribute per class
+      }
+    }
+
+    // Default to "SessionStorage" if the attribute is not found
+    return "SessionStorage";
   }
 
   class SyntaxReceiver : ISyntaxReceiver
