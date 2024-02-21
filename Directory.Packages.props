@@ -4,7 +4,7 @@
     <PackageVersion Include="Blazor-State" Version="10.0.0" />
     <PackageVersion Include="Blazor.SessionStorage.WebAssembly" Version="8.0.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
-    <PackageVersion Include="Blazored.LocalStorage" Version="4.4.0" />
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
     <PackageVersion Include="FakeItEasy" Version="7.3.1" />
@@ -12,10 +12,10 @@
     <PackageVersion Include="Fixie.TestAdapter" Version="3.3.0" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="MediatR" Version="12.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Test.App.Server" Version="8.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
