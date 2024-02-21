@@ -1,28 +1,25 @@
 namespace BlazorState.Features.Routing;
 
-using BlazorState;
-using Microsoft.JSInterop;
-using System.Collections.Generic;
-using System.Reflection;
-
 public partial class RouteState : State<RouteState>
 {
-  public override RouteState Hydrate(IDictionary<string, object> aKeyValuePairs)
+  public override RouteState Hydrate(IDictionary<string, object> keyValuePairs) => new()
   {
-    return new RouteState
-    {
-      Guid = new System.Guid(aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString()),
-      Route = aKeyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Route))].ToString()
-    };
-  }
+    Guid = 
+      new Guid
+      (
+        keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ?? 
+        throw new InvalidOperationException()
+      ),
+    Route = keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Route))].ToString()
+  };
 
   /// <summary>
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
-  /// <param name="aRoute">The initial value for Route</param>
-  public void Initialize(string aRoute)
+  /// <param name="route">The initial value for Route</param>
+  public void Initialize(string route)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    Route = aRoute;
+    Route = route;
   }
 }

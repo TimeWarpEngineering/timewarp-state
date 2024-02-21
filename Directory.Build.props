@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <PackageVersion>11.0.0-beta.4+8.0.101</PackageVersion>
+    <PackageVersion>11.0.0-beta.5+8.0.101</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>Logo.png</PackageIcon>
@@ -12,8 +12,24 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
-    <PackageReadmeFile>README.md</PackageReadmeFile> 
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+  
+  <!-- Complier Generated files https://andrewlock.net/creating-a-source-generator-part-6-saving-source-generator-output-in-source-control/ -->
+
+<!--  <PropertyGroup>-->
+<!--    &lt;!&ndash; Persist the source generator (and other) files to disk &ndash;&gt;-->
+<!--    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
+<!--    &lt;!&ndash; 👇 The "base" path for the source generators &ndash;&gt;-->
+<!--    <GeneratedFolder>D:\Temp\Generated</GeneratedFolder>-->
+<!--    &lt;!&ndash; 👇 Write the output for each target framework to a different sub-folder &ndash;&gt;-->
+<!--    <CompilerGeneratedFilesOutputPath>$(GeneratedFolder)\$(TargetFramework)</CompilerGeneratedFilesOutputPath>-->
+<!--  </PropertyGroup>-->
+
+<!--  <ItemGroup>-->
+<!--    &lt;!&ndash; 👇 Exclude everything in the base folder &ndash;&gt;-->
+<!--    <Compile Remove="$(GeneratedFolder)/**/*.cs" />-->
+<!--  </ItemGroup>-->
 
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">

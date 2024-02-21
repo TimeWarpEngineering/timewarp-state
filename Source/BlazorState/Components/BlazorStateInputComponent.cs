@@ -1,3 +1,4 @@
+#nullable enable
 namespace BlazorState;
 
 /// <summary>
@@ -5,18 +6,13 @@ namespace BlazorState;
 /// And exposes StateHasChanged
 /// </summary>
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable, IBlazorStateComponent
+public abstract class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable, IBlazorStateComponent
 {
-  protected override bool TryParseValueFromString(string aValue, out TValue aResult, out string aValidationErrorMessage) =>
-    TryParseValueFromString(aValue, out aResult, out aValidationErrorMessage);
-
-  static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-
-  public BlazorStateInputComponent()
+  protected BlazorStateInputComponent()
   {
     string name = GetType().Name;
-    int count = s_InstanceCounts.AddOrUpdate(name, 1, (aKey, aValue) => aValue + 1);
-
+    InstanceCounter.IncrementCount<TValue>();
+    int count = InstanceCounter.GetCount<TValue>();
     Id = $"{name}-{count}";
   }
 
@@ -28,16 +24,16 @@ public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable,
   /// <summary>
   /// Allows for the Assigning of a value one can use to select an element during automated testing.
   /// </summary>
-  [Parameter] public string TestId { get; set; }
+  [Parameter] public string? TestId { get; set; }
 
-  [Inject] public IMediator Mediator { get; set; }
-  [Inject] public IStore Store { get; set; }
+  [Inject] public IMediator Mediator { get; set; } = null!;
+  [Inject] public IStore Store { get; set; } = null!;
 
   /// <summary>
   /// Maintains all components that subscribe to a State.
   /// Is updated by using the GetState method
   /// </summary>
-  [Inject] public Subscriptions Subscriptions { get; set; }
+  [Inject] public Subscriptions Subscriptions { get; set; } = null!;
 
   /// <summary>
   /// Exposes StateHasChanged
@@ -56,10 +52,19 @@ public class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable,
     Subscriptions.Add(stateType, this);
     return Store.GetState<T>();
   }
-
+  
   public void Dispose()
   {
     Subscriptions.Remove(this);
     GC.SuppressFinalize(this);
   }
+}
+
+public static class InstanceCounter
+{
+  private static readonly ConcurrentDictionary<Type, int> InstanceCounts = new();
+
+  public static int GetCount<T>() => InstanceCounts.GetOrAdd(typeof(T), 0);
+
+  public static void IncrementCount<T>() => InstanceCounts.AddOrUpdate(typeof(T), 1, (_, count) => count + 1);
 }

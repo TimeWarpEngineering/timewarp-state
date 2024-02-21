@@ -1,0 +1,51 @@
+﻿@rendermode InteractiveAuto
+@namespace Test.App.Client.Pages
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+
+@RenderModeDisplay
+<br/>
+<div>
+  The purpose of this page is two show two different persistent states, LocalStorage and SessionStorage.
+  <br/>
+  The two counters are independent of each other and will persist across page refreshes.
+  Opening a new tab will share the state of the Purple counter (LocalStorage), but not the Blue counter (SessionStorage).
+  <br/>
+</div>
+<h1>Purple</h1>
+
+@if (IsPreRendering)
+{
+  <div role="status">PurpleState.Guid: </div>
+  <div role="status">Purple Count: </div>
+}
+else
+{
+  <div role="status">PurpleState.Guid: @PurpleState.Guid</div>
+  <div role="status">Purple Count: @PurpleState.Count</div>
+  <button class="btn btn-primary" @onclick="IncrementPurpleCount">Increment Purple Count</button>
+}
+<br/>
+<br/>
+
+<h1>Blue</h1>
+@if (IsPreRendering)
+{
+  <div role="status">BlueState.Guid: </div>
+  <div role="status">Blue Count: </div>
+}
+else
+{
+  <div role="status">BlueState.Guid: @BlueState.Guid</div>
+  <div role="status">Blue Count: @BlueState.Count</div>
+  <button class="btn btn-primary" @onclick="IncrementBlueCount">Increment Blue Count</button>
+}
+
+@code
+{
+  public const string Title = "Purple and Blue";
+  public const string Route = "/twodiffcounters";
+}

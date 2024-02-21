@@ -1,0 +1,34 @@
+﻿@rendermode InteractiveAuto
+@namespace Test.App.Client.Pages
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+@RenderModeDisplay
+<br/>
+<div>The button should return you to the previous page</div>
+<br/>
+<button class="btn btn-primary" data-qa="GoBack" @onclick=GoBack>Go Back</button>
+<hr/>
+<h3>History Stack</h3>
+@foreach(string? url in  RouteState.History)
+{
+  <div>@url</div>
+}
+
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Go Back Page";
+  
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/goback";
+  
+  private async Task GoBack() =>
+    await Mediator.Send(new RouteState.GoBack.Action());
+}

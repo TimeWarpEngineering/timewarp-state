@@ -1,19 +1,9 @@
 ﻿namespace BlazorState.Features.Persistence.Attributes;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class PersistentStateAttribute : Attribute
+public class PersistentStateAttribute
+(
+  PersistentStateMethod PersistentStateMethod
+) : Attribute
 {
-  public readonly PersistentStateMethod PersistentStateMethod;
-
-  public PersistentStateAttribute(PersistentStateMethod persistentStateMethod)
-  {
-    PersistentStateMethod = persistentStateMethod;
-  }
-}
-
-public enum PersistentStateMethod
-{
-  PreRender,
-  Server,
-  SessionStorage,
-  LocalStorage
+  public readonly PersistentStateMethod PersistentStateMethod = PersistentStateMethod;
 }

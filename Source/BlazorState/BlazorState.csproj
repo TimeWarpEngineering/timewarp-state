@@ -36,6 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
   <!-- End Source Link -->
@@ -73,7 +74,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <InternalsVisibleTo Include="TestApp.Client.Integration.Tests" />
+    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests" />
+    <InternalsVisibleTo Include="Client.Integration.Tests" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,17 @@
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<br/>
+<div>EventStream is an example of middleware. It adds each action to the event list. Displayed below</div>
+<br/>
+<EventStream/>
+
+@code
+{
+  public const string Title = "Event Stream Page";
+  public const string Route = "/eventstream";
+}

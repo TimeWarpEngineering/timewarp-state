@@ -1,12 +1,5 @@
 namespace TimeWarp.State.Middleware;
 
-using Blazored.SessionStorage;
-using BlazorState;
-using BlazorState.Features.Persistence.Attributes;
-using MediatR.Pipeline;
-using Microsoft.Extensions.Logging;
-using System.Reflection;
-
 public class PersistentStatePostProcessor<TRequest, TResponse>
 (
   ILogger<PersistentStatePostProcessor<TRequest, TResponse>> logger,
@@ -14,20 +7,13 @@ public class PersistentStatePostProcessor<TRequest, TResponse>
   ISessionStorageService SessionStorageService,
   ILocalStorageService LocalSessionStorageService
 ) : IRequestPostProcessor<TRequest, TResponse>
-  where TRequest : notnull, IAction
+  where TRequest : IAction
 {
   private readonly ILogger Logger = logger;
 
-
   public async Task Process(TRequest aRequest, TResponse response, CancellationToken cancellationToken)
   {
-    // TODO: remove below or replace with proper Logger.Debug
-    Console.WriteLine($"PersistentStatePostProcessor: {typeof(TRequest).FullName}");
-    // We want to persist using the method defined by the PersistentStateAttribute
-    // Should we inject a common interface IPersistentState/IPersistState?
-    // Then the user would register the IPersistentState with a name and the method.
-    // Then we could have a dictionary of IPersistState and call the appropriate one based on PersistentStateMethod?
-    // Or we could have the IPersistState.Persist method take the PersistentStateMethod as a parameter?
+    Logger.LogDebug("PersistentStatePostProcessor: {FullName}", typeof(TRequest).FullName);
 
     Type currentType = typeof(TRequest);
     while (currentType.DeclaringType != null)

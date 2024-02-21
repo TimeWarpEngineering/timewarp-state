@@ -1,0 +1,11 @@
+﻿@code {
+
+  [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
+
+  /// <inheritdoc />
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    await ReduxDevToolsInterop.InitAsync();
+    await base.OnAfterRenderAsync(firstRender);
+  }
+}

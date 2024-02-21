@@ -1,6 +1,6 @@
 namespace BlazorState;
 
-using static BlazorState.Features.Routing.RouteState;
+using static RouteState;
 
 public static class ServiceCollectionExtensions
 {
@@ -29,7 +29,6 @@ public static class ServiceCollectionExtensions
 
     aServiceCollection.AddScoped<BlazorHostingLocation>();
     aServiceCollection.AddScoped<JsonRequestHandler>();
-    aServiceCollection.AddScoped<RenderPhaseService>();
     aServiceCollection.AddScoped<Subscriptions>();
     aServiceCollection.AddScoped<IStore, Store>();
     aServiceCollection.AddSingleton(blazorStateOptions);
@@ -49,9 +48,9 @@ public static class ServiceCollectionExtensions
       aServiceCollection.AddScoped<TimeWarpNavigationManager>();
       aServiceCollection.AddScoped<RouteState>();
 
-      aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction>, ChangeRouteHandler>();
-      aServiceCollection.AddTransient<IRequestHandler<GoBackAction>, GoBackHandler>();
-      aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction>, InitializeRouteHandler>();
+      aServiceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRouteHandler>();
+      aServiceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBackHandler>();
+      aServiceCollection.AddTransient<IRequestHandler<InitializeRoute.Action>, InitializeRouteHandler>();
     }
     return aServiceCollection;
   }
@@ -60,14 +59,14 @@ public static class ServiceCollectionExtensions
   {
     var blazorHostingLocation = new BlazorHostingLocation();
 
-    // Server Side Blazor doesn't register HttpClient by default
+    // Test.App.Server Side Blazor doesn't register HttpClient by default
     if (!blazorHostingLocation.IsServerSide) return;
     
     // Double check that nothing is registered.
     if (aServiceCollection.HasRegistrationFor(typeof(HttpClient))) return;
     
     // Setup HttpClient for server side in a client side compatible fashion
-    aServiceCollection.AddScoped<HttpClient>
+    aServiceCollection.AddScoped
     (
       aServiceProvider =>
       {
@@ -123,8 +122,7 @@ public static class ServiceCollectionExtensions
         aType =>
           !aType.IsAbstract &&
           !aType.IsInterface &&
-          aType.BaseType != null &&
-          aType.BaseType.IsGenericType &&
+          aType.BaseType is { IsGenericType: true } &&
           aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
       );
 
@@ -138,6 +136,7 @@ public static class ServiceCollectionExtensions
   private static bool HasRegistrationFor(this IServiceCollection aServiceCollection, Type aType) => 
     aServiceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == aType);
 
+  // ReSharper disable once UnusedMethodReturnValue.Global
   public static BlazorStateOptions UseReduxDevTools
   (
     this BlazorStateOptions aBlazorStateOptions,
@@ -158,7 +157,7 @@ public static class ServiceCollectionExtensions
     serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
     serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
 
-    serviceCollection.AddSingleton<ReduxDevToolsOptions>(reduxDevToolsOptions);
+    serviceCollection.AddSingleton(reduxDevToolsOptions);
 
     return aBlazorStateOptions;
   }

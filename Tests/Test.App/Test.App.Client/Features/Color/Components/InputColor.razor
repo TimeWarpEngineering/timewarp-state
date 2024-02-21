@@ -1,0 +1,58 @@
+﻿@namespace Test.App.Client.Features.Color.Components
+@using System.Drawing
+@using System.Text.RegularExpressions
+@using System.Diagnostics.CodeAnalysis
+@inherits InputBase<Color>
+
+<input type="color" @attributes=AdditionalAttributes class=@CssClass @bind=CurrentValueAsString />
+
+@code {
+  /// <summary>
+  /// The error message to display when the value is not a valid color.
+  /// </summary>
+  [Parameter]
+  public string? ParsingErrorMessage { get; set; }
+
+  /// <summary>
+  /// The Hexadecimal color value. 
+  /// </summary>
+  /// <param name="value"></param>
+  /// <returns></returns>
+  public static string ColorToString(Color value) => 
+    $"#{value.R:x2}{value.G:x2}{value.B:x2}";
+
+  /// <inheritdoc />
+  protected override string FormatValueAsString(Color value) => 
+    ColorToString(value);
+
+  static Regex s_Regex = new Regex("^#([0-9a-f]{2}){3}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+  /// <inheritdoc />
+  protected override bool TryParseValueFromString(string? value, out Color result, [NotNullWhen(false)] out string? validationErrorMessage)
+  {
+    Match match = s_Regex.Match(value ?? throw new ArgumentNullException(nameof(value)));
+    if (!match.Success)
+    {
+      validationErrorMessage = ParsingErrorMessage;
+      result = Color.Red;
+      return true;
+    }
+
+    byte r = HexStringToByte(match.Groups[1].Captures[0].Value);
+    byte g = HexStringToByte(match.Groups[1].Captures[1].Value);
+    byte b = HexStringToByte(match.Groups[1].Captures[2].Value);
+
+    validationErrorMessage = null;
+    result = Color.FromArgb(r, g, b);
+    return true;
+  }
+
+  byte HexStringToByte(string hex)
+  {
+    const string hexChars = "0123456789abcdef";
+
+    hex = hex.ToLowerInvariant();
+    int result = (hexChars.IndexOf(hex[0]) * 16) + hexChars.IndexOf(hex[1]);
+    return (byte)result;
+  }
+}

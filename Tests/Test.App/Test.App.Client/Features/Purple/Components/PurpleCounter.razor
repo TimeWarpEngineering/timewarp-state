@@ -1,0 +1,15 @@
+@inherits BaseComponent
+<h3>Counter</h3>
+@RenderModeDisplay
+
+@if (IsPreRendering)
+{
+  <div role="status">CounterState.Guid: </div>
+  <div role="status">Counter 1 count: </div>
+}
+else
+{
+  <div role="status">CounterState.Guid: @PurpleState.Guid</div>
+  <div role="status">Counter 1 count: @PurpleState.Count</div>
+  <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+}

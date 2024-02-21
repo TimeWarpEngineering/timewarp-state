@@ -12,5 +12,22 @@ namespace BlazorState.Pipeline.ReduxDevTools;
 public class BlazorStateDevToolsComponent : BlazorStateComponent,
   IDevToolsComponent
 {
-  protected override void OnInitialized() => Subscriptions.Add<IDevToolsComponent>(this);
+  protected readonly RenderFragment RenderModeDisplay;
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    Subscriptions.Add<IDevToolsComponent>(this);
+  }
+  
+  protected string RenderModeDisplayString => $"CurrentRenderMode: {CurrentRenderMode}\nConfiguredRenderMode: {ConfiguredRenderMode}";
+  protected BlazorStateDevToolsComponent()
+  {
+    RenderModeDisplay = builder =>
+    {
+      builder.OpenComponent<RenderModeDisplay>(0);
+      builder.AddComponentParameter(0, nameof(BlazorState.Features.Developer.Components.RenderModeDisplay.CurrentRenderMode), CurrentRenderMode);
+      builder.AddComponentParameter(0, nameof(BlazorState.Features.Developer.Components.RenderModeDisplay.ConfiguredRenderMode), ConfiguredRenderMode);
+      builder.CloseComponent();
+    };
+  }
 }

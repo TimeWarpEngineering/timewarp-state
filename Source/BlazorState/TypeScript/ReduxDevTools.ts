@@ -1,5 +1,6 @@
 ﻿import { blazorState, BlazorState } from './BlazorState.js';
 import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
+import { log } from './Logger.js';
 
 type traceType = (action) => string;
 //see reduxjs/redux-devtools/packages/redux-devtools-extension/src/index.ts for types
@@ -29,8 +30,8 @@ export class ReduxDevTools {
   private IsInitialized: boolean = false;
 
   constructor(reduxDevToolsOptions) {
-    console.log("constructing ReduxDevTools with the following options")
-    console.log(reduxDevToolsOptions);
+    log("ReduxDevTools", "constructor", "info");
+    log("ReduxDevTools", reduxDevToolsOptions.toString(), "info");
 
     this.BlazorState = blazorState;
     this.Config = reduxDevToolsOptions;
@@ -54,7 +55,7 @@ export class ReduxDevTools {
     const extension = window[ReduxExtensionName];
 
     if (!extension) {
-      console.log('Redux DevTools are not installed.');
+      log("ReduxDevTools", "Redux DevTools are not installed.", "warning");
     }
     return extension;
   }
@@ -62,7 +63,7 @@ export class ReduxDevTools {
   GetDevTools() {
     const devTools = this.Extension && this.Extension.connect(this.Config);
     if (!devTools) {
-      console.log('Unable to connect to Redux DevTools.');
+      log("ReduxDevTools", "Unable to connect to Redux DevTools.", "warning");
     }
     return devTools;
   }
@@ -96,15 +97,16 @@ export class ReduxDevTools {
         break;
     }
     blazorRequestType &&
-      console.log(`Redux Dev tools type: ${message.type} maps to ${blazorRequestType}`);
+      log("ReduxDevTools", `type: ${message.type} maps to ${blazorRequestType}`, "info");
 
     return blazorRequestType;
   }
 
   MessageHandler = (message) => {
-    console.log('ReduxDevTools.MessageHandler');
-    console.log(message);
-    var jsonRequest;
+    log("ReduxDevTools", "MessageHandler", "info");
+    log("ReduxDevTools", message, "info")
+
+    let jsonRequest;
     const requestType = this.MapRequestType(message);
     if (requestType) { // If we don't map this type then there is nothing to dispatch just ignore.
       jsonRequest = {
@@ -112,10 +114,10 @@ export class ReduxDevTools {
         RequestType: requestType,
         Payload: message
       };
-
+      
       this.BlazorState.DispatchRequest(requestType, message);
     } else
-      console.log(`messages of this type are currently not supported`);
+      log("ReduxDevTools", `messages of this type are currently not supported`, "warning");
   }
 
   ReduxDevToolsDispatch(action, state, stackTrace) {

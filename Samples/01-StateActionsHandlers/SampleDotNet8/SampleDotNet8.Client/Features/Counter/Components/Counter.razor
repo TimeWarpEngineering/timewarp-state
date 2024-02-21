@@ -1,6 +1,7 @@
-@inherits BlazorStateComponent
+@using BlazorState.Features.Developer.Components
+@inherits BlazorState.Pipeline.ReduxDevTools.BlazorStateDevToolsComponent
 <h3>Counter</h3>
-<p>Render Mode: @RenderModeString</p>
+@RenderModeDisplay
 
 @if (IsPreRendering)
 {

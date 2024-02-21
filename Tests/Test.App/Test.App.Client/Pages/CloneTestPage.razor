@@ -1,0 +1,52 @@
+﻿@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@using AnyClone.Tests
+@inherits BaseComponent
+
+<h1>Clone Tests</h1>
+
+@RenderModeDisplay
+<div>Testing ability to clone various Types.</div>
+<div>The button should set TestResult to Passed</div>
+
+<button class="btn btn-primary" @onclick="TestClone">Click me</button>
+<hr/>
+<h6 data-qa="TestResult">TestResult:@TestResult</h6>
+
+@code {
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Clone Test Page";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/cloneTest";
+  
+  string TestResult = "Not run";
+
+  void TestClone()
+  {
+    try
+    {
+      CloneProviderTests.ModifiedClone_Array_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Basic_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Collection_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_ComplexObject_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Dictionary_ShouldNotBeEqual();
+      CloneProviderTests.Should_Clone_ArrayObject();
+      CloneProviderTests.Should_Clone_BasicObject();
+      CloneProviderTests.Should_Clone_CollectionObject();
+      CloneProviderTests.Should_Clone_ComplexObject();
+      CloneProviderTests.Should_Clone_CustomCollectionObject();
+      CloneProviderTests.Should_Clone_DictionaryObject();
+      CloneProviderTests.Should_Clone_InterfacesObject();
+      TestResult = "Passed";
+    }
+    catch (Exception)
+    {
+      TestResult = "Failed";
+    }
+  }
+}

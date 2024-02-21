@@ -2,23 +2,22 @@
 
 public partial class RouteState
 {
-  internal class GoBackHandler : ActionHandler<GoBackAction>
+  internal class GoBackHandler
+  (
+    IStore store,
+    NavigationManager NavigationManager
+  ) : ActionHandler<GoBack.Action>(store)
   {
-    private readonly NavigationManager NavigationManager;
 
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public GoBackHandler
-    (
-      IStore aStore,
-      NavigationManager aNavigationManager
-    ) : base(aStore)
+    public override Task Handle(GoBack.Action aAction, CancellationToken aCancellationToken)
     {
-      NavigationManager = aNavigationManager;
-    }
-    public override Task Handle(GoBackAction aAction, CancellationToken aCancellationToken)
-    {
-      NavigationManager.NavigateTo(RouteState.History.Pop());
+      if (RouteState.History.Count != 0)
+      {
+        RouteState.GoingBack = true;
+        NavigationManager.NavigateTo(RouteState.HistoryStack.Pop());
+      }
       return Task.CompletedTask;
     }
   }

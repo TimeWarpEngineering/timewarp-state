@@ -14,8 +14,8 @@ public interface IState<TState> : IState
   /// Set the state from Dictionary
   /// Used by ReduxDevTools to support TimeTravel
   /// </summary>
-  /// <param name="aKeyValuePairs"></param>
+  /// <param name="keyValuePairs"></param>
   /// <returns></returns>
   /// <remarks>Only needed for time travel which I think is waste anyway.</remarks>
-  TState Hydrate(IDictionary<string, object> aKeyValuePairs);
+  TState Hydrate(IDictionary<string, object> keyValuePairs);
 }

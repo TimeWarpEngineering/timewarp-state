@@ -1,0 +1,21 @@
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+
+@RenderModeDisplay
+<div>Testing ability to clone various Types.</div>
+<div>The button should increment the count by 7</div>
+<br/>
+<div>CounterState.Count: @CounterState.Count</div>
+
+<button class="btn btn-primary" data-qa="JsInterop" onclick="window.InteropTest()">Increment Count by 7 via JavaScript Interop</button>
+
+@code
+{
+  private const string Title = "JavaScript Interop Page";
+  public const string Route = "/JavaScriptInteropPage";
+}
+

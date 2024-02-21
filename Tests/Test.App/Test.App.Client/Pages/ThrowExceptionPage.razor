@@ -1,0 +1,52 @@
+﻿@rendermode InteractiveAuto
+@namespace Test.App.Client.Pages
+@attribute [Route(Route)]
+@using Test.App.Client.Features.Counter
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+
+@RenderModeDisplay
+<br/>
+<div>Clicking both buttons should throw an exception but should NOT crash the UX</div>
+<div>If RenderMode is Server you will see stack trace on Server console</div>
+<div>If RenderMode is Wasm you will see stack trace "warning" on Browser console</div>
+<div>The clone middleware will catch these exceptions and reset the state</div>
+<div>Thus the CounterState.Guid should NOT change </div>
+
+<br/>
+
+<div>CounterState.Guid:@CounterState.Guid</div>
+
+<h6>Click below to Throw Client Side Exception.</h6>
+<button class="btn btn-primary" data-qa="ThrowException" @onclick=SendThrowExceptionAction>Throw Client Side Exception</button>
+
+<h6>Click below to Throw Server Side Exception.</h6>
+<button class="btn btn-primary" data-qa="ThrowException" @onclick=SendThrowServerSideExceptionAction>Throw Server Side Exception</button>
+
+@code
+{
+  
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Exception Page";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/throwexception";
+  
+  private async Task SendThrowExceptionAction() =>
+    await Mediator.Send(new CounterState.ThrowExceptionAction
+    {
+      Message = "This is a client side exception"
+    });
+
+  private async Task SendThrowServerSideExceptionAction() =>
+    await Mediator.Send(new CounterState.ThrowServerSideExceptionAction
+    {
+      Message = "This is a server side exception"
+    });
+}

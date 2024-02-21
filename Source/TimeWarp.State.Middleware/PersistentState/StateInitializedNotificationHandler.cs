@@ -1,23 +1,20 @@
 namespace TimeWarp.State.Middleware.PersistentState;
 
-using BlazorState;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
 public class StateInitializedNotificationHandler
 (
-  ISender Sender
+  ISender Sender,
+  ILogger<StateInitializedNotificationHandler> logger
 ) : INotificationHandler<StateInitializedNotification>
 {
+  private ILogger Logger => logger;
 
   public async Task Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
   {
-    // Logger.LogDebug("StateInitializedNotificationHandler: {StateName}",stateName);
     string fullName = stateInitializedNotification.StateType.FullName ?? throw new InvalidOperationException();
     string assemblyQualifiedName = stateInitializedNotification.StateType.AssemblyQualifiedName ?? throw new InvalidOperationException();
     
     string typeName = assemblyQualifiedName.Replace(fullName, $"{fullName}+Load+Action");
-    Console.WriteLine($"StateInitializedNotificationHandler: {stateInitializedNotification.StateType.Name}");
+    Logger.LogDebug("StateInitializedNotificationHandler: {StateTypeName}", stateInitializedNotification.StateType.Name);
     var actionType = Type.GetType(typeName);
     
     if (actionType != null)

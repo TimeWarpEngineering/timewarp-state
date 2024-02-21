@@ -1,0 +1,17 @@
+<div class="render-mode-display">
+    <div>Current Render Mode: @CurrentRenderMode</div>
+    <div>Configured Render Mode: @ConfiguredRenderMode</div>
+</div>
+
+@code {
+  /// <summary>
+  /// The render mode that is configured for the component.
+  /// </summary>
+  [Parameter] public string ConfiguredRenderMode { get; set; }
+  
+  
+  /// <summary>
+  /// The render mode that is currently being used by the component.
+  /// </summary>
+  [Parameter] public string CurrentRenderMode { get; set; }
+}

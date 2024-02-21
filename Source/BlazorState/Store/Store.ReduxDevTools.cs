@@ -1,13 +1,5 @@
 namespace BlazorState;
 
-using BlazorState.Features.Routing;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text.Json;
-
 /// <summary>
 /// The portion of the store that is only needed to support
 /// ReduxDevTools Integration

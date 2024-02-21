@@ -1,9 +1,6 @@
 // ReSharper disable InconsistentNaming
 namespace BlazorStateActionAnalyzer_;
 
-using BlazorStateAnalyzer;
-using BlazorStateAnalyzer.Tests;
-
 public class Should_Trigger_TW0001
 {
   public static async Task Given_InvalidRecord()

@@ -7,14 +7,43 @@ namespace BlazorState;
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
-  private static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-  private bool IsJsInteropAvailable => OperatingSystem.IsBrowser() || HasRendered;
-  private bool HasRendered = false;
+  private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
+
+  private static readonly ConcurrentDictionary<Type, string> ConfiguredRenderModeCache = new();
+
+  protected string ConfiguredRenderMode =>
+    ConfiguredRenderModeCache.GetOrAdd(this.GetType(), type =>
+    {
+      // Use reflection to get all attributes on the current component type.
+      object[] attributes = type.GetCustomAttributes(true);
+
+      foreach (object attribute in attributes)
+      {
+        // Check if the type name of the attribute contains the expected name.
+        if (attribute.GetType().Name.Contains("PrivateComponentRenderModeAttribute"))
+        {
+          // Try to get the 'Mode' property value of the attribute.
+          PropertyInfo modeProperty = attribute.GetType().GetProperty("Mode");
+          if (modeProperty != null)
+          {
+            // Use dynamic to bypass compile-time type checking
+            dynamic modeValue = modeProperty.GetValue(attribute);
+            // Return the type name of the Mode property's value.
+            return modeValue == null ? "None" : modeValue.GetType().Name;
+          }
+        }
+      }
+
+      // If no matching attribute is found, return a default identifier.
+      return "None"; // Adjust as needed for your default case.
+    });
+
+  private bool HasRendered;
 
   public BlazorStateComponent()
   {
     string name = GetType().Name;
-    int count = s_InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
+    int count = InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
 
     Id = $"{name}-{count}";
   }
@@ -41,27 +70,33 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// <summary>
   ///   Indicates if the component is being prerendered.
   /// </summary>
-  protected bool IsPreRendering => GetCurrentRenderMode() == CurrentRenderMode.PreRendering;
+  protected bool IsPreRendering => GetCurrentRenderMode() == BlazorState.CurrentRenderMode.PreRendering;
 
-  private CurrentRenderMode CurrentRenderMode => GetCurrentRenderMode();
+  private static readonly ConcurrentDictionary<Type, bool> TypeRenderAttributeCache = new();
 
   private CurrentRenderMode GetCurrentRenderMode()
   {
     if (OperatingSystem.IsBrowser())
     {
-      return CurrentRenderMode.Wasm;
+      return BlazorState.CurrentRenderMode.Wasm;
     }
     else if (!HasRendered)
     {
-      return CurrentRenderMode.PreRendering;
+      bool hasRenderAttribute = TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
+        type.GetCustomAttributes(true)
+          .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
+
+      return hasRenderAttribute
+        ? BlazorState.CurrentRenderMode.PreRendering
+        : BlazorState.CurrentRenderMode.Static;
     }
     else
     {
-      return CurrentRenderMode.Server;
+      return BlazorState.CurrentRenderMode.Server;
     }
   }
 
-  protected string RenderModeString => CurrentRenderMode.ToString();
+  protected string CurrentRenderMode => GetCurrentRenderMode().ToString();
   
   /// <summary>
   ///   Exposes StateHasChanged
@@ -98,7 +133,8 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
 
 public enum CurrentRenderMode
 {
-  Wasm,
+  Static,
   PreRendering,
-  Server
+  Server,
+  Wasm,
 }
