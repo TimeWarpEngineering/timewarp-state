@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests" />
+    <InternalsVisibleTo Include="Client.Integration.Tests" />
   </ItemGroup>
   <PropertyGroup>
     <!-- Persist the source generator (and other) files to disk -->
