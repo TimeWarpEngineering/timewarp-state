@@ -1,0 +1,8 @@
+# Top-most EditorConfig file
+# root = false  # This is the default if not specified
+
+# C# files
+[*.cs]
+
+# Test class methods/members are only used by the test framework
+resharper_unused_member_global_highlighting=none
