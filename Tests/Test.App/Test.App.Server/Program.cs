@@ -1,5 +1,6 @@
-using Test.App.Client.Pages;
-using Test.App.Components;
+namespace Test.App.Server;
+
+using Components;
 
 internal class Program
 {
@@ -11,7 +12,7 @@ internal class Program
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents()
         .AddInteractiveWebAssemblyComponents();
-    Test.App.Client.Program.ConfigureServices(builder.Services);
+    Client.Program.ConfigureServices(builder.Services);
     WebApplication app = builder.Build();
 
     // Configure the HTTP request pipeline.
