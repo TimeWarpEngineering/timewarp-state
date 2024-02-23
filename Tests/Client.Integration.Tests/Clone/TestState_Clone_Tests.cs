@@ -1,13 +1,11 @@
 namespace TestState_;
 
-using AnyClone;
-using FluentAssertions;
 using TestApp.Client.Integration.Tests.Clone;
 
 public class Clone_Should
 {
 
-  public void Clone()
+  public static void Clone()
   {
 
     // Arrange
