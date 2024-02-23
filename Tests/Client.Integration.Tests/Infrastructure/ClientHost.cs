@@ -1,16 +1,11 @@
 namespace TestApp.Client.Integration.Tests.Infrastructure;
 
-using Microsoft.Extensions.DependencyInjection;
-using System;
-
 [NotTest]
 public class ClientHost
+(
+  IServiceProvider aServiceProvider
+)
 {
 
-  public ClientHost(ServiceProvider aServiceProvider)
-  {
-    ServiceProvider = aServiceProvider;
-  }
-
-  public IServiceProvider ServiceProvider { get; }
+  public IServiceProvider ServiceProvider { get; } = aServiceProvider;
 }
