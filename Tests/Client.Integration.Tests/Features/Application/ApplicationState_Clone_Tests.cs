@@ -8,7 +8,7 @@ public class Clone_Should : BaseTest
     ApplicationState = Store.GetState<ApplicationState>();
   }
 
-  private ApplicationState ApplicationState { get; set; }
+  private ApplicationState ApplicationState { get; }
   
   public void Clone()
   {
