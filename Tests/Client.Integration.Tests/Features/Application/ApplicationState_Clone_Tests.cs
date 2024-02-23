@@ -3,7 +3,7 @@ namespace ApplicationState_;
 
 public class Clone_Should : BaseTest
 {
-  public Clone_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+  public Clone_Should(ClientHost clientHost) : base(clientHost)
   {
     ApplicationState = Store.GetState<ApplicationState>();
   }
