@@ -1,38 +1,25 @@
 namespace TestApp.Client.Integration.Tests.Infrastructure;
 
-using BlazorState;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 /// <summary>
-/// 
+/// Base class for all tests
 /// </summary>
-/// <remarks>
-/// Based on Jimmy's SliceFixture
-/// https://github.com/jbogard/ContosoUniversityDotNetCore-Pages/blob/master/ContosoUniversity.IntegrationTests/SliceFixture.cs
-/// </remarks>
 public abstract class BaseTest
 {
-  private readonly IServiceScopeFactory ServiceScopeFactory;
-  private readonly IServiceScope ServiceScope;
   private readonly ISender Sender;
   protected readonly IStore Store;
-  protected readonly HttpClient HttpClient;
+  //protected readonly HttpClient HttpClient;
 
-  public BaseTest(ClientHost aWebAssemblyHost)
+  protected BaseTest(ClientHost clientHost)
   {
     Console.WriteLine("BaseTest");
-    ServiceScopeFactory = aWebAssemblyHost.ServiceProvider.GetService<IServiceScopeFactory>()!;
-    ServiceScope = ServiceScopeFactory.CreateScope();
-    ServiceProvider = ServiceScope.ServiceProvider;
+    IServiceScopeFactory serviceScopeFactory = clientHost.ServiceProvider.GetService<IServiceScopeFactory>()!;
+    IServiceScope serviceScope = serviceScopeFactory.CreateScope();
+    ServiceProvider = serviceScope.ServiceProvider;
     Sender = ServiceProvider.GetService<ISender>()!;
     Store = ServiceProvider.GetService<IStore>()!;
   }
 
-  public IServiceProvider ServiceProvider { get; }
+  private IServiceProvider ServiceProvider { get; }
 
   /// <summary>
   /// Send a request to the MediatR pipeline
@@ -40,7 +27,7 @@ public abstract class BaseTest
   /// <param name="aRequest"></param>
   /// <typeparam name="TResponse"></typeparam>
   /// <returns></returns>
-  protected Task<TResponse> Send<TResponse>(IRequest<TResponse> aRequest) => Send(aRequest);
+  // protected Task<TResponse> Send<TResponse>(IRequest<TResponse> aRequest) => Send(aRequest);
 
   /// <summary>
   /// Send a request to the MediatR pipeline
