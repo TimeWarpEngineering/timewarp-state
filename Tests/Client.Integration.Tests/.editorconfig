@@ -1,8 +1,31 @@
 # Top-most EditorConfig file
 # root = false  # This is the default if not specified
-
+root = true
 # C# files
 [*.cs]
 
 # Test class methods/members are only used by the test framework
 resharper_unused_member_global_highlighting=none
+
+# Naming rules
+dotnet_naming_rule.types_and_namespaces_naming_style.severity = suggestion
+dotnet_naming_rule.types_and_namespaces_naming_style.style = upper_camel_case
+dotnet_naming_rule.types_and_namespaces_naming_style.symbols = types_and_namespaces
+dotnet_naming_symbols.types_and_namespaces.applicable_kinds = class, struct, interface, enum, delegate, namespace
+dotnet_naming_symbols.types_and_namespaces.applicable_accessibilities = *
+dotnet_naming_style.upper_camel_case.capitalization = pascal_case
+
+[*Tests.cs]
+
+# General naming style that allows PascalCase and underscores
+dotnet_naming_style.pascal_case_with_underscore.capitalization = pascal_case
+dotnet_naming_style.pascal_case_with_underscore.word_separator = _
+
+# Apply the naming style to class names specifically
+dotnet_naming_rule.class_names_should_be_pascal_case_with_underscore.severity = suggestion
+dotnet_naming_rule.class_names_should_be_pascal_case_with_underscore.symbols = class_names
+dotnet_naming_rule.class_names_should_be_pascal_case_with_underscore.style = pascal_case_with_underscore
+
+# Define symbols for class names
+dotnet_naming_symbols.class_names.applicable_kinds = class
+dotnet_naming_symbols.class_names.applicable_accessibilities = *
