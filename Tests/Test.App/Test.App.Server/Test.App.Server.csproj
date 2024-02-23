@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Client.Integration.Tests" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Folder Include="Features\" />
   </ItemGroup>
 </Project>

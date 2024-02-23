@@ -25,6 +25,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Client.Integration.Tests" />
   </ItemGroup>
+  
   <PropertyGroup>
     <!-- Persist the source generator (and other) files to disk -->
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
