@@ -1,7 +1,5 @@
 ﻿namespace ConventionTest_;
 
-using FluentAssertions;
-
 [TestTag(TestTags.Fast)]
 public class SimpleNoApplicationTest_Should_
 {
