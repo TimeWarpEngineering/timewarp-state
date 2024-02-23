@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Test.App\Test.App.Client\Test.App.Client.csproj" />
     <ProjectReference Include="..\Test.App\Test.App.Server\Test.App.Server.csproj" />
   </ItemGroup>
