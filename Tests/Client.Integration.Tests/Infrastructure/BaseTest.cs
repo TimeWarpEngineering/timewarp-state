@@ -25,14 +25,5 @@ public abstract class BaseTest
   /// Send a request to the MediatR pipeline
   /// </summary>
   /// <param name="aRequest"></param>
-  /// <typeparam name="TResponse"></typeparam>
-  /// <returns></returns>
-  // protected Task<TResponse> Send<TResponse>(IRequest<TResponse> aRequest) => Send(aRequest);
-
-  /// <summary>
-  /// Send a request to the MediatR pipeline
-  /// </summary>
-  /// <param name="aRequest"></param>
   protected async Task Send(IRequest aRequest) => await Sender.Send(aRequest);
-
 }
