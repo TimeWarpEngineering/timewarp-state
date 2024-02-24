@@ -1,4 +1,5 @@
 // ReSharper disable ConvertToPrimaryConstructor
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace AnyClone.Tests.TestObjects;
 
 using System.Collections.ObjectModel;

@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMemberInSuper.Global
 namespace AnyClone.Tests.TestObjects;
 
 public interface ITestInterface

@@ -12,13 +12,13 @@ public partial class CounterState
     /// <summary>
     /// Intentionally throw so we can test exception handling.
     /// </summary>
-    /// <param name="aThrowServerSideExceptionAction"></param>
-    /// <param name="aCancellationToken"></param>
+    /// <param name="throwServerSideExceptionAction"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public override async Task Handle
     (
-      ThrowServerSideExceptionAction aThrowServerSideExceptionAction,
-      CancellationToken aCancellationToken
+      ThrowServerSideExceptionAction throwServerSideExceptionAction,
+      CancellationToken cancellationToken
     )
     {
       var throwServerSideExceptionRequest = new ThrowServerSideExceptionRequest();
@@ -26,7 +26,7 @@ public partial class CounterState
       await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>
       (
       throwServerSideExceptionRequest.GetRoute()
-      , cancellationToken: aCancellationToken
+      , cancellationToken: cancellationToken
       );
     }
   }

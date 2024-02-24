@@ -1,15 +1,14 @@
 namespace Test.App.Client.Features.CloneTest;
 
+[UsedImplicitly]
 internal partial class CloneTestState
 {
+  [UsedImplicitly]
   internal class CloneTestHandler
   (
     IStore store
   ) : BaseActionHandler<CloneTestAction>(store)
   {
-
-    protected CloneTestState CloneTestState => Store.GetState<CloneTestState>();
-
     public override Task<Unit> Handle
     (
       CloneTestAction aCloneTestAction,

@@ -1,5 +1,6 @@
 namespace Test.App.Client.Features.Counter;
 
+[UsedImplicitly]
 internal class PreIncrementCountNotificationHandler
 (
   ILogger<PreIncrementCountNotificationHandler> logger

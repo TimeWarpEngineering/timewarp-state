@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMember.Global
 namespace Test.App.Client.Features.Base.Components;
 
 /// <summary>

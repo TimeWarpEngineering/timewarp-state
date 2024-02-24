@@ -28,7 +28,7 @@ public class Program
             }
         );
         options.Assemblies =
-          new Assembly[]
+          new[]
           {
                 typeof(Program).GetTypeInfo().Assembly,
 		            typeof(StateInitializedNotificationHandler).GetTypeInfo().Assembly
@@ -38,7 +38,7 @@ public class Program
     serviceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(PrePipelineNotificationRequestPreProcessor<>));
     serviceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PostPipelineNotificationRequestPostProcessor<,>));
     serviceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PersistentStatePostProcessor<,>));
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(Features.EventStream.EventStreamBehavior<,>));
+    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
     serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddSingleton(serviceCollection);
   }

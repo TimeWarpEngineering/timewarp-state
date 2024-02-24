@@ -4,6 +4,7 @@ using BlazorState.Pipeline.State;
 
 public partial class ApplicationState
 {
+  [UsedImplicitly]
   internal class ExceptionNotificationHandler
   (
     ILogger<ExceptionNotificationHandler> Logger,
@@ -19,7 +20,7 @@ public partial class ApplicationState
       CancellationToken aCancellationToken
     )
     {
-      Logger.LogWarning($"aExceptionNotification.Exception.Message: {aExceptionNotification.Exception.Message}");
+      Logger.LogWarning("aExceptionNotification.Exception.Message: {ExceptionMessage}", aExceptionNotification.Exception.Message);
       ApplicationState.ExceptionMessage = aExceptionNotification.Exception.Message;
       return Task.CompletedTask;
     }

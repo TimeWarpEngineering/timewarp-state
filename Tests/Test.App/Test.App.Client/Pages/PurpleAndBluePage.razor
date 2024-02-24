@@ -46,6 +46,19 @@ else
 
 @code
 {
+  /// <summary>
+  /// The title of the page
+  /// </summary>
   public const string Title = "Purple and Blue";
+  
+  /// <summary>
+  /// The route for the page
+  /// </summary>
   public const string Route = "/twodiffcounters";
+  
+  private PurpleState PurpleState => GetState<PurpleState>();
+  private BlueState BlueState => GetState<BlueState>();
+
+  async Task IncrementPurpleCount() => await Mediator.Send(new PurpleState.IncrementCount.Action { Amount = 5 });
+  async Task IncrementBlueCount() => await Mediator.Send(new BlueState.IncrementCount.Action { Amount = 3 });
 }

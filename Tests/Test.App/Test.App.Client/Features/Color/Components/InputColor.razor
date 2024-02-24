@@ -1,7 +1,5 @@
 ﻿@namespace Test.App.Client.Features.Color.Components
 @using System.Drawing
-@using System.Text.RegularExpressions
-@using System.Diagnostics.CodeAnalysis
 @inherits InputBase<Color>
 
 <input type="color" @attributes=AdditionalAttributes class=@CssClass @bind=CurrentValueAsString />
@@ -25,7 +23,7 @@
   protected override string FormatValueAsString(Color value) => 
     ColorToString(value);
 
-  static Regex s_Regex = new Regex("^#([0-9a-f]{2}){3}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+  static Regex s_Regex = new("^#([0-9a-f]{2}){3}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
   /// <inheritdoc />
   protected override bool TryParseValueFromString(string? value, out Color result, [NotNullWhen(false)] out string? validationErrorMessage)
@@ -52,7 +50,7 @@
     const string hexChars = "0123456789abcdef";
 
     hex = hex.ToLowerInvariant();
-    int result = (hexChars.IndexOf(hex[0]) * 16) + hexChars.IndexOf(hex[1]);
+    int result = hexChars.IndexOf(hex[0]) * 16 + hexChars.IndexOf(hex[1]);
     return (byte)result;
   }
 }

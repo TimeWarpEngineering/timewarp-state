@@ -2,7 +2,7 @@
 @inherits BaseComponent
 
 <PageTitle>@Title</PageTitle>
-<h1 data-qa="HomeHeader">@Title</h1>
+<h1 data-qa="HomeHeader">@Title (@ApplicationState.Version)</h1>
 @RenderModeDisplay
 <div>Home Page render mode should be "Static" all the time.</div>
 <br/>
@@ -20,6 +20,6 @@
 
 @code
 {
-  public string Title => ApplicationState.Name;
-  public const string Route = "/";
+  private string Title => ApplicationState.Name;
+  private const string Route = "/";
 }

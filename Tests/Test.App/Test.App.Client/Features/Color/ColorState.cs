@@ -1,14 +1,20 @@
 namespace Test.App.Client.Features.Counter;
 
-public partial class ColorState : State<ColorState>
+using System.Drawing;
+
+[UsedImplicitly]
+internal partial class ColorState : State<ColorState>
 {
+  public string MyColorName { get; private set; } = null!;
 
-  public int Count { get; private set; }
-
-  public ColorState() { }
+  public Color FavoriteColor { get; private set; }
 
   /// <summary>
   /// Set the Initial State
   /// </summary>
-  public override void Initialize() => Count = 3;
+  public override void Initialize()
+  {
+    MyColorName = "Fools Gold";
+    FavoriteColor = Color.Gold;
+  }
 }
