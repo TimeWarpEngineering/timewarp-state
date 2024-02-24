@@ -169,6 +169,8 @@ csharp_style_namespace_declarations=file_scoped:error
 
 # Naming rules
 
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
 # Interfaces should begin with an I and be PascalCase
 dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
 dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
@@ -186,13 +188,10 @@ dotnet_naming_style.interface_style.capitalization = pascal_case
 # Types should be PascalCase
 dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
-dotnet_naming_rule.types_should_be_pascal_case.style = types_style
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case_style
 
 dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
 dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal
-dotnet_naming_symbols.types.required_modifiers =
-
-dotnet_naming_style.types_style.capitalization = pascal_case
 
 # Non-private static fields are PascalCase
 dotnet_naming_rule.non_private_static_fields_should_be_pascal_case.severity = suggestion
@@ -205,15 +204,25 @@ dotnet_naming_symbols.non_private_static_fields.required_modifiers = static
 
 dotnet_naming_style.non_private_static_field_style.capitalization = pascal_case
 
-# Constants are PascalCase
-dotnet_naming_rule.constants_should_be_pascal_case.severity = suggestion
-dotnet_naming_rule.constants_should_be_pascal_case.symbols = constants
-dotnet_naming_rule.constants_should_be_pascal_case.style = constant_style
+# Rule for class-level constants to be PascalCase
+dotnet_naming_rule.class_level_constants_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.class_level_constants_should_be_pascal_case.symbols = class_level_constants
+dotnet_naming_rule.class_level_constants_should_be_pascal_case.style = pascal_case_style
 
-dotnet_naming_symbols.constants.applicable_kinds = field, local
-dotnet_naming_symbols.constants.required_modifiers = const
+dotnet_naming_symbols.class_level_constants.applicable_kinds = field
+dotnet_naming_symbols.class_level_constants.applicable_accessibilities = public, private, protected, internal
+dotnet_naming_symbols.class_level_constants.required_modifiers = const
 
-dotnet_naming_style.constant_style.capitalization = pascal_case
+# Rule for local constants to be camelCase
+dotnet_naming_rule.local_constants_should_be_camel_case.severity = suggestion
+dotnet_naming_rule.local_constants_should_be_camel_case.symbols = local_constants
+dotnet_naming_rule.local_constants_should_be_camel_case.style = camel_case_style
+
+dotnet_naming_symbols.local_constants.applicable_kinds = local
+dotnet_naming_symbols.local_constants.required_modifiers = const
+
+dotnet_naming_style.camel_case_style.capitalization = camel_case
+
 
 # Static fields are camelCase and start with s_
 dotnet_naming_rule.static_fields_should_be_camel_case.severity = suggestion
@@ -247,3 +256,21 @@ dotnet_naming_style.local_function_style.capitalization = pascal_case
 dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.TW0001.severity = error
 dotnet_diagnostic.TWD001.severity = warning
+
+[*Tests.cs]
+# Override general settings for Test files
+
+# Naming rules specifically for Tests files
+dotnet_naming_rule.test_types_should_be_pascal_case_with_underscore.severity = suggestion
+dotnet_naming_rule.test_types_should_be_pascal_case_with_underscore.style = pascal_case_with_underscore
+dotnet_naming_rule.test_types_should_be_pascal_case_with_underscore.symbols = test_types
+
+dotnet_naming_symbols.test_types.applicable_kinds = class, struct, interface, enum, delegate
+dotnet_naming_symbols.test_types.applicable_accessibilities = *
+
+# General naming style that allows PascalCase and underscores for Test files
+dotnet_naming_style.pascal_case_with_underscore.capitalization = pascal_case
+dotnet_naming_style.pascal_case_with_underscore.word_separator = _
+
+# Notice that we removed the specific rule for class names in test files
+# since it's already covered by the test_types rule
