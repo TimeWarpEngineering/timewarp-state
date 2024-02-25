@@ -8,3 +8,8 @@
    <li>@item</li>
   }
 </ul>
+
+@code
+{
+  private IReadOnlyList<string> Events => EventStreamState.Events;
+}
