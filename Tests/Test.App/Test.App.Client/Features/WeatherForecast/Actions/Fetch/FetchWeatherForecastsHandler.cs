@@ -2,6 +2,7 @@ namespace Test.App.Client.Features.WeatherForecast;
 
 internal partial class WeatherForecastsState
 {
+  [UsedImplicitly]
   public class FetchWeatherForecastsHandler
   (
     IStore store,

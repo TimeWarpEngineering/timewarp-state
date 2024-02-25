@@ -32,7 +32,7 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
     title: "Unique Hint Name",
     messageFormat: "Unique hint name for generated file: {0}",
     category: "SourceGeneratorDebug",
-    defaultSeverity: DiagnosticSeverity.Warning,
+    defaultSeverity: DiagnosticSeverity.Info,
     isEnabledByDefault: true
     ),
     location: Location.None,

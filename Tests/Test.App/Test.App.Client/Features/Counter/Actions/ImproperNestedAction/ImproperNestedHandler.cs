@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.Counter;
 
-using static Test.App.Client.Features.Counter.WrongNesting;
+using static WrongNesting;
 
 public partial class CounterState
 {

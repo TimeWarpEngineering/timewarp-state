@@ -1,3 +1,4 @@
+global using AnyClone.Tests.Extensions;
 global using AnyClone.Tests.TestObjects;
 global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
@@ -18,9 +19,12 @@ global using Microsoft.JSInterop;
 global using System;
 global using System.Collections;
 global using System.Collections.Generic;
+// ReSharper disable once RedundantUsingDirective.Global
 global using System.Diagnostics.CodeAnalysis;
+// ReSharper disable once RedundantUsingDirective.Global
 global using System.Globalization;
 global using System.Linq;
+// ReSharper disable once RedundantUsingDirective.Global
 global using System.Linq.Expressions;
 global using System.Net.Http;
 global using System.Net.Http.Json;
@@ -31,11 +35,13 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using Test.App.Client.Features.Application;
 global using Test.App.Client.Features.Base;
+// ReSharper disable once RedundantUsingDirective.Global
 global using Test.App.Client.Features.Base.Components;
 global using Test.App.Client.Features.Counter;
 global using Test.App.Client.Features.Blue;
 global using Test.App.Client.Features.EventStream;
 global using Test.App.Client.Features.Purple;
+global using Test.App.Client.Features.Theme;
 global using Test.App.Client.Features.WeatherForecast;
 global using Test.App.Client.Pipeline.NotificationPostProcessor;
 global using Test.App.Client.Pipeline.NotificationPreProcessor;

@@ -1,4 +1,4 @@
-namespace Test.App.Client.Features.Counter.Components;
+namespace Test.App.Client.Features.Theme.Components;
 
 public partial class CustomInput<T> : BaseInputComponent<T>
 {
@@ -48,8 +48,4 @@ public partial class CustomInput<T> : BaseInputComponent<T>
 
     return canParse;
   }
-
-  private async Task ButtonClick() =>
-    await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString ?? "1") });
-
 }

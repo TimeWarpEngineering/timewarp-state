@@ -6,16 +6,35 @@
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
 @RenderModeDisplay
+<hr>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Test the GoBack Handler</p>
 <br/>
-<div>The button should return you to the previous page</div>
-<br/>
-<button class="btn btn-primary" data-qa="GoBack" @onclick=GoBack>Go Back</button>
-<hr/>
-<h3>History Stack</h3>
+<!-- Values to validate -->
+<h4>History Stack</h4>
 @foreach(string? url in  RouteState.History)
 {
   <div>@url</div>
 }
+
+<!-- Actions to take -->
+<button data-qa="GoBack" @onclick=GoBack>Go Back</button>
+<hr>
+
+<!-- ACT -->
+<p><strong>Act:</strong> Click the `Go Back` button</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the route changes to the top one on the History Stack.
+</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
 
 @code
 {

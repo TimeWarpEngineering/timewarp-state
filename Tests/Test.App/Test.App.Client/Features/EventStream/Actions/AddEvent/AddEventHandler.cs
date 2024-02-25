@@ -2,6 +2,7 @@ namespace Test.App.Client.Features.EventStream;
 
 internal partial class EventStreamState
 {
+  [UsedImplicitly]
   internal class AddEventHandler
   (
     IStore store

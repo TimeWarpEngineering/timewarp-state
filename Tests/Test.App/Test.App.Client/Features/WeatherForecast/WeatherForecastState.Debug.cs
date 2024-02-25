@@ -11,7 +11,7 @@ internal partial class WeatherForecastsState
   {
     string json = keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(WeatherForecasts))].ToString() ?? throw new InvalidOperationException();
 
-    var newWeatherForecastsState = new WeatherForecastsState()
+    var newWeatherForecastsState = new WeatherForecastsState
     {
       WeatherForecastList = 
         JsonSerializer.Deserialize<List<WeatherForecastDto>>(json, JsonSerializerOptions) ??
@@ -20,12 +20,13 @@ internal partial class WeatherForecastsState
       (
         keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ??
         throw new InvalidOperationException()
-      ),
+      )
     };
 
     return newWeatherForecastsState;
   }
 
+  [UsedImplicitly]
   internal void Initialize(List<WeatherForecastDto> aWeatherForecastList)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());

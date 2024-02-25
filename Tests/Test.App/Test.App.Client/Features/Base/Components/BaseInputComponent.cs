@@ -1,3 +1,4 @@
+// ReSharper disable UnusedMember.Global
 namespace Test.App.Client.Features.Base.Components;
 
 /// <summary>
@@ -15,4 +16,5 @@ public abstract class BaseInputComponent<T> : BlazorStateDevToolsInputComponent<
   internal CounterState CounterState => GetState<CounterState>();
   internal EventStreamState EventStreamState => GetState<EventStreamState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
+  internal ThemeState ThemeState => GetState<ThemeState>();
 }

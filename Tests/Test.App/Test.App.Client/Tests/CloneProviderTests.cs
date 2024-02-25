@@ -39,7 +39,7 @@ public static class CloneProviderTests
     {
       ByteArray = [0x01, 0x02, 0x03, 0x04],
       IntArray = [1, 2, 3, 4],
-      DoubleArray = [1.0, 2.0, 3.0, 4.0, 5.0],
+      DoubleArray = [1.0, 2.0, 3.0, 4.0, 5.0]
     };
     ArrayObject cloned = original.Clone();
 
@@ -82,9 +82,9 @@ public static class CloneProviderTests
   {
     var original = new ArrayObject
     {
-      ByteArray = new byte[] { 0x01, 0x02, 0x03, 0x04 },
-      IntArray = new int[] { 1, 2, 3, 4 },
-      DoubleArray = new double[] { 1.0, 2.0, 3.0, 4.0, 5.0 },
+      ByteArray = [0x01, 0x02, 0x03, 0x04],
+      IntArray = [1, 2, 3, 4],
+      DoubleArray = [1.0, 2.0, 3.0, 4.0, 5.0]
     };
     ArrayObject cloned = original.Clone();
     cloned.ByteArray[2] = 0x10;
@@ -99,16 +99,16 @@ public static class CloneProviderTests
       IntCollection = new List<int> { 1, 2, 3, 4 },
       ObjectCollection = new List<BasicObject>
                 {
-                    new BasicObject
+                    new()
                     {
                         BoolValue = true,
-                        ByteValue = 0x10,
+                        ByteValue = 0x10
                     },
-                    new BasicObject
+                    new()
                     {
                         BoolValue = false,
-                        ByteValue = 0x20,
-                    },
+                        ByteValue = 0x20
+                    }
                 }
     };
     CollectionObject cloned = original.Clone();
@@ -123,16 +123,16 @@ public static class CloneProviderTests
       IntCollection = new List<int> { 1, 2, 3, 4 },
       ObjectCollection = new List<BasicObject>
                 {
-                    new BasicObject
+                    new()
                     {
                         BoolValue = true,
-                        ByteValue = 0x10,
+                        ByteValue = 0x10
                     },
-                    new BasicObject
+                    new()
                     {
                         BoolValue = false,
-                        ByteValue = 0x20,
-                    },
+                        ByteValue = 0x20
+                    }
                 }
     };
     CollectionObject cloned = original.Clone();
@@ -146,9 +146,9 @@ public static class CloneProviderTests
     var original = new DictionaryObject
     {
       Collection = {
-                    { 1, new BasicObject() { IntValue = 1, LongValue = 10 } },
-                    { 2, new BasicObject() { IntValue = 2, LongValue = 20} },
-                    { 3, new BasicObject() { IntValue = 3, LongValue = 30} },
+                    { 1, new BasicObject { IntValue = 1, LongValue = 10 } },
+                    { 2, new BasicObject { IntValue = 2, LongValue = 20} },
+                    { 3, new BasicObject { IntValue = 3, LongValue = 30} }
                 }
     };
     DictionaryObject cloned = original.Clone();
@@ -161,9 +161,9 @@ public static class CloneProviderTests
     var original = new DictionaryObject
     {
       Collection = {
-                    { 1, new BasicObject() { IntValue = 1, LongValue = 10 } },
-                    { 2, new BasicObject() { IntValue = 2, LongValue = 20} },
-                    { 3, new BasicObject() { IntValue = 3, LongValue = 30} },
+                    { 1, new BasicObject { IntValue = 1, LongValue = 10 } },
+                    { 2, new BasicObject { IntValue = 2, LongValue = 20} },
+                    { 3, new BasicObject { IntValue = 3, LongValue = 30} }
                 }
     };
     DictionaryObject cloned = original.Clone();
@@ -174,16 +174,16 @@ public static class CloneProviderTests
 
   public static void Should_Clone_InterfacesObject()
   {
-    var original = new InterfaceObject()
+    var original = new InterfaceObject
     {
       BoolValue = true,
       IntValue = 10,
       DictionaryValue = new Dictionary<int, BasicObject>
                 {
-                    { 1, new BasicObject() { IntValue = 1, LongValue = 10 } },
-                    { 2, new BasicObject() { IntValue = 2, LongValue = 20 } },
-                    { 3, new BasicObject() { IntValue = 3, LongValue = 30 } },
-                },
+                    { 1, new BasicObject { IntValue = 1, LongValue = 10 } },
+                    { 2, new BasicObject { IntValue = 2, LongValue = 20 } },
+                    { 3, new BasicObject { IntValue = 3, LongValue = 30 } }
+                }
     };
     InterfaceObject cloned = original.Clone();
 
@@ -193,16 +193,16 @@ public static class CloneProviderTests
   // ReSharper disable once UnusedMember.Global
   public static void ModifiedClone_InterfaceObject_ShouldNotBeEqual()
   {
-    var original = new InterfaceObject()
+    var original = new InterfaceObject
     {
       BoolValue = true,
       IntValue = 10,
       DictionaryValue = new Dictionary<int, BasicObject>
                 {
-                    { 1, new BasicObject() { IntValue = 1, LongValue = 10 } },
-                    { 2, new BasicObject() { IntValue = 2, LongValue = 20 } },
-                    { 3, new BasicObject() { IntValue = 3, LongValue = 30 } },
-                },
+                    { 1, new BasicObject { IntValue = 1, LongValue = 10 } },
+                    { 2, new BasicObject { IntValue = 2, LongValue = 20 } },
+                    { 3, new BasicObject { IntValue = 3, LongValue = 30 } }
+                }
     };
     InterfaceObject cloned = original.Clone();
     cloned.DictionaryValue[2].StringValue = "Test string";
@@ -231,9 +231,9 @@ public static class CloneProviderTests
   {
     var original = new CustomCollectionObject<BasicObject>(100, "test")
             {
-                new BasicObject() { IntValue = 1, BoolValue = true, ByteValue = 10, LongValue = 100, StringValue = "Test 1" },
-                new BasicObject() { IntValue = 2, BoolValue = false, ByteValue = 20, LongValue = 200, StringValue = "Test 2" },
-                new BasicObject() { IntValue = 3, BoolValue = true, ByteValue = 30, LongValue = 300, StringValue = "Test 3" }
+                new() { IntValue = 1, BoolValue = true, ByteValue = 10, LongValue = 100, StringValue = "Test 1" },
+                new() { IntValue = 2, BoolValue = false, ByteValue = 20, LongValue = 200, StringValue = "Test 2" },
+                new() { IntValue = 3, BoolValue = true, ByteValue = 30, LongValue = 300, StringValue = "Test 3" }
             };
     CustomCollectionObject<BasicObject> cloned = original.Clone();
 

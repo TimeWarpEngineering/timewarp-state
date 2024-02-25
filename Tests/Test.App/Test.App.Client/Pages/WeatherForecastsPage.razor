@@ -11,7 +11,8 @@
 <div>This component demonstrates fetching data from the server.</div>
 
 // TODO: Won't ever be null, so how can I tell when loading?
-@if (@WeatherForecastsState.WeatherForecasts == null)
+// We should use the IsProcessing Middleware to show a spinner when loading.
+@if (WeatherForecastsState.WeatherForecasts == null)
 {
   <p><em>Loading...</em></p>
 }
@@ -27,7 +28,7 @@ else
       </tr>
     </thead>
     <tbody>
-      @foreach (WeatherForecastDto forecast in @WeatherForecastsState.WeatherForecasts)
+      @foreach (WeatherForecastDto forecast in WeatherForecastsState.WeatherForecasts)
       {
         <tr>
           <td>@forecast.Date.ToShortDateString()</td>

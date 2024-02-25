@@ -4,7 +4,7 @@ public partial class CounterState
 {
   public override CounterState Hydrate(IDictionary<string, object> keyValuePairs)
   {
-    var counterState = new CounterState()
+    var counterState = new CounterState
     {
       Count = Convert.ToInt32(keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
       Guid = 
@@ -12,7 +12,7 @@ public partial class CounterState
         (
           keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ?? 
           throw new InvalidOperationException()
-        ),
+        )
     };
 
     return counterState;

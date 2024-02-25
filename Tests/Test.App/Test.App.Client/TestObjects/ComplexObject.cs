@@ -8,6 +8,9 @@
 // ReSharper disable BaseObjectGetHashCodeCallInGetHashCode
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable ArrangeMethodOrOperatorBody
+// ReSharper disable EventNeverSubscribedTo.Global
+// ReSharper disable UnusedParameter.Global
+#pragma warning disable CS0067 // Event is never used
 #pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -20,11 +23,8 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
 
   public delegate void TestDelegate(int aValue);
   public TestDelegate MyTestDelegate { get; set; }
-#pragma warning disable 0067
   public event TestDelegate OnTestDelegate;
-#pragma warning restore 0067
-
-  public List<string> listOfStrings = new List<string>();
+  public List<string> listOfStrings = [];
   public ATestClass TestClassNoSetter { get; }
 #pragma warning disable IDE0044 // Add readonly modifier
   private ATestClass _anotherTestClass;
@@ -36,14 +36,14 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
     _constField = aInitialValue;
     MyTestDelegate = MyTestMethod;
 
-    TestClassNoSetter = new ATestClass()
+    TestClassNoSetter = new ATestClass
     {
       Name = "Read-only Property test",
       Description = "A class assigned to a public read-only property",
       TestInterface = new InterfaceObject { BoolValue = false, IntValue = 456 }
     };
 
-    _anotherTestClass = new ATestClass()
+    _anotherTestClass = new ATestClass
     {
       Name = "Private field test",
       Description = "A class assigned to a private field",
@@ -74,7 +74,7 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
     return e1 && e2 && e3 && e4 && e5;
   }
 
-  protected virtual void Dispose(bool aIsDisposing) => _isDisposed = true;
+  protected virtual void Dispose(bool isDisposing) => _isDisposed = true;
 
   public void Dispose()
   {

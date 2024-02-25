@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.Base.Components;
 
-using static Test.App.Client.Features.Application.ApplicationState;
+using static ApplicationState;
 
 public partial class ResetButton : BaseComponent
 {

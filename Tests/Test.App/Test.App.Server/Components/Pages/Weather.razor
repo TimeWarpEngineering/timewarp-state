@@ -6,9 +6,13 @@
 
 <h1>@Title</h1>
 @RenderModeDisplay
+<hr/>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Test StreamRendering data. </p>
+
 <br/>
-<div>This component demonstrates showing StreamRendering data. </div>
-<br/>
+<!-- Values to validate -->
 @if (forecasts == null)
 {
     <p><em>Loading...</em></p>
@@ -37,6 +41,18 @@ else
         </tbody>
     </table>
 }
+
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong>Load this page</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  Current Render Mode == Static<br/>
+  Configured Render Mode: None<br/>
+  The page should render the weather forecast data in a table.
+</p>
 
 @code {
     public const string Title = "Weather";

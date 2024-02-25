@@ -24,7 +24,7 @@ public class EventStreamBehavior<TRequest, TResponse>
     CancellationToken aCancellationToken
   )
   {
-    Logger.LogDebug("{classname}: Handle", GetType().Name);
+    Logger.LogDebug("{classname}: Handle", GetType().FullName);
     ArgumentNullException.ThrowIfNull(aNext);
     await AddEventToStream(aRequest, "Start");
     TResponse response = await aNext();
@@ -32,14 +32,16 @@ public class EventStreamBehavior<TRequest, TResponse>
     return response;
   }
 
-  private async Task AddEventToStream(TRequest aRequest, string aTag)
+  private async Task AddEventToStream(TRequest request, string tag)
   {
-    if (aRequest is not AddEventAction)//Skip to avoid recursion
+    if (request is not AddEventAction)//Skip to avoid recursion
     {
-      string requestTypeName = aRequest.GetType().Name;
+      string requestTypeName = request.GetType().FullName ?? "Unknown";
+      string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
       var addEventAction = new AddEventAction
       {
-        Message = $"{aTag}:{requestTypeName}"
+        Message = $"{timestamp} {tag}:{requestTypeName}"
       };
       await Sender.Send(addEventAction);
     }

@@ -5,47 +5,94 @@
 
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
-
 @RenderModeDisplay
-<br/>
-<div>
-  The purpose of this page is two show two different persistent states, LocalStorage and SessionStorage.
-  <br/>
-  The two counters are independent of each other and will persist across page refreshes.
+<hr/>
+<!-- Arrange -->
+<!-- Test description -->
+<p>
+  The purpose of this page is to test two different persistent states, LocalStorage and SessionStorage.<br/>
+  The two counters are independent of each other and will persist across page refreshes.<br/>
   Opening a new tab will share the state of the Purple counter (LocalStorage), but not the Blue counter (SessionStorage).
   <br/>
+</p>
+<div style="border: 2px solid blue; padding: 10px; margin-bottom: 20px;">
+  <h2>System Under Test</h2>
+  <h3>Purple (Local)</h3>
+
+  @if (IsPreRendering)
+  {
+    <div role="status">PurpleState.Guid: </div>
+    <div role="status">Purple Count: </div>
+  }
+  else
+  {
+    <div role="status">PurpleState.Guid: @PurpleState.Guid</div>
+    <div role="status">Purple Count: @PurpleState.Count</div>
+    <button @onclick="IncrementPurpleCount">Increment Purple Count</button>
+  }
+  <br/>
+  <br/>
+
+  <h3>Blue (Session)</h3>
+  @if (IsPreRendering)
+  {
+    <div role="status">BlueState.Guid: </div>
+    <div role="status">Blue Count: </div>
+  }
+  else
+  {
+    <div role="status">BlueState.Guid: @BlueState.Guid</div>
+    <div role="status">Blue Count: @BlueState.Count</div>
+    <button @onclick="IncrementBlueCount">Increment Blue Count</button>
+  }
 </div>
-<h1>Purple</h1>
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong><br/>
+  Click the `Increment Purple Count` button<br/>
+  Click the `Increment Blue Count` button<br/>
+  Make note of the `Guid` and `Count` for both PurpleState and BlueState`<br/>
+  Refresh the page<br/>
+</p>
 
-@if (IsPreRendering)
-{
-  <div role="status">PurpleState.Guid: </div>
-  <div role="status">Purple Count: </div>
-}
-else
-{
-  <div role="status">PurpleState.Guid: @PurpleState.Guid</div>
-  <div role="status">Purple Count: @PurpleState.Count</div>
-  <button class="btn btn-primary" @onclick="IncrementPurpleCount">Increment Purple Count</button>
-}
-<br/>
-<br/>
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong><br/>
+  `Current Render Mode` == Wasm.<br/>
+  The `Guid` and `Count` for both PurpleState and BlueState are the same as before the refresh.
+</p>
 
-<h1>Blue</h1>
-@if (IsPreRendering)
-{
-  <div role="status">BlueState.Guid: </div>
-  <div role="status">Blue Count: </div>
-}
-else
-{
-  <div role="status">BlueState.Guid: @BlueState.Guid</div>
-  <div role="status">Blue Count: @BlueState.Count</div>
-  <button class="btn btn-primary" @onclick="IncrementBlueCount">Increment Blue Count</button>
-}
+<!-- ACT -->
+<p><strong>Act:</strong>Open a new tab to this page</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong><br/> The `Guid` and `Count` for PurpleState are the same as the previous tab. <br/>
+  The `Guid` for BlueState is different and the Count is 2.<br/>
+</p>
+<hr>
 
 @code
 {
-  public const string Title = "Purple and Blue";
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Persistance Test Page";
+
+  /// <summary>
+  /// The route for the page
+  /// </summary>
   public const string Route = "/twodiffcounters";
+
+  private PurpleState PurpleState => GetState<PurpleState>();
+  private BlueState BlueState => GetState<BlueState>();
+
+  async Task IncrementPurpleCount() => await Mediator.Send(new PurpleState.IncrementCount.Action
+  {
+    Amount = 5
+  });
+  async Task IncrementBlueCount() => await Mediator.Send(new BlueState.IncrementCount.Action
+  {
+    Amount = 3
+  });
 }

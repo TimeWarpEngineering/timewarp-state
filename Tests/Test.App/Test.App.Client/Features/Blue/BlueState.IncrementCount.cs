@@ -9,6 +9,7 @@ public partial class BlueState
       public int Amount { get; init; }
     }
 
+    [UsedImplicitly]
     public class Handler
     (
       IStore store

@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.CloneTest;
 
-internal partial class CloneTestState : State<CloneTestState>
+internal partial class CloneTestState
 {
   public override CloneTestState Hydrate(IDictionary<string, object> keyValuePairs)
   {
@@ -12,7 +12,7 @@ internal partial class CloneTestState : State<CloneTestState>
         (
           keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ?? 
           throw new InvalidOperationException()
-        ),
+        )
     };
 
     return counterState;
@@ -22,7 +22,7 @@ internal partial class CloneTestState : State<CloneTestState>
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
   /// <param name="aCount"></param>
-  public void Initialize(int aCount)
+  [UsedImplicitly] public void Initialize(int aCount)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
     Count = aCount;

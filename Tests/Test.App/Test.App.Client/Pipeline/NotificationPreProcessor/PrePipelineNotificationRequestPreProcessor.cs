@@ -13,7 +13,7 @@ internal class PrePipelineNotificationRequestPreProcessor<TRequest>
   {
     var notification = new PrePipelineNotification<TRequest>
     {
-      Request = aRequest,
+      Request = aRequest
     };
 
     Logger.LogDebug(nameof(PrePipelineNotificationRequestPreProcessor<TRequest>));

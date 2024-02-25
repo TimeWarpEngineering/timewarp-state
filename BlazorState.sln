@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.App.Contracts", "Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeWarp.State.SourceGenerator", "Source\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj", "{0F284DE4-210E-4012-AA97-F5D2AA393E4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Integration.Tests", "Tests\Client.Integration.Tests\Client.Integration.Tests.csproj", "{D8CF79FE-21E3-4075-AA23-DD98329FFB14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +140,12 @@ Global
 		{0F284DE4-210E-4012-AA97-F5D2AA393E4E}.ReduxDevToolsEnabled|Any CPU.Build.0 = Debug|Any CPU
 		{0F284DE4-210E-4012-AA97-F5D2AA393E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F284DE4-210E-4012-AA97-F5D2AA393E4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14}.ReduxDevToolsEnabled|Any CPU.Build.0 = Debug|Any CPU
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +163,7 @@ Global
 		{987E1838-715E-4D11-85AC-575F90F94E07} = {B96A36DB-E4B3-412D-A9BB-7E97A9D042F4}
 		{32843547-4F68-4720-9F8A-27A06B912E5C} = {B96A36DB-E4B3-412D-A9BB-7E97A9D042F4}
 		{8891678E-2973-403B-9205-2DB2AEA6D7F7} = {B96A36DB-E4B3-412D-A9BB-7E97A9D042F4}
+		{D8CF79FE-21E3-4075-AA23-DD98329FFB14} = {2902FDFD-016E-4BF7-8B41-53D674FA53DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16FA64C2-4A0E-42D4-94E6-C8CFDE84597E}
