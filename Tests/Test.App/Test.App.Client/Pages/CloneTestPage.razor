@@ -3,15 +3,31 @@
 @using AnyClone.Tests
 @inherits BaseComponent
 
-<h1>Clone Tests</h1>
-
+<PageTitle>@Title</PageTitle>
+<h3>Clone Tests</h3>
 @RenderModeDisplay
-<div>Testing ability to clone various Types.</div>
-<div>The button should set TestResult to Passed</div>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Test ability of Any Cone to clone various Types.</p>
 
-<button class="btn btn-primary" @onclick="TestClone">Click me</button>
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>TestResult:</strong>@TestResult
+  </li>
+</ul>
+
+<!-- Actions to take -->
+<button @onclick="TestClone">Run</button>
+
 <hr/>
-<h6 data-qa="TestResult">TestResult:@TestResult</h6>
+<!-- ACT -->
+<p><strong>Act:</strong> Click the `Run` button</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong> TestResult should be `Passed`
+</p>
 
 @code {
   /// <summary>
