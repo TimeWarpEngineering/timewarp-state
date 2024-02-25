@@ -30,7 +30,7 @@
 <!-- System Under Test (SUT) -->
 <div style="border: 2px solid blue; padding: 10px; margin-bottom: 20px;">
   <h2>System Under Test: CustomInput Component</h2>
-  <EditForm FormName="Person" Model=@MyModel>
+  <EditForm FormName="TheForm" Model=@MyModel>
     <CustomInput @bind-Value=MyModel.Amount ValidationFor=@(() => MyModel.Amount) Label="Amount"/>
   </EditForm>
 </div>
