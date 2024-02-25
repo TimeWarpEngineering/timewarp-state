@@ -41,6 +41,7 @@ global using Test.App.Client.Features.Counter;
 global using Test.App.Client.Features.Blue;
 global using Test.App.Client.Features.EventStream;
 global using Test.App.Client.Features.Purple;
+global using Test.App.Client.Features.Theme;
 global using Test.App.Client.Features.WeatherForecast;
 global using Test.App.Client.Pipeline.NotificationPostProcessor;
 global using Test.App.Client.Pipeline.NotificationPreProcessor;

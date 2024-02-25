@@ -5,17 +5,47 @@
 
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
-
 @RenderModeDisplay
-<br/>
-<div>Two Counter Components that display and increment the same state</div>
-<br/>
-<h2>Counter Component 1</h2>
-<Counter TestId="Counter1"/>
-<br/>
+<hr>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Two Counter Components that display and increment the same state</p>
 
-<h2>Counter Component 2</h2>
-<Counter TestId="Counter2"/>
+<div style="border: 2px solid blue; padding: 10px; margin-bottom: 20px;">
+  <h3>System Under Test</h3>
+  <h4>Counter TestId="Counter1"</h4>
+  <div style="border: 2px solid gray; padding: 10px; margin-bottom: 20px;">
+    <Counter TestId="Counter1"/>
+  </div>
+  <h4>Counter TestId="Counter2"</h4>
+  <div style="border: 2px solid gray; padding: 10px; margin-bottom: 20px;">
+    <Counter TestId="Counter2"/>
+  </div>
+</div>
+
+<hr>
+<!-- ACT: Toggle Theme -->
+<p><strong>Act:</strong> Click the Counter1 component button</p>
+
+<!-- ASSERT: Theme Change Reflected -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the CounterState.Count is incremented by 5 on both Counter components
+</p>
+
+<!-- ACT: Toggle Theme -->
+<p><strong>Act:</strong> Click the Counter2 component button</p>
+
+<!-- ASSERT: Theme Change Reflected -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the CounterState.Count is incremented by 5 on both Counter components
+</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
 
 @code
 {
@@ -23,7 +53,7 @@
   /// The title of the page
   /// </summary>
   public const string Title = "Counter Page";
-  
+
   /// <summary>
   /// The route of the page
   /// </summary>

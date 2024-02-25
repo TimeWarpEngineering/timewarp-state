@@ -5,5 +5,5 @@ using static CounterState;
 public partial class Counter : BaseComponent
 {
   private async Task ButtonClick() =>
-    await Mediator.Send(new IncrementCounterAction { Amount = 5 });
+    await Mediator.Send(new IncrementCount.Action { Amount = 5 });
 }
