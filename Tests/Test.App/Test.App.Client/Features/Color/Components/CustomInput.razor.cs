@@ -48,8 +48,4 @@ public partial class CustomInput<T> : BaseInputComponent<T>
 
     return canParse;
   }
-
-  private async Task ButtonClick() =>
-    await Mediator.Send(new CounterState.IncrementCounterAction { Amount = int.Parse(CurrentValueAsString ?? "1") });
-
 }

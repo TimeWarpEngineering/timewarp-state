@@ -16,6 +16,7 @@ public abstract class BaseComponent : BlazorStateDevToolsComponent
   internal CounterState CounterState => GetState<CounterState>();
   internal EventStreamState EventStreamState => GetState<EventStreamState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
+  internal ThemeState ThemeState => GetState<ThemeState>();
   
   // ReSharper disable once UnusedMember.Global - Can be used by inheriting classes not in this library.
   protected Task Send(IRequest aRequest) => Mediator.Send(aRequest);

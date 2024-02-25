@@ -1,54 +1,92 @@
-﻿@namespace Test.App.Client.Pages
+﻿@rendermode InteractiveAuto
+@namespace Test.App.Client.Pages
 @page "/customInput"
 @inherits BaseComponent
-@using System.Drawing
 
-<h1>Custom Input</h1>
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
 @RenderModeDisplay
-<br />
-<div>
-  Shows how to create a custom input component that uses a color picker.
-  Forms need to be bound to mutable properties. Thus should NOT be bound directly to State.
-  Instead, they should be bound to a property on an Action that will be dispatched to update the state.
-  The CustomInput component has access to States and thus can adjust display based on the state and will subscribe to state changes.
-  Although the Input component will not be bound to state as it is immutable.
-  This CustomInput shows that it can display CounterState.Count and dispatch an action in the custom input.
-  While being bound to a property on the Person model (would likely be some Action).
-</div>
-<hr />
-<EditForm FormName="Person" Model=@CurrentPerson OnValidSubmit=@HandleValidSubmit>
-  <CustomInput @bind-Value=CurrentPerson.Amount ValidationFor=@(() => CurrentPerson.Amount) Label="Custom Input"/>
-  <br/>
-  <InputColor @bind-Value=CurrentPerson.FavoriteColor />
-</EditForm>
+<hr>
+<!-- Arrange -->
+<!-- Test description -->
+<p>
+  This test page is designed to validate the dynamic style adjustment of a CustomInput component based on the application's current theme (Light or Dark).
+</p>
 
-Favorite color is @CurrentPerson.FavoriteColor
-<div style="width:100px;height:100px;background-color:@ColorAsHex"></div>
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>Current Theme:</strong> @ThemeState.CurrentTheme
+  </li>
+  <li>
+    <strong>Amount:</strong> @MyModel.Amount
+  </li>
+</ul>
+
+<!-- Actions to take -->
+<button @onclick=ToggleTheme>Toggle Theme</button>
+<hr>
+
+<!-- System Under Test (SUT) -->
+<div style="border: 2px solid blue; padding: 10px; margin-bottom: 20px;">
+  <h2>System Under Test: CustomInput Component</h2>
+  <EditForm FormName="Person" Model=@MyModel>
+    <CustomInput @bind-Value=MyModel.Amount ValidationFor=@(() => MyModel.Amount) Label="Amount"/>
+  </EditForm>
+</div>
+
+<hr>
+<!-- ACT: Toggle Theme -->
+<p><strong>Act:</strong> Toggle the theme by clicking the 'Toggle Theme' button.</p>
+
+<!-- ASSERT: Theme Change Reflected -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the theme changes from Light to Dark or vice versa upon clicking the 'Toggle Theme' button by
+  inspecting the class on the input element.
+</p>
+
+<!-- ASSERT: CustomInput Reflects State -->
+<p><strong>Assert:</strong> Verify that the CustomInput component properly reflects the current theme.</p>
+
+
+<!-- ACT: Enter a number -->
+<p><strong>Act:</strong> Enter a number into the input box.</p>
+<p><strong>Assert:</strong> The Amount value updates on exiting the input.</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
 
 @code {
-  readonly Person CurrentPerson = new()
+  readonly TheModel MyModel = new()
   {
-    Amount = 10,
-    FavoriteColor = Color.Green
+    Amount = 10
   };
 
-  string ColorAsHex => InputColor.ColorToString(CurrentPerson.FavoriteColor);
-
-  class Person
+  class TheModel
   {
-    public Color FavoriteColor { get; set; }
     public int Amount { get; set; }
   }
-  
+
   /// <summary>
   /// The title for the page.
   /// </summary>
-  public const string Title = "Custom Input Page";
-  
+  public const string Title = "Custom Input Test";
+
   /// <summary>
   /// The route for the page.
   /// </summary>
   public const string Route = "/custominput";
-  
-  private static void HandleValidSubmit() => Console.WriteLine("Valid Submit");
+  private void ToggleTheme()
+  {
+    Send
+    (
+    new ThemeState.Update.Action
+    {
+      NewTheme = ThemeState.CurrentTheme == ThemeState.Theme.Light ? ThemeState.Theme.Dark : ThemeState.Theme.Light
+    }
+    );
+  }
 }
