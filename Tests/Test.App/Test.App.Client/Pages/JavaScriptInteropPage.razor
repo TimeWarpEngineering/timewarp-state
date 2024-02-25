@@ -4,14 +4,33 @@
 
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
-
 @RenderModeDisplay
-<div>Testing ability to clone various Types.</div>
-<div>The button should increment the count by 7</div>
-<br/>
-<div>CounterState.Count: @CounterState.Count</div>
+<hr/>
+<p>Testing ability for Javascript to Dispatch Actions via the include `blazorState.DispatchRequest` Javascript method.</p>
+<!-- Values to validate -->
+<ul>
+<li>
+  <strong>CounterState.Count:</strong> @CounterState.Count
+</li>
+</ul>
 
-<button class="btn btn-primary" data-qa="JsInterop" onclick="window.InteropTest()">Increment Count by 7 via JavaScript Interop</button>
+<!-- Actions to take -->
+
+<button data-qa="JsInterop" onclick="window.InteropTest()">Increment Count by 7 via JavaScript Interop</button>
+
+<hr>
+<!-- ACT: Toggle Theme -->
+<p><strong>Act:</strong> Click the button</p>
+
+<!-- ASSERT: Theme Change Reflected -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the CounterState.Count increments by 7.
+</p>
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
 
 @code
 {
@@ -19,7 +38,7 @@
   /// <summary>
   /// The title of the page
   /// </summary>
-  public const string Title = "JavaScript Interop Page";
+  public const string Title = "JavaScript Interop Test";
   
   
   /// <summary>

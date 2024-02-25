@@ -6,25 +6,53 @@
 
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
-
 @RenderModeDisplay
-<br/>
-<div>Clicking both buttons should throw an exception but should NOT crash the UX</div>
-<div>If RenderMode is Server you will see stack trace on Server console</div>
-<div>If RenderMode is Wasm you will see stack trace "warning" on Browser console</div>
-<div>The clone middleware will catch these exceptions and reset the state</div>
-<div>Thus the CounterState.Guid should NOT change </div>
+<hr>
+<!-- Arrange -->
+<!-- Test description -->
+<p>
+  Verify that exceptions thrown in the UI are caught by the clone middleware and do not crash the UX.
+</p>
 
-<br/>
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>CounterState.Guid:</strong> @CounterState.Guid
+  </li>
+</ul>
 
-<div>CounterState.Guid:@CounterState.Guid</div>
-
+<!-- Actions to take -->
 <h6>Click below to Throw Client Side Exception.</h6>
-<button class="btn btn-primary" data-qa="ThrowException" @onclick=SendThrowExceptionAction>Throw Client Side Exception</button>
+<button data-qa="ThrowClientException" @onclick=SendThrowExceptionAction>Throw Client Side Exception</button>
 
 <h6>Click below to Throw Server Side Exception.</h6>
-<button class="btn btn-primary" data-qa="ThrowException" @onclick=SendThrowServerSideExceptionAction>Throw Server Side Exception</button>
+<button data-qa="ThrowServerException" @onclick=SendThrowServerSideExceptionAction>Throw Server Side Exception</button>
 
+
+<hr>
+<!-- ACT: -->
+<p><strong>Act:</strong> Click `Throw Client Side Exception` Button</p>
+
+<!-- ASSERT: -->
+<p>
+  <strong>Assert:</strong> CounterState.Guid should NOT change. And the UX should not crash.
+</p>
+
+<hr>
+<!-- ACT: -->
+<p><strong>Act:</strong> Click `Throw Server Side Exception` Button</p>
+
+<!-- ASSERT: -->
+<p>
+  <strong>Assert:</strong> CounterState.Guid should NOT change. And the UX should not crash.
+</p>
+
+<div><strong>Note:</strong>
+If RenderMode is Server you will see stack trace on Server console<br>
+If RenderMode is Wasm you will see stack trace "warning" on Browser console<br>
+The clone middleware will catch these exceptions and reset the state
+thus the CounterState.Guid should NOT change 
+</div>
 @code
 {
   
