@@ -1,21 +1,21 @@
 ﻿namespace Sample.Client.Features.Counter;
 
-using BlazorState;
-using MediatR;
-
+[UsedImplicitly]
 public partial class CounterState
 {
   public static class IncrementCount
   {
     public class Action : IAction
     {
-      public int Amount { get; set; }
+      public int Amount { get; init; }
     }
 
-    public class Handler : ActionHandler<Action>
+    [UsedImplicitly]
+    public class Handler
+    (
+      IStore store
+    ) : ActionHandler<Action>(store)
     {
-      public Handler(IStore aStore) : base(aStore) { }
-      
       CounterState CounterState => Store.GetState<CounterState>();
 
       public override Task Handle(Action aAction, CancellationToken aCancellationToken)
