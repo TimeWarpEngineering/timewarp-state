@@ -1,7 +1,5 @@
 namespace Test.App.Client.Features.CloneTest;
 
-using AnyClone.Tests;
-
 [UsedImplicitly]
 internal partial class CloneableState
 {
