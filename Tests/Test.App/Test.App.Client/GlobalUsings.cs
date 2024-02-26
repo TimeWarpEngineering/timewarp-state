@@ -12,6 +12,7 @@ global using FluentAssertions;
 global using JetBrains.Annotations;
 global using MediatR;
 global using MediatR.Pipeline;
+// ReSharper disable once RedundantUsingDirective.Global
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.Logging;

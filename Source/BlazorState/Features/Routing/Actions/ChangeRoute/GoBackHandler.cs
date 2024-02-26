@@ -8,16 +8,14 @@ public partial class RouteState
     NavigationManager NavigationManager
   ) : ActionHandler<GoBack.Action>(store)
   {
-
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public override Task Handle(GoBack.Action aAction, CancellationToken aCancellationToken)
+    public override Task Handle(GoBack.Action action, CancellationToken cancellationToken)
     {
-      if (RouteState.History.Count != 0)
-      {
-        RouteState.GoingBack = true;
-        NavigationManager.NavigateTo(RouteState.HistoryStack.Pop());
-      }
+      if (RouteState.IsHistoryEmpty) return Task.CompletedTask;
+      
+      RouteState.GoingBack = true;
+      NavigationManager.NavigateTo(RouteState.HistoryStack.Pop());
       return Task.CompletedTask;
     }
   }

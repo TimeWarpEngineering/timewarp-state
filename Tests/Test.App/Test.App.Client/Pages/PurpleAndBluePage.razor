@@ -84,15 +84,6 @@
   /// </summary>
   public const string Route = "/twodiffcounters";
 
-  private PurpleState PurpleState => GetState<PurpleState>();
-  private BlueState BlueState => GetState<BlueState>();
-
-  async Task IncrementPurpleCount() => await Mediator.Send(new PurpleState.IncrementCount.Action
-  {
-    Amount = 5
-  });
-  async Task IncrementBlueCount() => await Mediator.Send(new BlueState.IncrementCount.Action
-  {
-    Amount = 3
-  });
+  private async Task IncrementPurpleCount() => await Send(new PurpleState.IncrementCount.Action { Amount = 5 });
+  private async Task IncrementBlueCount() => await Send(new BlueState.IncrementCount.Action { Amount = 3 });
 }

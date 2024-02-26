@@ -7,10 +7,10 @@ public partial class CounterState
     var counterState = new CounterState
     {
       Count = Convert.ToInt32(keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
-      Guid = 
+      Guid =
         new Guid
         (
-          keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ?? 
+          keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ??
           throw new InvalidOperationException()
         )
     };

@@ -23,7 +23,7 @@
   protected override string FormatValueAsString(Color value) => 
     ColorToString(value);
 
-  static Regex s_Regex = new("^#([0-9a-f]{2}){3}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+  static readonly Regex s_Regex = new("^#([0-9a-f]{2}){3}$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
   /// <inheritdoc />
   protected override bool TryParseValueFromString(string? value, out Color result, [NotNullWhen(false)] out string? validationErrorMessage)
@@ -45,7 +45,7 @@
     return true;
   }
 
-  byte HexStringToByte(string hex)
+  static byte HexStringToByte(string hex)
   {
     const string hexChars = "0123456789abcdef";
 
