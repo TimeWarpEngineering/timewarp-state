@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Title>TimeWarp State Middleware</Title>
-    <Description>Middleware package for TimeWarp Blazor State management library</Description>
+    <Title>TimeWarp.State.Plus</Title>
+    <Description>TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.</Description>
     <PackageId>TimeWarp.State.Plus</PackageId>
-    <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux; Middleware</PackageTags>
+    <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Middleware; Redux; Flux; Features; Plus</PackageTags>
   </PropertyGroup>
   
   <PropertyGroup>
