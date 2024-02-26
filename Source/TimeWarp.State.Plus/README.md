@@ -16,7 +16,7 @@
 
 ![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.svg)
 
-TimeWarp.State.Plus is a versatile extension of the Blazor-State library, designed to enhance state management in Blazor applications with a suite of middleware capabilities.
+TimeWarp.State.Plus extends Blazor-State with additional, features, middleware and components to simplify and enhance your Blazor applications.
 
 ## Available Middleware
 
@@ -35,6 +35,17 @@ public partial class Counter2State : State<Counter2State>
 }
 ```
 
+## Available Components
+- **InputColor**
+  - **Key Feature**: A color picker input component.
+  - **Usage**: `<InputColor @bind-Value="Color" />`
+  - **ValueType**: System.Drawing.Color
+
+## Available Features
+- **ThemeState**
+  - **Key Feature**: Manages the `CurrentTheme` of your application (Light, Dark, System).
+  - **Actions**: UpdateTheme 
+  
 ## Give a Star! :star:
 
 If you find this project useful, please give it a star. Thanks!
