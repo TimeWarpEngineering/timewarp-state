@@ -2,8 +2,8 @@
 [![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/blazor-state?logo=github)](https://github.com/TimeWarpEngineering/blazor-state)
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![workflow](https://github.com/TimeWarpEngineering/blazor-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/blazor-state/actions)
-[![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Middleware?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Middleware/)
-[![nuget](https://img.shields.io/nuget/dt/TimeWarp.State.Middleware?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Middleware/)
+[![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
+[![nuget](https://img.shields.io/nuget/dt/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 [![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/blazor-state.svg?logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
 [![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/blazor-state)](https://github.com/TimeWarpEngineering/blazor-state)
 [![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
@@ -12,11 +12,11 @@
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
 [![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
 
-# TimeWarp.State.Middleware
+# TimeWarp.State.Plus
 
 ![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.svg)
 
-TimeWarp.State.Middleware is a versatile extension of the Blazor-State library, designed to enhance state management in Blazor applications with a suite of middleware capabilities.
+TimeWarp.State.Plus is a versatile extension of the Blazor-State library, designed to enhance state management in Blazor applications with a suite of middleware capabilities.
 
 ## Available Middleware
 
@@ -46,12 +46,12 @@ For a quick start, refer to the [middleware section](https://timewarpengineering
 ## Installation
 
 ```console
-dotnet add package TimeWarp.State.Middleware
+dotnet add package TimeWarp.State.Plus
 ```
 
 Check out the latest NuGet packages on the [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
-* [TimeWarp.State.Middleware](https://www.nuget.org/packages/TimeWarp.State.Middleware/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Middleware?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Middleware/)
+* [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 
 ## Releases
 
