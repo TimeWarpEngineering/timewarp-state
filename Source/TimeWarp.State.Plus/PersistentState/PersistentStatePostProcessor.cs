@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Middleware;
+namespace TimeWarp.State.Plus;
 
 public class PersistentStatePostProcessor<TRequest, TResponse>
 (

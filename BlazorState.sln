@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleDotNet8", "Samples\01
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleDotNet8.Client", "Samples\01-StateActionsHandlers\SampleDotNet8\SampleDotNet8.Client\SampleDotNet8.Client.csproj", "{5CB54165-1F46-448A-9827-2C4F03E28A0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.State.Middleware", "Source\TimeWarp.State.Middleware\TimeWarp.State.Middleware.csproj", "{6ED520FE-F6F0-4349-92BD-86C66A48A39E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.State.Plus", "Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj", "{6ED520FE-F6F0-4349-92BD-86C66A48A39E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorStateAnalyzer.Tests", "Tests\BlazorStateAnalyzer.Tests\BlazorStateAnalyzer.Tests.csproj", "{42C84D63-112E-4A35-98DE-DFCB3EA5A452}"
 EndProject

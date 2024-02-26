@@ -48,5 +48,5 @@ global using Test.App.Client.Pipeline.NotificationPostProcessor;
 global using Test.App.Client.Pipeline.NotificationPreProcessor;
 global using Test.App.Contracts.Features.ExceptionHandlings;
 global using Test.App.Contracts.Features.WeatherForecast;
-global using TimeWarp.State.Middleware;
-global using TimeWarp.State.Middleware.PersistentState;
+global using TimeWarp.State.Plus;
+global using TimeWarp.State.Plus.PersistentState;

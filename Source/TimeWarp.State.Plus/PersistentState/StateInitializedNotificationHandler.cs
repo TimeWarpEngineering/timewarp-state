@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Middleware.PersistentState;
+namespace TimeWarp.State.Plus.PersistentState;
 
 public class StateInitializedNotificationHandler
 (
