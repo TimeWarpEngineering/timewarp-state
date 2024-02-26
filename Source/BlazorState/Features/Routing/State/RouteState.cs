@@ -7,6 +7,7 @@ public partial class RouteState : State<RouteState>
 {
   private readonly Stack<string> HistoryStack = new();
   private bool GoingBack;
+  public bool IsHistoryEmpty => HistoryStack.Count == 0;
 
   /// <summary>
   /// The collection of routes that have been navigated to
