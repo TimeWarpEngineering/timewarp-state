@@ -1,7 +1,9 @@
 namespace Test.App.Client.Features.CloneTest;
 
+using AnyClone.Tests;
+
 [UsedImplicitly]
-internal partial class CloneTestState
+internal partial class CloneableState
 {
   [UsedImplicitly]
   internal class CloneTestHandler
@@ -9,10 +11,19 @@ internal partial class CloneTestState
     IStore store
   ) : BaseActionHandler<CloneTestAction>(store)
   {
-    public override Task<Unit> Handle
+    private CloneableState CloneableState => Store.GetState<CloneableState>();
+    
+    public override Task Handle
     (
       CloneTestAction aCloneTestAction,
       CancellationToken aCancellationToken
-    ) => Unit.Task;
+    )
+    {
+      // Note: This is a test to verify that the state is cloned.
+      // It is not an example of any real-world usage.
+      if ( CloneableState.Count != 42) throw new Exception("Count is not 42 it seems I have failed to clone the state");
+      CloneableState.Count++;
+      return Task.CompletedTask;
+    }
   }
 }

@@ -1,10 +1,10 @@
 namespace Test.App.Client.Features.CloneTest;
 
-internal partial class CloneTestState
+internal partial class CloneableState
 {
-  public override CloneTestState Hydrate(IDictionary<string, object> keyValuePairs)
+  public override CloneableState Hydrate(IDictionary<string, object> keyValuePairs)
   {
-    var counterState = new CloneTestState
+    var counterState = new CloneableState
     {
       Count = Convert.ToInt32(keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
       Guid = 
@@ -21,10 +21,10 @@ internal partial class CloneTestState
   /// <summary>
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
-  /// <param name="aCount"></param>
-  [UsedImplicitly] public void Initialize(int aCount)
+  /// <param name="count"></param>
+  [UsedImplicitly] public void Initialize(int count)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    Count = aCount;
+    Count = count;
   }
 }
