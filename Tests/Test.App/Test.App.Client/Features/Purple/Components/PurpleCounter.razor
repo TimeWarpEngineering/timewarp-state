@@ -16,7 +16,5 @@ else
 
 @code
 {
-  [Inject] private ILogger<PurpleCounter> Logger { get; set; } = null!;
-  private PurpleState PurpleState => GetState<PurpleState>();
   private async Task IncrementCount() => await Mediator.Send(new PurpleState.IncrementCount.Action { Amount = 5 });
 }
