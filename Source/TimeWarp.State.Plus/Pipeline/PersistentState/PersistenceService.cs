@@ -13,26 +13,22 @@ public class PersistenceService
     string typeName = 
       stateType.Name ?? 
       throw new InvalidOperationException("The type provided has a null full name, which is not supported for persistence operations.");
-
-    // TODO: Remove these comments potentially add Debug Logging.
-    Logger.LogInformation($"PersistenceService.LoadState Loading State for {stateType}");
+    
+    Logger.LogInformation("PersistenceService.LoadState Loading State for {stateType}", stateType);
 
     string? serializedState = persistentStateMethod switch
     {
       PersistentStateMethod.SessionStorage => await SessionStorageService.GetItemAsStringAsync(typeName),
       PersistentStateMethod.LocalStorage => await LocalStorageService.GetItemAsStringAsync(typeName),
+      PersistentStateMethod.PreRender => null,// TODO
       PersistentStateMethod.Server => null,// TODO
-      _ => null,
+      _ => null
     };
     
-    Console.WriteLine($"PersistenceService.LoadState serializedState: {serializedState}");
-
     object? result = 
       serializedState != null ?
       JsonSerializer.Deserialize(serializedState, stateType, JsonSerializerOptions) :
       null;
-
-    Console.WriteLine($"PersistenceService.LoadState serializedState: {serializedState}");
 
     return result;
   }

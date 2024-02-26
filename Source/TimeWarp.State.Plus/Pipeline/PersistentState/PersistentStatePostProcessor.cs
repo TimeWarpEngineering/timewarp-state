@@ -32,20 +32,21 @@ public class PersistentStatePostProcessor<TRequest, TResponse>
     switch (persistentStateAttribute.PersistentStateMethod)
     {
       case PersistentStateMethod.Server:
+        // TODO: 
         break;
       case PersistentStateMethod.SessionStorage:
-        Console.WriteLine($"Save to Session Storage {currentType.Name}");
+        Logger.LogDebug("Save to Session Storage {StateTypeName}", currentType.Name);
         await SessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.LocalStorage:
-        Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] Save to Local Storage {currentType.Name}");
+        Logger.LogDebug("Save to Local Storage {StateTypeName}", currentType.Name);
         await LocalSessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.PreRender:
         // TODO: This needs to be tried and see if improves UX.
         break;
       default:
-        throw new ArgumentOutOfRangeException();
+        throw new InvalidOperationException($"The {persistentStateAttribute.PersistentStateMethod} is not supported.");
     }
   }
 }
