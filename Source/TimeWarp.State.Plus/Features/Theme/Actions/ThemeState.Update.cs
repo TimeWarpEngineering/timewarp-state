@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Plus.Features.Theme;
+namespace TimeWarp.Features.Theme;
 
 [UsedImplicitly]
 public partial class ThemeState
