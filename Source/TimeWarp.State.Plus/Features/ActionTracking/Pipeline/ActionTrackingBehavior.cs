@@ -1,6 +1,6 @@
-﻿namespace TimeWarp.Features.Processing;
+﻿namespace TimeWarp.Features.ActionTracking;
 
-using static ActiveActionState;
+using static ActionTrackingState;
 
 public class ActiveActionBehavior<TAction, TResponse>
 (

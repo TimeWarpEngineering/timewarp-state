@@ -1,6 +1,6 @@
-namespace TimeWarp.Features.Processing;
+namespace TimeWarp.Features.ActionTracking;
 
-public partial class ActiveActionState : State<ActiveActionState>
+public partial class ActionTrackingState : State<ActionTrackingState>
 {
   private List<IAction> ActiveActionsList = [];
   public bool IsProcessing => ActiveActionsList.Count > 0;

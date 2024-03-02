@@ -1,6 +1,6 @@
-namespace TimeWarp.Features.Processing;
+namespace TimeWarp.Features.ActionTracking;
 
-public partial class ActiveActionState
+public partial class ActionTrackingState
 {
   public static class FiveSecondTask
   {
@@ -13,7 +13,7 @@ public partial class ActiveActionState
       IStore store
     ): ActionHandler<Action>(store)
     {
-      private ActiveActionState ActiveActionState => Store.GetState<ActiveActionState>();
+      private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {

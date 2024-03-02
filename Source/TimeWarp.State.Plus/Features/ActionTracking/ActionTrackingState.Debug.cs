@@ -1,8 +1,8 @@
-namespace TimeWarp.Features.Processing;
+namespace TimeWarp.Features.ActionTracking;
 
-public partial class ActiveActionState
+public partial class ActionTrackingState
 {
-  public override ActiveActionState Hydrate(IDictionary<string, object> keyValuePairs)
+  public override ActionTrackingState Hydrate(IDictionary<string, object> keyValuePairs)
   {
     string guidKey = CamelCase.MemberNameToCamelCase(nameof(Guid));
     
@@ -11,7 +11,7 @@ public partial class ActiveActionState
       throw new InvalidOperationException($"Expected key '{guidKey}' not found or value is null.");
     }
     
-    var processingState = new ActiveActionState
+    var processingState = new ActionTrackingState
     {
       Guid = Guid.Parse(guidValue.ToString()!)
     };
