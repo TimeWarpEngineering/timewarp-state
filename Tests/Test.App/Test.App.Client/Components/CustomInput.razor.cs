@@ -1,4 +1,4 @@
-namespace Test.App.Client.Features.Theme.Components;
+namespace Test.App.Client.Components;
 
 public partial class CustomInput<T> : BaseInputComponent<T>
 {
