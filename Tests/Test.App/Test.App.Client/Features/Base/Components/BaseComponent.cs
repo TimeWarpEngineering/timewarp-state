@@ -19,7 +19,7 @@ public abstract class BaseComponent : BlazorStateDevToolsComponent
   internal CloneableState CloneableState => GetState<CloneableState>();
   internal EventStreamState EventStreamState => GetState<EventStreamState>();
   internal PurpleState PurpleState => GetState<PurpleState>();
-  internal ProcessingState ProcessingState => GetState<ProcessingState>();
+  internal ActionTrackingState ActionTrackingState => GetState<ActionTrackingState>();
   internal RouteState RouteState => GetState<RouteState>();
   internal ThemeState ThemeState => GetState<ThemeState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();

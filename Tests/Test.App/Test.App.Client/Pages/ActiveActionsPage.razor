@@ -8,12 +8,17 @@
 <hr/>
 <!-- Arrange -->
 <!-- Test description -->
-<p>Is Active Actions list working correctly</p>
+<p>Determine if Active Actions list working correctly</p>
 
 <!-- Values to validate -->
-@foreach(string action in ProcessingState.ActiveActions)
+<p><strong>ActionTrackingState.IsActive:</strong> @ActionTrackingState.IsActive</p>
+<p><strong>ActionTrackingState.IsAnyActive (Two Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.TwoSecondTask.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.FiveSecondTask.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Two Second or Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.FiveSecondTask.Action),typeof(ActionTrackingState.TwoSecondTask.Action)])</p>
+<p><strong>Active Actions:</strong></p>
+@foreach(IAction action in ActionTrackingState.ActiveActions)
 {
-  <p>@action</p>
+  <p>@(action.GetType().FullName)</p>
 }
 
 <!-- Actions to take -->
@@ -22,12 +27,15 @@
 
 <hr>
 <!-- ACT -->
-<p><strong>Act:</strong> Click the `Launch Five Second Task` Button.</p>
+<p><strong>Act:</strong><br/>
+  Click the `Launch Five Second Task` Button.<br/>
+  Click the `Launch Two Second Task` Button.<br/>
+</p>
 
 <!-- ASSERT -->
 <p>
   <strong>Assert:</strong>
-  spinner is displayed for 5 seconds and then disappears.
+  The states transition accordingly.
 </p>
 
 <hr>
@@ -49,8 +57,8 @@
   public const string Route = "/ActiveActionsPage";
   
   private async Task FiveSecondTaskButtonClick() =>
-    await Send(new ProcessingState.FiveSecondTask.Action());
+    await Send(new ActionTrackingState.FiveSecondTask.Action());
 
   private async Task TwoSecondTaskButtonClick() =>
-    await Send(new ProcessingState.TwoSecondTask.Action());
+    await Send(new ActionTrackingState.TwoSecondTask.Action());
 }
