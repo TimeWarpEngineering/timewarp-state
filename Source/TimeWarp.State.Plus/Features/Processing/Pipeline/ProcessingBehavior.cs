@@ -1,34 +1,33 @@
 ﻿namespace TimeWarp.Features.Processing;
 
-using static ProcessingState;
+using static ActiveActionState;
 
-public class ProcessingBehavior<TRequest, TResponse>
+public class ProcessingBehavior<TAction, TResponse>
 (
   ISender sender
-) : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IAction
+) : IPipelineBehavior<TAction, TResponse>
+  where TAction : IAction
 {
   public async Task<TResponse> Handle
   (
-    TRequest aRequest,
-    RequestHandlerDelegate<TResponse> aNextHandler,
-    CancellationToken aCancellationToken
+    TAction action,
+    RequestHandlerDelegate<TResponse> nextHandler,
+    CancellationToken cancellationToken
   )
   {
-    if (typeof(TRequest).GetCustomAttributes(typeof(TrackProcessingAttribute), false).Length != 0)
+    if (typeof(TAction).GetCustomAttributes(typeof(TrackProcessingAttribute), false).Length != 0)
     {
-      ArgumentValidation.EnsureNotType<TRequest, StartProcessing.Action>(aRequest, nameof(aRequest));
-      ArgumentValidation.EnsureNotType<TRequest, CompleteProcessing.Action>(aRequest, nameof(aRequest));
-
-      string actionName = typeof(TRequest).FullName!;
-      await sender.Send(new StartProcessing.Action(actionName), aCancellationToken);
-      TResponse response = await aNextHandler().ConfigureAwait(false);
-      await sender.Send(new CompleteProcessing.Action(actionName), aCancellationToken);
+      ArgumentValidation.EnsureNotType<TAction, StartProcessing.Action>(action, nameof(action));
+      ArgumentValidation.EnsureNotType<TAction, CompleteProcessing.Action>(action, nameof(action));
+      
+      await sender.Send(new StartProcessing.Action(action), cancellationToken);
+      TResponse response = await nextHandler().ConfigureAwait(false);
+      await sender.Send(new CompleteProcessing.Action(action), cancellationToken);
       return response;
     }
     else
     {
-      TResponse response = await aNextHandler().ConfigureAwait(false);
+      TResponse response = await nextHandler().ConfigureAwait(false);
       return response;
     }
   }

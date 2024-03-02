@@ -1,10 +1,10 @@
 ﻿namespace TimeWarp.Features.Processing;
 
-public partial class ProcessingState
+public partial class ActiveActionState
 {
   public static class CompleteProcessing
   {
-    public record Action(string ActionName) : IAction;
+    public record Action(IAction TheAction) : IAction;
 
     [UsedImplicitly]
     internal class Handler
@@ -12,11 +12,11 @@ public partial class ProcessingState
       IStore store
     ): ActionHandler<Action>(store)
     {
-      private ProcessingState ProcessingState => Store.GetState<ProcessingState>();
+      private ActiveActionState ActiveActionState => Store.GetState<ActiveActionState>();
       
       public override Task Handle(Action action, CancellationToken cancellationToken)
       {
-        ProcessingState.ActiveActionsList.Remove(action.ActionName);
+        ActiveActionState.ActiveActionsList.Remove(action.TheAction);
         return Task.CompletedTask;
       }
     }

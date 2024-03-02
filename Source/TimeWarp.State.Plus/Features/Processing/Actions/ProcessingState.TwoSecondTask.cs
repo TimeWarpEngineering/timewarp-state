@@ -1,6 +1,6 @@
 namespace TimeWarp.Features.Processing;
 
-public partial class ProcessingState
+public partial class ActiveActionState
 {
   public static class TwoSecondTask
   {
@@ -13,7 +13,7 @@ public partial class ProcessingState
       IStore store
     ): ActionHandler<Action>(store)
     {
-      private ProcessingState ProcessingState => Store.GetState<ProcessingState>();
+      private ActiveActionState ActiveActionState => Store.GetState<ActiveActionState>();
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {

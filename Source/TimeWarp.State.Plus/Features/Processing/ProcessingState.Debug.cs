@@ -1,8 +1,8 @@
 namespace TimeWarp.Features.Processing;
 
-public partial class ProcessingState
+public partial class ActiveActionState
 {
-  public override ProcessingState Hydrate(IDictionary<string, object> keyValuePairs)
+  public override ActiveActionState Hydrate(IDictionary<string, object> keyValuePairs)
   {
     string guidKey = CamelCase.MemberNameToCamelCase(nameof(Guid));
     
@@ -11,14 +11,14 @@ public partial class ProcessingState
       throw new InvalidOperationException($"Expected key '{guidKey}' not found or value is null.");
     }
     
-    var processingState = new ProcessingState
+    var processingState = new ActiveActionState
     {
       Guid = Guid.Parse(guidValue.ToString()!)
     };
     return processingState;
   }
 
-  internal void Initialize(List<string> processingList)
+  internal void Initialize(List<IAction> processingList)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
     ActiveActionsList = processingList;
