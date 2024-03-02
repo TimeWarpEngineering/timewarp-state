@@ -1,4 +1,4 @@
-namespace Test.App.Client.Features.Theme;
+namespace TimeWarp.State.Plus.Features.Theme;
 
 [UsedImplicitly]
 public partial class ThemeState
