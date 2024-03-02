@@ -2,7 +2,7 @@
 
 using static ActiveActionState;
 
-public class ProcessingBehavior<TAction, TResponse>
+public class ActiveActionBehavior<TAction, TResponse>
 (
   ISender sender
 ) : IPipelineBehavior<TAction, TResponse>
@@ -15,7 +15,7 @@ public class ProcessingBehavior<TAction, TResponse>
     CancellationToken cancellationToken
   )
   {
-    if (typeof(TAction).GetCustomAttributes(typeof(TrackProcessingAttribute), false).Length != 0)
+    if (typeof(TAction).GetCustomAttributes(typeof(TrackActionAttribute), false).Length != 0)
     {
       ArgumentValidation.EnsureNotType<TAction, StartProcessing.Action>(action, nameof(action));
       ArgumentValidation.EnsureNotType<TAction, CompleteProcessing.Action>(action, nameof(action));

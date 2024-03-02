@@ -2,9 +2,9 @@ namespace TimeWarp.Features.Processing;
 
 public partial class ActiveActionState
 {
-  public static class FiveSecondTask
+  public static class TwoSecondTask
   {
-    [TrackProcessing]
+    [TrackAction]
     public record Action : IAction;
 
     [UsedImplicitly]
@@ -17,9 +17,9 @@ public partial class ActiveActionState
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
-        Console.WriteLine("Start five second task");
-        await Task.Delay(millisecondsDelay: 5000, cancellationToken: cancellationToken);
-        Console.WriteLine("Five second task complete");
+        Console.WriteLine("Start two Second Task");
+        await Task.Delay(millisecondsDelay: 2000, cancellationToken: cancellationToken);
+        Console.WriteLine("Two Second Task Complete");
       }
     }
   }
