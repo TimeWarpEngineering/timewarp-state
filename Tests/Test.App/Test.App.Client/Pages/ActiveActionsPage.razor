@@ -1,0 +1,56 @@
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<hr/>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Is Active Actions list working correctly</p>
+
+<!-- Values to validate -->
+@foreach(string action in ProcessingState.ActiveActions)
+{
+  <p>@action</p>
+}
+
+<!-- Actions to take -->
+<button data-qa="FiveSecondButton" @onclick=FiveSecondTaskButtonClick>Launch Five Second Task</button>
+<button data-qa="TwoSecondButton" @onclick=TwoSecondTaskButtonClick>Launch Two Second Task</button>
+
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong> Click the `Launch Five Second Task` Button.</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  spinner is displayed for 5 seconds and then disappears.
+</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
+
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Active Actions Page";
+
+
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/ActiveActionsPage";
+  
+  private async Task FiveSecondTaskButtonClick() =>
+    await Send(new ProcessingState.FiveSecondTask.Action());
+
+  private async Task TwoSecondTaskButtonClick() =>
+    await Send(new ProcessingState.TwoSecondTask.Action());
+}
