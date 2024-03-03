@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
     EnsureStates(aServiceCollection, blazorStateOptions);
     EnsureMediator(aServiceCollection, blazorStateOptions);
 
-    if (blazorStateOptions.UseCloneStateBehavior)
+    if (blazorStateOptions.UseStateTransactionBehavior)
     {
       aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
     }

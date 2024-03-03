@@ -7,7 +7,7 @@ public class BlazorStateOptions
   ///// </summary>
   public IEnumerable<Assembly> Assemblies { get; set; }
 
-  public bool UseCloneStateBehavior { get; set; } = true;
+  public bool UseStateTransactionBehavior { get; set; } = true;
 
   public bool UseRouting { get; set; } = true;
 

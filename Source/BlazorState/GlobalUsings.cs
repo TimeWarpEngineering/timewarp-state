@@ -28,6 +28,7 @@ global using System.Text.Json;
 global using System.Text.RegularExpressions;
 global using System.Text;
 global using System;
+global using TimeWarp.Features.StateTransaction;
 global using TimeWarp.Features.Developer;
 global using TimeWarp.Features.JavaScriptInterop;
 global using TimeWarp.Features.Persistence.Attributes;
