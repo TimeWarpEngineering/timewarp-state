@@ -1,8 +1,6 @@
 namespace SampleDotNet8.Client.Features.Counter;
 
-using BlazorState.Features.Persistence.Abstractions;
-using BlazorState.Features.Persistence.Attributes;
-using BlazorState.Services;
+using TimeWarp.Features.Persistence.Abstractions;
 using System.Diagnostics.CodeAnalysis;
 
 public partial class CounterState

@@ -1,4 +1,4 @@
-namespace BlazorState.Features.Persistence;
+namespace TimeWarp.Features.Persistence;
 
 public enum PersistentStateMethod
 {

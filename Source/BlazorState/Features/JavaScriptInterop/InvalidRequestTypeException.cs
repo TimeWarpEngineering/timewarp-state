@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace BlazorState.Features.JavaScriptInterop;
+namespace TimeWarp.Features.JavaScriptInterop;
 
 [Serializable]
 public class InvalidRequestTypeException : Exception

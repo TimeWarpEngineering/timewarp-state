@@ -11,12 +11,12 @@ internal class EventIds
   public static readonly EventId JsonRequestOfInvalidType = new(203, nameof(JsonRequestOfInvalidType));
   //   Routing
   // Pipeline - Middleware
-  //   CloneState
-  public static readonly EventId CloneStateBehavior_Initializing = new(400, nameof(CloneStateBehavior_Initializing));
-  public static readonly EventId CloneStateBehavior_Cloning = new(401, nameof(CloneStateBehavior_Cloning));
-  public static readonly EventId CloneStateBehavior_Ignoring = new(402, nameof(CloneStateBehavior_Ignoring));
-  public static readonly EventId CloneStateBehavior_Exception = new(403, nameof(CloneStateBehavior_Exception));
-  public static readonly EventId CloneStateBehavior_Restored = new(404, nameof(CloneStateBehavior_Restored));
+  //   StateTransaction
+  public static readonly EventId StateTransactionBehavior_Initializing = new(400, nameof(StateTransactionBehavior_Initializing));
+  public static readonly EventId StateTransactionBehavior_Cloning = new(401, nameof(StateTransactionBehavior_Cloning));
+  public static readonly EventId StateTransactionBehavior_Ignoring = new(402, nameof(StateTransactionBehavior_Ignoring));
+  public static readonly EventId StateTransactionBehavior_Exception = new(403, nameof(StateTransactionBehavior_Exception));
+  public static readonly EventId StateTransactionBehavior_Restored = new(404, nameof(StateTransactionBehavior_Restored));
 
   //   ReduxDevTools
   public static readonly EventId StartHandler_Initializing = new(500, nameof(StartHandler_Initializing));

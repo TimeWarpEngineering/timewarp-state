@@ -1,22 +1,37 @@
 #nullable enable
-namespace BlazorState.Pipeline.State;
+namespace TimeWarp.Features.StateTransaction;
 
-internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+/// <summary>
+///   Represents a pipeline behavior in BlazorState that clones the current state before processing a request.
+///   This behavior ensures that the state can be reverted to its original form in case of an error during the request handling.
+///   The cloning process is contingent upon the state implementing <see cref="ICloneable"/>, allowing for a deep copy.
+///   If the state does not implement <see cref="ICloneable"/>, it falls back to a custom clone method. This behavior is
+///   critical for maintaining application consistency and enables undo functionality.
+/// </summary>
+/// <remarks>
+///   This behavior is part of the BlazorState pipeline, intercepting actions (requests) to clone the relevant state before
+///   proceeding. If an action fails, the system reverts to the cloned state, thus preventing partial state updates
+///   from corrupting the application state. It uses MediatR's pipeline behavior feature to hook into the request handling
+///   process.
+/// </remarks> 
+/// <typeparam name="TRequest"></typeparam>
+/// <typeparam name="TResponse"></typeparam>
+public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : notnull, IAction
 {
   private readonly ILogger Logger;
   private readonly IPublisher Publisher;
   private readonly IStore Store;
 
-  public CloneStateBehavior
+  public StateTransactionBehavior
   (
-    ILogger<CloneStateBehavior<TRequest, TResponse>> logger,
+    ILogger<StateTransactionBehavior<TRequest, TResponse>> logger,
     IStore store,
     IPublisher publisher
   )
   {
     Logger = logger;
-    Logger.LogDebug(EventIds.CloneStateBehavior_Initializing, "constructing");
+    Logger.LogDebug(EventIds.StateTransactionBehavior_Initializing, "constructing");
     Store = store;
     Publisher = publisher;
   }
@@ -43,7 +58,7 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
 
     Logger.LogDebug
     (
-      EventIds.CloneStateBehavior_Cloning,
+      EventIds.StateTransactionBehavior_Cloning,
       "Clone State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
       enclosingStateType,
       originalState.Guid,
@@ -60,20 +75,20 @@ internal sealed class CloneStateBehavior<TRequest, TResponse> : IPipelineBehavio
     catch (Exception exception)
     {
       // If something fails we restore system to previous state.
-      Logger.LogWarning(EventIds.CloneStateBehavior_Exception, exception, "Error cloning State");
+      Logger.LogWarning(EventIds.StateTransactionBehavior_Exception, exception, "Error cloning State");
 
       Store.SetState(originalState);
 
       Logger.LogWarning
       (
-        EventIds.CloneStateBehavior_Restored,
+        EventIds.StateTransactionBehavior_Restored,
         "Restored State of type: {enclosingStateType}",
         enclosingStateType
       );
 
       var exceptionNotification = new ExceptionNotification
       {
-        RequestName = nameof(CloneStateBehavior<TRequest, TResponse>),
+        RequestName = nameof(StateTransactionBehavior<TRequest, TResponse>),
         Exception = exception
       };
 

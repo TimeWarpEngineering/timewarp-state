@@ -1,4 +1,4 @@
-namespace BlazorState.Features.JavaScriptInterop;
+namespace TimeWarp.Features.JavaScriptInterop;
 
 public class JsonRequestHandler
 {

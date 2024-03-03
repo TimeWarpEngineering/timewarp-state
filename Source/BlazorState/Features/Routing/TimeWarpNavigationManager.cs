@@ -1,4 +1,4 @@
-namespace BlazorState.Features.Routing;
+namespace TimeWarp.Features.Routing;
 
 /// <summary>
 /// When constructed will attach a OnLocationChanged Handler

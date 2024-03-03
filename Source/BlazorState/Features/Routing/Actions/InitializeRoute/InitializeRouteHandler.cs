@@ -1,4 +1,4 @@
-namespace BlazorState.Features.Routing;
+namespace TimeWarp.Features.Routing;
 public partial class RouteState
 {
   internal class InitializeRouteHandler

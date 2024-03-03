@@ -1,7 +1,7 @@
 namespace SampleDotNet8.Client.Features.Counter2;
 
-using BlazorState.Features.Persistence.Abstractions;
-using BlazorState.Features.Persistence.Attributes;
+using TimeWarp.Features.Persistence.Abstractions;
+using TimeWarp.Features.Persistence.Attributes;
 using BlazorState.Services;
 using System.Diagnostics.CodeAnalysis;
 
@@ -35,7 +35,7 @@ public partial class Counter2State
         }
         catch (Exception e)
         {
-          // if this is a JavaScript not avaailable exception then we are prerendering and just ignore it
+          // if this is a JavaScript not available exception then we are prerendering and just ignore it
           Console.WriteLine("**********************************");
           Console.WriteLine(e);
           Console.WriteLine("**********************************");
