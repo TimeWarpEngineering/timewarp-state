@@ -2,8 +2,8 @@
 
 using System.Threading.Tasks;
 using BlazorState.Pipeline.ReduxDevTools;
-using BlazorState.Features.JavaScriptInterop;
-using BlazorState.Features.Routing;
+using TimeWarp.Features.JavaScriptInterop;
+using TimeWarp.Features.Routing;
 using Microsoft.AspNetCore.Components;
 
 public partial class App : ComponentBase

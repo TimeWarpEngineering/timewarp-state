@@ -1,7 +1,7 @@
 namespace SampleDotNet8.Client.Features.Counter;
 
-using BlazorState.Features.Persistence.Abstractions;
-using BlazorState.Features.Persistence.Attributes;
+using TimeWarp.Features.Persistence.Abstractions;
+using TimeWarp.Features.Persistence.Attributes;
 using BlazorState.Services;
 using System.Diagnostics.CodeAnalysis;
 

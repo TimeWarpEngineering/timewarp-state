@@ -2,7 +2,7 @@ namespace SampleDotNet8.Client;
 
 using Blazored.LocalStorage;
 using TimeWarp.State.Plus.PersistentState;
-using BlazorState.Features.Persistence.Abstractions;
+using TimeWarp.Features.Persistence.Abstractions;
 public class Program
 {
   private static async Task Main(string[] args)

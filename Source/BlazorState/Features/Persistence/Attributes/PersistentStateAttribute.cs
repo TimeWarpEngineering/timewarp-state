@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Features.Persistence.Attributes;
+﻿namespace TimeWarp.Features.Persistence.Attributes;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class PersistentStateAttribute
 (

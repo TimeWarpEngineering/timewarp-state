@@ -1,6 +1,6 @@
 ﻿namespace SampleDotNet8.Client.Features.Counter;
 
-using BlazorState.Features.Persistence.Attributes;
+using TimeWarp.Features.Persistence.Attributes;
 using System.Text.Json.Serialization;
 
 [PersistentState(PersistentStateMethod.LocalStorage)]

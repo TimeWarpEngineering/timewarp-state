@@ -1,5 +1,5 @@
 ﻿#nullable enable
-namespace BlazorState.Features.Persistence.Abstractions;
+namespace TimeWarp.Features.Persistence.Abstractions;
 
 public interface IPersistenceService
 {
