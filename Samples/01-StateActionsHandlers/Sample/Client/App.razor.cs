@@ -19,7 +19,7 @@ public partial class App : ComponentBase
       Justification = "It is used, the constructor has side effects "
     )
   ]
-  private TimeWarpNavigationManager RouteManager { get; set; } = null!;
+  private TimeWarpNavigationManager TimeWarpNavigationManager { get; set; } = null!;
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {

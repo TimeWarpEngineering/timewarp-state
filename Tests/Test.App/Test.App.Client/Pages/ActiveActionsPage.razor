@@ -1,0 +1,64 @@
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<hr/>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Determine if Active Actions list working correctly</p>
+
+<!-- Values to validate -->
+<p><strong>ActionTrackingState.IsActive:</strong> @ActionTrackingState.IsActive</p>
+<p><strong>ActionTrackingState.IsAnyActive (Two Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.TwoSecondTask.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.FiveSecondTask.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Two Second or Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.FiveSecondTask.Action),typeof(ActionTrackingState.TwoSecondTask.Action)])</p>
+<p><strong>Active Actions:</strong></p>
+@foreach(IAction action in ActionTrackingState.ActiveActions)
+{
+  <p>@(action.GetType().FullName)</p>
+}
+
+<!-- Actions to take -->
+<button data-qa="FiveSecondButton" @onclick=FiveSecondTaskButtonClick>Launch Five Second Task</button>
+<button data-qa="TwoSecondButton" @onclick=TwoSecondTaskButtonClick>Launch Two Second Task</button>
+
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong><br/>
+  Click the `Launch Five Second Task` Button.<br/>
+  Click the `Launch Two Second Task` Button.<br/>
+</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  The states transition accordingly.
+</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
+
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Active Actions Page";
+
+
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/ActiveActionsPage";
+  
+  private async Task FiveSecondTaskButtonClick() =>
+    await Send(new ActionTrackingState.FiveSecondTask.Action());
+
+  private async Task TwoSecondTaskButtonClick() =>
+    await Send(new ActionTrackingState.TwoSecondTask.Action());
+}
