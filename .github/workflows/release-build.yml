@@ -49,9 +49,9 @@ jobs:
           dotnet build --configuration Release
           dotnet pack --configuration Release
   
-      - name: Build and Pack TimeWarp.State.Middleware
+      - name: Build and Pack TimeWarp.State.Plus
         run: |
-          cd ${{ github.workspace }}/Source/TimeWarp.State.Middleware/
+          cd ${{ github.workspace }}/Source/TimeWarp.State.Plus/
           dotnet clean --configuration Release
           dotnet build --configuration Release
           dotnet pack --configuration Release
@@ -62,10 +62,10 @@ jobs:
           dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
 
-      - name: Publish TimeWarp.State.Middleware
+      - name: Publish TimeWarp.State.Plus
         run: |
-          cd Source/TimeWarp.State.Middleware/bin/Release
-          dotnet nuget push TimeWarp.State.Middleware.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          cd Source/TimeWarp.State.Plus/bin/Release
+          dotnet nuget push TimeWarp.State.Plus.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
   
       - run: echo "🍏 This job's status is ${{ job.status }}."

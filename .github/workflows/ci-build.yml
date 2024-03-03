@@ -50,9 +50,9 @@ jobs:
           dotnet build --configuration Debug
           dotnet pack --configuration Debug
 
-      - name: Build and Pack TimeWarp.State.Middleware
+      - name: Build and Pack TimeWarp.State.Plus
         run: |
-          cd ${{ github.workspace }}/Source/TimeWarp.State.Middleware/
+          cd ${{ github.workspace }}/Source/TimeWarp.State.Plus/
           dotnet clean --configuration Debug
           dotnet build --configuration Debug
           dotnet pack --configuration Debug          
