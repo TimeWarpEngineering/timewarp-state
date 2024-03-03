@@ -1,6 +1,5 @@
 ﻿global using AnyClone;
 global using BlazorState.Extensions;
-global using BlazorState.Services;
 global using BlazorState;
 global using JetBrains.Annotations;
 global using MediatR.Pipeline;
