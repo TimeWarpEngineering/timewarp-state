@@ -1,8 +1,5 @@
 ﻿namespace SampleDotNet8.Client.Features.Counter;
 
-using TimeWarp.Features.Persistence.Attributes;
-using System.Text.Json.Serialization;
-
 [PersistentState(PersistentStateMethod.LocalStorage)]
 public partial class CounterState : State<CounterState>
 {

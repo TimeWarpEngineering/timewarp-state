@@ -1,7 +1,7 @@
 ﻿namespace Sample.Client;
 
 using System.Threading.Tasks;
-using BlazorState.Pipeline.ReduxDevTools;
+using TimeWarp.Features.ReduxDevTools;
 using TimeWarp.Features.JavaScriptInterop;
 using TimeWarp.Features.Routing;
 using Microsoft.AspNetCore.Components;

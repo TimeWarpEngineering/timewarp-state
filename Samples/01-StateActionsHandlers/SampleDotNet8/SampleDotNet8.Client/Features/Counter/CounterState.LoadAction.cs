@@ -1,8 +1,5 @@
 namespace SampleDotNet8.Client.Features.Counter;
 
-using TimeWarp.Features.Persistence.Abstractions;
-using System.Diagnostics.CodeAnalysis;
-
 public partial class CounterState
 {
   public static class Load
