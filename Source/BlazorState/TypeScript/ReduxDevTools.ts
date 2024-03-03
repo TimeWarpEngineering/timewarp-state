@@ -72,8 +72,8 @@ export class ReduxDevTools {
     var dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
-      'JUMP_TO_ACTION': 'BlazorState.Pipeline.ReduxDevTools.JumpToStateRequest',
-      'JUMP_TO_STATE': 'BlazorState.Pipeline.ReduxDevTools.JumpToStateRequest',
+      'JUMP_TO_ACTION': 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
+      'JUMP_TO_STATE': 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
       'LOCK_CHANGES': undefined,
       'PAUSE_RECORDING': undefined,
       'PERFORM_ACTION': undefined,
@@ -87,10 +87,10 @@ export class ReduxDevTools {
     var blazorRequestType;
     switch (message.type) {
       case 'START':
-        blazorRequestType = 'BlazorState.Pipeline.ReduxDevTools.StartRequest';
+        blazorRequestType = 'TimeWarp.Features.ReduxDevTools.StartRequest';
         break;
       case 'STOP':
-        //blazorRequestType = 'BlazorState.Pipeline.ReduxDevTools.StopRequest';
+        //blazorRequestType = 'TimeWarp.Features.ReduxDevTools.StopRequest';
         break;
       case 'DISPATCH':
         blazorRequestType = dispatchRequests[message.payload.type];

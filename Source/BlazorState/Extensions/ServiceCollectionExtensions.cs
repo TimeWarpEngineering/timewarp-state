@@ -26,8 +26,7 @@ public static class ServiceCollectionExtensions
     
     var blazorStateOptions = new BlazorStateOptions(aServiceCollection);
     aConfigureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
-
-    aServiceCollection.AddScoped<BlazorHostingLocation>();
+    
     aServiceCollection.AddScoped<JsonRequestHandler>();
     aServiceCollection.AddScoped<Subscriptions>();
     aServiceCollection.AddScoped<IStore, Store>();
@@ -57,10 +56,8 @@ public static class ServiceCollectionExtensions
 
   private static void EnsureHttpClient(IServiceCollection aServiceCollection)
   {
-    var blazorHostingLocation = new BlazorHostingLocation();
-
-    // Test.App.Client Side Blazor registers HttpClient by default
-    if (blazorHostingLocation.IsClientSide) return;
+    // If client side wasm, Blazor registers HttpClient by default.
+    if (OperatingSystem.IsBrowser()) return;
     
     // Double check that nothing is registered.
     if (aServiceCollection.HasRegistrationFor(typeof(HttpClient))) return;

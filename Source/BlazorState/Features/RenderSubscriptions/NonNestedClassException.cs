@@ -1,5 +1,5 @@
 #nullable enable
-namespace BlazorState.Pipeline.RenderSubscriptions;
+namespace TimeWarp.Features.RenderSubscriptions;
 
 public class NonNestedClassException : ArgumentException
 {

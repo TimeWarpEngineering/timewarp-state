@@ -1,4 +1,4 @@
-﻿namespace TimeWarp.Features.Persistence.Attributes;
+﻿namespace TimeWarp.Features.Persistence;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class PersistentStateAttribute
 (

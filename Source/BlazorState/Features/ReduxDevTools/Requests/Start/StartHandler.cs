@@ -1,4 +1,4 @@
-namespace BlazorState.Pipeline.ReduxDevTools;
+namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 /// Redux Devtools will send the Request once on startup

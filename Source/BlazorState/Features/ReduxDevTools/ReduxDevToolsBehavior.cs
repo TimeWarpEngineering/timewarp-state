@@ -1,5 +1,5 @@
 #nullable enable
-namespace BlazorState.Pipeline.ReduxDevTools;
+namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 ///

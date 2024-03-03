@@ -1,7 +1,5 @@
 namespace Test.App.Client.Features.Application;
 
-using BlazorState.Pipeline.State;
-
 public partial class ApplicationState
 {
   [UsedImplicitly]

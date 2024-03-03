@@ -1,5 +1,5 @@
 #nullable enable
-namespace TimeWarp.Features.StateTransaction;
+namespace TimeWarp.Features.StateTransactions;
 
 /// <summary>
 ///   Represents a pipeline behavior in BlazorState that clones the current state before processing a request.
