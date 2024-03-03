@@ -40,7 +40,7 @@ public static class ServiceCollectionExtensions
 
     if (blazorStateOptions.UseCloneStateBehavior)
     {
-      aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
+      aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
     }
 
     if (blazorStateOptions.UseRouting)
@@ -59,8 +59,8 @@ public static class ServiceCollectionExtensions
   {
     var blazorHostingLocation = new BlazorHostingLocation();
 
-    // Test.App.Server Side Blazor doesn't register HttpClient by default
-    if (!blazorHostingLocation.IsServerSide) return;
+    // Test.App.Client Side Blazor registers HttpClient by default
+    if (blazorHostingLocation.IsClientSide) return;
     
     // Double check that nothing is registered.
     if (aServiceCollection.HasRegistrationFor(typeof(HttpClient))) return;
