@@ -1,4 +1,4 @@
-namespace BlazorState.Pipeline.ReduxDevTools;
+namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 /// Request received from Redux Dev Tools when one presses the Start Button.

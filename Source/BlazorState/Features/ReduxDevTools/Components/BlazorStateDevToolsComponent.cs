@@ -1,4 +1,4 @@
-namespace BlazorState.Pipeline.ReduxDevTools;
+namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 /// Base implementation of IDevToolsComponent. Required for TimeTravel in ReduxDevTools

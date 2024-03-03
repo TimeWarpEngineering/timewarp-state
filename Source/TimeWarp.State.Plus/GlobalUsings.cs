@@ -2,8 +2,6 @@
 global using Blazored.SessionStorage;
 global using BlazorState;
 global using TimeWarp.Features.Persistence;
-global using TimeWarp.Features.Persistence.Abstractions;
-global using TimeWarp.Features.Persistence.Attributes;
 global using JetBrains.Annotations;
 global using MediatR;
 global using MediatR.Pipeline;

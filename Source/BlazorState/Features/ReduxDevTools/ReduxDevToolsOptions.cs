@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Pipeline.ReduxDevTools;
+﻿namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 /// Redux Dev Tools Options (see docs)

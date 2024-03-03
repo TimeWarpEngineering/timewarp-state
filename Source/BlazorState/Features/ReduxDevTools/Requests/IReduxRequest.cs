@@ -1,4 +1,4 @@
-namespace BlazorState.Pipeline.ReduxDevTools;
+namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 /// Marker Interface to allow for filtering of Devtools Requests

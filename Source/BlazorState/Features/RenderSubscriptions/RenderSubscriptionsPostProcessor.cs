@@ -1,6 +1,6 @@
 # nullable enable
 
-namespace BlazorState.Pipeline.RenderSubscriptions;
+namespace TimeWarp.Features.RenderSubscriptions;
 
 internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   where TRequest : notnull, IAction
