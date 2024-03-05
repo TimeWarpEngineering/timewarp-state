@@ -11,7 +11,7 @@ import {
 function InitializeJavaScriptInterop(JsonRequestHandler) {
   log("TimeWarp.State","InitializeJavaScriptInterop","info");
   blazorState.jsonRequestHandler = JsonRequestHandler;
-};
+}
 
 function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
   log("TimeWarp.State","ReduxDevToolsFactory","info");
@@ -25,22 +25,17 @@ function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
   return window[ReduxDevToolsName].IsEnabled;
 }
 
-// These will be used by dotnet 7
-// export function beforeStart(options, extensions) {
-// log("TimeWarp.State","beforeStart","info", LogAction.Begin);
-// }
-//
-// export function afterStarted(blazor) {
-//   log("TimeWarp.State","afterStarted","info", LogAction.End);
-// }
-
-// ====================
-
-export function beforeWebStart(options, extensions) {
-  log("TimeWarp.State Web","beforeWebStart","info", LogAction.Begin);
+function initializeEnvironment(options, extensions) {
+  log("TimeWarp.State","initializeEnvironment","info", LogAction.Begin);
   window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
   window[BlazorStateName] = blazorState;
+  log("TimeWarp.State","initializeEnvironment","info", LogAction.End);
+}
+
+export function beforeWebStart(options, extensions) {
+  log("TimeWarp.State Web","beforeWebStart","info", LogAction.Begin);
+  initializeEnvironment(options, extensions);
 }
 
 export function afterWebStarted(blazor) {
@@ -49,6 +44,7 @@ export function afterWebStarted(blazor) {
 
 export function beforeWebAssemblyStart(options, extensions) {
   log("TimeWarp.State WebAssembly","beforeWebAssemblyStart","info", LogAction.Begin);
+  initializeEnvironment(options, extensions);
 }
 
 export function afterWebAssemblyStarted(blazor) {
@@ -57,6 +53,7 @@ export function afterWebAssemblyStarted(blazor) {
 
 export function beforeServerStart(options, extensions) {
   log("TimeWarp.State Server","beforeServerStart","info", LogAction.Begin);
+  initializeEnvironment(options, extensions);
 }
 
 export function afterServerStarted(blazor) {
