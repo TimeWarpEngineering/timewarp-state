@@ -307,4 +307,6 @@ __pycache__/
 *.binlog
 /Documentation/Blazor-State/
 *.bkp
-/Tests/Test.App/Test.App.Client/Generated/Microsoft.NET.Sdk.Razor.SourceGenerators/Microsoft.NET.Sdk.Razor.SourceGenerators.RazorSourceGenerator/*
+# Ignore all files in Razor Source Generators directories
+**/Microsoft.NET.Sdk.Razor.SourceGenerators/**
+**/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**

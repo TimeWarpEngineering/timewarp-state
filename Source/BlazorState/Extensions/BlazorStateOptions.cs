@@ -11,6 +11,10 @@ public class BlazorStateOptions
 
   public bool UseRouting { get; set; } = true;
 
+  /// <summary>
+  /// Use the FullName of the State in the ReduxDevTools
+  /// </summary>
+  public bool UseFullNameForStatesInDevTools { get; set; } = false;
   public JsonSerializerOptions JsonSerializerOptions { get; }
   
   public readonly IServiceCollection ServiceCollection;

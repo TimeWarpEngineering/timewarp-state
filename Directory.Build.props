@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <PackageVersion>11.0.0-beta.13+8.0.101</PackageVersion>
+    <PackageVersion>11.0.0-beta.14+8.0.101</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>Logo.png</PackageIcon>
@@ -14,22 +14,6 @@
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
-  
-  <!-- Complier Generated files https://andrewlock.net/creating-a-source-generator-part-6-saving-source-generator-output-in-source-control/ -->
-
-<!--  <PropertyGroup>-->
-<!--    &lt;!&ndash; Persist the source generator (and other) files to disk &ndash;&gt;-->
-<!--    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>-->
-<!--    &lt;!&ndash; 👇 The "base" path for the source generators &ndash;&gt;-->
-<!--    <GeneratedFolder>D:\Temp\Generated</GeneratedFolder>-->
-<!--    &lt;!&ndash; 👇 Write the output for each target framework to a different sub-folder &ndash;&gt;-->
-<!--    <CompilerGeneratedFilesOutputPath>$(GeneratedFolder)\$(TargetFramework)</CompilerGeneratedFilesOutputPath>-->
-<!--  </PropertyGroup>-->
-
-<!--  <ItemGroup>-->
-<!--    &lt;!&ndash; 👇 Exclude everything in the base folder &ndash;&gt;-->
-<!--    <Compile Remove="$(GeneratedFolder)/**/*.cs" />-->
-<!--  </ItemGroup>-->
 
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
   <PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
@@ -50,37 +34,40 @@
     <TargetFramework>net8.0</TargetFramework>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
-  
+
   <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
-  <Choose>
-    <When Condition="'$(OfficialBuild)' != 'true'">
-      <!-- On non-official builds we don't burn in a git sha. In large part because it
-           hurts our determinism efforts as binaries which should be the same between
-           builds will not (due to developers building against different HEAD
-           values -->
-      <PropertyGroup>
-        <GitHeadSha>&lt;developer build&gt;</GitHeadSha>
-      </PropertyGroup>
-    </When>
-    <When Condition="'$(BUILD_SOURCEVERSION)' != ''">
-      <PropertyGroup>
-        <GitHeadSha>$(BUILD_SOURCEVERSION)</GitHeadSha>
-      </PropertyGroup>
-    </When>
-    <When Condition="'$(BUILD_SOURCEVERSION)' == '' AND '$(GIT_COMMIT)' != ''">
-      <PropertyGroup>
-        <GitHeadSha>$(GIT_COMMIT)</GitHeadSha>
-      </PropertyGroup>
-    </When>
-    <Otherwise>
-      <PropertyGroup>
-        <GitHeadSha>Not found</GitHeadSha>
-        <DotGitDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory).git'))</DotGitDir>
-        <HeadFileContent Condition="Exists('$(DotGitDir)/HEAD')">$([System.IO.File]::ReadAllText('$(DotGitDir)/HEAD').Trim())</HeadFileContent>
-        <RefPath Condition="$(HeadFileContent.StartsWith('ref: '))">$(DotGitDir)/$(HeadFileContent.Substring(5))</RefPath>
-        <GitHeadSha Condition="'$(RefPath)' != '' AND Exists('$(RefPath)')">$([System.IO.File]::ReadAllText('$(RefPath)').Trim())</GitHeadSha>
-        <GitHeadSha Condition="'$(HeadFileContent)' != '' AND '$(RefPath)' == ''">$(HeadFileContent)</GitHeadSha>
-      </PropertyGroup>
-    </Otherwise>
-  </Choose>
+
+  <PropertyGroup>
+    <GitHeadSha>Not found</GitHeadSha>
+    <DotGitDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory).git'))</DotGitDir>
+    <HeadFileContent Condition="Exists('$(DotGitDir)/HEAD')">$([System.IO.File]::ReadAllText('$(DotGitDir)/HEAD').Trim())</HeadFileContent>
+    <RefPath Condition="$(HeadFileContent.StartsWith('ref: '))">$(DotGitDir)/$(HeadFileContent.Substring(5))</RefPath>
+    <GitHeadSha Condition="'$(RefPath)' != '' AND Exists('$(RefPath)')">$([System.IO.File]::ReadAllText('$(RefPath)').Trim())</GitHeadSha>
+    <GitHeadSha Condition="'$(HeadFileContent)' != '' AND '$(RefPath)' == ''">$(HeadFileContent)</GitHeadSha>
+  </PropertyGroup>
+
+  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent">
+    <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
+    </Exec>
+    <Exec Command="git log -1 --format=%ct" ConsoleToMSBuild="true" Condition="'$(OS)' != 'Windows_NT'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
+    </Exec>
+    <PropertyGroup>
+      <LastCommitDate>$([System.DateTime]::UnixEpoch.AddSeconds($(GitCommitTimestamp)).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))</LastCommitDate>
+    </PropertyGroup>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>CommitHash</_Parameter1>
+        <_Parameter2>$(GitHeadSha)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>CommitDate</_Parameter1>
+        <_Parameter2>$(LastCommitDate)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+    <!--    <Message Importance="high" Text="OS: $(OS)" />-->
+    <!--    <Message Importance="high" Text="CommitDate: $(LastCommitDate)" />-->
+    <!--    <Message Importance="high" Text="CommitHash: $(GitHeadSha)" />-->
+  </Target>
 </Project>

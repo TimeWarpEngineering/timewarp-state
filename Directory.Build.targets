@@ -1,7 +1,8 @@
 <Project>
   <!-- Set InformationVersion here, since $(Version) is already set at this point. -->
   <PropertyGroup>
-    <InformationalVersion>$(Version). Commit Hash: $(GitHeadSha)</InformationalVersion>
+    <!-- Assuming $(LastCommitDate) and $(GitHeadSha) are already defined -->
+    <InformationalVersion>$(Version)</InformationalVersion>
     <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
 </Project>

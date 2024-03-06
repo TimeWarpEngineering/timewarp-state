@@ -16,7 +16,11 @@ internal partial class Store : IReduxDevToolsStore
     var states = new Dictionary<string, object>();
     foreach (KeyValuePair<string, IState> pair in States.OrderBy(aKeyValuePair => aKeyValuePair.Key))
     {
-      states[pair.Key] = pair.Value;
+      string stateKey = BlazorStateOptions.UseFullNameForStatesInDevTools
+        ? pair.Key
+        : pair.Key.Split('.').Last();
+      
+      states[stateKey] = pair.Value;
     }
 
     return states;
