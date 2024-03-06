@@ -46,7 +46,7 @@
     <GitHeadSha Condition="'$(HeadFileContent)' != '' AND '$(RefPath)' == ''">$(HeadFileContent)</GitHeadSha>
   </PropertyGroup>
 
-  <Target Name="SetLastCommitDate" BeforeTargets="PreBuildEvent">
+  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent">
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" EchoOff="true" WorkingDirectory="$(MSBuildThisFileDirectory)">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>
@@ -63,6 +63,7 @@
         <_Parameter2>$(LastCommitDate)</_Parameter2>
       </AssemblyAttribute>
     </ItemGroup>
-    <Message Importance="high" Text="$(GitHeadSha)" />
+<!--    <Message Importance="high" Text="CommitDate: $(LastCommitDate)" />-->
+<!--    <Message Importance="high" Text="CommitHash: $(GitHeadSha)" />-->
   </Target>
 </Project>
