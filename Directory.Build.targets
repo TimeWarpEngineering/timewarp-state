@@ -1,7 +1,19 @@
 <Project>
   <!-- Set InformationVersion here, since $(Version) is already set at this point. -->
   <PropertyGroup>
-    <InformationalVersion>$(Version). Commit Hash: $(GitHeadSha)</InformationalVersion>
+    <!-- Assuming $(LastCommitDate) and $(GitHeadSha) are already defined -->
+    <InformationalVersion>$(Version)</InformationalVersion>
     <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>CommitHash</_Parameter1>
+      <_Parameter2>$(GitHeadSha)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>CommitDate</_Parameter1>
+      <_Parameter2>$(LastCommitDate)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>
