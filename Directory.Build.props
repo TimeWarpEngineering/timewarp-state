@@ -47,9 +47,16 @@
   </PropertyGroup>
 
   <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent">
-    <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true">
+    <Exec Command="pwsh --NoProfile -Command &quot;git log -1 --format=%%ct&quot;" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>
+
+<!--    <Exec Command="git log -1 &#45;&#45;format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">-->
+<!--      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>-->
+<!--    </Exec>-->
+<!--    <Exec Command="git log -1 &#45;&#45;format=%ct" ConsoleToMSBuild="true" Condition="'$(OS)' != 'Windows_NT'">-->
+<!--      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>-->
+<!--    </Exec>-->
     <PropertyGroup>
       <LastCommitDate>$([System.DateTime]::UnixEpoch.AddSeconds($(GitCommitTimestamp)).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))</LastCommitDate>
     </PropertyGroup>
@@ -63,6 +70,7 @@
         <_Parameter2>$(LastCommitDate)</_Parameter2>
       </AssemblyAttribute>
     </ItemGroup>
+    <!--    <Message Importance="high" Text="OS: $(OS)" />-->
     <!--    <Message Importance="high" Text="CommitDate: $(LastCommitDate)" />-->
     <!--    <Message Importance="high" Text="CommitHash: $(GitHeadSha)" />-->
   </Target>
