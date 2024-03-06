@@ -9,7 +9,7 @@ internal class ReduxAction
       throw new ArgumentNullException(nameof(aRequest));
     }
 
-    Type = aRequest.GetType().Name;
+    Type = aRequest.GetType().FullName;
     Payload = aRequest;
   }
 
