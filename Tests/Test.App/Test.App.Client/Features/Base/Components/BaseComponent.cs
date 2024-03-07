@@ -25,5 +25,5 @@ public abstract class BaseComponent : BlazorStateDevToolsComponent
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
   
   // ReSharper disable once UnusedMember.Global - Can be used by inheriting classes not in this library.
-  protected Task Send(IRequest aRequest) => Mediator.Send(aRequest);
+  protected Task Send(IRequest request) => Mediator.Send(request);
 }

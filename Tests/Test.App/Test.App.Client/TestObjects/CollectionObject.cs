@@ -19,10 +19,10 @@ public class CollectionObject : IEquatable<CollectionObject>
     return Equals(basicObject);
   }
 
-  public bool Equals(CollectionObject aOther)
+  public bool Equals(CollectionObject other)
   {
-    return aOther.IntCollection.AsEnumerable().SequenceEqual(IntCollection)
-        && aOther.ObjectCollection.AsEnumerable().SequenceEqual(ObjectCollection)
+    return other.IntCollection.AsEnumerable().SequenceEqual(IntCollection)
+        && other.ObjectCollection.AsEnumerable().SequenceEqual(ObjectCollection)
         ;
   }
 }

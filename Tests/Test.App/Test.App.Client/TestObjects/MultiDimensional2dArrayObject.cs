@@ -16,5 +16,5 @@ public class MultiDimensional2dArrayObject
     return Equals(basicObject);
   }
 
-  public bool Equals(MultiDimensional2dArrayObject aOther) => Int2DArray.EnumerableEqual(aOther.Int2DArray);
+  public bool Equals(MultiDimensional2dArrayObject other) => Int2DArray.EnumerableEqual(other.Int2DArray);
 }

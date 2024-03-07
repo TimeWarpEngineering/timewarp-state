@@ -21,7 +21,7 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
   private bool _isDisposed;
   private readonly int _constField;
 
-  public delegate void TestDelegate(int aValue);
+  public delegate void TestDelegate(int value);
   public TestDelegate MyTestDelegate { get; set; }
   public event TestDelegate OnTestDelegate;
   public List<string> listOfStrings = [];
@@ -30,10 +30,10 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
   private ATestClass _anotherTestClass;
 #pragma warning restore IDE0044 // Add readonly modifier
 
-  public ComplexObject(int aInitialValue)
+  public ComplexObject(int initialValue)
   {
     _isDisposed = false;
-    _constField = aInitialValue;
+    _constField = initialValue;
     MyTestDelegate = MyTestMethod;
 
     TestClassNoSetter = new ATestClass
@@ -51,7 +51,7 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
     };
   }
 
-  private void MyTestMethod(int aValue)
+  private void MyTestMethod(int value)
   {
     // this doesn't do anything
   }
@@ -63,13 +63,13 @@ public class ComplexObject : IEquatable<ComplexObject>, IDisposable
     return Equals(basicObject);
   }
 
-  public bool Equals(ComplexObject aComplexObject)
+  public bool Equals(ComplexObject complexObject)
   {
-    bool e1 = _isDisposed == aComplexObject._isDisposed;
-    bool e2 = _constField == aComplexObject._constField;
-    bool e3 = listOfStrings.AsEnumerable().SequenceEqual(aComplexObject.listOfStrings);
-    bool e4 = TestClassNoSetter.Equals(aComplexObject.TestClassNoSetter);
-    bool e5 = _anotherTestClass.Equals(aComplexObject._anotherTestClass);
+    bool e1 = _isDisposed == complexObject._isDisposed;
+    bool e2 = _constField == complexObject._constField;
+    bool e3 = listOfStrings.AsEnumerable().SequenceEqual(complexObject.listOfStrings);
+    bool e4 = TestClassNoSetter.Equals(complexObject.TestClassNoSetter);
+    bool e5 = _anotherTestClass.Equals(complexObject._anotherTestClass);
 
     return e1 && e2 && e3 && e4 && e5;
   }

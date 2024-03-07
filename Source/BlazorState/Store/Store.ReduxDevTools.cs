@@ -14,7 +14,7 @@ internal partial class Store : IReduxDevToolsStore
   public IDictionary<string, object> GetSerializableState()
   {
     var states = new Dictionary<string, object>();
-    foreach (KeyValuePair<string, IState> pair in States.OrderBy(aKeyValuePair => aKeyValuePair.Key))
+    foreach (KeyValuePair<string, IState> pair in States.OrderBy(keyValuePair => keyValuePair.Key))
     {
       string stateKey = BlazorStateOptions.UseFullNameForStatesInDevTools
         ? pair.Key
@@ -56,7 +56,7 @@ internal partial class Store : IReduxDevToolsStore
     Logger.LogDebug
     (
       EventIds.LoadStateFromJson,
-      "typename:{TypeName} aKeyValuePair.Value: {aKeyValuePair_Value} aKeyValuePair.Value.GetType().Name: {aKeyValuePair_Value_Type_Name}",
+      "typename:{TypeName} keyValuePair.Value: {keyValuePair_Value} keyValuePair.Value.GetType().Name: {keyValuePair_Value_Type_Name}",
       typeName,
       keyValuePair.Value,
       keyValuePair.Value.GetType().Name
@@ -66,9 +66,9 @@ internal partial class Store : IReduxDevToolsStore
       JsonSerializer.Deserialize<Dictionary<string, object>>(keyValuePair.Value.ToString(), JsonSerializerOptions);
     // Get the Type
     Type stateType = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(aAssembly => !aAssembly.IsDynamic)
-        .SelectMany(aAssembly => aAssembly.GetTypes())
-        .FirstOrDefault(aType => aType.FullName.Equals(typeName));
+        .Where(assembly => !assembly.IsDynamic)
+        .SelectMany(assembly => assembly.GetTypes())
+        .FirstOrDefault(type => type.FullName.Equals(typeName));
 
     // Get the Hydrate Method
     // I am only trying to get the name of "Hydrate" without magic string.

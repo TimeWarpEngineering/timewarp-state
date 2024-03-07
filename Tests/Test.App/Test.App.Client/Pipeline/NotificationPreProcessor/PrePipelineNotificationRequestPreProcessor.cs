@@ -9,14 +9,14 @@ internal class PrePipelineNotificationRequestPreProcessor<TRequest>
 {
   private readonly ILogger Logger = logger;
 
-  public Task Process(TRequest aRequest, CancellationToken aCancellationToken)
+  public Task Process(TRequest request, CancellationToken cancellationToken)
   {
     var notification = new PrePipelineNotification<TRequest>
     {
-      Request = aRequest
+      Request = request
     };
 
     Logger.LogDebug(nameof(PrePipelineNotificationRequestPreProcessor<TRequest>));
-    return Publisher.Publish(notification, aCancellationToken);
+    return Publisher.Publish(notification, cancellationToken);
   }
 }

@@ -14,24 +14,24 @@ public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResp
 
   public MyBehavior
   (
-    ILogger<MyBehavior<TRequest, TResponse>> aLogger
+    ILogger<MyBehavior<TRequest, TResponse>> logger
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug("{classname}: Constructor", GetType().Name);
   }
 
   public async Task<TResponse> Handle
   (
-    TRequest aRequest,
-    RequestHandlerDelegate<TResponse> aNext,
-    CancellationToken aCancellationToken
+    TRequest request,
+    RequestHandlerDelegate<TResponse> next,
+    CancellationToken cancellationToken
   )
   {
     Logger.LogDebug("{classname}: Start", GetType().Name);
 
     Logger.LogDebug("{classname}: Call next", GetType().Name);
-    TResponse newState = await aNext();
+    TResponse newState = await next();
     Logger.LogDebug("{classname}: Start Post Processing", GetType().Name);
     // Constrain here based on a type or anything you want.
     if (typeof(IState).IsAssignableFrom(typeof(TResponse)))

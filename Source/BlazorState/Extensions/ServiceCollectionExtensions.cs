@@ -5,7 +5,7 @@ using static RouteState;
 public static class ServiceCollectionExtensions
 {
   /// <summary>
-  /// Register BlazorState services based on the aConfigure options
+  /// Register BlazorState services based on the Configure options
   /// </summary>
   /// <param name="serviceCollection"></param>
   /// <param name="configureBlazorStateOptionsAction"></param>
@@ -65,10 +65,10 @@ public static class ServiceCollectionExtensions
     // Setup HttpClient for server side in a client side compatible fashion
     serviceCollection.AddScoped
     (
-      aServiceProvider =>
+      serviceProvider =>
       {
         // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
-        NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
+        NavigationManager navigationManager = serviceProvider.GetRequiredService<NavigationManager>();
 
         return new HttpClient
         {
@@ -102,8 +102,8 @@ public static class ServiceCollectionExtensions
     serviceCollection
       .AddMediatR
       (
-      aMediatRServiceConfiguration =>
-        aMediatRServiceConfiguration
+      mediatRServiceConfiguration =>
+        mediatRServiceConfiguration
           .RegisterServicesFromAssemblies(blazorStateOptions.Assemblies.ToArray())
           .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
       );
@@ -116,11 +116,11 @@ public static class ServiceCollectionExtensions
     {
       IEnumerable<Type> types = assembly.GetTypes().Where
       (
-        aType =>
-          !aType.IsAbstract &&
-          !aType.IsInterface &&
-          aType.BaseType is { IsGenericType: true } &&
-          aType.BaseType.GetGenericTypeDefinition() == typeof(State<>)
+        type =>
+          !type.IsAbstract &&
+          !type.IsInterface &&
+          type.BaseType is { IsGenericType: true } &&
+          type.BaseType.GetGenericTypeDefinition() == typeof(State<>)
       );
 
       foreach (Type type in types)
@@ -131,7 +131,7 @@ public static class ServiceCollectionExtensions
   }
 
   private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) => 
-    serviceCollection.Any(aServiceDescriptor => aServiceDescriptor.ServiceType == type);
+    serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
 
   // ReSharper disable once UnusedMethodReturnValue.Global
   public static BlazorStateOptions UseReduxDevTools

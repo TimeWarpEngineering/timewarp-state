@@ -16,11 +16,11 @@ public class InterfaceObject : ITestInterface, IEquatable<InterfaceObject>
     return Equals(basicObject);
   }
 
-  public bool Equals(InterfaceObject aOther)
+  public bool Equals(InterfaceObject other)
   {
     var collectionComparer = new DictionaryComparer<int, BasicObject>();
-    bool dictionaryIsEqual = collectionComparer.Equals(DictionaryValue, aOther.DictionaryValue);
+    bool dictionaryIsEqual = collectionComparer.Equals(DictionaryValue, other.DictionaryValue);
 
-    return dictionaryIsEqual && BoolValue == aOther.BoolValue && IntValue == aOther.IntValue;
+    return dictionaryIsEqual && BoolValue == other.BoolValue && IntValue == other.IntValue;
   }
 }

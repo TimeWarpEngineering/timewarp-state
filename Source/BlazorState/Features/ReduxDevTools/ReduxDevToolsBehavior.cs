@@ -54,12 +54,12 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
       await ReduxDevToolsInterop.DispatchAsync(request, Store.GetSerializableState(), stackTrace);
       Logger.LogDebug(EventIds.ReduxDevToolsBehavior_End, "ReduxDevToolsBehavior Completed");
     }
-    catch (Exception aException)
+    catch (Exception exception)
     {
       Logger.LogDebug
       (
         EventIds.ReduxDevToolsBehavior_Exception,
-        aException,
+        exception,
         "Error dispatching Request to Redux DevTools"
       );
 
@@ -78,22 +78,22 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
           .GetFrames()
           .Select
           (
-            aStackFrame =>
+            stackFrame =>
             {
               stringBuilder.Clear();
               stringBuilder.Append("at ");
-              stringBuilder.Append(aStackFrame.GetMethod()?.DeclaringType?.FullName);
+              stringBuilder.Append(stackFrame.GetMethod()?.DeclaringType?.FullName);
               stringBuilder.Append('.');
-              stringBuilder.Append(aStackFrame.GetMethod()?.Name);
+              stringBuilder.Append(stackFrame.GetMethod()?.Name);
               stringBuilder.Append(' ');
-              if (aStackFrame.GetFileName() is not null)
+              if (stackFrame.GetFileName() is not null)
               {
                 stringBuilder.Append('(');
-                stringBuilder.Append(aStackFrame.GetFileName());
+                stringBuilder.Append(stackFrame.GetFileName());
                 stringBuilder.Append(':');
-                stringBuilder.Append(aStackFrame.GetFileLineNumber());
+                stringBuilder.Append(stackFrame.GetFileLineNumber());
                 stringBuilder.Append(':');
-                stringBuilder.Append(aStackFrame.GetFileColumnNumber());
+                stringBuilder.Append(stackFrame.GetFileColumnNumber());
                 stringBuilder.Append(')');
               }
               return stringBuilder.ToString();

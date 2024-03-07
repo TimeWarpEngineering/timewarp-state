@@ -37,7 +37,7 @@ public class ReduxDevToolsInterop
       Logger.LogDebug
       (
         EventIds.ReduxDevToolsInterop_DispatchingRequest,
-        "dispatching aRequest.GetType().FullName:{TypeFullName} to ReduxDevTools",
+        "dispatching request.GetType().FullName:{TypeFullName} to ReduxDevTools",
         request.GetType().FullName
       );
 

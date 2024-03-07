@@ -28,12 +28,12 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
     {
       Subscriptions.ReRenderSubscribers(enclosingStateType);
     }
-    catch (Exception aException)
+    catch (Exception exception)
     {
       Logger.LogDebug
       (
         EventIds.RenderSubscriptionsPostProcessor_Exception,
-        aException,
+        exception,
         "Error re-rendering subscriptions"
       );
       throw;

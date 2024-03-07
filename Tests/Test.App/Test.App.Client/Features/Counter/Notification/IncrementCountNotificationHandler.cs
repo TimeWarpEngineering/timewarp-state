@@ -10,12 +10,12 @@ internal class IncrementCountNotificationHandler
 
   public Task Handle
   (
-    PostPipelineNotification<CounterState.IncrementCount.Action, Unit> aPostPipelineNotification,
-    CancellationToken aCancellationToken
+    PostPipelineNotification<CounterState.IncrementCount.Action, Unit> postPipelineNotification,
+    CancellationToken cancellationToken
   ) 
   {
-    Logger.LogDebug("{aPostPipelineNotification_Request_Type_Name}", aPostPipelineNotification.Request.GetType().Name);
-    Logger.LogDebug("{aPostPipelineNotification_Response_Type_Name}", aPostPipelineNotification.Response.GetType().Name);
+    Logger.LogDebug("{postPipelineNotification_Request_Type_Name}", postPipelineNotification.Request.GetType().Name);
+    Logger.LogDebug("{postPipelineNotification_Response_Type_Name}", postPipelineNotification.Response.GetType().Name);
     Logger.LogDebug("{methodName} handled", nameof(IncrementCountNotificationHandler));
     return Task.CompletedTask;
   }
