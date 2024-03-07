@@ -10,8 +10,8 @@ public partial class CounterState
 
     public override Task<Unit> Handle
     (
-      NonNestedAction aNonNestedAction,
-      CancellationToken aCancellationToken
+      NonNestedAction action,
+      CancellationToken cancellationToken
     ) => Unit.Task;
   }
 }

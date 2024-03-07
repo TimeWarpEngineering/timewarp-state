@@ -4,7 +4,7 @@ public interface IReduxDevToolsStore
 {
   IDictionary<string, object> GetSerializableState();
 
-  void LoadStatesFromJson(string aJsonString);
+  void LoadStatesFromJson(string jsonString);
 }
 
 public interface IStore

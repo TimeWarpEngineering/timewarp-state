@@ -11,7 +11,7 @@ public class PersistentStatePostProcessor<TRequest, TResponse>
 {
   private readonly ILogger Logger = logger;
 
-  public async Task Process(TRequest aRequest, TResponse response, CancellationToken cancellationToken)
+  public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
     Logger.LogDebug("PersistentStatePostProcessor: {FullName}", typeof(TRequest).FullName);
 

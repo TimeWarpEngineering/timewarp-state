@@ -13,10 +13,10 @@ public partial class RouteState
 
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public override Task Handle(ChangeRoute.Action aChangeRouteRequest, CancellationToken aCancellationToken)
+    public override Task Handle(ChangeRoute.Action action, CancellationToken cancellationToken)
     {
-      Logger.LogDebug("ChangeRouteAction.Handle-NewRoute:{NewRoute}", aChangeRouteRequest.NewRoute);
-      string newAbsoluteUri = NavigationManager.ToAbsoluteUri(aChangeRouteRequest.NewRoute).ToString();
+      Logger.LogDebug("ChangeRouteAction.Handle-NewRoute:{NewRoute}", action.NewRoute);
+      string newAbsoluteUri = NavigationManager.ToAbsoluteUri(action.NewRoute).ToString();
       string absoluteUri = NavigationManager.Uri;
 
       if (absoluteUri != newAbsoluteUri)

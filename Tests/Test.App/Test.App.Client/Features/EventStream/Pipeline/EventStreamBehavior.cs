@@ -19,16 +19,16 @@ public class EventStreamBehavior<TRequest, TResponse>
 
   public async Task<TResponse> Handle
   (
-    TRequest aRequest,
-    RequestHandlerDelegate<TResponse> aNext,
-    CancellationToken aCancellationToken
+    TRequest request,
+    RequestHandlerDelegate<TResponse> next,
+    CancellationToken cancellationToken
   )
   {
     Logger.LogDebug("{classname}: Handle", GetType().FullName);
-    ArgumentNullException.ThrowIfNull(aNext);
-    await AddEventToStream(aRequest, "Start");
-    TResponse response = await aNext();
-    await AddEventToStream(aRequest, "Completed");
+    ArgumentNullException.ThrowIfNull(next);
+    await AddEventToStream(request, "Start");
+    TResponse response = await next();
+    await AddEventToStream(request, "Completed");
     return response;
   }
 

@@ -21,9 +21,9 @@ public class BasicObject : IEquatable<BasicObject>
   public string StringValue { get; set; }
 
   public BasicObject() { }
-  public BasicObject(int aPrivateIntValue)
+  public BasicObject(int privateIntValue)
   {
-    _privateIntValue = aPrivateIntValue;
+    _privateIntValue = privateIntValue;
   }
 
   public override int GetHashCode() => base.GetHashCode();
@@ -39,16 +39,16 @@ public class BasicObject : IEquatable<BasicObject>
     return Equals(basicObject);
   }
 
-  public bool Equals(BasicObject aBasicObject)
+  public bool Equals(BasicObject basicObject)
   {
-    if (aBasicObject == null) return false;
+    if (basicObject == null) return false;
     return
-        aBasicObject._privateIntValue == _privateIntValue
-        && aBasicObject.BoolValue == BoolValue
-        && aBasicObject.ByteValue == ByteValue
-        && aBasicObject.IntValue == IntValue
-        && aBasicObject.LongValue == LongValue
-        && aBasicObject.StringValue == StringValue
+        basicObject._privateIntValue == _privateIntValue
+        && basicObject.BoolValue == BoolValue
+        && basicObject.ByteValue == ByteValue
+        && basicObject.IntValue == IntValue
+        && basicObject.LongValue == LongValue
+        && basicObject.StringValue == StringValue
         ;
   }
 }

@@ -12,8 +12,8 @@ internal partial class WeatherForecastsState
 
     public override async Task Handle
     (
-      FetchWeatherForecastsAction aFetchWeatherForecastsAction,
-      CancellationToken aCancellationToken
+      FetchWeatherForecastsAction action,
+      CancellationToken cancellationToken
     )
     {
       var getWeatherForecastsRequest = new GetWeatherForecastsRequest { Days = 10 };
@@ -22,7 +22,7 @@ internal partial class WeatherForecastsState
         await HttpClient.GetFromJsonAsync<GetWeatherForecastsResponse>
         (
           getWeatherForecastsRequest.RouteFactory, 
-          cancellationToken: aCancellationToken
+          cancellationToken: cancellationToken
         );
       
       ArgumentNullException.ThrowIfNull(getWeatherForecastsResponse);

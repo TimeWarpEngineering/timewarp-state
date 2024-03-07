@@ -11,7 +11,7 @@ namespace BlazorState;
 ///   public BlazorStateComponent()
 ///   {
 ///     string name = GetType().Name;
-///     int count = s_InstanceCounts.AddOrUpdate(name, 1, (aKey, aValue) => aValue + 1);
+///     int count = s_InstanceCounts.AddOrUpdate(name, 1, (key, value) => value + 1);
 ///     Id = $"{name}-{count}";
 ///   }
 ///   public string Id { get; }

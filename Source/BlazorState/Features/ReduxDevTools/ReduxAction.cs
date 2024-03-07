@@ -2,15 +2,12 @@ namespace TimeWarp.Features.ReduxDevTools;
 
 internal class ReduxAction
 {
-  public ReduxAction(object aRequest)
+  public ReduxAction(object request)
   {
-    if (aRequest == null)
-    {
-      throw new ArgumentNullException(nameof(aRequest));
-    }
+    ArgumentNullException.ThrowIfNull(request);
 
-    Type = aRequest.GetType().FullName;
-    Payload = aRequest;
+    Type = request.GetType().FullName;
+    Payload = request;
   }
 
   public object Payload { get; set; }

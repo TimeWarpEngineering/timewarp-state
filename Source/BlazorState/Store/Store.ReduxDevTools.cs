@@ -14,7 +14,7 @@ internal partial class Store : IReduxDevToolsStore
   public IDictionary<string, object> GetSerializableState()
   {
     var states = new Dictionary<string, object>();
-    foreach (KeyValuePair<string, IState> pair in States.OrderBy(aKeyValuePair => aKeyValuePair.Key))
+    foreach (KeyValuePair<string, IState> pair in States.OrderBy(keyValuePair => keyValuePair.Key))
     {
       string stateKey = BlazorStateOptions.UseFullNameForStatesInDevTools
         ? pair.Key
@@ -29,20 +29,20 @@ internal partial class Store : IReduxDevToolsStore
   /// <summary>
   /// Needed for ReduxDevTools time travel
   /// </summary>
-  /// <param name="aJsonString"></param>
-  public void LoadStatesFromJson(string aJsonString)
+  /// <param name="jsonString"></param>
+  public void LoadStatesFromJson(string jsonString)
   {
-    if (string.IsNullOrWhiteSpace(aJsonString))
-      throw new ArgumentException("aJsonString was null or white space", nameof(aJsonString));
+    if (string.IsNullOrWhiteSpace(jsonString))
+      throw new ArgumentException("aJsonString was null or white space", nameof(jsonString));
 
     Logger.LogDebug
     (
       EventIds.LoadStatesFromJson,
       "jsonString:{aJsonString}",
-      aJsonString
+      jsonString
     );
 
-    Dictionary<string, object> newStates = JsonSerializer.Deserialize<Dictionary<string, object>>(aJsonString, JsonSerializerOptions);
+    Dictionary<string, object> newStates = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString, JsonSerializerOptions);
 
     foreach (KeyValuePair<string, object> keyValuePair in newStates)
     {
@@ -50,25 +50,25 @@ internal partial class Store : IReduxDevToolsStore
     }
   }
 
-  private void LoadStateFromJson(KeyValuePair<string, object> aKeyValuePair)
+  private void LoadStateFromJson(KeyValuePair<string, object> keyValuePair)
   {
-    string typeName = aKeyValuePair.Key;
+    string typeName = keyValuePair.Key;
     Logger.LogDebug
     (
       EventIds.LoadStateFromJson,
-      "typename:{TypeName} aKeyValuePair.Value: {aKeyValuePair_Value} aKeyValuePair.Value.GetType().Name: {aKeyValuePair_Value_Type_Name}",
+      "typename:{TypeName} keyValuePair.Value: {keyValuePair_Value} keyValuePair.Value.GetType().Name: {keyValuePair_Value_Type_Name}",
       typeName,
-      aKeyValuePair.Value,
-      aKeyValuePair.Value.GetType().Name
+      keyValuePair.Value,
+      keyValuePair.Value.GetType().Name
     );
 
     Dictionary<string, object> newStateKeyValuePairs =
-      JsonSerializer.Deserialize<Dictionary<string, object>>(aKeyValuePair.Value.ToString(), JsonSerializerOptions);
+      JsonSerializer.Deserialize<Dictionary<string, object>>(keyValuePair.Value.ToString(), JsonSerializerOptions);
     // Get the Type
     Type stateType = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(aAssembly => !aAssembly.IsDynamic)
-        .SelectMany(aAssembly => aAssembly.GetTypes())
-        .FirstOrDefault(aType => aType.FullName.Equals(typeName));
+        .Where(assembly => !assembly.IsDynamic)
+        .SelectMany(assembly => assembly.GetTypes())
+        .FirstOrDefault(type => type.FullName.Equals(typeName));
 
     // Get the Hydrate Method
     // I am only trying to get the name of "Hydrate" without magic string.

@@ -18,11 +18,11 @@ public class ArrayObject : IEquatable<ArrayObject>
     return Equals(basicObject);
   }
 
-  public bool Equals(ArrayObject aOther)
+  public bool Equals(ArrayObject other)
   {
-    return aOther.ByteArray.AsEnumerable().SequenceEqual(ByteArray)
-        && aOther.IntArray.AsEnumerable().SequenceEqual(IntArray)
-        && aOther.DoubleArray.AsEnumerable().SequenceEqual(DoubleArray)
+    return other.ByteArray.AsEnumerable().SequenceEqual(ByteArray)
+        && other.IntArray.AsEnumerable().SequenceEqual(IntArray)
+        && other.DoubleArray.AsEnumerable().SequenceEqual(DoubleArray)
         ;
   }
 

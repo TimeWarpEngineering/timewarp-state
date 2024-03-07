@@ -14,7 +14,7 @@ public partial class Counter2State
     {
       Counter2State Counter2State => Store.GetState<Counter2State>();
       
-      public override async Task Handle(Action aAction, CancellationToken aCancellationToken)
+      public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
         Console.WriteLine("Entering Counter2State.Load.Handler: Counter2State.Count: {0} Counter2State.Guid {1} ", Counter2State.Count, Counter2State.Guid);
         

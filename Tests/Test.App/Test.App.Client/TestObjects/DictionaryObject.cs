@@ -15,9 +15,9 @@ public class DictionaryObject : IEquatable<DictionaryObject>
     return Equals(basicObject);
   }
 
-  public bool Equals(DictionaryObject aOther)
+  public bool Equals(DictionaryObject other)
   {
     var dictionaryComparer = new DictionaryComparer<int, BasicObject>();
-    return dictionaryComparer.Equals(Collection, aOther.Collection);
+    return dictionaryComparer.Equals(Collection, other.Collection);
   }
 }
