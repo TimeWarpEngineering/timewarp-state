@@ -83,16 +83,16 @@ internal partial class Store : IStore
     }
   }
 
-  private void SetState(string aTypeName, object aNewState)
+  private void SetState(string typeName, object newStateObject)
   {
-    var newState = (IState)aNewState;
+    var newState = (IState)newStateObject;
     Logger.LogDebug
     (
       EventIds.Store_SetState,
       "Assigning State. Type:{typeName}, Guid:{newState.Guid}",
-      aTypeName,
+      typeName,
       newState.Guid
     );
-    States[aTypeName] = newState;
+    States[typeName] = newState;
   }
 }

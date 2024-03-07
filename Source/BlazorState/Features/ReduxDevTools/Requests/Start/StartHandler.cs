@@ -10,19 +10,19 @@ internal class StartHandler : IRequestHandler<StartRequest>
 
   public StartHandler
   (
-    ILogger<StartHandler> aLogger
+    ILogger<StartHandler> logger
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug(EventIds.JumpToStateHandler_RequestHandled, "constructing");
   }
 
   /// <summary>
   /// Currently does nothing
   /// </summary>
-  /// <param name="aRequest"></param>
-  /// <param name="aCancellationToken"></param>
+  /// <param name="request"></param>
+  /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public Task Handle(StartRequest aRequest, CancellationToken aCancellationToken) =>
+  public Task Handle(StartRequest request, CancellationToken cancellationToken) =>
     Task.CompletedTask;
 }

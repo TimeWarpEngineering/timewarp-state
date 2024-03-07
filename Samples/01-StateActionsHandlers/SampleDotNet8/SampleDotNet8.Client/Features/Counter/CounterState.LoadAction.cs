@@ -14,7 +14,7 @@ public partial class CounterState
     {
       CounterState CounterState => Store.GetState<CounterState>();
       
-      public override async Task Handle(Action aAction, CancellationToken aCancellationToken)
+      public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
         Console.WriteLine("Entering CounterState.Load.Handler: CounterState.Count: {0} CounterState.Guid {1} ", CounterState.Count, CounterState.Guid);
         Console.WriteLine("CounterState.Load.Handler: Loading CounterState");

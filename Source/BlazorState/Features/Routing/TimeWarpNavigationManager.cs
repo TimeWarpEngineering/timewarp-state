@@ -26,9 +26,9 @@ public class TimeWarpNavigationManager
     Mediator.Send(new RouteState.InitializeRoute.Action());
   }
 
-  private void LocationChanged(object aSender, LocationChangedEventArgs aLocationChangedEventArgs)
+  private void LocationChanged(object sender, LocationChangedEventArgs locationChangedEventArgs)
   {
-    string absoluteUri = NavigationManager.ToAbsoluteUri(aLocationChangedEventArgs.Location).ToString();
+    string absoluteUri = NavigationManager.ToAbsoluteUri(locationChangedEventArgs.Location).ToString();
     if (RouteState.Route != absoluteUri)
     {
       Mediator.Send(new RouteState.ChangeRoute.Action { NewRoute = absoluteUri });

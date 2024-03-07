@@ -19,9 +19,9 @@ public class BlazorStateOptions
   
   public readonly IServiceCollection ServiceCollection;
 
-  public BlazorStateOptions(IServiceCollection aServiceCollection)
+  public BlazorStateOptions(IServiceCollection serviceCollection)
   {
-    ServiceCollection = aServiceCollection;
+    ServiceCollection = serviceCollection;
     Assemblies = Array.Empty<Assembly>();
     JsonSerializerOptions = new JsonSerializerOptions
     {

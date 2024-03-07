@@ -17,25 +17,25 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
 
   public ReduxDevToolsBehavior
   (
-    ILogger<ReduxDevToolsBehavior<TRequest, TResponse>> aLogger,
-    ReduxDevToolsInterop aReduxDevToolsInterop,
-    ReduxDevToolsOptions aReduxDevToolsOptions,
-    IReduxDevToolsStore aStore
+    ILogger<ReduxDevToolsBehavior<TRequest, TResponse>> logger,
+    ReduxDevToolsInterop reduxDevToolsInterop,
+    ReduxDevToolsOptions reduxDevToolsOptions,
+    IReduxDevToolsStore store
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug(EventIds.ReduxDevToolsBehavior_Constructing, "constructing ReduxDevToolsBehavior");
-    Store = aStore;
-    ReduxDevToolsInterop = aReduxDevToolsInterop;
-    ReduxDevToolsOptions = aReduxDevToolsOptions;
-    TraceFilterRegex = new Regex(aReduxDevToolsOptions.TraceFilterExpression);
+    Store = store;
+    ReduxDevToolsInterop = reduxDevToolsInterop;
+    ReduxDevToolsOptions = reduxDevToolsOptions;
+    TraceFilterRegex = new Regex(reduxDevToolsOptions.TraceFilterExpression);
   }
 
   public async Task<TResponse> Handle
   (
-    TRequest aRequest,
-    RequestHandlerDelegate<TResponse> aNext,
-    CancellationToken aCancellationToken
+    TRequest request,
+    RequestHandlerDelegate<TResponse> next,
+    CancellationToken cancellationToken
   )
   {
     Logger.LogDebug(EventIds.ReduxDevToolsBehavior_Begin,"{classname}: Start", GetType().Name);
@@ -46,12 +46,12 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     if (ReduxDevToolsOptions.Trace) stackTrace = BuildStackTrace(maxItems);
 
     Logger.LogDebug("{classname}: Call next", GetType().Name);
-    TResponse response = await aNext();
+    TResponse response = await next();
 
     try
     {
       Logger.LogDebug("{classname}: Start", GetType().Name);
-      await ReduxDevToolsInterop.DispatchAsync(aRequest, Store.GetSerializableState(), stackTrace);
+      await ReduxDevToolsInterop.DispatchAsync(request, Store.GetSerializableState(), stackTrace);
       Logger.LogDebug(EventIds.ReduxDevToolsBehavior_End, "ReduxDevToolsBehavior Completed");
     }
     catch (Exception aException)

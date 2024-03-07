@@ -10,13 +10,13 @@ public partial class CounterState
     /// <summary>
     /// Intentionally throw so we can test exception handling.
     /// </summary>
-    /// <param name="aThrowExceptionAction"></param>
-    /// <param name="aCancellationToken"></param>
+    /// <param name="action"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public override Task<Unit> Handle
     (
-      ThrowExceptionAction aThrowExceptionAction,
-      CancellationToken aCancellationToken
-    ) => throw new Exception(aThrowExceptionAction.Message);
+      ThrowExceptionAction action,
+      CancellationToken cancellationToken
+    ) => throw new Exception(action.Message);
   }
 }

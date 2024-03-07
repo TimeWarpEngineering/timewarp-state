@@ -38,9 +38,9 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
   public async Task<TResponse> Handle
   (
-    TRequest aRequest,
-    RequestHandlerDelegate<TResponse> aNext,
-    CancellationToken aCancellationToken
+    TRequest request,
+    RequestHandlerDelegate<TResponse> next,
+    CancellationToken cancellationToken
   )
   {
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
@@ -69,7 +69,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
     try
     {
-      TResponse response = await aNext();
+      TResponse response = await next();
       return response;
     }
     catch (Exception exception)
@@ -92,7 +92,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
         Exception = exception
       };
 
-      await Publisher.Publish(exceptionNotification, aCancellationToken);
+      await Publisher.Publish(exceptionNotification, cancellationToken);
       return default!; // It can be null, but we don't care since MediatR handles null values gracefully.
     }
   }

@@ -13,8 +13,8 @@ internal partial class CloneableState
     
     public override Task Handle
     (
-      CloneTestAction aCloneTestAction,
-      CancellationToken aCancellationToken
+      CloneTestAction action,
+      CancellationToken cancellationToken
     )
     {
       // Note: This is a test to verify that the state is cloned.
