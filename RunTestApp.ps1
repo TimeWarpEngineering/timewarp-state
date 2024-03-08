@@ -2,17 +2,11 @@ $Env:ASPNETCORE_ENVIRONMENT = "Development"
 
 Push-Location $PSScriptRoot
 try {
-    dotnet build /p:UseSharedCompilation=false
-    
-    Push-Location ./Tests/Test.App/Test.App.Server
-    try {
-        dotnet run /p:UseSharedCompilation=false
-    }
-    finally {
-        Pop-Location
-    }
+  # The analyzer is not directly referenced by the test app, so we need to build it first
+  dotnet build ./Source/BlazorStateAnalyzer/BlazorStateAnalyzer.csproj    
+  dotnet run --project ./Tests/Test.App/Test.App.Server/Test.App.Server.csproj
 }
 finally {
-    Pop-Location
+  Pop-Location
 }
     
