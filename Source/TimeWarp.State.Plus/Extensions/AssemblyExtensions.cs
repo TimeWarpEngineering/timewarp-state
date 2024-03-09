@@ -1,5 +1,6 @@
 namespace TimeWarp.State.Plus.Extensions;
 
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 [UsedImplicitly]
@@ -53,7 +54,20 @@ public class AssemblyInfo
   /// Gets the commit date stored in the assembly's metadata, if available.
   /// </summary>
   /// <value>The commit date in string format, or null if not available.</value>
-  public string? CommitDate => GetMetadata(nameof(CommitDate));
+  public DateTime? CommitDate
+  {
+    get
+    {
+      string? commitDateString = GetMetadata(nameof(CommitDate));
+      if (DateTime.TryParseExact(commitDateString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime commitDate))
+      {
+        return commitDate;
+      }
+
+      return null;
+    }
+  }
+
 
   public string? RepositoryUrl => GetMetadata(nameof(RepositoryUrl));
   public string? Company => Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
