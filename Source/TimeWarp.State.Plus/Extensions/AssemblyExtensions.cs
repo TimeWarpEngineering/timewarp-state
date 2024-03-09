@@ -1,6 +1,6 @@
 namespace TimeWarp.State.Plus.Extensions;
 
-using System.Globalization;
+using System.Resources;
 using System.Runtime.CompilerServices;
 
 [UsedImplicitly]
@@ -39,17 +39,37 @@ public class AssemblyInfo
   /// <returns>The value of the metadata attribute if found; otherwise, null.</returns>
   private string? GetMetadata(string key) => Metadata.GetValueOrDefault(key);
 
+  // Direct properties for common assembly attributes
+  public uint? AlgorithmId => Assembly.GetCustomAttribute<AssemblyAlgorithmIdAttribute>()?.AlgorithmId;
+  public string? Title => Assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
+  public string? Description => Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
+  public string? Configuration => Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration;
+  public string? Company => Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
+  public string? Product => Assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
+  public string? Copyright => Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright;
+  public string? Trademark => Assembly.GetCustomAttribute<AssemblyTrademarkAttribute>()?.Trademark;
+  public string? Culture => Assembly.GetCustomAttribute<AssemblyCultureAttribute>()?.Culture;
+  public string? Version => Assembly.GetName().Version?.ToString();
+  public string? FileVersion => Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
+  [UsedImplicitly] public string? InformationalVersion => Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+  public string? NeutralResourcesLanguage => Assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>()?.CultureName;
+  public string? ClsCompliant => Assembly.GetCustomAttribute<CLSCompliantAttribute>()?.IsCompliant.ToString();
+  public string InternalsVisibleTo => string.Join(", ", Assembly.GetCustomAttributes<InternalsVisibleToAttribute>().Select(a => a.AssemblyName));
+  public string? DelaySign => Assembly.GetCustomAttribute<AssemblyDelaySignAttribute>()?.DelaySign.ToString();
+  public string? KeyFile => Assembly.GetCustomAttribute<AssemblyKeyFileAttribute>()?.KeyFile;
+  public string? KeyName => Assembly.GetCustomAttribute<AssemblyKeyNameAttribute>()?.KeyName;
+
+  // Custom properties for commit and repository information
   /// <summary>
   /// Gets the commit hash stored in the assembly's metadata, if available.
   /// </summary>
   /// <value>The commit hash, or null if not available.</value>
   public string? CommitHash => InformationalVersion?.Split('+').Skip(1).FirstOrDefault();
-  
+
   // Last 6 characters of the commit hash
   public string? ShortHash => CommitHash?[^6..];
-  
-  public string? CommitUrl => CommitHash is not null && RepositoryUrl is not null ? $"{RepositoryUrl.TrimEnd('/')}/commit/{CommitHash}" : null;
-  
+  public string? CommitUrl => !string.IsNullOrEmpty(CommitHash) && !string.IsNullOrEmpty(RepositoryUrl) ? $"{RepositoryUrl.TrimEnd('/')}/commit/{CommitHash}" : null;
+
   /// <summary>
   /// Gets the commit date stored in the assembly's metadata, if available.
   /// </summary>
@@ -58,28 +78,14 @@ public class AssemblyInfo
   {
     get
     {
-      string? commitDateString = GetMetadata(nameof(CommitDate));
-      if (DateTime.TryParseExact(commitDateString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime commitDate))
+      string? commitDateString = GetMetadata("CommitDate");
+      if (DateTime.TryParse(commitDateString, out DateTime commitDate))
       {
         return commitDate;
       }
-
       return null;
     }
   }
 
-
-  public string? RepositoryUrl => GetMetadata(nameof(RepositoryUrl));
-  public string? Company => Assembly.GetCustomAttribute<AssemblyCompanyAttribute>()?.Company;
-  public string? Title => Assembly.GetCustomAttribute<AssemblyTitleAttribute>()?.Title;
-  public string? Description => Assembly.GetCustomAttribute<AssemblyDescriptionAttribute>()?.Description;
-  public string? Product => Assembly.GetCustomAttribute<AssemblyProductAttribute>()?.Product;
-  public string? InformationalVersion => Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-  public string? Version => Assembly.GetName().Version?.ToString();
-  public string? FileVersion => Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-  public string? VersionString => Assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version;
-  public string? Configuration => Assembly.GetCustomAttribute<AssemblyConfigurationAttribute>()?.Configuration;
-  public string? Trademark => Assembly.GetCustomAttribute<AssemblyTrademarkAttribute>()?.Trademark;
-  public string? Culture => Assembly.GetCustomAttribute<AssemblyCultureAttribute>()?.Culture;
-  public string? InternalsVisibleTo => string.Join(", ", Assembly.GetCustomAttributes<InternalsVisibleToAttribute>().Select(a => a.AssemblyName));
+  public string? RepositoryUrl => GetMetadata("RepositoryUrl");
 }
