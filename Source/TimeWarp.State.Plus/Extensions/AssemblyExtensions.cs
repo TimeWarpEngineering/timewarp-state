@@ -42,8 +42,8 @@ public class AssemblyInfo
   /// Gets the commit hash stored in the assembly's metadata, if available.
   /// </summary>
   /// <value>The commit hash, or null if not available.</value>
-  public string? CommitHash => GetMetadata("CommitHash");
-
+  public string? CommitHash => InformationalVersion?.Split('+').Skip(1).FirstOrDefault();
+  
   // Last 6 characters of the commit hash
   public string? ShortHash => CommitHash?[^6..];
   
