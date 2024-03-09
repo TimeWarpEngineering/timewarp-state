@@ -35,7 +35,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <!--This is to add the SHA for the commit to your assembly InformationalVersion -->
+  <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
 
   <PropertyGroup>
     <GitHeadSha>Not found</GitHeadSha>
