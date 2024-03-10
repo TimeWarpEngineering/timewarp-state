@@ -40,7 +40,7 @@ export class ReduxDevTools {
     }
     this.Extension = this.GetExtension();
     this.DevTools = this.GetDevTools();
-    this.IsEnabled = this.DevTools ? true : false;
+    this.IsEnabled = !!this.DevTools;
     this.Init();
   }
 
