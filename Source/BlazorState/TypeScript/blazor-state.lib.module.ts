@@ -7,13 +7,14 @@ import {
   ReduxDevToolsFactoryName,
   ReduxDevToolsName,
 } from './Constants.js';
+import { DotNetReference } from './DotNetReference.js';
 
-function InitializeJavaScriptInterop(JsonRequestHandler) {
+function InitializeJavaScriptInterop(JsonRequestHandler: DotNetReference) {
   log("TimeWarp.State","InitializeJavaScriptInterop","info");
   blazorState.jsonRequestHandler = JsonRequestHandler;
 }
 
-function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
+function ReduxDevToolsFactory(reduxDevToolsOptions: any): boolean {
   log("TimeWarp.State","ReduxDevToolsFactory","info");
 
   if (!window[ReduxDevToolsName]) {
