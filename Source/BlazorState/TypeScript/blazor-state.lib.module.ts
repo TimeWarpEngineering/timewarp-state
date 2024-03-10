@@ -25,7 +25,7 @@ function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
   return window[ReduxDevToolsName].IsEnabled;
 }
 
-function initializeEnvironment(options, extensions) {
+function initializeEnvironment() {
   log("TimeWarp.State","initializeEnvironment","info", LogAction.Begin);
   window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
@@ -35,7 +35,7 @@ function initializeEnvironment(options, extensions) {
 
 export function beforeWebStart(options, extensions) {
   log("TimeWarp.State Web","beforeWebStart","info", LogAction.Begin);
-  initializeEnvironment(options, extensions);
+  initializeEnvironment();
 }
 
 export function afterWebStarted(blazor) {
@@ -44,7 +44,7 @@ export function afterWebStarted(blazor) {
 
 export function beforeWebAssemblyStart(options, extensions) {
   log("TimeWarp.State WebAssembly","beforeWebAssemblyStart","info", LogAction.Begin);
-  initializeEnvironment(options, extensions);
+  initializeEnvironment();
 }
 
 export function afterWebAssemblyStarted(blazor) {
@@ -53,7 +53,7 @@ export function afterWebAssemblyStarted(blazor) {
 
 export function beforeServerStart(options, extensions) {
   log("TimeWarp.State Server","beforeServerStart","info", LogAction.Begin);
-  initializeEnvironment(options, extensions);
+  initializeEnvironment();
 }
 
 export function afterServerStarted(blazor) {
