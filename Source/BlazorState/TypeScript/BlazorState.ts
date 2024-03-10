@@ -1,12 +1,15 @@
-﻿import { JsonRequestHandlerMethodName, JsonRequestHandlerName } from './Constants.js';
-import { log } from './Logger.js';
+﻿import {JsonRequestHandlerMethodName} from './Constants.js';
+import {DotNetReference} from './DotNetReference';
+import {log} from './Logger.js';
+import {ReduxDevTools} from "./ReduxDevTools";
+
 export class BlazorState {
 
   // Holds the .NET instance of JsonRequestHandler
-  jsonRequestHandler: any;
-  
+  jsonRequestHandler: DotNetReference;
+
   // Holds the Redux DevTools instance
-  reduxDevTools: any;
+  reduxDevTools: ReduxDevTools;
 
   // @ts-ignore
   /**
@@ -18,11 +21,11 @@ export class BlazorState {
     if (!this.jsonRequestHandler) {
       throw new Error('jsonRequestHandler is not initialized. Add ');
     }
-    
+
     // Convert the request payload to a JSON string
     const requestAsJson = JSON.stringify(request);
 
-    log("DispatchRequest",`Dispatching request of Type ${requestTypeFullName}: ${requestAsJson}`, "function",);
+    log("DispatchRequest", `Dispatching request of Type ${requestTypeFullName}: ${requestAsJson}`, "function",);
 
     // Invoke the .NET method to handle the request
     await this.jsonRequestHandler.invokeMethodAsync(JsonRequestHandlerMethodName, requestTypeFullName, requestAsJson);
