@@ -15,7 +15,7 @@
     "noImplicitThis": false,
     "alwaysStrict": false,
     "skipLibCheck": false,
-    "declaration": false,
+    "declaration": true,
   },
   "include": [
     "TypeScript/**/*.ts" // Adjust this path to where your TypeScript files are located.
