@@ -3,13 +3,11 @@
 This script converts a Git commit timestamp to a human-readable date format and is intended for use in build processes.
 
 .DESCRIPTION
-The script takes a Git commit timestamp as input and converts it into a standardized date format ("yyyy-MM-ddTHH:mm:ssK"). 
-It's designed to be run as part of an automated build process, specifically within MSBuild tasks, to generate and use date information from Git commits.
+The script takes a Git commit timestamp as input and converts it into a standardized date format ("yyyy-MM-ddTHH:mm:ssK"). It's designed to be run as part of an automated build process, specifically within MSBuild tasks, to generate and use date information from Git commits.
 
 .NOTES
 The script is intended to be called from an MSBuild task, but can be used in any context where a Git commit timestamp needs to be converted to a human-readable date.
 
- #>
 .EXAMPLE
 pwsh -NoProfile -ExecutionPolicy Bypass -File "ConvertTimestamp.ps1" -GitCommitTimestamp <timestamp>
 
