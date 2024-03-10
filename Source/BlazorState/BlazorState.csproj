@@ -68,6 +68,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\js\*.d.ts">
+      <Pack>true</Pack>
+      <PackagePath>staticwebassets\js\</PackagePath>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\BlazorStateAnalyzer\bin\$(Configuration)\netstandard2.0\BlazorStateAnalyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs" />
   </ItemGroup>
 
@@ -92,7 +99,7 @@
     <TypeScriptNoImplicitThis>false</TypeScriptNoImplicitThis>
     <TypeScriptAlwaysStrict>false</TypeScriptAlwaysStrict>
     <TypeScriptSkipLibCheck>false</TypeScriptSkipLibCheck>
-    <TypeScriptGeneratesDeclarations>false</TypeScriptGeneratesDeclarations>
+    <TypeScriptGeneratesDeclarations>true</TypeScriptGeneratesDeclarations>
   </PropertyGroup>
 
 </Project>
