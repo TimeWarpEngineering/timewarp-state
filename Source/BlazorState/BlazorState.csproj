@@ -99,7 +99,7 @@
     <TypeScriptNoImplicitThis>false</TypeScriptNoImplicitThis>
     <TypeScriptAlwaysStrict>false</TypeScriptAlwaysStrict>
     <TypeScriptSkipLibCheck>false</TypeScriptSkipLibCheck>
-    <TypeScriptGeneratesDeclarations>true</TypeScriptGeneratesDeclarations>
+    <TypeScriptGeneratesDeclarations>false</TypeScriptGeneratesDeclarations>
   </PropertyGroup>
 
 </Project>
