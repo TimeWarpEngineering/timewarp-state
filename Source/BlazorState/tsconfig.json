@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "sourceMap": true,
+    "outDir": "wwwroot/js",
+    "removeComments": true,
+    "noEmitOnError": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false, // This enables a wide range of strict type-checking options.
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "skipLibCheck": false,
+    "declaration": false,
+  },
+  "include": [
+    "TypeScript/**/*.ts" // Adjust this path to where your TypeScript files are located.
+  ],
+  "exclude": [
+    "node_modules", // Standard exclude, you might adjust or add more paths as needed.
+    "**/*.spec.ts" // Exclude test files if present; adjust as needed.
+  ]
+}

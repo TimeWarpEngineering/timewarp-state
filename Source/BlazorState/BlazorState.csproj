@@ -20,13 +20,13 @@
 
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
   <!--  dotnet 8 no longer requires configuration for Source Link it is automatic if on GitHub, Azure, GitLab, or Bitbucket-->
-  
+
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
-    
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
@@ -34,12 +34,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnyClone" />
-    <PackageReference Include="JetBrains.Annotations" />
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="TypeSupport" />
+    <PackageReference Include="AnyClone"/>
+    <PackageReference Include="JetBrains.Annotations"/>
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    <PackageReference Include="TypeSupport"/>
     <PackageReference Include="Microsoft.TypeScript.MSBuild">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -47,16 +47,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\**\*" />
+    <SupportedPlatform Include="browser"/>
   </ItemGroup>
 
   <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests" />
-    <InternalsVisibleTo Include="Client.Integration.Tests" />
+    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests"/>
+    <InternalsVisibleTo Include="Client.Integration.Tests"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -64,7 +60,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>
@@ -75,31 +71,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\BlazorStateAnalyzer\bin\$(Configuration)\netstandard2.0\BlazorStateAnalyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs" />
+    <None Include="..\BlazorStateAnalyzer\bin\$(Configuration)\netstandard2.0\BlazorStateAnalyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\"/>
   </ItemGroup>
-
-  <PropertyGroup>
-    <PrepareForBuildDependsOn>CompileTypeScript;GetTypeScriptOutputForPublishing;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
-    <TypeScriptTarget>ES2022</TypeScriptTarget>
-    <TypeScriptModuleKind>ES2022</TypeScriptModuleKind>
-    <TypeScriptSourceMap>true</TypeScriptSourceMap>
-    <TypeScriptOutDir>wwwroot/js</TypeScriptOutDir>
-    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
-    <TypeScriptForceConsistentCasingInFileNames>true</TypeScriptForceConsistentCasingInFileNames>
-    <TypeScriptStrict>false</TypeScriptStrict>
-    <TypeScriptNoImplicitAny>false</TypeScriptNoImplicitAny>
-    <TypeScriptStrictNullChecks>false</TypeScriptStrictNullChecks>
-    <TypeScriptStrictFunctionTypes>false</TypeScriptStrictFunctionTypes>
-    <TypeScriptStrictBindCallApply>false</TypeScriptStrictBindCallApply>
-    <TypeScriptNoImplicitThis>false</TypeScriptNoImplicitThis>
-    <TypeScriptAlwaysStrict>false</TypeScriptAlwaysStrict>
-    <TypeScriptSkipLibCheck>false</TypeScriptSkipLibCheck>
-    <TypeScriptGeneratesDeclarations>false</TypeScriptGeneratesDeclarations>
-  </PropertyGroup>
 
 </Project>
