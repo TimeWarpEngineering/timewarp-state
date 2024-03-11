@@ -78,4 +78,9 @@
     <Folder Include="wwwroot\"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="package.json" Pack="false" />
+    <None Include="package-lock.json" Pack="false" />
+  </ItemGroup>
+
 </Project>

@@ -22,25 +22,25 @@ function initializeEnvironment() {
     window[BlazorStateName] = blazorState;
     log("TimeWarp.State", "initializeEnvironment", "info", LogAction.End);
 }
-export function beforeWebStart(options, extensions) {
+export function beforeWebStart(_options, _extensions) {
     log("TimeWarp.State Web", "beforeWebStart", "info", LogAction.Begin);
     initializeEnvironment();
 }
-export function afterWebStarted(blazor) {
+export function afterWebStarted(_blazor) {
     log("TimeWarp.State Web", "afterWebStarted", "info", LogAction.End);
 }
-export function beforeWebAssemblyStart(options, extensions) {
+export function beforeWebAssemblyStart(_options, _extensions) {
     log("TimeWarp.State WebAssembly", "beforeWebAssemblyStart", "info", LogAction.Begin);
     initializeEnvironment();
 }
-export function afterWebAssemblyStarted(blazor) {
+export function afterWebAssemblyStarted(_blazor) {
     log("TimeWarp.State WebAssembly", "afterWebAssemblyStarted", "info", LogAction.End);
 }
-export function beforeServerStart(options, extensions) {
+export function beforeServerStart(_options, _extensions) {
     log("TimeWarp.State Server", "beforeServerStart", "info", LogAction.Begin);
     initializeEnvironment();
 }
-export function afterServerStarted(blazor) {
+export function afterServerStarted(_blazor) {
     log("TimeWarp.State Server", "afterServerStarted", "info", LogAction.End);
 }
 //# sourceMappingURL=blazor-state.lib.module.js.map

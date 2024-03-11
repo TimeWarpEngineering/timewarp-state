@@ -19,7 +19,7 @@ export class ReduxDevTools {
         }
         this.Extension = this.GetExtension();
         this.DevTools = this.GetDevTools();
-        this.IsEnabled = this.DevTools ? true : false;
+        this.IsEnabled = !!this.DevTools;
         this.Init();
     }
     Init() {
@@ -43,7 +43,7 @@ export class ReduxDevTools {
         return devTools;
     }
     MapRequestType(message) {
-        var dispatchRequests = {
+        const dispatchRequests = {
             'COMMIT': undefined,
             'IMPORT_STATE': undefined,
             'JUMP_TO_ACTION': 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
@@ -58,7 +58,7 @@ export class ReduxDevTools {
             'SWEEP': undefined,
             'TOGGLE_ACTION': undefined,
         };
-        var blazorRequestType;
+        let blazorRequestType;
         switch (message.type) {
             case 'START':
                 blazorRequestType = 'TimeWarp.Features.ReduxDevTools.StartRequest';
@@ -75,21 +75,16 @@ export class ReduxDevTools {
     }
     MessageHandler = (message) => {
         log("ReduxDevTools", "MessageHandler", "info");
-        log("ReduxDevTools", message, "info");
-        let jsonRequest;
+        log("ReduxDevTools", message.type, "info");
         const requestType = this.MapRequestType(message);
         if (requestType) {
-            jsonRequest = {
-                RequestType: requestType,
-                Payload: message
-            };
-            this.BlazorState.DispatchRequest(requestType, message);
+            this.BlazorState.DispatchRequest(requestType, message).then();
         }
         else
-            log("ReduxDevTools", `messages of this type are currently not supported`, "warning");
+            log("ReduxDevTools", `messages of type ${requestType} are currently not supported`, "warning");
     };
     ReduxDevToolsDispatch(action, state, stackTrace) {
-        if (action === 'init') {
+        if (action.type === 'init') {
             if (!this.IsInitialized) {
                 this.IsInitialized = true;
                 return window[DevToolsName].init(state);
@@ -99,8 +94,8 @@ export class ReduxDevTools {
         window[ReduxDevToolsName].StackTrace = stackTrace;
         return window[DevToolsName].send(action, state);
     }
-    GetStackTraceForAction(action) {
-        return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (nofile:0:0)";
+    GetStackTraceForAction(_action) {
+        return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (noFile:0:0)";
     }
 }
 //# sourceMappingURL=ReduxDevTools.js.map

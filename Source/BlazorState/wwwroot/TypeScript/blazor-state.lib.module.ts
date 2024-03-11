@@ -1,4 +1,6 @@
-﻿import {blazorState} from './BlazorState.js';
+﻿// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
+
+import {blazorState} from './BlazorState.js';
 import {ReduxDevTools} from './ReduxDevTools.js';
 import {log, LogAction} from './Logger.js'
 import {
@@ -7,13 +9,14 @@ import {
   ReduxDevToolsFactoryName,
   ReduxDevToolsName,
 } from './Constants.js';
+import { DotNetReference } from './DotNetReference.js';
 
-function InitializeJavaScriptInterop(JsonRequestHandler) {
+function InitializeJavaScriptInterop(JsonRequestHandler: DotNetReference) {
   log("TimeWarp.State","InitializeJavaScriptInterop","info");
   blazorState.jsonRequestHandler = JsonRequestHandler;
 }
 
-function ReduxDevToolsFactory(reduxDevToolsOptions): boolean {
+function ReduxDevToolsFactory(reduxDevToolsOptions: any): boolean {
   log("TimeWarp.State","ReduxDevToolsFactory","info");
 
   if (!window[ReduxDevToolsName]) {
@@ -33,29 +36,29 @@ function initializeEnvironment() {
   log("TimeWarp.State","initializeEnvironment","info", LogAction.End);
 }
 
-export function beforeWebStart(options, extensions) {
+export function beforeWebStart(_options: any, _extensions: any) {
   log("TimeWarp.State Web","beforeWebStart","info", LogAction.Begin);
   initializeEnvironment();
 }
 
-export function afterWebStarted(blazor) {
+export function afterWebStarted(_blazor: any) {
   log("TimeWarp.State Web","afterWebStarted","info", LogAction.End);
 }
 
-export function beforeWebAssemblyStart(options, extensions) {
+export function beforeWebAssemblyStart(_options: any, _extensions: any) {
   log("TimeWarp.State WebAssembly","beforeWebAssemblyStart","info", LogAction.Begin);
   initializeEnvironment();
 }
 
-export function afterWebAssemblyStarted(blazor) {
+export function afterWebAssemblyStarted(_blazor: any) {
   log("TimeWarp.State WebAssembly","afterWebAssemblyStarted","info", LogAction.End);
 }
 
-export function beforeServerStart(options, extensions) {
+export function beforeServerStart(_options: any, _extensions: any) {
   log("TimeWarp.State Server","beforeServerStart","info", LogAction.Begin);
   initializeEnvironment();
 }
 
-export function afterServerStarted(blazor) {
+export function afterServerStarted(_blazor: any) {
   log("TimeWarp.State Server","afterServerStarted","info", LogAction.End);
 }

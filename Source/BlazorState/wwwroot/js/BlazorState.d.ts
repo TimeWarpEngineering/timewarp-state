@@ -1,6 +1,8 @@
+import { DotNetReference } from './DotNetReference';
+import { ReduxDevTools } from "./ReduxDevTools";
 export declare class BlazorState {
-    jsonRequestHandler: any;
-    reduxDevTools: any;
-    DispatchRequest(requestTypeFullName: string, request: any): Promise<void>;
+    jsonRequestHandler: DotNetReference;
+    reduxDevTools: ReduxDevTools;
+    DispatchRequest(requestTypeFullName: string, request: unknown): Promise<void>;
 }
 export declare const blazorState: BlazorState;

@@ -30,7 +30,12 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      
+
+      - name: Install NPM packages
+        run: |
+          cd Source/BlazorState/wwwroot/TypeScript/
+          npm install
+          
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
