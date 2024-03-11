@@ -1,4 +1,4 @@
-﻿@rendermode InteractiveAuto
+@rendermode InteractiveAuto
 @namespace Test.App.Client.Pages
 @attribute [Route(Route)]
 @inherits BaseComponent
@@ -19,8 +19,11 @@
 }
 
 <!-- Actions to take -->
-<button data-qa="GoBack" @onclick=GoBack>Go Back</button>
-<hr>
+<div>
+    <button id="goback-button" data-qa="GoBack" @onclick=GoBack>Go Back</button>
+    <hr>
+</div>
+
 
 <!-- ACT -->
 <p><strong>Act:</strong> Click the `Go Back` button</p>

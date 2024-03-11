@@ -36,9 +36,10 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Playwright" Version="1.19.1" />
+    <PackageVersion Include="Microsoft.Playwright" Version="1.42.0" />
+    <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.42.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.3.3" />
+    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.4.2" />
     <PackageVersion Include="Scrutor" Version="4.2.2" />
     <PackageVersion Include="Serilog.Sinks.BrowserConsole" Version="2.0.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="8.0.0" />
