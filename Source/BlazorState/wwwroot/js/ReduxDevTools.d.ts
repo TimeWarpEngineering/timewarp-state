@@ -1,35 +1,21 @@
 import { BlazorState } from './BlazorState.js';
-type traceType = (action: any) => string;
+import type { Config } from '@redux-devtools/extension';
+import type { ConnectResponse, ListenerMessage, ReduxDevtoolsExtension } from './ReduxDevToolsTypes';
+import { Action } from 'redux';
 export declare class ReduxDevTools {
     IsEnabled: boolean;
-    DevTools: any;
-    Extension: any;
-    Config: {
-        name: string;
-        trace: boolean | traceType;
-        features: {
-            pause: boolean;
-            lock: boolean;
-            persist: boolean;
-            export: boolean;
-            import: boolean;
-            jump: boolean;
-            skip: boolean;
-            reorder: boolean;
-            dispatch: boolean;
-            test: boolean;
-        };
-    };
+    DevTools: ConnectResponse;
+    Extension: ReduxDevtoolsExtension;
+    Config: Config;
     BlazorState: BlazorState;
     StackTrace: string | undefined;
     private IsInitialized;
-    constructor(reduxDevToolsOptions: any);
+    constructor(reduxDevToolsOptions: Config);
     Init(): void;
-    GetExtension(): any;
-    GetDevTools(): any;
-    MapRequestType(message: any): any;
-    MessageHandler: (message: any) => void;
-    ReduxDevToolsDispatch(action: any, state: any, stackTrace: any): any;
-    GetStackTraceForAction(action: any): string;
+    GetExtension(): ReduxDevtoolsExtension | undefined;
+    GetDevTools(): ConnectResponse | undefined;
+    MapRequestType(message: ListenerMessage<unknown, Action>): string;
+    MessageHandler: (message: ListenerMessage<unknown, Action>) => void;
+    ReduxDevToolsDispatch(action: Action<string>, state: unknown, stackTrace: any): any;
+    GetStackTraceForAction(_action: any): string;
 }
-export {};

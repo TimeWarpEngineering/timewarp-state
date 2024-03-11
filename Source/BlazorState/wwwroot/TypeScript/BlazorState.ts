@@ -17,7 +17,7 @@ export class BlazorState {
    * @param {string} requestTypeFullName - The full name of the request type.
    * @param {any} request - The request payload.
    */
-  async DispatchRequest(requestTypeFullName: string, request: any) {
+  async DispatchRequest(requestTypeFullName: string, request: unknown) {
     if (!this.jsonRequestHandler) {
       throw new Error('jsonRequestHandler is not initialized. Add ');
     }

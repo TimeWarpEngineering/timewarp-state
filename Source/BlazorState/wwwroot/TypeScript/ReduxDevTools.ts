@@ -1,35 +1,20 @@
 ﻿import { blazorState, BlazorState } from './BlazorState.js';
 import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
 import { log } from './Logger.js';
-
-type traceType = (action) => string;
-//see reduxjs/redux-devtools/packages/redux-devtools-extension/src/index.ts for types
+import type { Config } from '@redux-devtools/extension';
+import type {ConnectResponse, ListenerMessage, ReduxDevtoolsExtension} from './ReduxDevToolsTypes';
+import { Action } from 'redux';
 export class ReduxDevTools {
   IsEnabled: boolean;
-  DevTools: any;
-  Extension: any;
-  Config: {
-    name: string;
-    trace: boolean | traceType;
-    features: {
-      pause: boolean;
-      lock: boolean;
-      persist: boolean;
-      export: boolean;
-      import: boolean;
-      jump: boolean;
-      skip: boolean;
-      reorder: boolean;
-      dispatch: boolean;
-      test: boolean;
-    };
-  };
+  DevTools: ConnectResponse;
+  Extension: ReduxDevtoolsExtension;
+  Config: Config;
   BlazorState: BlazorState;
   StackTrace: string | undefined;
 
   private IsInitialized: boolean = false;
 
-  constructor(reduxDevToolsOptions) {
+  constructor(reduxDevToolsOptions: Config) {
     log("ReduxDevTools", "constructor", "info");
     log("ReduxDevTools", reduxDevToolsOptions.toString(), "info");
 
@@ -51,7 +36,7 @@ export class ReduxDevTools {
     }
   }
 
-  GetExtension() {
+  GetExtension():ReduxDevtoolsExtension | undefined{
     const extension = window[ReduxExtensionName];
 
     if (!extension) {
@@ -60,16 +45,16 @@ export class ReduxDevTools {
     return extension;
   }
 
-  GetDevTools() {
-    const devTools = this.Extension && this.Extension.connect(this.Config);
+  GetDevTools():ConnectResponse | undefined{
+    const devTools :ConnectResponse = this.Extension && this.Extension.connect(this.Config);
     if (!devTools) {
       log("ReduxDevTools", "Unable to connect to Redux DevTools.", "warning");
     }
     return devTools;
   }
 
-  MapRequestType(message) {
-    var dispatchRequests = {
+  MapRequestType(message: ListenerMessage<unknown,Action>): string {
+    const dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
       'JUMP_TO_ACTION': 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
@@ -84,7 +69,7 @@ export class ReduxDevTools {
       'SWEEP': undefined,
       'TOGGLE_ACTION': undefined,
     };
-    var blazorRequestType;
+    let blazorRequestType: string;
     switch (message.type) {
       case 'START':
         blazorRequestType = 'TimeWarp.Features.ReduxDevTools.StartRequest';
@@ -102,26 +87,20 @@ export class ReduxDevTools {
     return blazorRequestType;
   }
 
-  MessageHandler = (message) => {
+  MessageHandler = (message: ListenerMessage<unknown,Action>) => {
     log("ReduxDevTools", "MessageHandler", "info");
-    log("ReduxDevTools", message, "info")
+    log("ReduxDevTools", message.type, "info")
 
-    let jsonRequest;
-    const requestType = this.MapRequestType(message);
+    const requestType: string = this.MapRequestType(message);
     if (requestType) { // If we don't map this type then there is nothing to dispatch just ignore.
-      jsonRequest = {
-        // TODO: make sure non Requests from assemblies other than BlazorState also work.
-        RequestType: requestType,
-        Payload: message
-      };
-      
-      this.BlazorState.DispatchRequest(requestType, message);
+      this.BlazorState.DispatchRequest(requestType, message).then();
     } else
-      log("ReduxDevTools", `messages of this type are currently not supported`, "warning");
+      log("ReduxDevTools", `messages of type ${requestType} are currently not supported`, "warning");
   }
 
-  ReduxDevToolsDispatch(action, state, stackTrace) {
-    if (action === 'init') {
+  // noinspection JSUnusedGlobalSymbols // Called from Blazor
+  ReduxDevToolsDispatch(action: Action<string>, state: unknown, stackTrace: any) {
+    if (action.type === 'init') {
       if (!this.IsInitialized) {
         this.IsInitialized = true;
         return window[DevToolsName].init(state);
@@ -131,11 +110,10 @@ export class ReduxDevTools {
 
     // Handle other actions
     window[ReduxDevToolsName].StackTrace = stackTrace;
-    return window[DevToolsName].send(action, state);
+    return (window[DevToolsName] as ConnectResponse).send(action, state);
   }
 
-
-  GetStackTraceForAction(action): string {
-    return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (nofile:0:0)";
+  GetStackTraceForAction(_action: any): string {
+    return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (noFile:0:0)";
   }
 }
