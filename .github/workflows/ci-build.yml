@@ -28,9 +28,11 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-          
-      - name: Restore Dotnet Tools
-        run: dotnet tool restore          
+
+      - name: Install NPM packages
+        run: |
+          cd Source/BlazorState/wwwroot/TypeScript/
+          npm install                    
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
