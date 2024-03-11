@@ -34,6 +34,9 @@ jobs:
           cd Source/BlazorState/wwwroot/TypeScript/
           npm install                    
 
+      - name: Restore Dotnet Tools
+        run: dotnet tool restore
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
