@@ -308,3 +308,4 @@ __pycache__/
 # Ignore all files in Razor Source Generators directories
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
+/Source/BlazorState/wwwroot/js/**
