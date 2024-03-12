@@ -1,9 +1,13 @@
 ﻿import { blazorState, BlazorState } from './BlazorState.js';
 import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
 import { log } from './Logger.js';
-import type { Config } from '@redux-devtools/extension';
-import type {ConnectResponse, ListenerMessage, ReduxDevtoolsExtension} from './ReduxDevToolsTypes';
-import { Action } from 'redux';
+// import type { Config } from '@redux-devtools/extension';
+// import type {ConnectResponse, ListenerMessage, ReduxDevtoolsExtension} from './ReduxDevToolsTypes';
+// import { Action } from 'redux';
+type Config = any;
+type Action = any;
+type ConnectResponse = any;
+type ReduxDevtoolsExtension = any;
 export class ReduxDevTools {
   IsEnabled: boolean;
   DevTools: ConnectResponse;
@@ -53,7 +57,7 @@ export class ReduxDevTools {
     return devTools;
   }
 
-  MapRequestType(message: ListenerMessage<unknown,Action>): string {
+  MapRequestType(message: any): string { // MapRequestType(message: ListenerMessage<unknown,Action>): string {
     const dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
@@ -87,7 +91,7 @@ export class ReduxDevTools {
     return blazorRequestType;
   }
 
-  MessageHandler = (message: ListenerMessage<unknown,Action>) => {
+  MessageHandler = (message: any) => { // MessageHandler = (message: ListenerMessage<unknown,Action>) => {
     log("ReduxDevTools", "MessageHandler", "info");
     log("ReduxDevTools", message.type, "info")
 
@@ -99,7 +103,7 @@ export class ReduxDevTools {
   }
 
   // noinspection JSUnusedGlobalSymbols // Called from Blazor
-  ReduxDevToolsDispatch(action: Action<string>, state: unknown, stackTrace: any) {
+  ReduxDevToolsDispatch(action: any, state: unknown, stackTrace: any) { // ReduxDevToolsDispatch(action: Action<string>, state: unknown, stackTrace: any) {
     if (action.type === 'init') {
       if (!this.IsInitialized) {
         this.IsInitialized = true;
