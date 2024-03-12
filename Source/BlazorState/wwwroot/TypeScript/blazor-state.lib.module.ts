@@ -1,8 +1,8 @@
 ﻿// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
-import {blazorState} from './BlazorState';
-import {ReduxDevTools} from './ReduxDevTools';
-import {log, LogAction} from './Logger'
+import {blazorState} from './BlazorState.js';
+import {ReduxDevTools} from './ReduxDevTools.js';
+import {log, LogAction} from './Logger.js'
 import {
   BlazorStateName,
   InitializeJavaScriptInteropName,
