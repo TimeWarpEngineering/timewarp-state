@@ -29,10 +29,10 @@ jobs:
         run: |
           ls ${{ github.workspace }}
 
-      - name: Install NPM packages
-        run: |
-          cd Source/BlazorState/
-          npm install                    
+#      - name: Install NPM packages
+#        run: |
+#          cd Source/BlazorState/
+#          npm install                    
 
       - name: Restore Dotnet Tools
         run: dotnet tool restore
