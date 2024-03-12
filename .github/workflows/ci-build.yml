@@ -31,7 +31,7 @@ jobs:
 
       - name: Install NPM packages
         run: |
-          cd Source/BlazorState/wwwroot/TypeScript/
+          cd Source/BlazorState/
           npm install                    
 
       - name: Restore Dotnet Tools
