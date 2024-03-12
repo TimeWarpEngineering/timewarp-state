@@ -1,20 +1,11 @@
 ﻿import { blazorState } from '/_content/Blazor-State/js/BlazorState.js'
-import { log,LogAction } from '/_content/Blazor-State/js/Logger.js'
+import { log, LogAction } from '/_content/Blazor-State/js/Logger.js'
 
 const dispatchIncrementCountAction = () => {
   log("dispatchIncrementCountAction", "Dispatching IncrementCountAction", "function");
   const IncrementCountActionName = "Test.App.Client.Features.Counter.CounterState+IncrementCount+Action, Test.App.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
   blazorState.DispatchRequest(IncrementCountActionName, { amount: 7 });
 };
-
-// export function beforeStart(options, extensions) {
-//   log("Interop Lifecycle", "Test.App.Client beforeStart", "info", LogAction.Begin);
-//   window["InteropTest"] = dispatchIncrementCountAction;
-// }
-//
-// export function afterStarted(blazor) {
-//   log("Interop Lifecycle", "Test.App.Client afterStarted", "success", LogAction.End);
-// }
 
 export function beforeWebStart(blazor) {
   log("Interop Lifecycle Web", "Test.App.Client beforeWebStart", "info", LogAction.Begin);
