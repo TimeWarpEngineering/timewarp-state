@@ -51,10 +51,10 @@ jobs:
           cd Source/BlazorState/
           npm install
           
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 8.0.x
+#      - name: Setup .NET
+#        uses: actions/setup-dotnet@v2
+#        with:
+#          dotnet-version: 8.0.x
 
       - name: Setup DocFX
         uses: crazy-max/ghaction-chocolatey@v2
