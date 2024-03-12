@@ -20,7 +20,7 @@
     "declaration": true,
   },
   "include": [
-    "wwwroot/TypeScript/**/*.ts" // Adjust this path to where your TypeScript files are located.
+    "wwwroot/TypeScript/**/*.ts"
   ],
   "exclude": [
     "node_modules", // Standard exclude, you might adjust or add more paths as needed.
