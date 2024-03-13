@@ -6,5 +6,5 @@ public class TestState
 {
   // Create an array of strings to sort.
   public string[] Fruits { get; set; } = ["apricot", "orange", "banana", "mango", "apple", "grape", "strawberry"];
-  public IOrderedEnumerable<string> SortedFruits => Fruits.OrderBy(aFruit => aFruit.Length).ThenBy(aFruit => aFruit);
+  public IOrderedEnumerable<string> SortedFruits => Fruits.OrderBy(fruit => fruit.Length).ThenBy(fruit => fruit);
 }

@@ -20,7 +20,7 @@ public partial class BlueState
           IPersistenceService PersistenceService
         ): ActionHandler<Action>(store)
         {
-            public override async System.Threading.Tasks.Task Handle(Action aAction, System.Threading.CancellationToken aCancellationToken)
+            public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
             {
                 try
                 {

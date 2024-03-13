@@ -30,8 +30,8 @@ public class Program
         options.Assemblies =
           new[]
           {
-                typeof(Program).GetTypeInfo().Assembly,
-		            typeof(StateInitializedNotificationHandler).GetTypeInfo().Assembly
+                typeof(Test.App.Client.AssemblyMarker).GetTypeInfo().Assembly,
+		            typeof(TimeWarp.State.Plus.AssemblyMarker).GetTypeInfo().Assembly
           };
       }
     );

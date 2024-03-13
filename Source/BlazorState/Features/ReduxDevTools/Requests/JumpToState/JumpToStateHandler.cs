@@ -8,35 +8,35 @@ internal class JumpToStateHandler : IRequestHandler<JumpToStateRequest>
 
   public JumpToStateHandler
   (
-    ILogger<JumpToStateHandler> aLogger,
-    IReduxDevToolsStore aStore,
-    Subscriptions aSubscriptions
+    ILogger<JumpToStateHandler> logger,
+    IReduxDevToolsStore store,
+    Subscriptions subscriptions
   )
   {
-    Logger = aLogger;
+    Logger = logger;
     Logger.LogDebug(EventIds.JumpToStateHandler_Initializing, "constructor");
-    Store = aStore;
-    Subscriptions = aSubscriptions;
+    Store = store;
+    Subscriptions = subscriptions;
   }
 
-  public Task Handle(JumpToStateRequest aJumpToStateRequest, CancellationToken aCancellationToken)
+  public Task Handle(JumpToStateRequest jumpToStateRequest, CancellationToken cancellationToken)
   {
     Logger.LogDebug
     (
       EventIds.JumpToStateHandler_RequestReceived,
-      "Recieved Id:{aJumpToStateRequest_Id} State:{aRequest_State}",
-      aJumpToStateRequest.Id,
-      aJumpToStateRequest.State
+      "Received Id:{aJumpToStateRequest_Id} State:{aRequest_State}",
+      jumpToStateRequest.Id,
+      jumpToStateRequest.State
     );
 
-    Store.LoadStatesFromJson(aJumpToStateRequest.State);
+    Store.LoadStatesFromJson(jumpToStateRequest.State);
     Subscriptions.ReRenderSubscribers<IDevToolsComponent>();
 
     Logger.LogDebug
     (
       EventIds.JumpToStateHandler_RequestHandled,
       "Handled Id:{aJumpToStateRequest_Id}",
-      aJumpToStateRequest.Id
+      jumpToStateRequest.Id
     );
     return Task.CompletedTask;
   }

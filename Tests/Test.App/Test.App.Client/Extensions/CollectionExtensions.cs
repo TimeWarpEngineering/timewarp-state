@@ -5,16 +5,16 @@ public static class CollectionExtensions
   /// <summary>
   /// Compare any enumerable to another enumerable
   /// </summary>
-  /// <param name="aCollection"></param>
-  /// <param name="aSecond"></param>
+  /// <param name="collection"></param>
+  /// <param name="second"></param>
   /// <returns></returns>
-  public static bool EnumerableEqual(this IEnumerable aCollection, IEnumerable aSecond)
+  public static bool EnumerableEqual(this IEnumerable collection, IEnumerable second)
   {
     // optimal way to compare 2 multidimensional arrays is to flatten both of them then compare the entire set
     var linearList = new List<int>();
     var otherLinearList = new List<int>();
-    IEnumerator enumerator = aCollection.GetEnumerator();
-    IEnumerator secondEnumerator = aSecond.GetEnumerator();
+    IEnumerator enumerator = collection.GetEnumerator();
+    IEnumerator secondEnumerator = second.GetEnumerator();
     try
     {
       while (enumerator.MoveNext() && secondEnumerator.MoveNext())

@@ -14,12 +14,12 @@ public partial class ApplicationState
 
     public Task Handle
     (
-      ExceptionNotification aExceptionNotification,
-      CancellationToken aCancellationToken
+      ExceptionNotification exceptionNotification,
+      CancellationToken cancellationToken
     )
     {
-      Logger.LogWarning("aExceptionNotification.Exception.Message: {ExceptionMessage}", aExceptionNotification.Exception.Message);
-      ApplicationState.ExceptionMessage = aExceptionNotification.Exception.Message;
+      Logger.LogWarning("aExceptionNotification.Exception.Message: {ExceptionMessage}", exceptionNotification.Exception.Message);
+      ApplicationState.ExceptionMessage = exceptionNotification.Exception.Message;
       return Task.CompletedTask;
     }
   }

@@ -28,7 +28,7 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
     serviceCollection.AddSingleton(serverHttpClient);
     serviceCollection.AddBlazorState
     (
-      aOptions => aOptions.Assemblies =
+      options => options.Assemblies =
         new[] { typeof(Test.App.Client.Program).GetTypeInfo().Assembly }
     );
   

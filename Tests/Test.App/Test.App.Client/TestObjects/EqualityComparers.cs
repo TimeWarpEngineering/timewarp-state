@@ -23,5 +23,5 @@ public class DictionaryComparer<TKey, TValue> : IEqualityComparer<IDictionary<TK
     return dictionary1.All(pair => ValueComparer.Equals(pair.Value, dictionary2[pair.Key]));
   }
 
-  public int GetHashCode(IDictionary<TKey, TValue> aDictionary) => 0;
+  public int GetHashCode(IDictionary<TKey, TValue> dictionary) => 0;
 }

@@ -11,11 +11,11 @@ public class WeatherForecastDto
 {
   public WeatherForecastDto() { }
 
-  public WeatherForecastDto(DateTime aDate, string aSummary, int aTemperatureC)
+  public WeatherForecastDto(DateTime date, string summary, int temperatureC)
   {
-    Date = aDate;
-    Summary = aSummary;
-    TemperatureC = aTemperatureC;
+    Date = date;
+    Summary = summary;
+    TemperatureC = temperatureC;
   }
 
   public DateTime Date { get; }

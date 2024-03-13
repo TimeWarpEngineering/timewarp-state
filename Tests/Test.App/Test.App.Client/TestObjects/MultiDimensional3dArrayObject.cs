@@ -16,5 +16,5 @@ public class MultiDimensional3dArrayObject
     return Equals(basicObject);
   }
 
-  public bool Equals(MultiDimensional3dArrayObject aOther) => Int3DArray.EnumerableEqual(aOther.Int3DArray);
+  public bool Equals(MultiDimensional3dArrayObject other) => Int3DArray.EnumerableEqual(other.Int3DArray);
 }

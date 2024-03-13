@@ -24,6 +24,6 @@ public abstract class BaseTest
   /// <summary>
   /// Send a request to the MediatR pipeline
   /// </summary>
-  /// <param name="aRequest"></param>
-  protected async Task Send(IRequest aRequest) => await Sender.Send(aRequest);
+  /// <param name="request"></param>
+  protected async Task Send(IRequest request) => await Sender.Send(request);
 }

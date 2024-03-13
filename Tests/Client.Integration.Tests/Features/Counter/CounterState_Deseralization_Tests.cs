@@ -8,7 +8,7 @@ public class JsonSerializer_Should : BaseTest
   private CounterState CounterState { get; }
   private JsonSerializerOptions JsonSerializerOptions { get; }
   
-  public JsonSerializer_Should(ClientHost aWebAssemblyHost) : base(aWebAssemblyHost)
+  public JsonSerializer_Should(ClientHost webAssemblyHost) : base(webAssemblyHost)
   {
     CounterState = Store.GetState<CounterState>();
     JsonSerializerOptions = new JsonSerializerOptions();

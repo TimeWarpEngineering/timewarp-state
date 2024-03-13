@@ -19,34 +19,13 @@
   </PropertyGroup>
 
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-  <PropertyGroup>
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-
-    <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
-    <DebugType>embedded</DebugType>
-
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link --> 
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
-  </ItemGroup>
-  <!-- End Source Link -->
+  <!--  dotnet 8 no longer requires configuration for Source Link it is automatic if on GitHub, Azure, GitLab, or Bitbucket-->
 
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
-    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
@@ -54,11 +33,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnyClone" />
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
-    <PackageReference Include="TypeSupport" />
+    <PackageReference Include="AnyClone"/>
+    <PackageReference Include="JetBrains.Annotations"/>
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    <PackageReference Include="TypeSupport"/>
     <PackageReference Include="Microsoft.TypeScript.MSBuild">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -66,32 +46,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\js\**\*" />
+    <Content Remove="wwwroot\js\**\*"/>
+  </ItemGroup>
+  <ItemGroup>
+    <SupportedPlatform Include="browser"/>
   </ItemGroup>
 
   <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests" />
-    <InternalsVisibleTo Include="Client.Integration.Tests" />
+    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests"/>
+    <InternalsVisibleTo Include="Client.Integration.Tests"/>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\README.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\BlazorStateAnalyzer\bin\$(Configuration)\netstandard2.0\BlazorStateAnalyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs" />
+    <None Include="..\BlazorStateAnalyzer\bin\$(Configuration)\netstandard2.0\BlazorStateAnalyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\js\"/>
   </ItemGroup>
 
   <PropertyGroup>
@@ -114,4 +90,12 @@
     <TypeScriptGeneratesDeclarations>false</TypeScriptGeneratesDeclarations>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="build\**" Pack="false"/>
+    <Content Include="buildMultiTargeting\**" Pack="false"/>
+    <Content Include="buildTransitive\**" Pack="false"/>
+  </ItemGroup>
+
+
 </Project>
+

@@ -18,9 +18,9 @@ public partial class BlueState
 
       BlueState BlueState => Store.GetState<BlueState>();
 
-      public override Task Handle(Action aAction, CancellationToken aCancellationToken)
+      public override Task Handle(Action action, CancellationToken cancellationToken)
       {
-        BlueState.Count += aAction.Amount;
+        BlueState.Count += action.Amount;
         return Task.CompletedTask;
       }
     }

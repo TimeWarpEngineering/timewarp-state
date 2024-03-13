@@ -11,15 +11,15 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
 
   public RenderSubscriptionsPostProcessor
   (
-    ILogger<RenderSubscriptionsPostProcessor<TRequest, TResponse>> aLogger,
-    Subscriptions aSubscriptions
+    ILogger<RenderSubscriptionsPostProcessor<TRequest, TResponse>> logger,
+    Subscriptions subscriptions
   )
   {
-    Logger = aLogger;
-    Subscriptions = aSubscriptions;
+    Logger = logger;
+    Subscriptions = subscriptions;
   }
 
-  public Task Process(TRequest aRequest, TResponse aResponse, CancellationToken aCancellationToken)
+  public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
     Type requestType = typeof(TRequest);
     Type enclosingStateType = requestType.GetEnclosingStateType();
@@ -28,12 +28,12 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
     {
       Subscriptions.ReRenderSubscribers(enclosingStateType);
     }
-    catch (Exception aException)
+    catch (Exception exception)
     {
       Logger.LogDebug
       (
         EventIds.RenderSubscriptionsPostProcessor_Exception,
-        aException,
+        exception,
         "Error re-rendering subscriptions"
       );
       throw;

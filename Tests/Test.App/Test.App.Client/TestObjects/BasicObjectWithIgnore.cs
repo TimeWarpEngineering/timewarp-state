@@ -28,14 +28,14 @@ public class BasicObjectWithIgnore : IEquatable<BasicObjectWithIgnore>
     return Equals(basicObject);
   }
 
-  public bool Equals(BasicObjectWithIgnore aOther)
+  public bool Equals(BasicObjectWithIgnore other)
   {
-    if (aOther == null)
+    if (other == null)
       return false;
-    return aOther.BoolValue == BoolValue
-        && aOther.ByteValue == ByteValue
-        && aOther.IntValue == IntValue
-        && aOther.LongValue == LongValue
+    return other.BoolValue == BoolValue
+        && other.ByteValue == ByteValue
+        && other.IntValue == IntValue
+        && other.LongValue == LongValue
         // && other.StringValue == StringValue
         ;
   }

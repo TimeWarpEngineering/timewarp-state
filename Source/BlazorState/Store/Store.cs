@@ -10,6 +10,7 @@ internal partial class Store : IStore
   private readonly IServiceProvider ServiceProvider;
   private readonly IDictionary<string, IState> States;
   private readonly IPublisher Publisher;
+  private readonly BlazorStateOptions BlazorStateOptions;
 
   /// <summary>
   /// Unique Guid for the Store.
@@ -29,6 +30,7 @@ internal partial class Store : IStore
     Logger.LogDebug(EventIds.Store_Initializing, "constructing with guid:{Guid}", Guid);
     ServiceProvider = serviceProvider;
     Publisher = publisher;
+    BlazorStateOptions = blazorStateOptions;
     JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
 
     States = new ConcurrentDictionary<string, IState>();
@@ -81,16 +83,16 @@ internal partial class Store : IStore
     }
   }
 
-  private void SetState(string aTypeName, object aNewState)
+  private void SetState(string typeName, object newStateObject)
   {
-    var newState = (IState)aNewState;
+    var newState = (IState)newStateObject;
     Logger.LogDebug
     (
       EventIds.Store_SetState,
       "Assigning State. Type:{typeName}, Guid:{newState.Guid}",
-      aTypeName,
+      typeName,
       newState.Guid
     );
-    States[aTypeName] = newState;
+    States[typeName] = newState;
   }
 }

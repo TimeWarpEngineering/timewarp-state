@@ -11,7 +11,7 @@ internal class PreIncrementCountNotificationHandler
   public Task Handle
   (
     PrePipelineNotification<CounterState.IncrementCount.Action> prePipelineNotification,
-    CancellationToken aCancellationToken
+    CancellationToken cancellationToken
   )
   {
     Logger.LogDebug("{prePipelineNotification_Request_Type_Name}", prePipelineNotification.Request.GetType().Name);

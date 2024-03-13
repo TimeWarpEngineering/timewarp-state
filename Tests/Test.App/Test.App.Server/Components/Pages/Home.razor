@@ -1,4 +1,6 @@
 ﻿@attribute [Route(Route)]
+@using System.Reflection
+@using TimeWarp.State.Plus.Extensions
 @inherits BaseComponent
 
 <PageTitle>@Title</PageTitle>
@@ -18,8 +20,22 @@
   </li>
 </ul>
 
+<ul>
+  <li>Commit Date: @AssemblyInfo?.CommitDate</li>
+  <li>Commit Hash: @AssemblyInfo?.CommitHash</li>
+  <li>RepositoryUrl: @AssemblyInfo?.RepositoryUrl</li>
+  <li><a href=@AssemblyInfo?.CommitUrl>@AssemblyInfo?.CommitUrl</a></li>
+</ul>
+
 @code
 {
   private string Title => ApplicationState.Name;
   private const string Route = "/";
+  private AssemblyInfo? AssemblyInfo;
+
+  /// <inheritdoc />
+  protected override void OnInitialized()
+  {
+    AssemblyInfo = typeof(Program).Assembly.GetAssemblyInfo();
+  }
 }

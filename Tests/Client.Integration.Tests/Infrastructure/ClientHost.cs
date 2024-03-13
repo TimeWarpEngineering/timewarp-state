@@ -3,9 +3,9 @@ namespace TestApp.Client.Integration.Tests.Infrastructure;
 [NotTest]
 public class ClientHost
 (
-  IServiceProvider aServiceProvider
+  IServiceProvider serviceProvider
 )
 {
 
-  public IServiceProvider ServiceProvider { get; } = aServiceProvider;
+  public IServiceProvider ServiceProvider { get; } = serviceProvider;
 }

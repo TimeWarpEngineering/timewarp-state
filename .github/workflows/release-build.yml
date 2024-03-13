@@ -30,11 +30,16 @@ jobs:
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
-      
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 8.0.x
+
+#      - name: Install NPM packages
+#        run: |
+#          cd Source/BlazorState/
+#          npm install
+          
+#      - name: Setup .NET
+#        uses: actions/setup-dotnet@v2
+#        with:
+#          dotnet-version: 8.0.x
 
       - name: Build BlazorStateAnalyzer
         run: |

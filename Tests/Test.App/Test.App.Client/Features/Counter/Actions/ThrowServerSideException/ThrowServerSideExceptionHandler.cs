@@ -12,12 +12,12 @@ public partial class CounterState
     /// <summary>
     /// Intentionally throw so we can test exception handling.
     /// </summary>
-    /// <param name="throwServerSideExceptionAction"></param>
+    /// <param name="action"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public override async Task Handle
     (
-      ThrowServerSideExceptionAction throwServerSideExceptionAction,
+      ThrowServerSideExceptionAction action,
       CancellationToken cancellationToken
     )
     {

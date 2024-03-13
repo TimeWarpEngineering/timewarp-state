@@ -27,9 +27,9 @@ internal partial class WeatherForecastsState
   }
 
   [UsedImplicitly]
-  internal void Initialize(List<WeatherForecastDto> aWeatherForecastList)
+  internal void Initialize(List<WeatherForecastDto> weatherForecastList)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    ArgumentNullException.ThrowIfNull(aWeatherForecastList);
+    ArgumentNullException.ThrowIfNull(weatherForecastList);
   }
 }

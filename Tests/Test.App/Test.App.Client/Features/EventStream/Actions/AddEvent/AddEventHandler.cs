@@ -11,11 +11,11 @@ internal partial class EventStreamState
 
     public override Task Handle
     (
-      AddEventAction aAddEventAction,
-      CancellationToken aCancellationToken
+      AddEventAction action,
+      CancellationToken cancellationToken
     )
     {
-      EventStreamState.EventList.Add(aAddEventAction.Message);
+      EventStreamState.EventList.Add(action.Message);
       return Task.CompletedTask;
     }
   }

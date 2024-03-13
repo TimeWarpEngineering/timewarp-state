@@ -9,7 +9,7 @@ public partial class RouteState
   {
     private RouteState RouteState => Store.GetState<RouteState>();
 
-    public override Task Handle(InitializeRoute.Action aInitializeRouteRequest, CancellationToken aCancellationToken)
+    public override Task Handle(InitializeRoute.Action action, CancellationToken cancellationToken)
     {
       RouteState.Route = NavigationManager.Uri;
       return Task.CompletedTask;

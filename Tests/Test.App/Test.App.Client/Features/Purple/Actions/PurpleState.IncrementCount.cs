@@ -17,9 +17,9 @@ public partial class PurpleState
     {
       PurpleState PurpleState => Store.GetState<PurpleState>();
 
-      public override Task Handle(Action aAction, CancellationToken aCancellationToken)
+      public override Task Handle(Action action, CancellationToken cancellationToken)
       {
-        PurpleState.Count += aAction.Amount;
+        PurpleState.Count += action.Amount;
         return Task.CompletedTask;
       }
     }
