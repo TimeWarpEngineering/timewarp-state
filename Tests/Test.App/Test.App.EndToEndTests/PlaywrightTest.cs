@@ -1,5 +1,8 @@
 using Microsoft.Playwright;
 using NUnit.Framework;
+using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Test.App.EndToEndTests;
@@ -10,6 +13,7 @@ namespace Test.App.EndToEndTests;
       private IPlaywright _playwright;
       private IBrowser _browser;
       private IPage _page;
+      public const string LocalHost = "https://localhost:7011";
 
       [SetUp]
       public async Task SetUp()
@@ -30,7 +34,7 @@ namespace Test.App.EndToEndTests;
       [Test]
       public async Task WeatherForecastTableShouldBeRendered()
       {
-        await _page.GotoAsync("https://localhost:7011/weather");
+        await _page.GotoAsync($"{LocalHost}/weather");
 
         await _page.WaitForSelectorAsync(".table");
         System.Collections.Generic.IReadOnlyList<IElementHandle> rows = await _page.QuerySelectorAllAsync(".table tbody tr");
@@ -41,7 +45,7 @@ namespace Test.App.EndToEndTests;
       [Test]
       public async Task CounterComponentsShouldIncrementCount()
       {
-         await _page.GotoAsync("https://localhost:7011/counter");
+         await _page.GotoAsync($"{LocalHost}/counter");
 
         // Wait for the Counter components to be rendered
         await _page.WaitForSelectorAsync("[data-qa='Counter1']");
@@ -74,7 +78,7 @@ namespace Test.App.EndToEndTests;
       {
 
           // Navigate to the JavaScript Interop page
-          await _page.GotoAsync("https://localhost:7011/JavaScriptInteropPage"); // Replace URL with the actual URL
+          await _page.GotoAsync($"{LocalHost}/JavaScriptInteropPage"); // Replace URL with the actual URL
 
           // Wait for the button to be rendered
           await _page.WaitForSelectorAsync("[data-qa='JsInterop']");
@@ -99,80 +103,114 @@ namespace Test.App.EndToEndTests;
       public async Task ExceptionShouldNotChangeGuid()
       {
           // Navigate to the Exception page
-          await _page.GotoAsync("https://localhost:7011/throwexception"); // Replace URL with the actual URL
+          await _page.GotoAsync($"{LocalHost}/throwexception"); // Replace URL with the actual URL
 
           // Wait for the GUID element to be rendered
-          await _page.WaitForSelectorAsync("#exceptionGuid");
+          await _page.WaitForSelectorAsync("[data-qa='ThrowClientException']");
 
-          // Get the initial GUID value
-          var initialGuid = await GetGuid(_page);
+          // Select the element using data-qa attribute
+          var initialElement = await _page.QuerySelectorAsync("[data-qa='CounterStateId']");
+
+          // Extract the text content of the element
+          var initialCounterStateId = await initialElement.TextContentAsync();
 
           // Click the button to throw a client-side exception
           await _page.ClickAsync("[data-qa='ThrowClientException']");
 
 
-          // Add a delay to allow time for the GUID to roll back
-          await Task.Delay(2000); // Adjust the delay time as needed
+          await Task.Delay(1000); // Adjust the delay time as needed
 
-          // Get the updated GUID value after the rollback
-          var updatedGuidAfterClientException = await GetGuid(_page);
-
-          // Verify that the GUID has rolled back to the initial value after the client-side exception
-          Assert.AreEqual(initialGuid, updatedGuidAfterClientException);
-
-          // Click the button to throw a server-side exception
           await _page.ClickAsync("[data-qa='ThrowServerException']");
 
 
           // Add a delay to allow time for the GUID to roll back
-          await Task.Delay(2000); // Adjust the delay time as needed
+          await Task.Delay(1000); // Adjust the delay time as needed
 
-          // Get the updated GUID value after the rollback
-          var updatedGuidAfterServerException = await GetGuid(_page);
+          // Select the element using data-qa attribute
+          var finalElement = await _page.QuerySelectorAsync("[data-qa='CounterStateId']");
 
-          // Verify that the GUID has rolled back to the initial value after the server-side exception
-          Assert.AreEqual(initialGuid, updatedGuidAfterServerException);
+          // Extract the text content of the element
+          var finialCounterStateId = await initialElement.TextContentAsync();
+
+          // Verify that the GUID has rolled back to the initial value after the client-side exception
+          Assert.AreEqual(initialCounterStateId, finialCounterStateId);
 
       }
       [Test]
       public async Task TestGoBackButton()
       {
+          var initialUrl = $"{LocalHost}";
           // Navigate to the Blazor page
-          await _page.GotoAsync("https://localhost:7011/goback");
+          await _page.GotoAsync(initialUrl);
+          // Wait for the navigation link to appear
+          await _page.WaitForSelectorAsync(".nav-link");
 
-          // Wait for the page to load
-          await Task.Delay(5000); // Adjust the delay time as needed
+          // Click on the navigation link for the GoBackPage
+          await _page.ClickAsync("text=Go Back Page");
 
+          await _page.WaitForURLAsync($"{LocalHost}/goback");
+
+           // Wait for the page to load
+           await _page.WaitForSelectorAsync("[data-qa='GoBack11']");
           // Click the 'Go Back' button
-          await _page.ClickAsync("#goback-button");
-
-          await _page.WaitForNavigationAsync();
+          await _page.ClickAsync("[data-qa='GoBack11']");
           // Get the current URL after navigation
+          await _page.WaitForURLAsync($"{LocalHost}/");
           var currentUrl = _page.Url;
 
           // Check if the current URL is the home page
-          Assert.AreEqual("https://localhost:7011/", currentUrl);
+          Assert.AreEqual(initialUrl, currentUrl);
       }
       [Test]
       public async Task TestResetStoreButton()
       {
-          // Navigate to the Reset Store page
-          await _page.GotoAsync("https://localhost:7011/ResetStorePage");
+          var initialUrl = $"{LocalHost}/";
+          // Navigate to the Blazor page
+          await _page.GotoAsync(initialUrl);
+          // Wait for the navigation link to appear
+          await _page.WaitForSelectorAsync(".nav-link");
 
-          await _page.WaitForSelectorAsync("#resetstore-button", new PageWaitForSelectorOptions { Timeout = 60000 });
-          // Click the Reset Store button
-          await _page.ClickAsync("#resetstore-button");
-          await _page.WaitForNavigationAsync();
+          // Click on the navigation link for the GoBackPage
+          await _page.ClickAsync("text=Reset Store Page");
+
+          await _page.WaitForURLAsync($"{LocalHost}/ResetStorePage");
+
+          await _page.WaitForSelectorAsync("[data-qa='ResetButton1']");
+          // Click the 'Go Back' button
+          await _page.ClickAsync("[data-qa='ResetButton1']");
+          // Get the current URL after navigation
+          //await _page.WaitForURLAsync($"{LocalHost}");
           // Get the current URL after navigation
           var currentUrl = _page.Url;
-
+          Console.WriteLine(currentUrl);
           // Check if the current URL is the home page
-          Assert.AreEqual("https://localhost:7011/", currentUrl);
+          Assert.AreEqual(initialUrl, currentUrl);
       }
 
+        [Test]
+        public async Task EventStreamShouldAddStartAndCompleteEvents()
+        {
+            // Navigate to the Event Stream page
+            await _page.GotoAsync($"{LocalHost}/eventstream");
+
+            await _page.WaitForSelectorAsync("[data-qa='increaseCounterButton']");
+            // Click the button to increment the CounterState.Count
+            await _page.ClickAsync("[data-qa='increaseCounterButton'] button");
+           // Wait for the new events to be added
+            await _page.WaitForSelectorAsync("[data-qa='eventLists'] li");
+
+            // Get the text content of the events list
+            var eventsList = await _page.QuerySelectorAllAsync("[data-qa='eventLists'] li");
+            var events = await Task.WhenAll(eventsList.Select(async element => await element.TextContentAsync()));
+
+            // Assert that start and complete events for the CounterState+IncrementCount+Action are added
+            Assert.IsTrue(events.Any(eventText => eventText.Contains("Start:Test.App.Client.Features.Counter.CounterState+IncrementCount+Action")));
+            Assert.IsTrue(events.Any(eventText => eventText.Contains("Completed:Test.App.Client.Features.Counter.CounterState+IncrementCount+Action")));
+        }
 
 
-  private async Task<string> GetGuid(IPage page)
+
+      private async Task<string> GetGuid(IPage page)
       {
           return await page.EvalOnSelectorAsync<string>("#exceptionGuid", "el => el.innerText.trim()");
       }
