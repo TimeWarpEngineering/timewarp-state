@@ -37,7 +37,7 @@
 
   <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
 
-  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent">
+  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" Condition="'$(NCrunch)' != '1'">
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>
