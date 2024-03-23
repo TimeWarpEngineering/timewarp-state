@@ -72,5 +72,45 @@ jobs:
           cd Source/TimeWarp.State.Plus/bin/Release
           dotnet nuget push TimeWarp.State.Plus.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
-  
+          
+      - name: Extract version from Directory.Build.props
+        id: extract_version
+        run: |
+          [xml]$xml = Get-Content -Path "Directory.Build.props"
+          $version = $xml.Project.PropertyGroup.PackageVersion
+          echo "Extracted version: $version"
+          echo "::set-output name=VERSION::$version"
+        shell: pwsh
+          
+      - name: Tag commit with version
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a "${{ steps.extract_version.outputs.VERSION }}" -m "Release ${{ steps.extract_version.outputs.VERSION }}"
+          git push origin "${{ steps.extract_version.outputs.VERSION }}"
+        shell: pwsh
+
+      - name: Check if version is not a beta
+        id: check_beta
+        run: |
+          $version = "${{ steps.extract_version.outputs.VERSION }}"
+          $isBeta = $version -match "-beta"
+          echo "IsBeta=$isBeta"
+          # Setting output that indicates whether it's a beta version
+          echo "::set-output name=IS_BETA::$isBeta"
+        shell: pwsh
+
+      - name: Create GitHub Release
+        if: steps.check_beta.outputs.IS_BETA == 'False'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.extract_version.outputs.VERSION }}
+          release_name: Release ${{ steps.extract_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          body: "Description of the release goes here."
+      
+      
       - run: echo "🍏 This job's status is ${{ job.status }}."
