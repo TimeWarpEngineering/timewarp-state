@@ -12,7 +12,10 @@ internal class Program
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents()
         .AddInteractiveWebAssemblyComponents();
+    
     Client.Program.ConfigureServices(builder.Services);
+    builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
+    
     WebApplication app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -35,7 +38,7 @@ internal class Program
     app.MapRazorComponents<App>()
         .AddInteractiveServerRenderMode()
         .AddInteractiveWebAssemblyRenderMode()
-        .AddAdditionalAssemblies(typeof(Test.App.Client._Imports).Assembly);
+        .AddAdditionalAssemblies(typeof(Test.App.Client.AssemblyMarker).Assembly);
 
     app.Run();
     

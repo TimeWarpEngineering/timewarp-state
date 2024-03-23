@@ -15,11 +15,11 @@ public class JsonRequestHandler
     BlazorStateOptions blazorStateOptions
   )
   {
+    ArgumentNullException.ThrowIfNull(logger);
     Logger = logger;
     Mediator = mediator;
     JSRuntime = jsRuntime;
     JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
-    if (Logger is null) throw new ArgumentNullException(nameof(Logger));
     Logger.LogDebug
     (
       EventIds.JsonRequestHandler_Initializing,
@@ -59,8 +59,17 @@ public class JsonRequestHandler
       throw new InvalidRequestTypeException("Could not find type", requestTypeAssemblyQualifiedName);
     }
 
-    object instance = JsonSerializer.Deserialize(requestAsJson, requestType, JsonSerializerOptions);
-
+    object instance;
+    if (string.IsNullOrWhiteSpace(requestAsJson))
+    {
+      instance = Activator.CreateInstance(requestType) ?? 
+        throw new InvalidOperationException($"Cannot create an instance of {requestTypeAssemblyQualifiedName}. Ensure it has a parameterless constructor.");
+    }
+    else
+    {
+      instance = JsonSerializer.Deserialize(requestAsJson, requestType, JsonSerializerOptions) ?? throw new InvalidOperationException("Deserialization resulted in a null object.");
+    }
+    
     Task<object> result = Mediator.Send(instance);
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
