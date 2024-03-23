@@ -67,10 +67,10 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
     context.ReportDiagnostic(debugDiagnostic);
   }
 
-  private void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
+  private static void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
   {
     // This analyzer only concerns itself with type declarations (classes, structs, records).
-    if (!(context.Node is TypeDeclarationSyntax typeDeclaration)) return;
+    if (context.Node is not TypeDeclarationSyntax typeDeclaration) return;
 
     if (!ImplementsIAction(context, typeDeclaration)) return;
 
@@ -84,28 +84,21 @@ public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
 
   private static bool ImplementsIAction(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
-    var symbolInfo = context.SemanticModel.GetDeclaredSymbol(typeDeclaration) as INamedTypeSymbol;
+    INamedTypeSymbol? symbolInfo = context.SemanticModel.GetDeclaredSymbol(typeDeclaration);
 
     return ImplementsIAction(symbolInfo);
   }
 
-  private static bool ImplementsIAction(INamedTypeSymbol? symbolInfo)
+  private static bool ImplementsIAction(ITypeSymbol? symbolInfo)
   {
     if (symbolInfo == null)
     {
       return false;
     }
 
-    foreach (var iface in symbolInfo.Interfaces)
-    {
-      if (iface.OriginalDefinition.ToString() == IActionDefinition)
-      {
-        return true;
-      }
-    }
-
-    // Recursively check if any base class implements IAction
-    return ImplementsIAction(symbolInfo.BaseType);
+    return Enumerable.Any(symbolInfo.Interfaces, namedTypeSymbol => namedTypeSymbol.OriginalDefinition.ToString() == IActionDefinition) ||
+      // Recursively check if any base class implements IAction
+      ImplementsIAction(symbolInfo.BaseType);
   }
 
 
