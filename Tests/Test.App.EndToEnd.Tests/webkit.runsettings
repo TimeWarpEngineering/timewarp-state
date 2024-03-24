@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <!-- NUnit adapter -->  
+  <!-- NUnit adapter -->
   <NUnit>
     <NumberOfTestWorkers>24</NumberOfTestWorkers>
   </NUnit>
@@ -8,10 +8,10 @@
   <RunConfiguration>
     <EnvironmentVariables>
       <!-- For debugging selectors, it's recommend to set the following environment variable -->
-      <DEBUG>pw:api</DEBUG>
+      <!-- <DEBUG>pw:api</DEBUG> -->
     </EnvironmentVariables>
   </RunConfiguration>
-  <!-- Playwright -->  
+  <!-- Playwright -->
   <Playwright>
     <BrowserName>webkit</BrowserName>
     <ExpectTimeout>5000</ExpectTimeout>
