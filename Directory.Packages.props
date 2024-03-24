@@ -1,6 +1,5 @@
 <Project>
   <ItemGroup>
-
     <PackageVersion Include="AnyClone" Version="1.1.6" />
     <PackageVersion Include="Blazor-State" Version="10.0.0" />
     <PackageVersion Include="Blazor.SessionStorage.WebAssembly" Version="8.0.0" />
@@ -38,6 +37,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.19.1" />
+    <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.42.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.4.3" />
     <PackageVersion Include="NUnit" Version="4.1.0" />
