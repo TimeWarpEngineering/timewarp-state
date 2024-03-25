@@ -71,9 +71,6 @@ jobs:
             dotnet fixie --configuration Debug
 
       # End to End Tests
-      - name: Install dotCover Global Tool
-        run: dotnet tool install --global JetBrains.dotCover.GlobalTool --version <specific_version_if_needed>
-
       - name: Test.App.EndToEnd.Tests
         run: |
           cd Tests/App.EndToEnd.Tests/
