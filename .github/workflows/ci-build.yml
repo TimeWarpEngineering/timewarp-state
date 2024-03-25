@@ -27,20 +27,10 @@ jobs:
 
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
-
-#      - name: Install NPM packages
-#        run: |
-#          cd Source/BlazorState/
-#          npm install                    
+          ls ${{ github.workspace }}                
 
       - name: Restore Dotnet Tools
         run: dotnet tool restore
-
-#      - name: Setup .NET
-#        uses: actions/setup-dotnet@v2
-#        with:
-#          dotnet-version: 8.0.x
 
       - name: Build BlazorStateAnalyzer
         run: |
@@ -76,8 +66,27 @@ jobs:
 
       - name: BlazorStateAnalyzer.Tests
         run: |
-            cd Tests/BlazorStateAnalyzer.Tests/
+            cd ${{ github.workspace }}/Tests/BlazorStateAnalyzer.Tests/
             dotnet restore
-            dotnet fixie --configuration Debug          
+            dotnet fixie --configuration Debug
+
+      # End to End Tests
+      - name: Test.App.EndToEnd.Tests
+        run: |
+          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
+          dotnet build
+
+      - name: Ensure browsers are installed
+        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+        
+      - name: Run End-to-End Tests against all settings
+        run: ./RunE2ETests.ps1
+        working-directory: ${{ github.workspace }}    
+        
+      - name: Publish Code Coverage Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

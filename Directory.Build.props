@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
     <Product>Blazor State</Product>
-    <PackageVersion>11.0.0-beta.25+8.0.200</PackageVersion>
+    <PackageVersion>11.0.0-beta.26+8.0.202</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>Logo.png</PackageIcon>
@@ -37,7 +37,7 @@
 
   <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
 
-  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent">
+  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" Condition="'$(NCrunch)' != '1'">
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>

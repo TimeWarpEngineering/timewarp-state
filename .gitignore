@@ -309,3 +309,4 @@ __pycache__/
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
 /Source/BlazorState/wwwroot/js/**
+/Tests/Test.App.EndToEnd.Tests/Output/**
