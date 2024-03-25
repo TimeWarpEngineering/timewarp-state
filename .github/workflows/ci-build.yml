@@ -66,18 +66,18 @@ jobs:
 
       - name: BlazorStateAnalyzer.Tests
         run: |
-            cd Tests/BlazorStateAnalyzer.Tests/
+            cd ${{ github.workspace }}/Tests/BlazorStateAnalyzer.Tests/
             dotnet restore
             dotnet fixie --configuration Debug
 
       # End to End Tests
       - name: Test.App.EndToEnd.Tests
         run: |
-          cd Tests/App.EndToEnd.Tests/
+          cd ${{ github.workspace }}/Tests/App.EndToEnd.Tests/
           dotnet build
 
       - name: Ensure browsers are installed
-        run: bin/Debug/net8.0/playwright.ps1 install --with-deps
+        run: ${{ github.workspace }}/Tests/App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
         
       - name: Run End-to-End Tests against all settings
         run: ./RunE2ETests.ps1
@@ -87,6 +87,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: Tests/App.EndToEnd.Tests/Output/coverageReport.html
+          path: ${{ github.workspace }}Tests/App.EndToEnd.Tests/Output/coverageReport.html
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
