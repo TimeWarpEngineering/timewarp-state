@@ -1,11 +1,22 @@
 Push-Location $PSScriptRoot
-try {
+try
+{
   Push-Location .\Tests\Test.App.EndToEnd.Tests
-  dotnet test --settings:chrome.runsettings
-  dotnet test --settings:edge.runsettings
-  dotnet test --settings:firefox.runsettings
-  dotnet test --settings:webkit.runsettings
+  $settings = "chrome.runsettings", "edge.runsettings", "firefox.runsettings", "webkit.runsettings"
+  foreach ($setting in $settings)
+  {
+    dotnet test --settings:$setting --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format="cobertura"
+  }
+
+  $coverageFiles = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml"
+  foreach ($coverageFile in $coverageFiles)
+  {
+    & reportGenerator "-reports:$coverageFile" "-targetdir:coveragereport" "-reportTypes:Html;MarkdownSummaryGithub"
+  }
+
+  .\coveragereport\index.html
 }
-finally {
+finally
+{
   Pop-Location
 }
