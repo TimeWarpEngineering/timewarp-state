@@ -73,11 +73,11 @@ jobs:
       # End to End Tests
       - name: Test.App.EndToEnd.Tests
         run: |
-          cd ${{ github.workspace }}/Tests/App.EndToEnd.Tests/
+          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
           dotnet build
 
       - name: Ensure browsers are installed
-        run: ${{ github.workspace }}/Tests/App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
         
       - name: Run End-to-End Tests against all settings
         run: ./RunE2ETests.ps1
@@ -87,6 +87,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: ${{ github.workspace }}Tests/App.EndToEnd.Tests/Output/coverageReport.html
+          path: ${{ github.workspace }}Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
