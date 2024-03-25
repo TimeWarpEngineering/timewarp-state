@@ -1,5 +1,6 @@
 Push-Location $PSScriptRoot
-try {
+try
+{
   $testProjectDir = Join-Path $PSScriptRoot "Tests\Test.App.EndToEnd.Tests"
   Push-Location $testProjectDir
   $settings = @("chrome.runsettings", "edge.runsettings", "webkit.runsettings")
@@ -8,7 +9,8 @@ try {
   Write-Host "Output directory: $outputDir"
 
   $projectFile = "Test.App.EndToEnd.Tests.csproj" # Specify your project file here
-  foreach ($setting in $settings) {
+  foreach ($setting in $settings)
+  {
     $snapshotName = "coverage{0}.snapshot" -f $setting.Replace(".runsettings", "")
     $snapshotPath = Join-Path $outputDir $snapshotName
     $targetArguments = "test --no-build --settings:PlaywrightSettings\$setting ./$projectFile"
@@ -16,7 +18,7 @@ try {
     dotnet dotCover cover-dotnet .\dotcover.config.xml  --output=$outputPath --targetArguments=$targetArguments
     $snapshots += $snapshotPath
   }
-  
+
   # Create a new variable for the Source with absolute paths
   $sourceParameter = ($snapshots -join ";")
 
@@ -30,8 +32,12 @@ try {
   dotnet dotcover report --source=$mergedSnapshotPath --output=$reportPath --reportType="HTML"
 
   # Open the report - this is typically only useful when running locally
-  Start-Process $reportPath
+  if (-not $env:CI)
+  {
+    Start-Process $reportPath
+  }
 }
-finally {
+finally
+{
   Pop-Location
 }
