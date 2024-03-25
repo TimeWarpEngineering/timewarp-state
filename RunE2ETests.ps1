@@ -8,11 +8,9 @@ try
     dotnet test --settings:$setting --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format="cobertura"
   }
 
-  $coverageFiles = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml"
-  foreach ($coverageFile in $coverageFiles)
-  {
-    & reportGenerator "-reports:$coverageFile" "-targetdir:coveragereport" "-reportTypes:Html;MarkdownSummaryGithub"
-  }
+  $coverageFiles = Get-ChildItem -Recurse -Filter "coverage.cobertura.xml" | ForEach-Object { $_.FullName }
+  $coverageFilesArgs = $coverageFiles -join ";"
+  & reportGenerator "-reports:$coverageFilesArgs" "-targetdir:coveragereport" "-reportTypes:Html;MarkdownSummaryGithub"
 
   .\coveragereport\index.html
 }
