@@ -19,6 +19,12 @@
       "commands": [
         "cleanup"
       ]
+    },
+    "jetbrains.dotcover.commandlinetools": {
+      "version": "2023.3.0",
+      "commands": [
+        "dotnet-dotCover"
+      ]
     }
   }
 }
