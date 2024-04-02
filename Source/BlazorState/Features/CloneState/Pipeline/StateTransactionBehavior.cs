@@ -17,7 +17,7 @@ namespace TimeWarp.Features.StateTransactions;
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull, IAction
+  where TRequest : IAction
 {
   private readonly ILogger Logger;
   private readonly IPublisher Publisher;
