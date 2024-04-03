@@ -44,13 +44,10 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     int maxItems = ReduxDevToolsOptions.TraceLimit == 0 ? int.MaxValue : ReduxDevToolsOptions.TraceLimit;
     
     if (ReduxDevToolsOptions.Trace) stackTrace = BuildStackTrace(maxItems);
-
-    Logger.LogDebug("{classname}: Call next", GetType().Name);
     TResponse response = await next();
 
     try
     {
-      Logger.LogDebug("{classname}: Start", GetType().Name);
       await ReduxDevToolsInterop.DispatchAsync(request, Store.GetSerializableState(), stackTrace);
       Logger.LogDebug(EventIds.ReduxDevToolsBehavior_End, "ReduxDevToolsBehavior Completed");
     }
@@ -65,6 +62,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
 
       throw;
     }
+ 
     return response;
   }
 

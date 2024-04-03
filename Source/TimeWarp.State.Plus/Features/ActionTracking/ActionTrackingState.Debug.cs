@@ -21,6 +21,6 @@ public partial class ActionTrackingState
   internal void Initialize(List<IAction> processingList)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
-    ActiveActionsList = processingList;
+    ActiveActionList = processingList;
   }
 }

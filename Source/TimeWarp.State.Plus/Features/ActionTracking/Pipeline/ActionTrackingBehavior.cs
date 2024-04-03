@@ -39,15 +39,12 @@ public class ActiveActionBehavior<TAction, TResponse>
       );
       
       TResponse response = await nextHandler();
-      
       Logger.LogDebug
       (
         State.Plus.EventIds.ActionTrackingBehavior_CompletedProcessing,
         "Completed process Action of type {actionType}",
         action.GetType().FullName
       );
-      
-      
       
       await Sender.Send(new CompleteProcessing.Action(action), cancellationToken);
       Logger.LogDebug

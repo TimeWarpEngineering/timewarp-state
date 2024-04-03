@@ -13,7 +13,6 @@ public class PersistentStatePostProcessor<TRequest, TResponse>
 
   public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
-    Logger.LogDebug("PersistentStatePostProcessor: {FullName}", typeof(TRequest).FullName);
 
     Type currentType = typeof(TRequest);
     while (currentType.DeclaringType != null)
@@ -26,6 +25,8 @@ public class PersistentStatePostProcessor<TRequest, TResponse>
       currentType.GetCustomAttribute<PersistentStateAttribute>();
       
     if (persistentStateAttribute is null) return;
+    
+    Logger.LogDebug("PersistentStatePostProcessor: {FullName}", typeof(TRequest).FullName);
 
     object state = Store.GetState(currentType);
 
