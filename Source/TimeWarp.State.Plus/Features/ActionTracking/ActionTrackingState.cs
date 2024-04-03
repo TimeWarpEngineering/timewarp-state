@@ -2,12 +2,12 @@ namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState : State<ActionTrackingState>
 {
-  private List<IAction> ActiveActionsList = [];
-  public bool IsActive => ActiveActionsList.Count > 0;
+  private List<IAction> ActiveActionList = [];
+  public bool IsActive => ActiveActionList.Count > 0;
   public bool IsAnyActive(params Type[] actionTypes) => 
-    ActiveActionsList.Any(action => actionTypes.Any(type => type.IsInstanceOfType(action)));
+    ActiveActionList.Any(action => actionTypes.Any(type => type.IsInstanceOfType(action)));
 
-  public IReadOnlyList<IAction> ActiveActions => ActiveActionsList.AsReadOnly();
+  public IReadOnlyList<IAction> ActiveActions => ActiveActionList.AsReadOnly();
 
-  public override void Initialize() => ActiveActionsList = [];
+  public override void Initialize() => ActiveActionList = [];
 }
