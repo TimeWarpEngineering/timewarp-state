@@ -4,7 +4,10 @@ public partial class ActionTrackingState
 {
   public static class StartProcessing
   {
-    internal record Action(IAction TheAction) : IAction;
+    internal class Action(IAction theAction) : IAction
+    {
+      public IAction TheAction { get; init; } = theAction;
+    }
 
     [UsedImplicitly]
     internal class Handler

@@ -5,7 +5,7 @@ public partial class ActionTrackingState
   public static class TwoSecondTask
   {
     [TrackAction]
-    public record Action : IAction;
+    public class Action : IAction;
 
     [UsedImplicitly]
     internal class Handler
