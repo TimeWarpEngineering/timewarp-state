@@ -86,8 +86,9 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git tag -a "${{ steps.extract_version.outputs.VERSION }}" -m "Release ${{ steps.extract_version.outputs.VERSION }}"
-          git push origin "${{ steps.extract_version.outputs.VERSION }}"
+          $version = "${{ steps.extract_version.outputs.VERSION }}" -replace "\+.*$",""
+          git tag -a $version -m "Release $version"
+          git push origin $version
         shell: pwsh
 
       - name: Check if version is not a beta
