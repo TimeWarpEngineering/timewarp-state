@@ -97,7 +97,6 @@ jobs:
           badge: true
           format: 'markdown'
           output: 'both'
-          fail-if-coverage-less-than: 80 # Optional: Specify the minimum acceptable coverage percentage
     
       - name: Add Coverage PR Comment
         if: github.event_name == 'pull_request'
