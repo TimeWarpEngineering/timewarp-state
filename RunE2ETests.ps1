@@ -1,5 +1,5 @@
 Push-Location $PSScriptRoot
-try
+try 
 {
   $testProjectDir = Join-Path $PSScriptRoot "Tests\Test.App.EndToEnd.Tests"
   Push-Location $testProjectDir
@@ -7,37 +7,43 @@ try
   $snapshots = @()
   $outputDir = Join-Path $testProjectDir "Output"
   Write-Host "Output directory: $outputDir"
+  
+  $projectFile = "Test.App.EndToEnd.Tests.csproj"
 
-  $projectFile = "Test.App.EndToEnd.Tests.csproj" # Specify your project file here
-  foreach ($setting in $settings)
+  # The path for the merged coverage snapshot
+  $mergedSnapshotPath = Join-Path $outputDir "mergedCoverage.snapshot"
+  
+  $detailedXmlReportPath = Join-Path $outputDir "coverage.xml"
+  $htmlReportPath = Join-Path $outputDir "coverageReport.html"
+
+  foreach ($setting in $settings) 
   {
     $snapshotName = "coverage{0}.snapshot" -f $setting.Replace(".runsettings", "")
     $snapshotPath = Join-Path $outputDir $snapshotName
     $targetArguments = "test --no-build --settings:PlaywrightSettings\$setting ./$projectFile"
-    $outputPath = Join-Path $outputDir $snapshotName
-    dotnet dotCover cover-dotnet .\dotcover.config.xml  --output=$outputPath --targetArguments=$targetArguments
+    dotnet dotCover cover-dotnet .\dotcover.config.xml  --output=$snapshotPath --targetArguments=$targetArguments
     $snapshots += $snapshotPath
   }
 
-  # Create a new variable for the Source with absolute paths
+  # Merge snapshots
   $sourceParameter = ($snapshots -join ";")
-
-  # Write out the Source parameter to console
   Write-Host "Source parameter for dotCover merge: $sourceParameter"
-
-  $mergedSnapshotPath = Join-Path $outputDir "mergedCoverage.snapshot"
   dotnet dotcover merge --output=$mergedSnapshotPath --Source=$sourceParameter
 
-  $reportPath = Join-Path $outputDir "coverageReport.html"
-  dotnet dotcover report --source=$mergedSnapshotPath --output=$reportPath --reportType="HTML"
+  # Generate DetailedXML report
+  dotnet dotcover report --source=$mergedSnapshotPath --output=$detailedXmlReportPath  --reportType="DetailedXml"
 
-  # Open the report - this is typically only useful when running locally
-  if (-not $env:CI)
-  {
-    Start-Process $reportPath
+  # Generate HTML report
+  dotnet dotcover report --source=$mergedSnapshotPath --output=$htmlReportPath --reportType="HTML"
+
+  # Run ReportGenerator to convert the DetailedXml report to Cobertura format using local tool
+  dotnet reportgenerator "-reports:$detailedXmlReportPath" "-targetdir:$outputDir" "-reporttypes:Cobertura"
+  
+  # Open the HTML report - this is typically only useful when running locally
+  if (-not $IsCICD) {
+    Start-Process $htmlReportPath
   }
 }
-finally
-{
+finally {
   Pop-Location
 }
