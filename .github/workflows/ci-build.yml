@@ -91,10 +91,10 @@ jobs:
         id: coverage-summary
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
-          filename: '${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/Cobertura.xml'
+          filename: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/Cobertura.xml
           badge: true
-          format: 'markdown'
-          output: 'both'
+          format: markdown
+          output: both
     
       - name: Add Coverage PR Comment
         if: github.event_name == 'pull_request'
