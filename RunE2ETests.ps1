@@ -40,7 +40,7 @@ try
   dotnet reportgenerator "-reports:$detailedXmlReportPath" "-targetdir:$outputDir" "-reporttypes:Cobertura"
   
   # Open the HTML report - this is typically only useful when running locally
-  if (-not $IsCICD) {
+  if (-not $env:CI) {
     Start-Process $htmlReportPath
   }
 }
