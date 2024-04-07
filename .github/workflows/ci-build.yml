@@ -82,12 +82,10 @@ jobs:
       - name: Run End-to-End Tests against all settings
         run: ./RunE2ETests.ps1
         working-directory: ${{ github.workspace }}
-
-      - name: Publish Code Coverage Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html
+        
+      - name: list files in the repository
+        run: |
+          ls ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output
           
       - name: Generate Code Coverage Summary Report
         id: coverage-summary
@@ -111,5 +109,11 @@ jobs:
         run: |
           echo "## Code Coverage Summary" >> $GITHUB_STEP_SUMMARY
           echo '${{ steps.coverage-summary.outputs.report }}' >> $GITHUB_STEP_SUMMARY
+          
+      - name: Publish Code Coverage Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html          
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
