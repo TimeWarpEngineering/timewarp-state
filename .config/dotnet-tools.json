@@ -25,6 +25,12 @@
       "commands": [
         "dotnet-dotCover"
       ]
+    },
+    "dotnet-reportgenerator-globaltool": {
+      "version": "5.2.4",
+      "commands": [
+        "reportgenerator"
+      ]
     }
   }
 }
