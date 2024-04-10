@@ -1,12 +1,18 @@
 namespace BlazorState;
 
+/// <summary>
+/// Options for configuring BlazorState
+/// </summary>
 public class BlazorStateOptions
 {
-  ///// <summary>
-  ///// Assemblies to be searched for MediatR Requests
-  ///// </summary>
+  /// <summary>
+  /// Assemblies to be searched for MediatR Actions and Handlers
+  /// </summary>
   public IEnumerable<Assembly> Assemblies { get; set; }
 
+  /// <summary>
+  /// Use the StateTransactionBehavior (default) or not
+  /// </summary>
   public bool UseStateTransactionBehavior { get; set; } = true;
 
   public bool UseRouting { get; set; } = true;
