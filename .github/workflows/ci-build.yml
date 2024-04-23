@@ -22,7 +22,7 @@ jobs:
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
 
       - name: List files in the repository
@@ -81,12 +81,39 @@ jobs:
         
       - name: Run End-to-End Tests against all settings
         run: ./RunE2ETests.ps1
-        working-directory: ${{ github.workspace }}    
+        working-directory: ${{ github.workspace }}
         
-      - name: Publish Code Coverage Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report
-          path: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html
+#      - name: list files in the repository
+#        run: |
+#          ls ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output
+#          
+#      - name: Generate Code Coverage Summary Report
+#        id: coverage-summary
+#        uses: irongut/CodeCoverageSummary@v1.3.0
+#        with:
+#          filename: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/Cobertura.xml
+#          badge: true
+#          format: markdown
+#          output: both
+#    
+#      - name: Add Coverage PR Comment
+#        if: github.event_name == 'pull_request'
+#        uses: marocchino/sticky-pull-request-comment@v2
+#        with:
+#          recreate: true
+#          message: |
+#            ## Code Coverage Summary
+#            ${{ steps.coverage-summary.outputs.report }}
+#    
+#      - name: Update Actions Summary
+#        run: |
+#          echo "## Code Coverage Summary" >> $GITHUB_STEP_SUMMARY
+#          echo '${{ steps.coverage-summary.outputs.report }}' >> $GITHUB_STEP_SUMMARY
+#          
+#      - name: Publish Code Coverage Results
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: coverage-report
+#          path: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html          
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

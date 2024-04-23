@@ -1,11 +1,11 @@
 ---
 uid: BlazorState:Tutorial.md
-title: Blazor-State Blazor Hosted WebAssembly Tutorial
+title: TimeWarp.State Blazor Hosted WebAssembly Tutorial
 ---
 
-# Blazor-State Blazor Hosted WebAssembly Tutorial
+# TimeWarp.State Blazor Hosted WebAssembly Tutorial
 
-Integrate Blazor-State into a `Blazor hosted WebAssembly App`.
+Integrate TimWarp.State into a `Blazor App`.
 
 ## Prerequisites
 
@@ -13,9 +13,9 @@ Integrate Blazor-State into a `Blazor hosted WebAssembly App`.
 
 ## Creating the Project
 
-1. Create a new Blazor WebAssembly project: `dotnet new blazorwasm --hosted -n Sample`.
+1. Create a new Blazor WebAssembly project: `dotnet new blazor --interactivity Auto -n Sample`.
 1. Navigate to the new project: `cd Sample`
-1. Test the application: `dotnet run --project ./Server/Sample.Server.csproj`
+1. Test the application: `dotnet run --project ./Sample/Sample.csproj`
 1. Open the URL shown in the command output (e.g., <http://localhost:5256>) and test the counter functionality. Note: Your URL may differ.
 
 > [!NOTE]
@@ -23,10 +23,10 @@ Integrate Blazor-State into a `Blazor hosted WebAssembly App`.
    the counter component is destroyed. 
    When you return, a new instance of the component is created, starting the count afresh. 
 
-## Add Blazor-State
+## Add TimeWarp.State
 
-Add the Blazor-State NuGet package to the `Sample.Client` project.  
-   `dotnet add ./Client/Sample.Client.csproj package Blazor-State`
+Add the TimeWarp.State NuGet package to the `Sample.Client` project.  
+   `dotnet add ./Client/Sample.Client.csproj package TimeWarp.State`
 
 ## Solution Structure
 
@@ -127,7 +127,7 @@ The code should look as follows:
 }
 ```
 
-This binds the counter's UI to the state managed by Blazor-State.
+This binds the counter's UI to the state managed by TimeWarp.State.
 
 
 ## Implementing State Mutation through Actions and Handlers
@@ -278,7 +278,7 @@ If you inspect the State in the DevTools you will also notice it maintains the c
 
 ![ReduxRouteState](Images/ReduxRouteState.png)
 
-Congratulations that is the basics of Blazor-State.
+Congratulations that is the basics of TimeWarp.State.
 
 
 [^1]: https://github.com/TimeWarpEngineering/timewarp-architecture/blob/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Documentation/Developer/Conceptual/ArchitecturalDecisionRecords/ProjectStructureAndConventions/ProjectStructureAndConventions.md
