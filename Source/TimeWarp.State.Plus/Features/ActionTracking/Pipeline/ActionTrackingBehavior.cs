@@ -37,22 +37,29 @@ public class ActiveActionBehavior<TAction, TResponse>
         "Start processing Action of type {actionType}",
         action.GetType().FullName
       );
-      
-      TResponse response = await nextHandler();
-      Logger.LogDebug
-      (
-        State.Plus.EventIds.ActionTrackingBehavior_CompletedProcessing,
-        "Completed process Action of type {actionType}",
-        action.GetType().FullName
-      );
-      
-      await Sender.Send(new CompleteProcessing.Action(action), cancellationToken);
-      Logger.LogDebug
-      (
-        State.Plus.EventIds.ActionTrackingBehavior_CompletedTracking,
-        "Completed tracking Action of type {actionType}",
-        action.GetType().FullName
-      );
+
+      TResponse? response; 
+      try
+      {
+        response = await nextHandler();
+      }
+      finally // If an exception is thrown, we still want to complete the tracking
+      {
+        Logger.LogDebug
+        (
+          State.Plus.EventIds.ActionTrackingBehavior_CompletedProcessing,
+          "Completed process Action of type {actionType}",
+          action.GetType().FullName
+        );
+        
+        await Sender.Send(new CompleteProcessing.Action(action), cancellationToken);
+        Logger.LogDebug
+        (
+          State.Plus.EventIds.ActionTrackingBehavior_CompletedTracking,
+          "Completed tracking Action of type {actionType}",
+          action.GetType().FullName
+        );
+      }
       return response;
     }
     else
