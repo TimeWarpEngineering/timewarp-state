@@ -47,9 +47,9 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddScoped<TimeWarpNavigationManager>();
       serviceCollection.AddScoped<RouteState>();
 
-      serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRouteHandler>();
-      serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBackHandler>();
-      serviceCollection.AddTransient<IRequestHandler<InitializeRoute.Action>, InitializeRouteHandler>();
+      serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRoute.ChangeRouteHandler>();
+      serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBack.GoBackHandler>();
+      serviceCollection.AddTransient<IRequestHandler<InitializeRoute.Action>, InitializeRoute.InitializeRouteHandler>();
     }
     return serviceCollection;
   }
