@@ -13,13 +13,14 @@
 <br/>
 <!-- Values to validate -->
 <h4>History Stack</h4>
-@foreach(string? url in  RouteState.History)
+@foreach(RouteState.RouteInfo? url in  RouteState.History)
 {
   <div>@url</div>
 }
 
 <!-- Actions to take -->
-<button data-qa="GoBack" @onclick=GoBack>Go Back</button>
+<button data-qa="GoBack" @onclick=@(() => GoBack(1))>Go Back</button>
+<button data-qa="GoBack 2" @onclick=@(() => GoBack(2))>Go Back 2</button>
 <hr>
 
 <!-- ACT -->
@@ -28,7 +29,8 @@
 <!-- ASSERT -->
 <p>
   <strong>Assert:</strong>
-  Verify that the route changes to the top one on the History Stack.
+  Verify that the route changes to the top one on the History Stack if the `Go Back` button is clicked.
+  Verify that the route changes to the second on the History Stack if the `Go Back 2` button is clicked.
 </p>
 
 <hr>
@@ -48,6 +50,6 @@
   /// </summary>
   public const string Route = "/goback";
   
-  private async Task GoBack() =>
-    await Mediator.Send(new RouteState.GoBack.Action());
+  private async Task GoBack(int amount) =>
+    await Send(new RouteState.GoBack.Action(amount));
 }
