@@ -5,18 +5,31 @@ namespace TimeWarp.Features.Routing;
 /// </summary>
 public partial class RouteState : State<RouteState>
 {
-  private readonly Stack<string> HistoryStack = new();
+  private readonly Stack<RouteInfo> HistoryStack = new();
   private bool GoingBack;
   public bool IsHistoryEmpty => HistoryStack.Count == 0;
 
   /// <summary>
-  /// The collection of routes that have been navigated to
+  /// The collection of RouteInfo that have been navigated to
   /// </summary>
   /// <remarks>Is public so will be serialized and visible in DevTools and maybe UX wants to display the stack.</remarks>
-  // ReSharper disable once MemberCanBePrivate.Global
-  public IReadOnlyCollection<string> History => HistoryStack;
+  public IEnumerable<RouteInfo> History => HistoryStack;
 
   public string Route { get; private set; }
 
   public override void Initialize() {}
+  
+  public class RouteInfo
+  {
+    public string Url { get; }
+    public string PageTitle { get; }
+
+    public RouteInfo(string url, string pageTitle)
+    {
+      Url = url;
+      PageTitle = pageTitle;
+    }
+
+    public override string ToString() => PageTitle;
+  }
 }
