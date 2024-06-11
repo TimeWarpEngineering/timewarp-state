@@ -5,7 +5,7 @@
 <div class="top-row ps-3 navbar navbar-dark">
   <div class="container-fluid" title=@RenderModeDisplayString>
     <a class="navbar-brand" href="">Test.App.Server</a>
-    <button disabled=@RouteState.IsHistoryEmpty data-qa="GoBack" @onclick=GoBack style="width: 40px; height: 40px;">
+    <button disabled=@(!RouteState.CanGoBack) data-qa="GoBack" @onclick=GoBack style="width: 40px; height: 40px;">
       <TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon class="icon-size"/>
     </button>
   </div>
