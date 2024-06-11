@@ -1,4 +1,18 @@
 ﻿@namespace TimeWarp.Features.Routing
-@code {  
-  [Inject] private TimeWarpNavigationManager TimeWarpNavigationManager { get; set; }
+@inherits ComponentBase
+@inject ISender Sender
+@code {
+  #nullable enable
+  /// <summary>
+  /// The Nonce is used to ensure that the correct page title is set.
+  /// Will reload this component on every page render.
+  /// </summary>
+  [Parameter] public Guid? Nonce { get; set; }
+  
+  /// <inheritdoc />
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  { 
+    await base.OnAfterRenderAsync(firstRender);
+    await Sender.Send(new RouteState.PushRouteInfo.Action()); 
+  }
 }

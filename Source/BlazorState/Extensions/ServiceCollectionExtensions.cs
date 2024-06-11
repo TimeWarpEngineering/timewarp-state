@@ -44,12 +44,11 @@ public static class ServiceCollectionExtensions
 
     if (blazorStateOptions.UseRouting)
     {
-      serviceCollection.AddScoped<TimeWarpNavigationManager>();
       serviceCollection.AddScoped<RouteState>();
 
-      serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRoute.ChangeRouteHandler>();
-      serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBack.GoBackHandler>();
-      serviceCollection.AddTransient<IRequestHandler<InitializeRoute.Action>, InitializeRoute.InitializeRouteHandler>();
+      serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRoute.Handler>();
+      serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBack.Handler>();
+      serviceCollection.AddTransient<IRequestHandler<PushRouteInfo.Action>, PushRouteInfo.Handler>();
     }
     return serviceCollection;
   }

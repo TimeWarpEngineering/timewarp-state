@@ -11,11 +11,12 @@
 <!-- Test description -->
 <p>Test the GoBack Handler</p>
 <br/>
+
 <!-- Values to validate -->
-<h4>History Stack</h4>
-@foreach(RouteState.RouteInfo? url in  RouteState.History)
+<h4>Route Stack</h4>
+@foreach(RouteState.RouteInfo? item in  RouteState.Routes)
 {
-  <div>@url</div>
+  <div>@item.PageTitle (@item.Url)</div>
 }
 
 <!-- Actions to take -->
@@ -29,8 +30,7 @@
 <!-- ASSERT -->
 <p>
   <strong>Assert:</strong>
-  Verify that the route changes to the top one on the History Stack if the `Go Back` button is clicked.
-  Verify that the route changes to the second on the History Stack if the `Go Back 2` button is clicked.
+  Verify that the route changes to the proper one in the Route Stack if the `Go Back` button is clicked.
 </p>
 
 <hr>
