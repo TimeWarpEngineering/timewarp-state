@@ -19,8 +19,11 @@ public partial class RouteState
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
-        string title = await JsRuntime.InvokeAsync<string>("eval", cancellationToken, "document.title");
-        RouteState.RouteStack.Push(new RouteInfo(NavigationManager.Uri, title));
+        if (RouteState.RouteStack.Peek().Url != NavigationManager.Uri)
+        {
+          string title = await JsRuntime.InvokeAsync<string>("eval", cancellationToken, "document.title");
+          RouteState.RouteStack.Push(new RouteInfo(NavigationManager.Uri, title));
+        }
       }
     }
   }
