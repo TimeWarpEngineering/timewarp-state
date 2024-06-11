@@ -14,10 +14,10 @@ public partial class RouteState
       }
     }
     
-    internal class GoBackHandler : ActionHandler<Action>
+    internal class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
-      public GoBackHandler
+      public Handler
       (
         IStore store,
         NavigationManager navigationManager
@@ -29,15 +29,15 @@ public partial class RouteState
 
       public override Task Handle(Action action, CancellationToken cancellationToken)
       {
-        if (RouteState.IsHistoryEmpty) return Task.CompletedTask;
+        if (RouteState.IsRouteStackEmpty) return Task.CompletedTask;
 
-        RouteState.GoingBack = true;
+        // RouteState.GoingBack = true;
         // Pop off the ones we don't want
         RouteInfo target = null;
-        for (int i = 0; i < action.Amount; i++) 
+        for (int i = 0; i <= action.Amount; i++) 
         {
-          target = RouteState.HistoryStack.Pop();
-          if (RouteState.IsHistoryEmpty) break;
+          target = RouteState.RouteStack.Pop();
+          if (RouteState.IsRouteStackEmpty) break;
         }
         // Navigate to the one we do want.
         NavigationManager.NavigateTo(target!.Url);
