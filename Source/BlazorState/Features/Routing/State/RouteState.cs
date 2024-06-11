@@ -6,7 +6,8 @@ namespace TimeWarp.Features.Routing;
 public partial class RouteState : State<RouteState>
 {
   private readonly Stack<RouteInfo> RouteStack = new();
-
+  private readonly SemaphoreSlim Semaphore = new(1, 1);
+  
   private bool IsRouteStackEmpty => RouteStack.Count == 0;
   public bool CanGoBack => RouteStack.Count > 1;
 

@@ -19,10 +19,26 @@ public partial class RouteState
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
-        if (RouteState.RouteStack.Peek().Url != NavigationManager.Uri)
+        await RouteState.Semaphore.WaitAsync(cancellationToken);
+        try
         {
+          string currentUri = NavigationManager.Uri;
+
           string title = await JsRuntime.InvokeAsync<string>("eval", cancellationToken, "document.title");
-          RouteState.RouteStack.Push(new RouteInfo(NavigationManager.Uri, title));
+          if (RouteState.RouteStack.TryPeek(out RouteInfo routeInfo) && routeInfo.Url == currentUri)
+          {
+            // Update Title
+            RouteState.RouteStack.Pop();
+            var newRouteInfo = new RouteInfo(currentUri, title);
+            RouteState.RouteStack.Push(newRouteInfo);
+            return;
+          }
+          
+          RouteState.RouteStack.Push(new RouteInfo(currentUri, title));
+        }
+        finally
+        {
+          RouteState.Semaphore.Release();
         }
       }
     }

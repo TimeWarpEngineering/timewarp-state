@@ -1,13 +1,15 @@
-﻿@namespace TimeWarp.Features.Routing
+﻿
+@namespace TimeWarp.Features.Routing
 @inherits ComponentBase
 @inject ISender Sender
+
 @code {
   #nullable enable
   /// <summary>
   /// The Nonce is used to ensure that the correct page title is set.
   /// Will reload this component on every page render.
   /// </summary>
-  [Parameter] public Guid? Nonce { get; set; }
+  [Parameter, EditorRequired] public Guid? Nonce { get; set; }
   
   /// <inheritdoc />
   protected override async Task OnAfterRenderAsync(bool firstRender)
