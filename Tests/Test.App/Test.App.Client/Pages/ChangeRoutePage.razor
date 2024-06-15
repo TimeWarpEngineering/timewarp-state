@@ -41,5 +41,5 @@
   public const string Route = "/ChangeRoutePage";
   
   private async Task ChangeRouteToHome() =>
-    await Mediator.Send(new RouteState.ChangeRoute.Action { NewRoute = "/" });
+    await Mediator.Send(new RouteState.ChangeRoute.Action( newRoute: "/" ));
 }
