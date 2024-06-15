@@ -1,7 +1,5 @@
 namespace BlazorState;
 
-using static RouteState;
-
 public static class ServiceCollectionExtensions
 {
   /// <summary>
@@ -23,15 +21,15 @@ public static class ServiceCollectionExtensions
   {
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
     if (serviceCollection.HasRegistrationFor(typeof(Subscriptions))) return serviceCollection;
-    
+
     var blazorStateOptions = new BlazorStateOptions(serviceCollection);
     configureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
-    
+
     serviceCollection.AddScoped<JsonRequestHandler>();
     serviceCollection.AddScoped<Subscriptions>();
     serviceCollection.AddScoped<IStore, Store>();
     serviceCollection.AddSingleton(blazorStateOptions);
-      
+
     EnsureLogger(serviceCollection);
     EnsureHttpClient(serviceCollection);
     EnsureStates(serviceCollection, blazorStateOptions);
@@ -42,14 +40,6 @@ public static class ServiceCollectionExtensions
       serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
     }
 
-    if (blazorStateOptions.UseRouting)
-    {
-      serviceCollection.AddScoped<RouteState>();
-
-      serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRoute.Handler>();
-      serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBack.Handler>();
-      serviceCollection.AddTransient<IRequestHandler<PushRouteInfo.Action>, PushRouteInfo.Handler>();
-    }
     return serviceCollection;
   }
 
@@ -57,10 +47,10 @@ public static class ServiceCollectionExtensions
   {
     // If client side wasm, Blazor registers HttpClient by default.
     if (OperatingSystem.IsBrowser()) return;
-    
+
     // Double check that nothing is registered.
     if (serviceCollection.HasRegistrationFor(typeof(HttpClient))) return;
-    
+
     // Setup HttpClient for server side in a client side compatible fashion
     serviceCollection.AddScoped
     (
@@ -83,7 +73,7 @@ public static class ServiceCollectionExtensions
   /// <param name="serviceCollection"></param>
   private static void EnsureLogger(IServiceCollection serviceCollection)
   {
-    if(!serviceCollection.HasRegistrationFor(typeof(ILogger<>)))
+    if (!serviceCollection.HasRegistrationFor(typeof(ILogger<>)))
     {
       serviceCollection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
     }
@@ -97,14 +87,14 @@ public static class ServiceCollectionExtensions
   private static void EnsureMediator(IServiceCollection serviceCollection, BlazorStateOptions blazorStateOptions)
   {
     if (serviceCollection.HasRegistrationFor(typeof(IMediator))) return;
-    
+
     serviceCollection
       .AddMediatR
       (
-      mediatRServiceConfiguration =>
-        mediatRServiceConfiguration
-          .RegisterServicesFromAssemblies(blazorStateOptions.Assemblies.ToArray())
-          .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
+        mediatRServiceConfiguration =>
+          mediatRServiceConfiguration
+            .RegisterServicesFromAssemblies(blazorStateOptions.Assemblies.ToArray())
+            .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
       );
     serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>), ServiceLifetime.Transient));
   }
@@ -129,7 +119,7 @@ public static class ServiceCollectionExtensions
     }
   }
 
-  private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) => 
+  private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) =>
     serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
 
   // ReSharper disable once UnusedMethodReturnValue.Global
@@ -141,7 +131,7 @@ public static class ServiceCollectionExtensions
   {
     IServiceCollection serviceCollection = blazorStateOptions.ServiceCollection;
     if (serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions))) return blazorStateOptions;
-    
+
     var reduxDevToolsOptions = new ReduxDevToolsOptions();
     reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
 
