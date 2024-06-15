@@ -72,8 +72,8 @@ internal partial class Store : IReduxDevToolsStore
 
     // Get the Hydrate Method
     // I am only trying to get the name of "Hydrate" without magic string.
-    // I use RouteState as a type because it is in this project
-    MethodInfo hydrateMethodInfo = stateType?.GetMethod(nameof(State<RouteState>.Hydrate));
+    // I use IState as a type because it is in this project
+    MethodInfo hydrateMethodInfo = stateType?.GetMethod(nameof(IState<string>.Hydrate));
 
     if (hydrateMethodInfo == null)
     {
