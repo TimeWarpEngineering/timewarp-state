@@ -1,4 +1,3 @@
-#nullable enable
 namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
@@ -7,7 +6,7 @@ namespace TimeWarp.Features.ReduxDevTools;
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull, IAction
+  where TRequest : IAction
 {
   private readonly ILogger Logger;
   private readonly ReduxDevToolsInterop ReduxDevToolsInterop;
@@ -28,7 +27,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     Store = store;
     ReduxDevToolsInterop = reduxDevToolsInterop;
     ReduxDevToolsOptions = reduxDevToolsOptions;
-    TraceFilterRegex = new Regex(reduxDevToolsOptions.TraceFilterExpression);
+    TraceFilterRegex = new Regex(ReduxDevToolsOptions.TraceFilterExpression);
   }
 
   public async Task<TResponse> Handle
@@ -97,7 +96,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
               return stringBuilder.ToString();
             }
           )
-          .Where(x => TraceFilterRegex?.IsMatch(x) != false)
+          .Where(x => TraceFilterRegex.IsMatch(x))
           .Take(maxItems)
       );
   }
