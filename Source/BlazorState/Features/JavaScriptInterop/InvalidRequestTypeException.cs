@@ -1,14 +1,12 @@
-﻿#nullable enable
-
-namespace TimeWarp.Features.JavaScriptInterop;
+﻿namespace TimeWarp.Features.JavaScriptInterop;
 
 [Serializable]
 public class InvalidRequestTypeException : Exception
 {
   public string? RequestedTypeAssemblyQualifiedName { get; set; }
-  public InvalidRequestTypeException() : base() { }
-  public InvalidRequestTypeException(string? message) : base(message) { }
-  public InvalidRequestTypeException(string? message, Exception innerException) : base(message, innerException) { }
+  public InvalidRequestTypeException() {}
+  public InvalidRequestTypeException(string? message) : base(message) {}
+  public InvalidRequestTypeException(string? message, Exception innerException) : base(message, innerException) {}
   public InvalidRequestTypeException(string? message, string requestedTypeAssemblyQualifiedName) : base(message)
   {
     RequestedTypeAssemblyQualifiedName = requestedTypeAssemblyQualifiedName;
@@ -25,5 +23,5 @@ public class InvalidRequestTypeException : Exception
   (
     SerializationInfo serializationInfo,
     StreamingContext streamingContext
-  ) { }
+  ) {}
 }

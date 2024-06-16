@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace TimeWarp.Features.Persistence;
+﻿namespace TimeWarp.Features.Persistence;
 
 public interface IPersistenceService
 {

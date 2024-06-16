@@ -1,4 +1,3 @@
-#nullable enable
 namespace TimeWarp.Features.StateTransactions;
 
 /// <summary>
