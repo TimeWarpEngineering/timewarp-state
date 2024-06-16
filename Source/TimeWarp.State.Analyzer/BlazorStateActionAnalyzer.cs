@@ -1,4 +1,4 @@
-﻿namespace BlazorStateAnalyzer;
+﻿namespace TimeWarp.State.Analyzer;
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;

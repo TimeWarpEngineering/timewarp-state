@@ -1,5 +1,5 @@
-global using BlazorStateAnalyzer;
-global using BlazorStateAnalyzer.Tests;
+global using TimeWarp.State.Analyzer;
+global using TimeWarp.State.Analyzer.Tests;
 global using FluentAssertions;
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp.Testing;

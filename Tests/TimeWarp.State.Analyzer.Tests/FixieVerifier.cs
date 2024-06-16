@@ -1,4 +1,4 @@
-namespace BlazorStateAnalyzer.Tests;
+namespace TimeWarp.State.Analyzer.Tests;
 
 // FixieVerifier is a basic implementation since Fixie doesn't have a verifier like xUnit or NUnit.
 internal class FixieVerifier : IVerifier
