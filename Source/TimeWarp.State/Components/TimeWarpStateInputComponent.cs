@@ -5,9 +5,9 @@ namespace TimeWarp.State;
 /// And exposes StateHasChanged
 /// </summary>
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-public abstract class BlazorStateInputComponent<TValue> : InputBase<TValue>, IDisposable, IBlazorStateComponent
+public abstract class TimeWarpStateInputComponent<TValue> : InputBase<TValue>, IDisposable, ITimeWarpStateComponent
 {
-  protected BlazorStateInputComponent()
+  protected TimeWarpStateInputComponent()
   {
     string name = GetType().Name;
     InstanceCounter.IncrementCount<TValue>();

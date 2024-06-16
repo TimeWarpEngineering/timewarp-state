@@ -5,7 +5,7 @@ namespace TimeWarp.State;
 ///   And exposes StateHasChanged
 /// </summary>
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-public class TimeWarpStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
+public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpStateComponent
 {
   [Inject] private IStore Store { get; set; } = null!;
   [Inject] protected IMediator Mediator { get; set; } = null!;

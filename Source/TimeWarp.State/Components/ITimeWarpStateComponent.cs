@@ -5,10 +5,10 @@ namespace TimeWarp.State;
 /// </summary>
 /// <example>
 /// <![CDATA[
-/// public class YourBaseComponent : BlazorComponent, IBlazorStateComponent
+/// public class YourBaseComponent : BlazorComponent, ITimeWarpStateComponent
 /// {
 ///   static readonly ConcurrentDictionary<string, int> s_InstanceCounts = new();
-///   public BlazorStateComponent()
+///   public TimeWarpStateComponent()
 ///   {
 ///     string name = GetType().Name;
 ///     int count = s_InstanceCounts.AddOrUpdate(name, 1, (key, value) => value + 1);
@@ -20,7 +20,7 @@ namespace TimeWarp.State;
 /// ]]>
 /// </example>
 
-public interface IBlazorStateComponent
+public interface ITimeWarpStateComponent
 {
   string Id { get; }
   

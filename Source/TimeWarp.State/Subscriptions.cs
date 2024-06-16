@@ -13,30 +13,30 @@ public class Subscriptions
     BlazorStateComponentReferencesList = new List<Subscription>();
   }
 
-  public Subscriptions Add<T>(IBlazorStateComponent blazorStateComponent)
+  public Subscriptions Add<T>(ITimeWarpStateComponent timeWarpStateComponent)
   {
     Type type = typeof(T);
-    return Add(type, blazorStateComponent);
+    return Add(type, timeWarpStateComponent);
   }
 
-  public Subscriptions Add(Type type, IBlazorStateComponent blazorStateComponent)
+  public Subscriptions Add(Type type, ITimeWarpStateComponent timeWarpStateComponent)
   {
 
     // Add only once.
-    if (!BlazorStateComponentReferencesList.Any(subscription => subscription.StateType == type && subscription.ComponentId == blazorStateComponent.Id))
+    if (!BlazorStateComponentReferencesList.Any(subscription => subscription.StateType == type && subscription.ComponentId == timeWarpStateComponent.Id))
     {
       Logger.LogDebug
       (
         EventIds.Subscriptions_Adding,
         "adding subscription for Id:{id} Type.Name:{type_name}",
-        blazorStateComponent.Id,
+        timeWarpStateComponent.Id,
         type.Name
       );
 
       var subscription = new Subscription(
         type,
-        blazorStateComponent.Id,
-        new WeakReference<IBlazorStateComponent>(blazorStateComponent));
+        timeWarpStateComponent.Id,
+        new WeakReference<ITimeWarpStateComponent>(timeWarpStateComponent));
 
       BlazorStateComponentReferencesList.Add(subscription);
     }
@@ -51,16 +51,16 @@ public class Subscriptions
 
   public override int GetHashCode() => HashCode.Combine(Logger, BlazorStateComponentReferencesList);
 
-  public Subscriptions Remove(IBlazorStateComponent blazorStateComponent)
+  public Subscriptions Remove(ITimeWarpStateComponent timeWarpStateComponent)
   {
     Logger.LogDebug
     (
       EventIds.Subscriptions_RemovingComponentSubscriptions,
       "Removing Subscription for {aBlazorStateComponent_Id}",
-      blazorStateComponent.Id
+      timeWarpStateComponent.Id
     );
 
-    BlazorStateComponentReferencesList.RemoveAll(record => record.ComponentId == blazorStateComponent.Id);
+    BlazorStateComponentReferencesList.RemoveAll(record => record.ComponentId == timeWarpStateComponent.Id);
 
     return this;
   }
@@ -87,7 +87,7 @@ public class Subscriptions
     IEnumerable<Subscription> subscriptions = BlazorStateComponentReferencesList.Where(record => record.StateType == type);
     foreach (Subscription subscription in subscriptions.ToList())
     {
-      if (subscription.BlazorStateComponentReference.TryGetTarget(out IBlazorStateComponent? target))
+      if (subscription.BlazorStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
       {
         Logger.LogDebug
         (
@@ -118,13 +118,13 @@ public class Subscriptions
 
   private readonly struct Subscription : IEquatable<Subscription>
   {
-    public WeakReference<IBlazorStateComponent> BlazorStateComponentReference { get; }
+    public WeakReference<ITimeWarpStateComponent> BlazorStateComponentReference { get; }
 
     public string ComponentId { get; }
 
     public Type StateType { get; }
 
-    public Subscription(Type stateType, string componentId, WeakReference<IBlazorStateComponent> blazorStateComponentReference)
+    public Subscription(Type stateType, string componentId, WeakReference<ITimeWarpStateComponent> blazorStateComponentReference)
     {
       StateType = stateType;
       ComponentId = componentId;
@@ -138,7 +138,7 @@ public class Subscriptions
     public bool Equals(Subscription subscription) =>
       EqualityComparer<Type>.Default.Equals(StateType, subscription.StateType) &&
       ComponentId == subscription.ComponentId &&
-      EqualityComparer<WeakReference<IBlazorStateComponent>>.Default.Equals(BlazorStateComponentReference, subscription.BlazorStateComponentReference);
+      EqualityComparer<WeakReference<ITimeWarpStateComponent>>.Default.Equals(BlazorStateComponentReference, subscription.BlazorStateComponentReference);
 
     public override bool Equals(object? aObject) => aObject is Subscription subscription && this.Equals(subscription);
 
