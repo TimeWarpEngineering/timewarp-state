@@ -6,7 +6,7 @@ public interface IState
   void Initialize();
 }
 
-public interface IState<TState> : IState
+public interface IState<out TState> : IState
 {
 
   /// <summary>
