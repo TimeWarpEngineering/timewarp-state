@@ -6,7 +6,7 @@ public static class ServiceCollectionExtensions
   /// Register TimeWarp.State services based on the Configure options
   /// </summary>
   /// <param name="serviceCollection"></param>
-  /// <param name="configureBlazorStateOptionsAction"></param>
+  /// <param name="configureTimeWarpStateOptionsAction"></param>
   /// <returns></returns>
   /// <example></example>
   /// <remarks>
@@ -16,14 +16,14 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection AddTimeWarpState
   (
     this IServiceCollection serviceCollection,
-    Action<TimeWarpStateOptions>? configureBlazorStateOptionsAction = null
+    Action<TimeWarpStateOptions>? configureTimeWarpStateOptionsAction = null
   )
   {
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
     if (serviceCollection.HasRegistrationFor(typeof(Subscriptions))) return serviceCollection;
 
     var blazorStateOptions = new TimeWarpStateOptions(serviceCollection);
-    configureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
+    configureTimeWarpStateOptionsAction?.Invoke(blazorStateOptions);
 
     serviceCollection.AddScoped<JsonRequestHandler>();
     serviceCollection.AddScoped<Subscriptions>();
