@@ -8,18 +8,18 @@
 /// </remarks>
 public sealed class ReduxDevToolsOptions
 {
-  public string Name { get; set; }
+  public string? Name { get; set; }
   public int Latency { get; set; }
   public int MaxAge { get; set; }
   public bool Trace { get; set; }
   public int TraceLimit { get; set; }
-  public string TraceFilterExpression { get; set; } =
-        @"^(?:(?!\b" +
-        @"System" +
-        @"|Microsoft" +
-        @"|MediatR" +
-        @"|ReduxDevTools" +
-        @"\b).)*$";
+  public static string TraceFilterExpression =>
+    @"^(?:(?!\b" +
+    @"System" +
+    @"|Microsoft" +
+    @"|MediatR" +
+    @"|ReduxDevTools" +
+    @"\b).)*$";
   // serialize is not implemented thus will use JSON.stringy
   // actionSanitizer
   // stateSanitizer
@@ -33,8 +33,7 @@ public sealed class ReduxDevToolsOptions
   // shouldHotReload
   // shouldCatchErrors
   public TFeatures Features {get; set;} = 
-    new TFeatures
-    (
+    new(
       Pause: false,
       Lock: false,
       Persist: false,
@@ -60,13 +59,14 @@ public sealed class ReduxDevToolsOptions
   /// <param name="Reorder">drag and drop actions in the history list</param>
   /// <param name="Dispatch">dispatch custom actions or action creators</param>
   /// <param name="Test">generate tests for the selected actions</param>
+  // ReSharper disable once InconsistentNaming
   public record TFeatures
   (
     bool Pause,
     bool Lock,
     bool Persist,
     bool Export,
-    string Import,
+    string? Import,
     bool Jump,
     bool Skip,
     bool Reorder,
