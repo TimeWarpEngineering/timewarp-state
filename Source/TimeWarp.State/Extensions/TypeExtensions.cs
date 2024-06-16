@@ -1,4 +1,4 @@
-﻿namespace BlazorState.Extensions;
+﻿namespace TimeWarp.State.Extensions;
 
 public static class TypeExtensions
 {

@@ -1,4 +1,4 @@
-namespace BlazorState;
+namespace TimeWarp.State;
 
 /// <summary>
 /// The portion of the store that is only needed to support

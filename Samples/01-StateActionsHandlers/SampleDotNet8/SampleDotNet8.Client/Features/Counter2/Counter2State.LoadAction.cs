@@ -5,7 +5,7 @@ public partial class Counter2State
   public static class Load
   {
     
-    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Instantiated by BlazorState")]
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global", Justification = "Instantiated by TimeWarp.State")]
     public class Action : IAction { }
 
     public class Handler(IStore store,

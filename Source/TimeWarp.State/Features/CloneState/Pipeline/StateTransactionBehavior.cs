@@ -1,14 +1,14 @@
 namespace TimeWarp.Features.StateTransactions;
 
 /// <summary>
-///   Represents a pipeline behavior in BlazorState that clones the current state before processing a request.
+///   Represents a pipeline behavior in TimeWarp.State that clones the current state before processing a request.
 ///   This behavior ensures that the state can be reverted to its original form in case of an error during the request handling.
 ///   The cloning process is contingent upon the state implementing <see cref="ICloneable"/>, allowing for a deep copy.
 ///   If the state does not implement <see cref="ICloneable"/>, it falls back to a custom clone method. This behavior is
 ///   critical for maintaining application consistency and enables undo functionality.
 /// </summary>
 /// <remarks>
-///   This behavior is part of the BlazorState pipeline, intercepting actions (requests) to clone the relevant state before
+///   This behavior is part of the TimeWarp.State pipeline, intercepting actions (requests) to clone the relevant state before
 ///   proceeding. If an action fails, the system reverts to the cloned state, thus preventing partial state updates
 ///   from corrupting the application state. It uses MediatR's pipeline behavior feature to hook into the request handling
 ///   process.

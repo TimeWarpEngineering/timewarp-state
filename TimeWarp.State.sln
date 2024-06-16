@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorState", "Source\BlazorState\BlazorState.csproj", "{DF355720-EA1E-4505-AE68-1D36BD0D4711}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeWarp.State", "Source\TimeWarp.State\TimeWarp.State.csproj", "{DF355720-EA1E-4505-AE68-1D36BD0D4711}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2} = {F6DD04E6-EE7E-492D-BF81-5CBA1F7C6EE2}
 	EndProjectSection

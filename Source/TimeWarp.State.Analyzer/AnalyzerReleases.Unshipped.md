@@ -5,5 +5,5 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-TW0001 | BlazorState | Error | BlazorStateActionAnalyzer
+TW0001 | TimeWarp.State | Error | TimeWarpStateActionAnalyzer
 TWD001 | Debug | Info | BlazorStateActionAnalyzer

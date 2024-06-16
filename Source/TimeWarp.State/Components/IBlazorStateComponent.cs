@@ -1,7 +1,7 @@
-namespace BlazorState;
+namespace TimeWarp.State;
 
 /// <summary>
-/// Minimum implementation needed for BlazorState to function
+/// Minimum implementation needed for TimeWarp.State to function
 /// </summary>
 /// <example>
 /// <![CDATA[

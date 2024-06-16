@@ -1,7 +1,7 @@
-namespace BlazorState;
+namespace TimeWarp.State;
 
 /// <summary>
-/// Options for configuring BlazorState
+/// Options for configuring TimeWarp.State
 /// </summary>
 public class BlazorStateOptions
 {

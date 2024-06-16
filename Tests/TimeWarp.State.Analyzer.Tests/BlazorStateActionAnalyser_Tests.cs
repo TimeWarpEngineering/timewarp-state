@@ -7,7 +7,7 @@ public class Should_Trigger_TW0001
   {
     const string TestCode = 
       """
-      using BlazorState;
+      using TimeWarp.State;
 
       public record SampleInvalidRecordAction : IAction { }
       """;
@@ -16,7 +16,7 @@ public class Should_Trigger_TW0001
       .WithSpan(3, 15, 3, 40) // Assuming the error is at the record declaration
       .WithArguments("SampleInvalidRecordAction");
 
-    var analyzerTest = new CSharpAnalyzerTest<BlazorStateActionAnalyzer, FixieVerifier>
+    var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>
     {
       TestCode = TestCode
     };
@@ -36,7 +36,7 @@ public class Should_Trigger_TW0001
   {
     const string TestCode = 
       """
-      using BlazorState;
+      using TimeWarp.State;
 
       public class SampleInvalidClassAction : IAction { }
       """;
@@ -45,7 +45,7 @@ public class Should_Trigger_TW0001
       new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(3, 14, 3, 38)
         .WithArguments("SampleInvalidClassAction");
 
-    var analyzerTest = new CSharpAnalyzerTest<BlazorStateActionAnalyzer, FixieVerifier>
+    var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>
     {
       TestCode = TestCode
     };
@@ -65,7 +65,7 @@ public class Should_Trigger_TW0001
   {
     const string TestCode = 
       """
-      using BlazorState;
+      using TimeWarp.State;
 
       public struct SampleInvalidStructAction : IAction { }
       """;
@@ -74,7 +74,7 @@ public class Should_Trigger_TW0001
       new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(3, 15, 3, 40)
         .WithArguments("SampleInvalidStructAction");
 
-    var analyzerTest = new CSharpAnalyzerTest<BlazorStateActionAnalyzer, FixieVerifier>
+    var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>
     {
       TestCode = TestCode
     };
@@ -94,7 +94,7 @@ public class Should_Trigger_TW0001
   {
     const string TestCode = 
       """
-      using BlazorState;
+      using TimeWarp.State;
       
       public abstract class AbstractAction: IAction { }
       public class SampleInvalidDescendantClassAction : AbstractAction { }
@@ -104,7 +104,7 @@ public class Should_Trigger_TW0001
       new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(4, 14, 4, 48)
         .WithArguments("SampleInvalidDescendantClassAction");
 
-    var analyzerTest = new CSharpAnalyzerTest<BlazorStateActionAnalyzer, FixieVerifier>
+    var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>
     {
       TestCode = TestCode
     };

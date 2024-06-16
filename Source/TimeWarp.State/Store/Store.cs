@@ -1,4 +1,4 @@
-namespace BlazorState;
+namespace TimeWarp.State;
 
 /// <summary>
 /// 

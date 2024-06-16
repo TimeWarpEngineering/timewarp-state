@@ -1,6 +1,6 @@
 ﻿global using AnyClone;
-global using BlazorState.Extensions;
-global using BlazorState;
+global using TimeWarp.State.Extensions;
+global using TimeWarp.State;
 global using JetBrains.Annotations;
 global using MediatR.Pipeline;
 global using MediatR;

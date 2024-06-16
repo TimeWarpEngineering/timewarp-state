@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Source\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" />
-    <ProjectReference Include="..\..\Source\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\..\Source\TimeWarp.State\TimeWarp.State.csproj" />
   </ItemGroup>
 
 </Project>

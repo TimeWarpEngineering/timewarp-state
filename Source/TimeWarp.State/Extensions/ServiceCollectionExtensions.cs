@@ -1,9 +1,9 @@
-namespace BlazorState;
+namespace TimeWarp.State;
 
 public static class ServiceCollectionExtensions
 {
   /// <summary>
-  /// Register BlazorState services based on the Configure options
+  /// Register TimeWarp.State services based on the Configure options
   /// </summary>
   /// <param name="serviceCollection"></param>
   /// <param name="configureBlazorStateOptionsAction"></param>

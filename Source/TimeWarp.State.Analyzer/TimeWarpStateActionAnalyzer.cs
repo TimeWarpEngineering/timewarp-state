@@ -7,17 +7,17 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class BlazorStateActionAnalyzer : DiagnosticAnalyzer
+public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
   public const string DebugDiagnosticId = "TWD001";
-  public const string IActionDefinition = "BlazorState.IAction";
-  public const string IStateDefinition = "BlazorState.IState";
+  public const string IActionDefinition = "TimeWarp.State.IAction";
+  public const string IStateDefinition = "TimeWarp.State.IState";
 
-  private static readonly LocalizableString Title = "Blazor State Action should be a nested type of its State";
+  private static readonly LocalizableString Title = "TimeWarp.State Action should be a nested type of its State";
   private static readonly LocalizableString MessageFormat = "The Action '{0}' is not a nested type of its State";
-  private static readonly LocalizableString Description = "Blazor State Actions should be nested types of their corresponding States.";
-  private const string Category = "BlazorState";
+  private static readonly LocalizableString Description = "TimeWarp.State Actions should be nested types of their corresponding States.";
+  private const string Category = "TimeWarp.State";
 
   private static readonly DiagnosticDescriptor Rule =
     new

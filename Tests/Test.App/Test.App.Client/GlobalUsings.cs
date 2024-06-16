@@ -2,7 +2,7 @@ global using AnyClone.Tests.Extensions;
 global using AnyClone.Tests.TestObjects;
 global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
-global using BlazorState;
+global using TimeWarp.State;
 global using TimeWarp.Features.Persistence;
 global using TimeWarp.Features.Routing;
 global using TimeWarp.Features.ReduxDevTools;

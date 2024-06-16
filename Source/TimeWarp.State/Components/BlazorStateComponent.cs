@@ -1,4 +1,4 @@
-namespace BlazorState;
+namespace TimeWarp.State;
 
 /// <summary>
 ///   A non required Base Class that injects Mediator and Store.
@@ -72,7 +72,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   /// <summary>
   ///   Indicates if the component is being prerendered.
   /// </summary>
-  protected bool IsPreRendering => GetCurrentRenderMode() == BlazorState.CurrentRenderMode.PreRendering;
+  protected bool IsPreRendering => GetCurrentRenderMode() == State.CurrentRenderMode.PreRendering;
 
   private static readonly ConcurrentDictionary<Type, bool> TypeRenderAttributeCache = new();
 
@@ -80,7 +80,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
   {
     if (OperatingSystem.IsBrowser())
     {
-      return BlazorState.CurrentRenderMode.Wasm;
+      return State.CurrentRenderMode.Wasm;
     }
     else if (!HasRendered)
     {
@@ -89,12 +89,12 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
           .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
 
       return hasRenderAttribute
-        ? BlazorState.CurrentRenderMode.PreRendering
-        : BlazorState.CurrentRenderMode.Static;
+        ? State.CurrentRenderMode.PreRendering
+        : State.CurrentRenderMode.Static;
     }
     else
     {
-      return BlazorState.CurrentRenderMode.Server;
+      return State.CurrentRenderMode.Server;
     }
   }
 
