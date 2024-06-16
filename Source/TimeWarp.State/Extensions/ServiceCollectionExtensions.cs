@@ -22,20 +22,20 @@ public static class ServiceCollectionExtensions
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
     if (serviceCollection.HasRegistrationFor(typeof(Subscriptions))) return serviceCollection;
 
-    var blazorStateOptions = new TimeWarpStateOptions(serviceCollection);
-    configureTimeWarpStateOptionsAction?.Invoke(blazorStateOptions);
+    var timeWarpStateOptions = new TimeWarpStateOptions(serviceCollection);
+    configureTimeWarpStateOptionsAction?.Invoke(timeWarpStateOptions);
 
     serviceCollection.AddScoped<JsonRequestHandler>();
     serviceCollection.AddScoped<Subscriptions>();
     serviceCollection.AddScoped<IStore, Store>();
-    serviceCollection.AddSingleton(blazorStateOptions);
+    serviceCollection.AddSingleton(timeWarpStateOptions);
 
     EnsureLogger(serviceCollection);
     EnsureHttpClient(serviceCollection);
-    EnsureStates(serviceCollection, blazorStateOptions);
-    EnsureMediator(serviceCollection, blazorStateOptions);
+    EnsureStates(serviceCollection, timeWarpStateOptions);
+    EnsureMediator(serviceCollection, timeWarpStateOptions);
 
-    if (blazorStateOptions.UseStateTransactionBehavior)
+    if (timeWarpStateOptions.UseStateTransactionBehavior)
     {
       serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
     }

@@ -23,8 +23,8 @@ public class Should_Trigger_TW0001
    
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
         
-    const string BlazorStateAssemblyPath = @"Blazor-State.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(BlazorStateAssemblyPath));
+    const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
     const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
@@ -52,8 +52,8 @@ public class Should_Trigger_TW0001
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     
-    const string BlazorStateAssemblyPath = @"Blazor-State.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(BlazorStateAssemblyPath));
+    const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
     const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
@@ -81,8 +81,8 @@ public class Should_Trigger_TW0001
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     
-    const string BlazorStateAssemblyPath = @"Blazor-State.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(BlazorStateAssemblyPath));
+    const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
     const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
@@ -111,8 +111,8 @@ public class Should_Trigger_TW0001
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     
-    const string BlazorStateAssemblyPath = @"Blazor-State.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(BlazorStateAssemblyPath));
+    const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
     const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
