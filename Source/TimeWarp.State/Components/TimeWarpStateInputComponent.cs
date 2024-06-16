@@ -4,7 +4,7 @@ namespace TimeWarp.State;
 /// A non required Base Class that injects Mediator and Store.
 /// And exposes StateHasChanged
 /// </summary>
-/// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
+/// <remarks>Implements ITimeWarpStateComponent by Injecting</remarks>
 public abstract class TimeWarpStateInputComponent<TValue> : InputBase<TValue>, IDisposable, ITimeWarpStateComponent
 {
   protected TimeWarpStateInputComponent()
