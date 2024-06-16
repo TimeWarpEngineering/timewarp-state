@@ -2,7 +2,7 @@
 
 @code {
 
-  [Inject] private JsonRequestHandler JsonRequestHandler { get; set; }
+  [Inject] private JsonRequestHandler JsonRequestHandler { get; set; } = null!;
 
   /// <inheritdoc/>
   protected override async Task OnAfterRenderAsync(bool firstRender)
