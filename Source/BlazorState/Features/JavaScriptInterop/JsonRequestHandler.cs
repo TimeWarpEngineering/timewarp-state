@@ -5,19 +5,19 @@ public class JsonRequestHandler
   private readonly JsonSerializerOptions JsonSerializerOptions;
   private readonly IJSRuntime JsRuntime;
   private readonly ILogger Logger;
-  private readonly IMediator Mediator;
+  private readonly ISender Sender;
 
   public JsonRequestHandler
   (
     ILogger<JsonRequestHandler> logger,
-    IMediator mediator,
+    ISender sender,
     IJSRuntime jsRuntime,
     BlazorStateOptions blazorStateOptions
   )
   {
     ArgumentNullException.ThrowIfNull(logger);
     Logger = logger;
-    Mediator = mediator;
+    Sender = sender;
     JsRuntime = jsRuntime;
     JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
     Logger.LogDebug
@@ -70,7 +70,7 @@ public class JsonRequestHandler
       instance = JsonSerializer.Deserialize(requestAsJson, requestType, JsonSerializerOptions) ?? throw new InvalidOperationException("Deserialization resulted in a null object.");
     }
     
-    Task<object?> result = Mediator.Send(instance);
+    Task<object?> result = Sender.Send(instance);
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
   }
