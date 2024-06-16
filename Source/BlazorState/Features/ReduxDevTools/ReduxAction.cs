@@ -6,7 +6,7 @@ internal class ReduxAction
   {
     ArgumentNullException.ThrowIfNull(request);
 
-    Type = request.GetType().FullName;
+    Type = request.GetType().FullName ?? throw new InvalidOperationException();
     Payload = request;
   }
 
