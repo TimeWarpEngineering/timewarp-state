@@ -10,7 +10,7 @@ internal partial class Store : IStore
   private readonly IServiceProvider ServiceProvider;
   private readonly IDictionary<string, IState> States;
   private readonly IPublisher Publisher;
-  private readonly BlazorStateOptions BlazorStateOptions;
+  private readonly TimeWarpStateOptions TimeWarpStateOptions;
 
   /// <summary>
   /// Unique Guid for the Store.
@@ -22,7 +22,7 @@ internal partial class Store : IStore
   (
     ILogger<Store> logger,
     IServiceProvider serviceProvider,
-    BlazorStateOptions blazorStateOptions,
+    TimeWarpStateOptions timeWarpStateOptions,
     IPublisher publisher
   )
   {
@@ -30,8 +30,8 @@ internal partial class Store : IStore
     Logger.LogDebug(EventIds.Store_Initializing, "constructing with guid:{Guid}", Guid);
     ServiceProvider = serviceProvider;
     Publisher = publisher;
-    BlazorStateOptions = blazorStateOptions;
-    JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
+    TimeWarpStateOptions = timeWarpStateOptions;
+    JsonSerializerOptions = timeWarpStateOptions.JsonSerializerOptions;
 
     States = new ConcurrentDictionary<string, IState>();
   }

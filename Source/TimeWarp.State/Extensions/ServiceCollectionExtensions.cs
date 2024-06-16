@@ -16,13 +16,13 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection AddTimeWarpState
   (
     this IServiceCollection serviceCollection,
-    Action<BlazorStateOptions>? configureBlazorStateOptionsAction = null
+    Action<TimeWarpStateOptions>? configureBlazorStateOptionsAction = null
   )
   {
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
     if (serviceCollection.HasRegistrationFor(typeof(Subscriptions))) return serviceCollection;
 
-    var blazorStateOptions = new BlazorStateOptions(serviceCollection);
+    var blazorStateOptions = new TimeWarpStateOptions(serviceCollection);
     configureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
 
     serviceCollection.AddScoped<JsonRequestHandler>();
@@ -83,8 +83,8 @@ public static class ServiceCollectionExtensions
   /// Scan Assemblies for Handlers.
   /// </summary>
   /// <param name="serviceCollection"></param>
-  /// <param name="blazorStateOptions"></param>
-  private static void EnsureMediator(IServiceCollection serviceCollection, BlazorStateOptions blazorStateOptions)
+  /// <param name="timeWarpStateOptions"></param>
+  private static void EnsureMediator(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
   {
     if (serviceCollection.HasRegistrationFor(typeof(IMediator))) return;
 
@@ -93,15 +93,15 @@ public static class ServiceCollectionExtensions
       (
         mediatRServiceConfiguration =>
           mediatRServiceConfiguration
-            .RegisterServicesFromAssemblies(blazorStateOptions.Assemblies.ToArray())
+            .RegisterServicesFromAssemblies(timeWarpStateOptions.Assemblies.ToArray())
             .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
       );
     serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>), ServiceLifetime.Transient));
   }
 
-  private static void EnsureStates(IServiceCollection serviceCollection, BlazorStateOptions blazorStateOptions)
+  private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
   {
-    foreach (Assembly assembly in blazorStateOptions.Assemblies)
+    foreach (Assembly assembly in timeWarpStateOptions.Assemblies)
     {
       IEnumerable<Type> types = assembly.GetTypes().Where
       (
@@ -121,14 +121,14 @@ public static class ServiceCollectionExtensions
     serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
 
   // ReSharper disable once UnusedMethodReturnValue.Global
-  public static BlazorStateOptions UseReduxDevTools
+  public static TimeWarpStateOptions UseReduxDevTools
   (
-    this BlazorStateOptions blazorStateOptions,
+    this TimeWarpStateOptions timeWarpStateOptions,
     Action<ReduxDevToolsOptions>? reduxDevToolsOptionsAction = null
   )
   {
-    IServiceCollection serviceCollection = blazorStateOptions.ServiceCollection;
-    if (serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions))) return blazorStateOptions;
+    IServiceCollection serviceCollection = timeWarpStateOptions.ServiceCollection;
+    if (serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions))) return timeWarpStateOptions;
 
     var reduxDevToolsOptions = new ReduxDevToolsOptions();
     reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
@@ -143,6 +143,6 @@ public static class ServiceCollectionExtensions
 
     serviceCollection.AddSingleton(reduxDevToolsOptions);
 
-    return blazorStateOptions;
+    return timeWarpStateOptions;
   }
 }

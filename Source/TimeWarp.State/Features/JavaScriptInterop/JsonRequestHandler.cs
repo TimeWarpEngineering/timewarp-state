@@ -12,14 +12,14 @@ public class JsonRequestHandler
     ILogger<JsonRequestHandler> logger,
     ISender sender,
     IJSRuntime jsRuntime,
-    BlazorStateOptions blazorStateOptions
+    TimeWarpStateOptions timeWarpStateOptions
   )
   {
     ArgumentNullException.ThrowIfNull(logger);
     Logger = logger;
     Sender = sender;
     JsRuntime = jsRuntime;
-    JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
+    JsonSerializerOptions = timeWarpStateOptions.JsonSerializerOptions;
     Logger.LogDebug
     (
       EventIds.JsonRequestHandler_Initializing,

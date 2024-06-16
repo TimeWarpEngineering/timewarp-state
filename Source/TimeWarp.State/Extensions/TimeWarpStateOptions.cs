@@ -3,7 +3,7 @@ namespace TimeWarp.State;
 /// <summary>
 /// Options for configuring TimeWarp.State
 /// </summary>
-public class BlazorStateOptions
+public class TimeWarpStateOptions
 {
   /// <summary>
   /// Assemblies to be searched for MediatR Actions and Handlers
@@ -25,7 +25,7 @@ public class BlazorStateOptions
   
   public readonly IServiceCollection ServiceCollection;
 
-  public BlazorStateOptions(IServiceCollection serviceCollection)
+  public TimeWarpStateOptions(IServiceCollection serviceCollection)
   {
     ServiceCollection = serviceCollection;
     Assemblies = Array.Empty<Assembly>();
