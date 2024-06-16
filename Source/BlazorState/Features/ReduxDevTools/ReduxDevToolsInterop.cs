@@ -9,9 +9,9 @@ public class ReduxDevToolsInterop
   private readonly IReduxDevToolsStore Store;
   private readonly ReduxDevToolsOptions ReduxDevToolsOptions;
   
-  private bool IsInitialized = false; 
+  private bool IsInitialized;
 
-  public bool IsEnabled { get; set; }
+  private bool IsEnabled { get; set; }
 
 
   public ReduxDevToolsInterop
@@ -28,7 +28,8 @@ public class ReduxDevToolsInterop
     JsRuntime = jsRuntime;
   }
 
-  public async Task DispatchAsync<TRequest>(TRequest request, object state, string stackTrace)
+  public async Task DispatchAsync<TRequest>(TRequest request, object state, string? stackTrace)
+  where TRequest : notnull
   {
     if (IsEnabled)
     {
@@ -59,8 +60,8 @@ public class ReduxDevToolsInterop
     if (IsInitialized) return;
 
     Logger.LogDebug(EventIds.ReduxDevToolsInterop_Initializing, "Init ReduxDevToolsInterop");
-    const string ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
-    IsEnabled = await JsRuntime.InvokeAsync<bool>(ReduxDevToolsFactoryName, ReduxDevToolsOptions);
+    const string reduxDevToolsFactoryName = "ReduxDevToolsFactory";
+    IsEnabled = await JsRuntime.InvokeAsync<bool>(reduxDevToolsFactoryName, ReduxDevToolsOptions);
 
     if (IsEnabled)
       await DispatchInitAsync(Store.GetSerializableState());
