@@ -8,7 +8,6 @@ public interface IState
 
 public interface IState<TState> : IState
 {
-  TState State { get; }
 
   /// <summary>
   /// Set the state from Dictionary

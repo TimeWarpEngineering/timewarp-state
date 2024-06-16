@@ -5,8 +5,6 @@ public abstract class State<TState> : IState<TState>
   [IgnoreDataMember]
   public Guid Guid { get; protected init; } = Guid.NewGuid();
 
-  TState IState<TState>.State { get; }
-
   /// <summary>
   /// returns a new instance of type TState
   /// </summary>
