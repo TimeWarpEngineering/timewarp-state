@@ -106,9 +106,7 @@ public static class ServiceCollectionExtensions
       IEnumerable<Type> types = assembly.GetTypes().Where
       (
         type =>
-          !type.IsAbstract &&
-          !type.IsInterface &&
-          type.BaseType is { IsGenericType: true } &&
+          type is { IsAbstract: false, IsInterface: false, BaseType.IsGenericType: true } &&
           type.BaseType.GetGenericTypeDefinition() == typeof(State<>)
       );
 
