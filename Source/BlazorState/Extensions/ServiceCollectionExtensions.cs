@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
   public static IServiceCollection AddBlazorState
   (
     this IServiceCollection serviceCollection,
-    Action<BlazorStateOptions> configureBlazorStateOptionsAction = null
+    Action<BlazorStateOptions>? configureBlazorStateOptionsAction = null
   )
   {
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
@@ -126,7 +126,7 @@ public static class ServiceCollectionExtensions
   public static BlazorStateOptions UseReduxDevTools
   (
     this BlazorStateOptions blazorStateOptions,
-    Action<ReduxDevToolsOptions> reduxDevToolsOptionsAction = null
+    Action<ReduxDevToolsOptions>? reduxDevToolsOptionsAction = null
   )
   {
     IServiceCollection serviceCollection = blazorStateOptions.ServiceCollection;
@@ -141,7 +141,7 @@ public static class ServiceCollectionExtensions
     serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
     serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest>, JumpToStateHandler>();
     serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
-    serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
+    serviceCollection.AddScoped(serviceProvider => (IReduxDevToolsStore)serviceProvider.GetRequiredService<IStore>());
 
     serviceCollection.AddSingleton(reduxDevToolsOptions);
 
