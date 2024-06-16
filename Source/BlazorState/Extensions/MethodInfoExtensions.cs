@@ -8,7 +8,7 @@ public static class MethodInfoExtensions
 {
   public static async Task<object> InvokeAsync(this MethodInfo methodInfo, object @object, params object[] parameters)
   {
-    dynamic awaitable = methodInfo.Invoke(@object, parameters);
+    dynamic awaitable = methodInfo.Invoke(@object, parameters) ?? throw new InvalidOperationException();
     await awaitable;
     return awaitable.GetAwaiter().GetResult();
   }
