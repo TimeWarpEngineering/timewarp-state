@@ -3,7 +3,7 @@ namespace TimeWarp.Features.JavaScriptInterop;
 public class JsonRequestHandler
 {
   private readonly JsonSerializerOptions JsonSerializerOptions;
-  private readonly IJSRuntime JSRuntime;
+  private readonly IJSRuntime JsRuntime;
   private readonly ILogger Logger;
   private readonly IMediator Mediator;
 
@@ -18,7 +18,7 @@ public class JsonRequestHandler
     ArgumentNullException.ThrowIfNull(logger);
     Logger = logger;
     Mediator = mediator;
-    JSRuntime = jsRuntime;
+    JsRuntime = jsRuntime;
     JsonSerializerOptions = blazorStateOptions.JsonSerializerOptions;
     Logger.LogDebug
     (
@@ -34,7 +34,7 @@ public class JsonRequestHandler
   /// <param name="requestTypeAssemblyQualifiedName"></param>
   /// <param name="requestAsJson"></param>
   [JSInvokable]
-  public Task Handle(string requestTypeAssemblyQualifiedName, string requestAsJson = null)
+  public Task Handle(string requestTypeAssemblyQualifiedName, string? requestAsJson = null)
   {
     if (string.IsNullOrWhiteSpace(requestTypeAssemblyQualifiedName))
       throw new ArgumentException("was Null or empty", nameof(requestTypeAssemblyQualifiedName));
@@ -42,7 +42,7 @@ public class JsonRequestHandler
     Logger.LogDebug
     (
       EventIds.JsonRequestReceived,
-      "Handling request of type: {aRequestTypeAssemblyQualifiedName}: {aRequestAsJson}",
+      "Handling request of type: {requestTypeAssemblyQualifiedName}: {requestAsJson}",
       requestTypeAssemblyQualifiedName,
       requestAsJson
     );
@@ -70,7 +70,7 @@ public class JsonRequestHandler
       instance = JsonSerializer.Deserialize(requestAsJson, requestType, JsonSerializerOptions) ?? throw new InvalidOperationException("Deserialization resulted in a null object.");
     }
     
-    Task<object> result = Mediator.Send(instance);
+    Task<object?> result = Mediator.Send(instance);
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
   }
@@ -78,7 +78,7 @@ public class JsonRequestHandler
   public ValueTask<object> InitAsync()
   {
     Logger.LogDebug(EventIds.JsonRequestHandler_Initializing, "Initializing");
-    const string InitializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-    return JSRuntime.InvokeAsync<object>(InitializeJavaScriptInteropName, DotNetObjectReference.Create(this));
+    const string initializeJavaScriptInteropName = "InitializeJavaScriptInterop";
+    return JsRuntime.InvokeAsync<object>(initializeJavaScriptInteropName, DotNetObjectReference.Create(this));
   }
 }
