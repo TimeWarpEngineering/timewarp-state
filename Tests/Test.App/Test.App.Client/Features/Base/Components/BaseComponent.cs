@@ -11,7 +11,7 @@ using CloneTest;
 /// But would be required to properly implement the required interfaces.
 /// one could conditionally inherit from BaseComponent for production build.
 /// </remarks>
-public abstract class BaseComponent : BlazorStateDevToolsComponent
+public abstract class BaseComponent : TimeWarpStateDevToolsComponent
 {
   protected ApplicationState ApplicationState => GetState<ApplicationState>();
   internal BlueState BlueState => GetState<BlueState>();

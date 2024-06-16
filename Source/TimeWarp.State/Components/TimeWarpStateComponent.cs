@@ -5,7 +5,7 @@ namespace TimeWarp.State;
 ///   And exposes StateHasChanged
 /// </summary>
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
-public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
+public class TimeWarpStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
   [Inject] private IStore Store { get; set; } = null!;
   [Inject] protected IMediator Mediator { get; set; } = null!;
@@ -56,7 +56,7 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
 
   private bool HasRendered;
 
-  public BlazorStateComponent()
+  public TimeWarpStateComponent()
   {
     string name = GetType().Name;
     int count = InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);

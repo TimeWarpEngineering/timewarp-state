@@ -9,7 +9,7 @@ namespace TimeWarp.Features.ReduxDevTools;
 /// They won't be forced to use this one.
 /// C# 8 with default implementations of interfaces will be quite tempting to solve this.
 /// </remarks>
-public class BlazorStateDevToolsComponent : BlazorStateComponent,
+public class TimeWarpStateDevToolsComponent : TimeWarpStateComponent,
   IDevToolsComponent
 {
   protected readonly RenderFragment RenderModeDisplay;
@@ -20,7 +20,7 @@ public class BlazorStateDevToolsComponent : BlazorStateComponent,
   }
   
   protected string RenderModeDisplayString => $"CurrentRenderMode: {CurrentRenderMode}\nConfiguredRenderMode: {ConfiguredRenderMode}";
-  protected BlazorStateDevToolsComponent()
+  protected TimeWarpStateDevToolsComponent()
   {
     RenderModeDisplay = builder =>
     {
