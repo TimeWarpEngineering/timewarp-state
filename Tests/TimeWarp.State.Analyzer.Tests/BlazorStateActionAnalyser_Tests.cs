@@ -1,5 +1,5 @@
 // ReSharper disable InconsistentNaming
-namespace BlazorStateActionAnalyzer_;
+namespace TimeWarpStateActionAnalyzer_;
 
 public class Should_Trigger_TW0001
 {
