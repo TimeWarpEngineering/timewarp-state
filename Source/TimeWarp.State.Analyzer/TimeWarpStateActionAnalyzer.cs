@@ -35,7 +35,7 @@ public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
     new
     (
         id: DebugDiagnosticId,
-        title: "BlazorStateAnalyzerDebug",
+        title: "TimeWarpStateAnalyzerDebug",
         messageFormat: "{0}",
         category: "Debug",
         defaultSeverity: DiagnosticSeverity.Info,
