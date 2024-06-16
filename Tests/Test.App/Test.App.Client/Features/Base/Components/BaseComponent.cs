@@ -4,7 +4,7 @@ using CloneTest;
 
 /// <summary>
 /// Makes access to the State a little easier and by inheriting from
-/// BlazorStateDevToolsComponent it allows for ReduxDevTools operation.
+/// TimeWarpStateDevToolsComponent it allows for ReduxDevTools operation.
 /// </summary>
 /// <remarks>
 /// In production one would NOT be required to use these base components

@@ -3,7 +3,7 @@ namespace Test.App.Client.Features.Base.Components;
 
 /// <summary>
 /// Makes access to the State a little easier and by inheriting from
-/// BlazorStateDevToolsComponent it allows for ReduxDevTools operation.
+/// TimeWarpStateDevToolsInputComponent it allows for ReduxDevTools operation.
 /// </summary>
 /// <remarks>
 /// In production one would NOT be required to use these base components

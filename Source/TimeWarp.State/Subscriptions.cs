@@ -4,13 +4,13 @@ public class Subscriptions
 {
   private readonly ILogger Logger;
 
-  private readonly List<Subscription> BlazorStateComponentReferencesList;
+  private readonly List<Subscription> TimeWarpStateComponentReferencesList;
 
   public Subscriptions(ILogger<Subscriptions> logger)
   {
     Logger = logger;
     Logger.LogDebug(EventIds.Subscriptions_Initializing, "constructing");
-    BlazorStateComponentReferencesList = new List<Subscription>();
+    TimeWarpStateComponentReferencesList = new List<Subscription>();
   }
 
   public Subscriptions Add<T>(ITimeWarpStateComponent timeWarpStateComponent)
@@ -23,7 +23,7 @@ public class Subscriptions
   {
 
     // Add only once.
-    if (!BlazorStateComponentReferencesList.Any(subscription => subscription.StateType == type && subscription.ComponentId == timeWarpStateComponent.Id))
+    if (!TimeWarpStateComponentReferencesList.Any(subscription => subscription.StateType == type && subscription.ComponentId == timeWarpStateComponent.Id))
     {
       Logger.LogDebug
       (
@@ -38,7 +38,7 @@ public class Subscriptions
         timeWarpStateComponent.Id,
         new WeakReference<ITimeWarpStateComponent>(timeWarpStateComponent));
 
-      BlazorStateComponentReferencesList.Add(subscription);
+      TimeWarpStateComponentReferencesList.Add(subscription);
     }
 
     return this;
@@ -47,20 +47,20 @@ public class Subscriptions
   public override bool Equals(object? aObject) =>
     aObject is Subscriptions subscriptions &&
     EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) &&
-    EqualityComparer<List<Subscription>>.Default.Equals(BlazorStateComponentReferencesList, subscriptions.BlazorStateComponentReferencesList);
+    EqualityComparer<List<Subscription>>.Default.Equals(TimeWarpStateComponentReferencesList, subscriptions.TimeWarpStateComponentReferencesList);
 
-  public override int GetHashCode() => HashCode.Combine(Logger, BlazorStateComponentReferencesList);
+  public override int GetHashCode() => HashCode.Combine(Logger, TimeWarpStateComponentReferencesList);
 
   public Subscriptions Remove(ITimeWarpStateComponent timeWarpStateComponent)
   {
     Logger.LogDebug
     (
       EventIds.Subscriptions_RemovingComponentSubscriptions,
-      "Removing Subscription for {aBlazorStateComponent_Id}",
+      "Removing Subscription for {timeWarpStateComponent_Id}",
       timeWarpStateComponent.Id
     );
 
-    BlazorStateComponentReferencesList.RemoveAll(record => record.ComponentId == timeWarpStateComponent.Id);
+    TimeWarpStateComponentReferencesList.RemoveAll(record => record.ComponentId == timeWarpStateComponent.Id);
 
     return this;
   }
@@ -84,10 +84,10 @@ public class Subscriptions
   /// <param name="type"></param>
   public void ReRenderSubscribers(Type type)
   {
-    IEnumerable<Subscription> subscriptions = BlazorStateComponentReferencesList.Where(record => record.StateType == type);
+    IEnumerable<Subscription> subscriptions = TimeWarpStateComponentReferencesList.Where(record => record.StateType == type);
     foreach (Subscription subscription in subscriptions.ToList())
     {
-      if (subscription.BlazorStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
+      if (subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
       {
         Logger.LogDebug
         (
@@ -111,24 +111,24 @@ public class Subscriptions
           subscription.StateType.Name
         );
 
-        BlazorStateComponentReferencesList.Remove(subscription);
+        TimeWarpStateComponentReferencesList.Remove(subscription);
       }
     }
   }
 
   private readonly struct Subscription : IEquatable<Subscription>
   {
-    public WeakReference<ITimeWarpStateComponent> BlazorStateComponentReference { get; }
+    public WeakReference<ITimeWarpStateComponent> TimeWarpStateComponentReference { get; }
 
     public string ComponentId { get; }
 
     public Type StateType { get; }
 
-    public Subscription(Type stateType, string componentId, WeakReference<ITimeWarpStateComponent> blazorStateComponentReference)
+    public Subscription(Type stateType, string componentId, WeakReference<ITimeWarpStateComponent> timeWarpStateComponentReference)
     {
       StateType = stateType;
       ComponentId = componentId;
-      BlazorStateComponentReference = blazorStateComponentReference;
+      TimeWarpStateComponentReference = timeWarpStateComponentReference;
     }
 
     public static bool operator !=(Subscription leftSubscription, Subscription rightSubscription) => !(leftSubscription == rightSubscription);
@@ -138,7 +138,7 @@ public class Subscriptions
     public bool Equals(Subscription subscription) =>
       EqualityComparer<Type>.Default.Equals(StateType, subscription.StateType) &&
       ComponentId == subscription.ComponentId &&
-      EqualityComparer<WeakReference<ITimeWarpStateComponent>>.Default.Equals(BlazorStateComponentReference, subscription.BlazorStateComponentReference);
+      EqualityComparer<WeakReference<ITimeWarpStateComponent>>.Default.Equals(TimeWarpStateComponentReference, subscription.TimeWarpStateComponentReference);
 
     public override bool Equals(object? aObject) => aObject is Subscription subscription && this.Equals(subscription);
 
