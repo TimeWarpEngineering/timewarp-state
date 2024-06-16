@@ -44,7 +44,7 @@ public class Subscriptions
     return this;
   }
 
-  public override bool Equals(object aObject) =>
+  public override bool Equals(object? aObject) =>
     aObject is Subscriptions subscriptions &&
     EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) &&
     EqualityComparer<List<Subscription>>.Default.Equals(BlazorStateComponentReferencesList, subscriptions.BlazorStateComponentReferencesList);
@@ -87,7 +87,7 @@ public class Subscriptions
     IEnumerable<Subscription> subscriptions = BlazorStateComponentReferencesList.Where(record => record.StateType == type);
     foreach (Subscription subscription in subscriptions.ToList())
     {
-      if (subscription.BlazorStateComponentReference.TryGetTarget(out IBlazorStateComponent target))
+      if (subscription.BlazorStateComponentReference.TryGetTarget(out IBlazorStateComponent? target))
       {
         Logger.LogDebug
         (
@@ -140,7 +140,7 @@ public class Subscriptions
       ComponentId == subscription.ComponentId &&
       EqualityComparer<WeakReference<IBlazorStateComponent>>.Default.Equals(BlazorStateComponentReference, subscription.BlazorStateComponentReference);
 
-    public override bool Equals(object aObject) => this.Equals((Subscription)aObject);
+    public override bool Equals(object? aObject) => aObject is Subscription subscription && this.Equals(subscription);
 
     public override int GetHashCode() => ComponentId.GetHashCode();
   }
