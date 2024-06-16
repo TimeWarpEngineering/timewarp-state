@@ -28,11 +28,17 @@ TimeWarp.State.Plus extends Blazor-State with additional, features, middleware a
 Example:
 
 ```csharp
+// Register the required services in Program.cs
+// serviceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PersistentStatePostProcessor<,>));
+// serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
+
+
 [PersistentState(PersistentStateMethod.LocalStorage)]
 public partial class Counter2State : State<Counter2State>
 {
 // State implementation
 }
+
 ```
 
 ## Available Components

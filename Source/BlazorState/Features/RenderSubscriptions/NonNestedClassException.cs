@@ -1,4 +1,3 @@
-#nullable enable
 namespace TimeWarp.Features.RenderSubscriptions;
 
 public class NonNestedClassException : ArgumentException

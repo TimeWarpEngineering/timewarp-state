@@ -8,11 +8,25 @@
   /// <summary>
   /// The render mode that is configured for the component.
   /// </summary>
-  [Parameter] public string ConfiguredRenderMode { get; set; }
-  
-  
+  [Parameter, EditorRequired] public string ConfiguredRenderMode { get; set; } = null!;
+
+
   /// <summary>
   /// The render mode that is currently being used by the component.
   /// </summary>
-  [Parameter] public string CurrentRenderMode { get; set; }
+  [Parameter, EditorRequired] public string CurrentRenderMode { get; set; } = null!;
+
+  /// <inheritdoc />
+  protected override void OnParametersSet()
+  {
+    base.OnParametersSet();
+    if(ConfiguredRenderMode == null)
+    {
+      throw new ArgumentNullException(nameof(ConfiguredRenderMode));
+    }
+    if(CurrentRenderMode == null)
+    {
+      throw new ArgumentNullException(nameof(CurrentRenderMode));
+    }
+  }
 }

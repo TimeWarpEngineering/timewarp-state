@@ -25,7 +25,7 @@ public partial class RouteState
           string currentUri = NavigationManager.Uri;
 
           string title = await JsRuntime.InvokeAsync<string>("eval", cancellationToken, "document.title");
-          if (RouteState.RouteStack.TryPeek(out RouteInfo routeInfo) && routeInfo.Url == currentUri)
+          if (RouteState.RouteStack.TryPeek(out RouteInfo? routeInfo) && routeInfo.Url == currentUri)
           {
             // Update Title
             RouteState.RouteStack.Pop();

@@ -1,4 +1,3 @@
-#nullable enable
 namespace TimeWarp.Features.StateTransactions;
 
 /// <summary>
@@ -87,10 +86,10 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       );
 
       var exceptionNotification = new ExceptionNotification
-      {
-        RequestName = nameof(StateTransactionBehavior<TRequest, TResponse>),
-        Exception = exception
-      };
+      (
+        requestName: nameof(StateTransactionBehavior<TRequest, TResponse>),
+        exception: exception
+      );
 
       await Publisher.Publish(exceptionNotification, cancellationToken);
       return default!; // It can be null, but we don't care since MediatR handles null values gracefully.

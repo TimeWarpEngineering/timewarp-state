@@ -7,6 +7,21 @@ namespace BlazorState;
 /// <remarks>Implements IBlazorStateComponent by Injecting</remarks>
 public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComponent
 {
+  [Inject] private IStore Store { get; set; } = null!;
+  [Inject] protected IMediator Mediator { get; set; } = null!;
+  
+  /// <summary>
+  ///   Maintains all components that subscribe to a State.
+  ///   Is updated by using the GetState method
+  /// </summary>
+  [Inject] public Subscriptions Subscriptions { get; set; } = null!;
+  
+  
+  /// <summary>
+  ///   Allows for the Assigning of a value one can use to select an element during automated testing.
+  /// </summary>
+  [Parameter] public string? TestId { get; set; }
+  
   private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
 
   private static readonly ConcurrentDictionary<Type, string> ConfiguredRenderModeCache = new();
@@ -20,14 +35,15 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
       foreach (object attribute in attributes)
       {
         // Check if the type name of the attribute contains the expected name.
-        if (attribute.GetType().Name.Contains("PrivateComponentRenderModeAttribute"))
+        Type attributeType = attribute.GetType();
+        if (attributeType.Name.Contains("PrivateComponentRenderModeAttribute"))
         {
           // Try to get the 'Mode' property value of the attribute.
-          PropertyInfo modeProperty = attribute.GetType().GetProperty("Mode");
+          PropertyInfo? modeProperty = attributeType.GetProperty("Mode");
           if (modeProperty != null)
           {
             // Use dynamic to bypass compile-time type checking
-            dynamic modeValue = modeProperty.GetValue(attribute);
+            dynamic? modeValue = modeProperty.GetValue(attribute);
             // Return the type name of the Mode property's value.
             return modeValue == null ? "None" : modeValue.GetType().Name;
           }
@@ -47,25 +63,11 @@ public class BlazorStateComponent : ComponentBase, IDisposable, IBlazorStateComp
 
     Id = $"{name}-{count}";
   }
-
-  /// <summary>
-  ///   Allows for the Assigning of a value one can use to select an element during automated testing.
-  /// </summary>
-  [Parameter] public string TestId { get; set; }
   
   /// <summary>
   ///   A generated unique Id based on the Class name and number of times they have been created
   /// </summary>
   public string Id { get; }
-  
-  [Inject] private IStore Store { get; set; } = null!;
-  [Inject] protected IMediator Mediator { get; set; } = null!;
-  
-  /// <summary>
-  ///   Maintains all components that subscribe to a State.
-  ///   Is updated by using the GetState method
-  /// </summary>
-  [Inject] public Subscriptions Subscriptions { get; set; }
   
   /// <summary>
   ///   Indicates if the component is being prerendered.

@@ -7,6 +7,7 @@
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>true</IncludeBuildOutput>
     <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <!-- End Blazor Library Template parameters-->
 

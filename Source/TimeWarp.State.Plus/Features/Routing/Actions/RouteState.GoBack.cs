@@ -30,17 +30,16 @@ public partial class RouteState
       public override Task Handle(Action action, CancellationToken cancellationToken)
       {
         if (RouteState.IsRouteStackEmpty) return Task.CompletedTask;
-
-        // RouteState.GoingBack = true;
-        // Pop off the ones we don't want
-        RouteInfo target = null;
+        
+        // Pop until we reach the one we want or the stack is empty
+        RouteInfo target = null!;
         for (int i = 0; i <= action.Amount; i++) 
         {
           target = RouteState.RouteStack.Pop();
           if (RouteState.IsRouteStackEmpty) break;
         }
-        // Navigate to the one we do want.
-        NavigationManager.NavigateTo(target!.Url);
+
+        NavigationManager.NavigateTo(target.Url);
         return Task.CompletedTask;
       }
     }

@@ -1,7 +1,7 @@
 ﻿@namespace TimeWarp.Features.Developer
 @code {
 
-  [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; }
+  [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; } = null!;
 
   /// <inheritdoc />
   protected override async Task OnAfterRenderAsync(bool firstRender)

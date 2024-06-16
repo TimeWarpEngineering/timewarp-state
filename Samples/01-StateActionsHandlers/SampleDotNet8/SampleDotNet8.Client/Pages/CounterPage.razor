@@ -33,6 +33,6 @@ else
   <button class="btn btn-primary" @onclick="IncrementCount2">Click me</button>
 }
 
-<TimeWarp.Features.ReduxDevTools.Components.ReduxDevTools />
-<TimeWarp.Features.JavaScriptInterop.Components.TimeWarpJavaScriptInterop />
-<TimeWarp.Features.Routing.Components.TimeWarpNavigation />
+<TimeWarp.Features.Developer.ReduxDevTools @rendermode=InteractiveAuto />
+<TimeWarp.Features.JavaScriptInterop.TimeWarpJavaScriptInterop @rendermode=InteractiveAuto />
+<TimeWarp.Features.Routing.TimeWarpPageRenderNotifier @rendermode=InteractiveAuto Nonce=@Guid.NewGuid() />

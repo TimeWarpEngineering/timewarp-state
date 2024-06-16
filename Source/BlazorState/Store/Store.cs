@@ -66,16 +66,27 @@ internal partial class Store : IStore
   {
     using (Logger.BeginScope(nameof(GetState)))
     {
-      string className = GetType().Name;
       string typeName = stateType.FullName ?? throw new InvalidOperationException();
 
-      if (!States.TryGetValue(typeName, out IState state))
+      if (!States.TryGetValue(typeName, out IState? state))
       {
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
         state = (IState)ServiceProvider.GetRequiredService(stateType);
         state.Initialize();
         States.Add(typeName, state);
-        Publisher.Publish(new StateInitializedNotification(stateType)); // TODO: This is NOT await by intention, double check this is good idea.  I don't want this method async.
+        
+        // Fire-and-forget publishing the state initialization notification with exception handling
+        Task.Run(async () =>
+        {
+          try
+          {
+            await Publisher.Publish(new StateInitializedNotification(stateType));
+          }
+          catch (Exception ex)
+          {
+            Logger.LogError(ex, "Error occurred while publishing state initialization notification.");
+          }
+        });
       }
       else
         Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);

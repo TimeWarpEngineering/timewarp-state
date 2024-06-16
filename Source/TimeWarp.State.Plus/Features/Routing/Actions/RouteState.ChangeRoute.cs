@@ -6,6 +6,10 @@ public partial class RouteState
   {
     public class Action : IAction
     {
+      public Action(string newRoute) 
+      {
+        NewRoute = newRoute;
+      }
       public string NewRoute { get; init; }
     }
 

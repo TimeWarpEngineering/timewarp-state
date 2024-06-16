@@ -1,5 +1,4 @@
-﻿#nullable enable
-namespace BlazorState.Extensions;
+﻿namespace BlazorState.Extensions;
 
 public static class TypeExtensions
 {

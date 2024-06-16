@@ -2,8 +2,12 @@ namespace TimeWarp.Features.StateTransactions;
 
 public class ExceptionNotification : INotification
 {
-  //public TRequest Request { get; set; }
-  public string RequestName { get; set; }
+  public ExceptionNotification(string requestName, Exception exception)
+  {
+    RequestName = requestName;
+    Exception = exception;
+  }
+  public string RequestName { get; }
 
-  public Exception Exception { get; init; }
+  public Exception Exception { get; }
 }
