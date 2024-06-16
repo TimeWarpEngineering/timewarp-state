@@ -26,7 +26,7 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
   {
     // Need an HttpClient to talk to the Server side configured before calling AddBlazorState.
     serviceCollection.AddSingleton(serverHttpClient);
-    serviceCollection.AddBlazorState
+    serviceCollection.AddTimeWarpState
     (
       options => options.Assemblies =
         new[] { typeof(Test.App.Client.Program).GetTypeInfo().Assembly }

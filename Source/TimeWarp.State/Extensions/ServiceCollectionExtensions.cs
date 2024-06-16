@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensions
   /// The order of registration matters.
   /// If the user wants to change the order they can configure themselves vs using this extension
   /// </remarks>
-  public static IServiceCollection AddBlazorState
+  public static IServiceCollection AddTimeWarpState
   (
     this IServiceCollection serviceCollection,
     Action<BlazorStateOptions>? configureBlazorStateOptionsAction = null

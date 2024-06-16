@@ -16,7 +16,7 @@ public class Program
     serviceCollection.AddBlazoredSessionStorage();
     serviceCollection.AddBlazoredLocalStorage();
 
-    serviceCollection.AddBlazorState
+    serviceCollection.AddTimeWarpState
     (
       options =>
       {
