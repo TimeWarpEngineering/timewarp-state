@@ -1,10 +1,10 @@
 Push-Location $PSScriptRoot
 try {
     # Define the project, package, and source paths.
-    $analyzerPath = "./Source/TimeWarpStateAnalyzer/TimeWarpStateAnalyzer.csproj"
-    $projectPath = "./Source/TimeWarpState/TimeWarpState.csproj" # <path to your .csproj file>
+    $analyzerPath = "./Source/TimeWarpStateAnalyzer/TimeWarp.State.Analyzer.csproj"
+    $projectPath = "./Source/TimeWarpState/TimeWarp.State.csproj" # <path to your .csproj file>
     $tutorialPath = "./Samples/01-StateActionsHandlers/Sample/Sample.sln"
-    $analyzerTestPath = "./Tests/TimeWarpStateAnalyzerTest/TimeWarpStateAnalyzerTest.csproj"
+    $analyzerTestPath = "./Tests/TimeWarpStateAnalyzerTest/TimeWarp.State.Analyzer.Tests.csproj"
     $packageOutputPath = "./Nuget" # <path where you want the .nupkg file to go>
     $localSourcePath = "C:\LocalNugetFeed" # <path to your local NuGet source>
     $nugetConfigPath = "./Samples/01-StateActionsHandlers/Sample/nuget.config"
