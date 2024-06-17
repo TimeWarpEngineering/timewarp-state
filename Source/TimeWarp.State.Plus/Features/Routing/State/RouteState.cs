@@ -1,7 +1,7 @@
 namespace TimeWarp.Features.Routing;
 
 /// <summary>
-/// Maintain the Route in Blazor-State
+/// Maintain the Route in TimeWarp.State
 /// </summary>
 public partial class RouteState : State<RouteState>
 {

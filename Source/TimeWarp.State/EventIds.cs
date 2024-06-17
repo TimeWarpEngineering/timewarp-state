@@ -46,7 +46,7 @@ internal class EventIds
   public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(ReduxDevToolsBehavior_Constructing));
   public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
 
-  // Store - Blazor State Specific
+  // Store - TimeWarp State Specific
   public static readonly EventId Store_Initializing = new(100, nameof(Store_Initializing));
   public static readonly EventId Store_GetState = new(101, nameof(Store_GetState));
   public static readonly EventId Store_CreateState = new(102, nameof(Store_CreateState));
@@ -56,7 +56,7 @@ internal class EventIds
   public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
   public static readonly EventId LoadStateFromJson = new(105, nameof(LoadStateFromJson));
 
-  // Subscriptions - Blazor State Specific
+  // Subscriptions - TimeWarp State Specific
   public static readonly EventId Subscriptions_Initializing = new(300, nameof(Subscriptions_Initializing));
   public static readonly EventId Subscriptions_Adding = new(301, nameof(Subscriptions_Adding));
   public static readonly EventId Subscriptions_RemovingComponentSubscriptions = new(302, nameof(Subscriptions_RemovingComponentSubscriptions));

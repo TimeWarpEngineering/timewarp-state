@@ -1,5 +1,5 @@
 ---
-uid: BlazorState:AddReduxDevTools.md
+uid: TimeWarpState:AddReduxDevTools.md
 title: Add Redux Dev Tools
 ---
 
@@ -8,12 +8,12 @@ title: Add Redux Dev Tools
 [ReduxDevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) are a chrome extension that let you view the `Action`s and `State` before and after each `Action` is handled.
 This is quite handy for debugging.
 
-### Enable in Blazor-State
+### Enable in TimeWarp.State
 
 > [!WARNING]
 > Redux Dev Tools should NOT be enabled in production.
 
-Redux Dev Tools are disabled by default.  Update the options passed to the `AddBlazorState` extension method to set `UseReduxDevToolsBehavior` to true, as show here in the sample application:
+Redux Dev Tools are disabled by default.  Update the options passed to the `AddTimeWarpState` extension method to set `UseReduxDevToolsBehavior` to true, as show here in the sample application:
 
 [!code-csharp[Startup](../../Samples/01-StateActionsHandlers/Sample/Client/Program.cs?highlight=16 "Code Link")]
 

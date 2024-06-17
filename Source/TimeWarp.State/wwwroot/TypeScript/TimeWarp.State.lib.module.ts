@@ -1,10 +1,10 @@
 ﻿// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
-import {blazorState} from './BlazorState.js';
+import {timeWarpState} from './TimeWarpState.js';
 import {ReduxDevTools} from './ReduxDevTools.js';
 import {log, LogAction} from './Logger.js'
 import {
-  BlazorStateName,
+  TimeWarpStateName,
   InitializeJavaScriptInteropName,
   ReduxDevToolsFactoryName,
   ReduxDevToolsName,
@@ -13,7 +13,7 @@ import { DotNetReference } from './DotNetReference.js';
 
 function InitializeJavaScriptInterop(JsonRequestHandler: DotNetReference) {
   log("TimeWarp.State","InitializeJavaScriptInterop","info");
-  blazorState.jsonRequestHandler = JsonRequestHandler;
+  timeWarpState.jsonRequestHandler = JsonRequestHandler;
 }
 
 function ReduxDevToolsFactory(reduxDevToolsOptions: any): boolean {
@@ -21,7 +21,7 @@ function ReduxDevToolsFactory(reduxDevToolsOptions: any): boolean {
 
   if (!window[ReduxDevToolsName]) {
     const reduxDevTools = new ReduxDevTools(reduxDevToolsOptions);
-    blazorState.reduxDevTools = reduxDevTools;
+    timeWarpState.reduxDevTools = reduxDevTools;
     window[ReduxDevToolsName] = reduxDevTools;
   }
 
@@ -32,7 +32,7 @@ function initializeEnvironment() {
   log("TimeWarp.State","initializeEnvironment","info", LogAction.Begin);
   window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
   window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
-  window[BlazorStateName] = blazorState;
+  window[TimeWarpStateName] = timeWarpState;
   log("TimeWarp.State","initializeEnvironment","info", LogAction.End);
 }
 

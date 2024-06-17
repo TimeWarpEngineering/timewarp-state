@@ -6,4 +6,4 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 TW0001 | TimeWarp.State | Error | TimeWarpStateActionAnalyzer
-TWD001 | Debug | Info | BlazorStateActionAnalyzer
+TWD001 | Debug | Info | TimeWarpStateActionAnalyzer

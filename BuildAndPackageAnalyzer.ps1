@@ -1,10 +1,10 @@
 Push-Location $PSScriptRoot
 try {
     # Define the project, package, and source paths.
-    $analyzerPath = "./Source/BlazorStateAnalyzer/BlazorStateAnalyzer.csproj"
-    $projectPath = "./Source/BlazorState/BlazorState.csproj" # <path to your .csproj file>
+    $analyzerPath = "./Source/TimeWarpStateAnalyzer/TimeWarpStateAnalyzer.csproj"
+    $projectPath = "./Source/TimeWarpState/TimeWarpState.csproj" # <path to your .csproj file>
     $tutorialPath = "./Samples/01-StateActionsHandlers/Sample/Sample.sln"
-    $analyzerTestPath = "./Tests/BlazorStateAnalyzerTest/BlazorStateAnalyzerTest.csproj"
+    $analyzerTestPath = "./Tests/TimeWarpStateAnalyzerTest/TimeWarpStateAnalyzerTest.csproj"
     $packageOutputPath = "./Nuget" # <path where you want the .nupkg file to go>
     $localSourcePath = "C:\LocalNugetFeed" # <path to your local NuGet source>
     $nugetConfigPath = "./Samples/01-StateActionsHandlers/Sample/nuget.config"
@@ -54,8 +54,8 @@ try {
     Write-Host "#### Building Sample should be no compiler errors."
     dotnet build $tutorialPath --configuration Release /p:UseSharedCompilation=false 
 
-    # Build the BlazorStateAnalyzerTest App and we should have 3 errors
-    Write-Host "#### Build the BlazorStateAnalyzerTest App and we should have 3 errors"
+    # Build the TimeWarpStateAnalyzerTest App and we should have 3 errors
+    Write-Host "#### Build the TimeWarpStateAnalyzerTest App and we should have 3 errors"
     dotnet build $analyzerTestPath --configuration Release /p:UseSharedCompilation=false
 
 }

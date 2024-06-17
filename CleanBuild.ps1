@@ -1,12 +1,12 @@
 Push-Location $PSScriptRoot
 try {
   cleanup -y
-  Remove-Item ".\Source\BlazorState\wwwroot\js" -Recurse -Force
-  # Push-Location ".\Source\BlazorState"
+  Remove-Item ".\Source\TimeWarpState\wwwroot\js" -Recurse -Force
+  # Push-Location ".\Source\TimeWarpState"
   # npm install
   # Pop-Location
   dotnet build
-  Get-ChildItem ".\Source\BlazorState\wwwroot\js"
+  Get-ChildItem ".\Source\TimeWarpState\wwwroot\js"
 }
 finally {
   Pop-Location

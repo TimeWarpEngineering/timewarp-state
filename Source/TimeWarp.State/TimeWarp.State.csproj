@@ -12,10 +12,10 @@
   <!-- End Blazor Library Template parameters-->
 
   <PropertyGroup>
-    <Title>TimeWarp Blazor State</Title>
+    <Title>TimeWarp State</Title>
     <Description>A Blazor state management library by TimeWarp</Description>
-    <PackageId>Blazor-State</PackageId>
-    <AssemblyName>Blazor-State</AssemblyName>
+    <PackageId>TimeWarp.State</PackageId>
+    <AssemblyName>TimeWarp.State</AssemblyName>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

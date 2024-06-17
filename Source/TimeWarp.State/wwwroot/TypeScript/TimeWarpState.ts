@@ -3,7 +3,7 @@ import {DotNetReference} from './DotNetReference';
 import {log} from './Logger.js';
 import {ReduxDevTools} from "./ReduxDevTools";
 
-export class BlazorState {
+export class TimeWarpState {
 
   // Holds the .NET instance of JsonRequestHandler
   jsonRequestHandler: DotNetReference;
@@ -32,4 +32,4 @@ export class BlazorState {
   }
 }
 
-export const blazorState = new BlazorState();
+export const timeWarpState = new TimeWarpState();

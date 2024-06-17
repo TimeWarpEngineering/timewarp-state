@@ -1,4 +1,4 @@
-﻿export const BlazorStateName: string = "BlazorState";
+﻿export const TimeWarpStateName: string = "TimeWarpState";
 export const DevToolsName: string = "devTools"
 export const InitializeJavaScriptInteropName: string = "InitializeJavaScriptInterop";
 export const JsonRequestHandlerMethodName: string = "Handle";

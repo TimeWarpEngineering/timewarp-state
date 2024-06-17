@@ -1,4 +1,4 @@
-﻿import { blazorState, BlazorState } from './BlazorState.js';
+﻿import {timeWarpState, TimeWarpState} from './TimeWarpState.js';
 import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
 import { log } from './Logger.js';
 // import type { Config } from '@redux-devtools/extension';
@@ -13,7 +13,7 @@ export class ReduxDevTools {
   DevTools: ConnectResponse;
   Extension: ReduxDevtoolsExtension;
   Config: Config;
-  BlazorState: BlazorState;
+  TimeWarpState: TimeWarpState;
   StackTrace: string | undefined;
 
   private IsInitialized: boolean = false;
@@ -22,7 +22,7 @@ export class ReduxDevTools {
     log("ReduxDevTools", "constructor", "info");
     log("ReduxDevTools", reduxDevToolsOptions.toString(), "info");
 
-    this.BlazorState = blazorState;
+    this.TimeWarpState = timeWarpState;
     this.Config = reduxDevToolsOptions;
     if (this.Config.trace) {
       this.Config.trace = this.GetStackTraceForAction;
@@ -97,7 +97,7 @@ export class ReduxDevTools {
 
     const requestType: string = this.MapRequestType(message);
     if (requestType) { // If we don't map this type then there is nothing to dispatch just ignore.
-      this.BlazorState.DispatchRequest(requestType, message).then();
+      this.TimeWarpState.DispatchRequest(requestType, message).then();
     } else
       log("ReduxDevTools", `messages of type ${requestType} are currently not supported`, "warning");
   }
