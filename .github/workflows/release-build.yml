@@ -33,7 +33,7 @@ jobs:
 
 #      - name: Install NPM packages
 #        run: |
-#          cd Source/TimeWarpState/
+#          cd Source/TimeWarp.State/
 #          npm install
           
 #      - name: Setup .NET
@@ -41,15 +41,15 @@ jobs:
 #        with:
 #          dotnet-version: 8.0.x
 
-      - name: Build TimeWarpStateAnalyzer
+      - name: Build TimeWarp.State.Analyzer
         run: |
-          cd ${{ github.workspace }}/Source/TimeWarpStateAnalyzer/
+          cd ${{ github.workspace }}/Source/TimeWarp.State.Analyzer/
           dotnet clean --configuration Release
           dotnet build --configuration Release
   
-      - name: Build and Pack TimeWarpState
+      - name: Build and Pack TimeWarp.State
         run: |
-          cd ${{ github.workspace }}/Source/TimeWarpState/
+          cd ${{ github.workspace }}/Source/TimeWarp.State/
           dotnet clean  --configuration Release
           dotnet build --configuration Release
           dotnet pack --configuration Release
@@ -61,9 +61,9 @@ jobs:
           dotnet build --configuration Release
           dotnet pack --configuration Release
 
-      - name: Publish TimeWarpState
+      - name: Publish TimeWarp.State
         run: |
-          cd Source/TimeWarpState/bin/Release
+          cd Source/TimeWarp.State/bin/Release
           dotnet nuget push TimeWarp.State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
 
