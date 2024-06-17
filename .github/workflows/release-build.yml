@@ -64,7 +64,7 @@ jobs:
       - name: Publish TimeWarpState
         run: |
           cd Source/TimeWarpState/bin/Release
-          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          dotnet nuget push TimeWarp.State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
 
       - name: Publish TimeWarp.State.Plus
