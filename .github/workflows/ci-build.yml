@@ -32,15 +32,15 @@ jobs:
       - name: Restore Dotnet Tools
         run: dotnet tool restore
 
-      - name: Build BlazorStateAnalyzer
+      - name: Build TimeWarpStateAnalyzer
         run: |
-          cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
+          cd ${{ github.workspace }}/Source/TimeWarpStateAnalyzer/
           dotnet clean --configuration Debug
           dotnet build --configuration Debug
 
-      - name: Build and Pack BlazorState
+      - name: Build and Pack TimeWarpState
         run: |
-          cd ${{ github.workspace }}/Source/BlazorState/
+          cd ${{ github.workspace }}/Source/TimeWarpState/
           dotnet clean --configuration Debug
           dotnet build --configuration Debug
           dotnet pack --configuration Debug
@@ -64,9 +64,9 @@ jobs:
 #          dotnet restore
 #          dotnet fixie --configuration Debug
 
-      - name: BlazorStateAnalyzer.Tests
+      - name: TimeWarpStateAnalyzer.Tests
         run: |
-            cd ${{ github.workspace }}/Tests/BlazorStateAnalyzer.Tests/
+            cd ${{ github.workspace }}/Tests/TimeWarpStateAnalyzer.Tests/
             dotnet restore
             dotnet fixie --configuration Debug
 

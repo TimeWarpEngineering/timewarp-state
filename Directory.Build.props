@@ -2,8 +2,8 @@
   <!-- Set common properties regarding assembly information and nuget packages -->
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
-    <Product>Blazor State</Product>
-    <PackageVersion>11.0.0-beta.36+8.0.300</PackageVersion>
+    <Product>TimeWarp State</Product>
+    <PackageVersion>11.0.0-beta.37+8.0.300</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>Logo.png</PackageIcon>

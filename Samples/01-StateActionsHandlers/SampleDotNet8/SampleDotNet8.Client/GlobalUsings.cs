@@ -1,5 +1,5 @@
 global using Blazored.SessionStorage;
-global using BlazorState;
+global using TimeWarp.State;
 global using MediatR.Pipeline;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using System.Diagnostics.CodeAnalysis;

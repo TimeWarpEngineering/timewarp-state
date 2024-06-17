@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Source\BlazorState\BlazorState.csproj" />
+    <ProjectReference Include="..\..\..\..\Source\TimeWarp.State\TimeWarp.State.csproj" />
     <ProjectReference Include="..\Shared\Sample.Shared.csproj" />
   </ItemGroup>
 

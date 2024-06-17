@@ -33,7 +33,7 @@ jobs:
 
 #      - name: Install NPM packages
 #        run: |
-#          cd Source/BlazorState/
+#          cd Source/TimeWarpState/
 #          npm install
           
 #      - name: Setup .NET
@@ -41,15 +41,15 @@ jobs:
 #        with:
 #          dotnet-version: 8.0.x
 
-      - name: Build BlazorStateAnalyzer
+      - name: Build TimeWarpStateAnalyzer
         run: |
-          cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
+          cd ${{ github.workspace }}/Source/TimeWarpStateAnalyzer/
           dotnet clean --configuration Release
           dotnet build --configuration Release
   
-      - name: Build and Pack BlazorState
+      - name: Build and Pack TimeWarpState
         run: |
-          cd ${{ github.workspace }}/Source/BlazorState/
+          cd ${{ github.workspace }}/Source/TimeWarpState/
           dotnet clean  --configuration Release
           dotnet build --configuration Release
           dotnet pack --configuration Release
@@ -61,10 +61,10 @@ jobs:
           dotnet build --configuration Release
           dotnet pack --configuration Release
 
-      - name: Publish BlazorState
+      - name: Publish TimeWarpState
         run: |
-          cd Source/BlazorState/bin/Release
-          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          cd Source/TimeWarpState/bin/Release
+          dotnet nuget push TimeWarp.State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
 
       - name: Publish TimeWarp.State.Plus

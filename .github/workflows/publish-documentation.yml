@@ -48,7 +48,7 @@ jobs:
 
 #      - name: Install NPM packages
 #        run: |
-#          cd Source/BlazorState/
+#          cd Source/TimeWarpState/
 #          npm install
           
 #      - name: Setup .NET
@@ -63,10 +63,10 @@ jobs:
 
       - name: Build
         run: |
-          cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
+          cd ${{ github.workspace }}/Source/TimeWarpStateAnalyzer/
           dotnet clean --configuration Release
           dotnet build --configuration Release
-          cd ${{ github.workspace }}/Source/BlazorState/
+          cd ${{ github.workspace }}/Source/TimeWarpState/
           dotnet clean  --configuration Release
           dotnet build --configuration Release
 

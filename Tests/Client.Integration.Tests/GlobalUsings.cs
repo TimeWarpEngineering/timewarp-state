@@ -1,5 +1,5 @@
 global using AnyClone;
-global using BlazorState;
+global using TimeWarp.State;
 global using FluentAssertions;
 global using JetBrains.Annotations;
 global using MediatR;
