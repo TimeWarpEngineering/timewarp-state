@@ -46,7 +46,13 @@ jobs:
           cd ${{ github.workspace }}/Source/TimeWarp.State.Analyzer/
           dotnet clean --configuration Release
           dotnet build --configuration Release
-  
+
+      - name: Build TimeWarp.State.SourceGenerator
+        run: |
+          cd ${{ github.workspace }}/Source/TimeWarp.State.SourceGenerator/
+          dotnet clean --configuration Release
+          dotnet build --configuration Release  
+
       - name: Build and Pack TimeWarp.State
         run: |
           cd ${{ github.workspace }}/Source/TimeWarp.State/
