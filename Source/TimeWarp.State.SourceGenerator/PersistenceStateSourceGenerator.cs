@@ -52,17 +52,15 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
       #pragma warning disable CS1591
       namespace {{namespaceName}};
       
-      using JetBrains.Annotations;
+      using TimeWarp.Features.Persistence;
+      using TimeWarp.State;
 
       public partial class {{className}}
       {
-          [UsedImplicitly]
           public static class Load
           {
-              [UsedImplicitly]
               public class Action : IAction { }
       
-              [UsedImplicitly]
               public class Handler
               (
                 IStore store,
