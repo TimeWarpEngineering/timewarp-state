@@ -308,5 +308,5 @@ __pycache__/
 # Ignore all files in Razor Source Generators directories
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
-/Source/TimeWarpState/wwwroot/js/**
+/Source/TimeWarp.State/wwwroot/js/**
 /Tests/Test.App.EndToEnd.Tests/Output/**
