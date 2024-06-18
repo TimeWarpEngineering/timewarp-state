@@ -1,13 +1,21 @@
 ﻿namespace TimeWarp.Features.Persistence;
 
-public class PersistenceService
-(
-  ISessionStorageService SessionStorageService,
-  ILocalStorageService LocalStorageService,
-  ILogger<PersistenceService> Logger
-) : IPersistenceService
+public class PersistenceService : IPersistenceService
 {
   private readonly JsonSerializerOptions JsonSerializerOptions = new();
+  private readonly ISessionStorageService SessionStorageService;
+  private readonly ILocalStorageService LocalStorageService;
+  private readonly ILogger<PersistenceService> Logger;
+  public PersistenceService
+  (
+    ISessionStorageService sessionStorageService,
+    ILocalStorageService localStorageService,
+    ILogger<PersistenceService> logger)
+  {
+    SessionStorageService = sessionStorageService;
+    LocalStorageService = localStorageService;
+    Logger = logger;
+  }
   public async Task<object?> LoadState(Type stateType, PersistentStateMethod persistentStateMethod)
   {
     string typeName = 
