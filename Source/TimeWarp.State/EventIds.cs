@@ -12,7 +12,7 @@ internal class EventIds
   //   Routing
   // Pipeline - Middleware
   //   StateTransaction
-  public static readonly EventId StateTransactionBehavior_Initializing = new(400, nameof(StateTransactionBehavior_Initializing));
+  public static readonly EventId StateTransactionBehavior_Constructing = new(400, nameof(StateTransactionBehavior_Constructing));
   public static readonly EventId StateTransactionBehavior_Cloning = new(401, nameof(StateTransactionBehavior_Cloning));
   public static readonly EventId StateTransactionBehavior_Ignoring = new(402, nameof(StateTransactionBehavior_Ignoring));
   public static readonly EventId StateTransactionBehavior_Exception = new(403, nameof(StateTransactionBehavior_Exception));
@@ -47,10 +47,11 @@ internal class EventIds
   public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
 
   // Store - TimeWarp State Specific
-  public static readonly EventId Store_Initializing = new(100, nameof(Store_Initializing));
-  public static readonly EventId Store_GetState = new(101, nameof(Store_GetState));
-  public static readonly EventId Store_CreateState = new(102, nameof(Store_CreateState));
-  public static readonly EventId Store_SetState = new(103, nameof(Store_SetState));
+  public static readonly EventId Store_Constructing = new(100, nameof(Store_Constructing));
+  public static readonly EventId Store_Initializing = new(101, nameof(Store_Initializing));
+  public static readonly EventId Store_GetState = new(102, nameof(Store_GetState));
+  public static readonly EventId Store_CreateState = new(103, nameof(Store_CreateState));
+  public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
 
   //Store.ReduxDevTools
   public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
