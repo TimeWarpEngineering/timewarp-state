@@ -23,12 +23,20 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
   )
   {
     Logger = logger;
-    string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
-    Logger.LogDebug(EventIds.ReduxDevToolsBehavior_Constructing, "constructing {ClassName}<{RequestType},{ResponseType}>", className, typeof(TRequest).Name, typeof(TResponse).Name);
     Store = store;
     ReduxDevToolsInterop = reduxDevToolsInterop;
     ReduxDevToolsOptions = reduxDevToolsOptions;
     TraceFilterRegex = new Regex(ReduxDevToolsOptions.TraceFilterExpression);
+    
+    string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
+    Logger.LogDebug
+    (
+      EventIds.StateTransactionBehavior_Constructing,
+      "constructing {ClassName}<{RequestType},{ResponseType}>",
+      className, 
+      typeof(TRequest).Name,
+      typeof(TResponse).Name
+    );
   }
 
   public async Task<TResponse> Handle
