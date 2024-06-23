@@ -3,6 +3,7 @@ namespace TimeWarp.State;
 public interface IState
 {
   Guid Guid { get; }
+  SemaphoreSlim Semaphore { get; }
   void Initialize();
 }
 
