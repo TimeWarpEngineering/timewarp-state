@@ -23,11 +23,20 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
   )
   {
     Logger = logger;
-    Logger.LogDebug(EventIds.ReduxDevToolsBehavior_Constructing, "constructing ReduxDevToolsBehavior");
     Store = store;
     ReduxDevToolsInterop = reduxDevToolsInterop;
     ReduxDevToolsOptions = reduxDevToolsOptions;
     TraceFilterRegex = new Regex(ReduxDevToolsOptions.TraceFilterExpression);
+    
+    string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
+    Logger.LogDebug
+    (
+      EventIds.StateTransactionBehavior_Constructing,
+      "constructing {ClassName}<{RequestType},{ResponseType}>",
+      className, 
+      typeof(TRequest).Name,
+      typeof(TResponse).Name
+    );
   }
 
   public async Task<TResponse> Handle
@@ -37,11 +46,11 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     CancellationToken cancellationToken
   )
   {
-    Logger.LogDebug(EventIds.ReduxDevToolsBehavior_Begin,"{classname}: Start", GetType().Name);
+    Logger.LogDebug(EventIds.ReduxDevToolsBehavior_Begin, "{classname}: Start", GetType().Name);
 
     string? stackTrace = null;
     int maxItems = ReduxDevToolsOptions.TraceLimit == 0 ? int.MaxValue : ReduxDevToolsOptions.TraceLimit;
-    
+
     if (ReduxDevToolsOptions.Trace) stackTrace = BuildStackTrace(maxItems);
     TResponse response = await next();
 
@@ -61,7 +70,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
 
       throw;
     }
- 
+
     return response;
   }
 
@@ -69,35 +78,35 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
   {
     StringBuilder stringBuilder = new();
     return string.Join
-      (
-        "\r\n",
-        new StackTrace(fNeedFileInfo: true)
-          .GetFrames()
-          .Select
-          (
-            stackFrame =>
+    (
+      "\r\n",
+      new StackTrace(fNeedFileInfo: true)
+        .GetFrames()
+        .Select
+        (
+          stackFrame =>
+          {
+            stringBuilder.Clear();
+            stringBuilder.Append("at ");
+            stringBuilder.Append(stackFrame.GetMethod()?.DeclaringType?.FullName);
+            stringBuilder.Append('.');
+            stringBuilder.Append(stackFrame.GetMethod()?.Name);
+            stringBuilder.Append(' ');
+            if (stackFrame.GetFileName() is not null)
             {
-              stringBuilder.Clear();
-              stringBuilder.Append("at ");
-              stringBuilder.Append(stackFrame.GetMethod()?.DeclaringType?.FullName);
-              stringBuilder.Append('.');
-              stringBuilder.Append(stackFrame.GetMethod()?.Name);
-              stringBuilder.Append(' ');
-              if (stackFrame.GetFileName() is not null)
-              {
-                stringBuilder.Append('(');
-                stringBuilder.Append(stackFrame.GetFileName());
-                stringBuilder.Append(':');
-                stringBuilder.Append(stackFrame.GetFileLineNumber());
-                stringBuilder.Append(':');
-                stringBuilder.Append(stackFrame.GetFileColumnNumber());
-                stringBuilder.Append(')');
-              }
-              return stringBuilder.ToString();
+              stringBuilder.Append('(');
+              stringBuilder.Append(stackFrame.GetFileName());
+              stringBuilder.Append(':');
+              stringBuilder.Append(stackFrame.GetFileLineNumber());
+              stringBuilder.Append(':');
+              stringBuilder.Append(stackFrame.GetFileColumnNumber());
+              stringBuilder.Append(')');
             }
-          )
-          .Where(x => TraceFilterRegex.IsMatch(x))
-          .Take(maxItems)
-      );
+            return stringBuilder.ToString();
+          }
+        )
+        .Where(x => TraceFilterRegex.IsMatch(x))
+        .Take(maxItems)
+    );
   }
 }

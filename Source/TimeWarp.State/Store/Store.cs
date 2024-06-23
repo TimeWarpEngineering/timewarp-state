@@ -27,7 +27,7 @@ internal partial class Store : IStore
   )
   {
     Logger = logger;
-    Logger.LogDebug(EventIds.Store_Initializing, "constructing with guid:{Guid}", Guid);
+    Logger.LogDebug(EventIds.Store_Constructing, "constructing {StoreName} with guid:{Guid}", nameof(Store), Guid);
     ServiceProvider = serviceProvider;
     Publisher = publisher;
     TimeWarpStateOptions = timeWarpStateOptions;

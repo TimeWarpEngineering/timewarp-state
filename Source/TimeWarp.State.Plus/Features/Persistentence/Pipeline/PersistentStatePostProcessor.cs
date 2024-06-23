@@ -1,5 +1,7 @@
 namespace TimeWarp.State.Plus;
 
+using State.Extensions;
+
 public class PersistentStatePostProcessor<TRequest, TResponse>
 (
   ILogger<PersistentStatePostProcessor<TRequest, TResponse>> logger,
@@ -14,13 +16,8 @@ public class PersistentStatePostProcessor<TRequest, TResponse>
   public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
 
-    Type currentType = typeof(TRequest);
-    while (currentType.DeclaringType != null)
-    {
-      currentType = currentType.DeclaringType;
-    }
-    // currentType is now the top-level non-nested type
-
+    Type currentType = typeof(TRequest).GetEnclosingStateType();
+    
     PersistentStateAttribute? persistentStateAttribute =
       currentType.GetCustomAttribute<PersistentStateAttribute>();
       

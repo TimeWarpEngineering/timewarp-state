@@ -30,9 +30,18 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
   )
   {
     Logger = logger;
-    Logger.LogDebug(EventIds.StateTransactionBehavior_Initializing, "constructing");
     Store = store;
     Publisher = publisher;
+    
+    string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
+    Logger.LogDebug
+    (
+      EventIds.StateTransactionBehavior_Constructing,
+      "constructing {ClassName}<{RequestType},{ResponseType}>",
+      className, 
+      typeof(TRequest).Name,
+      typeof(TResponse).Name
+    );
   }
 
   public async Task<TResponse> Handle
