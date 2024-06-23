@@ -1,9 +1,13 @@
 namespace TimeWarp.State;
 
+using System.Text.Json.Serialization;
+
 public abstract class State<TState> : IState<TState>
 {
   [IgnoreDataMember]
   public Guid Guid { get; protected init; } = Guid.NewGuid();
+  
+  [JsonIgnore]
   public SemaphoreSlim Semaphore { get; }  = new(1, 1);
 
   /// <summary>
