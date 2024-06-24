@@ -70,6 +70,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\js\"/>
+    <Folder Include="wwwroot\types\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -99,7 +100,11 @@
     <Content Include="buildMultiTargeting\**" Pack="false"/>
     <Content Include="buildTransitive\**" Pack="false"/>
   </ItemGroup>
-
+  
+  
+  <ItemGroup>
+    <TypeScriptCompile Include="wwwroot\TypeScript\**\*" />
+    <TypeScriptCompile Remove="wwwroot\types\*.d.ts" />
+  </ItemGroup>
 
 </Project>
-
