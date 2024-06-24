@@ -9,6 +9,7 @@ internal partial class Store : IStore
   private readonly ILogger Logger;
   private readonly IServiceProvider ServiceProvider;
   private readonly IDictionary<string, IState> States;
+  private readonly IDictionary<string, SemaphoreSlim> Semaphores;
   private readonly IPublisher Publisher;
   private readonly TimeWarpStateOptions TimeWarpStateOptions;
 
@@ -34,6 +35,7 @@ internal partial class Store : IStore
     JsonSerializerOptions = timeWarpStateOptions.JsonSerializerOptions;
 
     States = new ConcurrentDictionary<string, IState>();
+    Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
   }
 
   /// <summary>
@@ -52,6 +54,18 @@ internal partial class Store : IStore
   /// </summary>
   public void Reset() => States.Clear();
 
+  /// <summary>
+  /// Get the Semaphore for the specific State
+  /// </summary>
+  public SemaphoreSlim GetSemaphore(Type stateType)
+  {
+    string typeName = stateType.FullName ?? throw new InvalidOperationException();
+    if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? semaphore)) return semaphore;
+    semaphore = new SemaphoreSlim(1, 1);
+    Semaphores.Add(typeName, semaphore);
+    return semaphore;
+  }
+  
   /// <summary>
   /// Set the state for specific Type
   /// </summary>

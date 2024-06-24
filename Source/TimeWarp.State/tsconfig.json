@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "declaration": true,
+    "declarationDir": "wwwroot/types",
+//    "rootDir": "./",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "typeRoots": ["./types"],                             /* Specify multiple folders that act like `./node_modules/@types`. */
+//    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "outDir": "wwwroot/js",
+    "removeComments": true,
+    "noEmitOnError": true,
+//    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */,    
+    "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
+    
+    /* Type Checking */    
+    "strict": false, // This enables a wide range of strict type-checking options.
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictFunctionTypes": false,
+    "strictBindCallApply": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "skipLibCheck": false,
+  },
+  "include": [
+    "wwwroot/TypeScript/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules", // Standard exclude, you might adjust or add more paths as needed.
+    "**/*.spec.ts", // Exclude test files if present; adjust as needed.
+    "wwwroot/js", // Exclude the output directory
+    "wwwroot/types" // Exclude the output directory
+  ]
+}
