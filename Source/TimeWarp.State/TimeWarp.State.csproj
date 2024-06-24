@@ -64,11 +64,6 @@
     <None Include="..\TimeWarp.State.Analyzer\bin\$(Configuration)\net8.0\TimeWarp.State.Analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
     <None Include="..\TimeWarp.State.SourceGenerator\bin\$(Configuration)\net8.0\TimeWarp.State.SourceGenerator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\js\"/>
-    <Folder Include="wwwroot\types\" />
-  </ItemGroup>
   
   <ItemGroup>
     <Content Include="build\**" Pack="false"/>
@@ -76,4 +71,10 @@
     <Content Include="buildTransitive\**" Pack="false"/>
   </ItemGroup>
 
+  <Target Name="RemoveTSConfigFileFromPackage" AfterTargets="CompileTypeScriptWithTSConfig">
+    <ItemGroup>
+      <Content Remove="**\tsconfig.json" />
+    </ItemGroup>
+  </Target>
+  
 </Project>
