@@ -19,7 +19,8 @@ public partial class RouteState
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
-        await RouteState.Semaphore.WaitAsync(cancellationToken);
+        SemaphoreSlim semaphoreSlim = Store.GetSemaphore(typeof(RouteState));
+        await semaphoreSlim.WaitAsync(cancellationToken);
         try
         {
           string currentUri = NavigationManager.Uri;
@@ -38,7 +39,7 @@ public partial class RouteState
         }
         finally
         {
-          RouteState.Semaphore.Release();
+          semaphoreSlim.Release();
         }
       }
     }
