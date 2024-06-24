@@ -297,7 +297,6 @@ __pycache__/
 /test/TestApp/TestApp.Client/wwwroot/timewarpstate.js
 /source/AnyClone/
 /source/TypeSupport/
-/Source/TimeWarpState/wwwroot/timewarpstate.js
 
 /StatiqDocs/output
 /TimeWarpState.sln.EasyRun.json
@@ -308,5 +307,4 @@ __pycache__/
 # Ignore all files in Razor Source Generators directories
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
-/Source/TimeWarp.State/wwwroot/js/**
 /Tests/Test.App.EndToEnd.Tests/Output/**
