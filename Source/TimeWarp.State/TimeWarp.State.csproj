@@ -78,18 +78,20 @@
     <TypeScriptModuleKind>ES2022</TypeScriptModuleKind>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptOutDir>wwwroot/js</TypeScriptOutDir>
-    <TypeScriptRemoveComments>true</TypeScriptRemoveComments>
-    <TypeScriptNoEmitOnError>true</TypeScriptNoEmitOnError>
-    <TypeScriptForceConsistentCasingInFileNames>true</TypeScriptForceConsistentCasingInFileNames>
-    <TypeScriptStrict>false</TypeScriptStrict>
-    <TypeScriptNoImplicitAny>false</TypeScriptNoImplicitAny>
-    <TypeScriptStrictNullChecks>false</TypeScriptStrictNullChecks>
-    <TypeScriptStrictFunctionTypes>false</TypeScriptStrictFunctionTypes>
-    <TypeScriptStrictBindCallApply>false</TypeScriptStrictBindCallApply>
-    <TypeScriptNoImplicitThis>false</TypeScriptNoImplicitThis>
-    <TypeScriptAlwaysStrict>false</TypeScriptAlwaysStrict>
-    <TypeScriptSkipLibCheck>false</TypeScriptSkipLibCheck>
-    <TypeScriptGeneratesDeclarations>false</TypeScriptGeneratesDeclarations>
+    <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+    <TypeScriptNoEmitOnError>True</TypeScriptNoEmitOnError>
+    <TypeScriptForceConsistentCasingInFileNames>True</TypeScriptForceConsistentCasingInFileNames>
+    <TypeScriptStrict>False</TypeScriptStrict>
+    <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
+    <TypeScriptStrictNullChecks>False</TypeScriptStrictNullChecks>
+    <TypeScriptStrictFunctionTypes>False</TypeScriptStrictFunctionTypes>
+    <TypeScriptStrictBindCallApply>False</TypeScriptStrictBindCallApply>
+    <TypeScriptNoImplicitThis>False</TypeScriptNoImplicitThis>
+    <TypeScriptAlwaysStrict>False</TypeScriptAlwaysStrict>
+    <TypeScriptSkipLibCheck>False</TypeScriptSkipLibCheck>
+    <TypeScriptGeneratesDeclarations>True</TypeScriptGeneratesDeclarations>
+    <TypeScriptDeclarationDir>wwwroot/types</TypeScriptDeclarationDir>
+    <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
   </PropertyGroup>
 
   <ItemGroup>
