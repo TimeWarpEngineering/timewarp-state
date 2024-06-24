@@ -66,6 +66,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\js\"/>
+    <Folder Include="wwwroot\types\" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <Content Include="build\**" Pack="false"/>
     <Content Include="buildMultiTargeting\**" Pack="false"/>
     <Content Include="buildTransitive\**" Pack="false"/>
