@@ -73,6 +73,12 @@ jobs:
             cd ${{ github.workspace }}/Tests/TimeWarp.State.Analyzer.Tests/
             dotnet restore
             dotnet fixie --configuration Debug
+          
+      - name: TimeWarp.State.Tests
+        run: |
+          cd ${{ github.workspace }}/Tests/TimeWarp.State.Tests/
+          dotnet restore
+          dotnet fixie --configuration Debug
 
       # End to End Tests
       - name: Test.App.EndToEnd.Tests
