@@ -30,31 +30,29 @@ jobs:
           ls ${{ github.workspace }}                
 
       - name: Restore Dotnet Tools
-        run: dotnet tool restore
-
+        run: |
+          dotnet tool restore
+          dotnet cleanup -y
+        
       - name: Build TimeWarp.State.Analyzer
         run: |
           cd ${{ github.workspace }}/Source/TimeWarp.State.Analyzer/
-          dotnet clean --configuration Debug
           dotnet build --configuration Debug
           
       - name: Build TimeWarp.State.SourceGenerator
         run: |
           cd ${{ github.workspace }}/Source/TimeWarp.State.SourceGenerator/
-          dotnet clean --configuration Debug
           dotnet build --configuration Debug          
 
       - name: Build and Pack TimeWarp.State
         run: |
           cd ${{ github.workspace }}/Source/TimeWarp.State/
-          dotnet clean --configuration Debug
           dotnet build --configuration Debug
           dotnet pack --configuration Debug
 
       - name: Build and Pack TimeWarp.State.Plus
         run: |
           cd ${{ github.workspace }}/Source/TimeWarp.State.Plus/
-          dotnet clean --configuration Debug
           dotnet build --configuration Debug
           dotnet pack --configuration Debug          
 
