@@ -6,12 +6,16 @@ public class PersistenceService : IPersistenceService
   private readonly ISessionStorageService SessionStorageService;
   private readonly ILocalStorageService LocalStorageService;
   private readonly ILogger<PersistenceService> Logger;
+  private readonly ISender Sender;
   public PersistenceService
   (
+    ISender sender,
     ISessionStorageService sessionStorageService,
     ILocalStorageService localStorageService,
-    ILogger<PersistenceService> logger)
+    ILogger<PersistenceService> logger
+  )
   {
+    Sender = sender;
     SessionStorageService = sessionStorageService;
     LocalStorageService = localStorageService;
     Logger = logger;
@@ -37,6 +41,11 @@ public class PersistenceService : IPersistenceService
       serializedState != null ?
       JsonSerializer.Deserialize(serializedState, stateType, JsonSerializerOptions) :
       null;
+
+    if (result is IState state)
+    {
+      state.Sender = Sender;
+    }
 
     return result;
   }
