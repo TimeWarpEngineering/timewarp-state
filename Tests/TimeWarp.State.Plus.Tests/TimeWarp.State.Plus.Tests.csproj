@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Fixie.TestAdapter" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="TimeWarp.Fixie" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj" />
+  </ItemGroup>
 </Project>
