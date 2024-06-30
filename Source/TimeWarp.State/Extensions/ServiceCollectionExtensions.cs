@@ -106,8 +106,9 @@ public static class ServiceCollectionExtensions
       IEnumerable<Type> types = assembly.GetTypes().Where
       (
         type =>
-          type is { IsAbstract: false, IsInterface: false, BaseType.IsGenericType: true } &&
-          type.BaseType.GetGenericTypeDefinition() == typeof(State<>)
+          type is { IsAbstract: false, IsInterface: false } &&
+          type.BaseType != null &&
+          IsDerivedFromGenericType(type.BaseType, typeof(State<>))
       );
 
       foreach (Type type in types)
@@ -115,7 +116,24 @@ public static class ServiceCollectionExtensions
         serviceCollection.TryAddTransient(type);
       }
     }
+    return;
+
+    bool IsDerivedFromGenericType(Type type, Type genericType)
+    {
+      Type? currentType = type;
+
+      while (currentType != null && currentType != typeof(object))
+      {
+        if (currentType.IsGenericType && currentType.GetGenericTypeDefinition() == genericType)
+        {
+          return true;
+        }
+        currentType = currentType.BaseType;
+      }
+      return false;
+    }
   }
+
 
   private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) =>
     serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
