@@ -1,6 +1,7 @@
 namespace GetEnclosingStateType_;
 
 using FluentAssertions;
+using MediatR;
 using TimeWarp.Features.RenderSubscriptions;
 using TimeWarp.State;
 using TimeWarp.State.Extensions;
@@ -9,15 +10,12 @@ public class TypeExtensionsTests
 {
   private class TestState : IState
   {
-    public class NestedClass
-    {
-    }
+    public class NestedClass;
 
-    public class AnotherNestedClass : NestedClass
-    {
-    }
+    public class AnotherNestedClass : NestedClass;
 
-    public Guid Guid { get; }
+    public ISender Sender { get; set; } = null!;
+    public Guid Guid { get; } = Guid.Empty;
     public void Initialize() => throw new NotImplementedException();
   }
     
