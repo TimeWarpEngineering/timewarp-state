@@ -1,23 +1,30 @@
 namespace Test.App.EndToEnd.Tests;
 
-using Microsoft.Playwright.NUnit;
+using System.Text.RegularExpressions;
+using Microsoft.Playwright;
+using Microsoft.Playwright.MSTest;
 
-[Parallelizable(ParallelScope.Self)]
-[TestFixture]
-public class MyTest : PageTest
+[TestClass]
+public class ExampleTest : PageTest
 {
-  [Test]
-  public async Task ShouldHaveTheCorrectSlogan()
+  [TestMethod]
+  public async Task HasTitle()
   {
     await Page.GotoAsync("https://playwright.dev");
-    await Expect(Page.Locator("text=enables reliable end-to-end testing for modern web apps")).ToBeVisibleAsync();
+
+    // Expect a title "to contain" a substring.
+    await Expect(Page).ToHaveTitleAsync(new Regex("Playwright"));
   }
 
-  [Test]
-  public async Task ShouldHaveTheCorrectTitle()
+  [TestMethod]
+  public async Task GetStartedLink()
   {
     await Page.GotoAsync("https://playwright.dev");
-    var title = Page.Locator(".navbar__inner .navbar__title");
-    await Expect(title).ToHaveTextAsync("Playwright");
-  }
+
+    // Click the get started link.
+    await Page.GetByRole(AriaRole.Link, new() { Name = "Get started" }).ClickAsync();
+
+    // Expects page to have a heading with the name of Installation.
+    await Expect(Page.GetByRole(AriaRole.Heading, new() { Name = "Installation" })).ToBeVisibleAsync();
+  } 
 }
