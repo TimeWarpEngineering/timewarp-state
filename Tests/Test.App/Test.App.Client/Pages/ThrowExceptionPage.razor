@@ -1,5 +1,4 @@
-@rendermode InteractiveAuto
-@namespace Test.App.Client.Pages
+﻿@namespace Test.App.Client.Pages
 @attribute [Route(Route)]
 @using Test.App.Client.Features.Counter
 @inherits BaseComponent
@@ -16,7 +15,7 @@
 
 <!-- Values to validate -->
 <ul>
-  <li data-qa="CounterStateId">
+  <li data-qa="CounterState.Guid">
     <strong>CounterState.Guid:</strong> @CounterState.Guid
   </li>
 </ul>

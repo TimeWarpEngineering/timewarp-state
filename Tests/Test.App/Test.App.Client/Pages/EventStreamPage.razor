@@ -10,9 +10,9 @@
 <!-- Test description -->
 <p>EventStream is an example of middleware. It adds each action to the event list. Displayed below</p>
 
-<EventStream TestId="eventLists"/>
+<EventStream TestId=@nameof(EventStream)/>
 <!-- Actions to take -->
-<Counter TestId="increaseCounterButton"/>
+<Counter TestId=@nameof(Counter)/>
 
 <hr>
 <!-- ACT -->
