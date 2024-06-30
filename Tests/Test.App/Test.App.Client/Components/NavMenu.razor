@@ -148,6 +148,6 @@
 {
   private async Task GoBack()
   {
-    await Mediator.Send(new RouteState.GoBack.Action());
+    await RouteState.GoBack();
   }
 }
