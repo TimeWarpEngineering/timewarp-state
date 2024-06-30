@@ -2,7 +2,7 @@ namespace TimeWarp.Features.Routing;
 
 public partial class RouteState
 {
-  public static class PushRouteInfo
+  public static class PushRouteInfoActionSet
   {
     public class Action : IAction;
 
@@ -44,4 +44,5 @@ public partial class RouteState
       }
     }
   }
+  public async Task PushRouteInfo() => await Sender.Send(new PushRouteInfoActionSet.Action());
 }
