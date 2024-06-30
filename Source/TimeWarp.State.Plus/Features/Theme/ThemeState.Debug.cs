@@ -17,10 +17,9 @@ public partial class ThemeState
       throw new InvalidOperationException($"Expected key '{guidKey}' not found or value is null.");
     }
 
-    var themeState = new ThemeState
+    var themeState = new ThemeState(this.Sender)
     {
-      CurrentTheme = (Theme)Enum.Parse(typeof(Theme), themeValue.ToString()!, true),
-      Guid = Guid.Parse(guidValue.ToString()!)
+      CurrentTheme = (Theme)Enum.Parse(typeof(Theme), themeValue.ToString()!, true), Guid = Guid.Parse(guidValue.ToString()!)
     };
 
     return themeState;
@@ -30,7 +29,7 @@ public partial class ThemeState
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
   /// <param name="currentTheme"></param>
-  [UsedImplicitly] 
+  [UsedImplicitly]
   public void Initialize(Theme currentTheme)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
