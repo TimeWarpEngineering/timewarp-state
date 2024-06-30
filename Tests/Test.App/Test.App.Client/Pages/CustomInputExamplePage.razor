@@ -80,14 +80,13 @@
   /// The route for the page.
   /// </summary>
   public const string Route = "/custominput";
-  private void ToggleTheme()
+  private async Task ToggleTheme()
   {
-    Send
+    await ThemeState.Update
     (
-    new ThemeState.Update.Action
-    {
-      NewTheme = ThemeState.CurrentTheme == ThemeState.Theme.Light ? ThemeState.Theme.Dark : ThemeState.Theme.Light
-    }
+      ThemeState.CurrentTheme == ThemeState.Theme.Light 
+        ? ThemeState.Theme.Dark 
+        : ThemeState.Theme.Light
     );
   }
 }
