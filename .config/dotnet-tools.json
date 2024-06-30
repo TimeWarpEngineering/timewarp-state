@@ -6,19 +6,36 @@
       "version": "3.4.0",
       "commands": [
         "fixie"
-      ]
+      ],
+      "rollForward": false
     },
     "dotnet-outdated-tool": {
-      "version": "4.1.0",
+      "version": "4.6.4",
       "commands": [
         "dotnet-outdated"
-      ]
+      ],
+      "rollForward": false
     },
     "dotnet-cleanup": {
       "version": "0.6.1",
       "commands": [
         "cleanup"
-      ]
+      ],
+      "rollForward": false
+    },
+    "jetbrains.dotcover.commandlinetools": {
+      "version": "2024.1.4",
+      "commands": [
+        "dotnet-dotCover"
+      ],
+      "rollForward": false
+    },
+    "dotnet-reportgenerator-globaltool": {
+      "version": "5.3.6",
+      "commands": [
+        "reportgenerator"
+      ],
+      "rollForward": false
     }
   }
 }

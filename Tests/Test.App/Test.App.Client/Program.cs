@@ -1,5 +1,7 @@
 namespace Test.App.Client;
 
+using TimeWarp.State.Plus.Extensions;
+
 public class Program
 {
   private static async Task Main(string[] args)
@@ -14,7 +16,7 @@ public class Program
     serviceCollection.AddBlazoredSessionStorage();
     serviceCollection.AddBlazoredLocalStorage();
 
-    serviceCollection.AddBlazorState
+    serviceCollection.AddTimeWarpState
     (
       options =>
       {
@@ -42,5 +44,6 @@ public class Program
     serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
     serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddSingleton(serviceCollection);
+    serviceCollection.AddTimeWarpStateRouting();
   }
 }

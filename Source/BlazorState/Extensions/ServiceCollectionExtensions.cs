@@ -1,14 +1,14 @@
 namespace BlazorState;
 
-using static RouteState;
+using static BlazorState.Features.Routing.RouteState;
 
 public static class ServiceCollectionExtensions
 {
   /// <summary>
-  /// Register BlazorState services based on the Configure options
+  /// Register BlazorState services based on the aConfigure options
   /// </summary>
-  /// <param name="serviceCollection"></param>
-  /// <param name="configureBlazorStateOptionsAction"></param>
+  /// <param name="aServiceCollection"></param>
+  /// <param name="aConfigureBlazorStateOptionsAction"></param>
   /// <returns></returns>
   /// <example></example>
   /// <remarks>
@@ -17,145 +17,168 @@ public static class ServiceCollectionExtensions
   /// </remarks>
   public static IServiceCollection AddBlazorState
   (
-    this IServiceCollection serviceCollection,
-    Action<BlazorStateOptions> configureBlazorStateOptionsAction = null
+    this IServiceCollection aServiceCollection,
+    Action<BlazorStateOptions> aConfigureBlazorStateOptionsAction = null
   )
   {
     // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
-    if (serviceCollection.HasRegistrationFor(typeof(Subscriptions))) return serviceCollection;
-    
-    var blazorStateOptions = new BlazorStateOptions(serviceCollection);
-    configureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
-    
-    serviceCollection.AddScoped<JsonRequestHandler>();
-    serviceCollection.AddScoped<Subscriptions>();
-    serviceCollection.AddScoped<IStore, Store>();
-    serviceCollection.AddSingleton(blazorStateOptions);
+    if (!aServiceCollection.HasRegistrationFor(typeof(Subscriptions)))
+    {
+      var blazorStateOptions = new BlazorStateOptions(aServiceCollection);
+      aConfigureBlazorStateOptionsAction?.Invoke(blazorStateOptions);
+
+      aServiceCollection.AddScoped<BlazorHostingLocation>();
+      aServiceCollection.AddScoped<JsonRequestHandler>();
+      aServiceCollection.AddScoped<Subscriptions>();
+      aServiceCollection.AddScoped(typeof(IRequestPostProcessor<,>), typeof(RenderSubscriptionsPostProcessor<,>));
+      aServiceCollection.AddScoped<IStore, Store>();
+      aServiceCollection.AddSingleton(blazorStateOptions);
       
-    EnsureLogger(serviceCollection);
-    EnsureHttpClient(serviceCollection);
-    EnsureStates(serviceCollection, blazorStateOptions);
-    EnsureMediator(serviceCollection, blazorStateOptions);
+      EnsureLogger(aServiceCollection);
+      EnsureHttpClient(aServiceCollection);
+      EnsureStates(aServiceCollection, blazorStateOptions);
+      EnsureMediator(aServiceCollection, blazorStateOptions);
 
-    if (blazorStateOptions.UseStateTransactionBehavior)
-    {
-      serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
+      if (blazorStateOptions.UseCloneStateBehavior)
+      {
+        aServiceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(CloneStateBehavior<,>));
+      }
+
+      if (blazorStateOptions.UseRouting)
+      {
+        aServiceCollection.AddScoped<RouteManager>();
+        aServiceCollection.AddScoped<RouteState>();
+
+        aServiceCollection.AddTransient<IRequestHandler<ChangeRouteAction>, ChangeRouteHandler>();
+        aServiceCollection.AddTransient<IRequestHandler<GoBackAction>, GoBackHandler>();
+        aServiceCollection.AddTransient<IRequestHandler<InitializeRouteAction>, InitializeRouteHandler>();
+      }
     }
-
-    if (blazorStateOptions.UseRouting)
-    {
-      serviceCollection.AddScoped<TimeWarpNavigationManager>();
-      serviceCollection.AddScoped<RouteState>();
-
-      serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRouteHandler>();
-      serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBackHandler>();
-      serviceCollection.AddTransient<IRequestHandler<InitializeRoute.Action>, InitializeRouteHandler>();
-    }
-    return serviceCollection;
+    return aServiceCollection;
   }
 
-  private static void EnsureHttpClient(IServiceCollection serviceCollection)
+  private static void EnsureHttpClient(IServiceCollection aServiceCollection)
   {
-    // If client side wasm, Blazor registers HttpClient by default.
-    if (OperatingSystem.IsBrowser()) return;
-    
-    // Double check that nothing is registered.
-    if (serviceCollection.HasRegistrationFor(typeof(HttpClient))) return;
-    
-    // Setup HttpClient for server side in a client side compatible fashion
-    serviceCollection.AddScoped
-    (
-      serviceProvider =>
-      {
-        // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
-        NavigationManager navigationManager = serviceProvider.GetRequiredService<NavigationManager>();
+    var blazorHostingLocation = new BlazorHostingLocation();
 
-        return new HttpClient
-        {
-          BaseAddress = new Uri(navigationManager.BaseUri)
-        };
+    // Server Side Blazor doesn't register HttpClient by default
+    if (blazorHostingLocation.IsServerSide)
+    {
+      // Double check that nothing is registered.
+      if (!aServiceCollection.HasRegistrationFor(typeof(HttpClient)))
+      {
+        // Setup HttpClient for server side in a client side compatible fashion
+        aServiceCollection.AddScoped<HttpClient>
+        (
+          aServiceProvider =>
+          {
+            // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
+            NavigationManager navigationManager = aServiceProvider.GetRequiredService<NavigationManager>();
+
+            return new HttpClient
+            {
+              BaseAddress = new Uri(navigationManager.BaseUri)
+            };
+          }
+        );
       }
-    );
+    }
   }
 
   /// <summary>
   /// If no ILogger is registered it would throw as we inject it.  This provides us with a NullLogger to avoid that
   /// </summary>
-  /// <param name="serviceCollection"></param>
-  private static void EnsureLogger(IServiceCollection serviceCollection)
+  /// <param name="aServiceCollection"></param>
+  private static void EnsureLogger(IServiceCollection aServiceCollection)
   {
-    if(!serviceCollection.HasRegistrationFor(typeof(ILogger<>)))
+    if(!aServiceCollection.HasRegistrationFor(typeof(ILogger<>)))
     {
-      serviceCollection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
+      aServiceCollection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
     }
   }
 
   /// <summary>
   /// Scan Assemblies for Handlers.
   /// </summary>
-  /// <param name="serviceCollection"></param>
-  /// <param name="blazorStateOptions"></param>
-  private static void EnsureMediator(IServiceCollection serviceCollection, BlazorStateOptions blazorStateOptions)
+  /// <param name="aServiceCollection"></param>
+  /// <param name="aBlazorStateOptions"></param>
+  private static void EnsureMediator(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
   {
-    if (serviceCollection.HasRegistrationFor(typeof(IMediator))) return;
-    
-    serviceCollection
-      .AddMediatR
-      (
-      mediatRServiceConfiguration =>
-        mediatRServiceConfiguration
-          .RegisterServicesFromAssemblies(blazorStateOptions.Assemblies.ToArray())
-          .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
-      );
-    serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>), ServiceLifetime.Transient));
+    if(!aServiceCollection.HasRegistrationFor(typeof(IMediator)))
+    {
+      aServiceCollection
+        .AddMediatR
+        (
+          aMediatRServiceConfiguration =>
+            aMediatRServiceConfiguration.RegisterServicesFromAssemblies(aBlazorStateOptions.Assemblies.ToArray())
+        );
+    }
   }
 
-  private static void EnsureStates(IServiceCollection serviceCollection, BlazorStateOptions blazorStateOptions)
+  private static void EnsureStates(IServiceCollection aServiceCollection, BlazorStateOptions aBlazorStateOptions)
   {
-    foreach (Assembly assembly in blazorStateOptions.Assemblies)
+    foreach (Assembly assembly in aBlazorStateOptions.Assemblies)
     {
       IEnumerable<Type> types = assembly.GetTypes().Where
       (
-        type =>
-          !type.IsAbstract &&
-          !type.IsInterface &&
-          type.BaseType is { IsGenericType: true } &&
-          type.BaseType.GetGenericTypeDefinition() == typeof(State<>)
+        aType =>
+          !aType.IsAbstract &&
+          !aType.IsInterface &&
+          aType.BaseType != null &&
+          IsSubclassOfRawGeneric(typeof(State<>),aType)
       );
+      
+      // https://stackoverflow.com/questions/457676/check-if-a-class-is-derived-from-a-generic-class
+      // performance? startup-code less important, and also while loop breaks early.
+      static bool IsSubclassOfRawGeneric(Type generic, Type? toCheck) {
+        while (toCheck != null && toCheck != typeof(object)) {
+          Type cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+          if (generic == cur) {
+            return true;
+          }
+          toCheck = toCheck.BaseType;
+        }
+        return false;
+      }
 
       foreach (Type type in types)
       {
-        serviceCollection.TryAddTransient(type);
+        aServiceCollection.TryAddTransient(type);
       }
     }
   }
 
-  private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) => 
-    serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
+  private static bool HasRegistrationFor(this IServiceCollection aServiceCollection, Type aType)
+  {
+    return aServiceCollection.Any
+    (
+      aServiceDescriptor => aServiceDescriptor.ServiceType == aType
+    );
+  }
 
-  // ReSharper disable once UnusedMethodReturnValue.Global
   public static BlazorStateOptions UseReduxDevTools
   (
-    this BlazorStateOptions blazorStateOptions,
-    Action<ReduxDevToolsOptions> reduxDevToolsOptionsAction = null
+    this BlazorStateOptions aBlazorStateOptions,
+    Action<ReduxDevToolsOptions> aReduxDevToolsOptionsAction = null
   )
   {
-    IServiceCollection serviceCollection = blazorStateOptions.ServiceCollection;
-    if (serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions))) return blazorStateOptions;
-    
-    var reduxDevToolsOptions = new ReduxDevToolsOptions();
-    reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
+    IServiceCollection serviceCollection = aBlazorStateOptions.ServiceCollection;
+    if(!serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions)))
+    {
+      var reduxDevToolsOptions = new ReduxDevToolsOptions();
+      aReduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
 
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
-    serviceCollection.AddScoped<ReduxDevToolsInterop>();
+      serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
+      serviceCollection.AddScoped<ReduxDevToolsInterop>();
 
-    serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
-    serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest>, JumpToStateHandler>();
-    serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
-    serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
+      serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
+      serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest>, JumpToStateHandler>();
+      serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
+      serviceCollection.AddScoped(aServiceProvider => (IReduxDevToolsStore)aServiceProvider.GetService<IStore>());
 
-    serviceCollection.AddSingleton(reduxDevToolsOptions);
+      serviceCollection.AddSingleton<ReduxDevToolsOptions>(reduxDevToolsOptions);
+    }
 
-    return blazorStateOptions;
+    return aBlazorStateOptions;
   }
 }

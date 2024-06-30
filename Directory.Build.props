@@ -2,10 +2,10 @@
   <!-- Set common properties regarding assembly information and nuget packages -->
   <PropertyGroup>
     <Authors>Steven T. Cramer</Authors>
-    <Product>Blazor State</Product>
-    <PackageVersion>11.0.0-beta.24+8.0.200</PackageVersion>
+    <Product>TimeWarp State</Product>
+    <PackageVersion>11.0.0-beta.45+8.0.300</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/blazor-state/</PackageProjectUrl>
-    <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
+    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>Logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/blazor-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -13,6 +13,7 @@
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <ContentTargetFolders>contentFiles</ContentTargetFolders>
   </PropertyGroup>
 
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
@@ -37,7 +38,7 @@
 
   <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
 
-  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent">
+  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" Condition="'$(NCrunch)' != '1'">
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>

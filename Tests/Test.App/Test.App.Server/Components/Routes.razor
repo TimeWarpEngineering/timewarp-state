@@ -1,13 +1,9 @@
-﻿@using TimeWarp.Features.Developer
-@using TimeWarp.Features.JavaScriptInterop
-@using TimeWarp.Features.Routing
-
-<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+<Router AppAssembly=@typeof(Program).Assembly AdditionalAssemblies=@(new[] { typeof(Client._Imports).Assembly })>
   <Found Context="routeData">
-    <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
-    <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    <RouteView RouteData=@routeData DefaultLayout=@typeof(Layout.MainLayout) />
+    <FocusOnNavigate RouteData=@routeData Selector="h1" />
   </Found>
 </Router>
-<ReduxDevTools @rendermode=InteractiveAuto></ReduxDevTools>
-<TimeWarpJavaScriptInterop @rendermode=InteractiveAuto></TimeWarpJavaScriptInterop>
-<TimeWarpNavigation @rendermode=InteractiveAuto></TimeWarpNavigation>
+<ReduxDevTools @rendermode=InteractiveAuto />
+<TimeWarpJavaScriptInterop @rendermode=InteractiveAuto />
+<TimeWarpPageRenderNotifier @rendermode=InteractiveAuto Nonce=@Guid.NewGuid() />

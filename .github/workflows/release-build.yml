@@ -26,45 +26,15 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+        
+      - name: Run BuildNuGets.ps1
+        run: |
+          .\BuildNuGets.ps1
 
-      - name: List files in the repository
+      - name: Publish TimeWarp.State
         run: |
-          ls ${{ github.workspace }}
-
-#      - name: Install NPM packages
-#        run: |
-#          cd Source/BlazorState/
-#          npm install
-          
-#      - name: Setup .NET
-#        uses: actions/setup-dotnet@v2
-#        with:
-#          dotnet-version: 8.0.x
-
-      - name: Build BlazorStateAnalyzer
-        run: |
-          cd ${{ github.workspace }}/Source/BlazorStateAnalyzer/
-          dotnet clean --configuration Release
-          dotnet build --configuration Release
-  
-      - name: Build and Pack BlazorState
-        run: |
-          cd ${{ github.workspace }}/Source/BlazorState/
-          dotnet clean  --configuration Release
-          dotnet build --configuration Release
-          dotnet pack --configuration Release
-  
-      - name: Build and Pack TimeWarp.State.Plus
-        run: |
-          cd ${{ github.workspace }}/Source/TimeWarp.State.Plus/
-          dotnet clean --configuration Release
-          dotnet build --configuration Release
-          dotnet pack --configuration Release
-
-      - name: Publish BlazorState
-        run: |
-          cd Source/BlazorState/bin/Release
-          dotnet nuget push Blazor-State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          cd Source/TimeWarp.State/bin/Release
+          dotnet nuget push TimeWarp.State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
 
       - name: Publish TimeWarp.State.Plus
@@ -72,5 +42,46 @@ jobs:
           cd Source/TimeWarp.State.Plus/bin/Release
           dotnet nuget push TimeWarp.State.Plus.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
-  
+          
+      - name: Extract version from Directory.Build.props
+        id: extract_version
+        run: |
+          [xml]$xml = Get-Content -Path "Directory.Build.props"
+          $version = $xml.Project.PropertyGroup.PackageVersion
+          echo "Extracted version: $version"
+          echo "::set-output name=VERSION::$version"
+        shell: pwsh
+          
+      - name: Tag commit with version
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          $version = "${{ steps.extract_version.outputs.VERSION }}" -replace "\+.*$",""
+          git tag -a $version -m "Release $version"
+          git push origin $version
+        shell: pwsh
+
+      - name: Check if version is not a beta
+        id: check_beta
+        run: |
+          $version = "${{ steps.extract_version.outputs.VERSION }}"
+          $isBeta = $version -match "-beta"
+          echo "IsBeta=$isBeta"
+          # Setting output that indicates whether it's a beta version
+          echo "::set-output name=IS_BETA::$isBeta"
+        shell: pwsh
+
+      - name: Create GitHub Release
+        if: steps.check_beta.outputs.IS_BETA == 'False'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.extract_version.outputs.VERSION }}
+          release_name: Release ${{ steps.extract_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          body: "Description of the release goes here."
+      
+      
       - run: echo "🍏 This job's status is ${{ job.status }}."

@@ -1,0 +1,80 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <!-- Blazor Library Template parameters-->
+  <!--https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/RazorClassLibrary-CSharp.csproj.in -->
+  <PropertyGroup>
+    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
+    <IsPackable>true</IsPackable>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <!-- End Blazor Library Template parameters-->
+
+  <PropertyGroup>
+    <Title>TimeWarp State</Title>
+    <Description>A Blazor state management library by TimeWarp</Description>
+    <PackageId>TimeWarp.State</PackageId>
+    <AssemblyName>TimeWarp.State</AssemblyName>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
+  <!--  dotnet 8 no longer requires configuration for Source Link it is automatic if on GitHub, Azure, GitLab, or Bitbucket-->
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://timewarpengineering.github.io/blazor-state/Overview.html</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
+    <DefineConstants>TRACE; EnableRedux</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AnyClone"/>
+    <PackageReference Include="JetBrains.Annotations"/>
+    <PackageReference Include="MediatR"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    <PackageReference Include="TypeSupport"/>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests"/>
+    <InternalsVisibleTo Include="Client.Integration.Tests"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\README.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\TimeWarp.State.Analyzer\bin\$(Configuration)\net8.0\TimeWarp.State.Analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="..\TimeWarp.State.SourceGenerator\bin\$(Configuration)\net8.0\TimeWarp.State.SourceGenerator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="build\**" Pack="false"/>
+    <Content Include="buildMultiTargeting\**" Pack="false"/>
+    <Content Include="buildTransitive\**" Pack="false"/>
+  </ItemGroup>
+
+  <Target Name="RemoveTSConfigFileFromPackage" AfterTargets="CompileTypeScriptWithTSConfig">
+    <ItemGroup>
+      <Content Remove="**\tsconfig.json" />
+    </ItemGroup>
+  </Target>
+  
+</Project>

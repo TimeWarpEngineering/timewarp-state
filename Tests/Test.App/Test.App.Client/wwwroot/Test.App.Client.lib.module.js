@@ -1,10 +1,10 @@
-﻿import { blazorState } from '/_content/Blazor-State/js/BlazorState.js'
-import { log, LogAction } from '/_content/Blazor-State/js/Logger.js'
+﻿import { timeWarpState } from '/_content/TimeWarp.State/js/TimeWarpState.js'
+import { log, LogAction } from '/_content/TimeWarp.State/js/Logger.js'
 
 const dispatchIncrementCountAction = () => {
   log("dispatchIncrementCountAction", "Dispatching IncrementCountAction", "function");
   const IncrementCountActionName = "Test.App.Client.Features.Counter.CounterState+IncrementCount+Action, Test.App.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
-  blazorState.DispatchRequest(IncrementCountActionName, { amount: 7 });
+  timeWarpState.DispatchRequest(IncrementCountActionName, { amount: 7 });
 };
 
 export function beforeWebStart(blazor) {

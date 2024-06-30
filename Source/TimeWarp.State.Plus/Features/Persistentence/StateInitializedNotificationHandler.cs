@@ -1,12 +1,18 @@
 namespace TimeWarp.State.Plus.PersistentState;
 
-public class StateInitializedNotificationHandler
-(
-  ISender Sender,
-  ILogger<StateInitializedNotificationHandler> logger
-) : INotificationHandler<StateInitializedNotification>
+public class StateInitializedNotificationHandler : INotificationHandler<StateInitializedNotification>
 {
-  private ILogger Logger => logger;
+  private readonly ISender Sender;
+  private readonly ILogger<StateInitializedNotificationHandler> Logger;
+  public StateInitializedNotificationHandler
+  (
+    ISender sender,
+    ILogger<StateInitializedNotificationHandler> logger
+  )
+  {
+    Sender = sender;
+    Logger = logger;
+  }
 
   public async Task Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
   {

@@ -290,22 +290,21 @@ __pycache__/
 /BlazorDefault2018-05-02.Server/
 /BlazorDefault2018-05-02.Shared/
 /.vscode/
-/source/BlazorState.Js/dist/
+/source/TimeWarpState.Js/dist/
 
 /test/BaseTemplateApp/
 /test/BSS/
-/test/TestApp/TestApp.Client/wwwroot/blazorstate.js
+/test/TestApp/TestApp.Client/wwwroot/timewarpstate.js
 /source/AnyClone/
 /source/TypeSupport/
-/Source/BlazorState/wwwroot/blazorstate.js
 
 /StatiqDocs/output
-/BlazorState.sln.EasyRun.json
+/TimeWarpState.sln.EasyRun.json
 /Samples/Tutorial/Sample/Sample.sln.EasyRun.json
 *.binlog
-/Documentation/Blazor-State/
+/Documentation/TimeWarp.State/
 *.bkp
 # Ignore all files in Razor Source Generators directories
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
-/Source/BlazorState/wwwroot/js/**
+/Tests/Test.App.EndToEnd.Tests/Output/**
