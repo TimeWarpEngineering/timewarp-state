@@ -16,9 +16,9 @@ public static class ServiceCollectionExtensions
     if (serviceCollection.HasRegistrationFor(typeof(RouteState))) return serviceCollection;
 
     serviceCollection.AddScoped<RouteState>();
-    serviceCollection.AddTransient<IRequestHandler<ChangeRoute.Action>, ChangeRoute.Handler>();
-    serviceCollection.AddTransient<IRequestHandler<GoBack.Action>, GoBack.Handler>();
-    serviceCollection.AddTransient<IRequestHandler<PushRouteInfo.Action>, PushRouteInfo.Handler>();
+    serviceCollection.AddTransient<IRequestHandler<ChangeRouteActionSet.Action>, ChangeRouteActionSet.Handler>();
+    serviceCollection.AddTransient<IRequestHandler<GoBackActionSet.Action>, GoBackActionSet.Handler>();
+    serviceCollection.AddTransient<IRequestHandler<PushRouteInfoActionSet.Action>, PushRouteInfoActionSet.Handler>();
 
     return serviceCollection;
   }
