@@ -45,5 +45,5 @@ public partial class RouteState
     }
   }
   
-  public async Task GoBack() => await Sender.Send(new GoBackActionSet.Action());
+  public async Task GoBack(int amount) => await Sender.Send(new GoBackActionSet.Action(amount));
 }
