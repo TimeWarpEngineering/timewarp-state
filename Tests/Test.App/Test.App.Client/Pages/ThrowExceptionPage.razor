@@ -1,4 +1,4 @@
-﻿@rendermode InteractiveAuto
+@rendermode InteractiveAuto
 @namespace Test.App.Client.Pages
 @attribute [Route(Route)]
 @using Test.App.Client.Features.Counter
@@ -16,7 +16,7 @@
 
 <!-- Values to validate -->
 <ul>
-  <li>
+  <li data-qa="CounterStateId">
     <strong>CounterState.Guid:</strong> @CounterState.Guid
   </li>
 </ul>
