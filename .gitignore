@@ -308,3 +308,4 @@ __pycache__/
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
 /Tests/Test.App.EndToEnd.Tests/Output/**
+/Tests/Test.App/Test.App.Client/Generated/**
