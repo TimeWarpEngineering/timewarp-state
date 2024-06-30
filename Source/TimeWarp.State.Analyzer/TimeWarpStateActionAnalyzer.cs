@@ -34,12 +34,12 @@ public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
   private static readonly DiagnosticDescriptor DebugRule =
     new
     (
-        id: DebugDiagnosticId,
-        title: "TimeWarpStateAnalyzerDebug",
-        messageFormat: "{0}",
-        category: "Debug",
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true
+      id: DebugDiagnosticId,
+      title: "TimeWarpStateAnalyzerDebug",
+      messageFormat: "{0}",
+      category: "Debug",
+      defaultSeverity: DiagnosticSeverity.Info,
+      isEnabledByDefault: true
     );
 
   public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule, DebugRule);
