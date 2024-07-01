@@ -26,6 +26,16 @@ public partial class RouteState : State<RouteState>
   {
     RouteStack.Clear();
   }
+  
+  internal void Initialize(Stack<RouteInfo> routeStack)
+  {
+    ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
+    RouteStack.Clear();
+    foreach (RouteInfo routeInfo in routeStack)
+    {
+      RouteStack.Push(routeInfo);
+    }
+  }
 
   public class RouteInfo
   {
