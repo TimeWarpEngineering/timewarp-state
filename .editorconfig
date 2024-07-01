@@ -186,7 +186,7 @@ dotnet_naming_style.interface_style.word_separator =
 dotnet_naming_style.interface_style.capitalization = pascal_case
 
 # Types should be PascalCase
-dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.severity = none
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case_style
 
