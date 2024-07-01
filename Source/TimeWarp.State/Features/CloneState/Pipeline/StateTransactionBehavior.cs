@@ -54,10 +54,18 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
     var originalState = (IState)Store.GetState(enclosingStateType)!; // Not null because of Analyzer
-    IState newState = 
-      (originalState is ICloneable cloneable) ? 
-      (IState)cloneable.Clone() : 
-      originalState.Clone();
+    IState newState = (originalState is ICloneable cloneable) 
+      ? (IState)cloneable.Clone() 
+      : originalState.Clone
+        (
+          (ex, path, _, _) =>
+          {
+            Logger.LogDebug("Cloning error: {path} {Message}", path, ex.Message);
+          }
+        );
+    
+    // We don't clone the Sender, it is an injected service and not part of state.
+    newState.Sender = originalState.Sender;
 
     if (newState.Guid == Guid.Empty || originalState.Guid == newState.Guid)
     {
