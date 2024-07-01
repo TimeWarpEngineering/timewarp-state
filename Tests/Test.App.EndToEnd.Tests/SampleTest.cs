@@ -1,9 +1,5 @@
 namespace Test.App.EndToEnd.Tests;
 
-using System.Text.RegularExpressions;
-using Microsoft.Playwright;
-using Microsoft.Playwright.MSTest;
-
 [TestClass]
 public class ExampleTest : PageTest
 {
