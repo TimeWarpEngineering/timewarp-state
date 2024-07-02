@@ -1,8 +1,7 @@
-param(
-  [string]$SutProjectPath = "./Tests/Test.App/Test.App.Server/Test.App.Server.csproj",
-  [string]$OutputPath = "./Tests/Test.App/Output",
-  [string]$SutUrl = "https://localhost"
-)
+# Configuration variables
+$SutProjectPath = "./Tests/Test.App/Test.App.Server/Test.App.Server.csproj"
+$OutputPath = "./Tests/Test.App/Output"
+$SutUrl = "https://localhost"
 
 function Get-AvailablePort {
   $listener = [System.Net.Sockets.TcpListener]::Create(0)
