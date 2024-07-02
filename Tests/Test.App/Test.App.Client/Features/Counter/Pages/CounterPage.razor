@@ -3,6 +3,20 @@
 @attribute [Route(Route)]
 @inherits BaseComponent
 
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Counter Page";
+
+  /// <summary>
+  /// The route of the page
+  /// </summary>
+  public const string Route = "/counter";
+}
+
+
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
 @RenderModeDisplay
@@ -47,15 +61,3 @@
   <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
 </p>
 
-@code
-{
-  /// <summary>
-  /// The title of the page
-  /// </summary>
-  public const string Title = "Counter Page";
-
-  /// <summary>
-  /// The route of the page
-  /// </summary>
-  public const string Route = "/counter";
-}
