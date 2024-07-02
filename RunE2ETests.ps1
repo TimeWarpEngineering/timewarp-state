@@ -5,7 +5,7 @@ $SutUrl = "https://localhost"
 $DotCoverConfigPath = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests/dotcover.config.xml"
 
 # Ensure these values align with the dotcover.config.xml file
-# <TargetExecutable>./Tests/Test.App/Output/Test.App.Server.exe</TargetExecutable>
+# <TargetExecutable>../Test.App/Output/Test.App.Server.exe</TargetExecutable>
 # <TargetArguments>--urls https://localhost:7011</TargetArguments>
 
 Push-Location $PSScriptRoot
@@ -41,9 +41,12 @@ try {
     Write-Host "Building the test project..."
     dotnet build $projectFile --configuration Debug
 
-    # Start the SUT with dotCover
+    # Start the SUT with dotCover in the background
     Write-Host "Using dotCover config at: $DotCoverConfigPath"
-    dotnet dotCover cover $DotCoverConfigPath
+    Start-Process -NoNewWindow -FilePath "dotnet" -ArgumentList "dotCover cover $DotCoverConfigPath" -PassThru | Out-Null
+
+    # Wait a bit to ensure the SUT has started
+    Start-Sleep -Seconds 10
 
     # Run the E2E tests
     Write-Host "SUT URL: $SutUrl:7011"
