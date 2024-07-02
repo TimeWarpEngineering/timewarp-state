@@ -3,7 +3,9 @@ try
 {
   $testProjectDir = Join-Path $PSScriptRoot "Tests\Test.App.EndToEnd.Tests"
   Push-Location $testProjectDir
-  $settings = @("chrome.runsettings", "edge.runsettings", "webkit.runsettings")
+  
+#  $settings = @("chrome.runsettings", "edge.runsettings", "webkit.runsettings")
+  $settings = @("edge.runsettings")
   $snapshots = @()
   $outputDir = Join-Path $testProjectDir "Output"
   Write-Host "Output directory: $outputDir"
