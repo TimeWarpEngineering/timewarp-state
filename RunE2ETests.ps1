@@ -4,9 +4,53 @@ $OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
 $SutUrl = "https://localhost"
 $TestProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
 $TestProjectPath = "$TestProjectDir/Test.App.EndToEnd.Tests.csproj"
+$AnalyzerProjectPath = "$PSScriptRoot/Source/TimeWarp.State.Analyzer/TimeWarp.State.Analyzer.csproj"
+$SourceGeneratorProjectPath = "$PSScriptRoot/Source/TimeWarp.State.SourceGenerator/TimeWarp.State.SourceGenerator.csproj"
 $SutPort = 7011
 $MaxRetries = 30
 $RetryInterval = 1
+
+function Restore-Tools-And-Cleanup {
+  Push-Location $PSScriptRoot
+  try {
+    # Restore .NET tools
+    dotnet tool restore
+
+    # Clean the solution
+    dotnet clean -y
+
+    # Clean the Output directory
+    if (Test-Path $OutputPath) {
+      Remove-Item -Recurse -Force $OutputPath
+      Write-Host "Deleted: $OutputPath"
+    }
+  }
+  finally {
+    Pop-Location
+  }
+}
+
+function Build-Analyzer {
+  Push-Location (Split-Path $AnalyzerProjectPath)
+  try {
+    # Build the Analyzer project
+    dotnet build --configuration Release
+  }
+  finally {
+    Pop-Location
+  }
+}
+
+function Build-SourceGenerator {
+  Push-Location (Split-Path $SourceGeneratorProjectPath)
+  try {
+    # Build the Source Generator project
+    dotnet build --configuration Release
+  }
+  finally {
+    Pop-Location
+  }
+}
 
 function Build-And-Publish-Sut {
   Push-Location $SutProjectDir
@@ -15,10 +59,10 @@ function Build-And-Publish-Sut {
     dotnet restore
 
     # Build the solution
-    dotnet build --configuration Debug --no-restore
+    dotnet build --configuration Release --no-restore
 
     # Publish the SUT
-    dotnet publish --configuration Debug --output $OutputPath
+    dotnet publish --configuration Release --output $OutputPath
   }
   finally {
     Pop-Location
@@ -104,6 +148,9 @@ function Kill-Sut {
 }
 
 # Main script execution
+Restore-Tools-And-Cleanup
+Build-Analyzer
+Build-SourceGenerator
 Build-And-Publish-Sut
 Build-Test
 
