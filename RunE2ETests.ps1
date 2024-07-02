@@ -1,98 +1,91 @@
 # Configuration variables
-$SutProjectPath = "$PSScriptRoot/Tests/Test.App/Test.App.Server/Test.App.Server.csproj"
+$SutProjectDir = "$PSScriptRoot/Tests/Test.App/Test.App.Server"
 $OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
 $SutUrl = "https://localhost"
-$DotCoverConfigPath = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests/dotcover.config.xml"
+$TestProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
+$TestProjectPath = "$TestProjectDir/Test.App.EndToEnd.Tests.csproj"
+$SutPort = 7011
 
-# Ensure these values align with the dotcover.config.xml file
-# <TargetExecutable>../Test.App/Output/Test.App.Server.exe</TargetExecutable>
-# <TargetArguments>--urls https://localhost:7011</TargetArguments>
-
-Push-Location $PSScriptRoot
-try {
-  # Restore dependencies
-  dotnet restore $SutProjectPath
-
-  # Build the solution
-  dotnet build $SutProjectPath --configuration Debug --no-restore
-
-  # Publish the SUT
-  dotnet publish $SutProjectPath --configuration Debug --output $OutputPath
-
-  # Extract the project name from the SutProjectPath to determine the executable name
-  $ProjectName = [System.IO.Path]::GetFileNameWithoutExtension($SutProjectPath)
-  $ExecutablePath = "$OutputPath/$ProjectName.exe"
-
-  # Set environment variable for the port
-  $env:SutPort = 7011  # This should align with the port specified in the dotcover.config.xml
-
-  $testProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
-  Push-Location $testProjectDir
+function Build-And-Publish-Sut {
+  Push-Location $SutProjectDir
   try {
-    $settings = @("edge.runsettings")
-    $snapshots = @()
-    $outputDir = "$testProjectDir/Output"
-    Write-Host "Output directory: $outputDir"
+    # Restore dependencies
+    dotnet restore
 
-    $projectFile = "Test.App.EndToEnd.Tests.csproj"
+    # Build the solution
+    dotnet build --configuration Debug --no-restore
+
+    # Publish the SUT
+    dotnet publish --configuration Debug --output $OutputPath
+  }
+  finally {
+    Pop-Location
+  }
+}
+
+function Build-Test {
+  Push-Location $TestProjectDir
+  try {
+    # Restore dependencies
+    dotnet restore
 
     # Build the test project
-    Write-Host "Building the test project..."
-    dotnet build $projectFile --configuration Debug
+    dotnet build --configuration Debug
+  }
+  finally {
+    Pop-Location
+  }
+}
 
-    # Start the SUT with dotCover in the background
-    Write-Host "Using dotCover config at: $DotCoverConfigPath"
-    $sutProcess = Start-Process -NoNewWindow -FilePath "dotnet" -ArgumentList "dotCover cover $DotCoverConfigPath" -PassThru
+function Start-Sut {
+  # Start the SUT in the background
+  Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
+  $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
 
-    # Ensure the SUT process is killed in the finally block
-    try {
-      # Wait a bit to ensure the SUT has started
-      Start-Sleep -Seconds 10
+  # Wait a bit to ensure the SUT has started
+  Start-Sleep -Seconds 10
 
-      # Run the E2E tests
-      foreach ($setting in $settings)
-      {
-        $snapshotName = "coverage{0}.snapshot" -f $setting.Replace(".runsettings", "")
-        $snapshotPath = Join-Path $outputDir $snapshotName
-        $targetArguments = "test --no-build --settings:PlaywrightSettings\$setting ./$projectFile"
-        dotnet dotCover cover-dotnet .\dotcover.config.xml --output=$snapshotPath --targetArguments=$targetArguments
-        $snapshots += $snapshotPath
-      }
+  return $sutProcess
+}
 
-      # Merge snapshots
-      $mergedSnapshotPath = Join-Path $outputDir "mergedCoverage.snapshot"
-      $sourceParameter = ($snapshots -join ";")
-      Write-Host "Source parameter for dotCover merge: $sourceParameter"
-      dotnet dotcover merge --output=$mergedSnapshotPath --Source=$sourceParameter
+function Run-Tests {
+  Push-Location $TestProjectDir
+  try {
+    $settings = @("edge.runsettings")
 
-      # Generate DetailedXML report
-      $detailedXmlReportPath = Join-Path $outputDir "coverage.xml"
-      dotnet dotcover report --source=$mergedSnapshotPath --output=$detailedXmlReportPath --reportType="DetailedXml"
-
-      # Generate HTML report
-      $htmlReportPath = Join-Path $outputDir "coverage.html"
-      dotnet dotcover report --source=$mergedSnapshotPath --output=$htmlReportPath --reportType="HTML"
-
-      # Run ReportGenerator to convert the DetailedXml report to Cobertura format using local tool
-      dotnet reportgenerator "-reports:$detailedXmlReportPath" "-targetdir:$outputDir" "-reporttypes:Cobertura"
-
-      # Open the HTML report - this is typically only useful when running locally
-      if (-not $env:CI) {
-        Start-Process $htmlReportPath
-      }
-    }
-    finally {
-      if ($sutProcess -and !$sutProcess.HasExited) {
-        $sutProcess.Kill()
-        $sutProcess | Out-Null
-        Write-Host "SUT process terminated."
-      }
+    Write-Host "Running E2E tests"
+    foreach ($setting in $settings) {
+      $targetArguments = @("--no-build", "--settings:PlaywrightSettings\$setting", "./Test.App.EndToEnd.Tests.csproj")
+      dotnet test $targetArguments
     }
   }
   finally {
     Pop-Location
   }
 }
+
+function Kill-Sut {
+  param (
+    [Parameter(Mandatory=$true)]
+    [System.Diagnostics.Process]$sutProcess
+  )
+
+  if ($sutProcess -and !$sutProcess.HasExited) {
+    $sutProcess.Kill()
+    $sutProcess | Out-Null
+    Write-Host "SUT process terminated."
+  }
+}
+
+# Main script execution
+Build-And-Publish-Sut
+Build-Test
+
+$sutProcess = Start-Sut
+
+try {
+  Run-Tests
+}
 finally {
-  Pop-Location
+  Kill-Sut -sutProcess $sutProcess
 }
