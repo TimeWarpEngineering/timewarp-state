@@ -12,6 +12,10 @@ try
   
   $projectFile = "Test.App.EndToEnd.Tests.csproj"
 
+  # Build the test project
+  Write-Host "Building the test project..."
+  dotnet build $projectFile
+
   # The path for the merged coverage snapshot
   $mergedSnapshotPath = Join-Path $outputDir "mergedCoverage.snapshot"
   
