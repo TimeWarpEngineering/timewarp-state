@@ -5,6 +5,8 @@ $SutUrl = "https://localhost"
 $TestProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
 $TestProjectPath = "$TestProjectDir/Test.App.EndToEnd.Tests.csproj"
 $SutPort = 7011
+$MaxRetries = 30
+$RetryInterval = 1
 
 function Build-And-Publish-Sut {
   Push-Location $SutProjectDir
@@ -42,10 +44,34 @@ function Start-Sut {
   Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
   $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
 
-  # Wait a bit to ensure the SUT has started
-  Start-Sleep -Seconds 10
-
   return $sutProcess
+}
+
+function Wait-For-Sut {
+  param (
+    [string]$url,
+    [int]$maxRetries,
+    [int]$retryInterval
+  )
+
+  $retries = 0
+  while ($retries -lt $maxRetries) {
+    try {
+      $response = Invoke-WebRequest -Uri $url -UseBasicParsing -SkipCertificateCheck -TimeoutSec 5
+      if ($response.StatusCode -eq 200) {
+        Write-Host "SUT is ready."
+        return $true
+      }
+    } catch {
+      # Ignore the error and retry
+    }
+
+    Start-Sleep -Seconds $retryInterval
+    $retries++
+  }
+
+  Write-Error "SUT did not become ready in time."
+  exit 1
 }
 
 function Run-Tests {
@@ -84,6 +110,7 @@ Build-Test
 $sutProcess = Start-Sut
 
 try {
+  Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
   Run-Tests
 }
 finally {
