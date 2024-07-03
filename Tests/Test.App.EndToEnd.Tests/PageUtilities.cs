@@ -32,4 +32,13 @@ public static class PageUtilities
 
     throw new Exception("Local storage is still empty after waiting.");
   }
+  
+  public static async Task ValidateRenderModesAsync(PlaywrightTest test, IPage page, string expectedCurrentMode, string expectedConfiguredMode)
+  {
+    ILocator currentRenderModeLocator = page.Locator("[data-qa='current-render-mode']");
+    ILocator configuredRenderModeLocator = page.Locator("[data-qa='configured-render-mode']");
+
+    await test.Expect(currentRenderModeLocator).ToHaveTextAsync(expectedCurrentMode);
+    await test.Expect(configuredRenderModeLocator).ToHaveTextAsync(expectedConfiguredMode);
+  }
 }

@@ -4,8 +4,6 @@ namespace CounterPageTests;
 public class CounterTests : PageTest
 {
   private string SutBaseUrl = null!;
-  private ILocator CurrentRenderModeLocator = null!;
-  private ILocator ConfiguredRenderModeLocator = null!;
   private ILocator Counter1Locator = null!;
   private ILocator Counter2Locator = null!;
   private ILocator Counter1ButtonLocator = null!;
@@ -20,8 +18,6 @@ public class CounterTests : PageTest
     await Page.GotoAsync($"{SutBaseUrl}/counter");
 
     // Define the locators for the render modes and counters
-    CurrentRenderModeLocator = Page.Locator("[data-qa='current-render-mode']");
-    ConfiguredRenderModeLocator = Page.Locator("[data-qa='configured-render-mode']");
     Counter1Locator = Page.Locator("[data-qa='Counter1'] [data-qa='count']");
     Counter2Locator = Page.Locator("[data-qa='Counter2'] [data-qa='count']");
     Counter1ButtonLocator = Page.Locator("[data-qa='Counter1'] button");
@@ -39,19 +35,12 @@ public class CounterTests : PageTest
 
   private async Task TestRenderModeAndCountersAsync(string expectedCurrentMode)
   {
-    await ValidateRenderModesAsync(expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
-
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
     await ValidateCountersAsync("3");
     await Counter1ButtonLocator.ClickAsync();
     await ValidateCountersAsync("8");
     await Counter2ButtonLocator.ClickAsync();
     await ValidateCountersAsync("13");
-  }
-
-  private async Task ValidateRenderModesAsync(string expectedCurrentMode, string expectedConfiguredMode)
-  {
-    await Expect(CurrentRenderModeLocator).ToHaveTextAsync(expectedCurrentMode);
-    await Expect(ConfiguredRenderModeLocator).ToHaveTextAsync(expectedConfiguredMode);
   }
 
   private async Task ValidateCountersAsync(string expectedCount)
