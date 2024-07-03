@@ -23,17 +23,19 @@ public class JavaScriptInteropTests : PageTest
   [TestMethod]
   public async Task TestJavaScriptInterop()
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, RenderModes.Server, ConfiguredRenderModes.InteractiveAutoRenderMode);
-    await ValidateCounterStateAsync("3");
-    await IncrementButtonLocator.ClickAsync();
-    await ValidateCounterStateAsync("10");
+    // Validate Server Side
+    await ValidateJavaScript(RenderModes.Server);
 
     // Reload
     await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
     await Page.ReloadAsync();
     
-    // Validate again
-    await PageUtilities.ValidateRenderModesAsync(this, Page, RenderModes.Wasm, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    // Validate in Wasm
+    await ValidateJavaScript(RenderModes.Wasm);
+  }
+  private async Task ValidateJavaScript(string expectedCurrentMode)
+  {
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
     await ValidateCounterStateAsync("3");
     await IncrementButtonLocator.ClickAsync();
     await ValidateCounterStateAsync("10");
