@@ -16,10 +16,10 @@ public class Should_ : PageTest
        
     // Validate Current Render Mode
     ILocator currentRenderModeLocator = Page.Locator("[data-qa='current-render-mode']");
-    await Expect(currentRenderModeLocator).ToHaveTextAsync("Current Render Mode: Static");
+    await Expect(currentRenderModeLocator).ToHaveTextAsync("Static");
 
     // Validate Configured Render Mode
     ILocator configuredRenderModeLocator = Page.Locator("[data-qa='configured-render-mode']");
-    await Expect(configuredRenderModeLocator).ToHaveTextAsync("Configured Render Mode: None");
+    await Expect(configuredRenderModeLocator).ToHaveTextAsync("None");
   }
 }
