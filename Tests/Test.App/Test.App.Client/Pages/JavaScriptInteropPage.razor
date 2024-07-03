@@ -10,13 +10,13 @@
 <!-- Values to validate -->
 <ul>
 <li>
-  <strong>CounterState.Count:</strong> @CounterState.Count
+  <strong>CounterState.Count:</strong> <span data-qa="counter-state-count">@CounterState.Count</span>
 </li>
 </ul>
 
 <!-- Actions to take -->
 
-<button data-qa="JsInterop" onclick="window.InteropTest()">Increment Count by 7 via JavaScript Interop</button>
+<button data-qa="increment-button" onclick="window.InteropTest()">Increment Count by 7 via JavaScript Interop</button>
 
 <hr>
 <!-- ACT: Toggle Theme -->
