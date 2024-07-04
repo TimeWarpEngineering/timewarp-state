@@ -1,6 +1,21 @@
 @rendermode InteractiveAuto
 @attribute [Route(Route)]
 @inherits BaseComponent
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Change Route Page";
+  
+  /// <summary>
+  /// The route to this page
+  /// </summary>
+  public const string Route = "/ChangeRoutePage";
+
+  private async Task ChangeRouteToHome() =>
+    await RouteState.ChangeRoute(newRoute: "/");
+}
 
 <PageTitle>@Title</PageTitle>
 <h3>@Title</h3>
@@ -11,7 +26,7 @@
 <p>Test the ChangeRoute Handler</p>
 
 <!-- Actions to take -->
-<button data-qa="ChangeRoute" @onclick=ChangeRouteToHome>Change Route to Home</button>
+<button data-qa="change-route-button" @onclick=ChangeRouteToHome>Change Route to Home</button>
 
 <hr>
 <!-- ACT -->
@@ -28,18 +43,3 @@
   <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
 </p>
 
-@code
-{
-  /// <summary>
-  /// The title of the page
-  /// </summary>
-  public const string Title = "Change Route Page";
-  
-  /// <summary>
-  /// The route to this page
-  /// </summary>
-  public const string Route = "/ChangeRoutePage";
-
-  private async Task ChangeRouteToHome() =>
-    await RouteState.ChangeRoute(newRoute: "/");
-}
