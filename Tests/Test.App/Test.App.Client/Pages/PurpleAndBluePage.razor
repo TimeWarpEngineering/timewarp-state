@@ -25,9 +25,9 @@
   }
   else
   {
-    <div role="status">PurpleState.Guid: @PurpleState.Guid</div>
-    <div role="status">Purple Count: @PurpleState.Count</div>
-    <button @onclick="IncrementPurpleCount">Increment Purple Count</button>
+    <div role="status">PurpleState.Guid: <span data-qa="purple-state-guid">@PurpleState.Guid</span></div>
+    <div role="status">Purple Count: <span data-qa="purple-state-count">@PurpleState.Count</span></div>
+    <button data-qa="increment-purple-count" @onclick="IncrementPurpleCount">Increment Purple Count</button>
   }
   <br/>
   <br/>
@@ -40,9 +40,9 @@
   }
   else
   {
-    <div role="status">BlueState.Guid: @BlueState.Guid</div>
-    <div role="status">Blue Count: @BlueState.Count</div>
-    <button @onclick="IncrementBlueCount">Increment Blue Count</button>
+    <div role="status">BlueState.Guid: <span data-qa="blue-state-guid">@BlueState.Guid</span></div>
+    <div role="status">Blue Count: <span data-qa="blue-state-count">@BlueState.Count</span></div>
+    <button data-qa="increment-blue-count" @onclick="IncrementBlueCount">Increment Blue Count</button>
   }
 </div>
 <hr>
@@ -76,12 +76,12 @@
   /// <summary>
   /// The title of the page
   /// </summary>
-  public const string Title = "Persistance Test Page";
+  public const string Title = "Persistence Test Page";
 
   /// <summary>
   /// The route for the page
   /// </summary>
-  public const string Route = "/twodiffcounters";
+  public const string Route = "/PersistenceTestPage";
 
   private async Task IncrementPurpleCount() => await Send(new PurpleState.IncrementCount.Action { Amount = 5 });
   private async Task IncrementBlueCount() => await Send(new BlueState.IncrementCount.Action { Amount = 3 });
