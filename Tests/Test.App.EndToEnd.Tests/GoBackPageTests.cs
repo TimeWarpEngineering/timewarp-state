@@ -27,7 +27,7 @@ public class GoBackTests : PageTest
     await ValidateGoBack(RenderModes.Server);
 
     // Reload
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
     
     // Validate in Wasm

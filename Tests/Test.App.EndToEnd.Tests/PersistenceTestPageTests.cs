@@ -10,6 +10,12 @@ public class PersistenceTest : PageTest
   private ILocator BlueStateGuidLocator = null!;
   private ILocator BlueStateCountLocator = null!;
   private ILocator IncrementBlueCountButtonLocator = null!;
+  
+  private int ExpectedPurpleCount = 1;
+  private int ExpectedBlueCount = 2;
+  private const  int PurpleIncrement = 5;
+  private const  int BlueIncrement = 3;
+    
 
   [TestInitialize]
   public async Task Initialize()
@@ -35,7 +41,7 @@ public class PersistenceTest : PageTest
     await ValidatePersistence(RenderModes.Server);
 
     // Reload
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
     
     // Validate in Wasm
@@ -48,7 +54,12 @@ public class PersistenceTest : PageTest
     
     // Click the increment buttons
     await IncrementPurpleCountButtonLocator.ClickAsync();
+    ExpectedPurpleCount += PurpleIncrement;
     await IncrementBlueCountButtonLocator.ClickAsync();
+    ExpectedBlueCount += BlueIncrement;
+    
+    await ValidateCount(PurpleStateCountLocator, ExpectedPurpleCount);
+    await ValidateCount(BlueStateCountLocator, ExpectedBlueCount);
     
     string initialPurpleStateGuid = await PurpleStateGuidLocator.TextContentAsync() ?? throw new InvalidOperationException("Purple state GUID is null.");
     string initialPurpleStateCount = await PurpleStateCountLocator.TextContentAsync() ?? throw new InvalidOperationException("Purple state count is null.");
@@ -56,7 +67,7 @@ public class PersistenceTest : PageTest
     string initialBlueStateCount = await BlueStateCountLocator.TextContentAsync() ?? throw new InvalidOperationException("Blue state count is null.");
 
     // Reload the page
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
 
     // Validate states after reload
@@ -77,20 +88,21 @@ public class PersistenceTest : PageTest
 
   private async Task ValidateState(ILocator locator, string expectedGuid, bool expectSame = true)
   {
-    string currentGuid = await locator.TextContentAsync() ?? throw new InvalidOperationException("State GUID is null.");
     if (expectSame)
     {
-      Assert.AreEqual(expectedGuid, currentGuid, "GUID should be the same.");
+      await Expect(locator).ToHaveTextAsync(expectedGuid, new LocatorAssertionsToHaveTextOptions
+        { Timeout = 5000 });
     }
     else
     {
-      Assert.AreNotEqual(expectedGuid, currentGuid, "GUID should be different.");
+      await Expect(locator).Not.ToHaveTextAsync(expectedGuid, new LocatorAssertionsToHaveTextOptions
+        { Timeout = 5000 });
     }
   }
 
   private async Task ValidateCount(ILocator locator, int expectedCount)
   {
-    string currentCount = await locator.TextContentAsync() ?? throw new InvalidOperationException("State count is null.");
-    Assert.AreEqual(expectedCount.ToString(), currentCount, "Count should match the expected value.");
+    await Expect(locator).ToHaveTextAsync(expectedCount.ToString(), new LocatorAssertionsToHaveTextOptions
+      { Timeout = 5000 });
   }
 }

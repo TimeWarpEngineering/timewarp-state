@@ -28,7 +28,7 @@ public class CounterTests : PageTest
   public async Task TestCounterComponents()
   {
     await TestRenderModeAndCountersAsync(RenderModes.Server);
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
     await TestRenderModeAndCountersAsync(RenderModes.Wasm);
   }

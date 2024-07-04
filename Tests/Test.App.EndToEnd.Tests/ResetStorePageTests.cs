@@ -25,7 +25,7 @@ public class ResetStoreTests : PageTest
     await ValidateResetStore(RenderModes.Server);
     
     // Reload
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
     await Page.GotoAsync($"{SutBaseUrl}/ResetStorePage");
     

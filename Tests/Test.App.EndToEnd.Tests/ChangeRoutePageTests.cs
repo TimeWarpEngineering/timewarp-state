@@ -25,7 +25,7 @@ public class ChangeRouteTests : PageTest
     await ValidateChangeRoute(RenderModes.Server);
 
     // Reload
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
     await Page.GotoAsync($"{SutBaseUrl}/ChangeRoutePage");
     

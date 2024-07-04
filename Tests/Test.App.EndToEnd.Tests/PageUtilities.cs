@@ -13,25 +13,37 @@ public static class PageUtilities
     return page.Locator("[data-qa='configured-render-mode']");
   }
 
-  public static async Task WaitForLocalStorageNotEmptyAsync(IPage page)
+  public static async Task WaitTillBlazorWasmIsDownloadedAsync(IPage page)
   {
     const int retries = 10;
     const int delay = 1000; // 1 second
 
     for (int i = 0; i < retries; i++)
     {
-      string localStorageContent = await page.EvaluateAsync<string>("() => JSON.stringify(window.localStorage)");
-      if (!string.IsNullOrEmpty(localStorageContent) && localStorageContent != "{}")
+      // Evaluate JavaScript to check for the key in local storage
+      bool isBlazorDownloaded = await page.EvaluateAsync<bool>(@"
+      () => {
+        for (let i = 0; i < localStorage.length; i++) {
+          if (localStorage.key(i).includes('blazor-resource-hash:')) {
+            return true;
+          }
+        }
+        return false;
+      }
+    ");
+
+      if (isBlazorDownloaded)
       {
-        Console.WriteLine($"Local Storage is populated: {localStorageContent}");
+        Console.WriteLine("Blazor WASM resource is downloaded.");
         return;
       }
 
       await Task.Delay(delay);
     }
 
-    throw new Exception("Local storage is still empty after waiting.");
+    throw new Exception("Blazor WASM resource was not downloaded within the expected time.");
   }
+
   
   public static async Task ValidateRenderModesAsync(PlaywrightTest test, IPage page, string expectedCurrentMode, string expectedConfiguredMode)
   {

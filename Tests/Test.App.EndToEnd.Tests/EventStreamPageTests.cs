@@ -29,7 +29,7 @@ public class EventStreamTests : PageTest
     await ValidateEventStream(RenderModes.Server);
 
     // Reload
-    await PageUtilities.WaitForLocalStorageNotEmptyAsync(Page);
+    await PageUtilities.WaitTillBlazorWasmIsDownloadedAsync(Page);
     await Page.ReloadAsync();
     
     // Validate in Wasm
