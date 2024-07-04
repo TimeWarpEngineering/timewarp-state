@@ -40,7 +40,7 @@ public class EventStreamTests : PageTest
   {
     await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
 
-    string? initialCounterStateCount = await CounterStateCountLocator.TextContentAsync();
+    string initialCounterStateCount = await CounterStateCountLocator.TextContentAsync() ?? throw new InvalidOperationException("Counter state count is null.");
     
     // Click the increment button and validate events list
     await IncrementCounterStateCountButtonLocator.ClickAsync();
@@ -53,7 +53,7 @@ public class EventStreamTests : PageTest
 
   private async Task ValidateEventsList()
   {
-    string eventsText = await EventsListLocator.TextContentAsync();
+    string eventsText = await EventsListLocator.TextContentAsync() ?? throw new InvalidOperationException("Events list text content is null.");
     Assert.IsTrue(eventsText.Contains("Start:Test.App.Client.Features.Counter.CounterState+IncrementCount+Action"), "Start event not found.");
     Assert.IsTrue(eventsText.Contains("Completed:Test.App.Client.Features.Counter.CounterState+IncrementCount+Action"), "Completed event not found.");
   }
