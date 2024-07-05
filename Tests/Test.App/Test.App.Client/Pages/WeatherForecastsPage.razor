@@ -4,6 +4,23 @@
 @using Test.App.Contracts.Features.WeatherForecast
 @inherits BaseComponent
 
+@code
+{
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Weather forecast";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/WeatherForecastsPage";
+  
+  /// <inheritdoc/>
+  protected override async Task OnInitializedAsync() =>
+    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecastsAction());
+}
+
 <PageTitle>@Title</PageTitle>
 <h1>Weather forecast</h1>
 @RenderModeDisplay
@@ -39,21 +56,4 @@ else
       }
     </tbody>
   </table>
-}
-
-@code
-{
-  /// <summary>
-  /// The title for the page.
-  /// </summary>
-  public const string Title = "Weather forecast";
-  
-  /// <summary>
-  /// The route for the page.
-  /// </summary>
-  public const string Route = "/weatherforecasts";
-  
-  /// <inheritdoc/>
-  protected override async Task OnInitializedAsync() =>
-    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecastsAction());
 }
