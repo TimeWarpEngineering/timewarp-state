@@ -1,6 +1,7 @@
 namespace Test.App.Server;
 
 using Components;
+using Contracts.Features.WeatherForecast;
 
 internal class Program
 {
@@ -39,6 +40,27 @@ internal class Program
         .AddInteractiveServerRenderMode()
         .AddInteractiveWebAssemblyRenderMode()
         .AddAdditionalAssemblies(typeof(Test.App.Client.AssemblyMarker).Assembly);
+
+    // Define the /api/weather endpoint
+    app.MapGet("/api/weather", () =>
+    {
+      var startDate = DateOnly.FromDateTime(DateTime.Now);
+      string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
+      GetWeatherForecasts.WeatherForecastDto[] forecasts = 
+        Enumerable.Range(1, 5)
+          .Select
+          (
+            index => 
+              new GetWeatherForecasts.WeatherForecastDto
+              (
+                startDate.AddDays(index),
+                summaries[Random.Shared.Next(summaries.Length)],
+                Random.Shared.Next(-20, 55)
+              )
+          ).ToArray();
+        
+      return Results.Ok(forecasts);
+    });
 
     app.Run();
     
