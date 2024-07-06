@@ -1,4 +1,4 @@
-﻿@rendermode InteractiveAuto
+﻿@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @attribute [Route(Route)]
 @using Test.App.Client.Features.WeatherForecast
 @using Test.App.Contracts.Features.WeatherForecast
@@ -9,26 +9,26 @@
   /// <summary>
   /// The title for the page.
   /// </summary>
-  public const string Title = "Weather forecast";
+  public const string Title = "Weather (Wasm)";
   
   /// <summary>
   /// The route for the page.
   /// </summary>
-  public const string Route = "/WeatherForecastsPage";
+  public const string Route = "/WasmWeatherForecastsPage";
   
   /// <inheritdoc/>
-  protected override async Task OnInitializedAsync() =>
-    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecastsAction());
+  protected override async Task OnInitializedAsync()
+  {
+    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecasts.Action());
+  }
 }
 
 <PageTitle>@Title</PageTitle>
-<h1>Weather forecast</h1>
+<h1>Wasm Weather</h1>
 @RenderModeDisplay
 <br/>
 <div>This component demonstrates fetching data from the server.</div>
 
-// TODO: Won't ever be null, so how can I tell when loading?
-// We should use the IsActive Middleware to show a spinner when loading.
 @if (WeatherForecastsState.WeatherForecasts == null)
 {
   <p><em>Loading...</em></p>
@@ -45,7 +45,7 @@ else
       </tr>
     </thead>
     <tbody>
-      @foreach (WeatherForecastDto forecast in WeatherForecastsState.WeatherForecasts)
+      @foreach (GetWeatherForecasts.WeatherForecastDto forecast in WeatherForecastsState.WeatherForecasts)
       {
         <tr>
           <td>@forecast.Date.ToShortDateString()</td>
@@ -57,3 +57,15 @@ else
     </tbody>
   </table>
 }
+
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong>Load this page</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  Current Render Mode == Wasm<br/>
+  Configured Render Mode: InteractiveWebAssemblyRenderMode<br/>
+  The page should render the weather forecast data in a table.
+</p>
