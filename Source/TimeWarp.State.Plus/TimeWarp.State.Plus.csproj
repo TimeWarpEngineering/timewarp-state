@@ -11,6 +11,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="TimeWarp.State.Plus.Tests"/>
+  </ItemGroup>
+
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
   <PropertyGroup>
     <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->

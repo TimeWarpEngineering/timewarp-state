@@ -4,9 +4,38 @@ using System.Text.Json.Serialization;
 
 public abstract class State<TState> : IState<TState>
 {
+
+  #region JsonIgnore
+
+  // JsonIgnore is used to prevent serialization of the property by both AnyClone and ReduxDevTools 
+
+  [JsonIgnore]
+  public ISender Sender { get; set; } = null!;
+
+  #endregion
+
+  #region IgnoreDataMember
+
+  // IgnoreDataMember is used to prevent serialization of properties by AnyClone
+  // They change on every instance creation and are not needed for cloning
+
   [IgnoreDataMember]
   public Guid Guid { get; protected init; } = Guid.NewGuid();
-  
+
+  #endregion
+
+  /// <summary>
+  /// DI Constructor
+  /// </summary>
+  /// <param name="sender"></param>
+  protected State(ISender sender)
+  {
+    Sender = sender;
+  }
+
+  [JsonConstructor]
+  protected State() {}
+
   /// <summary>
   /// returns a new instance of type TState
   /// </summary>
@@ -23,7 +52,7 @@ public abstract class State<TState> : IState<TState>
   {
     ArgumentNullException.ThrowIfNull(assembly);
     ArgumentNullException.ThrowIfNull(assembly.FullName);
-    
+
     if (!assembly.FullName.Contains("Test"))
     {
       throw new FieldAccessException("Do not use this in production. This method is intended for Test access only!");

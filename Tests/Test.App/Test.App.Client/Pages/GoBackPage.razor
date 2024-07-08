@@ -1,7 +1,22 @@
-@rendermode InteractiveAuto
-@namespace Test.App.Client.Pages
+﻿@rendermode InteractiveAuto
 @attribute [Route(Route)]
 @inherits BaseComponent
+
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Go Back Page";
+  
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/GoBackPage";
+
+  private async Task GoBack(int amount) =>
+    await RouteState.GoBack(amount);
+}
 
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
@@ -20,8 +35,8 @@
 }
 
 <!-- Actions to take -->
-<button data-qa="GoBack" @onclick=@(() => GoBack(1))>Go Back</button>
-<button data-qa="GoBack 2" @onclick=@(() => GoBack(2))>Go Back 2</button>
+<button data-qa="go-back-button" @onclick=@(() => GoBack(1))>Go Back</button>
+<button data-qa="go-back-button-2" @onclick=@(() => GoBack(2))>Go Back 2</button>
 <hr>
 
 <!-- ACT -->
@@ -38,18 +53,3 @@
   <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
 </p>
 
-@code
-{
-  /// <summary>
-  /// The title of the page
-  /// </summary>
-  public const string Title = "Go Back Page";
-  
-  /// <summary>
-  /// The route for the page
-  /// </summary>
-  public const string Route = "/goback";
-  
-  private async Task GoBack(int amount) =>
-    await Send(new RouteState.GoBack.Action(amount));
-}

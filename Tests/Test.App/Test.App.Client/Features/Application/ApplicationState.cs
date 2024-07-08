@@ -7,5 +7,5 @@ public partial class ApplicationState : State<ApplicationState>
 
   public string? Version => GetType().Assembly.GetName().Version?.ToString();
 
-  public override void Initialize() => Name = "TimeWarp State Test App";
+  public override void Initialize() => Name = "TimeWarp.State Test App";
 }

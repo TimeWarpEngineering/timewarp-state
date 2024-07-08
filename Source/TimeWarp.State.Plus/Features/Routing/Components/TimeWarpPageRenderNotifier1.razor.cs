@@ -34,6 +34,6 @@ public class TimeWarpPageRenderNotifier : ComponentBase
   protected override async Task OnAfterRenderAsync(bool firstRender)
   {
     await base.OnAfterRenderAsync(firstRender);
-    await Sender.Send(new RouteState.PushRouteInfo.Action());
+    await Sender.Send(new RouteState.PushRouteInfoActionSet.Action());
   }
 }

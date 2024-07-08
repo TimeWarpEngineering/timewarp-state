@@ -1,9 +1,4 @@
 @namespace TimeWarp.Features.Developer
-<div class="render-mode-display">
-    <div>Current Render Mode: @CurrentRenderMode</div>
-    <div>Configured Render Mode: @ConfiguredRenderMode</div>
-</div>
-
 @code {
   /// <summary>
   /// The render mode that is configured for the component.
@@ -30,3 +25,8 @@
     }
   }
 }
+
+<div class="render-mode-display">
+    <div>Current Render Mode: <span data-qa="current-render-mode">@CurrentRenderMode</span></div>
+    <div>Configured Render Mode: <span data-qa="configured-render-mode">@ConfiguredRenderMode</span></div>
+</div>

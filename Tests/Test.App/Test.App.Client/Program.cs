@@ -1,12 +1,14 @@
 namespace Test.App.Client;
 
 using TimeWarp.State.Plus.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 public class Program
 {
   private static async Task Main(string[] args)
   {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
+    SetIsoCulture();
     ConfigureServices(builder.Services);
     
     await builder.Build().RunAsync();
@@ -45,5 +47,25 @@ public class Program
     serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddSingleton(serviceCollection);
     serviceCollection.AddTimeWarpStateRouting();
+    serviceCollection.AddScoped(sp =>
+      new HttpClient
+      {
+        BaseAddress = new Uri("https://localhost:7011")
+      });
+  }
+  
+  private static void SetIsoCulture()
+  {
+    var isoCulture =
+      new CultureInfo("en-US")
+      {
+        DateTimeFormat =
+        {
+          ShortDatePattern = "yyyy-MM-dd", LongDatePattern = "yyyy-MM-ddTHH:mm:ss"
+        }
+      };
+
+    CultureInfo.DefaultThreadCurrentCulture = isoCulture;
+    CultureInfo.DefaultThreadCurrentUICulture = isoCulture;
   }
 }

@@ -1,12 +1,18 @@
 namespace TimeWarp.Features.Routing;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 /// Maintain the Route in TimeWarp.State
 /// </summary>
 public partial class RouteState : State<RouteState>
 {
   private readonly Stack<RouteInfo> RouteStack = new();
-  
+  public RouteState(ISender sender) : base(sender) {}
+
+  [JsonConstructor]
+  public RouteState() {}
+
   private bool IsRouteStackEmpty => RouteStack.Count == 0;
   public bool CanGoBack => RouteStack.Count > 1;
 
@@ -19,6 +25,16 @@ public partial class RouteState : State<RouteState>
   public override void Initialize()
   {
     RouteStack.Clear();
+  }
+  
+  internal void Initialize(Stack<RouteInfo> routeStack)
+  {
+    ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
+    RouteStack.Clear();
+    foreach (RouteInfo routeInfo in routeStack)
+    {
+      RouteStack.Push(routeInfo);
+    }
   }
 
   public class RouteInfo

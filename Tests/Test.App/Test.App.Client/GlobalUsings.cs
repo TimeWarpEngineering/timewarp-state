@@ -44,7 +44,6 @@ global using Test.App.Client.Features.WeatherForecast;
 global using Test.App.Client.Pipeline.NotificationPostProcessor;
 global using Test.App.Client.Pipeline.NotificationPreProcessor;
 global using Test.App.Contracts.Features.ExceptionHandlings;
-global using Test.App.Contracts.Features.WeatherForecast;
 global using TimeWarp.Features.ActionTracking;
 global using TimeWarp.Features.StateTransactions;
 global using TimeWarp.State.Plus;

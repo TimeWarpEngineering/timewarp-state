@@ -2,7 +2,7 @@
 
 public partial class RouteState
 {
-  public static class GoBack
+  public static class GoBackActionSet
   {
     [UsedImplicitly]
     public class Action : IAction
@@ -44,4 +44,6 @@ public partial class RouteState
       }
     }
   }
+  
+  public async Task GoBack(int amount = 1) => await Sender.Send(new GoBackActionSet.Action(amount));
 }

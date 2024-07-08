@@ -16,7 +16,7 @@
     <BrowserName>chromium</BrowserName>
     <ExpectTimeout>5000</ExpectTimeout>
     <LaunchOptions>
-      <Headless>true</Headless>
+      <Headless>false</Headless>
       <Channel>chrome</Channel>
     </LaunchOptions>
   </Playwright>

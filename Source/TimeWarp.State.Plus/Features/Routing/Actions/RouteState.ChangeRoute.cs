@@ -2,7 +2,7 @@ namespace TimeWarp.Features.Routing;
 
 public partial class RouteState
 {
-  public static class ChangeRoute
+  public static class ChangeRouteActionSet
   {
     public class Action : IAction
     {
@@ -10,7 +10,7 @@ public partial class RouteState
       {
         NewRoute = newRoute;
       }
-      public string NewRoute { get; init; }
+      public string NewRoute { get; }
     }
 
     internal class Handler : ActionHandler<Action>
@@ -42,4 +42,6 @@ public partial class RouteState
       }
     }
   }
+  public async Task ChangeRoute(string newRoute) =>
+    await Sender.Send(new RouteState.ChangeRouteActionSet.Action(newRoute));
 }

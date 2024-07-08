@@ -1,8 +1,33 @@
-@rendermode InteractiveAuto
-@namespace Test.App.Client.Pages
+﻿@rendermode InteractiveAuto
 @attribute [Route(Route)]
 @using Test.App.Client.Features.Counter
 @inherits BaseComponent
+
+@code
+{
+  
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Exception Page";
+  
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/ThrowExceptionPage";
+  
+  private async Task SendThrowExceptionAction() =>
+    await Mediator.Send(new CounterState.ThrowExceptionAction
+    {
+      Message = "This is a client side exception"
+    });
+
+  private async Task SendThrowServerSideExceptionAction() =>
+    await Mediator.Send(new CounterState.ThrowServerSideExceptionAction
+    {
+      Message = "This is a server side exception"
+    });
+}
 
 <PageTitle>@Title</PageTitle>
 <h1>@Title</h1>
@@ -16,17 +41,17 @@
 
 <!-- Values to validate -->
 <ul>
-  <li data-qa="CounterStateId">
-    <strong>CounterState.Guid:</strong> @CounterState.Guid
+  <li data-qa="CounterState.Guid">
+    <strong>CounterState.Guid:</strong> <span data-qa='counter-state-guid'>@CounterState.Guid</span>
   </li>
 </ul>
 
 <!-- Actions to take -->
 <h6>Click below to Throw Client Side Exception.</h6>
-<button data-qa="ThrowClientException" @onclick=SendThrowExceptionAction>Throw Client Side Exception</button>
+<button data-qa="throw-client-side-exception" @onclick=SendThrowExceptionAction>Throw Client Side Exception</button>
 
 <h6>Click below to Throw Server Side Exception.</h6>
-<button data-qa="ThrowServerException" @onclick=SendThrowServerSideExceptionAction>Throw Server Side Exception</button>
+<button data-qa="throw-server-side-exception" @onclick=SendThrowServerSideExceptionAction>Throw Server Side Exception</button>
 
 
 <hr>
@@ -58,28 +83,4 @@ If RenderMode is Wasm you will see stack trace "warning" on Browser console<br>
 The clone middleware will catch these exceptions and reset the state
 thus the CounterState.Guid should NOT change 
 </div>
-@code
-{
-  
-  /// <summary>
-  /// The title for the page.
-  /// </summary>
-  public const string Title = "Exception Page";
-  
-  /// <summary>
-  /// The route for the page.
-  /// </summary>
-  public const string Route = "/throwexception";
-  
-  private async Task SendThrowExceptionAction() =>
-    await Mediator.Send(new CounterState.ThrowExceptionAction
-    {
-      Message = "This is a client side exception"
-    });
 
-  private async Task SendThrowServerSideExceptionAction() =>
-    await Mediator.Send(new CounterState.ThrowServerSideExceptionAction
-    {
-      Message = "This is a server side exception"
-    });
-}

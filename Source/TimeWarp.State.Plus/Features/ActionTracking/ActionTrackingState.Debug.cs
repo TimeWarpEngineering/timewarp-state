@@ -11,7 +11,7 @@ public partial class ActionTrackingState
       throw new InvalidOperationException($"Expected key '{guidKey}' not found or value is null.");
     }
     
-    var processingState = new ActionTrackingState
+    var processingState = new ActionTrackingState(this.Sender)
     {
       Guid = Guid.Parse(guidValue.ToString()!)
     };

@@ -1,11 +1,16 @@
 namespace Test.App.Client.Features.WeatherForecast;
 
+using static Contracts.Features.WeatherForecast.GetWeatherForecasts;
+
 internal partial class WeatherForecastsState: State<WeatherForecastsState>
 {
-  private List<WeatherForecastDto> WeatherForecastList = [];
+  private Response? WeatherForecastList;
 
-  public IReadOnlyList<WeatherForecastDto> WeatherForecasts => WeatherForecastList.AsReadOnly();
+  public IReadOnlyList<WeatherForecastDto>? WeatherForecasts => WeatherForecastList?.AsReadOnly();
 
   ///<inheritdoc/>
-  public override void Initialize() => ArgumentNullException.ThrowIfNull(WeatherForecastList);
+  public override void Initialize()
+  {
+    WeatherForecastList = null;
+  }
 }

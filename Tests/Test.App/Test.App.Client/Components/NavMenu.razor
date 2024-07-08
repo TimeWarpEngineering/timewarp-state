@@ -6,12 +6,12 @@
   <div class="container-fluid" title=@RenderModeDisplayString>
     <a class="navbar-brand" href="">Test.App.Server</a>
     <button disabled=@(!RouteState.CanGoBack) data-qa="GoBack" @onclick=GoBack style="width: 40px; height: 40px;">
-      <TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon class="icon-size"/>
+      <TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon class="icon-size" />
     </button>
   </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
   <nav class="flex-column">
@@ -82,8 +82,8 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href=@PurpleAndBluePage.Route>
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @PurpleAndBluePage.Title
+      <NavLink class="nav-link" href=@PersistenceTestPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @PersistenceTestPage.Title
       </NavLink>
     </div>
 
@@ -94,16 +94,16 @@
     </div>
 
     <div class="nav-item px-3">
-      <NavLink class="nav-link" href="weather">
-        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather (Server)
+      <NavLink class="nav-link" href="StaticWeatherForecastsPage">
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather (Static)
       </NavLink>
     </div>
 
-    @* <div class="nav-item px-3"> *@
-    @*   <NavLink class="nav-link" href=@WeatherForecastsPage.Route> *@
-    @*     <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @WeatherForecastsPage.Title *@
-    @*   </NavLink> *@
-    @* </div> *@
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@WasmWeatherForecastsPage.Route>
+        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @WasmWeatherForecastsPage.Title
+      </NavLink>
+    </div>
 
     <div class="nav-section-divider">
       <hr class="nav-divider">
@@ -112,35 +112,41 @@
     </div>
 
     <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@ActiveActionsPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ActiveActionsPage.Title
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@CachableWeatherForecastsPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @CachableWeatherForecastsPage.Title
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
       <NavLink class="nav-link" href=@CloneTestPage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@CloneTestPage.Title
       </NavLink>
     </div>
-    
+
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@ClonablePage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@ClonablePage.Title
       </NavLink>
     </div>
-    
-  
+
+
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@CustomInputExamplePage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @CustomInputExamplePage.Title
       </NavLink>
     </div>
-  
+
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@ServicesPage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ServicesPage.Title
       </NavLink>
     </div>
-    
-    <div class="nav-item px-3">
-          <NavLink class="nav-link" href=@ActiveActionsPage.Route>
-            <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ActiveActionsPage.Title
-          </NavLink>
-        </div>
   </nav>
 </div>
 
@@ -148,6 +154,6 @@
 {
   private async Task GoBack()
   {
-    await Mediator.Send(new RouteState.GoBack.Action());
+    await RouteState.GoBack();
   }
 }

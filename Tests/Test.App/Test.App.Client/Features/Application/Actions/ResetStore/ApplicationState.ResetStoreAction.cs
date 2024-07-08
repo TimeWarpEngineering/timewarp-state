@@ -19,7 +19,7 @@ public partial class ApplicationState
     public async Task Handle(ResetStoreAction resetStoreAction, CancellationToken cancellationToken)
     {
       Store.Reset();
-      await Sender.Send(new ChangeRoute.Action(newRoute:"/"), cancellationToken);
+      await Sender.Send(new ChangeRouteActionSet.Action(newRoute:"/"), cancellationToken);
     }
   }
 }

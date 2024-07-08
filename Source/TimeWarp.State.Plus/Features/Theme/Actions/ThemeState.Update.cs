@@ -3,7 +3,7 @@ namespace TimeWarp.Features.Theme;
 [UsedImplicitly]
 public partial class ThemeState
 {
-  public static class Update
+  public static class UpdateActionSet
   {
     [UsedImplicitly]
     public class Action : IAction
@@ -31,4 +31,7 @@ public partial class ThemeState
       }
     }
   }
+  
+  public async Task Update(Theme newTheme) => 
+    await Sender.Send(new UpdateActionSet.Action { NewTheme = newTheme });
 }

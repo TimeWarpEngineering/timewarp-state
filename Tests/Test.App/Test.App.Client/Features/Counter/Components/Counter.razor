@@ -2,7 +2,7 @@
 @inherits BaseComponent
 
 <div data-qa="@TestId">
-  <p>CounterState.Count: @CounterState.Count</p>
+  <p>CounterState.Count: <span data-qa="count">@CounterState.Count</span></p>
 
   <button @onclick="ButtonClick">Increment CounterState.Count</button>
 </div>

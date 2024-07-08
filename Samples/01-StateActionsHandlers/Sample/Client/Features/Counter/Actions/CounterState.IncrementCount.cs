@@ -1,5 +1,7 @@
 ﻿namespace Sample.Client.Features.Counter;
 
+using MediatR;
+
 [UsedImplicitly]
 public partial class CounterState
 {

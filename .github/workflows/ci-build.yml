@@ -23,11 +23,7 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}                
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."   
 
       - name: Restore Dotnet Tools
         run: |
@@ -54,44 +50,24 @@ jobs:
         run: |
           cd ${{ github.workspace }}/Source/TimeWarp.State.Plus/
           dotnet build --configuration Debug
-          dotnet pack --configuration Debug          
-
-#      - name: Client.Integration.Tests
-#        run: |
-#          cd Tests/Client.Integration.Tests/
-#          dotnet restore
-#          dotnet fixie --configuration Debug
-#
-#      - name: Server.Integration.Tests
-#        run: |
-#          cd Tests/Server.Integration.Tests/
-#          dotnet restore
-#          dotnet fixie --configuration Debug
-
-      - name: TimeWarp.State.Analyzer.Tests
-        run: |
-            cd ${{ github.workspace }}/Tests/TimeWarp.State.Analyzer.Tests/
-            dotnet restore
-            dotnet fixie --configuration Debug
+          dotnet pack --configuration Debug
           
-      - name: TimeWarp.State.Tests
-        run: |
-          cd ${{ github.workspace }}/Tests/TimeWarp.State.Tests/
-          dotnet restore
-          dotnet fixie --configuration Debug
-
-      # End to End Tests
-      - name: Test.App.EndToEnd.Tests
-        run: |
-          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
-          dotnet build
-
-      - name: Ensure browsers are installed
-        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
-        
-      - name: Run End-to-End Tests against all settings
-        run: ./RunE2ETests.ps1
+      - name: Run Tests
+        run: ./RunTests.ps1
         working-directory: ${{ github.workspace }}
+
+    # End to End Tests
+#      - name: Test.App.EndToEnd.Tests
+#        run: |
+#          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
+#          dotnet build
+#
+#      - name: Ensure browsers are installed
+#        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+#        
+#      - name: Run End-to-End Tests against all settings
+#        run: ./RunE2ETests.ps1
+#        working-directory: ${{ github.workspace }}
         
 #      - name: list files in the repository
 #        run: |

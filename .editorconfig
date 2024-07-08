@@ -79,14 +79,14 @@ csharp_style_var_for_built_in_types = false:warning
 csharp_style_var_when_type_is_apparent = true:warning
 
 # Expression-bodied members
-csharp_style_expression_bodied_accessors = when_on_single_line:warning
-csharp_style_expression_bodied_constructors = false:warning
-csharp_style_expression_bodied_indexers = when_on_single_line:warning
-csharp_style_expression_bodied_lambdas = true:suggestion
-csharp_style_expression_bodied_local_functions = false:suggestion
-csharp_style_expression_bodied_methods = when_on_single_line:warning
-csharp_style_expression_bodied_operators = when_on_single_line:warning
-csharp_style_expression_bodied_properties = when_on_single_line:warning
+csharp_style_expression_bodied_accessors = when_on_single_line:none
+csharp_style_expression_bodied_constructors = false:none
+csharp_style_expression_bodied_indexers = when_on_single_line:none
+csharp_style_expression_bodied_lambdas = true:none
+csharp_style_expression_bodied_local_functions = false:none
+csharp_style_expression_bodied_methods = when_on_single_line:none
+csharp_style_expression_bodied_operators = when_on_single_line:none
+csharp_style_expression_bodied_properties = when_on_single_line:none
 
 # Pattern Matching
 csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
@@ -186,7 +186,7 @@ dotnet_naming_style.interface_style.word_separator =
 dotnet_naming_style.interface_style.capitalization = pascal_case
 
 # Types should be PascalCase
-dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.severity = none
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case_style
 

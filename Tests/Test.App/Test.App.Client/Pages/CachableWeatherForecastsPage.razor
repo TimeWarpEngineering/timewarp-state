@@ -1,0 +1,121 @@
+﻿@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@attribute [Route(Route)]
+@using Test.App.Client.Features.WeatherForecast
+@using Test.App.Contracts.Features.WeatherForecast
+@inherits BaseComponent
+
+@code
+{
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "CachableState";
+
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/CacheableWeatherForecastsPage";
+
+  private async Task HandleFetchWeatherForecasts()
+  {
+    await Mediator.Send(new CacheableWeatherState.FetchWeatherForecasts.Action());
+  }
+}
+
+<PageTitle>@Title</PageTitle>
+<h3>Cacheable Weather</h3>
+@RenderModeDisplay
+<!-- Arrange -->
+<!-- Test description -->
+<p>This page demonstrates fetching data from the server using a ten second cache. </p>
+
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>CacheKey:</strong><span data-qa="cache-key">@CacheableWeatherState.CacheKey</span>
+  </li>
+  <li>
+    <strong>CacheDuration:</strong><span data-qa="cache-duration">@CacheableWeatherState.CacheDuration</span>
+  </li>
+  <li>
+    <strong>TimeStamp:</strong><span data-qa="timestamp">@CacheableWeatherState.TimeStamp</span>
+  </li>
+</ul>
+
+<!-- Actions to take -->
+<button data-qa="fetch-weather-forecasts" @onclick="HandleFetchWeatherForecasts">Fetch Weather Forecasts</button>
+
+
+@if (CacheableWeatherState.WeatherForecasts is not null)
+{
+  <table class="table" data-qa="weather-table">
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Temp. (C)</th>
+      <th>Temp. (F)</th>
+      <th>Summary</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (GetWeatherForecasts.WeatherForecastDto forecast in CacheableWeatherState.WeatherForecasts)
+    {
+      <tr>
+        <td>@forecast.Date.ToShortDateString()</td>
+        <td>@forecast.TemperatureC</td>
+        <td>@forecast.TemperatureF</td>
+        <td>@forecast.Summary</td>
+      </tr>
+    }
+    </tbody>
+  </table>
+}
+
+<hr>
+<!-- ACT -->
+<p><strong>Act: </strong>Load the Page</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong><br />
+  Current Render Mode == Wasm<br />
+  Configured Render Mode == InteractiveWebAssemblyRenderMode<br />
+  No Weather Forecasts should be displayed.<br />
+  CacheKey should be null.<br />
+  TimeStamp should be null.<br />
+  CacheDuration should be 10 seconds.<br />
+</p>
+
+<!-- ACT -->
+<p><strong>Act: </strong>Click the button to fetch weather forecasts</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong><br />
+  The page should render the weather forecast data in a table.<br />
+  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecasts.Action).FullName|{}`.<br />
+  The TimeStamp should have a value close to the current time.
+</p>
+
+<!-- ACT -->
+<p><strong>Act: </strong>Click the button a second time within the CacheDuration.</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong><br />
+  The page should render the weather forecast data in a table.<br />
+  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecasts.Action).FullName|{}`.<br />
+  The TimeStamp should be the same as the first time the button was clicked.<br />
+  The Weather Forecasts should be the same as the first time the button was clicked.
+</p>
+
+<!-- ACT -->
+<p><strong>Act: </strong>Wait longer than cache duration and then click button a third time.</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong><br />
+  The page should render new weather forecast data in a table.<br />
+  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecasts.Action).FullName|{}`.<br />
+  The TimeStamp should have a value close to the current time and different than the previous value.<br />
+</p>

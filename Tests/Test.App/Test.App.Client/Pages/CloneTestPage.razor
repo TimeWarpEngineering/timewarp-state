@@ -3,32 +3,6 @@
 @using AnyClone.Tests
 @inherits BaseComponent
 
-<PageTitle>@Title</PageTitle>
-<h3>@Title</h3>
-@RenderModeDisplay
-<!-- Arrange -->
-<!-- Test description -->
-<p>Test ability of Any Cone to clone various Types.</p>
-
-<!-- Values to validate -->
-<ul>
-  <li>
-    <strong>TestResult:</strong>@TestResult
-  </li>
-</ul>
-
-<!-- Actions to take -->
-<button @onclick="TestClone">Run</button>
-
-<hr/>
-<!-- ACT -->
-<p><strong>Act:</strong> Click the `Run` button</p>
-
-<!-- ASSERT -->
-<p>
-  <strong>Assert:</strong> TestResult should be `Passed`
-</p>
-
 @code {
   /// <summary>
   /// The title for the page.
@@ -66,3 +40,30 @@
     }
   }
 }
+
+
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<!-- Arrange -->
+<!-- Test description -->
+<p>Test ability of Any Cone to clone various Types.</p>
+
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>TestResult:</strong>@TestResult
+  </li>
+</ul>
+
+<!-- Actions to take -->
+<button @onclick="TestClone">Run</button>
+
+<hr/>
+<!-- ACT -->
+<p><strong>Act:</strong> Click the `Run` button</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong> TestResult should be `Passed`
+</p>

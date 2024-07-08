@@ -1,17 +1,27 @@
 namespace TimeWarp.State.Plus;
 
-using State.Extensions;
+using TimeWarp.State.Extensions;
 
-public class PersistentStatePostProcessor<TRequest, TResponse>
-(
-  ILogger<PersistentStatePostProcessor<TRequest, TResponse>> logger,
-  IStore Store,
-  ISessionStorageService SessionStorageService,
-  ILocalStorageService LocalSessionStorageService
-) : IRequestPostProcessor<TRequest, TResponse>
+public class PersistentStatePostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
   where TRequest : IAction
 {
-  private readonly ILogger Logger = logger;
+  private readonly ILogger Logger;
+  private readonly IStore Store;
+  private readonly ISessionStorageService SessionStorageService;
+  private readonly ILocalStorageService LocalSessionStorageService;
+  public PersistentStatePostProcessor
+  (
+    IStore store,
+    ISessionStorageService sessionStorageService,
+    ILocalStorageService localSessionStorageService,
+    ILogger<PersistentStatePostProcessor<TRequest, TResponse>> logger
+  )
+  {
+    Store = store;
+    SessionStorageService = sessionStorageService;
+    LocalSessionStorageService = localSessionStorageService;
+    Logger = logger;
+  }
 
   public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
