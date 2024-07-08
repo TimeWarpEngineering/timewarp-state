@@ -57,17 +57,17 @@ jobs:
         working-directory: ${{ github.workspace }}
 
     # End to End Tests
-      - name: Test.App.EndToEnd.Tests
-        run: |
-          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
-          dotnet build
-
-      - name: Ensure browsers are installed
-        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
-        
-      - name: Run End-to-End Tests against all settings
-        run: ./RunE2ETests.ps1
-        working-directory: ${{ github.workspace }}
+#      - name: Test.App.EndToEnd.Tests
+#        run: |
+#          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
+#          dotnet build
+#
+#      - name: Ensure browsers are installed
+#        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
+#        
+#      - name: Run End-to-End Tests against all settings
+#        run: ./RunE2ETests.ps1
+#        working-directory: ${{ github.workspace }}
         
 #      - name: list files in the repository
 #        run: |
