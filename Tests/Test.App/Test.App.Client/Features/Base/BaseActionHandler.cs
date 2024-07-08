@@ -15,4 +15,5 @@ internal abstract class BaseActionHandler<TAction>
   protected CounterState CounterState => Store.GetState<CounterState>();
   protected EventStreamState EventStreamState => Store.GetState<EventStreamState>();
   protected WeatherForecastsState WeatherForecastsState => Store.GetState<WeatherForecastsState>();
+  protected CacheableWeatherState CacheableWeatherState => Store.GetState<CacheableWeatherState>();
 }

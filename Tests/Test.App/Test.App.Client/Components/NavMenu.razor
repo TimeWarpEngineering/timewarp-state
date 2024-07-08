@@ -6,12 +6,12 @@
   <div class="container-fluid" title=@RenderModeDisplayString>
     <a class="navbar-brand" href="">Test.App.Server</a>
     <button disabled=@(!RouteState.CanGoBack) data-qa="GoBack" @onclick=GoBack style="width: 40px; height: 40px;">
-      <TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon class="icon-size"/>
+      <TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon class="icon-size" />
     </button>
   </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
   <nav class="flex-column">
@@ -112,35 +112,41 @@
     </div>
 
     <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@ActiveActionsPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ActiveActionsPage.Title
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@CachableWeatherForecastsPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @CachableWeatherForecastsPage.Title
+      </NavLink>
+    </div>
+
+    <div class="nav-item px-3">
       <NavLink class="nav-link" href=@CloneTestPage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@CloneTestPage.Title
       </NavLink>
     </div>
-    
+
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@ClonablePage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@ClonablePage.Title
       </NavLink>
     </div>
-    
-  
+
+
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@CustomInputExamplePage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @CustomInputExamplePage.Title
       </NavLink>
     </div>
-  
+
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@ServicesPage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ServicesPage.Title
       </NavLink>
     </div>
-    
-    <div class="nav-item px-3">
-          <NavLink class="nav-link" href=@ActiveActionsPage.Route>
-            <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ActiveActionsPage.Title
-          </NavLink>
-        </div>
   </nav>
 </div>
 
