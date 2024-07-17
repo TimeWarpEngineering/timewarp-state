@@ -76,5 +76,14 @@
       <Content Remove="**\tsconfig.json" />
     </ItemGroup>
   </Target>
-  
+
+  <Target Name="CopyPackage" AfterTargets="Pack">
+    <ItemGroup>
+      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(PackageFiles)"
+      DestinationFolder="$(SolutionDir)LocalNugetFeed\"
+    />
+  </Target>
 </Project>
