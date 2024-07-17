@@ -53,6 +53,8 @@
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
     <PackageVersion Include="System.Text.Json" Version="8.0.1" />
     <PackageVersion Include="TimeWarp.Fixie" Version="1.0.2" />
+    <PackageVersion Include="TimeWarp.State" Version="$(PackageVersion)" />
+    <PackageVersion Include="TimeWarp.State.Plus" Version="$(PackageVersion)" />
     <PackageVersion Include="TypeSupport" Version="1.2.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
