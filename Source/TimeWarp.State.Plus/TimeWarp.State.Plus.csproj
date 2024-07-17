@@ -58,10 +58,10 @@
     <ItemGroup>
       <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
     </ItemGroup>
-    <MakeDir Directories="$(SolutionDir)LocalNugetFeed\" />
+    <MakeDir Directories="$(ProjectDir)..\LocalNugetFeed\" />
     <Copy
       SourceFiles="@(PackageFiles)"
-      DestinationFolder="$(SolutionDir)LocalNugetFeed\"
+      DestinationFolder="$(ProjectDir)..\LocalNugetFeed\"
     />
   </Target>
   
