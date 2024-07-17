@@ -85,36 +85,37 @@ public class Subscriptions
   public void ReRenderSubscribers(Type type)
   {
     IEnumerable<Subscription> subscriptions = TimeWarpStateComponentReferencesList.Where(record => record.StateType == type);
-    foreach (Subscription subscription in subscriptions.ToList())
+    foreach (Subscription subscription in subscriptions)
     {
       if (subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
       {
-        Logger.LogDebug
-        (
-          EventIds.Subscriptions_ReRenderingSubscribers,
-          "ReRender ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
-          subscription.ComponentId,
-          subscription.StateType.Name
-        );
-
+        LogReRender(subscription);
         target.ReRender();
       }
       else
       {
         // If Dispose is called will I ever have items in this list that got Garbage collected?
         // Maybe for those that don't inherit from our BaseComponent?
-        Logger.LogDebug
-        (
-          EventIds.Subscriptions_RemoveSubscription,
-          "Removing Subscription for ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
-          subscription.ComponentId,
-          subscription.StateType.Name
-        );
-
+        LogRemoveSubscription(subscription);
         TimeWarpStateComponentReferencesList.Remove(subscription);
       }
     }
   }
+  private void LogRemoveSubscription(Subscription subscription) => Logger.LogDebug
+  (
+    EventIds.Subscriptions_RemoveSubscription,
+    "Removing Subscription for ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
+    subscription.ComponentId,
+    subscription.StateType.Name
+  );
+  
+  private void LogReRender(Subscription subscription) => Logger.LogDebug
+  (
+    EventIds.Subscriptions_ReRenderingSubscribers,
+    "ReRender ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
+    subscription.ComponentId,
+    subscription.StateType.Name
+  );
 
   private readonly struct Subscription : IEquatable<Subscription>
   {
