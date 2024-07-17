@@ -54,4 +54,15 @@
     <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <Target Name="CopyPackage" AfterTargets="Pack">
+    <ItemGroup>
+      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
+    </ItemGroup>
+    <MakeDir Directories="$(ProjectDir)..\..\LocalNugetFeed\" />
+    <Copy
+      SourceFiles="@(PackageFiles)"
+      DestinationFolder="$(ProjectDir)..\..\LocalNugetFeed\"
+    />
+  </Target>
+  
 </Project>

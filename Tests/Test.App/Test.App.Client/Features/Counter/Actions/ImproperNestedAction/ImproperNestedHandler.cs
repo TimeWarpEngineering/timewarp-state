@@ -1,3 +1,5 @@
+#if ANALYZER_TEST
+// Code examples that the analyzer should fail on
 namespace Test.App.Client.Features.Counter;
 
 using static WrongNesting;
@@ -17,3 +19,4 @@ public partial class CounterState
     ) => Unit.Task;
   }
 }
+#endif

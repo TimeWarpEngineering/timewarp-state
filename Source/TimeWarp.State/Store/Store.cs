@@ -8,8 +8,9 @@ internal partial class Store : IStore
   private readonly JsonSerializerOptions JsonSerializerOptions;
   private readonly ILogger Logger;
   private readonly IServiceProvider ServiceProvider;
-  private readonly IDictionary<string, IState> States;
-  private readonly IDictionary<string, SemaphoreSlim> Semaphores;
+  private readonly ConcurrentDictionary<string, IState> States;
+  private readonly ConcurrentDictionary<string, IState> PreviousStates;
+  private readonly ConcurrentDictionary<string, SemaphoreSlim> Semaphores;
   private readonly IPublisher Publisher;
   private readonly TimeWarpStateOptions TimeWarpStateOptions;
 
@@ -35,6 +36,7 @@ internal partial class Store : IStore
     JsonSerializerOptions = timeWarpStateOptions.JsonSerializerOptions;
 
     States = new ConcurrentDictionary<string, IState>();
+    PreviousStates = new ConcurrentDictionary<string, IState>();
     Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
   }
 
@@ -47,6 +49,12 @@ internal partial class Store : IStore
   {
     Type stateType = typeof(TState);
     return (TState)GetState(stateType);
+  }
+
+  public TState? GetPreviousState<TState>()
+  {
+    Type stateType = typeof(TState);
+    return (TState?)GetPreviousState(stateType);
   }
 
   /// <summary>
@@ -62,7 +70,10 @@ internal partial class Store : IStore
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
     if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? semaphore)) return semaphore;
     semaphore = new SemaphoreSlim(1, 1);
-    Semaphores.Add(typeName, semaphore);
+    if (!Semaphores.TryAdd(typeName, semaphore))
+    {
+      throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the Semaphores dictionary.");  
+    }
     return semaphore;
   }
   
@@ -87,7 +98,10 @@ internal partial class Store : IStore
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
         state = (IState)ServiceProvider.GetRequiredService(stateType);
         state.Initialize();
-        States.Add(typeName, state);
+        if (!States.TryAdd(typeName, state))
+        {
+          throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the States dictionary.");
+        }
         
         // Fire-and-forget publishing the state initialization notification with exception handling
         Task.Run(async () =>
@@ -108,6 +122,13 @@ internal partial class Store : IStore
     }
   }
 
+  public object? GetPreviousState(Type stateType)
+  {
+    string typeName = stateType.FullName ?? throw new InvalidOperationException();
+    PreviousStates.TryGetValue(typeName, out IState? state);
+    return state;
+  }
+
   private void SetState(string typeName, object newStateObject)
   {
     var newState = (IState)newStateObject;
@@ -118,6 +139,7 @@ internal partial class Store : IStore
       typeName,
       newState.Guid
     );
+    PreviousStates[typeName] = States[typeName];
     States[typeName] = newState;
   }
 }

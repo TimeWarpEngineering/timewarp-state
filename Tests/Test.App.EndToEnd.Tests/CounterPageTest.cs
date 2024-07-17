@@ -15,7 +15,7 @@ public class CounterTests : PageTest
     SutBaseUrl = Configuration.GetSutBaseUrl();
 
     // Navigate to the Counter page
-    await Page.GotoAsync($"{SutBaseUrl}/counter");
+    await Page.GotoAsync($"{SutBaseUrl}/CounterPage");
 
     // Define the locators for the render modes and counters
     Counter1Locator = Page.Locator("[data-qa='Counter1'] [data-qa='count']");

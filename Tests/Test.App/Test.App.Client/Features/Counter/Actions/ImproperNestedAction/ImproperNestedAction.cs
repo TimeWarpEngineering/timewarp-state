@@ -1,3 +1,5 @@
+#if ANALYZER_TEST
+// Code examples that the analyzer should fail on
 namespace Test.App.Client.Features.Counter;
 
 [UsedImplicitly]
@@ -10,3 +12,4 @@ public class WrongNesting
     public int Amount { get; set; }
   }
 }
+#endif
