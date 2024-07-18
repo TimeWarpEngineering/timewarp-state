@@ -26,33 +26,7 @@ Integrate TimWarp.State into a `Blazor App`.
 ## Add TimeWarp.State
 
 Add the TimeWarp.State NuGet package to the `Sample.Client` project.  
-   `dotnet add ./Client/Sample.Client.csproj package TimeWarp.State`
-
-## Solution Structure
-
-Organize Features[^1] by the `State` they act upon:
-
-1. Create `Features` folder in the Client project.
-2. Inside `Features`, add a `Counter` folder.
-
-## Add CounterState
-
-Inside `Counter`, add `CounterState.cs`:
-
-- Define `CounterState` as a partial class inheriting from `State<CounterState>`.
-- Override `Initialize()` to set `Count` to 3.
-
-```csharp
-namespace Sample.Client.Features.Counter;
-
-using BlazorState;
-
-public partial class CounterState : State<CounterState>
-{
-    public int Count { get; private set; }
-    public override void Initialize() => Count = 3;
-}
-```
+   `dotnet add ./Sample.Client/Sample.Client.csproj package TimeWarp.State`
 
 ## Configure Services
 
@@ -62,7 +36,7 @@ In `Program.cs` of `Sample.Client`:
 - Configure BlazorState options with the assemblies to scan.
 
 ```csharp
-using BlazorState;
+using TimeWarp.State;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Sample.Client;
@@ -87,6 +61,34 @@ builder.Services.AddBlazorState
 await builder.Build().RunAsync();
 ```
 
+
+## Solution Structure
+
+Organize Features[^1] by the `State` they act upon:
+
+1. Create `Features` folder in the Client project.
+2. Inside `Features`, add a `Counter` folder.
+
+## Add CounterState
+
+Inside `Counter`, add `CounterState.cs`:
+
+- Define `CounterState` as a partial class inheriting from `State<CounterState>`.
+- Override `Initialize()` to set `Count` to 3.
+
+```csharp
+namespace Sample.Client.Features.Counter;
+
+using TimeWarp.State;
+
+public partial class CounterState : State<CounterState>
+{
+    public int Count { get; private set; }
+    public override void Initialize() => Count = 3;
+}
+```
+
+
 ## UI Integration
 
 Modify `Pages/Counter.razor`:
@@ -102,7 +104,7 @@ The code should look as follows:
 
 ```csharp
 @page "/counter"
-@using BlazorState
+@using TimeWarp.State
 @using Sample.Client.Features.Counter
 
 @inherits BlazorStateComponent
