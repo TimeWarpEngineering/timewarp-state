@@ -61,8 +61,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\TimeWarp.State.Analyzer\bin\$(Configuration)\netstandard2.1\TimeWarp.State.Analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
-    <None Include="..\TimeWarp.State.SourceGenerator\bin\$(Configuration)\netstandard2.1\TimeWarp.State.SourceGenerator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="..\TimeWarp.State.Analyzer\bin\$(Configuration)\netstandard2.0\TimeWarp.State.Analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="..\TimeWarp.State.SourceGenerator\bin\$(Configuration)\netstandard2.0\TimeWarp.State.SourceGenerator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
   
   <ItemGroup>
