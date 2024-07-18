@@ -2,7 +2,7 @@ namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState
 {
-  public static class TwoSecondTask
+  public static class TwoSecondTaskActionSet
   {
     [TrackAction]
     public class Action : IAction;
@@ -23,4 +23,7 @@ public partial class ActionTrackingState
       }
     }
   }
+  
+  public async Task TwoSecondTask(CancellationToken cancellationToken) =>
+    await Sender.Send(new TwoSecondTaskActionSet.Action(), cancellationToken);
 }

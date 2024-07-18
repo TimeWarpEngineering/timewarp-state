@@ -42,6 +42,6 @@ public partial class RouteState
       }
     }
   }
-  public async Task ChangeRoute(string newRoute) =>
-    await Sender.Send(new RouteState.ChangeRouteActionSet.Action(newRoute));
+  public async Task ChangeRoute(string newRoute, CancellationToken cancellationToken) =>
+    await Sender.Send(new RouteState.ChangeRouteActionSet.Action(newRoute), cancellationToken);
 }

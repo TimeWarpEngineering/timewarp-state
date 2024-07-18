@@ -2,7 +2,7 @@
 
 public partial class ActionTrackingState
 {
-  public static class CompleteProcessing
+  public static class CompleteProcessingActionSet
   {
     public class Action : IAction
     {
@@ -41,4 +41,7 @@ public partial class ActionTrackingState
       }
     }
   }
+  
+  // public async Task CompleteProcessing(IAction theAction, CancellationToken cancellationToken) =>
+  //   await Sender.Send(new ActionTrackingState.CompleteProcessingActionSet.Action(theAction), cancellationToken);
 }
