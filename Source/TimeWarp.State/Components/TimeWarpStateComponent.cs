@@ -78,24 +78,17 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
 
   private CurrentRenderMode GetCurrentRenderMode()
   {
-    if (OperatingSystem.IsBrowser())
-    {
-      return State.CurrentRenderMode.Wasm;
-    }
-    else if (!HasRendered)
-    {
-      bool hasRenderAttribute = TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
-        type.GetCustomAttributes(true)
-          .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
+    if (OperatingSystem.IsBrowser()) return State.CurrentRenderMode.Wasm;
+    
+    if (HasRendered) return State.CurrentRenderMode.Server;
+    
+    bool hasRenderAttribute = TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
+      type.GetCustomAttributes(true)
+        .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
 
-      return hasRenderAttribute
-        ? State.CurrentRenderMode.PreRendering
-        : State.CurrentRenderMode.Static;
-    }
-    else
-    {
-      return State.CurrentRenderMode.Server;
-    }
+    return hasRenderAttribute
+      ? State.CurrentRenderMode.PreRendering
+      : State.CurrentRenderMode.Static;
   }
 
   protected string CurrentRenderMode => GetCurrentRenderMode().ToString();
@@ -104,17 +97,18 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   ///   Exposes StateHasChanged
   /// </summary>
   public void ReRender() => InvokeAsync(StateHasChanged);
-
+  
   /// <summary>
   ///   Place a Subscription for the calling component
-  ///   And returns the requested state
+  ///   And returns the requested state 
   /// </summary>
+  /// <param name="placeSubscription"></param>
   /// <typeparam name="T"></typeparam>
   /// <returns></returns>
-  protected T GetState<T>()
+  protected T GetState<T>(bool placeSubscription = true)
   {
     Type stateType = typeof(T);
-    Subscriptions.Add(stateType, this);
+    if (placeSubscription) Subscriptions.Add(stateType, this);
     return Store.GetState<T>();
   }
   
