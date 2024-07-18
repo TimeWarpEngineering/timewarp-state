@@ -44,5 +44,6 @@ public partial class RouteState
       }
     }
   }
-  public async Task PushRouteInfo() => await Sender.Send(new PushRouteInfoActionSet.Action());
+  public async Task PushRouteInfo(CancellationToken cancellationToken) => 
+    await Sender.Send(new PushRouteInfoActionSet.Action(), cancellationToken);
 }

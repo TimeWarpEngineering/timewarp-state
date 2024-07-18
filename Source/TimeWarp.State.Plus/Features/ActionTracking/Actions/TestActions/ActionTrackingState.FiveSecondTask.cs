@@ -2,18 +2,15 @@ namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState
 {
-  public static class FiveSecondTask
+  public static class FiveSecondTaskActionSet
   {
     [TrackAction]
     public record Action : IAction;
 
     [UsedImplicitly]
-    internal class Handler
-    (
-      IStore store
-    ): ActionHandler<Action>(store)
+    internal class Handler : ActionHandler<Action>
     {
-      private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
+      public Handler(IStore store) : base(store) {}
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
@@ -23,4 +20,7 @@ public partial class ActionTrackingState
       }
     }
   }
+
+  public async Task FiveSecondTask(CancellationToken cancellationToken) =>
+    await Sender.Send(new FiveSecondTaskActionSet.Action(), cancellationToken);
 }

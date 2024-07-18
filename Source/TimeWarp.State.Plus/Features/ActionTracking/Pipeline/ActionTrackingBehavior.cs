@@ -2,15 +2,17 @@
 
 using static ActionTrackingState;
 
-public class ActiveActionBehavior<TAction, TResponse>
-(
-  ISender Sender,
-  ILogger<ActiveActionBehavior<TAction, TResponse>> logger
-) : IPipelineBehavior<TAction, TResponse>
+public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
   where TAction : IAction
 {
-  private readonly ILogger Logger = logger;
-  
+  private readonly ILogger Logger;
+  private readonly ISender Sender;
+  public ActiveActionBehavior(ISender sender, ILogger<ActiveActionBehavior<TAction, TResponse>> logger)
+  {
+    Sender = sender;
+    Logger = logger;
+  }
+
   public async Task<TResponse> Handle
   (
     TAction action,
@@ -20,8 +22,8 @@ public class ActiveActionBehavior<TAction, TResponse>
   {
     if (typeof(TAction).GetCustomAttributes(typeof(TrackActionAttribute), false).Length != 0)
     {
-      ArgumentValidation.EnsureNotType<TAction, StartProcessing.Action>(action, nameof(action));
-      ArgumentValidation.EnsureNotType<TAction, CompleteProcessing.Action>(action, nameof(action));
+      ArgumentValidation.EnsureNotType<TAction, StartProcessingActionSet.Action>(action, nameof(action));
+      ArgumentValidation.EnsureNotType<TAction, CompleteProcessingActionSet.Action>(action, nameof(action));
 
       Logger.LogDebug
       (
@@ -29,7 +31,7 @@ public class ActiveActionBehavior<TAction, TResponse>
         "Start tracking Action of type {actionType}",
         action.GetType().FullName
       );
-      await Sender.Send(new StartProcessing.Action(action), cancellationToken);
+      await Sender.Send(new StartProcessingActionSet.Action(action), cancellationToken);
       
       Logger.LogDebug
       (
@@ -52,7 +54,7 @@ public class ActiveActionBehavior<TAction, TResponse>
           action.GetType().FullName
         );
         
-        await Sender.Send(new CompleteProcessing.Action(action), cancellationToken);
+        await Sender.Send(new CompleteProcessingActionSet.Action(action), cancellationToken);
         Logger.LogDebug
         (
           State.Plus.EventIds.ActionTrackingBehavior_CompletedTracking,

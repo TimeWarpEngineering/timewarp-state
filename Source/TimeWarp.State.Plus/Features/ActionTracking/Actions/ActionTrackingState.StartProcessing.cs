@@ -2,11 +2,15 @@
 
 public partial class ActionTrackingState
 {
-  public static class StartProcessing
+  public static class StartProcessingActionSet
   {
-    internal class Action(IAction theAction) : IAction
+    internal class Action : IAction
     {
-      public IAction TheAction { get; init; } = theAction;
+      public Action(IAction theAction) 
+      {
+        TheAction = theAction;
+      }
+      public IAction TheAction { get; }
     }
 
     [UsedImplicitly]
@@ -24,4 +28,7 @@ public partial class ActionTrackingState
       }
     }
   }
+  
+  // public async Task StartProcessing(IAction theAction, CancellationToken cancellationToken) =>
+  //   await Sender.Send(new ActionTrackingState.StartProcessingActionSet.Action(theAction), cancellationToken);
 }
