@@ -45,6 +45,7 @@ internal class EventIds
   public static readonly EventId RenderSubscriptionsPostProcessor_Begin = new(601, nameof(ReduxDevToolsBehavior_Constructing));
   public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(ReduxDevToolsBehavior_Constructing));
   public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_SkippedReRender = new(604, nameof(RenderSubscriptionsPostProcessor_SkippedReRender));
 
   // Store - TimeWarp State Specific
   public static readonly EventId Store_Constructing = new(100, nameof(Store_Constructing));
