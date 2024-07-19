@@ -21,6 +21,6 @@ public partial class ActionTrackingState
     }
   }
 
-  public async Task FiveSecondTask(CancellationToken cancellationToken) =>
+  public async Task FiveSecondTask(CancellationToken cancellationToken = default) =>
     await Sender.Send(new FiveSecondTaskActionSet.Action(), cancellationToken);
 }

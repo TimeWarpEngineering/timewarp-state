@@ -8,13 +8,9 @@ public partial class ActionTrackingState
     public class Action : IAction;
 
     [UsedImplicitly]
-    internal class Handler
-    (
-      IStore store
-    ): ActionHandler<Action>(store)
+    internal class Handler : ActionHandler<Action>
     {
-      private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
-
+      public Handler(IStore store) : base(store) {}
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
         Console.WriteLine("Start two Second Task");
@@ -24,6 +20,6 @@ public partial class ActionTrackingState
     }
   }
   
-  public async Task TwoSecondTask(CancellationToken cancellationToken) =>
+  public async Task TwoSecondTask(CancellationToken cancellationToken = default) =>
     await Sender.Send(new TwoSecondTaskActionSet.Action(), cancellationToken);
 }
