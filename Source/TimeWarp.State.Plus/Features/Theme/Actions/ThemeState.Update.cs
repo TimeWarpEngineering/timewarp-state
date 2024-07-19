@@ -32,6 +32,6 @@ public partial class ThemeState
     }
   }
   
-  public async Task Update(Theme newTheme, CancellationToken cancellationToken) => 
+  public async Task Update(Theme newTheme, CancellationToken cancellationToken = default) => 
     await Sender.Send(new UpdateActionSet.Action { NewTheme = newTheme }, cancellationToken);
 }

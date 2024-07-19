@@ -12,6 +12,8 @@ public interface IStore
   Guid Guid { get; }
 
   TState GetState<TState>();
+  
+  TState? GetPreviousState<TState>();
 
   object GetState(Type stateType);
   
