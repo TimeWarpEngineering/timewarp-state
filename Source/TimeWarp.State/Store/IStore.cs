@@ -13,7 +13,7 @@ public interface IStore
 
   TState GetState<TState>();
   
-  TState GetPreviousState<TState>();
+  TState? GetPreviousState<TState>();
 
   object GetState(Type stateType);
   
