@@ -45,6 +45,6 @@ public partial class RouteState
     }
   }
   
-  public async Task GoBack(CancellationToken cancellationToken, int amount = 1) => 
+  public async Task GoBack(int amount = 1, CancellationToken cancellationToken = default) => 
     await Sender.Send(new GoBackActionSet.Action(amount), cancellationToken);
 }
