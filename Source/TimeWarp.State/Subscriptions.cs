@@ -87,7 +87,11 @@ public class Subscriptions
     IEnumerable<Subscription> subscriptions = TimeWarpStateComponentReferencesList.Where(record => record.StateType == type);
     foreach (Subscription subscription in subscriptions)
     {
-      if (subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
+      if 
+      (
+        subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target) 
+        && target.ShouldReRender(type)
+      )
       {
         LogReRender(subscription);
         target.ReRender();
