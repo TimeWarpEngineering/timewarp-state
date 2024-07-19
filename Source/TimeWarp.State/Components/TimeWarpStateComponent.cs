@@ -112,7 +112,7 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     return Store.GetState<T>();
   }
   
-  protected T GetPreviousState<T>() => Store.GetPreviousState<T>();
+  protected T? GetPreviousState<T>() => Store.GetPreviousState<T>();
 
   protected override void OnAfterRender(bool firstRender)
   {
