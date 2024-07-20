@@ -124,6 +124,13 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
 
   public virtual bool ShouldReRender(Type type) => true;
   
+  protected bool ShouldReRender<T>(Type type, Func<T, bool> condition) where T : class
+  {
+    if (type != typeof(T)) return false;
+    T? previousState = GetPreviousState<T>();
+    return previousState != null && condition(previousState);
+  }
+  
   public virtual void Dispose()
   {
     Subscriptions.Remove(this);
