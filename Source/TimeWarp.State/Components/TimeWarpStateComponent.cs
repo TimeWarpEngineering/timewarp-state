@@ -122,11 +122,11 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     StateHasChanged();
   }
 
-  public virtual bool ShouldReRender(Type type) => true;
+  public virtual bool ShouldReRender(Type stateType) => true;
   
-  protected bool ShouldReRender<T>(Type type, Func<T, bool> condition) where T : class
+  protected bool ShouldReRender<T>(Type stateType, Func<T, bool> condition) where T : class
   {
-    if (type != typeof(T)) return false;
+    if (stateType != typeof(T)) return false;
     T? previousState = GetPreviousState<T>();
     return previousState != null && condition(previousState);
   }

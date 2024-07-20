@@ -26,5 +26,5 @@ public interface ITimeWarpStateComponent
   
   void ReRender();
 
-  bool ShouldReRender(Type type) => true;
+  bool ShouldReRender(Type stateType) => true;
 }
