@@ -1,5 +1,13 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-var builder = WebAssemblyHostBuilder.CreateDefault(args);
+namespace Sample.Client;
 
-await builder.Build().RunAsync();
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+        await builder.Build().RunAsync();
+    }
+}
