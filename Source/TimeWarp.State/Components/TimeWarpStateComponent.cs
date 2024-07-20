@@ -121,6 +121,8 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     HasRendered = true;
     StateHasChanged();
   }
+
+  public virtual bool ShouldReRender(Type type) => true;
   
   public virtual void Dispose()
   {
