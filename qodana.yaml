@@ -4,6 +4,9 @@
 #-------------------------------------------------------------------------------#
 version: "1.0"
 
+dotnet:
+  solution: TimeWarp.State.sln
+  
 #Specify IDE code to run analysis without container (Applied in CI/CD pipeline)
 ide: QDNET
 
