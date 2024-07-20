@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
 
     var timeWarpStateOptions = new TimeWarpStateOptions(serviceCollection);
     configureTimeWarpStateOptionsAction?.Invoke(timeWarpStateOptions);
+    TimeWarpStateOptionsValidator.Validate(timeWarpStateOptions);
 
     serviceCollection.AddScoped<JsonRequestHandler>();
     serviceCollection.AddScoped<Subscriptions>();
