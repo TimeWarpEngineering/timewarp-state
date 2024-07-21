@@ -1,4 +1,4 @@
 ---
-uid: BlazorState:EnableJavascriptInterop.md
+uid: TimeWarp.State:EnableJavascriptInterop.md
 title: Enable Javascript Interop
 ---

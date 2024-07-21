@@ -1,6 +1,6 @@
 ---
-uid: BlazorState:Tutorial.md
-title: TimeWarp.State Blazor Hosted WebAssembly Tutorial
+uid: TimeWarp.State:Tutorial.md
+title: TimeWarp.State Adding ReduxDevTools
 ---
 
 ### Prerequisites
@@ -9,10 +9,10 @@ title: TimeWarp.State Blazor Hosted WebAssembly Tutorial
 
 ## ReduxDevTools JavaScript Interop and RouteState
 
-To [enable ReduxDevTools](xref:BlazorState:AddReduxDevTools.md) update `Program.cs` as follows:
+To [enable ReduxDevTools](xref:TimeWarp.State:AddReduxDevTools.md) update `Program.cs` as follows:
 
 ```csharp
-using BlazorState;
+using TimeWarp.State;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Sample.Client;
@@ -24,7 +24,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddBlazorState
+builder.Services.AddTimeWarpState
 (
     options =>
     {
@@ -46,9 +46,9 @@ To facilitate JavaScript Interop, enable ReduxDevTools, and manage RouteState, a
 namespace Sample.Client;
 
 using System.Threading.Tasks;
-using BlazorState.Pipeline.ReduxDevTools;
-using BlazorState.Features.JavaScriptInterop;
-using BlazorState.Features.Routing;
+using TimeWarp.State.Pipeline.ReduxDevTools;
+using TimeWarp.State.Features.JavaScriptInterop;
+using TimeWarp.State.Features.Routing;
 using Microsoft.AspNetCore.Components;
 
 public partial class App : ComponentBase
