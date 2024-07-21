@@ -1,5 +1,5 @@
 ---
-uid: blazor-state.Acknowledgements.md
+uid: TimeWarp.State.Acknowledgements.md
 title: Acknowledgements
 ---
 
@@ -17,6 +17,6 @@ Not surprisingly, Pete and I think a lot alike.
 We both, independently, started working on our own State Management
 components. Although I started first. :P
 Pete's component attempts to solve most of the same problems.
-Blazor-State draws on the strengths of a proven pipeline in MediatR where Fluxor
+TimeWarp.State draws on the strengths of a proven async pipeline in MediatR, where as Fluxor
 implements its own middleware.  
-If Blazor-State does not meet your needs be sure to checkout Fluxor.
+If TimeWarp.State does not meet your needs be sure to checkout Fluxor.

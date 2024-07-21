@@ -1,12 +1,12 @@
 ---
-uid: blazor-state.Terminology.md
+uid: TimeWarp.State.Terminology.md
 title: Terminology
 ---
 
 ## Terminology
 
-The pattern used by Blazor-State and MediatR has been around for many years and goes by different names.
-We list various related terms here and **Bold** indicates the term used in Blazor-State.
+The pattern used by TimeWarp.State and MediatR has been around for many years and goes by different names.
+We list various related terms here and **Bold** indicates the term used in TimeWarp.State.
 
 ### Signals/**Actions**/**Requests**/Commands/
 
@@ -14,7 +14,7 @@ In Redux they call them "Action".
 In UML they are "Signal".  
 In Command Pattern they are "Command"  
 In MediatR they are `Request`
-In Blazor-State we call them `Actions` when they are handled on the Client and `Requests` if they handled on the Server.
+In TimeWarp.State we call them `Actions` when they are handled on the Client and `Requests` if they handled on the Server.
 
 ### Reducer/**Handler**/Executor
 
@@ -23,7 +23,7 @@ This is the code that processes the `Request/Action` and returns the `Response`.
 In Redux they call them "Reducer".
 In Command Pattern we call them "Executor".  
 In MediatR they are `Handler`.  
-In Blazor-State we call them `Handler`.
+In TimeWarp.State we call them `Handler`.
 
 ### Feature
 
