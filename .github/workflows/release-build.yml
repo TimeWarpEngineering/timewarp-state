@@ -47,7 +47,7 @@ jobs:
         id: extract_version
         run: |
           [xml]$xml = Get-Content -Path "Directory.Build.props"
-          $version = $xml.Project.PropertyGroup.PackageVersion
+          $version = $xml.Project.PropertyGroup.TimeWarpStateVersion
           echo "Extracted version: $version"
           echo "::set-output name=VERSION::$version"
         shell: pwsh
