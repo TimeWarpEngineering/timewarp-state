@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
 
     serviceCollection.AddScoped<JsonRequestHandler>();
     serviceCollection.AddScoped<Subscriptions>();
+    serviceCollection.AddScoped<RenderSubscriptionContext>();
     serviceCollection.AddScoped<IStore, Store>();
     serviceCollection.AddSingleton(timeWarpStateOptions);
 
