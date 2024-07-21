@@ -81,16 +81,16 @@ public class Subscriptions
   /// Will iterate over all subscriptions for the given type and call ReRender on each.
   /// If the target component no longer exists it will remove its subscription.
   /// </summary>
-  /// <param name="type"></param>
-  public void ReRenderSubscribers(Type type)
+  /// <param name="stateType"></param>
+  public void ReRenderSubscribers(Type stateType)
   {
-    IEnumerable<Subscription> subscriptions = TimeWarpStateComponentReferencesList.Where(record => record.StateType == type);
+    IEnumerable<Subscription> subscriptions = TimeWarpStateComponentReferencesList.Where(record => record.StateType == stateType);
     foreach (Subscription subscription in subscriptions)
     {
       if 
       (
         subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target) 
-        && target.ShouldReRender(type)
+        && target.ShouldReRender(stateType)
       )
       {
         LogReRender(subscription);

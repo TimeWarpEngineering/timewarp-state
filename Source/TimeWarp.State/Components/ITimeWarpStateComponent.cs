@@ -26,5 +26,12 @@ public interface ITimeWarpStateComponent
   
   void ReRender();
 
-  bool ShouldReRender(Type type) => true;
+  /// <summary>
+  /// Determines whether the component should re-render for the given state.
+  /// </summary>
+  /// <param name="stateType">The type of the state being checked.</param>
+  /// <returns>
+  /// <c>true</c> if the component should re-render based on the state and its previous values; otherwise, <c>false</c>.
+  /// </returns>
+  bool ShouldReRender(Type stateType) => true;
 }

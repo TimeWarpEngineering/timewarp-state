@@ -24,9 +24,19 @@ public static class ServiceCollectionExtensions
 
     var timeWarpStateOptions = new TimeWarpStateOptions(serviceCollection);
     configureTimeWarpStateOptionsAction?.Invoke(timeWarpStateOptions);
+    
+    if (!timeWarpStateOptions.Assemblies.Any())
+    {
+      // If no assemblies are specified then we will use the assembly that called this method.
+      // This is to avoid the user having to specify the assembly in the options.
+      // If the user specifies any assemblies they will have to specify the calling assembly also if they want it to be used.
+      timeWarpStateOptions.Assemblies = [Assembly.GetCallingAssembly()];
+    }
+    TimeWarpStateOptionsValidator.Validate(timeWarpStateOptions);
 
     serviceCollection.AddScoped<JsonRequestHandler>();
     serviceCollection.AddScoped<Subscriptions>();
+    serviceCollection.AddScoped<RenderSubscriptionContext>();
     serviceCollection.AddScoped<IStore, Store>();
     serviceCollection.AddSingleton(timeWarpStateOptions);
 

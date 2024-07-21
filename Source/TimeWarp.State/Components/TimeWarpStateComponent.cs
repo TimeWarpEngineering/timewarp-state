@@ -122,11 +122,25 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     StateHasChanged();
   }
 
-  public virtual bool ShouldReRender(Type type) => true;
+  /// <inheritdoc />
+  public virtual bool ShouldReRender(Type stateType) => true;
   
-  protected bool ShouldReRender<T>(Type type, Func<T, bool> condition) where T : class
+
+  /// <summary>
+  /// Determines whether the component should re-render based on changes in a specific state type.
+  /// </summary>
+  /// <typeparam name="T">The type of state to check.</typeparam>
+  /// <param name="stateType">The type of state that has changed.</param>
+  /// <param name="condition">A function that evaluates given the previous state and returns true if a re-render is needed.</param>
+  /// <returns>True if the component should re-render; otherwise, false.</returns>
+  /// <remarks>
+  /// This method checks if the changed state type matches the generic type parameter T.
+  /// If it matches, it retrieves the previous state and applies the provided condition.
+  /// The component will re-render if the condition returns true given the previous state.
+  /// </remarks>
+  protected bool ShouldReRender<T>(Type stateType, Func<T, bool> condition) where T : class
   {
-    if (type != typeof(T)) return false;
+    if (stateType != typeof(T)) return false;
     T? previousState = GetPreviousState<T>();
     return previousState != null && condition(previousState);
   }
