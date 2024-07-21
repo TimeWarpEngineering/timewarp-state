@@ -8,6 +8,10 @@ public class TimeWarpStateOptions
   /// <summary>
   /// Assemblies to be searched for MediatR Actions and Handlers
   /// </summary>
+  /// <remarks>
+  /// Will default to the calling assembly
+  /// If the user specifies any assemblies they will have to specify the calling assembly also if they want it to be used.
+  /// </remarks>
   public IEnumerable<Assembly> Assemblies { get; set; }
 
   /// <summary>
