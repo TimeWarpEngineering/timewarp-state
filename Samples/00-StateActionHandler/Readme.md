@@ -15,15 +15,15 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Creating the Project
 
-- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample`.
+- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample`
 - Navigate to the new project: `cd Sample`
 - Test the application: `dotnet run --project ./Sample/Sample.csproj`
 - Open the URL shown in the command output (e.g., <http://localhost:5256>) and test the counter functionality. Note: Your URL will differ.
 
 > [!NOTE]
-   > The counter resets to zero when you navigate away and return because each time you leave the page, 
-   the counter component is destroyed. 
-   When you return, a new instance of the component is created, starting the count afresh. 
+> The counter resets to zero when you navigate away and return because each time you leave the page,
+> the counter component is destroyed.
+> When you return, a new instance of the component is created, starting the count afresh.
 
 ###
 Add the TimeWarp.State NuGet package to the `Sample.Client` project.  
