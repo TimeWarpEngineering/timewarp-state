@@ -7,7 +7,7 @@
 [![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/timewarp-state.svg?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
 [![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/timewarp-state)](https://github.com/TimeWarpEngineering/timewarp-state)
 [![License](https://img.shields.io/github/license/TimeWarpEngineering/timewarp-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
-[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Fblazor-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
+[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Ftimewarp-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
 
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
 [![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
@@ -16,7 +16,7 @@
 
 ![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
 
-TimeWarp.State.Plus extends Blazor-State with additional, features, middleware and components to simplify and enhance your Blazor applications.
+TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.
 
 ## Available Middleware
 

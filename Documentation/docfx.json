@@ -4,12 +4,13 @@
       "src": [
         {
           "files": [
-            "Source/BlazorState/BlazorState.csproj"
+            "Source/TimeWarp.State/TimeWarp.State.csproj",
+            "Source/TimeWarp.State.Plus/TimeWarp.State.Plus.csproj"
           ],
           "src": "../"
         }
       ],
-      "dest": "Blazor-State/api",
+      "dest": "TimeWarp.State/api",
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }

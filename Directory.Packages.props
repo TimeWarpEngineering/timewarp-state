@@ -1,7 +1,6 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="AnyClone" Version="1.1.6" />
-    <PackageVersion Include="Blazor-State" Version="10.0.0" />
     <PackageVersion Include="Blazor.SessionStorage.WebAssembly" Version="8.0.0" />
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
