@@ -1,14 +1,14 @@
 ---
-uid: BlazorState:Overview.md
-title: Blazor-State Overview
+uid: TimeWarpState:Overview.md
+title: TimeWarp.State Overview
 ---
 
 [![Dotnet](https://img.shields.io/badge/dotnet-6.0-blue)](https://dotnet.microsoft.com)
 [![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/blazor-state?logo=github)](https://github.com/TimeWarpEngineering/blazor-state)
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![workflow](https://github.com/TimeWarpEngineering/blazor-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/blazor-state/actions)
-[![nuget](https://img.shields.io/nuget/v/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
-[![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
+[![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
+[![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 [![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/blazor-state.svg?logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
 [![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/blazor-state)](https://github.com/TimeWarpEngineering/blazor-state)
 [![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/blazor-state/issues)
@@ -17,11 +17,14 @@ title: Blazor-State Overview
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
 [![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
 
-# Blazor-State
+# TimeWarp.State
+
 
 ![TimeWarp Logo](/Assets/Logo.png)
 
-Blazor-State is a State Management architecture utilizing the MediatR pipeline.
+Previously known as Blazor-State. [![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
+
+TimeWarp.State is a State Management architecture utilizing the MediatR pipeline.
 
 If you are familiar with MediatR [^1], Redux [^2],
 or the Command Pattern [^3]
@@ -32,35 +35,35 @@ Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/blazor-sta
 
 ## Installation
 
-You can see the latest NuGet packages from the official [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
+You can get the latest NuGet packages from the official [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
-* [Blazor-State](https://www.nuget.org/packages/Blazor-State/) [![nuget](https://img.shields.io/nuget/v/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
+* [TimeWarp.State](https://www.nuget.org/packages/TimeWarp.State/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 
 ```console
-dotnet add package Blazor-State
+dotnet add package TimeWarp.State
 ```
 
 ## Getting Started
 
 If you are just beginning with Blazor then I recommend you start at the [dotnet blazor site](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor).
 
-If you already know a bit about Blazor then I recommend the [tutorial](xref:BlazorState:Tutorial.md)
+If you already know a bit about Blazor then I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md)
 
 ### Tutorial
 
-If you would like a basic step by step on adding blazor-state to the `blazorwasm --hosted` template then follow this [tutorial](xref:BlazorState:Tutorial.md).
+If you would like a basic step by step on building blazor app with TimeWarp.State then follow this [tutorial](xref:TimeWarp.State:00-StateActionHandler.md).
 
 ### TimeWarp Architecture Template
 
-To create a distributed application that utilizes blazor-state see the [timewarp-architecture template.](https://timewarpengineering.github.io/timewarp-architecture/TimeWarpBlazorTemplate/Overview.html)
+To create a distributed application that utilizes TimeWarp.State see the [timewarp-architecture template.](https://timewarpengineering.github.io/timewarp-architecture/TimeWarpBlazorTemplate/Overview.html)
 
-## The Blazor-State Architecture
+## The TimeWarp.State Architecture
 
 ### Store 1..* State
 
-Blazor-State implements a single `Store` with a collection of `State`s.
+TimeWarp.State implements a single `Store` with a collection of `State`s.
 
-To access a state you can either inherit from the BlazorStateComponent and use
+To access a state you can either inherit from the TimeWarpStateComponent and use
 
 ```csharp
 Store.GetState<YourState>()
@@ -79,9 +82,9 @@ or move the GetState functionality into your component
 
 ### Pipeline
 
-Blazor-State utilizes the MediatR pipeline which allows for middleware integration
+TimeWarp.State utilizes the MediatR pipeline which allows for middleware integration
 by registering an interface with the dependency injection container [^4].
-Blazor-State provides the extension method [^5] , `AddBlazorState`, which registers behaviors on the pipeline.
+TimeWarp.State provides the extension method [^5] , `AddTimeWarpState`, which registers behaviors on the pipeline.
 
 The interfaces available to extend the Pipeline are:
 
@@ -91,11 +94,11 @@ The interfaces available to extend the Pipeline are:
 * `IStreamPipelineBehavior`
 
 You can add functionality to the pipeline by implementing and registering one of these interfaces.
-See the [timewarp-architecture `EventStreamBehavior`](https://github.com/TimeWarpEngineering/timewarp-architecture/blob/master/Source/TimeWarp.Architecture.Template/templates/TimeWarp.Architecture/Source/ContainerApps/Web/Web.Spa/Features/EventStream/Pipeline/EventStreamBehavior.cs) for an example.
+See the [timewarp-architecture `EventStreamBehavior`](https://github.com/TimeWarpEngineering/blazor-state/blob/9e316ecaa00f21383caf4d120ad95d968b3e9dd6/Tests/Test.App/Test.App.Client/Features/EventStream/Pipeline/EventStreamBehavior.cs) for an example.
 
 ### Behaviors/Middleware
 
-Blazor-State ships with the following default middleware.
+TimeWarp.State ships with the following default middleware.
 
 #### CloneStateBehavior
 
@@ -104,20 +107,20 @@ If any exception occurs during the processing of the `Action` the state is rolle
 
 #### RenderSubscriptionsPostProcessor
 
-When a component accesses `State` a subscription is added.
-The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components.
-So you don't have to worry about where to call `StateHasChanged`.
+When a component accesses `State`, a subscription is added.
+The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components that return true for ShouldReRender.
+So you don't have to worry about where to call `StateHasChanged` and still have the ability to finely control re-rendering.
 
 ### JavaScript Interop
 
-Blazor-State uses the same "Command Pattern" for JavaScript interoperability.
+TimeWarp.State also uses the same "Command Pattern" for JavaScript interoperability.
 The JavaScript creates a request and dispatches it to Blazor where it is added to the pipeline.
 Handlers on the Blazor side can callback to the JavaScript side if needed.
 
 #### ReduxDevToolsPostProcessor
 
 > [!NOTE]
-> Disabled by default.  This should be disabled in production.
+> Disabled by default.  This should be disabled in production as it consumes significant resources.
 
 One of the nice features of redux is the developer tools [^6].
 This processor implements the integration of these developer tools.
@@ -126,10 +129,10 @@ This processor implements the integration of these developer tools.
 
 ### PureFunctions vs NonPureFunctions
 
-Blazor-State does not distinguish between these.
+TimeWarp.State does not distinguish between these.
 As they are processed via the pipeline the same.
 Thus, async calls to fetch data, send emails, or just update local state
-are implemented in the same manner. Although the developer **should** be aware that Handlers have side effects and
+are implemented in the same manner. Although the developer **should** be aware when Handlers have side effects and
 if the developer chose they could mark the Requests as such. For example **IActionWithSideEffect**
 
 [!include[Contributing](Partials/acknowledgements.md)]
