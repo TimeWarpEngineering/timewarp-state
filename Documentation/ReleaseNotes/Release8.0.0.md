@@ -23,11 +23,11 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 
 ## Release 8.0.1
 
-* [Issue 332](https://github.com/TimeWarpEngineering/blazor-state/issues/332) Upgrading to 8.0.0 breaks viewer components updating 
+* [Issue 332](https://github.com/TimeWarpEngineering/timewarp-state/issues/332) Upgrading to 8.0.0 breaks viewer components updating 
 
 ## Release 8.1.0
 
-* [Issue 334](https://github.com/TimeWarpEngineering/blazor-state/issues/334) Add Go Back
+* [Issue 334](https://github.com/TimeWarpEngineering/timewarp-state/issues/334) Add Go Back
 
 * Added Go Back to Route state which allows accessing the navigation history.
 * Updated the version of the Microsoft.TypeScript.MSBuild package to 5.0.3.
@@ -35,7 +35,7 @@ See [Migrations](xref:BlazorState:Migration7-8.md) for instructions on how to mi
 ## Release 8.2.0
 
 * Included BlazorStateAnalyzer, which replaces runtime checking of the IActions nesting with compile-time checking for better performance.
-* [Issue 342](https://github.com/TimeWarpEngineering/blazor-state/issues/342) Doubly nested IActions throw an error.
+* [Issue 342](https://github.com/TimeWarpEngineering/timewarp-state/issues/342) Doubly nested IActions throw an error.
 
 
 ## Release 8.2.1

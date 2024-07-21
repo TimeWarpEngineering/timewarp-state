@@ -46,16 +46,6 @@ jobs:
         run: |
           ls ${{ github.workspace }}
 
-#      - name: Install NPM packages
-#        run: |
-#          cd Source/TimeWarpState/
-#          npm install
-          
-#      - name: Setup .NET
-#        uses: actions/setup-dotnet@v2
-#        with:
-#          dotnet-version: 8.0.x
-
       - name: Setup DocFX
         uses: crazy-max/ghaction-chocolatey@v2
         with:

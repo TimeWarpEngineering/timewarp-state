@@ -6,22 +6,20 @@ ai-context:
     - explain what are file-scoped namespace;
     - use file-scoped namespaces.
   repository_info:
-    name: Blazor-State
+    name: TimeWarp.State
     description: A library for managing state in Blazor applications.
     pattern: Mediator Pattern
     repo_structure:
       - Source
-        - BlazorState
+        - TimeWarp.State
           - Base
             - Action
             - ActionHandler
           - Components
-            - BlazorStateComponent
+            - TimeWarpStateComponent
           - Features
             - JavaScriptInterop
             - Routing
-          - Pipeline
-            - ReduxDevTools
           - State
             - State
           - Store
@@ -53,7 +51,7 @@ ai-context:
       - State should NOT be mutated by anything other than handlers.
       - Handlers are nested classes within the State they mutate.
       - State classes should override the Initialize() method.
-      - Handlers should inherit from BlazorState.Handlers.ActionHandler.
+      - Handlers should inherit from TimeWarp.State.Handlers.ActionHandler.
     code_style_conventions:
       critical_url: 
       - Do not include 'usings'; assume global usings.
