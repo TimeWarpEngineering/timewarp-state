@@ -1,5 +1,8 @@
 ﻿@page "/counter"
 @rendermode InteractiveAuto
+@using Sample.Client.Features.Counter
+
+@inherits TimeWarp.State.TimeWarpStateComponent
 
 <PageTitle>Counter</PageTitle>
 
@@ -9,11 +12,13 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
-@code {
-    private int currentCount = 0;
+@code 
+{
+  CounterState CounterState => GetState<CounterState>();
+  private int currentCount => CounterState.Count;
 
-    private void IncrementCount()
-    {
-        currentCount++;
-    }
+  private async Task IncrementCount()
+  {
+    await CounterState.IncrementCount(amount:5);
+  }
 }
