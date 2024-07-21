@@ -311,3 +311,4 @@ __pycache__/
 /Tests/Test.App.EndToEnd.Tests/Output/**
 /Tests/Test.App/Output/**
 
+.aider*
