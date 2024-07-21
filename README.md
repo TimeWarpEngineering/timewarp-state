@@ -26,7 +26,7 @@ If you find this project useful, please give it a star. Thanks!
 
 ## Getting started
 
-To quickly get started I recommend the [tutorial](https://timewarpengineering.github.io/blazor-state/Samples/01-StateActionsHandlers/Readme.html) section of the full [Documentation](https://timewarpengineering.github.io/blazor-state/).
+To quickly get started I recommend the [tutorial](https://timewarpengineering.github.io/timewarp-state/Samples/01-StateActionsHandlers/Readme.html) section of the full [Documentation](https://timewarpengineering.github.io/timewarp-state/).
 
 ![TimeWarpStateOneWayFlow.drawio.svg](/Documentation/Images/TimeWarpStateOneWayFlow.drawio.svg)
 
@@ -42,7 +42,7 @@ Check out the latest NuGet packages on the [TimeWarp NuGet page](https://www.nug
 
 ## Releases
 
-View the [Release Notes](https://timewarpengineering.github.io/blazor-state/ReleaseNotes/Release11.0.0.html) for detailed information on each release.
+View the [Release Notes](https://timewarpengineering.github.io/timewarp-state/ReleaseNotes/Release11.0.0.html) for detailed information on each release.
 
 ## Unlicense
 
@@ -53,7 +53,7 @@ This project is licensed under the [Unlicense](https://unlicense.org).
 
 Your contributions are welcome! Before starting any work, please open a [discussion](https://github.com/TimeWarpEngineering/blazor-state/discussions).
 
-Help with the [documentation](https://timewarpengineering.github.io/blazor-state/) is also greatly appreciated.
+Help with the [documentation](https://timewarpengineering.github.io/timewarp-state/) is also greatly appreciated.
 
 ## Contact
 
