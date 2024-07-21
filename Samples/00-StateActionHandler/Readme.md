@@ -1,3 +1,4 @@
+
 ---
 uid: TimeWarp.State:00-StateActionHandler.md
 title: TimeWarp.State Blazor Interactive Auto Tutorial
@@ -25,10 +26,6 @@ This tutorial will walk you through the steps to create a Blazor application wit
 > the counter component is destroyed.
 > When you return, a new instance of the component is created, starting the count afresh.
 
-###
-Add the TimeWarp.State NuGet package to the `Sample.Client` project.  
-   `dotnet add ./Sample.Client/Sample.Client.csproj package TimeWarp.State`
-
 ### Configure Services
 
 Make TimeWarp.State functionality available from both Client and Server.
@@ -36,12 +33,12 @@ Make TimeWarp.State functionality available from both Client and Server.
 #### Sample.Client Program.cs
 
 - Add required usings
-- Create `ConfigureServices` method 
+- Create `ConfigureServices` method
 - Make `Program` Public
 - Call `ConfigureServices` from `Main`
 
 ```csharp
-//Sample.Client/Program.cs
+// Sample.Client/Program.cs
 namespace Sample.Client;
 
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -62,6 +59,7 @@ public class Program
   }
 }
 ```
+
 #### Sample Program.cs
 
 - Add required usings.
@@ -97,12 +95,10 @@ public class Program
     else
     {
       app.UseExceptionHandler("/Error");
-      // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
       app.UseHsts();
     }
 
     app.UseHttpsRedirection();
-
     app.UseStaticFiles();
     app.UseAntiforgery();
 
@@ -118,7 +114,7 @@ public class Program
 
 #### Sample/Components/Routes.razor
 
-Because we had to make the `Client` `Program` public we need to qualify `Program` with `Sample.Program`
+Because we had to make the `Client` `Program` public, we need to qualify `Program` with `Sample.Program`.
 
 ```html
 @* Sample/Components/Routes.razor *@
@@ -135,7 +131,7 @@ Validate the application still runs.
 
 ### Add Features
 
-- Create `Features` folder in the Client project.
+- Create a `Features` folder in the Client project.
 
 #### Add CounterState
 
@@ -163,14 +159,14 @@ internal sealed partial class CounterState : State<CounterState>
 #### UI Integration
 
 Modify `Pages/Counter.razor`:
- - Add `@using Sample.Client.Features.Counter`
- - Inherit from `TimeWarpStateComponent`.
- - Add a property to access `CounterState`.
- - Update display to use `CounterState`
- - Remove the `IncrementCount` implementation.  
-  
+- Add `@using Sample.Client.Features.Counter`
+- Inherit from `TimeWarpStateComponent`.
+- Add a property to access `CounterState`.
+- Update display to use `CounterState`.
+- Remove the `IncrementCount` implementation.
+
 > Notice that inside the `IncrementCount` method the `currentCount`can no longer be incremented. The `CounterState` class is immutable from the outside.
- So lets comment out that line.
+So lets comment out that line.
 
 The code should look as follows:
 
@@ -207,7 +203,7 @@ This binds the counter's UI to the state managed by TimeWarp.State.
 
 Changes to state are done by sending an Action through the pipeline. The Action is then handled by a Handler which can freely mutate the state.
 
-> [!Warning]
+> [!WARNING]
 > State must only be modified through designated handlers.
 > Direct mutation of state outside these handlers is not allowed or desired.
 > Maintain encapsulation by designing the state's public interface to be unmodifiable externally, with handlers implemented as nested classes within the state they modify.
@@ -217,7 +213,7 @@ Changes to state are done by sending an Action through the pipeline. The Action 
 
 Create `CounterState.IncrementCount.cs` in `Features/Counter/Actions`.
 
-Should expose the async IncrementCount method.
+Should expose the async `IncrementCount` method.
 
 In this file, the `Action` class should:
 
@@ -228,10 +224,10 @@ In this file, the `Action` class should:
 
 The `Handler` class should:
 
-* Be a nested class of the state it will mutate `CounterState`
-* Be a nested class within `IncrementCount.
+* Be a nested class of the state it will mutate `CounterState`.
+* Be a nested class within `IncrementCount`.
 * Inherit from `TimeWarp.State.Handlers.ActionHandler`.
-* The generic parameter is the Request Type `Action`
+* The generic parameter is the Request Type `Action`.
 * Override the `Handle` method to mutate state as desired:
 
 ```csharp
@@ -264,7 +260,6 @@ internal partial class CounterState
         return Task.CompletedTask;
       }
     }
-    
   }
   
   public async Task IncrementCount(int amount = 1, CancellationToken cancellationToken = default) =>
@@ -275,18 +270,21 @@ internal partial class CounterState
 
 ### Send action through the pipeline
 
-To Send the action through the pipeline when the user clicks the Click me button, In Pages/Counter.razor update the IncrementCount function as follows:
+To Send the action through the pipeline when the user clicks the Click me button, In `Pages/Counter.razor` update the IncrementCount function as follows:
 
 ```csharp
+// Pages/Counter.razor
+...
 private async Task IncrementCount()
 {
   await CounterState.IncrementCount(amount:5);
 }
+...
 ```
 
 ### Validate
 
 Execute the app and confirm that the "Click me" button properly increments the value.
-And when you navigate away from the page and back the value is still there.
+And when you navigate away from the page and back, the value is still there.
 
-Congratulations that is the basics of TimeWarp.State.
+Congratulations, that is the basics of TimeWarp.State.

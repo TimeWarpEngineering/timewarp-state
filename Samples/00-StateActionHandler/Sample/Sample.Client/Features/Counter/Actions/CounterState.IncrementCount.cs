@@ -27,7 +27,6 @@ internal partial class CounterState
         return Task.CompletedTask;
       }
     }
-    
   }
   
   public async Task IncrementCount(int amount = 1, CancellationToken cancellationToken = default) =>
