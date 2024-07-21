@@ -1,6 +1,6 @@
 ---
-uid: BlazorState:Tutorial.md
-title: TimeWarp.State Blazor Hosted WebAssembly Tutorial
+uid: TimeWarp.State:00-StateActionHandler.md
+title: TimeWarp.State Blazor Interactive Auto Tutorial
 ---
 
 # TimeWarp.State Blazor Interactive Auto Tutorial
@@ -15,7 +15,7 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Creating the Project
 
-- Create a new Blazor WebAssembly project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample`.
+- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample`.
 - Navigate to the new project: `cd Sample`
 - Test the application: `dotnet run --project ./Sample/Sample.csproj`
 - Open the URL shown in the command output (e.g., <http://localhost:5256>) and test the counter functionality. Note: Your URL will differ.
