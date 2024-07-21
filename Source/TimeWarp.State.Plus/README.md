@@ -1,12 +1,12 @@
 [![Dotnet](https://img.shields.io/badge/dotnet-8.0-blue)](https://dotnet.microsoft.com)
-[![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/blazor-state?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state)
+[![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/timewarp-state?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state)
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![workflow](https://github.com/TimeWarpEngineering/timewarp-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/timewarp-state/actions)
 [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 [![nuget](https://img.shields.io/nuget/dt/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
-[![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/blazor-state.svg?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
-[![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/blazor-state)](https://github.com/TimeWarpEngineering/timewarp-state)
-[![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
+[![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/timewarp-state.svg?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
+[![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/timewarp-state)](https://github.com/TimeWarpEngineering/timewarp-state)
+[![License](https://img.shields.io/github/license/TimeWarpEngineering/timewarp-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Fblazor-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
 
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
@@ -14,7 +14,7 @@
 
 # TimeWarp.State.Plus
 
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/blazor-state/master/Assets/Logo.svg)
+![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
 
 TimeWarp.State.Plus extends Blazor-State with additional, features, middleware and components to simplify and enhance your Blazor applications.
 
@@ -76,7 +76,7 @@ View the [Release Notes](https://timewarpengineering.github.io/timewarp-state/Re
 
 ## UnLicense
 
-[![License](https://img.shields.io/github/license/TimeWarpEngineering/blazor-state.svg?style=flat-square&logo=github)](https://unlicense.org)  
+[![License](https://img.shields.io/github/license/TimeWarpEngineering/timewarp-state.svg?style=flat-square&logo=github)](https://unlicense.org)  
 This project is licensed under the [Unlicense](https://unlicense.org).
 
 ## Contributing
