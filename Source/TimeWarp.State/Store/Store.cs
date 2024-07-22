@@ -96,7 +96,13 @@ internal partial class Store : IStore
       if (!States.TryGetValue(typeName, out IState? state))
       {
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
+        
+        // will use default constructor if none exists
         state = (IState)ServiceProvider.GetRequiredService(stateType);
+        
+        // we need to set the sender if the default constructor was used
+        state.Sender = ServiceProvider.GetRequiredService<ISender>();
+        
         state.Initialize();
         if (!States.TryAdd(typeName, state))
         {
