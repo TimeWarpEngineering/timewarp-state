@@ -16,16 +16,18 @@ public abstract class BaseCacheableState<TState> : State<TState>, ICacheableStat
   /// </summary>
   /// <param name="currentCacheKey">The cache key to validate against</param>
   /// <returns>True if the cache is valid, otherwise false</returns>
-  private bool IsCacheValid(string currentCacheKey) =>
-    CacheKey == currentCacheKey &&
-    TimeStamp.HasValue &&
-    (DateTime.UtcNow - TimeStamp.Value) < CacheDuration;
+  protected bool IsCacheValid(string currentCacheKey)
+  {
+    return CacheKey == currentCacheKey &&
+      TimeStamp.HasValue &&
+      (DateTime.UtcNow - TimeStamp.Value) < CacheDuration;
+  }
 
   // overload IsCacheValid to take in an IAction and serialize it to use as the cache key
   // use System.Text.Json to serialize the action to a string
-  // private bool IsCacheValid(IAction action) => IsCacheValid(JsonSerializer.Serialize(action));
+  // public bool IsCacheValid(IAction action) => IsCacheValid(JsonSerializer.Serialize(action));
 
-  private static string GenerateCacheKey<TAction>(TAction action) where TAction : IAction
+  protected static string GenerateCacheKey<TAction>(TAction action) where TAction : IAction
   {
     Type actionType = action.GetType();
     string actionProperties = JsonSerializer.Serialize(action);
@@ -40,6 +42,15 @@ public abstract class BaseCacheableState<TState> : State<TState>, ICacheableStat
     await updateStateFunc(action, cancellationToken);
 
     CacheKey = serializedAction;
+    TimeStamp = DateTime.UtcNow;
+  }
+  
+  protected void UpdateCacheKey(string newCacheKey)
+  {
+    if (string.IsNullOrWhiteSpace(newCacheKey))
+      throw new ArgumentException("Cache key cannot be null or empty", nameof(newCacheKey));
+      
+    CacheKey = newCacheKey;
     TimeStamp = DateTime.UtcNow;
   }
   
