@@ -84,7 +84,9 @@ public class Subscriptions
   /// <param name="stateType"></param>
   public void ReRenderSubscribers(Type stateType)
   {
+    var subscriptionsToRemove = new List<Subscription>();
     IEnumerable<Subscription> subscriptions = TimeWarpStateComponentReferencesList.Where(record => record.StateType == stateType);
+    
     foreach (Subscription subscription in subscriptions)
     {
       if 
@@ -101,8 +103,12 @@ public class Subscriptions
         // If Dispose is called will I ever have items in this list that got Garbage collected?
         // Maybe for those that don't inherit from our BaseComponent?
         LogRemoveSubscription(subscription);
-        TimeWarpStateComponentReferencesList.Remove(subscription);
+        subscriptionsToRemove.Add(subscription);
       }
+    }
+    foreach (Subscription subscription in subscriptionsToRemove)
+    {
+      TimeWarpStateComponentReferencesList.Remove(subscription);
     }
   }
   private void LogRemoveSubscription(Subscription subscription) => Logger.LogDebug
