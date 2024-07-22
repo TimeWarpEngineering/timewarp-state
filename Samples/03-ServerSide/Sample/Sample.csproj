@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" />
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" />
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State\TimeWarp.State.csproj" />
+  </ItemGroup>
+
 </Project>
