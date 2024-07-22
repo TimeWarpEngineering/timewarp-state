@@ -2,6 +2,9 @@ using Sample.Components;
 
 namespace Sample;
 
+using Features.Counter;
+using TimeWarp.State;
+
 public class Program
 {
     public static void Main(string[] args)
@@ -11,6 +14,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        builder.Services.AddTimeWarpState();
 
         var app = builder.Build();
 
