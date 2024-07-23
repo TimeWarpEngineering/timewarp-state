@@ -10,7 +10,7 @@ namespace Test.App.Client.Features.Base.Components;
 /// But would be required to properly implement the required interfaces.
 /// one could conditionally inherit from BaseComponent for production build.
 /// </remarks>
-public abstract class BaseInputComponent<T> : TimeWarpStateDevToolsInputComponent<T>
+public abstract class BaseInputComponent<T> : TimeWarpStateInputComponent<T>
 {
   internal ApplicationState ApplicationState => GetState<ApplicationState>();
   internal CounterState CounterState => GetState<CounterState>();
