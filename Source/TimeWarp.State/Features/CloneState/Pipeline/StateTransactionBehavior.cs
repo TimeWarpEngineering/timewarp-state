@@ -60,7 +60,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
         (
           (ex, path, _, _) =>
           {
-            Logger.LogDebug("Cloning error: {path} {Message}", path, ex.Message);
+            Logger.LogWarning("Cloning error: {path} {Message}", path, ex.Message);
           }
         );
     
@@ -75,7 +75,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     Logger.LogDebug
     (
       EventIds.StateTransactionBehavior_Cloning,
-      "Clone State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
+      "Cloned State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
       enclosingStateType,
       originalState.Guid,
       newState.Guid
