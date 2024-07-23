@@ -19,8 +19,7 @@ export class ReduxDevTools {
   private IsInitialized: boolean = false;
 
   constructor(reduxDevToolsOptions: Config) {
-    log("ReduxDevTools", "constructor", "info");
-    log("ReduxDevTools", reduxDevToolsOptions.toString(), "info");
+    log("ReduxDevTools", JSON.stringify(reduxDevToolsOptions, null, 2), "info");
 
     this.TimeWarpState = timeWarpState;
     this.Config = reduxDevToolsOptions;
@@ -61,8 +60,8 @@ export class ReduxDevTools {
     const dispatchRequests = {
       'COMMIT': undefined,
       'IMPORT_STATE': undefined,
-      'JUMP_TO_ACTION': 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
-      'JUMP_TO_STATE': 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
+      'JUMP_TO_ACTION': undefined, // 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
+      'JUMP_TO_STATE': undefined, // 'TimeWarp.Features.ReduxDevTools.JumpToStateRequest',
       'LOCK_CHANGES': undefined,
       'PAUSE_RECORDING': undefined,
       'PERFORM_ACTION': undefined,
