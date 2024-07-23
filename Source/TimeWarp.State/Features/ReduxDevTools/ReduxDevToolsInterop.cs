@@ -10,9 +10,7 @@ public class ReduxDevToolsInterop
   private readonly ReduxDevToolsOptions ReduxDevToolsOptions;
   
   private bool IsInitialized;
-
-  private bool IsEnabled { get; set; }
-
+  private bool IsEnabled;
 
   public ReduxDevToolsInterop
   (
