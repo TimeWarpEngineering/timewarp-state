@@ -1,26 +1,14 @@
 namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
-/// Base implementation of IDevToolsComponent. Required for TimeTravel in ReduxDevTools
+/// Adds a RenderModeDisplay RenderFragment to the TimeWarpStateComponent
 /// </summary>
-/// <remarks>See Peter Morris Issue on Blazor
-/// https://github.com/aspnet/Blazor/issues/704
-/// If one implements their own base class with these interfaces
-/// They won't be forced to use this one.
-/// C# 8 with default implementations of interfaces will be quite tempting to solve this.
-/// </remarks>
-public class TimeWarpStateDevToolsComponent : TimeWarpStateComponent,
-  IDevToolsComponent
+public class TimeWarpStateDevComponent : TimeWarpStateComponent
 {
   protected readonly RenderFragment RenderModeDisplay;
-  protected override void OnInitialized()
-  {
-    base.OnInitialized();
-    Subscriptions.Add<IDevToolsComponent>(this);
-  }
   
   protected string RenderModeDisplayString => $"CurrentRenderMode: {CurrentRenderMode}\nConfiguredRenderMode: {ConfiguredRenderMode}";
-  protected TimeWarpStateDevToolsComponent()
+  protected TimeWarpStateDevComponent()
   {
     RenderModeDisplay = builder =>
     {
