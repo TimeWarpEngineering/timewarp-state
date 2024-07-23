@@ -165,7 +165,6 @@ public static class ServiceCollectionExtensions
     serviceCollection.AddScoped<ReduxDevToolsInterop>();
 
     serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
-    serviceCollection.AddTransient<IRequestHandler<JumpToStateRequest>, JumpToStateHandler>();
     serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
     serviceCollection.AddScoped(serviceProvider => (IReduxDevToolsStore)serviceProvider.GetRequiredService<IStore>());
 
