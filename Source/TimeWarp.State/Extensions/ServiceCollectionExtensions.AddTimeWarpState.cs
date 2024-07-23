@@ -1,6 +1,6 @@
 namespace TimeWarp.State;
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
   /// <summary>
   /// Register TimeWarp.State services based on the Configure options
@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
 
     var timeWarpStateOptions = new TimeWarpStateOptions(serviceCollection);
     configureTimeWarpStateOptionsAction?.Invoke(timeWarpStateOptions);
-    
+
     if (!timeWarpStateOptions.Assemblies.Any())
     {
       // If no assemblies are specified then we will use the assembly that called this method.
@@ -52,6 +52,27 @@ public static class ServiceCollectionExtensions
 
     return serviceCollection;
   }
+
+  public static void LogMiddlewareOrder(this IServiceCollection serviceCollection, ILogger logger)
+  {
+    var registrations = serviceCollection
+      .Where
+      (
+        sd =>
+          sd.ServiceType.IsGenericType
+          && sd.ServiceType.GetGenericTypeDefinition() == typeof(IPipelineBehavior<,>)
+      )
+      .ToList();
+    
+    var message = new StringBuilder("MediatR middleware registration order:");
+    for (int i = 0; i < registrations.Count; i++)
+    {
+      Type? implementationType = registrations[i].ImplementationType;
+      message.AppendLine($"{i + 1}. {implementationType?.Name}");
+    }
+    logger.LogInformation(message.ToString());
+  }
+
 
   private static void EnsureHttpClient(IServiceCollection serviceCollection)
   {
@@ -144,32 +165,6 @@ public static class ServiceCollectionExtensions
     }
   }
 
-
   private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) =>
     serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
-
-  // ReSharper disable once UnusedMethodReturnValue.Global
-  public static TimeWarpStateOptions UseReduxDevTools
-  (
-    this TimeWarpStateOptions timeWarpStateOptions,
-    Action<ReduxDevToolsOptions>? reduxDevToolsOptionsAction = null
-  )
-  {
-    IServiceCollection serviceCollection = timeWarpStateOptions.ServiceCollection;
-    if (serviceCollection.HasRegistrationFor(typeof(ReduxDevToolsOptions))) return timeWarpStateOptions;
-
-    var reduxDevToolsOptions = new ReduxDevToolsOptions();
-    reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
-
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
-    serviceCollection.AddScoped<ReduxDevToolsInterop>();
-
-    serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
-    serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
-    serviceCollection.AddScoped(serviceProvider => (IReduxDevToolsStore)serviceProvider.GetRequiredService<IStore>());
-
-    serviceCollection.AddSingleton(reduxDevToolsOptions);
-
-    return timeWarpStateOptions;
-  }
 }
