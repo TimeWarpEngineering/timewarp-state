@@ -13,7 +13,7 @@ public class Subscriptions
     TimeWarpStateComponentReferencesList = new List<Subscription>();
   }
 
-  public Subscriptions Add<T>(ITimeWarpStateComponent timeWarpStateComponent)
+  public Subscriptions Add<T>(ITimeWarpStateComponent timeWarpStateComponent) where T : IState
   {
     Type type = typeof(T);
     return Add(type, timeWarpStateComponent);
@@ -69,8 +69,8 @@ public class Subscriptions
   /// Will iterate over all subscriptions for the given type and call ReRender on each.
   /// If the target component no longer exists it will remove its subscription.
   /// </summary>
-  /// <typeparam name="T"></typeparam>
-  public void ReRenderSubscribers<T>()
+  /// <typeparam name="T">The type of state, which must implement IState</typeparam>
+  public void ReRenderSubscribers<T>() where T : IState
   {
     Type type = typeof(T);
 
