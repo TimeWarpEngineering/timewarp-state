@@ -53,27 +53,6 @@ public static partial class ServiceCollectionExtensions
     return serviceCollection;
   }
 
-  public static void LogMiddlewareOrder(this IServiceCollection serviceCollection, ILogger logger)
-  {
-    var registrations = serviceCollection
-      .Where
-      (
-        sd =>
-          sd.ServiceType.IsGenericType
-          && sd.ServiceType.GetGenericTypeDefinition() == typeof(IPipelineBehavior<,>)
-      )
-      .ToList();
-    
-    var message = new StringBuilder("MediatR middleware registration order:");
-    for (int i = 0; i < registrations.Count; i++)
-    {
-      Type? implementationType = registrations[i].ImplementationType;
-      message.AppendLine($"{i + 1}. {implementationType?.Name}");
-    }
-    logger.LogInformation(message.ToString());
-  }
-
-
   private static void EnsureHttpClient(IServiceCollection serviceCollection)
   {
     // If client side wasm, Blazor registers HttpClient by default.
