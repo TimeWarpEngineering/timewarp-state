@@ -1,15 +1,11 @@
 namespace TimeWarp.State.Plus.State;
 
 public abstract class TimeWarpCacheableState<TState> : State<TState>, ITimeWarpCacheableState
+where TState : IState
 {
   public string? CacheKey { get; private set; }
   public DateTime? TimeStamp { get; private set; }
-  public TimeSpan CacheDuration { get; private set; }
-
-  protected TimeWarpCacheableState(TimeSpan cacheDuration)
-  {
-    CacheDuration = cacheDuration;
-  }
+  public TimeSpan CacheDuration { get; protected set; }
   
   /// <summary>
   /// Checks if the cache is valid based on the current cache key and timestamp
