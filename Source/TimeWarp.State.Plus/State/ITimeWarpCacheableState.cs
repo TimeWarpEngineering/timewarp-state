@@ -1,6 +1,6 @@
 namespace TimeWarp.State.Plus.State;
 
-public interface ICacheableState
+public interface ITimeWarpCacheableState
 {
   string? CacheKey { get; }
   DateTime? TimeStamp { get; }
