@@ -8,6 +8,7 @@ namespace TimeWarp.State;
 public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpStateComponent
 {
   [Inject] private IStore Store { get; set; } = null!;
+  [Inject] private ILogger<TimeWarpStateComponent> Logger { get; set; } = null!;
   [Inject] protected IMediator Mediator { get; set; } = null!;
   
   /// <summary>
@@ -55,6 +56,7 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     });
 
   private bool HasRendered;
+  private bool UsesRenderMode;
 
   public TimeWarpStateComponent()
   {
@@ -78,6 +80,7 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
 
   private CurrentRenderMode GetCurrentRenderMode()
   {
+    UsesRenderMode = true;
     if (OperatingSystem.IsBrowser()) return State.CurrentRenderMode.Wasm;
     
     if (HasRendered) return State.CurrentRenderMode.Server;
@@ -111,15 +114,18 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     if (placeSubscription) Subscriptions.Add(stateType, this);
     return Store.GetState<T>();
   }
-  
-  protected T? GetPreviousState<T>() => Store.GetPreviousState<T>();
+
+  private T? GetPreviousState<T>() => Store.GetPreviousState<T>();
 
   protected override void OnAfterRender(bool firstRender)
   {
     base.OnAfterRender(firstRender);
     if (!firstRender) return;
     HasRendered = true;
-    StateHasChanged();
+    if (UsesRenderMode)
+    {
+      StateHasChanged();
+    }
   }
 
   /// <inheritdoc />
@@ -142,7 +148,11 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   {
     if (stateType != typeof(T)) return false;
     T? previousState = GetPreviousState<T>();
-    return previousState != null && condition(previousState);
+    if (previousState == null) return true;  
+    bool result = condition(previousState);
+    Logger.LogDebug(EventIds.TimeWarpStateComponent_ShouldReRender, "ShouldReRender ComponentType: {ComponentId} StateType: {StateType} Result: {Result}", Id, stateType.FullName, result);
+    
+    return result;
   }
   
   public virtual void Dispose()

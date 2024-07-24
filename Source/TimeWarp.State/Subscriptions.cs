@@ -90,14 +90,13 @@ public class Subscriptions
     
     foreach (Subscription subscription in subscriptions)
     {
-      if 
-      (
-        subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target) 
-        && target.ShouldReRender(stateType)
-      )
+      if (subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
       {
-        LogReRender(subscription);
-        target.ReRender();
+        if (target.ShouldReRender(stateType))
+        {
+          LogReRender(subscription);
+          target.ReRender();
+        }
       }
       else
       {

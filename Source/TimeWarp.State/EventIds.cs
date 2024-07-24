@@ -54,7 +54,7 @@ internal class EventIds
   public static readonly EventId Store_CreateState = new(103, nameof(Store_CreateState));
   public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
 
-  //Store.ReduxDevTools
+  // Store.ReduxDevTools
   public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
   public static readonly EventId LoadStateFromJson = new(105, nameof(LoadStateFromJson));
 
@@ -64,4 +64,7 @@ internal class EventIds
   public static readonly EventId Subscriptions_RemovingComponentSubscriptions = new(302, nameof(Subscriptions_RemovingComponentSubscriptions));
   public static readonly EventId Subscriptions_ReRenderingSubscribers = new(303, nameof(Subscriptions_ReRenderingSubscribers));
   public static readonly EventId Subscriptions_RemoveSubscription = new(304, nameof(Subscriptions_RemoveSubscription));
+  
+  // TimeWarpStateComponent
+  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(700, nameof(TimeWarpStateComponent_ShouldReRender));
 }
