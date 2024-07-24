@@ -1,12 +1,12 @@
 namespace TimeWarp.State.Plus.State;
 
-public abstract class BaseCacheableState<TState> : State<TState>, ICacheableState
+public abstract class TimeWarpCacheableState<TState> : State<TState>, ITimeWarpCacheableState
 {
   public string? CacheKey { get; private set; }
   public DateTime? TimeStamp { get; private set; }
   public TimeSpan CacheDuration { get; private set; }
 
-  protected BaseCacheableState(TimeSpan cacheDuration)
+  protected TimeWarpCacheableState(TimeSpan cacheDuration)
   {
     CacheDuration = cacheDuration;
   }
