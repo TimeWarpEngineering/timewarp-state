@@ -2,6 +2,17 @@
 
 internal class EventIds
 {
+  // Store - TimeWarp State Specific
+  public static readonly EventId Store_Constructing = new(100, nameof(Store_Constructing));
+  public static readonly EventId Store_Initializing = new(101, nameof(Store_Initializing));
+  public static readonly EventId Store_GetState = new(102, nameof(Store_GetState));
+  public static readonly EventId Store_CreateState = new(103, nameof(Store_CreateState));
+  public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
+
+  // Store.ReduxDevTools
+  public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
+  public static readonly EventId LoadStateFromJson = new(105, nameof(LoadStateFromJson));
+  
   // Features - Normal
   //   JavascriptInterop
   //     JsonRequestHandler
@@ -9,6 +20,15 @@ internal class EventIds
   public static readonly EventId JsonRequestReceived = new(201, nameof(JsonRequestReceived));
   public static readonly EventId JsonRequestHandled = new(202, nameof(JsonRequestReceived));
   public static readonly EventId JsonRequestOfInvalidType = new(203, nameof(JsonRequestOfInvalidType));
+  
+  // Subscriptions - TimeWarp State Specific
+  public static readonly EventId Subscriptions_Initializing = new(300, nameof(Subscriptions_Initializing));
+  public static readonly EventId Subscriptions_Adding = new(301, nameof(Subscriptions_Adding));
+  public static readonly EventId Subscriptions_RemovingComponentSubscriptions = new(302, nameof(Subscriptions_RemovingComponentSubscriptions));
+  public static readonly EventId Subscriptions_ReRenderingSubscribers = new(303, nameof(Subscriptions_ReRenderingSubscribers));
+  public static readonly EventId Subscriptions_RemoveSubscription = new(304, nameof(Subscriptions_RemoveSubscription));
+
+  
   //   Routing
   // Pipeline - Middleware
   //   StateTransaction
@@ -46,24 +66,6 @@ internal class EventIds
   public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(ReduxDevToolsBehavior_Constructing));
   public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
   public static readonly EventId RenderSubscriptionsPostProcessor_SkippedReRender = new(604, nameof(RenderSubscriptionsPostProcessor_SkippedReRender));
-
-  // Store - TimeWarp State Specific
-  public static readonly EventId Store_Constructing = new(100, nameof(Store_Constructing));
-  public static readonly EventId Store_Initializing = new(101, nameof(Store_Initializing));
-  public static readonly EventId Store_GetState = new(102, nameof(Store_GetState));
-  public static readonly EventId Store_CreateState = new(103, nameof(Store_CreateState));
-  public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
-
-  // Store.ReduxDevTools
-  public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
-  public static readonly EventId LoadStateFromJson = new(105, nameof(LoadStateFromJson));
-
-  // Subscriptions - TimeWarp State Specific
-  public static readonly EventId Subscriptions_Initializing = new(300, nameof(Subscriptions_Initializing));
-  public static readonly EventId Subscriptions_Adding = new(301, nameof(Subscriptions_Adding));
-  public static readonly EventId Subscriptions_RemovingComponentSubscriptions = new(302, nameof(Subscriptions_RemovingComponentSubscriptions));
-  public static readonly EventId Subscriptions_ReRenderingSubscribers = new(303, nameof(Subscriptions_ReRenderingSubscribers));
-  public static readonly EventId Subscriptions_RemoveSubscription = new(304, nameof(Subscriptions_RemoveSubscription));
   
   // TimeWarpStateComponent
   public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(700, nameof(TimeWarpStateComponent_ShouldReRender));
