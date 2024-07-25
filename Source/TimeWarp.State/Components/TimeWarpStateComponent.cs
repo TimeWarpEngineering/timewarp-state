@@ -10,23 +10,36 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   [Inject] private IStore Store { get; set; } = null!;
   [Inject] private ILogger<TimeWarpStateComponent> Logger { get; set; } = null!;
   [Inject] protected IMediator Mediator { get; set; } = null!;
-  
+
   /// <summary>
   ///   Maintains all components that subscribe to a State.
   ///   Is updated by using the GetState method
   /// </summary>
   [Inject] public Subscriptions Subscriptions { get; set; } = null!;
-  
+
+  private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
+  private static readonly ConcurrentDictionary<Type, string> ConfiguredRenderModeCache = new();
+  private static readonly ConcurrentDictionary<Type, bool> TypeRenderAttributeCache = new();
+
+  /// <summary>
+  ///   A generated unique Id based on the Class name and number of times they have been created
+  /// </summary>
+  public string Id { get; }
   
   /// <summary>
   ///   Allows for the Assigning of a value one can use to select an element during automated testing.
   /// </summary>
   [Parameter] public string? TestId { get; set; }
   
-  private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
-
-  private static readonly ConcurrentDictionary<Type, string> ConfiguredRenderModeCache = new();
-
+  private readonly Dictionary<Type, Func<bool>> RenderTriggers = new();
+  
+  /// <summary>
+  /// Set this to true if something in the component has changed that requires a re-render.
+  /// </summary>
+  protected bool NeedsRerender;
+  private bool HasRendered;
+  private bool UsesRenderMode;
+  
   protected string ConfiguredRenderMode =>
     ConfiguredRenderModeCache.GetOrAdd(this.GetType(), type =>
     {
@@ -52,12 +65,15 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
       }
 
       // If no matching attribute is found, return a default identifier.
-      return "None"; // Adjust as needed for your default case.
+      return "None";// Adjust as needed for your default case.
     });
 
-  private bool HasRendered;
-  private bool UsesRenderMode;
-
+  /// <summary>
+  ///   Indicates if the component is being prerendered.
+  /// </summary>
+  protected bool IsPreRendering => GetCurrentRenderMode() == State.CurrentRenderMode.PreRendering;
+  protected string CurrentRenderMode => GetCurrentRenderMode().ToString();
+  
   public TimeWarpStateComponent()
   {
     string name = GetType().Name;
@@ -66,57 +82,6 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     Id = $"{name}-{count}";
   }
   
-  /// <summary>
-  ///   A generated unique Id based on the Class name and number of times they have been created
-  /// </summary>
-  public string Id { get; }
-  
-  /// <summary>
-  ///   Indicates if the component is being prerendered.
-  /// </summary>
-  protected bool IsPreRendering => GetCurrentRenderMode() == State.CurrentRenderMode.PreRendering;
-
-  private static readonly ConcurrentDictionary<Type, bool> TypeRenderAttributeCache = new();
-
-  private CurrentRenderMode GetCurrentRenderMode()
-  {
-    UsesRenderMode = true;
-    if (OperatingSystem.IsBrowser()) return State.CurrentRenderMode.Wasm;
-    
-    if (HasRendered) return State.CurrentRenderMode.Server;
-    
-    bool hasRenderAttribute = TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
-      type.GetCustomAttributes(true)
-        .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
-
-    return hasRenderAttribute
-      ? State.CurrentRenderMode.PreRendering
-      : State.CurrentRenderMode.Static;
-  }
-
-  protected string CurrentRenderMode => GetCurrentRenderMode().ToString();
-  
-  /// <summary>
-  ///   Exposes StateHasChanged
-  /// </summary>
-  public void ReRender() => InvokeAsync(StateHasChanged);
-  
-  /// <summary>
-  ///   Place a Subscription for the calling component
-  ///   And returns the requested state 
-  /// </summary>
-  /// <param name="placeSubscription"></param>
-  /// <typeparam name="T"></typeparam>
-  /// <returns></returns>
-  protected T GetState<T>(bool placeSubscription = true)
-  {
-    Type stateType = typeof(T);
-    if (placeSubscription) Subscriptions.Add(stateType, this);
-    return Store.GetState<T>();
-  }
-
-  private T? GetPreviousState<T>() => Store.GetPreviousState<T>();
-
   protected override void OnAfterRender(bool firstRender)
   {
     base.OnAfterRender(firstRender);
@@ -127,11 +92,35 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
       StateHasChanged();
     }
   }
+  
+  public virtual void Dispose()
+  {
+    Subscriptions.Remove(this);
+    GC.SuppressFinalize(this);
+  }
+  
+  /// <inheritdoc />
+  protected override bool ShouldRender()
+  {
+    // If there are no RenderTriggers, default to true (standard Blazor behavior)
+    if (RenderTriggers.Count == 0)
+      return true;
+
+    // If there are RenderTriggers, use NeedsRerender flag
+    bool result = NeedsRerender;
+    NeedsRerender = false;
+    return result;
+  }
 
   /// <inheritdoc />
-  public virtual bool ShouldReRender(Type stateType) => true;
-  
+  public virtual bool ShouldReRender(Type stateType)
+  {
+    ArgumentNullException.ThrowIfNull(stateType);
 
+    NeedsRerender = RenderTriggers.TryGetValue(stateType, out Func<bool>? check) && check();
+    return NeedsRerender;
+  }
+  
   /// <summary>
   /// Determines whether the component should re-render based on changes in a specific state type.
   /// </summary>
@@ -148,18 +137,70 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   {
     if (stateType != typeof(T)) return false;
     T? previousState = GetPreviousState<T>();
-    if (previousState == null) return true;  
+    if (previousState == null) return true;
     bool result = condition(previousState);
     Logger.LogDebug(EventIds.TimeWarpStateComponent_ShouldReRender, "ShouldReRender ComponentType: {ComponentId} StateType: {StateType} Result: {Result}", Id, stateType.FullName, result);
-    
+
     return result;
   }
   
-  public virtual void Dispose()
+  /// <summary>
+  /// Registers a render trigger for a specific state type.
+  /// </summary>
+  /// <typeparam name="T">The type of state to check. Must be a reference type.</typeparam>
+  /// <param name="triggerCondition">A function that takes the previous state of type T and returns a boolean indicating whether a re-render is needed.</param>
+  /// <remarks>
+  /// This method adds a new entry to the RenderTriggers dictionary. The key is the Type of T, 
+  /// and the value is a function that will be called to determine if a re-render is necessary 
+  /// when the state of type T changes. The function should compare the previous state 
+  /// (passed as an argument) with the current state (which should be accessible within the component).
+  /// </remarks>
+  /// <example>
+  /// <code>
+  /// RegisterRenderTrigger&lt;UserState&gt;(previousUserState => UserState.Name != previousUserState.Name);
+  /// </code>
+  /// </example>
+  protected void RegisterRenderTrigger<T>(Func<T, bool> triggerCondition) where T : class
   {
-    Subscriptions.Remove(this);
-    GC.SuppressFinalize(this);
+    RenderTriggers[typeof(T)] = () => ShouldReRender(typeof(T), triggerCondition);
   }
+  
+  /// <summary>
+  ///   Place a Subscription for the calling component
+  ///   And returns the requested state 
+  /// </summary>
+  /// <param name="placeSubscription"></param>
+  /// <typeparam name="T"></typeparam>
+  /// <returns></returns>
+  protected T GetState<T>(bool placeSubscription = true)
+  {
+    Type stateType = typeof(T);
+    if (placeSubscription) Subscriptions.Add(stateType, this);
+    return Store.GetState<T>();
+  }
+  
+  private T? GetPreviousState<T>() => Store.GetPreviousState<T>();
+  
+  private CurrentRenderMode GetCurrentRenderMode()
+  {
+    UsesRenderMode = true;
+    if (OperatingSystem.IsBrowser()) return State.CurrentRenderMode.Wasm;
+
+    if (HasRendered) return State.CurrentRenderMode.Server;
+
+    bool hasRenderAttribute = TypeRenderAttributeCache.GetOrAdd(this.GetType(), type =>
+      type.GetCustomAttributes(true)
+        .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
+
+    return hasRenderAttribute ? State.CurrentRenderMode.PreRendering : State.CurrentRenderMode.Static;
+  }
+
+
+  /// <summary>
+  ///   Exposes StateHasChanged
+  /// </summary>
+  public void ReRender() => InvokeAsync(StateHasChanged);
+  
 }
 
 public enum CurrentRenderMode
