@@ -1,5 +1,4 @@
 namespace TimeWarp.State;
-namespace TimeWarp.State;
 
 /// <summary>
 ///   A non required Base Class that injects Mediator and Store.

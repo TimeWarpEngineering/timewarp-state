@@ -46,6 +46,12 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 
 - `TestId` parameter for assigning identifiers useful in automated testing
 
+### 8. Render Counting
+
+- Tracks the number of times each component instance is rendered
+- Provides a `RenderCount` property to access the current render count
+- Useful for performance monitoring and debugging
+
 ## Usage
 
 1. **Inherit from TimeWarpStateComponent**
@@ -76,22 +82,36 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 4. **Optimize Renders**
    The component will automatically optimize renders based on registered triggers.
 
+5. **Monitor Render Count**
+   You can access the number of times a component has been rendered:
+   ```csharp
+   protected override void OnAfterRender(bool firstRender)
+   {
+       base.OnAfterRender(firstRender);
+       Console.WriteLine($"Component {Id} has rendered {RenderCount} times");
+   }
+   ```
+   
 ## Best Practices
 
 1. Register render triggers for all relevant states in `OnInitialized`
 2. Use `GetState<T>()` to access current state values
 3. Leverage `ConfiguredRenderMode` for render mode-specific optimizations
 4. Utilize the `TestId` parameter for automated testing scenarios
+5. Use the `RenderCount` property to monitor and optimize component rendering performance
 
 ## Performance Considerations
 
 - The component uses caching mechanisms to optimize repeated operations
 - Reflection is used on if `ConfiguredRenderMode` is accessed and results are cached for performance
 - State comparisons are only performed when necessary, based on registered triggers
+- The component tracks render counts, which can be used to identify unnecessary re-renders and optimize performance
+
 
 ## Extensibility
 
 - Override `ShouldReRender` for custom re-render logic
 - Extend the class to add additional state management or rendering features
+- Utilize the `RenderCount` property in derived classes for custom rendering logic or performance tracking
 
-By leveraging `TimeWarpStateComponent`, developers can create highly optimized, state-aware Blazor components with minimal boilerplate code.
+By leveraging `TimeWarpStateComponent`, developers can create highly optimized, state-aware Blazor components with minimal boilerplate code and built-in performance monitoring capabilities.
