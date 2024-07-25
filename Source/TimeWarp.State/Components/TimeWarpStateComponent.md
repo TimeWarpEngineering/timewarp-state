@@ -17,13 +17,13 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 ### 2. Instance Tracking
 
 - Generates a unique `Id` for each component instance
-  (Claude: The Primary purpose of the ID is for placing of subscriptions )
-- Useful for debugging and component identification
+- The primary purpose of the ID is for placing of subscriptions
+- Also useful for debugging and component identification
 
 ### 3. Render Mode Management
 
 - Supports multiple render modes: Static, PreRendering, Server, and WebAssembly (Wasm)
-- Detects and caches the current render mode for optimization
+- Caches the reflection information used to determine the `ConfiguredRenderMode`
 - Provides `ConfiguredRenderMode` property for render mode-specific logic
 
 ### 4. State Management
@@ -53,7 +53,7 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
    public class MyComponent : TimeWarpStateComponent
    ```
 
-2. **Register Render Triggers** 
+2. **Register Render Triggers**
    ```csharp
    protected override void OnInitialized()
    {
@@ -64,13 +64,13 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
    ```
 
 3. **Use State in Render**
-   (Claude: most uses are to just create a property to hold the state and then display its values in razor) Not in BuildRenderTree
+   To efficiently access and display state in your components, create a property that retrieves the state. This approach allows you to easily use the state in your Razor markup. For example:
    ```csharp
-   protected override void BuildRenderTree(RenderTreeBuilder builder)
-   {
-       var userState = GetState<UserState>();
-       // Use userState to render component
-   }
+   protected UserState UserState => GetState<UserState>();
+   ```
+   Then in your Razor:
+   ```razor
+   <p>@UserState.Name</p>
    ```
 
 4. **Optimize Renders**
@@ -79,14 +79,14 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 ## Best Practices
 
 1. Register render triggers for all relevant states in `OnInitialized`
-2. Use `GetState<T>()` to access current state values.
+2. Use `GetState<T>()` to access current state values
 3. Leverage `ConfiguredRenderMode` for render mode-specific optimizations
 4. Utilize the `TestId` parameter for automated testing scenarios
 
 ## Performance Considerations
 
 - The component uses caching mechanisms to optimize repeated operations
-- Reflection is used sparingly and results are cached for performance
+- Reflection is used on if `ConfiguredRenderMode` is accessed and results are cached for performance
 - State comparisons are only performed when necessary, based on registered triggers
 
 ## Extensibility
