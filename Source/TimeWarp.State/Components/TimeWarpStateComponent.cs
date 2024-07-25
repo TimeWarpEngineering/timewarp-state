@@ -31,7 +31,7 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   /// </summary>
   [Parameter] public string? TestId { get; set; }
   
-  private readonly Dictionary<Type, Func<bool>> RenderTriggers = new();
+  private readonly ConcurrentDictionary <Type, Func<bool>> RenderTriggers = new();
   
   /// <summary>
   /// Set this to true if something in the component has changed that requires a re-render.
