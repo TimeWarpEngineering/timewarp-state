@@ -68,5 +68,8 @@ internal class EventIds
   public static readonly EventId RenderSubscriptionsPostProcessor_SkippedReRender = new(604, nameof(RenderSubscriptionsPostProcessor_SkippedReRender));
   
   // TimeWarpStateComponent
-  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(700, nameof(TimeWarpStateComponent_ShouldReRender));
+  public static readonly EventId TimeWarpStateComponent_Constructed = new(700, nameof(TimeWarpStateComponent_Constructed)); 
+  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(701, nameof(TimeWarpStateComponent_ShouldReRender));
+  public static readonly EventId TimeWarpStateComponent_Disposing = new(702, nameof(TimeWarpStateComponent_Disposing));
+  public static readonly EventId TimeWarpStateComponent_RenderCount = new(702, nameof(TimeWarpStateComponent_RenderCount));
 }
