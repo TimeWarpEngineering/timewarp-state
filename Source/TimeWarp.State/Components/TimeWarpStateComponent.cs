@@ -177,6 +177,48 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   }
   
   /// <summary>
+  /// Registers a render trigger for a specific state type using a property selector expression.
+  /// </summary>
+  /// <typeparam name="TState">The type of state to monitor. Must be a reference type.</typeparam>
+  /// <param name="propertySelector">An expression that selects the property to monitor for changes.</param>
+  /// <remarks>
+  /// This method creates a render trigger that compares a specific property of the state object.
+  /// It uses expression trees to build an efficient comparison function.
+  /// The component will re-render when the selected property's value changes.
+  /// </remarks>
+  /// <example>
+  /// <code>
+  /// RegisterRenderTrigger&lt;CounterState&gt;(s => s.Count);
+  /// </code>
+  /// </example>
+  /// <exception cref="ArgumentNullException">Thrown when the propertySelector is null.</exception>
+  /// <exception cref="ArgumentException">Thrown when the propertySelector does not represent a simple property access.</exception>
+  protected void RegisterRenderTrigger<TState>(Expression<Func<TState, object>> propertySelector) 
+    where TState : class
+  {
+    ParameterExpression parameter = Expression.Parameter(typeof(TState), "previous");
+    MemberExpression? memberExpression = propertySelector.Body as MemberExpression 
+      ?? ((UnaryExpression)propertySelector.Body).Operand as MemberExpression;
+    var property = (PropertyInfo)memberExpression!.Member;
+
+    MemberExpression leftExpression = Expression.Property(parameter, property);
+    MethodInfo getStateMethod = typeof(TimeWarpStateComponent).GetMethod(nameof(GetState), BindingFlags.NonPublic | BindingFlags.Instance)!.MakeGenericMethod(typeof(TState));
+    MemberExpression rightExpression = Expression.Property(
+      Expression.Call(
+        Expression.Constant(this),
+        getStateMethod,
+        Expression.Constant(false) // This is the 'placeSubscription' parameter
+      ),
+      property.Name
+    );
+
+    BinaryExpression notEqualExpression = Expression.NotEqual(leftExpression, rightExpression);
+    var lambda = Expression.Lambda<Func<TState, bool>>(notEqualExpression, parameter);
+
+    RenderTriggers[typeof(TState)] = () => ShouldReRender(typeof(TState), lambda.Compile());
+  }
+  
+  /// <summary>
   ///   Place a Subscription for the calling component
   ///   And returns the requested state 
   /// </summary>

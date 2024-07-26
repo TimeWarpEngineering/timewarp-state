@@ -17,7 +17,7 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 ### 2. Instance Tracking
 
 - Generates a unique `Id` for each component instance
-- The primary purpose of the ID is for placing of subscriptions
+- The `Id` serves as a unique key in the subscription system
 - Also useful for debugging and component identification
 
 ### 3. Render Mode Management
