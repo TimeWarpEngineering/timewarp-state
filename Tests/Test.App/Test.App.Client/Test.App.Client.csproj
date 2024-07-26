@@ -13,14 +13,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="timewarp-heroicons" />
-    <PackageReference Include="TimeWarp.State" />
-    <PackageReference Include="TimeWarp.State.Plus" />
+<!--    <PackageReference Include="TimeWarp.State" />-->
+<!--    <PackageReference Include="TimeWarp.State.Plus" />-->
   </ItemGroup>
 
   <ItemGroup>
-<!--    <ProjectReference Include="..\..\..\Source\TimeWarp.State\TimeWarp.State.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj" />-->
-<!--    <ProjectReference Include="..\..\..\Source\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />-->
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State\TimeWarp.State.csproj" />
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj" />
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\Source\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Test.App.Contracts\Test.App.Contracts.csproj" />
   </ItemGroup>
 

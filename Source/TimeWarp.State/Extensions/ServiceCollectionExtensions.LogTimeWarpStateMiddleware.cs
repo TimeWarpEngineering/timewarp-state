@@ -8,9 +8,15 @@ public static partial class ServiceCollectionExtensions
     List<string> middleware = GetComponentOrder(serviceCollection, typeof(IPipelineBehavior<,>));
     List<string> postprocessors = GetComponentOrder(serviceCollection, typeof(IRequestPostProcessor<,>));
 
-    LogOrder(logger, "MediatR preprocessors", preprocessors);
-    LogOrder(logger, "MediatR middleware", middleware);
-    LogOrder(logger, "MediatR postprocessors", postprocessors);
+    var message = new StringBuilder("TimeWarp State (MediatR) Middleware Registrations:");
+    message.AppendLine();
+    message.AppendLine();
+    
+    AppendComponentOrder(message, "Preprocessors", preprocessors);
+    AppendComponentOrder(message, "Behaviors", middleware);
+    AppendComponentOrder(message, "Postprocessors", postprocessors);
+
+    logger.LogInformation(message.ToString());
   }
 
   public static List<string> GetComponentOrder(this IServiceCollection serviceCollection, Type componentType)
@@ -19,16 +25,17 @@ public static partial class ServiceCollectionExtensions
       .Where(sd => sd.ServiceType.IsGenericType && 
         sd.ServiceType.GetGenericTypeDefinition() == componentType)
       .Select(sd => sd.ImplementationType?.Name ?? "Unknown")
+      .Select(name => name.Split('`')[0])
       .ToList();
   }
 
-  private static void LogOrder(ILogger logger, string componentType, IReadOnlyList<string> order)
+  private static void AppendComponentOrder(StringBuilder message, string componentType, IReadOnlyList<string> order)
   {
-    var message = new StringBuilder($"{componentType} registration order:\n");
+    message.AppendLine($"{componentType}:");
     for (int i = 0; i < order.Count; i++)
     {
-      message.AppendLine($"{i + 1}. {order[i]}");
+      message.AppendLine($"  {i + 1}. {order[i]}");
     }
-    logger.LogInformation(message.ToString());
+    message.AppendLine();
   }
 }
