@@ -81,7 +81,11 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
     string name = GetType().Name;
     int count = InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
     Id = $"{name}-{count}";
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed,"TimeWarpStateComponent created: {Id}", Id);
+  }
+  
+  protected override void OnInitialized()
+  {
+    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed,"TimeWarpStateComponent created: {Id}", Id);    
   }
   
   protected override void OnAfterRender(bool firstRender)
