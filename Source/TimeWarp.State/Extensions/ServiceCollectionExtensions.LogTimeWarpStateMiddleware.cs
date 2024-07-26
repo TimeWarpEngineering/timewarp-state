@@ -19,12 +19,13 @@ public static partial class ServiceCollectionExtensions
       .Where(sd => sd.ServiceType.IsGenericType && 
         sd.ServiceType.GetGenericTypeDefinition() == componentType)
       .Select(sd => sd.ImplementationType?.Name ?? "Unknown")
+      .Select(name => name.Split('`')[0])
       .ToList();
   }
 
   private static void LogOrder(ILogger logger, string componentType, IReadOnlyList<string> order)
   {
-    var message = new StringBuilder($"{componentType} registration order:\n");
+    var message = new StringBuilder($"{componentType} registration order:{Environment.NewLine}");
     for (int i = 0; i < order.Count; i++)
     {
       message.AppendLine($"{i + 1}. {order[i]}");
