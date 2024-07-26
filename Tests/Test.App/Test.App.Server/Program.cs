@@ -18,6 +18,9 @@ internal class Program
     builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
     
     WebApplication app = builder.Build();
+    
+    ILogger<Program> logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
+    builder.Services.LogTimeWarpStateMiddleware(logger);
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

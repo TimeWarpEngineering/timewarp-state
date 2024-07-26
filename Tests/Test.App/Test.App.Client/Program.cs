@@ -14,6 +14,7 @@ public class Program
     WebAssemblyHost webAssemblyHost = builder.Build();
     ILogger<Program> logger = webAssemblyHost.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
     logger.LogInformation("Starting up Client...");
+    builder.Services.LogTimeWarpStateMiddleware(logger);
        
     await webAssemblyHost.RunAsync();
   }
