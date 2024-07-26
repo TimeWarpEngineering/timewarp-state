@@ -220,17 +220,19 @@ protected void RegisterRenderTrigger<TState>(Expression<Func<TState, object?>> p
         MemberExpression currentProperty = Expression.Property(Expression.Convert(currentParam, typeof(TState)), property);
 
         Expression comparison;
-        if (Nullable.GetUnderlyingType(property.PropertyType) != null)
-        {
-            // For nullable types, use nullable-aware comparison
-            comparison = Expression.Call(typeof(EqualityComparer<>).MakeGenericType(property.PropertyType).GetMethod("Equals", [property.PropertyType, property.PropertyType])!, previousProperty, currentProperty);
-            comparison = Expression.Not(comparison);
-        }
-        else
-        {
-            // For non-nullable types, use standard comparison
-            comparison = Expression.NotEqual(previousProperty, currentProperty);
-        }
+        Type propertyType = property.PropertyType;
+        Type comparerType = typeof(EqualityComparer<>).MakeGenericType(propertyType);
+        PropertyInfo defaultProperty = comparerType.GetProperty("Default")!;
+        MethodInfo equalsMethod = comparerType.GetMethod("Equals", new[] { propertyType, propertyType })!;
+
+        // Get the default comparer
+        Expression defaultComparer = Expression.Property(null, defaultProperty);
+
+        // Call Equals method on the default comparer
+        comparison = Expression.Call(defaultComparer, equalsMethod, previousProperty, currentProperty);
+        
+        // Negate the result because we want to know if they're different
+        comparison = Expression.Not(comparison);
 
         return Expression.Lambda<Func<object, object, bool>>(comparison, previousParam, currentParam).Compile();
     });
