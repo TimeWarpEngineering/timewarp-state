@@ -11,10 +11,15 @@ public class Program
     SetIsoCulture();
     ConfigureServices(builder.Services);
     
-    await builder.Build().RunAsync();
+    WebAssemblyHost webAssemblyHost = builder.Build();
+    ILogger<Program> logger = webAssemblyHost.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
+    logger.LogInformation("Starting up Client...");
+       
+    await webAssemblyHost.RunAsync();
   }
   public static void ConfigureServices(IServiceCollection serviceCollection)
   {
+    serviceCollection.AddLogging();
     serviceCollection.AddBlazoredSessionStorage();
     serviceCollection.AddBlazoredLocalStorage();
 
