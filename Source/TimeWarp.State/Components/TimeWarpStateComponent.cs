@@ -33,6 +33,7 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   [Parameter] public string? TestId { get; set; }
   
   private readonly ConcurrentDictionary <Type, Func<bool>> RenderTriggers = new();
+  private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
   
   /// <summary>
   /// Set this to true if something in the component has changed that requires a re-render.
@@ -177,46 +178,57 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   }
   
   /// <summary>
-  /// Registers a render trigger for a specific state type using a property selector expression.
-  /// </summary>
-  /// <typeparam name="TState">The type of state to monitor. Must be a reference type.</typeparam>
-  /// <param name="propertySelector">An expression that selects the property to monitor for changes.</param>
-  /// <remarks>
-  /// This method creates a render trigger that compares a specific property of the state object.
-  /// It uses expression trees to build an efficient comparison function.
-  /// The component will re-render when the selected property's value changes.
-  /// </remarks>
-  /// <example>
-  /// <code>
-  /// RegisterRenderTrigger&lt;CounterState&gt;(s => s.Count);
-  /// </code>
-  /// </example>
-  /// <exception cref="ArgumentNullException">Thrown when the propertySelector is null.</exception>
-  /// <exception cref="ArgumentException">Thrown when the propertySelector does not represent a simple property access.</exception>
-  protected void RegisterRenderTrigger<TState>(Expression<Func<TState, object>> propertySelector) 
-    where TState : class
-  {
-    ParameterExpression parameter = Expression.Parameter(typeof(TState), "previous");
-    MemberExpression? memberExpression = propertySelector.Body as MemberExpression 
-      ?? ((UnaryExpression)propertySelector.Body).Operand as MemberExpression;
-    var property = (PropertyInfo)memberExpression!.Member;
+    /// Registers a render trigger for a specific state type using a property selector expression.
+    /// </summary>
+    /// <typeparam name="TState">The type of state to monitor. Must be a reference type.</typeparam>
+    /// <param name="propertySelector">An expression that selects the property to monitor for changes.</param>
+    /// <remarks>
+    /// This method creates a render trigger that compares a specific property of the state object.
+    /// It uses expression trees to build an efficient comparison function, which is cached for subsequent use.
+    /// The component will re-render when the selected property's value changes.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// RegisterRenderTrigger&lt;CounterState&gt;(s => s.Count);
+    /// </code>
+    /// </example>
+    /// <exception cref="ArgumentNullException">Thrown when the propertySelector is null.</exception>
+    /// <exception cref="ArgumentException">Thrown when the propertySelector does not represent a simple property access.</exception>
+    protected void RegisterRenderTrigger<TState>(Expression<Func<TState, object>> propertySelector) 
+        where TState : class
+    {
+        ArgumentNullException.ThrowIfNull(propertySelector);
 
-    MemberExpression leftExpression = Expression.Property(parameter, property);
-    MethodInfo getStateMethod = typeof(TimeWarpStateComponent).GetMethod(nameof(GetState), BindingFlags.NonPublic | BindingFlags.Instance)!.MakeGenericMethod(typeof(TState));
-    MemberExpression rightExpression = Expression.Property(
-      Expression.Call(
-        Expression.Constant(this),
-        getStateMethod,
-        Expression.Constant(false) // This is the 'placeSubscription' parameter
-      ),
-      property.Name
-    );
+        MemberExpression? memberExpression = propertySelector.Body as MemberExpression 
+            ?? ((UnaryExpression)propertySelector.Body).Operand as MemberExpression;
+        
+        if (memberExpression == null)
+        {
+            throw new ArgumentException("Property selector must be a simple property access expression.", nameof(propertySelector));
+        }
 
-    BinaryExpression notEqualExpression = Expression.NotEqual(leftExpression, rightExpression);
-    var lambda = Expression.Lambda<Func<TState, bool>>(notEqualExpression, parameter);
+        var property = (PropertyInfo)memberExpression.Member;
 
-    RenderTriggers[typeof(TState)] = () => ShouldReRender(typeof(TState), lambda.Compile());
-  }
+        Func<object, object, bool> comparisonFunc = CompiledPropertyComparisons.GetOrAdd((typeof(TState), property.Name), _ =>
+        {
+            ParameterExpression previousParam = Expression.Parameter(typeof(object), "previous");
+            ParameterExpression currentParam = Expression.Parameter(typeof(object), "current");
+
+            BinaryExpression notEqualExpression = Expression.NotEqual(
+                Expression.Property(Expression.Convert(previousParam, typeof(TState)), property),
+                Expression.Property(Expression.Convert(currentParam, typeof(TState)), property)
+            );
+
+            return Expression.Lambda<Func<object, object, bool>>(notEqualExpression, previousParam, currentParam).Compile();
+        });
+
+        RenderTriggers[typeof(TState)] = () => 
+        {
+            TState? previousState = GetPreviousState<TState>();
+            TState currentState = GetState<TState>(false);
+            return previousState == null || comparisonFunc(previousState, currentState);
+        };
+    }
   
   /// <summary>
   ///   Place a Subscription for the calling component
