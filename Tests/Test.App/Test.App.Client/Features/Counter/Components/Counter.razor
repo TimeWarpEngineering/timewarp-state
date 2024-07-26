@@ -1,6 +1,16 @@
 ﻿@namespace Test.App.Client.Features.Counter.Components
 @inherits BaseComponent
 
+@code 
+{
+  protected override void OnInitialized()
+  {
+    RegisterRenderTrigger<CounterState>(p => p.Count != CounterState.Count);
+    RegisterRenderTrigger<CounterState>(p => p.Count);
+    base.OnInitialized();
+  }
+}
+
 <div data-qa="@TestId">
   <p>CounterState.Count: <span data-qa="count">@CounterState.Count</span></p>
 
