@@ -30,9 +30,11 @@ public partial class TimeWarpStateComponent
   {
     ArgumentNullException.ThrowIfNull(stateType);
 
-    NeedsRerender = RenderTriggers.TryGetValue(stateType, out Func<bool>? check) && check();
+    NeedsRerender = !RenderTriggers.TryGetValue(stateType, out Func<bool>? check) || check();
+
     return NeedsRerender;
   }
+
 
   /// <summary>
   /// Determines whether the component should re-render based on changes in a specific state type.
