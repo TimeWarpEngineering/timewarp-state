@@ -2,9 +2,12 @@ namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent
 {
+  public int RenderCount => RenderCounts.GetValueOrDefault(Id, 0);
+  
   private static readonly ConcurrentDictionary<Type, string> ConfiguredRenderModeCache = new();
   private static readonly ConcurrentDictionary<Type, bool> TypeRenderAttributeCache = new();
-
+  private static readonly ConcurrentDictionary<string, int> RenderCounts = new();
+  
   private bool UsesRenderMode;
   private bool HasRendered;
 
@@ -54,6 +57,25 @@ public partial class TimeWarpStateComponent
         .Any(attr => attr.GetType().Name.Contains("PrivateComponentRenderModeAttribute")));
 
     return hasRenderAttribute ? State.CurrentRenderMode.PreRendering : State.CurrentRenderMode.Static;
+  }
+  
+  protected override void OnAfterRender(bool firstRender)
+  {
+    base.OnAfterRender(firstRender);
+    IncrementRenderCount();
+    int renderCount = RenderCounts[Id];
+    Logger.LogTrace(EventIds.TimeWarpStateComponent_RenderCount, "{Id}: Rendered, RenderCount: {RenderCount}", Id, renderCount);
+    if (!firstRender) return;
+    HasRendered = true;
+    if (UsesRenderMode)
+    {
+      StateHasChanged();
+    }
+  }
+  
+  private void IncrementRenderCount()
+  {
+    RenderCounts.AddOrUpdate(Id, 1, (_, count) => count + 1);
   }
 }
 

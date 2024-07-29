@@ -18,7 +18,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   [Inject] protected IMediator Mediator { get; set; } = null!;
 
   private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
-  private static readonly ConcurrentDictionary<string, int> RenderCounts = new();
   /// <summary>
   ///   A generated unique Id based on the Class name and number of times they have been created
   /// </summary>
@@ -28,8 +27,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   ///   Allows for the Assigning of a value one can use to select an element during automated testing.
   /// </summary>
   [Parameter] public string? TestId { get; set; }
-
-  public int RenderCount => RenderCounts.GetValueOrDefault(Id, 0);
 
   public TimeWarpStateComponent()
   {
@@ -41,20 +38,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   protected override void OnInitialized()
   {
     Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "TimeWarpStateComponent created: {Id}", Id);
-  }
-
-  protected override void OnAfterRender(bool firstRender)
-  {
-    base.OnAfterRender(firstRender);
-    IncrementRenderCount();
-    int renderCount = RenderCounts[Id];
-    Logger.LogTrace(EventIds.TimeWarpStateComponent_RenderCount, "{Id}: Rendered, RenderCount: {RenderCount}", Id, renderCount);
-    if (!firstRender) return;
-    HasRendered = true;
-    if (UsesRenderMode)
-    {
-      StateHasChanged();
-    }
   }
 
   public virtual void Dispose()
@@ -83,9 +66,4 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   ///   Exposes StateHasChanged
   /// </summary>
   public void ReRender() => InvokeAsync(StateHasChanged);
-
-  private void IncrementRenderCount()
-  {
-    RenderCounts.AddOrUpdate(Id, 1, (_, count) => count + 1);
-  }
 }
