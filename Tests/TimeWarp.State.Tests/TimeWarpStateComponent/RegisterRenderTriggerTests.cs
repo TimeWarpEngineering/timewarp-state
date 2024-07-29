@@ -15,6 +15,30 @@ public class Should_
       .Should().Throw<ArgumentNullException>();
   }
 
+  public static void Register_RenderTrigger_With_StringProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { StringProperty = "Initial" };
+    TestState state1 = new() { StringProperty = "Changed" };
+    TestState state2 = new() { StringProperty = "Changed", AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.StringProperty;
+
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
   public static void Register_RenderTrigger_With_NullableString_PropertySelector()
   {
     TestComponent sut = new();
@@ -42,37 +66,6 @@ public class Should_
     store.SetState(state2);
     sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // Because the state has not changed
   }
-  
-  public static void Register_RenderTrigger_With_Derived_Bool_PropertySelector()
-  {
-    TestComponent sut = new();
-    TestStore store = new();
-    
-    // Use reflection to set the private Store property
-    store.SetComponentStore(sut);
-    // Make three states to test with
-    
-    TestState state0 = new() { IntProperty = 0 };
-    TestState state1 = new() { IntProperty = 0 };
-    TestState state2 = new() { IntProperty = 1 };
-    TestState state3 = new() { IntProperty = 1 };
-    
-    Expression<Func<TestState, object?>> propertySelector = t => t.DerivedBoolProperty;
-
-    // Act
-    sut.RegisterRenderTrigger(propertySelector);
-
-    // Assert
-    store.SetState(state0); // Previous state will be null
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // Because PreviousState is null
-    store.SetState(state1); 
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
-    store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // IsActive should have changed
-    store.SetState(state3);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
-  }
-  
   
   public static void Register_RenderTrigger_With_IntProperty_PropertySelector()
   {
@@ -122,30 +115,36 @@ public class Should_
     sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
   }
 
-  public static void Register_RenderTrigger_With_StringProperty_PropertySelector()
+  public static void Register_RenderTrigger_With_Derived_Bool_PropertySelector()
   {
     TestComponent sut = new();
     TestStore store = new();
     
+    // Use reflection to set the private Store property
     store.SetComponentStore(sut);
+    // Make three states to test with
     
-    TestState state0 = new() { StringProperty = "Initial" };
-    TestState state1 = new() { StringProperty = "Changed" };
-    TestState state2 = new() { StringProperty = "Changed", AnotherProperty = "Changed" };
+    TestState state0 = new() { IntProperty = 0 };
+    TestState state1 = new() { IntProperty = 0 };
+    TestState state2 = new() { IntProperty = 1 };
+    TestState state3 = new() { IntProperty = 1 };
     
-    store.SetState(state0);
-    Expression<Func<TestState, object?>> propertySelector = t => t.StringProperty;
+    Expression<Func<TestState, object?>> propertySelector = t => t.DerivedBoolProperty;
 
+    // Act
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
-    store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    // Assert
+    store.SetState(state0); // Previous state will be null
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // Because PreviousState is null
+    store.SetState(state1); 
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // IsActive should have changed
+    store.SetState(state3);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
   }
-
+  
   public static void Register_RenderTrigger_With_NullableReferenceProperty_PropertySelector()
   {
     TestComponent sut = new();
