@@ -74,7 +74,8 @@ public class Should_
   }
   
   
-  // Write tests that test the following Expressions
+  // Aider: Write test cases that test the following Expressions name them following the above examples.
+
   // propertySelector = t => t.IntProperty;
   // propertySelector = t => t.NullableIntProperty;
   // propertySelector = t => t.StringProperty;
