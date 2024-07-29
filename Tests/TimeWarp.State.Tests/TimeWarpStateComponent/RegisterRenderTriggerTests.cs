@@ -4,6 +4,17 @@ using TimeWarp.Fixie;
 
 public class Should_ 
 {
+  public static void RegisterRenderTrigger_NullPropertySelector_ThrowsArgumentNullException()
+  {
+    // Arrange
+    TestComponent sut = new();
+    Expression<Func<object, object?>> propertySelector = null!;
+
+    // Act and Assert
+    sut.Invoking(c => c.RegisterRenderTrigger(propertySelector))
+      .Should().Throw<ArgumentNullException>();
+  }
+
   public static void Register_RenderTrigger_With_NullableString_PropertySelector()
   {
     TestComponent sut = new();
@@ -61,6 +72,7 @@ public class Should_
     store.SetState(state3);
     sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
   }
+  
   
   // Write tests that test the following Expressions
   // propertySelector = t => t.IntProperty;
