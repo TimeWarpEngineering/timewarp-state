@@ -1,9 +1,6 @@
 namespace GetEnclosingStateType_;
 
-using FluentAssertions;
-using MediatR;
 using TimeWarp.Features.RenderSubscriptions;
-using TimeWarp.State;
 using TimeWarp.State.Extensions;
 
 public class TypeExtensionsTests
