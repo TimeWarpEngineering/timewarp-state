@@ -74,17 +74,150 @@ public class Should_
   }
   
   
-  // Aider: Write test cases that test the following Expressions name them following the above examples.
+  public static void Register_RenderTrigger_With_IntProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { IntProperty = 0 };
+    TestState state1 = new() { IntProperty = 1 };
+    TestState state2 = new() { IntProperty = 1, AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.IntProperty;
 
-  // propertySelector = t => t.IntProperty;
-  // propertySelector = t => t.NullableIntProperty;
-  // propertySelector = t => t.StringProperty;
-  // propertySelector = t => t.NullableStringProperty;
-  // propertySelector = t => t.NullableReferenceProperty;
-  // propertySelector = t => t.ReferenceProperty;
-  // propertySelector = t => t.NullableReferenceProperty.
-  
-  
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
+  public static void Register_RenderTrigger_With_NullableIntProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { NullableIntProperty = null };
+    TestState state1 = new() { NullableIntProperty = 1 };
+    TestState state2 = new() { NullableIntProperty = 1, AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.NullableIntProperty;
+
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
+  public static void Register_RenderTrigger_With_StringProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { StringProperty = "Initial" };
+    TestState state1 = new() { StringProperty = "Changed" };
+    TestState state2 = new() { StringProperty = "Changed", AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.StringProperty;
+
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
+  public static void Register_RenderTrigger_With_NullableReferenceProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { NullableReferenceProperty = null };
+    TestState state1 = new() { NullableReferenceProperty = new TestThing() };
+    TestState state2 = new() { NullableReferenceProperty = state1.NullableReferenceProperty, AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.NullableReferenceProperty;
+
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
+  public static void Register_RenderTrigger_With_ReferenceProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { ReferenceProperty = new TestThing() };
+    TestState state1 = new() { ReferenceProperty = new TestThing() };
+    TestState state2 = new() { ReferenceProperty = state1.ReferenceProperty, AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.ReferenceProperty;
+
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
+  public static void Register_RenderTrigger_With_NullableReferenceProperty_NestedProperty_PropertySelector()
+  {
+    TestComponent sut = new();
+    TestStore store = new();
+    
+    store.SetComponentStore(sut);
+    
+    TestState state0 = new() { NullableReferenceProperty = new TestThing { NullableStringProperty = "Initial" } };
+    TestState state1 = new() { NullableReferenceProperty = new TestThing { NullableStringProperty = "Changed" } };
+    TestState state2 = new() { NullableReferenceProperty = state1.NullableReferenceProperty, AnotherProperty = "Changed" };
+    
+    store.SetState(state0);
+    Expression<Func<TestState, object?>> propertySelector = t => t.NullableReferenceProperty!.NullableStringProperty;
+
+    sut.RegisterRenderTrigger(propertySelector);
+
+    sut.Should().NotBeNull();
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state1);
+    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    store.SetState(state2);
+    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+  }
+
   // Test setup code below
   private class TestState:IState
   {
