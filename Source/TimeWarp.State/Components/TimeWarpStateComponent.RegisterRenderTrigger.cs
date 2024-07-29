@@ -3,6 +3,8 @@ namespace TimeWarp.State;
 public partial class TimeWarpStateComponent
 {
   private readonly ConcurrentDictionary<Type, Func<bool>> RenderTriggers = new();
+
+  private T? GetPreviousState<T>() => Store.GetPreviousState<T>();
   private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
 
   /// <summary>

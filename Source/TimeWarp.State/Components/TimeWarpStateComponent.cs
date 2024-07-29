@@ -79,8 +79,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     return Store.GetState<T>();
   }
 
-  private T? GetPreviousState<T>() => Store.GetPreviousState<T>();
-
   /// <summary>
   ///   Exposes StateHasChanged
   /// </summary>
