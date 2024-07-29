@@ -29,14 +29,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   /// </summary>
   [Parameter] public string? TestId { get; set; }
   
-  private readonly ConcurrentDictionary <Type, Func<bool>> RenderTriggers = new();
-  private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
-  
-  /// <summary>
-  /// Set this to true if something in the component has changed that requires a re-render.
-  /// </summary>
-  protected bool NeedsRerender;
-  
   public int RenderCount => RenderCounts.GetValueOrDefault(Id, 0);
   
   public TimeWarpStateComponent()
@@ -71,51 +63,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     Subscriptions.Remove(this);
     RenderCounts.TryRemove(Id, out _);
     GC.SuppressFinalize(this);
-  }
-  
-  /// <inheritdoc />
-  protected override bool ShouldRender()
-  {
-    // If there are no RenderTriggers, default to true (standard Blazor behavior)
-    if (RenderTriggers.Count == 0)
-      return true;
-
-    // If there are RenderTriggers, use NeedsRerender flag
-    bool result = NeedsRerender;
-    NeedsRerender = false;
-    return result;
-  }
-
-  /// <inheritdoc />
-  public virtual bool ShouldReRender(Type stateType)
-  {
-    ArgumentNullException.ThrowIfNull(stateType);
-
-    NeedsRerender = RenderTriggers.TryGetValue(stateType, out Func<bool>? check) && check();
-    return NeedsRerender;
-  }
-  
-  /// <summary>
-  /// Determines whether the component should re-render based on changes in a specific state type.
-  /// </summary>
-  /// <typeparam name="T">The type of state to check.</typeparam>
-  /// <param name="stateType">The type of state that has changed.</param>
-  /// <param name="condition">A function that evaluates given the previous state and returns true if a re-render is needed.</param>
-  /// <returns>True if the component should re-render; otherwise, false.</returns>
-  /// <remarks>
-  /// This method checks if the changed state type matches the generic type parameter T.
-  /// If it matches, it retrieves the previous state and applies the provided condition.
-  /// The component will re-render if the condition returns true given the previous state.
-  /// </remarks>
-  protected bool ShouldReRender<T>(Type stateType, Func<T, bool> condition) where T : class
-  {
-    if (stateType != typeof(T)) return false;
-    T? previousState = GetPreviousState<T>();
-    if (previousState == null) return true;
-    bool result = condition(previousState);
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_ShouldReRender, "ShouldReRender ComponentType: {ComponentId} StateType: {StateType} Result: {Result}", Id, stateType.FullName, result);
-
-    return result;
   }
   
   /// <summary>
