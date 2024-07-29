@@ -5,7 +5,7 @@ namespace TimeWarp.State;
 ///   And exposes StateHasChanged
 /// </summary>
 /// <remarks>Implements ITimeWarpStateComponent by Injecting</remarks>
-public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpStateComponent
+public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpStateComponent
 {
   [Inject] private IStore Store { get; set; } = null!;
   [Inject] private ILogger<TimeWarpStateComponent> Logger { get; set; } = null!;
@@ -176,74 +176,6 @@ public class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpState
   {
     RenderTriggers[typeof(T)] = () => ShouldReRender(typeof(T), triggerCondition);
   }
-  
-  /// <summary>
-/// Registers a render trigger for a specific state type using a property selector expression.
-/// </summary>
-/// <typeparam name="TState">The type of state to monitor. Must be a reference type.</typeparam>
-/// <param name="propertySelector">An expression that selects the property to monitor for changes.</param>
-/// <remarks>
-/// This method creates a render trigger that compares a specific property of the state object.
-/// It uses expression trees to build an efficient comparison function, which is cached for subsequent use.
-/// The component will re-render when the selected property's value changes.
-/// This method supports both nullable and non-nullable property types.
-/// </remarks>
-/// <example>
-/// <code>
-/// RegisterRenderTrigger&lt;CounterState&gt;(s => s.Count);
-/// RegisterRenderTrigger&lt;AnnouncementState&gt;(s => s.TimeStamp);
-/// </code>
-/// </example>
-/// <exception cref="ArgumentNullException">Thrown when the propertySelector is null.</exception>
-/// <exception cref="ArgumentException">Thrown when the propertySelector does not represent a simple property access.</exception>
-protected void RegisterRenderTrigger<TState>(Expression<Func<TState, object?>> propertySelector) 
-    where TState : class
-{
-    ArgumentNullException.ThrowIfNull(propertySelector);
-
-    MemberExpression? memberExpression = propertySelector.Body as MemberExpression 
-        ?? ((UnaryExpression)propertySelector.Body).Operand as MemberExpression;
-    
-    if (memberExpression == null)
-    {
-        throw new ArgumentException("Property selector must be a simple property access expression.", nameof(propertySelector));
-    }
-
-    var property = (PropertyInfo)memberExpression.Member;
-
-    Func<object, object, bool> comparisonFunc = CompiledPropertyComparisons.GetOrAdd((typeof(TState), property.Name), _ =>
-    {
-        ParameterExpression previousParam = Expression.Parameter(typeof(object), "previous");
-        ParameterExpression currentParam = Expression.Parameter(typeof(object), "current");
-
-        MemberExpression previousProperty = Expression.Property(Expression.Convert(previousParam, typeof(TState)), property);
-        MemberExpression currentProperty = Expression.Property(Expression.Convert(currentParam, typeof(TState)), property);
-
-        Expression comparison;
-        Type propertyType = property.PropertyType;
-        Type comparerType = typeof(EqualityComparer<>).MakeGenericType(propertyType);
-        PropertyInfo defaultProperty = comparerType.GetProperty("Default")!;
-        MethodInfo equalsMethod = comparerType.GetMethod("Equals", new[] { propertyType, propertyType })!;
-
-        // Get the default comparer
-        Expression defaultComparer = Expression.Property(null, defaultProperty);
-
-        // Call Equals method on the default comparer
-        comparison = Expression.Call(defaultComparer, equalsMethod, previousProperty, currentProperty);
-        
-        // Negate the result because we want to know if they're different
-        comparison = Expression.Not(comparison);
-
-        return Expression.Lambda<Func<object, object, bool>>(comparison, previousParam, currentParam).Compile();
-    });
-
-    RenderTriggers[typeof(TState)] = () => 
-    {
-        TState? previousState = GetPreviousState<TState>();
-        TState currentState = GetState<TState>(false);
-        return previousState == null || comparisonFunc(previousState, currentState);
-    };
-}
   
   /// <summary>
   ///   Place a Subscription for the calling component
