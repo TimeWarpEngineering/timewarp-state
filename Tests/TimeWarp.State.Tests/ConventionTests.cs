@@ -1,6 +1,5 @@
 ﻿namespace ConventionTest_;
 
-using FluentAssertions;
 using TimeWarp.Fixie;
 
 [TestTag(TestTags.Fast)]

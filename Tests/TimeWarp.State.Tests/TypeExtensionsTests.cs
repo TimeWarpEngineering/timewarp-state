@@ -1,6 +1,5 @@
 namespace GetEnclosingStateType_;
 
-using FluentAssertions;
 using MediatR;
 using TimeWarp.Features.RenderSubscriptions;
 using TimeWarp.State;
