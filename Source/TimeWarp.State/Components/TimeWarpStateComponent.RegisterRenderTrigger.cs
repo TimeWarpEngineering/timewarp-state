@@ -2,6 +2,26 @@ namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent
 {
+  /// <summary>
+  /// Registers a render trigger for a specific state type.
+  /// </summary>
+  /// <typeparam name="T">The type of state to check. Must be a reference type.</typeparam>
+  /// <param name="triggerCondition">A function that takes the previous state of type T and returns a boolean indicating whether a re-render is needed.</param>
+  /// <remarks>
+  /// This method adds a new entry to the RenderTriggers dictionary. The key is the Type of T, 
+  /// and the value is a function that will be called to determine if a re-render is necessary 
+  /// when the state of type T changes. The function should compare the previous state 
+  /// (passed as an argument) with the current state (which should be accessible within the component).
+  /// </remarks>
+  /// <example>
+  /// <code>
+  /// RegisterRenderTrigger&lt;UserState&gt;(previousUserState => UserState.Name != previousUserState.Name);
+  /// </code>
+  /// </example>
+  protected void RegisterRenderTriggerCondition<T>(Func<T, bool> triggerCondition) where T : class
+  {
+    RenderTriggers[typeof(T)] = () => ShouldReRender(typeof(T), triggerCondition);
+  }
   protected void RegisterRenderTrigger<T>(Expression<Func<T, object?>> propertySelector) where T : class
   {
     ArgumentNullException.ThrowIfNull(propertySelector);
@@ -16,7 +36,7 @@ public partial class TimeWarpStateComponent
     };
   }
 
-  private Func<T, T, bool> CreateComparisonFunc<T>(Expression<Func<T, object?>> propertySelector) where T : class
+  private static Func<T, T, bool> CreateComparisonFunc<T>(Expression<Func<T, object?>> propertySelector) where T : class
   {
     Func<T, object?> compiledSelector = propertySelector.Compile();
     
