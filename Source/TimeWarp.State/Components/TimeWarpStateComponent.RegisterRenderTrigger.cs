@@ -4,7 +4,7 @@ public partial class TimeWarpStateComponent
 {
   private readonly ConcurrentDictionary<Type, Func<bool>> RenderTriggers = new();
   private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
-  
+
   /// <summary>
   /// Set this to true if something in the component has changed that requires a re-render.
   /// </summary>
@@ -31,7 +31,7 @@ public partial class TimeWarpStateComponent
     NeedsRerender = RenderTriggers.TryGetValue(stateType, out Func<bool>? check) && check();
     return NeedsRerender;
   }
-  
+
   /// <summary>
   /// Determines whether the component should re-render based on changes in a specific state type.
   /// </summary>
@@ -77,9 +77,9 @@ public partial class TimeWarpStateComponent
   protected void RegisterRenderTrigger<T>(Expression<Func<T, object?>> propertySelector) where T : class
   {
     ArgumentNullException.ThrowIfNull(propertySelector);
-    
+
     Func<T, T, bool> comparisonFunc = CreateComparisonFunc(propertySelector);
-    
+
     RenderTriggers[typeof(T)] = () =>
     {
       T? previousState = GetPreviousState<T>();
@@ -91,12 +91,12 @@ public partial class TimeWarpStateComponent
   private static Func<T, T, bool> CreateComparisonFunc<T>(Expression<Func<T, object?>> propertySelector) where T : class
   {
     Func<T, object?> compiledSelector = propertySelector.Compile();
-    
+
     return (T previous, T current) =>
     {
       object? previousValue = compiledSelector(previous);
       object? currentValue = compiledSelector(current);
-        
+
       return !Equals(previousValue, currentValue);
     };
   }
