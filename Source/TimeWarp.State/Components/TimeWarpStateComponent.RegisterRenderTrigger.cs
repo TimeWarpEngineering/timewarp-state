@@ -10,17 +10,42 @@ public partial class TimeWarpStateComponent
   /// <summary>
   /// Set this to true if something in the component has changed that requires a re-render.
   /// </summary>
-  protected bool NeedsRerender;
+  private bool NeedsRerender;
+
+  /// <summary>
+  /// Triggers a re-render of the component by setting the NeedsRerender flag
+  /// and invoking the base StateHasChanged method asynchronously.
+  /// </summary>
+  /// <remarks>
+  /// This method provides a public way to force a re-render of the component
+  /// from external code or in response to specific events or conditions.
+  /// </remarks>
+  public void ReRender()
+  {
+    NeedsRerender = true;
+    InvokeAsync(base.StateHasChanged);
+  }
+
+  /// <summary>
+  /// Overrides the base StateHasChanged method to control the re-rendering behavior
+  /// of the component.
+  /// </summary>
+  /// <remarks>
+  /// This method is called by the Blazor framework whenever the component's state
+  /// has changed. By overriding it and redirecting the call to ReRender(), we ensure
+  /// that our custom re-rendering logic is executed.
+  /// </remarks>
+  protected new void StateHasChanged()
+  {
+    ReRender();
+  }
 
   /// <inheritdoc />
   protected override bool ShouldRender()
   {
     // If there are no RenderTriggers, default to true (standard Blazor behavior)
-    if (RenderTriggers.Count == 0)
-      return true;
-
     // If there are RenderTriggers, use NeedsRerender flag
-    bool result = NeedsRerender;
+    bool result = RenderTriggers.IsEmpty || NeedsRerender; 
     NeedsRerender = false;
     return result;
   }

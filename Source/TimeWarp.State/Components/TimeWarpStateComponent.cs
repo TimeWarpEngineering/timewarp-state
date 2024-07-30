@@ -61,9 +61,4 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     if (placeSubscription) Subscriptions.Add(stateType, this);
     return Store.GetState<T>();
   }
-
-  /// <summary>
-  ///   Exposes StateHasChanged
-  /// </summary>
-  public void ReRender() => InvokeAsync(StateHasChanged);
 }
