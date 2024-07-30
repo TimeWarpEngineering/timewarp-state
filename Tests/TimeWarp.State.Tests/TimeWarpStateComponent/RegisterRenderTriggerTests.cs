@@ -8,7 +8,7 @@ public class Should_
   {
     // Arrange
     TestComponent sut = new();
-    Expression<Func<object, object?>> propertySelector = null!;
+    Expression<Func<IState, object?>> propertySelector = null!;
 
     // Act and Assert
     sut.Invoking(c => c.RegisterRenderTrigger(propertySelector))
@@ -250,7 +250,7 @@ public class Should_
 [NotTest]
 public class TestComponent : TimeWarpStateComponent
 {
-  public new void RegisterRenderTrigger<T>(Expression<Func<T, object?>> propertySelector) where T : class
+  public new void RegisterRenderTrigger<TState>(Expression<Func<TState, object?>> propertySelector) where TState : IState
   {
     base.RegisterRenderTrigger(propertySelector);
   }
@@ -263,13 +263,13 @@ public class TestStore : IStore
   private IState PreviousState { get; set; } = null!;
   
   public object GetState(Type stateType) => State;
-  public TState GetState<TState>() => (TState)State;
+  public TState GetState<TState>() where TState : IState => (TState)State;
   public void SetState(IState newState)
   {
     PreviousState = State;
     State = newState;
   }
-  public TState? GetPreviousState<TState>() => (TState?)PreviousState;
+  public TState? GetPreviousState<TState>() where TState : IState => (TState?)PreviousState;
   
   public void SetComponentStore(TimeWarpStateComponent component)
   {
@@ -277,8 +277,9 @@ public class TestStore : IStore
     storeProperty?.SetValue(component, this);
   }
   
-  // Properties below are not used by the tests
+  // Members below are not used by the tests
   public Guid Guid { get; } = Guid.Empty;
   public SemaphoreSlim GetSemaphore(Type stateType) => throw new NotImplementedException();
   public void Reset() => throw new NotImplementedException();
+  public void RemoveState<TState>() where TState : IState => throw new NotImplementedException();
 }
