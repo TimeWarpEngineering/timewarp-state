@@ -55,7 +55,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   /// <param name="placeSubscription"></param>
   /// <typeparam name="T"></typeparam>
   /// <returns></returns>
-  protected T GetState<T>(bool placeSubscription = true)
+  protected T GetState<T>(bool placeSubscription = true) where T : IState
   {
     Type stateType = typeof(T);
     if (placeSubscription) Subscriptions.Add(stateType, this);

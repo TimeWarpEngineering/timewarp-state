@@ -4,7 +4,7 @@ public partial class TimeWarpStateComponent
 {
   private readonly ConcurrentDictionary<Type, Func<bool>> RenderTriggers = new();
 
-  private T? GetPreviousState<T>() => Store.GetPreviousState<T>();
+  private TState? GetPreviousState<TState>() where TState:IState => Store.GetPreviousState<TState>();
   private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
 
   /// <summary>
@@ -63,7 +63,7 @@ public partial class TimeWarpStateComponent
   /// <summary>
   /// Determines whether the component should re-render based on changes in a specific state type.
   /// </summary>
-  /// <typeparam name="T">The type of state to check.</typeparam>
+  /// <typeparam name="TState">The type of state to check.</typeparam>
   /// <param name="stateType">The type of state that has changed.</param>
   /// <param name="condition">A function that evaluates given the previous state and returns true if a re-render is needed.</param>
   /// <returns>True if the component should re-render; otherwise, false.</returns>
@@ -72,10 +72,10 @@ public partial class TimeWarpStateComponent
   /// If it matches, it retrieves the previous state and applies the provided condition.
   /// The component will re-render if the condition returns true given the previous state.
   /// </remarks>
-  protected bool ShouldReRender<T>(Type stateType, Func<T, bool> condition) where T : class
+  protected bool ShouldReRender<TState>(Type stateType, Func<TState, bool> condition) where TState : IState
   {
-    if (stateType != typeof(T)) return false;
-    T? previousState = GetPreviousState<T>();
+    if (stateType != typeof(TState)) return false;
+    TState? previousState = GetPreviousState<TState>();
     if (previousState == null) return true;
     bool result = condition(previousState);
     Logger.LogDebug(EventIds.TimeWarpStateComponent_ShouldReRender, "ShouldReRender ComponentType: {ComponentId} StateType: {StateType} Result: {Result}", Id, stateType.FullName, result);
@@ -85,7 +85,7 @@ public partial class TimeWarpStateComponent
   /// <summary>
   /// Registers a render trigger for a specific state type.
   /// </summary>
-  /// <typeparam name="T">The type of state to check. Must be a reference type.</typeparam>
+  /// <typeparam name="TState">The type of state to check. Must be a reference type.</typeparam>
   /// <param name="triggerCondition">A function that takes the previous state of type T and returns a boolean indicating whether a re-render is needed.</param>
   /// <remarks>
   /// This method adds a new entry to the RenderTriggers dictionary. The key is the Type of T, 
@@ -98,29 +98,29 @@ public partial class TimeWarpStateComponent
   /// RegisterRenderTrigger&lt;UserState&gt;(previousUserState => UserState.Name != previousUserState.Name);
   /// </code>
   /// </example>
-  protected void RegisterRenderTriggerCondition<T>(Func<T, bool> triggerCondition) where T : class
+  protected void RegisterRenderTriggerCondition<TState>(Func<TState, bool> triggerCondition) where TState : IState
   {
-    RenderTriggers[typeof(T)] = () => ShouldReRender(typeof(T), triggerCondition);
+    RenderTriggers[typeof(TState)] = () => ShouldReRender(typeof(TState), triggerCondition);
   }
-  protected void RegisterRenderTrigger<T>(Expression<Func<T, object?>> propertySelector) where T : class
+  protected void RegisterRenderTrigger<TState>(Expression<Func<TState, object?>> propertySelector) where TState : IState
   {
     ArgumentNullException.ThrowIfNull(propertySelector);
 
-    Func<T, T, bool> comparisonFunc = CreateComparisonFunc(propertySelector);
+    Func<TState, TState, bool> comparisonFunc = CreateComparisonFunc(propertySelector);
 
-    RenderTriggers[typeof(T)] = () =>
+    RenderTriggers[typeof(TState)] = () =>
     {
-      T? previousState = GetPreviousState<T>();
-      T currentState = GetState<T>(false);
+      TState? previousState = GetPreviousState<TState>();
+      TState currentState = GetState<TState>(false);
       return previousState == null || comparisonFunc(previousState, currentState);
     };
   }
 
-  private static Func<T, T, bool> CreateComparisonFunc<T>(Expression<Func<T, object?>> propertySelector) where T : class
+  private static Func<TState, TState, bool> CreateComparisonFunc<TState>(Expression<Func<TState, object?>> propertySelector) where TState : IState
   {
-    Func<T, object?> compiledSelector = propertySelector.Compile();
+    Func<TState, object?> compiledSelector = propertySelector.Compile();
 
-    return (T previous, T current) =>
+    return (previous, current) =>
     {
       object? previousValue = compiledSelector(previous);
       object? currentValue = compiledSelector(current);
