@@ -35,7 +35,6 @@ public partial class TimeWarpStateComponent
     return NeedsRerender;
   }
 
-
   /// <summary>
   /// Determines whether the component should re-render based on changes in a specific state type.
   /// </summary>
