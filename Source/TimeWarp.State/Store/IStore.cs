@@ -11,15 +11,17 @@ public interface IStore
 {
   Guid Guid { get; }
 
-  TState GetState<TState>();
+  TState GetState<TState>() where TState : IState;
   
-  TState? GetPreviousState<TState>();
+  TState? GetPreviousState<TState>() where TState : IState;
 
   object GetState(Type stateType);
   
   SemaphoreSlim GetSemaphore(Type stateType);
 
   void SetState(IState newState);
+  
+  void RemoveState<TState>() where TState : IState;
 
   void Reset();
 }

@@ -43,15 +43,15 @@ public abstract class TimeWarpStateInputComponent<TValue> : InputBase<TValue>, I
   /// Place a Subscription for the calling component
   /// And returns the requested state
   /// </summary>
-  /// <typeparam name="T"></typeparam>
+  /// <typeparam name="TState"></typeparam>
   /// <returns></returns>
-  protected T GetState<T>()
+  protected TState GetState<TState>() where TState : IState
   {
-    Type stateType = typeof(T);
+    Type stateType = typeof(TState);
     Subscriptions.Add(stateType, this);
-    return Store.GetState<T>();
+    return Store.GetState<TState>();
   }
-  
+
   public void Dispose()
   {
     Subscriptions.Remove(this);

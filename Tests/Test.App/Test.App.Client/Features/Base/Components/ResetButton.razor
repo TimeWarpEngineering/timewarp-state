@@ -1,5 +1,10 @@
 ﻿@namespace Test.App.Client.Features.Base.Components
 @inherits BaseComponent
+@using static ApplicationState;
+
+@code {
+  private async Task ButtonClick() => await Mediator.Send(new ResetStoreAction());
+}
 
 <div id=@Id data-qa=@TestId>
   <button data-qa="reset-store-button" @onclick=ButtonClick>Reset Store</button>

@@ -53,17 +53,22 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   ///   And returns the requested state 
   /// </summary>
   /// <param name="placeSubscription"></param>
-  /// <typeparam name="T"></typeparam>
+  /// <typeparam name="TState"></typeparam>
   /// <returns></returns>
-  protected T GetState<T>(bool placeSubscription = true)
+  protected TState GetState<TState>(bool placeSubscription = true) where TState : IState
   {
-    Type stateType = typeof(T);
+    Type stateType = typeof(TState);
     if (placeSubscription) Subscriptions.Add(stateType, this);
-    return Store.GetState<T>();
+    return Store.GetState<TState>();
   }
 
   /// <summary>
-  ///   Exposes StateHasChanged
+  /// Allows for the removal of a state and its previous state.
   /// </summary>
-  public void ReRender() => InvokeAsync(StateHasChanged);
+  /// <typeparam name="TState"></typeparam>
+  /// <remarks>Use this in Dispose to free up memory</remarks>
+  protected void RemoveState<TState>() where TState : IState
+  {
+    Store.RemoveState<TState>();
+  }
 }

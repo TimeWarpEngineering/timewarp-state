@@ -45,18 +45,25 @@ internal partial class Store : IStore
   /// </summary>
   /// <typeparam name="TState"></typeparam>
   /// <returns>The specific IState</returns>
-  public TState GetState<TState>()
+  public TState GetState<TState>() where TState : IState
   {
     Type stateType = typeof(TState);
     return (TState)GetState(stateType);
   }
 
-  public TState? GetPreviousState<TState>()
+  public TState? GetPreviousState<TState>() where TState : IState
   {
     Type stateType = typeof(TState);
     return (TState?)GetPreviousState(stateType);
   }
 
+  public void RemoveState<TState>() where TState : IState
+  {
+    string typeName = typeof(TState).FullName ?? throw new InvalidOperationException();
+    PreviousStates.Remove(typeName, out _);
+    States.Remove(typeName, out _);
+  }
+  
   /// <summary>
   /// Clear all the states
   /// </summary>
