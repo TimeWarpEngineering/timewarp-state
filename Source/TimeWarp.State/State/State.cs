@@ -2,9 +2,10 @@ namespace TimeWarp.State;
 
 using System.Text.Json.Serialization;
 
-public abstract class State<TState> : IState<TState>
+public abstract class State<TState> : IState<TState>, IDisposable
 {
-
+  protected CancellationTokenSource CancellationTokenSource { get; } = new();
+  protected bool IsDisposed = false;
   #region JsonIgnore
 
   // JsonIgnore is used to prevent serialization of the property by both AnyClone and ReduxDevTools 
@@ -63,4 +64,22 @@ public abstract class State<TState> : IState<TState>
   /// Override this to Set the initial state
   /// </summary>
   public abstract void Initialize();
+  
+  protected virtual void Dispose(bool disposing)
+  {
+    if (IsDisposed) return;
+    if (disposing)
+    {
+      CancellationTokenSource.Cancel();
+      CancellationTokenSource.Dispose();
+    }
+
+    IsDisposed = true;
+  }
+
+  public void Dispose()
+  {
+    Dispose(true);
+    GC.SuppressFinalize(this);
+  }
 }
