@@ -19,6 +19,7 @@ internal partial class Store : IStore
   /// </summary>
   /// <remarks>Useful when logging </remarks>
   public Guid Guid { get; } = Guid.NewGuid();
+  public ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
 
   public Store
   (
@@ -103,38 +104,44 @@ internal partial class Store : IStore
       if (!States.TryGetValue(typeName, out IState? state))
       {
         Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
-        
+
         // will use default constructor if none exists
         state = (IState)ServiceProvider.GetRequiredService(stateType);
-        
+
         // we need to set the sender if the default constructor was used
         state.Sender = ServiceProvider.GetRequiredService<ISender>();
-        
+
         state.Initialize();
         if (!States.TryAdd(typeName, state))
         {
           throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the States dictionary.");
         }
+
+        // Publish the state initialization notification asynchronously
+        Task initializationTask = Publisher.Publish(new StateInitializedNotification(stateType))
+          .ContinueWith
+          (
+            t =>
+            {
+              if (t.Exception != null)
+              {
+                Logger.LogError(t.Exception, "Error occurred while publishing state initialization notification.");
+              }
+            }, 
+            TaskScheduler.Default
+          );
         
-        // Fire-and-forget publishing the state initialization notification with exception handling
-        Task.Run(async () =>
-        {
-          try
-          {
-            await Publisher.Publish(new StateInitializedNotification(stateType));
-          }
-          catch (Exception ex)
-          {
-            Logger.LogError(ex, "Error occurred while publishing state initialization notification.");
-          }
-        });
+        StateInitializationTasks[typeName] = initializationTask;
       }
       else
+      {
         Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);
+      }
+
       return state;
     }
   }
-
+  
   public object? GetPreviousState(Type stateType)
   {
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
