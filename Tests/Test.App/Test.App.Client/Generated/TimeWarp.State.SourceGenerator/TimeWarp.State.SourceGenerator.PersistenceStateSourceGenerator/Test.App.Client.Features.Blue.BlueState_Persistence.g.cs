@@ -10,7 +10,7 @@ public partial class BlueState
 {
   public static class Load
   {
-    public class Action : IAction { }
+    public class Action : IAction;
 
     public class Handler : ActionHandler<Action>
     {

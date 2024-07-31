@@ -59,7 +59,7 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
       {
         public static class Load
         {
-          public class Action : IAction { }
+          public class Action : IAction;
       
           public class Handler : ActionHandler<Action>
           {
