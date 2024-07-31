@@ -17,6 +17,9 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   [Inject] private Subscriptions Subscriptions { get; set; } = null!;
   [Inject] protected IMediator Mediator { get; set; } = null!;
 
+  protected CancellationTokenSource CancellationTokenSource { get; } = new();
+  protected CancellationToken CancellationToken => CancellationTokenSource.Token;
+  
   private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
   /// <summary>
   ///   A generated unique Id based on the Class name and number of times they have been created
@@ -45,6 +48,14 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     Logger.LogDebug(EventIds.TimeWarpStateComponent_Disposing, "{Id}: Disposing, removing subscriptions. Total renders: {RenderCount}", Id, RenderCount);
     Subscriptions.Remove(this);
     RenderCounts.TryRemove(Id, out _);
+
+    // Cancel and dispose the CancellationTokenSource
+    if (!CancellationTokenSource.IsCancellationRequested)
+    {
+      CancellationTokenSource.Cancel();
+    }
+    CancellationTokenSource.Dispose();
+
     GC.SuppressFinalize(this);
   }
 
