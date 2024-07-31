@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 public abstract class State<TState> : IState<TState>, IDisposable
 {
   protected CancellationTokenSource CancellationTokenSource { get; } = new();
+  protected CancellationToken CancellationToken => CancellationTokenSource.Token;
   protected bool IsDisposed = false;
   #region JsonIgnore
 
@@ -70,7 +71,7 @@ public abstract class State<TState> : IState<TState>, IDisposable
     if (IsDisposed) return;
     if (disposing)
     {
-      CancellationTokenSource.Cancel();
+      if (!CancellationTokenSource.IsCancellationRequested) CancellationTokenSource.Cancel();
       CancellationTokenSource.Dispose();
     }
 
