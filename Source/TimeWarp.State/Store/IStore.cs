@@ -24,4 +24,6 @@ public interface IStore
   void RemoveState<TState>() where TState : IState;
 
   void Reset();
+  
+  ConcurrentDictionary<string, Task> StateInitializationTasks { get; }
 }

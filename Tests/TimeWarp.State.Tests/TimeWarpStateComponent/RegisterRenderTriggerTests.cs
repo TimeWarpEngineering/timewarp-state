@@ -1,7 +1,5 @@
 namespace RegisterRenderTrigger;
 
-using TimeWarp.Fixie;
-
 public class Should_ 
 {
   public static void RegisterRenderTrigger_NullPropertySelector_ThrowsArgumentNullException()
@@ -281,5 +279,6 @@ public class TestStore : IStore
   public Guid Guid { get; } = Guid.Empty;
   public SemaphoreSlim GetSemaphore(Type stateType) => throw new NotImplementedException();
   public void Reset() => throw new NotImplementedException();
+  public ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
   public void RemoveState<TState>() where TState : IState => throw new NotImplementedException();
 }

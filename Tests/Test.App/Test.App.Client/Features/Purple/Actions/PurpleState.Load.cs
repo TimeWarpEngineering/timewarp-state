@@ -1,6 +1,3 @@
-﻿#nullable enable
-
-#pragma warning disable CS1591
 namespace Test.App.Client.Features.Purple;
 
 using TimeWarp.Features.Persistence;
@@ -8,32 +5,31 @@ using TimeWarp.State;
 
 public partial class PurpleState
 {
-  public static class Load
+  public static class Load2
   {
-    public class Action : IAction;
+    public class Action : IAction { }
 
     public class Handler : ActionHandler<Action>
     {
-      private readonly IPersistenceService PersistenceService;
+      private readonly IPersistenceService PersistenceService1;
       private readonly ILogger<Handler> Logger;
-      
       public Handler
       (
         IStore store,
-        IPersistenceService persistenceService,
+        IPersistenceService PersistenceService,
         ILogger<Handler> logger
       ) : base(store)
       {
-        PersistenceService = persistenceService;
+        PersistenceService1 = PersistenceService;
         Logger = logger;
       }
       public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
       {
         try
         {
-            object? state = await PersistenceService.LoadState(typeof(PurpleState), PersistentStateMethod.LocalStorage);
-            if (state is PurpleState purpleState) Store.SetState(purpleState);
-            else Logger.LogTrace("PurpleState is null");
+          object? state = await PersistenceService1.LoadState(typeof(PurpleState), PersistentStateMethod.LocalStorage);
+          if (state is PurpleState purpleState) Store.SetState(purpleState);
+          else Logger.LogTrace("PurpleState is null");
         }
         catch (Exception exception)
         {
@@ -44,4 +40,3 @@ public partial class PurpleState
     }
   }
 }
-#pragma warning restore CS1591

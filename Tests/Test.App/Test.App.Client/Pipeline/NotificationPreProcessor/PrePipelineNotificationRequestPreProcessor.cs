@@ -1,13 +1,19 @@
 namespace Test.App.Client.Pipeline.NotificationPreProcessor;
 
-internal class PrePipelineNotificationRequestPreProcessor<TRequest>
-(
-  ILogger<PrePipelineNotificationRequestPreProcessor<TRequest>> logger,
-  IPublisher Publisher
-) : IRequestPreProcessor<TRequest>
+internal class PrePipelineNotificationRequestPreProcessor<TRequest> : IRequestPreProcessor<TRequest>
   where TRequest : IAction
 {
-  private readonly ILogger Logger = logger;
+  private readonly ILogger Logger;
+  private readonly IPublisher Publisher;
+  public PrePipelineNotificationRequestPreProcessor
+  (
+    ILogger<PrePipelineNotificationRequestPreProcessor<TRequest>> logger,
+    IPublisher publisher
+  )
+  {
+    Publisher = publisher;
+    Logger = logger;
+  }
 
   public Task Process(TRequest request, CancellationToken cancellationToken)
   {

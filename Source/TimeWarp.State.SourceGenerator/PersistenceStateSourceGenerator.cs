@@ -46,41 +46,52 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
   {
     string camelCaseClassName = ToCamelCase(className);
 
-    return $$"""
+    return $$$"""
       #nullable enable
 
       #pragma warning disable CS1591
-      namespace {{namespaceName}};
+      namespace {{{namespaceName}}};
       
       using TimeWarp.Features.Persistence;
       using TimeWarp.State;
 
-      public partial class {{className}}
+      public partial class {{{className}}}
       {
-          public static class Load
-          {
-              public class Action : IAction { }
+        public static class Load
+        {
+          public class Action : IAction;
       
-              public class Handler
-              (
-                IStore store,
-                IPersistenceService PersistenceService
-              ): ActionHandler<Action>(store)
+          public class Handler : ActionHandler<Action>
+          {
+            private readonly IPersistenceService PersistenceService;
+            private readonly ILogger<Handler> Logger;
+            
+            public Handler
+            (
+              IStore store,
+              IPersistenceService persistenceService,
+              ILogger<Handler> logger
+            ) : base(store)
+            {
+              PersistenceService = persistenceService;
+              Logger = logger;
+            }
+            public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
+            {
+              try
               {
-                  public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
-                  {
-                      try
-                      {
-                          object? state = await PersistenceService.LoadState(typeof({{className}}), PersistentStateMethod.{{persistentStateMethod}});
-                          if (state is {{className}} {{camelCaseClassName}}) Store.SetState({{camelCaseClassName}});
-                      }
-                      catch (Exception)
-                      {
-                          // if this is a JavaScript not available exception then we are prerendering and just swallow it
-                      }
-                  }
+                  object? state = await PersistenceService.LoadState(typeof({{{className}}}), PersistentStateMethod.{{{persistentStateMethod}}});
+                  if (state is {{{className}}} {{{camelCaseClassName}}}) Store.SetState({{{camelCaseClassName}}});
+                  else Logger.LogTrace("{{{className}}} is null");
               }
+              catch (Exception exception)
+              {
+                Logger.LogError(exception, "Error loading {{{className}}}");
+                // if this is a JavaScript not available exception then we are prerendering and just swallow it
+              }
+            }
           }
+        }
       }
       #pragma warning restore CS1591
 

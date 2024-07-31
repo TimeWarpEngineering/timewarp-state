@@ -27,7 +27,6 @@ internal class EventIds
   public static readonly EventId Subscriptions_RemovingComponentSubscriptions = new(302, nameof(Subscriptions_RemovingComponentSubscriptions));
   public static readonly EventId Subscriptions_ReRenderingSubscribers = new(303, nameof(Subscriptions_ReRenderingSubscribers));
   public static readonly EventId Subscriptions_RemoveSubscription = new(304, nameof(Subscriptions_RemoveSubscription));
-
   
   //   Routing
   // Pipeline - Middleware
@@ -72,4 +71,8 @@ internal class EventIds
   public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(701, nameof(TimeWarpStateComponent_ShouldReRender));
   public static readonly EventId TimeWarpStateComponent_Disposing = new(702, nameof(TimeWarpStateComponent_Disposing));
   public static readonly EventId TimeWarpStateComponent_RenderCount = new(702, nameof(TimeWarpStateComponent_RenderCount));
+  
+  // StateInitializationPreProcessor
+  public static readonly EventId StateInitializationPreProcessor_Waiting = new(800, nameof(StateInitializationPreProcessor_Waiting));
+  public static readonly EventId StateInitializationPreProcessor_Completed = new(801, nameof(StateInitializationPreProcessor_Completed));
 }
