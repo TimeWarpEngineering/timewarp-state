@@ -33,7 +33,7 @@ public class PersistentStatePostProcessor<TRequest, TResponse> : IRequestPostPro
       
     if (persistentStateAttribute is null) return;
     
-    Logger.LogDebug("PersistentStatePostProcessor: {FullName}", typeof(TRequest).FullName);
+    Logger.LogTrace(EventIds.PersistentStatePostProcessor_StartProcessing, "Start Processing: {FullName}", typeof(TRequest).FullName);
 
     object state = Store.GetState(currentType);
 
@@ -43,11 +43,23 @@ public class PersistentStatePostProcessor<TRequest, TResponse> : IRequestPostPro
         // TODO: 
         break;
       case PersistentStateMethod.SessionStorage:
-        Logger.LogDebug("Save to Session Storage {StateTypeName}", currentType.Name);
+        Logger.LogTrace
+        (
+          EventIds.PersistentStatePostProcessor_SaveToSessionStorage
+          ,"Save {StateTypeName} to Session Storage with value {json}"
+          , currentType.Name
+          , JsonSerializer.Serialize(state)
+        );
         await SessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.LocalStorage:
-        Logger.LogDebug("Save to Local Storage {StateTypeName}", currentType.Name);
+        Logger.LogTrace
+        (
+          EventIds.PersistentStatePostProcessor_SaveToLocalStorage
+          ,"Save {StateTypeName} to Local Storage with value {json}"
+          , currentType.Name
+          , JsonSerializer.Serialize(state)
+        );
         await LocalSessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.PreRender:
