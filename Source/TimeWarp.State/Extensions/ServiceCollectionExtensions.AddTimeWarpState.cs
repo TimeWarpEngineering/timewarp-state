@@ -44,11 +44,14 @@ public static partial class ServiceCollectionExtensions
     EnsureHttpClient(serviceCollection);
     EnsureStates(serviceCollection, timeWarpStateOptions);
     EnsureMediator(serviceCollection, timeWarpStateOptions);
-
+    
+    serviceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(StateInitializationPreProcessor<>));
+    
     if (timeWarpStateOptions.UseStateTransactionBehavior)
     {
       serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
     }
+    
 
     return serviceCollection;
   }
