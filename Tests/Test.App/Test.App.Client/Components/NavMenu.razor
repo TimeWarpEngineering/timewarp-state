@@ -2,6 +2,15 @@
 @using Test.App.Client.Pages
 @inherits BaseComponent
 
+@code
+{
+  private async Task GoBack()
+  {
+    await RouteState.GoBack();
+  }
+}
+
+
 <div class="top-row ps-3 navbar navbar-dark">
   <div class="container-fluid" title=@RenderModeDisplayString>
     <a class="navbar-brand" href="">Test.App.Server</a>
@@ -86,6 +95,12 @@
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @PersistenceTestPage.Title
       </NavLink>
     </div>
+    
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@ServerSidePersistenceTestPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> @ServerSidePersistenceTestPage.Title
+      </NavLink>
+    </div>
 
     <div class="nav-section-divider">
       <hr class="nav-divider">
@@ -150,10 +165,8 @@
   </nav>
 </div>
 
-@code
-{
-  private async Task GoBack()
-  {
-    await RouteState.GoBack();
-  }
-}
+<style>
+    .nav-link {
+        font-size: 0.750rem; /* Adjust the font size as needed */
+    }
+</style>
