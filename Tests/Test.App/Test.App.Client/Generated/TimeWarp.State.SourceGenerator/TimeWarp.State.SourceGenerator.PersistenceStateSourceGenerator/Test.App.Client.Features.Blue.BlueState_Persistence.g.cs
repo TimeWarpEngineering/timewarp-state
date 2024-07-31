@@ -37,7 +37,7 @@ public partial class BlueState
         }
         catch (Exception exception)
         {
-          Logger.LogError(exception, "Error loading {{className}}");
+          Logger.LogError(exception, "Error loading BlueState");
           // if this is a JavaScript not available exception then we are prerendering and just swallow it
         }
       }
