@@ -21,6 +21,16 @@ public partial class ActionTrackingState
     }
   }
 
-  public async Task FiveSecondTask(CancellationToken cancellationToken = default) =>
-    await Sender.Send(new FiveSecondTaskActionSet.Action(), cancellationToken);
+  public async Task FiveSecondTask(CancellationToken? externalCancellationToken = null)
+  {
+    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    await Sender.Send
+    (
+      new FiveSecondTaskActionSet.Action(),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
 }
