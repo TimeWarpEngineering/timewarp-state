@@ -29,6 +29,6 @@ public partial class ActionTrackingState
     }
   }
   
-  // public async Task StartProcessing(IAction theAction, CancellationToken cancellationToken) =>
-  //   await Sender.Send(new ActionTrackingState.StartProcessingActionSet.Action(theAction), cancellationToken);
+  public async Task StartProcessing(IAction theAction, CancellationToken cancellationToken) =>
+    await Sender.Send(new ActionTrackingState.StartProcessingActionSet.Action(theAction), cancellationToken);
 }
