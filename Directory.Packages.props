@@ -42,6 +42,7 @@
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.5.3" />
     <PackageVersion Include="MSTest.TestAdapter" Version="3.5.0" />
     <PackageVersion Include="MSTest.TestFramework" Version="3.5.0" />
+    <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.3" />
     <PackageVersion Include="NUnit" Version="4.1.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.2.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
