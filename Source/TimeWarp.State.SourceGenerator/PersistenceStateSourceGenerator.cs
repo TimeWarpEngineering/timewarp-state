@@ -57,11 +57,11 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
       public partial class {{{className}}}
       {
-        public static class Load
+        internal static class LoadActionSet
         {
-          public class Action : IAction;
+          internal sealed class Action : IAction;
       
-          public class Handler : ActionHandler<Action>
+          internal sealed class Handler : ActionHandler<Action>
           {
             private readonly IPersistenceService PersistenceService;
             private readonly ILogger<Handler> Logger;
@@ -76,6 +76,7 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
               PersistenceService = persistenceService;
               Logger = logger;
             }
+            
             public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
             {
               try
@@ -91,6 +92,18 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
               }
             }
           }
+        }
+        public async Task Load(CancellationToken? externalCancellationToken = null)
+        {
+          using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+            : null;
+        
+          await Sender.Send
+          (
+            new LoadActionSet.Action(),
+            linkedCts?.Token ?? CancellationToken
+          );
         }
       }
       #pragma warning restore CS1591
