@@ -4,7 +4,7 @@ public partial class RouteState
 {
   public static class ChangeRouteActionSet
   {
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public Action(string newRoute) 
       {
@@ -13,7 +13,7 @@ public partial class RouteState
       public string NewRoute { get; }
     }
 
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly ILogger Logger;
       private readonly NavigationManager NavigationManager;

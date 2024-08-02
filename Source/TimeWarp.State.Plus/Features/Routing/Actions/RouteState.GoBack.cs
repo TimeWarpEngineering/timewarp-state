@@ -5,7 +5,7 @@ public partial class RouteState
   public static class GoBackActionSet
   {
     [UsedImplicitly]
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public int Amount { get; }
       public Action(int amount = 1)
@@ -14,7 +14,7 @@ public partial class RouteState
       }
     }
     
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
       public Handler

@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public static class CompleteProcessingActionSet
   {
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public IAction TheAction { get; }
       public Action(IAction theAction)
@@ -14,7 +14,7 @@ public partial class ActionTrackingState
     }
 
     [UsedImplicitly]
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly ILogger<Handler> Logger;
       public Handler(IStore store, ILogger<Handler> logger) : base(store)

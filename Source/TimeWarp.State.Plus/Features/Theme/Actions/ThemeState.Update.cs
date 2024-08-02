@@ -5,14 +5,12 @@ public partial class ThemeState
 {
   public static class UpdateActionSet
   {
-    [UsedImplicitly]
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public Theme NewTheme { get; init; }
     }
-
-    [UsedImplicitly]
-    internal class Handler
+    
+    internal sealed class Handler
     (
       IStore store
     ): ActionHandler<Action>(store)

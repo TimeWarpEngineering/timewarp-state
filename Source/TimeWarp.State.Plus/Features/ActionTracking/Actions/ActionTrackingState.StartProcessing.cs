@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public static class StartProcessingActionSet
   {
-    internal class Action : IAction
+    internal sealed class Action : IAction
     {
       public Action(IAction theAction) 
       {
@@ -13,12 +13,9 @@ public partial class ActionTrackingState
       public IAction TheAction { get; }
     }
 
-    [UsedImplicitly]
-    internal class Handler
-    (
-      IStore store
-    ): ActionHandler<Action>(store)
+    internal sealed class Handler : ActionHandler<Action>
     {
+      public Handler(IStore store) : base(store) {}
       private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
 
       public override Task Handle(Action action, CancellationToken cancellationToken)

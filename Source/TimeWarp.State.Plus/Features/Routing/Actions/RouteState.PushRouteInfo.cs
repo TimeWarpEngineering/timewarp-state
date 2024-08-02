@@ -4,9 +4,9 @@ public partial class RouteState
 {
   public static class PushRouteInfoActionSet
   {
-    public class Action : IAction;
+    internal sealed class Action : IAction;
 
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
       private readonly IJSRuntime JsRuntime;
