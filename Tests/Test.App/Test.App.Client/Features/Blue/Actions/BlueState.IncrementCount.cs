@@ -2,15 +2,14 @@
 
 public partial class BlueState
 {
-  public static class IncrementCount
+  public static class IncrementCountActionSet
   {
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public int Amount { get; init; }
     }
-
-    [UsedImplicitly]
-    public class Handler
+    
+    internal sealed class Handler
     (
       IStore store
     ) : ActionHandler<Action>(store)

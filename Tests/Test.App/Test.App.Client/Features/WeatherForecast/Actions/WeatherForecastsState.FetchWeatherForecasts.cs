@@ -4,12 +4,11 @@ using static Contracts.Features.WeatherForecast.GetWeatherForecasts;
 
 internal sealed partial class WeatherForecastsState
 {
-  public static class FetchWeatherForecasts
+  public static class FetchWeatherForecastsActionSet
   {
-    public class Action : IAction;
-
-    [UsedImplicitly]
-    public class Handler
+    internal sealed class Action : IAction;
+    
+    internal sealed  class Handler
     (
       IStore store,
       HttpClient httpClient

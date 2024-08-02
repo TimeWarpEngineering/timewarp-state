@@ -1,14 +1,14 @@
-namespace TimeWarp.Features.ActionTracking;
+namespace Test.App.Client.Features.Application;
 
-public partial class ActionTrackingState
+public partial class ApplicationState
 {
   public static class TwoSecondTaskActionSet
   {
     [TrackAction]
-    public class Action : IAction;
+    internal sealed class Action : IAction;
 
     [UsedImplicitly]
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       public Handler(IStore store) : base(store) {}
       public override async Task Handle(Action action, CancellationToken cancellationToken)

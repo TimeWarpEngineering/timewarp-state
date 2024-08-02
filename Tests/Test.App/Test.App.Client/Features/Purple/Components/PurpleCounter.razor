@@ -16,5 +16,5 @@ else
 
 @code
 {
-  private async Task IncrementCount() => await Mediator.Send(new PurpleState.IncrementCount.Action { Amount = 5 });
+  private async Task IncrementCount() => await Mediator.Send(new PurpleState.IncrementCountActionSet.Action { Amount = 5 });
 }

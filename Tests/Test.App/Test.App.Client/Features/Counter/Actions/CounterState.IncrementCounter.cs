@@ -2,24 +2,21 @@ namespace Test.App.Client.Features.Counter;
 
 public partial class CounterState
 {
-  [UsedImplicitly]
-  public static class IncrementCount
+  public static class IncrementCountActionSet
   {
     
-    [UsedImplicitly]
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public int Amount { get; init; }
     }
 
-    internal class Handler
+    internal sealed class Handler
     (
       IStore store
     ) : ActionHandler<Action>(store)
     {
       private CounterState CounterState => Store.GetState<CounterState>();
       
-      [UsedImplicitly]
       public override Task Handle
       (
         Action action,

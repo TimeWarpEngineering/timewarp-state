@@ -17,16 +17,22 @@
   public const string Route = "/ThrowExceptionPage";
   
   private async Task SendThrowExceptionAction() =>
-    await Mediator.Send(new CounterState.ThrowExceptionAction
-    {
-      Message = "This is a client side exception"
-    });
+    await Mediator.Send
+    (
+      new CounterState.ThrowExceptionActionSet.Action
+      {
+        Message = "This is a client side exception"
+      }
+    );
 
   private async Task SendThrowServerSideExceptionAction() =>
-    await Mediator.Send(new CounterState.ThrowServerSideExceptionAction
-    {
-      Message = "This is a server side exception"
-    });
+    await Mediator.Send
+    (
+      new CounterState.ThrowServerSideExceptionActionSet.Action
+      {
+        Message = "This is a server side exception"
+      }
+    );
 }
 
 <PageTitle>@Title</PageTitle>

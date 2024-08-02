@@ -3,7 +3,7 @@
 @using static ApplicationState;
 
 @code {
-  private async Task ButtonClick() => await Mediator.Send(new ResetStoreAction());
+  private async Task ButtonClick() => await Mediator.Send(new ResetStoreActionSet.Action());
 }
 
 <div id=@Id data-qa=@TestId>
