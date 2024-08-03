@@ -3,9 +3,9 @@ namespace Sample.Client.Features.Counter;
 
 using TimeWarp.State;
 
-internal partial class CounterState
+public partial class CounterState
 {
-  public static class IncrementCountActionSet
+  internal static class IncrementCountActionSet
   {
     internal sealed class Action : IAction
     {
