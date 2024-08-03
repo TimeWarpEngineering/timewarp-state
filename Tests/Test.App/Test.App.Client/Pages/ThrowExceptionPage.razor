@@ -20,18 +20,18 @@
     await Mediator.Send
     (
       new CounterState.ThrowExceptionActionSet.Action
-      {
-        Message = "This is a client side exception"
-      }
+      (
+        message: "This is a client side exception"
+      )
     );
 
   private async Task SendThrowServerSideExceptionAction() =>
     await Mediator.Send
     (
       new CounterState.ThrowServerSideExceptionActionSet.Action
-      {
-        Message = "This is a server side exception"
-      }
+      (
+        message: "This is a server side exception"
+      )
     );
 }
 

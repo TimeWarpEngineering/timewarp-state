@@ -7,7 +7,11 @@ public partial class CounterState
 
     internal sealed class Action : IAction
     {
-      public required string Message { get; set; }
+      public string Message { get; }
+      public Action(string message) 
+      {
+        Message = message;
+      }
     }
     
     internal sealed class Handler : BaseActionHandler<Action>

@@ -39,10 +39,7 @@ public class EventStreamBehavior<TRequest, TResponse>
       string requestTypeName = request.GetType().FullName ?? "Unknown";
       string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-      var addEventAction = new AddEventActionSet.Action
-      {
-        Message = $"{timestamp} {tag}:{requestTypeName}"
-      };
+      var addEventAction = new AddEventActionSet.Action(message: $"{timestamp} {tag}:{requestTypeName}");
       await Sender.Send(addEventAction);
     }
   }
