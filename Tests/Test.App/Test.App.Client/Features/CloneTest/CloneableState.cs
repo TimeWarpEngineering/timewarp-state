@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.CloneTest;
 
-internal partial class CloneableState : State<CloneableState>, ICloneable
+public sealed partial class CloneableState : State<CloneableState>, ICloneable
 {
   public int Count { get; private set; }
 

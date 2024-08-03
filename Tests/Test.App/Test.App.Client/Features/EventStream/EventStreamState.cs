@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.EventStream;
 
-internal partial class EventStreamState : State<EventStreamState>
+public sealed partial class EventStreamState : State<EventStreamState>
 {
   private List<string> EventList { get; set; } = [];
   public IReadOnlyList<string> Events => EventList.AsReadOnly();

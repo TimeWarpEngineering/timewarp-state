@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.EventStream;
 
-internal partial class EventStreamState
+public partial class EventStreamState
 {
   public static class AddEventActionSet
   {

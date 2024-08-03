@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.Application;
 
-public partial class ApplicationState : State<ApplicationState>
+public sealed partial class ApplicationState : State<ApplicationState>
 {
   public string Name { get; private set; } = null!;
   public string? ExceptionMessage { get; private set; }

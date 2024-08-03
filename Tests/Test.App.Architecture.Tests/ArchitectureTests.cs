@@ -17,4 +17,12 @@ public class Should_
     PolicyResults results = policy.Evaluate();
     results.ShouldBeSuccessful();
   }
+  
+  public static void FollowStatePolicy()
+  {
+    Assembly sut = typeof(Test.App.Client.AssemblyMarker).Assembly;
+    PolicyDefinition policy = Policies.CreateStatePolicy(sut);
+    PolicyResults results = policy.Evaluate();
+    results.ShouldBeSuccessful();
+  }
 }

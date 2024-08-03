@@ -3,7 +3,7 @@ namespace Test.App.Client.Features.Counter;
 using System.Drawing;
 
 [UsedImplicitly]
-internal partial class ColorState : State<ColorState>
+public sealed partial class ColorState : State<ColorState>
 {
   public string MyColorName { get; private set; } = null!;
 

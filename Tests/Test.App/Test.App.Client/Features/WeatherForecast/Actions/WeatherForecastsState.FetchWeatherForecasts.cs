@@ -2,7 +2,7 @@ namespace Test.App.Client.Features.WeatherForecast;
 
 using static Contracts.Features.WeatherForecast.GetWeatherForecasts;
 
-internal sealed partial class WeatherForecastsState
+public partial class WeatherForecastsState
 {
   public static class FetchWeatherForecastsActionSet
   {

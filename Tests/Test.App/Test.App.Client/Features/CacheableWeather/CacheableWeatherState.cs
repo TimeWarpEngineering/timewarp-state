@@ -1,9 +1,8 @@
 namespace Test.App.Client.Features.WeatherForecast;
 
-using TimeWarp.State.Plus.State;
 using static Contracts.Features.WeatherForecast.GetWeatherForecasts;
 
-internal partial class CacheableWeatherState: TimeWarpCacheableState<CacheableWeatherState>
+public sealed partial class CacheableWeatherState: TimeWarpCacheableState<CacheableWeatherState>
 {
   private Response? WeatherForecastList;
 

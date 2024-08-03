@@ -3,7 +3,7 @@ import { log, LogAction } from '/_content/TimeWarp.State/js/Logger.js'
 
 const dispatchIncrementCountAction = () => {
   log("dispatchIncrementCountAction", "Dispatching IncrementCountAction", "function");
-  const IncrementCountActionName = "Test.App.Client.Features.Counter.CounterState+IncrementCount+Action, Test.App.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
+  const IncrementCountActionName = "Test.App.Client.Features.Counter.CounterState+IncrementCountActionSet+Action, Test.App.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
   timeWarpState.DispatchRequest(IncrementCountActionName, { amount: 7 });
 };
 

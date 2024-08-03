@@ -13,6 +13,7 @@ global using MediatR.Pipeline;
 // ReSharper disable once RedundantUsingDirective.Global
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.JSInterop;
 global using System;
@@ -48,4 +49,6 @@ global using TimeWarp.Features.ActionTracking;
 global using TimeWarp.Features.StateTransactions;
 global using TimeWarp.State.Plus;
 global using TimeWarp.Features.Theme;
+global using TimeWarp.State.Plus.Extensions;
 global using TimeWarp.State.Plus.PersistentState;
+global using TimeWarp.State.Plus.State;

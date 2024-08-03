@@ -1,13 +1,11 @@
 namespace Test.App.Client;
 
-using TimeWarp.State.Plus.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-
 public class Program
 {
   private static async Task Main(string[] args)
   {
     var builder = WebAssemblyHostBuilder.CreateDefault(args);
+    builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
     SetIsoCulture();
     ConfigureServices(builder.Services);
     
