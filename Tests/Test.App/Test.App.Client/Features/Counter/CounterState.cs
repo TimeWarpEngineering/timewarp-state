@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.Counter;
 
-public partial class CounterState : State<CounterState>
+public sealed partial class CounterState : State<CounterState>
 {
 
   public int Count { get; private set; }

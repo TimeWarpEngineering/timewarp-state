@@ -2,20 +2,23 @@ namespace Test.App.Client.Features.WeatherForecast;
 
 using static Contracts.Features.WeatherForecast.GetWeatherForecasts;
 
-internal sealed partial class CacheableWeatherState
+public partial class CacheableWeatherState
 {
-  public static class FetchWeatherForecasts
+  public static class FetchWeatherForecastsActionSet
   {
-    public class Action : IAction;
-
-    [UsedImplicitly]
-    public class Handler
-    (
-      IStore store,
-      HttpClient httpClient
-    ) : BaseActionHandler<Action>(store)
+    internal sealed class Action : IAction;
+    
+    internal sealed class Handler : BaseActionHandler<Action>
     {
-      private readonly HttpClient HttpClient = httpClient;
+      private readonly HttpClient HttpClient;
+      public Handler
+      (
+        IStore store,
+        HttpClient httpClient
+      ) : base(store)
+      {
+        HttpClient = httpClient;
+      }
 
       public override async Task Handle
       (

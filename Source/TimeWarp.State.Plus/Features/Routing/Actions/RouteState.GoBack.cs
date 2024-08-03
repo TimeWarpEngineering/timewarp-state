@@ -5,7 +5,7 @@ public partial class RouteState
   public static class GoBackActionSet
   {
     [UsedImplicitly]
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public int Amount { get; }
       public Action(int amount = 1)
@@ -14,7 +14,7 @@ public partial class RouteState
       }
     }
     
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
       public Handler
@@ -45,6 +45,16 @@ public partial class RouteState
     }
   }
   
-  public async Task GoBack(int amount = 1, CancellationToken cancellationToken = default) => 
-    await Sender.Send(new GoBackActionSet.Action(amount), cancellationToken);
+  public async Task GoBack(int amount = 1, CancellationToken? externalCancellationToken = null)
+  {
+    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    await Sender.Send
+    (
+      new GoBackActionSet.Action(amount),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
 }

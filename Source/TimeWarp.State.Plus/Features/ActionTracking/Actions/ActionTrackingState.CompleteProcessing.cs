@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public static class CompleteProcessingActionSet
   {
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public IAction TheAction { get; }
       public Action(IAction theAction)
@@ -14,7 +14,7 @@ public partial class ActionTrackingState
     }
 
     [UsedImplicitly]
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly ILogger<Handler> Logger;
       public Handler(IStore store, ILogger<Handler> logger) : base(store)
@@ -42,6 +42,16 @@ public partial class ActionTrackingState
     }
   }
   
-  // public async Task CompleteProcessing(IAction theAction, CancellationToken cancellationToken) =>
-  //   await Sender.Send(new ActionTrackingState.CompleteProcessingActionSet.Action(theAction), cancellationToken);
+  public async Task CompleteProcessing(IAction theAction, CancellationToken? externalCancellationToken = null)
+  {
+    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    await Sender.Send
+    (
+      new ActionTrackingState.CompleteProcessingActionSet.Action(theAction),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
 }

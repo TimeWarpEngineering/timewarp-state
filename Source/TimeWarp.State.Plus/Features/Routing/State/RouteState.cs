@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 /// <summary>
 /// Maintain the Route in TimeWarp.State
 /// </summary>
-public partial class RouteState : State<RouteState>
+public sealed partial class RouteState : State<RouteState>
 {
   private readonly Stack<RouteInfo> RouteStack = new();
   public RouteState(ISender sender) : base(sender) {}

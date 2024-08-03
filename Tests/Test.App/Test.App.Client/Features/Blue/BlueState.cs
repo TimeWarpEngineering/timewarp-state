@@ -1,7 +1,7 @@
 ﻿namespace Test.App.Client.Features.Blue;
 
 [PersistentState(PersistentStateMethod.SessionStorage)]
-public partial class BlueState : State<BlueState>
+public sealed partial class BlueState : State<BlueState>
 {
   public int Count { get; private set; }
 

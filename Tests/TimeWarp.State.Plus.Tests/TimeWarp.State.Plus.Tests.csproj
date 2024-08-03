@@ -10,10 +10,12 @@
     <PackageReference Include="FakeItEasy" />
     <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="NetArchTest.eNhancedEdition" />
     <PackageReference Include="TimeWarp.Fixie" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj" />
+    <ProjectReference Include="..\..\Source\TimeWarp.State.Rules\TimeWarp.State.Rules.csproj" />
   </ItemGroup>
 </Project>

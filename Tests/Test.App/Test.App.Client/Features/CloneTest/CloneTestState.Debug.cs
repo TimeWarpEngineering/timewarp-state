@@ -1,6 +1,6 @@
 namespace Test.App.Client.Features.CloneTest;
 
-internal partial class CloneableState
+public partial class CloneableState
 {
   public override CloneableState Hydrate(IDictionary<string, object> keyValuePairs)
   {

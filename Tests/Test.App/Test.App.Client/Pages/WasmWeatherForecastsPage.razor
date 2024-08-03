@@ -19,7 +19,7 @@
   /// <inheritdoc/>
   protected override async Task OnInitializedAsync()
   {
-    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecasts.Action());
+    await Mediator.Send(new WeatherForecastsState.FetchWeatherForecastsActionSet.Action());
   }
 }
 

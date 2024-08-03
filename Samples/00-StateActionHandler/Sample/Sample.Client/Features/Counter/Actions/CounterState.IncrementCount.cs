@@ -3,11 +3,11 @@ namespace Sample.Client.Features.Counter;
 
 using TimeWarp.State;
 
-internal partial class CounterState
+public partial class CounterState
 {
-  public static class IncrementCountActionSet
+  internal static class IncrementCountActionSet
   {
-    public sealed class Action : IAction
+    internal sealed class Action : IAction
     {
       public int Amount { get; }
       public Action(int amount)
@@ -16,7 +16,7 @@ internal partial class CounterState
       }
     }
     
-    public sealed class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       public Handler(IStore store) : base(store) {}
       

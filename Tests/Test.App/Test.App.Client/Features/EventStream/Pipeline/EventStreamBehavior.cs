@@ -34,12 +34,12 @@ public class EventStreamBehavior<TRequest, TResponse>
 
   private async Task AddEventToStream(TRequest request, string tag)
   {
-    if (request is not AddEventAction)//Skip to avoid recursion
+    if (request is not AddEventActionSet.Action)//Skip to avoid recursion
     {
       string requestTypeName = request.GetType().FullName ?? "Unknown";
       string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-      var addEventAction = new AddEventAction
+      var addEventAction = new AddEventActionSet.Action
       {
         Message = $"{timestamp} {tag}:{requestTypeName}"
       };

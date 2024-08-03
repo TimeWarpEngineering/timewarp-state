@@ -18,7 +18,7 @@
 
   private async Task HandleFetchWeatherForecasts()
   {
-    await Mediator.Send(new CacheableWeatherState.FetchWeatherForecasts.Action());
+    await Mediator.Send(new CacheableWeatherState.FetchWeatherForecastsActionSet.Action());
   }
 }
 
@@ -93,7 +93,7 @@
 <p>
   <strong>Assert:</strong><br />
   The page should render the weather forecast data in a table.<br />
-  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecasts.Action).FullName|{}`.<br />
+  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName|{}`.<br />
   The TimeStamp should have a value close to the current time.
 </p>
 
@@ -104,7 +104,7 @@
 <p>
   <strong>Assert:</strong><br />
   The page should render the weather forecast data in a table.<br />
-  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecasts.Action).FullName|{}`.<br />
+  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName|{}`.<br />
   The TimeStamp should be the same as the first time the button was clicked.<br />
   The Weather Forecasts should be the same as the first time the button was clicked.
 </p>
@@ -116,6 +116,6 @@
 <p>
   <strong>Assert:</strong><br />
   The page should render new weather forecast data in a table.<br />
-  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecasts.Action).FullName|{}`.<br />
+  The CacheKey should be `@typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName|{}`.<br />
   The TimeStamp should have a value close to the current time and different than the previous value.<br />
 </p>

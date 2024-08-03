@@ -70,7 +70,8 @@ public class CacheableWeatherTests : PageTest
     await Expect(WeatherTableLocator).ToBeVisibleAsync();
 
     // Validate the cache key
-    const string cacheKey = "Test.App.Client.Features.WeatherForecast.CacheableWeatherState+FetchWeatherForecasts+Action|{}";
+
+    const string cacheKey = "Test.App.Client.Features.WeatherForecast.CacheableWeatherState+FetchWeatherForecastsActionSet+Action|{}";
     await Expect(CacheKeyLocator).ToHaveTextAsync(cacheKey);
 
     // Validate the timestamp

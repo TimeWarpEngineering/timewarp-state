@@ -16,10 +16,10 @@
   public const string Route = "/ActiveActionsPage";
 
   private async Task FiveSecondTaskButtonClick() =>
-    await ActionTrackingState.FiveSecondTask();
+    await ApplicationState.FiveSecondTask();
 
   private async Task TwoSecondTaskButtonClick() =>
-    await ActionTrackingState.TwoSecondTask();
+    await ApplicationState.TwoSecondTask();
 }
 
 <PageTitle>@Title</PageTitle>
@@ -32,9 +32,9 @@
 
 <!-- Values to validate -->
 <p><strong>ActionTrackingState.IsActive:</strong> @ActionTrackingState.IsActive</p>
-<p><strong>ActionTrackingState.IsAnyActive (Two Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.TwoSecondTaskActionSet.Action)])</p>
-<p><strong>ActionTrackingState.IsAnyActive (Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.FiveSecondTaskActionSet.Action)])</p>
-<p><strong>ActionTrackingState.IsAnyActive (Two Second or Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ActionTrackingState.FiveSecondTaskActionSet.Action),typeof(ActionTrackingState.TwoSecondTaskActionSet.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Two Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ApplicationState.TwoSecondTaskActionSet.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ApplicationState.FiveSecondTaskActionSet.Action)])</p>
+<p><strong>ActionTrackingState.IsAnyActive (Two Second or Five Second Tasks):</strong> @ActionTrackingState.IsAnyActive([typeof(ApplicationState.FiveSecondTaskActionSet.Action),typeof(ApplicationState.TwoSecondTaskActionSet.Action)])</p>
 <p><strong>Active Actions:</strong></p>
 @foreach(IAction action in ActionTrackingState.ActiveActions)
 {

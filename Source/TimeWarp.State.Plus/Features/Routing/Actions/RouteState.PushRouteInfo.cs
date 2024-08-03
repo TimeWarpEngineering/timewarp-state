@@ -4,9 +4,9 @@ public partial class RouteState
 {
   public static class PushRouteInfoActionSet
   {
-    public class Action : IAction;
+    internal sealed class Action : IAction;
 
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
       private readonly IJSRuntime JsRuntime;
@@ -44,6 +44,16 @@ public partial class RouteState
       }
     }
   }
-  public async Task PushRouteInfo(CancellationToken cancellationToken = default) => 
-    await Sender.Send(new PushRouteInfoActionSet.Action(), cancellationToken);
+  public async Task PushRouteInfo(CancellationToken? externalCancellationToken = null)
+  {
+    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    await Sender.Send
+    (
+      new PushRouteInfoActionSet.Action(),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
 }

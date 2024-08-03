@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="timewarp-heroicons" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
 <!--    <PackageReference Include="TimeWarp.State" />-->
 <!--    <PackageReference Include="TimeWarp.State.Plus" />-->
   </ItemGroup>
@@ -42,5 +43,6 @@
     <!-- 👇 Exclude everything in the base folder -->
     <Compile Remove="$(GeneratedFolder)/**/*.cs" />
   </ItemGroup>
+
 
 </Project>

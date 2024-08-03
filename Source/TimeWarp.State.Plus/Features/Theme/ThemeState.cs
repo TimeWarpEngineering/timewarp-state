@@ -1,6 +1,6 @@
 namespace TimeWarp.Features.Theme;
 
-public partial class ThemeState : State<ThemeState>
+public sealed partial class ThemeState : State<ThemeState>
 {
   public Theme CurrentTheme { get; private set; }
 

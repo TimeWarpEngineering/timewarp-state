@@ -4,7 +4,7 @@ public partial class RouteState
 {
   public static class ChangeRouteActionSet
   {
-    public class Action : IAction
+    internal sealed class Action : IAction
     {
       public Action(string newRoute) 
       {
@@ -13,7 +13,7 @@ public partial class RouteState
       public string NewRoute { get; }
     }
 
-    internal class Handler : ActionHandler<Action>
+    internal sealed class Handler : ActionHandler<Action>
     {
       private readonly ILogger Logger;
       private readonly NavigationManager NavigationManager;
@@ -42,6 +42,16 @@ public partial class RouteState
       }
     }
   }
-  public async Task ChangeRoute(string newRoute, CancellationToken cancellationToken = default) =>
-    await Sender.Send(new RouteState.ChangeRouteActionSet.Action(newRoute), cancellationToken);
+  public async Task ChangeRoute(string newRoute, CancellationToken? externalCancellationToken = null)
+  {
+    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    await Sender.Send
+    (
+      new RouteState.ChangeRouteActionSet.Action(newRoute),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
 }

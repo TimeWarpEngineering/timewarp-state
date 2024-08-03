@@ -2,7 +2,7 @@ namespace Test.App.Client.Features.WeatherForecast;
 
 using static Contracts.Features.WeatherForecast.GetWeatherForecasts;
 
-internal partial class WeatherForecastsState: State<WeatherForecastsState>
+public sealed partial class WeatherForecastsState: State<WeatherForecastsState>
 {
   private Response? WeatherForecastList;
 

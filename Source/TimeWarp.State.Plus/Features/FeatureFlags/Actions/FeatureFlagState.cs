@@ -1,6 +1,6 @@
 namespace TimeWarp.State.Plus.Features.FeatureFlags.Actions;
 
-public class FeatureFlagState : State<FeatureFlagState>
+public sealed class FeatureFlagState : State<FeatureFlagState>
 {
   public FeatureFlagState(ISender sender) : base(sender) {}
   

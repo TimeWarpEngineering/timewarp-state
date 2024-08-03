@@ -1,7 +1,7 @@
 ﻿namespace Test.App.Client.Features.Purple;
 
 [PersistentState(PersistentStateMethod.LocalStorage)]
-public partial class PurpleState : State<PurpleState>
+public sealed partial class PurpleState : State<PurpleState>
 {
   public int Count { get; private set; }
 

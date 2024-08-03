@@ -2,7 +2,7 @@ namespace Test.App.Client.Features.Counter;
 
 using System.Drawing;
 
-internal partial class ColorState
+public partial class ColorState
 {
   public override ColorState Hydrate(IDictionary<string, object> keyValuePairs)
   {
