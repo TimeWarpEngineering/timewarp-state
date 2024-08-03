@@ -19,7 +19,7 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
     string fullName = stateInitializedNotification.StateType.FullName ?? throw new InvalidOperationException();
     string assemblyQualifiedName = stateInitializedNotification.StateType.AssemblyQualifiedName ?? throw new InvalidOperationException();
     
-    string typeName = assemblyQualifiedName.Replace(fullName, $"{fullName}+Load+Action");
+    string typeName = assemblyQualifiedName.Replace(fullName, $"{fullName}+LoadActionSet+Action");
     Logger.LogDebug(EventIds.StateInitializedNotificationHandler_Handling, "StateInitializedNotificationHandler: {StateTypeName}", stateInitializedNotification.StateType.Name);
     var actionType = Type.GetType(typeName);
     
