@@ -1,6 +1,6 @@
 namespace TimeWarp.Features.ActionTracking;
 
-public partial class ActionTrackingState : State<ActionTrackingState>, ICloneable
+public sealed partial class ActionTrackingState : State<ActionTrackingState>, ICloneable
 {
   private List<IAction> ActiveActionList = [];
   public ActionTrackingState(ISender sender) : base(sender) {}
