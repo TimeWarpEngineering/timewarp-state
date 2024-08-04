@@ -10,6 +10,7 @@ public interface IState
   // bool IsCacheValid(string currentCacheKey);
 
   void Initialize();
+  public void CancelOperations();
 }
 
 public interface IState<out TState> : IState

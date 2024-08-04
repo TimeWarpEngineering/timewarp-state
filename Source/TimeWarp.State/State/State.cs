@@ -66,12 +66,20 @@ public abstract class State<TState> : IState<TState>, IDisposable
   /// </summary>
   public abstract void Initialize();
   
+  public void CancelOperations()
+  {
+    if (!CancellationTokenSource.IsCancellationRequested)
+    {
+      CancellationTokenSource.Cancel();
+    }
+  }
+  
   protected virtual void Dispose(bool disposing)
   {
     if (IsDisposed) return;
     if (disposing)
     {
-      if (!CancellationTokenSource.IsCancellationRequested) CancellationTokenSource.Cancel();
+      CancelOperations();
       CancellationTokenSource.Dispose();
     }
 
