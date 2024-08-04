@@ -20,12 +20,12 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
             if (actionClass != null)
             {
-                var parameters = GetActionConstructorParameters(actionClass);
+                List<(string Type, string Name)> parameters = GetActionConstructorParameters(actionClass);
                 string parentClassName = GetParentClassName(classDeclaration);
                 string generatedCode = GenerateMethodCode(namespaceName, className, methodName, parameters, parentClassName);
                 string uniqueHintName = $"{namespaceName}.{parentClassName}.{className}_Method.g.cs";
                 ReportUniqueHintNameDiagnostic(context, uniqueHintName);
-                context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
+                context.AddSource(uniqueHintName, generatedCode);
             }
         }
     }
@@ -50,51 +50,35 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
     private static string GenerateMethodCode(string namespaceName, string className, string methodName, List<(string Type, string Name)> parameters, string parentClassName)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine("#nullable enable");
-        sb.AppendLine();
-        sb.AppendLine("#pragma warning disable CS1591");
-        sb.AppendLine($"namespace {namespaceName};");
-        sb.AppendLine();
-        sb.AppendLine("using System.Threading;");
-        sb.AppendLine("using System.Threading.Tasks;");
-        sb.AppendLine();
-        sb.AppendLine($"public partial class {parentClassName}");
-        sb.AppendLine("{");
-        sb.Append($"    public async Task {methodName}(");
+        string parameterList = string.Join(", ", parameters.Select(p => $"{p.Type} {p.Name}"));
+        string argumentList = string.Join(", ", parameters.Select(p => p.Name));
 
-        for (int i = 0; i < parameters.Count; i++)
+        return $$"""
+        #nullable enable
+
+        #pragma warning disable CS1591
+        namespace {{namespaceName}};
+
+        using System.Threading;
+        using System.Threading.Tasks;
+
+        public partial class {{parentClassName}}
         {
-            sb.Append($"{parameters[i].Type} {parameters[i].Name}");
-            if (i < parameters.Count - 1)
-                sb.Append(", ");
+            public async Task {{methodName}}({{parameterList}}{{(parameters.Any() ? ", " : "")}}CancellationToken? externalCancellationToken = null)
+            {
+                using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+                    ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+                    : null;
+
+                await Sender.Send
+                (
+                    new {{className}}.Action({{argumentList}}),
+                    linkedCts?.Token ?? CancellationToken
+                );
+            }
         }
-
-        if (parameters.Count > 0)
-            sb.Append(", ");
-        sb.AppendLine("CancellationToken? externalCancellationToken = null)");
-        sb.AppendLine("    {");
-        sb.AppendLine("        using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue");
-        sb.AppendLine("            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)");
-        sb.AppendLine("            : null;");
-        sb.AppendLine();
-        sb.Append($"        await Sender.Send(new {className}.Action(");
-
-        for (int i = 0; i < parameters.Count; i++)
-        {
-            sb.Append(parameters[i].Name);
-            if (i < parameters.Count - 1)
-                sb.Append(", ");
-        }
-
-        sb.AppendLine("),");
-        sb.AppendLine("            linkedCts?.Token ?? CancellationToken");
-        sb.AppendLine("        );");
-        sb.AppendLine("    }");
-        sb.AppendLine("}");
-        sb.AppendLine("#pragma warning restore CS1591");
-
-        return sb.ToString();
+        #pragma warning restore CS1591
+        """;
     }
 
     private static string GetNamespace(SyntaxNode? node)
