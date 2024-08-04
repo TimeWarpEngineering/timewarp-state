@@ -8,26 +8,27 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
+      if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
 
-        foreach (ClassDeclarationSyntax classDeclaration in receiver.CandidateClasses)
+      foreach (ClassDeclarationSyntax classDeclaration in receiver.CandidateClasses)
+      {
+        SemanticModel semanticModel = context.Compilation.GetSemanticModel(classDeclaration.SyntaxTree);
+        string namespaceName = GetNamespace(classDeclaration);
+        string className = classDeclaration.Identifier.Text;
+        string methodName = className.Replace("ActionSet", "");
+        var actionClass = classDeclaration.DescendantNodes().OfType<ClassDeclarationSyntax>()
+          .FirstOrDefault(c => c.Identifier.Text == "Action");
+
+        if (actionClass != null)
         {
-            string namespaceName = GetNamespace(classDeclaration);
-            string className = classDeclaration.Identifier.Text;
-            string methodName = className.Replace("ActionSet", "");
-            var actionClass = classDeclaration.DescendantNodes().OfType<ClassDeclarationSyntax>()
-                .FirstOrDefault(c => c.Identifier.Text == "Action");
-
-            if (actionClass != null)
-            {
-                List<(string Type, string Name)> parameters = GetActionConstructorParameters(actionClass);
-                string parentClassName = GetParentClassName(classDeclaration);
-                string generatedCode = GenerateMethodCode(namespaceName, className, methodName, parameters, parentClassName);
-                string uniqueHintName = $"{namespaceName}.{parentClassName}.{className}_Method.g.cs";
-                ReportUniqueHintNameDiagnostic(context, uniqueHintName);
-                context.AddSource(uniqueHintName, generatedCode);
-            }
+          List<(string Type, string Name)> parameters = GetActionConstructorParameters(actionClass, semanticModel);
+          string parentClassName = GetParentClassName(classDeclaration);
+          string generatedCode = GenerateMethodCode(namespaceName, className, methodName, parameters, parentClassName);
+          string uniqueHintName = $"{namespaceName}.{parentClassName}.{className}_Method.g.cs";
+          ReportUniqueHintNameDiagnostic(context, uniqueHintName);
+          context.AddSource(uniqueHintName, generatedCode);
         }
+      }
     }
 
     private static void ReportUniqueHintNameDiagnostic(GeneratorExecutionContext context, string uniqueHintName)
@@ -104,13 +105,18 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
         return parentClass?.Identifier.Text ?? "UnknownParentClass";
     }
 
-    private static List<(string Type, string Name)> GetActionConstructorParameters(ClassDeclarationSyntax actionClass)
+    private static List<(string Type, string Name)> GetActionConstructorParameters(ClassDeclarationSyntax actionClass, SemanticModel semanticModel)
     {
-        var constructor = actionClass.DescendantNodes().OfType<ConstructorDeclarationSyntax>().FirstOrDefault();
-        if (constructor == null)
-            return new List<(string, string)>();
+      var constructor = actionClass.DescendantNodes().OfType<ConstructorDeclarationSyntax>().FirstOrDefault();
+      if (constructor == null)
+        return new List<(string, string)>();
 
-        return constructor.ParameterList.Parameters.Select(p => (p.Type?.ToString() ?? "object", p.Identifier.Text)).ToList();
+      return constructor.ParameterList.Parameters.Select(p =>
+      {
+        var parameterSymbol = semanticModel.GetDeclaredSymbol(p) as IParameterSymbol;
+        string fullTypeName = parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "System.Object";
+        return (fullTypeName, p.Identifier.Text);
+      }).ToList();
     }
 
     class SyntaxReceiver : ISyntaxReceiver
