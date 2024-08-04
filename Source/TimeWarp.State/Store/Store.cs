@@ -61,6 +61,7 @@ internal partial class Store : IStore
   public void RemoveState<TState>() where TState : IState
   {
     string typeName = typeof(TState).FullName ?? throw new InvalidOperationException();
+    Logger.LogDebug(EventIds.Store_RemoveState, "Removing State: {TypeName}", typeName);
     PreviousStates.Remove(typeName, out _);
     States.Remove(typeName, out _);
   }
