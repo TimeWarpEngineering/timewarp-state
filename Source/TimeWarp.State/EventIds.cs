@@ -36,7 +36,7 @@ internal class EventIds
   public static readonly EventId StateTransactionBehavior_Cloning = new(401, nameof(StateTransactionBehavior_Cloning));
   public static readonly EventId StateTransactionBehavior_Ignoring = new(402, nameof(StateTransactionBehavior_Ignoring));
   public static readonly EventId StateTransactionBehavior_Exception = new(403, nameof(StateTransactionBehavior_Exception));
-  public static readonly EventId StateTransactionBehavior_Restored = new(404, nameof(StateTransactionBehavior_Restored));
+  public static readonly EventId StateTransactionBehavior_Restoring = new(404, nameof(StateTransactionBehavior_Restoring));
 
   //   ReduxDevTools
   public static readonly EventId StartHandler_Initializing = new(500, nameof(StartHandler_Initializing));
