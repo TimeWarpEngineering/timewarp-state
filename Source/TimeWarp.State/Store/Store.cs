@@ -90,16 +90,20 @@ internal partial class Store : IStore
   /// <summary>
   /// Get the Semaphore for the specific State
   /// </summary>
-  public SemaphoreSlim GetSemaphore(Type stateType)
+  public SemaphoreSlim? GetSemaphore(Type stateType)
   {
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
     if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? semaphore)) return semaphore;
-    semaphore = new SemaphoreSlim(1, 1);
-    if (!Semaphores.TryAdd(typeName, semaphore))
+    if (States.ContainsKey(typeName)) // if the State has been removed then no need for semaphore
     {
-      throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the Semaphores dictionary.");
+      semaphore = new SemaphoreSlim(1, 1);
+      if (!Semaphores.TryAdd(typeName, semaphore))
+      {
+        throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the Semaphores dictionary.");
+      }
+      return semaphore;
     }
-    return semaphore;
+    return null;
   }
 
   /// <summary>
