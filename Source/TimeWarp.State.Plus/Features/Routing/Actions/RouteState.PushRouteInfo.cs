@@ -19,7 +19,8 @@ public partial class RouteState
 
       public override async Task Handle(Action action, CancellationToken cancellationToken)
       {
-        SemaphoreSlim semaphoreSlim = Store.GetSemaphore(typeof(RouteState));
+        SemaphoreSlim? semaphoreSlim = Store.GetSemaphore(typeof(RouteState));
+        if (semaphoreSlim == null) return;
         await semaphoreSlim.WaitAsync(cancellationToken);
         try
         {

@@ -8,6 +8,7 @@ internal class EventIds
   public static readonly EventId Store_GetState = new(102, nameof(Store_GetState));
   public static readonly EventId Store_CreateState = new(103, nameof(Store_CreateState));
   public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
+  public static readonly EventId Store_RemoveState = new (105, nameof(Store_RemoveState));
 
   // Store.ReduxDevTools
   public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
@@ -35,7 +36,7 @@ internal class EventIds
   public static readonly EventId StateTransactionBehavior_Cloning = new(401, nameof(StateTransactionBehavior_Cloning));
   public static readonly EventId StateTransactionBehavior_Ignoring = new(402, nameof(StateTransactionBehavior_Ignoring));
   public static readonly EventId StateTransactionBehavior_Exception = new(403, nameof(StateTransactionBehavior_Exception));
-  public static readonly EventId StateTransactionBehavior_Restored = new(404, nameof(StateTransactionBehavior_Restored));
+  public static readonly EventId StateTransactionBehavior_Restoring = new(404, nameof(StateTransactionBehavior_Restoring));
 
   //   ReduxDevTools
   public static readonly EventId StartHandler_Initializing = new(500, nameof(StartHandler_Initializing));
@@ -75,4 +76,5 @@ internal class EventIds
   // StateInitializationPreProcessor
   public static readonly EventId StateInitializationPreProcessor_Waiting = new(800, nameof(StateInitializationPreProcessor_Waiting));
   public static readonly EventId StateInitializationPreProcessor_Completed = new(801, nameof(StateInitializationPreProcessor_Completed));
+
 }

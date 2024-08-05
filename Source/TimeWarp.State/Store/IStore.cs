@@ -17,7 +17,7 @@ public interface IStore
 
   object GetState(Type stateType);
   
-  SemaphoreSlim GetSemaphore(Type stateType);
+  SemaphoreSlim? GetSemaphore(Type stateType);
 
   void SetState(IState newState);
   

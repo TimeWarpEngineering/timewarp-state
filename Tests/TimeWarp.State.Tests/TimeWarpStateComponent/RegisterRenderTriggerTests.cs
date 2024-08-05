@@ -233,6 +233,7 @@ public class Should_
     public ISender Sender { get; set; } = null!;
     public Guid Guid { get; } = Guid.Empty; 
     public void Initialize() => throw new NotImplementedException();
+    public void CancelOperations() => throw new NotImplementedException();
   }
 
   private class TestThing

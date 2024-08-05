@@ -7,7 +7,11 @@ public partial class EventStreamState
 
     internal sealed class Action : IAction
     {
-      public required string Message { get; init; }
+      public string Message { get; }
+      public Action(string message) 
+      {
+        Message = message;
+      }
     }
 
     internal sealed class AddEventHandler

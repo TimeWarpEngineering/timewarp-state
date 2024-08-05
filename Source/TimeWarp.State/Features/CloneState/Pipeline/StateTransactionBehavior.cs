@@ -32,13 +32,13 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     Logger = logger;
     Store = store;
     Publisher = publisher;
-    
+
     string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
     Logger.LogDebug
     (
       EventIds.StateTransactionBehavior_Constructing,
       "constructing {ClassName}<{RequestType},{ResponseType}>",
-      className, 
+      className,
       typeof(TRequest).Name,
       typeof(TResponse).Name
     );
@@ -53,17 +53,17 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
   {
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
-    var originalState = (IState)Store.GetState(enclosingStateType)!; // Not null because of Analyzer
-    IState newState = (originalState is ICloneable cloneable) 
-      ? (IState)cloneable.Clone() 
-      : originalState.Clone
-        (
-          (ex, path, _, _) =>
-          {
-            Logger.LogWarning("Cloning error: {path} {Message}", path, ex.Message);
-          }
-        );
-    
+    var originalState = (IState)Store.GetState(enclosingStateType)!;// Not null because of Analyzer
+    IState newState = (originalState is ICloneable cloneable) ?
+      (IState)cloneable.Clone() :
+      originalState.Clone
+      (
+        (ex, path, _, _) =>
+        {
+          Logger.LogWarning("Cloning error: {path} {Message}", path, ex.Message);
+        }
+      );
+
     // We don't clone the Sender, it is an injected service and not part of state.
     newState.Sender = originalState.Sender;
 
@@ -90,18 +90,24 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     }
     catch (Exception exception)
     {
-      // If something fails we restore system to previous state.
-      Logger.LogWarning(EventIds.StateTransactionBehavior_Exception, exception, "Error cloning State");
-
-      Store.SetState(originalState);
-
       Logger.LogWarning
       (
-        EventIds.StateTransactionBehavior_Restored,
-        "Restored State of type: {enclosingStateType}",
+        EventIds.StateTransactionBehavior_Exception,
+        exception,
+        "Error cloning State. Type:{enclosingStateType}",
         enclosingStateType
       );
 
+      // If something fails we restore system to previous state.
+      Logger.LogInformation
+      (
+        EventIds.StateTransactionBehavior_Restoring,
+        "Attempting to restore State of type: {enclosingStateType}",
+        enclosingStateType
+      );
+
+      Store.SetState(originalState);
+      
       var exceptionNotification = new ExceptionNotification
       (
         requestName: nameof(StateTransactionBehavior<TRequest, TResponse>),
@@ -109,7 +115,8 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       );
 
       await Publisher.Publish(exceptionNotification, cancellationToken);
-      return default!; // It can be null, but we don't care since MediatR handles null values gracefully.
+      
+      return default!;// It can be null, but we don't care since MediatR handles null values gracefully.
     }
   }
 }

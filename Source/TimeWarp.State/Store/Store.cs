@@ -61,10 +61,27 @@ internal partial class Store : IStore
   public void RemoveState<TState>() where TState : IState
   {
     string typeName = typeof(TState).FullName ?? throw new InvalidOperationException();
+    Logger.LogDebug
+    (
+      EventIds.Store_RemoveState,
+      "{Timestamp:O} Removing State: {TypeName}", 
+      DateTime.UtcNow, 
+      typeName
+    );
     PreviousStates.Remove(typeName, out _);
-    States.Remove(typeName, out _);
+    States.Remove(typeName, out IState? state);
+    state?.CancelOperations();
+    
+    // Remove and dispose the associated Semaphore
+    if (Semaphores.TryRemove(typeName, out SemaphoreSlim? semaphore))
+    {
+      semaphore.Dispose();
+    }
+
+    // Optionally, remove the initialization task
+    StateInitializationTasks.TryRemove(typeName, out _);
   }
-  
+
   /// <summary>
   /// Clear all the states
   /// </summary>
@@ -73,18 +90,22 @@ internal partial class Store : IStore
   /// <summary>
   /// Get the Semaphore for the specific State
   /// </summary>
-  public SemaphoreSlim GetSemaphore(Type stateType)
+  public SemaphoreSlim? GetSemaphore(Type stateType)
   {
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
     if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? semaphore)) return semaphore;
-    semaphore = new SemaphoreSlim(1, 1);
-    if (!Semaphores.TryAdd(typeName, semaphore))
+    if (States.ContainsKey(typeName)) // if the State has been removed then no need for semaphore
     {
-      throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the Semaphores dictionary.");  
+      semaphore = new SemaphoreSlim(1, 1);
+      if (!Semaphores.TryAdd(typeName, semaphore))
+      {
+        throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the Semaphores dictionary.");
+      }
+      return semaphore;
     }
-    return semaphore;
+    return null;
   }
-  
+
   /// <summary>
   /// Set the state for specific Type
   /// </summary>
@@ -127,10 +148,10 @@ internal partial class Store : IStore
               {
                 Logger.LogError(t.Exception, "Error occurred while publishing state initialization notification.");
               }
-            }, 
+            },
             TaskScheduler.Default
           );
-        
+
         StateInitializationTasks[typeName] = initializationTask;
       }
       else
@@ -141,7 +162,7 @@ internal partial class Store : IStore
       return state;
     }
   }
-  
+
   public object? GetPreviousState(Type stateType)
   {
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
@@ -152,14 +173,24 @@ internal partial class Store : IStore
   private void SetState(string typeName, object newStateObject)
   {
     var newState = (IState)newStateObject;
-    Logger.LogDebug
-    (
-      EventIds.Store_SetState,
-      "Assigning State. Type:{typeName}, Guid:{newState.Guid}",
-      typeName,
-      newState.Guid
-    );
-    PreviousStates[typeName] = States[typeName];
-    States[typeName] = newState;
+    
+    // Check if the state exists before trying to access it
+    // If the state has been removed then does it make sense to keep this new one? 
+    if (States.TryGetValue(typeName, out var currentState))
+    {
+      Logger.LogDebug
+      (
+        EventIds.Store_SetState,
+        "Assigning State. Type:{typeName}, Guid:{newState.Guid}",
+        typeName,
+        newState.Guid
+      );
+      PreviousStates[typeName] = currentState;
+      States[typeName] = newState;
+    }
+    else
+    {
+      Logger.LogDebug("State was removed while processing. Type:{typeName}", typeName);
+    }
   }
 }
