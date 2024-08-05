@@ -14,7 +14,17 @@ public static partial class Policies
          .Should()
          .BeInternal(),
         "internal ActionSet",
-        "ActionSets should be internal. They can still be registered with DI, but they are not intended to be called directly. The associated method will be exposed on the State."
+        "ActionSets should be internal. Their Action and Handler can still be registered with DI, but they are not intended to be called directly. The associated method will be exposed on the State."
+      )
+      .Add
+      (
+        t => t
+          .That()
+          .HaveNameEndingWith("ActionSet")
+          .Should()
+          .BeStatic(),
+        "static ActionSet",
+        "ActionSets should be static. They are just containers for Actions and Handlers and thus don't need to be instantiated."
       );
   }
 }
