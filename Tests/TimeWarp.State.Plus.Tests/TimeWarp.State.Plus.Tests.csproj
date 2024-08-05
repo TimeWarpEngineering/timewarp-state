@@ -16,6 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj" />
-    <ProjectReference Include="..\..\Source\TimeWarp.State.Rules\TimeWarp.State.Rules.csproj" />
+    <ProjectReference Include="..\..\Source\TimeWarp.State.Policies\TimeWarp.State.Policies.csproj" />
   </ItemGroup>
 </Project>

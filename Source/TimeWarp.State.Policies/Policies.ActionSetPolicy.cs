@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Rules;
+namespace TimeWarp.State.Policies;
 
 public static partial class Policies
 {
