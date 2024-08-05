@@ -87,7 +87,7 @@ jobs:
           release_name: Release ${{ steps.extract_version.outputs.VERSION }}
           draft: false
           prerelease: false
-          body: "Description of the release goes here."
+          body: "Update Release notes on GitHub"
       
       
       - run: echo "🍏 This job's status is ${{ job.status }}."

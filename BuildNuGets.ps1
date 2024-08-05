@@ -11,7 +11,8 @@ try
     "./Source/TimeWarp.State.Analyzer/",
     "./Source/TimeWarp.State.SourceGenerator/",
     "./Source/TimeWarp.State/",
-    "./Source/TimeWarp.State.Plus/"
+    "./Source/TimeWarp.State.Plus/",
+    "./Source/TimeWarp.State.Policies/"
   )
 
   foreach ($project in $projects) {
