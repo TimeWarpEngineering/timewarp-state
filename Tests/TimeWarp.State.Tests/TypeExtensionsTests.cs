@@ -14,6 +14,7 @@ public class TypeExtensionsTests
     public ISender Sender { get; set; } = null!;
     public Guid Guid { get; } = Guid.Empty;
     public void Initialize() => throw new NotImplementedException();
+    public void CancelOperations() => throw new NotImplementedException();
   }
     
   public void Should_Get_Enclosing_State_Type_For_Nested_Class()
