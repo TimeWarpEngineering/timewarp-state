@@ -57,9 +57,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Samples\03-Server
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-ServerSide", "03-ServerSide", "{F8557795-B5DD-4F2D-A487-FC73853CD36E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeWarp.State.Rules", "Source\TimeWarp.State.Rules\TimeWarp.State.Rules.csproj", "{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.App.Architecture.Tests", "Tests\Test.App.Architecture.Tests\Test.App.Architecture.Tests.csproj", "{18EC52C8-5934-40D6-B001-376C61049018}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeWarp.State.Policies", "Source\TimeWarp.State.Policies\TimeWarp.State.Policies.csproj", "{CBEF2299-5ADC-4677-BB43-447EC9CD562D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -158,18 +158,18 @@ Global
 		{29DFA784-979B-489D-BF27-A5758247E713}.ReduxDevToolsEnabled|Any CPU.Build.0 = Debug|Any CPU
 		{29DFA784-979B-489D-BF27-A5758247E713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29DFA784-979B-489D-BF27-A5758247E713}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Debug|Any CPU
-		{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}.ReduxDevToolsEnabled|Any CPU.Build.0 = Debug|Any CPU
-		{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BD61D3B8-5E8B-4DDC-8BDC-5194008CD63A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{18EC52C8-5934-40D6-B001-376C61049018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{18EC52C8-5934-40D6-B001-376C61049018}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18EC52C8-5934-40D6-B001-376C61049018}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Debug|Any CPU
 		{18EC52C8-5934-40D6-B001-376C61049018}.ReduxDevToolsEnabled|Any CPU.Build.0 = Debug|Any CPU
 		{18EC52C8-5934-40D6-B001-376C61049018}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18EC52C8-5934-40D6-B001-376C61049018}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBEF2299-5ADC-4677-BB43-447EC9CD562D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBEF2299-5ADC-4677-BB43-447EC9CD562D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBEF2299-5ADC-4677-BB43-447EC9CD562D}.ReduxDevToolsEnabled|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBEF2299-5ADC-4677-BB43-447EC9CD562D}.ReduxDevToolsEnabled|Any CPU.Build.0 = Debug|Any CPU
+		{CBEF2299-5ADC-4677-BB43-447EC9CD562D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBEF2299-5ADC-4677-BB43-447EC9CD562D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

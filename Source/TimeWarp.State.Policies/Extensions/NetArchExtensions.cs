@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Rules.Extensions;
+namespace TimeWarp.State.Policies.Extensions;
 
 public static class NetArchExtensions
 {

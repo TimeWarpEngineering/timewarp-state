@@ -42,6 +42,12 @@ jobs:
           cd Source/TimeWarp.State.Plus/bin/Release
           dotnet nuget push TimeWarp.State.Plus.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           # Assuming snupkg files are in the same directory and are named correspondingly
+
+      - name: Publish TimeWarp.State.Policies
+        run: |
+          cd Source/TimeWarp.State.Policies/bin/Release
+          dotnet nuget push TimeWarp.State.Policies.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
+          # Assuming snupkg files are in the same directory and are named correspondingly
           
       - name: Extract version from Directory.Build.props
         id: extract_version
