@@ -71,6 +71,7 @@ public partial class TimeWarpStateComponent
       }
     }
 
+    if (ParameterChanged) NeedsRerender = true;
     return base.SetParametersAsync(parameters);
   }
 }
