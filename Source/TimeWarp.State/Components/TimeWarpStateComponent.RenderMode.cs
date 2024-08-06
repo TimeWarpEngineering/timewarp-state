@@ -69,12 +69,12 @@ public partial class TimeWarpStateComponent
       EventIds.TimeWarpStateComponent_RenderCount, 
       "{Id}: Rendered, Category: {RenderReasonCategory} Detail: {RenderReasonDetail} Count: {RenderCount}",
       Id,
-      RenderReasonCategory,
+      RenderReason,
       RenderReasonDetail,
       renderCount
     );
 
-    RenderReasonCategory = RenderReasonCategory.None;
+    RenderReason = RenderReasonCategory.None;
     RenderReasonDetail = null;
     
     if (!firstRender) return;
