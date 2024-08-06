@@ -45,7 +45,7 @@ public partial class TimeWarpStateComponent
 
   public override Task SetParametersAsync(ParameterView parameters)
   {
-    RenderReasonCategory = RenderReasonCategory.None;
+    RenderReason = RenderReasonCategory.None;
     RenderReasonDetail = null;
     ParameterChanged = false;
 
@@ -58,7 +58,7 @@ public partial class TimeWarpStateComponent
         if (property != null && !Equals(property.GetValue(this), parameter.Value))
         {
           ParameterChanged = true;
-          RenderReasonCategory = RenderReasonCategory.ParameterChanged;
+          RenderReason = RenderReasonCategory.ParameterChanged;
           RenderReasonDetail = parameter.Name;
           break;
         }
@@ -70,7 +70,7 @@ public partial class TimeWarpStateComponent
         if (comparison.Comparer(currentValue, parameter.Value))
         {
           ParameterChanged = true;
-          RenderReasonCategory = RenderReasonCategory.ParameterChanged;
+          RenderReason = RenderReasonCategory.ParameterChanged;
           RenderReasonDetail = parameter.Name;
           break;
         }
@@ -79,7 +79,7 @@ public partial class TimeWarpStateComponent
       {
         // For unregistered, non-primitive types
         ParameterChanged = true;
-        RenderReasonCategory = RenderReasonCategory.UntrackedParameter;
+        RenderReason = RenderReasonCategory.UntrackedParameter;
         RenderReasonDetail = parameter.Name;
         break;
       }
