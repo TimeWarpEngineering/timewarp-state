@@ -41,16 +41,6 @@ public partial class TimeWarpStateComponent
   }
 
   /// <inheritdoc />
-  protected override bool ShouldRender()
-  {
-    // If there are no RenderTriggers or ParameterComparisons, default to true (standard Blazor behavior)
-    // If there are RenderTriggers or ParameterComparisons, use NeedsRerender flag
-    bool result = (RenderTriggers.IsEmpty && ParameterComparisons.IsEmpty) || NeedsRerender; 
-    NeedsRerender = false;
-    return result;
-  }
-
-  /// <inheritdoc />
   public virtual bool ShouldReRender(Type stateType)
   {
     ArgumentNullException.ThrowIfNull(stateType);

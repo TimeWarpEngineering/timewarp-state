@@ -82,4 +82,14 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   {
     Store.RemoveState<TState>();
   }
+  
+  /// <inheritdoc />
+  protected override bool ShouldRender()
+  {
+    // If there are no RenderTriggers or ParameterComparisons, default to true (standard Blazor behavior)
+    // If there are RenderTriggers or ParameterComparisons, use NeedsRerender flag
+    bool result = (RenderTriggers.IsEmpty && ParameterTriggers.IsEmpty) || NeedsRerender; 
+    NeedsRerender = false;
+    return result;
+  }
 }

@@ -2,15 +2,15 @@ namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent
 {
-  public delegate bool ParameterComparer(object? previous, object? current);
+  public delegate bool ParameterTrigger(object? previous, object? current);
   public delegate object ParameterGetter();
-  public delegate bool TypedComparer<in T>(T previous, T current);
+  public delegate bool TypedTrigger<in T>(T previous, T current);
   public delegate T ParameterSelector<out T>();
 
-  private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterComparer Comparer)> ParameterComparisons = new();
+  private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterTrigger Trigger)> ParameterTriggers = new();
   private bool ParameterChanged;
 
-  protected void RegisterParameterComparison<T>(Expression<ParameterSelector<T>> parameterSelector, TypedComparer<T>? customComparison = null)
+  protected void RegisterParameterTrigger<T>(Expression<ParameterSelector<T>> parameterSelector, TypedTrigger<T>? customTrigger = null)
     where T : class
   {
     ArgumentNullException.ThrowIfNull(parameterSelector);
@@ -21,10 +21,10 @@ public partial class TimeWarpStateComponent
     ParameterSelector<T> compiledSelector = parameterSelector.Compile();
     ParameterGetter objectGetter = () => compiledSelector()!;
 
-    ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
+    ParameterTriggers[parameterName] = (objectGetter, CreateParameterTriggerFunc(customTrigger));
   }
 
-  private static ParameterComparer CreateParameterComparisonFunc<T>(TypedComparer<T>? customComparison = null)
+  private static ParameterTrigger CreateParameterTriggerFunc<T>(TypedTrigger<T>? customTrigger = null)
   {
     return (previous, current) =>
     {
@@ -34,9 +34,9 @@ public partial class TimeWarpStateComponent
       T previousValue = (T)previous;
       T currentValue = (T)current;
 
-      if (customComparison != null)
+      if (customTrigger != null)
       {
-        return !customComparison(previousValue, currentValue);
+        return !customTrigger(previousValue, currentValue);
       }
 
       return !EqualityComparer<T>.Default.Equals(previousValue, currentValue);
@@ -63,11 +63,11 @@ public partial class TimeWarpStateComponent
           break;
         }
       }
-      else if (ParameterComparisons.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterComparer Comparer) comparison))
+      else if (ParameterTriggers.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterTrigger Trigger) trigger))
       {
         // For registered non-primitive types
-        object currentValue = comparison.Getter();
-        if (comparison.Comparer(currentValue, parameter.Value))
+        object currentValue = trigger.Getter();
+        if (trigger.Trigger(currentValue, parameter.Value))
         {
           ParameterChanged = true;
           RenderReason = RenderReasonCategory.ParameterChanged;
