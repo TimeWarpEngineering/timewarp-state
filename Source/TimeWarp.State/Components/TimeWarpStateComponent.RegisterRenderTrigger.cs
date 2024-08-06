@@ -74,12 +74,12 @@ public partial class TimeWarpStateComponent
   /// </remarks>
   protected bool ShouldReRender<TState>(Type stateType, Func<TState, bool> condition) where TState : IState
   {
-    RenderReasonCategory = RenderReasonCategory.Subscription;
+    RenderReason = RenderReasonCategory.Subscription;
     if (stateType != typeof(TState)) return false;
     TState? previousState = GetPreviousState<TState>();
     if (previousState == null) return true;
     bool result = condition(previousState);
-    if (result) RenderReasonCategory = RenderReasonCategory.RenderTrigger;
+    if (result) RenderReason = RenderReasonCategory.RenderTrigger;
     Logger.LogDebug
     (
       EventIds.TimeWarpStateComponent_ShouldReRender,
