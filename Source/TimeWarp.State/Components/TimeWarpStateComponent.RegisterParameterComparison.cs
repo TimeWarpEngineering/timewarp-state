@@ -3,22 +3,23 @@ namespace TimeWarp.State;
 public delegate bool ParameterComparer(object? previous, object? current);
 public delegate object ParameterGetter();
 public delegate bool TypedComparer<in T>(T previous, T current);
+public delegate T ParameterSelector<out T>();
 
 public partial class TimeWarpStateComponent
 {
     private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterComparer Comparer)> ParameterComparisons = new();
 
-    protected void RegisterParameterComparison<T>(Expression<Func<T>> parameterSelector, TypedComparer<T>? customComparison = null)
+    protected void RegisterParameterComparison<T>(Expression<ParameterSelector<T>> parameterSelector, TypedComparer<T>? customComparison = null)
     {
-        ArgumentNullException.ThrowIfNull(parameterSelector);
+      ArgumentNullException.ThrowIfNull(parameterSelector);
 
-        var memberExpression = (MemberExpression)parameterSelector.Body;
-        string parameterName = memberExpression.Member.Name;
+      var memberExpression = (MemberExpression)parameterSelector.Body;
+      string parameterName = memberExpression.Member.Name;
 
-        Func<T> compiledSelector = parameterSelector.Compile();
-        ParameterGetter objectGetter = () => compiledSelector()!;
+      ParameterSelector<T> compiledSelector = parameterSelector.Compile();
+      ParameterGetter objectGetter = () => compiledSelector()!;
 
-        ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
+      ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
     }
 
     private static ParameterComparer CreateParameterComparisonFunc<T>(TypedComparer<T>? customComparison = null)
