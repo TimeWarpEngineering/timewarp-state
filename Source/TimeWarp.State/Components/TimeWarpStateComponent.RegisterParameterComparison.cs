@@ -1,66 +1,67 @@
 namespace TimeWarp.State;
 
+public delegate bool ParameterComparer(object? previous, object? current);
+public delegate object ParameterGetter();
+public delegate bool TypedComparer<in T>(T previous, T current);
+
 public partial class TimeWarpStateComponent
 {
-  private readonly ConcurrentDictionary<string, (Func<object> Getter, Func<object?, object?, bool> Comparer)> ParameterComparisons = new();
+    private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterComparer Comparer)> ParameterComparisons = new();
 
-  protected void RegisterParameterComparison<T>(Expression<Func<T>> parameterSelector, Func<T, T, bool>? customComparison = null)
-  {
-    ArgumentNullException.ThrowIfNull(parameterSelector);
-
-    var memberExpression = (MemberExpression)parameterSelector.Body;
-    string parameterName = memberExpression.Member.Name;
-
-    Func<T> compiledSelector = parameterSelector.Compile();
-    Func<object> objectGetter = () => compiledSelector()!;
-
-    ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
-  }
-
-  private static Func<object?, object?, bool> CreateParameterComparisonFunc<T>(Func<T, T, bool>? customComparison = null)
-  {
-    return (previous, current) =>
+    protected void RegisterParameterComparison<T>(Expression<Func<T>> parameterSelector, TypedComparer<T>? customComparison = null)
     {
-      if (previous == null && current == null) return false;
-      if (previous == null || current == null) return true;
+        ArgumentNullException.ThrowIfNull(parameterSelector);
 
-      T previousValue = (T)previous;
-      T currentValue = (T)current;
+        var memberExpression = (MemberExpression)parameterSelector.Body;
+        string parameterName = memberExpression.Member.Name;
 
-      if (customComparison != null)
-      {
-        return !customComparison(previousValue, currentValue);
-      }
+        Func<T> compiledSelector = parameterSelector.Compile();
+        ParameterGetter objectGetter = () => compiledSelector()!;
 
-      return !EqualityComparer<T>.Default.Equals(previousValue, currentValue);
-    };
-  }
+        ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
+    }
 
-  public override Task SetParametersAsync(ParameterView parameters)
-  {
-    bool parameterChanged = false;
-
-    foreach (ParameterValue parameter in parameters)
+    private static ParameterComparer CreateParameterComparisonFunc<T>(TypedComparer<T>? customComparison = null)
     {
-      if (ParameterComparisons.TryGetValue(parameter.Name, out var comparison))
-      {
-        object? currentValue = comparison.Getter();
-        if (comparison.Comparer(currentValue, parameter.Value))
+        return (previous, current) =>
         {
-          parameterChanged = true;
-          break;
-        }
-      }
+            if (previous == null && current == null) return false;
+            if (previous == null || current == null) return true;
+
+            T previousValue = (T)previous;
+            T currentValue = (T)current;
+
+            if (customComparison != null)
+            {
+                return !customComparison(previousValue, currentValue);
+            }
+
+            return !EqualityComparer<T>.Default.Equals(previousValue, currentValue);
+        };
     }
 
-    if (parameterChanged)
+    public override Task SetParametersAsync(ParameterView parameters)
     {
-      return base.SetParametersAsync(parameters);
+        bool parameterChanged = false;
+
+        foreach (ParameterValue parameter in parameters)
+        {
+            if (ParameterComparisons.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterComparer Comparer) comparison))
+            {
+                object currentValue = comparison.Getter();
+                if (comparison.Comparer(currentValue, parameter.Value))
+                {
+                    parameterChanged = true;
+                    break;
+                }
+            }
+        }
+
+        if (parameterChanged)
+        {
+            return base.SetParametersAsync(parameters);
+        }
+        // Parameters haven't changed, skip update
+        return Task.CompletedTask;
     }
-    else
-    {
-      // Parameters haven't changed, skip update
-      return Task.CompletedTask;
-    }
-  }
 }
