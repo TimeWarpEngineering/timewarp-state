@@ -1,68 +1,76 @@
 namespace TimeWarp.State;
 
-public delegate bool ParameterComparer(object? previous, object? current);
-public delegate object ParameterGetter();
-public delegate bool TypedComparer<in T>(T previous, T current);
-public delegate T ParameterSelector<out T>();
-
 public partial class TimeWarpStateComponent
 {
-    private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterComparer Comparer)> ParameterComparisons = new();
+  public delegate bool ParameterComparer(object? previous, object? current);
+  public delegate object ParameterGetter();
+  public delegate bool TypedComparer<in T>(T previous, T current);
+  public delegate T ParameterSelector<out T>();
 
-    protected void RegisterParameterComparison<T>(Expression<ParameterSelector<T>> parameterSelector, TypedComparer<T>? customComparison = null)
+  private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterComparer Comparer)> ParameterComparisons = new();
+  private bool ParameterChanged;
+
+  protected void RegisterParameterComparison<T>(Expression<ParameterSelector<T>> parameterSelector, TypedComparer<T>? customComparison = null)
+  {
+    ArgumentNullException.ThrowIfNull(parameterSelector);
+
+    var memberExpression = (MemberExpression)parameterSelector.Body;
+    string parameterName = memberExpression.Member.Name;
+
+    ParameterSelector<T> compiledSelector = parameterSelector.Compile();
+    ParameterGetter objectGetter = () => compiledSelector()!;
+
+    ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
+  }
+
+  private static ParameterComparer CreateParameterComparisonFunc<T>(TypedComparer<T>? customComparison = null)
+  {
+    return (previous, current) =>
     {
-      ArgumentNullException.ThrowIfNull(parameterSelector);
+      if (previous == null && current == null) return false;
+      if (previous == null || current == null) return true;
 
-      var memberExpression = (MemberExpression)parameterSelector.Body;
-      string parameterName = memberExpression.Member.Name;
+      T previousValue = (T)previous;
+      T currentValue = (T)current;
 
-      ParameterSelector<T> compiledSelector = parameterSelector.Compile();
-      ParameterGetter objectGetter = () => compiledSelector()!;
+      if (customComparison != null)
+      {
+        return !customComparison(previousValue, currentValue);
+      }
 
-      ParameterComparisons[parameterName] = (objectGetter, CreateParameterComparisonFunc(customComparison));
-    }
+      return !EqualityComparer<T>.Default.Equals(previousValue, currentValue);
+    };
+  }
 
-    private static ParameterComparer CreateParameterComparisonFunc<T>(TypedComparer<T>? customComparison = null)
+  public override Task SetParametersAsync(ParameterView parameters)
+  {
+    RenderReasonCategory = RenderReasonCategory.None;
+    RenderReasonDetail = null;
+    ParameterChanged = false;
+
+    foreach (ParameterValue parameter in parameters)
     {
-        return (previous, current) =>
+      if (ParameterComparisons.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterComparer Comparer) comparison))
+      {
+        object currentValue = comparison.Getter();
+        if (comparison.Comparer(currentValue, parameter.Value))
         {
-            if (previous == null && current == null) return false;
-            if (previous == null || current == null) return true;
-
-            T previousValue = (T)previous;
-            T currentValue = (T)current;
-
-            if (customComparison != null)
-            {
-                return !customComparison(previousValue, currentValue);
-            }
-
-            return !EqualityComparer<T>.Default.Equals(previousValue, currentValue);
-        };
-    }
-
-    public override Task SetParametersAsync(ParameterView parameters)
-    {
-        bool parameterChanged = false;
-
-        foreach (ParameterValue parameter in parameters)
-        {
-            if (ParameterComparisons.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterComparer Comparer) comparison))
-            {
-                object currentValue = comparison.Getter();
-                if (comparison.Comparer(currentValue, parameter.Value))
-                {
-                    parameterChanged = true;
-                    break;
-                }
-            }
+          ParameterChanged = true;
+          RenderReasonCategory = RenderReasonCategory.Parameter;
+          RenderReasonDetail = parameter.Name;
+          break;
         }
-
-        if (parameterChanged)
-        {
-            return base.SetParametersAsync(parameters);
-        }
-        // Parameters haven't changed, skip update
-        return Task.CompletedTask;
+      }
+      else
+      {
+        // If the parameter is not registered for comparison, we assume it might have changed
+        ParameterChanged = true;
+        RenderReasonCategory = RenderReasonCategory.Default;
+        RenderReasonDetail = parameter.Name;
+        break;
+      }
     }
+
+    return base.SetParametersAsync(parameters);
+  }
 }
