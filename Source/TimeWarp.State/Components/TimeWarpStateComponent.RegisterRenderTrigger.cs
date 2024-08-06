@@ -43,9 +43,9 @@ public partial class TimeWarpStateComponent
   /// <inheritdoc />
   protected override bool ShouldRender()
   {
-    // If there are no RenderTriggers, default to true (standard Blazor behavior)
-    // If there are RenderTriggers, use NeedsRerender flag
-    bool result = RenderTriggers.IsEmpty || NeedsRerender; 
+    // If there are no RenderTriggers or ParameterComparisons, default to true (standard Blazor behavior)
+    // If there are RenderTriggers or ParameterComparisons, use NeedsRerender flag
+    bool result = (RenderTriggers.IsEmpty && ParameterComparisons.IsEmpty) || NeedsRerender; 
     NeedsRerender = false;
     return result;
   }
@@ -74,14 +74,24 @@ public partial class TimeWarpStateComponent
   /// </remarks>
   protected bool ShouldReRender<TState>(Type stateType, Func<TState, bool> condition) where TState : IState
   {
+    RenderReasonCategory = RenderReasonCategory.Subscription;
     if (stateType != typeof(TState)) return false;
     TState? previousState = GetPreviousState<TState>();
     if (previousState == null) return true;
     bool result = condition(previousState);
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_ShouldReRender, "ShouldReRender ComponentType: {ComponentId} StateType: {StateType} Result: {Result}", Id, stateType.FullName, result);
+    if (result) RenderReasonCategory = RenderReasonCategory.RenderTrigger;
+    Logger.LogDebug
+    (
+      EventIds.TimeWarpStateComponent_ShouldReRender,
+      "{Id}: ShouldReRender,  StateType: {StateType} Result: {Result}",
+      Id,
+      stateType.FullName,
+      result
+    );
 
     return result;
   }
+  
   /// <summary>
   /// Registers a render trigger for a specific state type.
   /// </summary>
