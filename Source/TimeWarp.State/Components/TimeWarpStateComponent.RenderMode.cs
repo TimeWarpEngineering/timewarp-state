@@ -10,7 +10,7 @@ public partial class TimeWarpStateComponent
   
   private bool UsesRenderMode;
   private bool HasRendered;
-
+  
   protected string ConfiguredRenderMode =>
     ConfiguredRenderModeCache.GetOrAdd(this.GetType(), type =>
     {
@@ -64,7 +64,19 @@ public partial class TimeWarpStateComponent
     base.OnAfterRender(firstRender);
     IncrementRenderCount();
     int renderCount = RenderCounts[Id];
-    Logger.LogTrace(EventIds.TimeWarpStateComponent_RenderCount, "{Id}: Rendered, RenderCount: {RenderCount}", Id, renderCount);
+    Logger.LogTrace
+    (
+      EventIds.TimeWarpStateComponent_RenderCount, 
+      "{Id}: Rendered, Category: {RenderReasonCategory} Detail: {RenderReasonDetail} Count: {RenderCount}",
+      Id,
+      RenderReasonCategory,
+      RenderReasonDetail,
+      renderCount
+    );
+
+    RenderReasonCategory = RenderReasonCategory.None;
+    RenderReasonDetail = null;
+    
     if (!firstRender) return;
     HasRendered = true;
     if (UsesRenderMode)
