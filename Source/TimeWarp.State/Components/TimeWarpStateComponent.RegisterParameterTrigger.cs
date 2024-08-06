@@ -2,13 +2,12 @@ namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent
 {
-  public delegate bool ParameterTrigger(object? previous, object? current);
-  public delegate object ParameterGetter();
-  public delegate bool TypedTrigger<in T>(T previous, T current);
-  public delegate T ParameterSelector<out T>();
+  private delegate bool ParameterTrigger(object? previous, object? current);
+  private delegate object ParameterGetter();
+  protected delegate bool TypedTrigger<in T>(T previous, T current);
+  protected delegate T ParameterSelector<out T>();
 
   private readonly ConcurrentDictionary<string, (ParameterGetter Getter, ParameterTrigger Trigger)> ParameterTriggers = new();
-  private bool ParameterChanged;
 
   protected void RegisterParameterTrigger<T>(Expression<ParameterSelector<T>> parameterSelector, TypedTrigger<T>? customTrigger = null)
     where T : class
@@ -19,9 +18,8 @@ public partial class TimeWarpStateComponent
     string parameterName = memberExpression.Member.Name;
 
     ParameterSelector<T> compiledSelector = parameterSelector.Compile();
-    ParameterGetter objectGetter = () => compiledSelector()!;
 
-    ParameterTriggers[parameterName] = (objectGetter, CreateParameterTriggerFunc(customTrigger));
+    ParameterTriggers[parameterName] = (Getter: () => compiledSelector(), CreateParameterTriggerFunc(customTrigger));
   }
 
   private static ParameterTrigger CreateParameterTriggerFunc<T>(TypedTrigger<T>? customTrigger = null)
@@ -47,45 +45,58 @@ public partial class TimeWarpStateComponent
   {
     RenderReason = RenderReasonCategory.None;
     RenderReasonDetail = null;
-    ParameterChanged = false;
-
+  
     foreach (ParameterValue parameter in parameters)
     {
-      if (parameter.Value.GetType().IsPrimitive)
+      if (CheckParameterChanged(parameter))
       {
-        // For all primitive types, do a direct comparison
-        PropertyInfo? property = this.GetType().GetProperty(parameter.Name);
-        if (property != null && !Equals(property.GetValue(this), parameter.Value))
-        {
-          ParameterChanged = true;
-          RenderReason = RenderReasonCategory.ParameterChanged;
-          RenderReasonDetail = parameter.Name;
-          break;
-        }
-      }
-      else if (ParameterTriggers.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterTrigger Trigger) trigger))
-      {
-        // For registered non-primitive types
-        object currentValue = trigger.Getter();
-        if (trigger.Trigger(currentValue, parameter.Value))
-        {
-          ParameterChanged = true;
-          RenderReason = RenderReasonCategory.ParameterChanged;
-          RenderReasonDetail = parameter.Name;
-          break;
-        }
-      }
-      else
-      {
-        // For unregistered, non-primitive types
-        ParameterChanged = true;
-        RenderReason = RenderReasonCategory.UntrackedParameter;
-        RenderReasonDetail = parameter.Name;
+        NeedsRerender = true;
         break;
       }
     }
 
-    if (ParameterChanged) NeedsRerender = true;
     return base.SetParametersAsync(parameters);
+  }
+
+  private bool CheckParameterChanged(ParameterValue parameter)
+  {
+    if (parameter.Value.GetType().IsPrimitive)
+      return CheckPrimitiveParameterChanged(parameter);
+
+    if (ParameterTriggers.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterTrigger Trigger) trigger))
+      return CheckRegisteredParameterChanged(parameter, trigger);
+    
+    return HandleUnregisteredParameter(parameter);
+  }
+
+  private bool CheckPrimitiveParameterChanged(ParameterValue parameter)
+  {
+    PropertyInfo? property = this.GetType().GetProperty(parameter.Name);
+    if (property != null && !Equals(property.GetValue(this), parameter.Value))
+    {
+      RenderReason = RenderReasonCategory.ParameterChanged;
+      RenderReasonDetail = parameter.Name;
+      return true;
+    }
+    return false;
+  }
+
+  private bool CheckRegisteredParameterChanged(ParameterValue parameter, (ParameterGetter Getter, ParameterTrigger Trigger) trigger)
+  {
+    object currentValue = trigger.Getter();
+    if (trigger.Trigger(currentValue, parameter.Value))
+    {
+      RenderReason = RenderReasonCategory.ParameterChanged;
+      RenderReasonDetail = parameter.Name;
+      return true;
+    }
+    return false;
+  }
+
+  private bool HandleUnregisteredParameter(ParameterValue parameter)
+  {
+    RenderReason = RenderReasonCategory.UntrackedParameter;
+    RenderReasonDetail = parameter.Name;
+    return true;
   }
 }
