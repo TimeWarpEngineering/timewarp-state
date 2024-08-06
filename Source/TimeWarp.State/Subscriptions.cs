@@ -28,7 +28,7 @@ public class Subscriptions
       Logger.LogDebug
       (
         EventIds.Subscriptions_Adding,
-        "adding subscription for Id:{id} Type.Name:{type_name}",
+        "{id} Type.Name:{type_name} subscription added",
         timeWarpStateComponent.Id,
         type.Name
       );
@@ -110,7 +110,7 @@ public class Subscriptions
   private void LogRemoveSubscription(Subscription subscription) => Logger.LogDebug
   (
     EventIds.Subscriptions_RemoveSubscription,
-    "Removing Subscription for ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
+    "{Id}: StateType:{StateType} subscription removed",
     subscription.ComponentId,
     subscription.StateType.Name
   );
@@ -118,7 +118,7 @@ public class Subscriptions
   private void LogReRender(Subscription subscription) => Logger.LogDebug
   (
     EventIds.Subscriptions_ReRenderingSubscribers,
-    "ReRender ComponentId:{subscription_ComponentId} StateType.Name:{subscription_StateType_Name}",
+    "{Id}: StateType:{StateType} ReRendered",
     subscription.ComponentId,
     subscription.StateType.Name
   );
