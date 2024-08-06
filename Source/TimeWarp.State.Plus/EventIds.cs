@@ -20,4 +20,5 @@ internal class EventIds
   // Feature - PersistenceService
   public static readonly EventId PersistenceService_LoadState = new(1300, nameof(PersistenceService_LoadState));
   public static readonly EventId PersistenceService_LoadState_SerializedState = new(1301, nameof(PersistenceService_LoadState_SerializedState));
+  public static readonly EventId PersistenceService_LoadState_DeserializationError = new(1302, nameof(PersistenceService_LoadState_DeserializationError));
 }

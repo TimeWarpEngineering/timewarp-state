@@ -44,8 +44,18 @@ public class PersistenceService : IPersistenceService
       serializedState
     );
 
-    object? result =
-      serializedState != null ? JsonSerializer.Deserialize(serializedState, stateType, JsonSerializerOptions) : null;
+    object? result = null;
+    if (serializedState != null)
+    {
+      try
+      {
+        result = JsonSerializer.Deserialize(serializedState, stateType, JsonSerializerOptions);
+      }
+      catch (JsonException ex)
+      {
+        Logger.LogError(EventIds.PersistenceService_LoadState_DeserializationError, ex, "Error deserializing state for {stateType}", stateType);
+      }
+    }
 
     if (result is IState state)
     {
