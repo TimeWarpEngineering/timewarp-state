@@ -1,7 +1,5 @@
 namespace TimeWarp.State.Policies;
 
-using Mono.Cecil;
-
 public class BeNestedInStateCustomRule:ICustomRule 
 {
   public bool MeetsRule(TypeDefinition typeDefinition)

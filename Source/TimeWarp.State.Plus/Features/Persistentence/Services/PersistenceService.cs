@@ -54,6 +54,7 @@ public class PersistenceService : IPersistenceService
       catch (JsonException ex)
       {
         Logger.LogError(EventIds.PersistenceService_LoadState_DeserializationError, ex, "Error deserializing state for {stateType}", stateType);
+        throw;
       }
     }
 
