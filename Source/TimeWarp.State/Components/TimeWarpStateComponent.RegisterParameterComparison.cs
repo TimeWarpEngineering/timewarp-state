@@ -11,6 +11,7 @@ public partial class TimeWarpStateComponent
   private bool ParameterChanged;
 
   protected void RegisterParameterComparison<T>(Expression<ParameterSelector<T>> parameterSelector, TypedComparer<T>? customComparison = null)
+    where T : class
   {
     ArgumentNullException.ThrowIfNull(parameterSelector);
 
@@ -50,22 +51,35 @@ public partial class TimeWarpStateComponent
 
     foreach (ParameterValue parameter in parameters)
     {
-      if (ParameterComparisons.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterComparer Comparer) comparison))
+      if (parameter.Value.GetType().IsPrimitive)
       {
+        // For all primitive types, do a direct comparison
+        PropertyInfo? property = this.GetType().GetProperty(parameter.Name);
+        if (property != null && !Equals(property.GetValue(this), parameter.Value))
+        {
+          ParameterChanged = true;
+          RenderReasonCategory = RenderReasonCategory.ParameterChanged;
+          RenderReasonDetail = parameter.Name;
+          break;
+        }
+      }
+      else if (ParameterComparisons.TryGetValue(parameter.Name, out (ParameterGetter Getter, ParameterComparer Comparer) comparison))
+      {
+        // For registered non-primitive types
         object currentValue = comparison.Getter();
         if (comparison.Comparer(currentValue, parameter.Value))
         {
           ParameterChanged = true;
-          RenderReasonCategory = RenderReasonCategory.Parameter;
+          RenderReasonCategory = RenderReasonCategory.ParameterChanged;
           RenderReasonDetail = parameter.Name;
           break;
         }
       }
       else
       {
-        // If the parameter is not registered for comparison, we assume it might have changed
+        // For unregistered, non-primitive types
         ParameterChanged = true;
-        RenderReasonCategory = RenderReasonCategory.Default;
+        RenderReasonCategory = RenderReasonCategory.UntrackedParameter;
         RenderReasonDetail = parameter.Name;
         break;
       }
