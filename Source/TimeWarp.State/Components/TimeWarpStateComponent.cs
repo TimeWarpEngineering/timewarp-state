@@ -40,7 +40,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
 
   protected override void OnInitialized()
   {
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "TimeWarpStateComponent created: {Id}", Id);
+    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "{Id}: created", Id);
   }
 
   public virtual void Dispose()
