@@ -8,9 +8,12 @@ public partial class TimeWarpStateComponent
   public enum RenderReasonCategory
   {
     None,
-    UntrackedParameter,
+    Event,
     ParameterChanged,
+    UntrackedParameter,
     Subscription,
-    RenderTrigger
+    RenderTrigger,
+    StateHasChanged,
+    Forced,
   }
 }
