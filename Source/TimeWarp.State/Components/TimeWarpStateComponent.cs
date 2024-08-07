@@ -78,17 +78,74 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     Store.RemoveState<TState>();
   }
   
-  /// <inheritdoc />
   protected override bool ShouldRender()
   {
-    // SetParametersAsync will update NeedsRerender
-    // As will any RenderTriggers in ShouldReRender
+    // Determine render trigger:
+    // 1. Event: If neither ShouldReRender, SetParametersAsync, nor ReRender (StateHasChanged) was called,
+    //    it's likely an event-triggered render that directly called Blazor's StateHasChanged.
+    // 2. Parameter change: Detected when SetParametersAsync was called, setting ParameterTriggered.
+    // 3. Subscription update: When a subscribed state changes, setting SubscriptionTriggered.
+    // 4. Forced render: Explicit request to re-render, setting ForceRender.
+    // 5. Manual StateHasChanged: Detected when ReRender was called, typically from custom logic.
     
-    return NeedsRerender && (NeedsRerender = false);
+    bool shouldRender = false;
+
+    bool eventTriggered =
+      !SetParametersAsyncWasCalled && // Came from Parent
+      !ShouldReRenderWasCalled && // Came from State Subscription
+      !ReRenderWasCalled; // Could have been called from custom logic
+
+    if (eventTriggered)
+    {
+      RenderReason = RenderReasonCategory.Event;
+      shouldRender = true;
+    }
+    else if (ParameterTriggered)
+    {
+      RenderReason = RenderReasonCategory.ParameterChanged;
+      shouldRender = true;
+    }
+    else if (SubscriptionTriggered)
+    {
+      RenderReason = RenderReasonCategory.Subscription;
+      shouldRender = true;
+    }
+    else if (ReRenderWasCalled)
+    {
+      RenderReason = RenderReasonCategory.Forced;
+      shouldRender = true;
+    }
+    else if (StateHasChangedWasCalled)
+    {
+      RenderReason = RenderReasonCategory.StateHasChanged;
+      shouldRender = true;
+    }
+
+    Logger.LogTrace
+    (
+      "ShouldRender triggered: {ComponentId} {RenderDetails}",
+      Id,
+      new
+      {
+        EventTriggered = eventTriggered,
+        SetParametersAsyncWasCalled,
+        ShouldReRenderWasCalled,
+        ReRenderWasCalled,
+        ParameterTriggered,
+        SubscriptionTriggered,
+        StateHasChangedWasCalled,
+        RenderReason,
+        ShouldRender = shouldRender
+      }
+    );
     
-    // Concise version of below utilizing short circuit feature of boolean 
-    // bool result = NeedsRerender; 
-    // NeedsRerender = false;
-    // return result;
+    // Reset flags for next render cycle
+    ShouldReRenderWasCalled = false;
+    SetParametersAsyncWasCalled = false;
+    ReRenderWasCalled = false;
+    ParameterTriggered = false;
+    SubscriptionTriggered = false;
+
+    return shouldRender;
   }
 }
