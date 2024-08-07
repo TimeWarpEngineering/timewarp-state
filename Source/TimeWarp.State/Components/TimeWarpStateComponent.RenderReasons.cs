@@ -2,8 +2,8 @@ namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent
 {
-  private RenderReasonCategory RenderReason { get; set; } = RenderReasonCategory.None;
-  private string? RenderReasonDetail { get; set; }
+  public RenderReasonCategory RenderReason { get; private set; } = RenderReasonCategory.None;
+  public string? RenderReasonDetail { get; private set; }
 
   public enum RenderReasonCategory
   {
