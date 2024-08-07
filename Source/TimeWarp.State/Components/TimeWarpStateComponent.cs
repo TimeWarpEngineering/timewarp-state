@@ -38,11 +38,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     Id = $"{name}-{count}";
   }
 
-  protected override void OnInitialized()
-  {
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "{Id}: created", Id);
-  }
-
   public virtual void Dispose()
   {
     Logger.LogDebug(EventIds.TimeWarpStateComponent_Disposing, "{Id}: Disposing, removing subscriptions. Total renders: {RenderCount}", Id, RenderCount);
@@ -86,10 +81,14 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   /// <inheritdoc />
   protected override bool ShouldRender()
   {
-    // If there are no RenderTriggers or ParameterComparisons, default to true (standard Blazor behavior)
-    // If there are RenderTriggers or ParameterComparisons, use NeedsRerender flag
-    bool result = (RenderTriggers.IsEmpty && ParameterTriggers.IsEmpty) || NeedsRerender; 
-    NeedsRerender = false;
-    return result;
+    // SetParametersAsync will update NeedsRerender
+    // As will any RenderTriggers in ShouldReRender
+    
+    return NeedsRerender && (NeedsRerender = false);
+    
+    // Concise version of below utilizing short circuit feature of boolean 
+    // bool result = NeedsRerender; 
+    // NeedsRerender = false;
+    // return result;
   }
 }
