@@ -7,47 +7,61 @@ public partial class TimeWarpStateComponent
   private TState? GetPreviousState<TState>() where TState:IState => Store.GetPreviousState<TState>();
   private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
 
-  /// <summary>
-  /// Set this to true if something in the component has changed that requires a re-render.
-  /// </summary>
-  private bool NeedsRerender;
+  private bool ReRenderWasCalled;
+  private bool SubscriptionTriggered;
+  private bool ShouldReRenderWasCalled;
+  private bool StateHasChangedWasCalled;
 
   /// <summary>
-  /// Triggers a re-render of the component by setting the NeedsRerender flag
+  /// Triggers a re-render of the component by setting the ReRenderWasCalled flag
   /// and invoking the base StateHasChanged method asynchronously.
   /// </summary>
   /// <remarks>
-  /// This method provides a public way to force a re-render of the component
+  /// This is the preferred method to force a re-render of the component
   /// from external code or in response to specific events or conditions.
+  /// Use this method when you want to trigger a re-render due to a state change that
+  /// Blazor might not automatically detect, such as changes to fields or properties
+  /// that are not marked as parameters.
   /// </remarks>
   public void ReRender()
   {
-    NeedsRerender = true;
+    // Subscriptions will call this if SubscriptionTriggered was true.
+    // But the user could call it directly. Or indirectly via StateHasChanged.
+    ReRenderWasCalled = true;
     InvokeAsync(base.StateHasChanged);
   }
 
   /// <summary>
-  /// Overrides the base StateHasChanged method to control the re-rendering behavior
-  /// of the component.
+  /// Notifies the component that its state has changed and triggers a re-render.
   /// </summary>
   /// <remarks>
-  /// This method is called by the Blazor framework whenever the component's state
-  /// has changed. By overriding it and redirecting the call to ReRender(), we ensure
-  /// that our custom re-rendering logic is executed.
+  /// This method overrides the base Blazor StateHasChanged method to provide additional
+  /// tracking of when StateHasChanged is called directly. It sets the StateHasChangedWasCalled
+  /// flag and then invokes the base implementation asynchronously.
+  /// 
+  /// Note: This method is called automatically by Blazor in many scenarios, such as
+  /// after event handlers complete. For manual re-render requests, prefer using the ReRender()
+  /// method instead of calling StateHasChanged() directly.
   /// </remarks>
   protected new void StateHasChanged()
   {
-    ReRender();
+    StateHasChangedWasCalled = true;
+    InvokeAsync(base.StateHasChanged);
   }
 
   /// <inheritdoc />
   public virtual bool ShouldReRender(Type stateType)
   {
+    // If this method returns true, Subscriptions will call ReRender on this component right away.
+    // Given that we do NOT need to store multiple reasons for a re-render
     ArgumentNullException.ThrowIfNull(stateType);
 
-    NeedsRerender = !RenderTriggers.TryGetValue(stateType, out Func<bool>? check) || check();
+    ShouldReRenderWasCalled = true;
+    bool triggerFound = RenderTriggers.TryGetValue(stateType, out Func<bool>? check);
+    bool triggerResult = triggerFound && check!();
+    SubscriptionTriggered = triggerResult || !triggerFound;
 
-    return NeedsRerender;
+    return SubscriptionTriggered;
   }
 
   /// <summary>
