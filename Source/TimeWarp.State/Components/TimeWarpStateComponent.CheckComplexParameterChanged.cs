@@ -3,6 +3,8 @@ namespace TimeWarp.State;
 public abstract partial class TimeWarpStateComponent
 {
   private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>> TypeParameterProperties = new();
+  private bool ParameterTriggered;
+  private bool SetParametersAsyncWasCalled;
 
   private Dictionary<string, PropertyInfo> ParameterProperties => 
     TypeParameterProperties.GetOrAdd(GetType(), type => 
@@ -21,40 +23,104 @@ public abstract partial class TimeWarpStateComponent
 
   public override Task SetParametersAsync(ParameterView parameters)
   {
+    SetParametersAsyncWasCalled = true;
     foreach (ParameterValue parameter in parameters)
     {
       if (CheckParameterChanged(parameter))
       {
-        NeedsRerender = true;
+        ParameterTriggered = true;
         break;
       }
     }
     return base.SetParametersAsync(parameters);
   }
   
+  /// <summary>
+  /// Checks if a parameter has changed.
+  /// </summary>
+  /// <param name="parameter">The parameter to check.</param>
+  /// <returns>True if the parameter has changed, false otherwise.</returns>
   protected bool CheckParameterChanged(ParameterValue parameter)
   {
     if (!ParameterProperties.TryGetValue(parameter.Name, out PropertyInfo? property))
     {
+      Logger.LogDebug
+      (
+        EventIds.TimeWarpStateComponent_ParameterChanged,
+        "Unregistered parameter detected: {ParameterName}"
+        , parameter.Name
+      );
+      
       return HandleUnregisteredParameter(parameter);
     }
 
     object? currentValue = property.GetValue(this);
-    object newValue = parameter.Value;
+    object? newValue = parameter.Value;
+    
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+    if (currentValue == null && newValue == null)
+    {
+      return false; // No change if both are null
+    }
 
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+    if (currentValue == null || newValue == null)
+    {
+      SetRenderReasonForParameterChange(parameter.Name, "Null value change");
+      Logger.LogDebug
+      (
+        EventIds.TimeWarpStateComponent_ParameterChanged,
+        "Null value change detected for parameter: {ParameterName}",
+        parameter.Name
+      );
+      return true; // Consider it changed if one is null and the other isn't
+    }
+    
+    bool changed;
+    
     if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string))
     {
-      return CheckPrimitiveParameterChanged(currentValue, newValue);
+      changed = CheckPrimitiveParameterChanged(currentValue, newValue);
     }
-
-    if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
+    else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
     {
-      return CheckCollectionParameterChanged(currentValue as IEnumerable, newValue as IEnumerable);
+      changed = CheckCollectionParameterChanged(currentValue as IEnumerable, newValue as IEnumerable);
+    }
+    else
+    {
+      changed = CheckComplexParameterChanged(currentValue, newValue);
+    }
+    
+    if (changed)
+    {
+      SetRenderReasonForParameterChange(parameter.Name);
+      Logger.LogDebug
+      (
+        EventIds.TimeWarpStateComponent_ParameterChanged,
+        "Parameter changed: {ParameterName}",
+        parameter.Name
+      );
     }
 
-    return CheckComplexParameterChanged(currentValue, newValue);
+    return changed;
   }
 
+  private void SetRenderReasonForParameterChange(string parameterName, string detail = "")
+  {
+    RenderReason = RenderReasonCategory.ParameterChanged;
+    RenderReasonDetail = string.IsNullOrEmpty(detail) 
+      ? $"Parameter '{parameterName}' changed" 
+      : $"Parameter '{parameterName}' changed: {detail}";
+
+    Logger.LogDebug
+    (
+      EventIds.TimeWarpStateComponent_ParameterChanged,
+      "Parameter changed: {ParameterName}. {Detail}",
+      parameterName,
+      detail
+    );
+  }
+  
   protected virtual bool CheckPrimitiveParameterChanged(object? currentValue, object? newValue)
   {
     return !Equals(currentValue, newValue);
@@ -67,11 +133,44 @@ public abstract partial class TimeWarpStateComponent
     return currentValue?.Cast<object>().Count() != newValue?.Cast<object>().Count();
   }
 
+  /// <summary>
+  /// Checks if a complex parameter has changed.
+  /// </summary>
+  /// <param name="currentValue">The current value of the parameter.</param>
+  /// <param name="newValue">The new value of the parameter.</param>
+  /// <returns>
+  /// True if the parameter has changed, false otherwise.
+  /// </returns>
+  /// <remarks>
+  /// This method performs a basic reference comparison by default.
+  /// Override this method in derived classes to implement custom comparison logic for complex types.
+  /// Note: When overriding, be mindful of the performance implications of your custom comparison logic,
+  /// especially for large or deeply nested objects.
+  /// </remarks>
   protected virtual bool CheckComplexParameterChanged(object? currentValue, object? newValue)
   {
-    // Implement complex object comparison logic
-    // This is a basic reference check, override in derived classes for more specific logic
-    return !ReferenceEquals(currentValue, newValue);
+    Logger.LogDebug
+    (
+      EventIds.TimeWarpStateComponent_CheckComplexParameter,
+      "Checking complex parameter: Current Value Type: {CurrentType}, New Value Type: {NewType}",
+      currentValue?.GetType().Name ?? "null",
+      newValue?.GetType().Name ?? "null"
+    );
+
+    bool changed = !ReferenceEquals(currentValue, newValue);
+
+    if (changed)
+    {
+      Logger.LogDebug
+      (
+        EventIds.TimeWarpStateComponent_ComplexParameterChanged,
+        "Complex parameter changed: Current Value: {CurrentValue}, New Value: {NewValue}",
+        currentValue,
+        newValue
+      );
+    }
+
+    return changed;
   }
 
   protected virtual bool HandleUnregisteredParameter(ParameterValue parameter)
