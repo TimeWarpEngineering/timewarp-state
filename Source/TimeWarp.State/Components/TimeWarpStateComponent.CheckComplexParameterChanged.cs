@@ -2,17 +2,21 @@ namespace TimeWarp.State;
 
 public abstract partial class TimeWarpStateComponent
 {
-  private ConcurrentDictionary<string, PropertyInfo>? ParameterProperties;
+  private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>> TypeParameterProperties = new();
+
+  private Dictionary<string, PropertyInfo> ParameterProperties => 
+    TypeParameterProperties.GetOrAdd(GetType(), type => 
+      type.GetProperties()
+        .Where(p => p.GetCustomAttribute<ParameterAttribute>() != null || 
+          p.GetCustomAttribute<CascadingParameterAttribute>() != null)
+        .ToDictionary(p => p.Name)
+    );
 
   protected override void OnInitialized()
   {
     Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "{Id}: created", Id);
     base.OnInitialized();
-    ParameterProperties = new ConcurrentDictionary<string, PropertyInfo>(
-      GetType().GetProperties()
-        .Where(p => p.GetCustomAttribute<ParameterAttribute>() != null || p.GetCustomAttribute<CascadingParameterAttribute>() != null)
-        .ToDictionary(p => p.Name)
-    );
+    // The ParameterProperties will be lazily initialized when first accessed
   }
 
   public override Task SetParametersAsync(ParameterView parameters)
@@ -21,8 +25,6 @@ public abstract partial class TimeWarpStateComponent
     {
       if (CheckParameterChanged(parameter))
       {
-        // Handle parameter change
-        // This could involve calling a method, updating state, etc.
         NeedsRerender = true;
         break;
       }
@@ -32,7 +34,7 @@ public abstract partial class TimeWarpStateComponent
   
   protected bool CheckParameterChanged(ParameterValue parameter)
   {
-    if (ParameterProperties == null || !ParameterProperties.TryGetValue(parameter.Name, out var property))
+    if (!ParameterProperties.TryGetValue(parameter.Name, out PropertyInfo? property))
     {
       return HandleUnregisteredParameter(parameter);
     }
