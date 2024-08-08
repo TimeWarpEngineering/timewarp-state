@@ -6,41 +6,6 @@
 {
   public const string Title = "ShouldRender Test Page";
   public const string Route = "/should-render-test";
-}
-
-<PageTitle>@Title</PageTitle>
-<h1>@Title</h1>
-@RenderModeDisplay
-<hr>
-
-<ul class="render-info">
-  <li>ParentInt: @ParentInt</li>
-  <li>Render Count: @RenderCount</li>
-  <li>Render Reason: @RenderReason</li>
-  <li>Render Reason Detail: @RenderReasonDetail</li>
-</ul>
-
-<button @onclick=TriggerEvent>Trigger Event</button>
-<button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
-<button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
-<button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
-<button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
-<button @onclick=TriggerForceRender>Trigger Force Render</button>
-<button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
-
-<ParameterlessChildComponent />
-<ChildComponentWithPrimitives SomeInt="@SomeInt" SomeString="@SomeString" />
-<ChildComponentWithComplex SomeComplex=@SomeComplex />
-<ChildComponentWithEventCallback SomeCallback="@SomeCallback" />
-<CascadingValue Value="@CascadeValue">
-  <ChildComponentWithCascade />
-</CascadingValue>
-<ChildComponentWithAllParameters
-  SomeInt="@SomeInt"
-  SomeComplex="@SomeComplex"
-  SomeCallback="@SomeCallback" />
-
-@code {
 
   private int ParentInt { get; set; } = 0;
   private int SomeInt { get; set; } = 0;
@@ -103,4 +68,70 @@
     public string Property { get; set; } = "";
   }
 
+  private void TriggerCounterStateChange()
+  {
+    Send(new CounterState.IncrementCountActionSet.Action());
+  }
 }
+
+<PageTitle>@Title</PageTitle>
+<div class=@Id>
+
+
+  <h1>@Title</h1>
+  @RenderModeDisplay
+  <hr>
+
+  <ul class="render-info">
+    <li>ParentInt: @ParentInt</li>
+    <li>Render Count: @(RenderCount+1)</li>
+    <li>Render Reason: @RenderReason</li>
+    <li>Render Reason Detail: @RenderReasonDetail</li>
+  </ul>
+
+  <button @onclick=TriggerEvent>Trigger Event</button>
+  <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
+  <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
+  <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
+  <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
+  <button @onclick=TriggerForceRender>Trigger Force Render</button>
+  <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
+  <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
+
+  <div class="grid-container">
+    <ChildComponentParameterless />
+    <ChildComponentWithPrimitives SomeInt="@SomeInt" SomeString="@SomeString" />
+    <ChildComponentWithComplex SomeComplex=@SomeComplex />
+    <ChildComponentWithEventCallback SomeCallback="@SomeCallback" />
+    <CascadingValue Value="@CascadeValue">
+      <ChildComponentWithCascade />
+    </CascadingValue>
+    <ChildComponentWithAllParameters
+      SomeInt="@SomeInt"
+      SomeComplex="@SomeComplex"
+      SomeCallback="@SomeCallback" />
+
+    <ChildComponentWithCounterStateSubscription/>
+    <ChildComponentWithCounterStateRenderTrigger/>
+  </div>
+</div>
+
+<style>
+  @($@"
+
+    .{Id} .grid-container {{
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }}
+
+    .{Id} .grid-container * {{
+      min-width: 0;
+    }}
+
+    /* Ensure the last child (Counter) spans full width if odd number of children */
+    .{Id} .grid-container > :last-child:nth-child(odd) {{
+      grid-column: 1 / -1;
+    }}
+  ")
+</style>

@@ -1,14 +1,16 @@
 @inherits TimeWarpStateComponent
 <div>
-  Child with All: Int = @SomeInt, Complex = @SomeComplex?.Property
-  <span @onclick="SomeCallback">Click me</span>
-</div>
+  <div>
+    Child with All: Int = @SomeInt, Complex = @SomeComplex?.Property
+    <span @onclick="SomeCallback">Click me</span>
+  </div>
 
-<ul class="render-info">
-    <li>Render Count: @RenderCount</li>
+  <ul class="render-info">
+    <li>Render Count: @(RenderCount+1)</li>
     <li>Render Reason: @RenderReason</li>
     <li>Render Reason Detail: @RenderReasonDetail</li>
-</ul>
+  </ul>
+</div>
 
 @code {
   [Parameter] public int SomeInt { get; set; }

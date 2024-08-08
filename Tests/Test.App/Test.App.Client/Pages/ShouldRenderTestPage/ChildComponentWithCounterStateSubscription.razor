@@ -1,6 +1,7 @@
 @inherits BaseComponent
 <div >
-  <div>Child with Complex: @SomeComplex?.Property</div>
+  <div>Child with CounterState Subscription No Render Trigger</div>
+  <div>CounterState.Count: @CounterState.Count</div>
 
   <ul class="render-info">
     <li>Render Count: @(RenderCount+1)</li>
@@ -8,7 +9,3 @@
     <li>Render Reason Detail: @RenderReasonDetail</li>
   </ul>
 </div>
-
-@code {
-  [Parameter] public ShouldRenderTestPage.ComplexType? SomeComplex { get; set; }
-}

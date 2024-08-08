@@ -1,0 +1,27 @@
+@inherits BaseComponent
+
+@code
+{
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    RegisterRenderTrigger<CounterState>(p => p.Count);
+    RegisterRenderTrigger<BlueState>(p => p.Count);
+  }
+}
+
+<div >
+  <div>Child with CounterState Subscription Register Render Triggers </div>
+  <code>
+    RegisterRenderTrigger&lt;CounterState&gt;(p =&gt; p.Count);
+    RegisterRenderTrigger&lt;BlueState&gt;(p =&gt; p.Count);
+  </code>
+
+  <div>CounterState.Count: @CounterState.Count</div>
+
+  <ul class="render-info">
+    <li>Render Count: @(RenderCount+1)</li>
+    <li>Render Reason: @RenderReason</li>
+    <li>Render Reason Detail: @RenderReasonDetail</li>
+  </ul>
+</div>
