@@ -1,39 +1,36 @@
 ﻿@attribute [Route(Route)]
 
-<h1>Registered Services</h1>
-<div class="row">
-    @for (int i = 0; i < ServiceCollection.Count; i++)
-    {
-        ServiceDescriptor service = ServiceCollection[i];
-        <div class="col-12 mb-3">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title mb-0">@(i + 1) - @service.ServiceType</h6>
-                </div>
-                <div class="m-1">
-                    <div class="card-text"><span class="text-muted">Lifetime:</span> <span class="fw-bold">@service.Lifetime</span></div>
-                    <div class="card-text"><span class="text-muted">Implementation Type:</span> <span class="fw-bold">@service.ImplementationType</span></div>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
 @code
 {
-  /// <summary>
-  /// The title for the page.
-  /// </summary>
   public const string Title = "Services Page";
-  
-  /// <summary>
-  /// The route for the page.
-  /// </summary>
   public const string Route = "/services";
-  
-    [Inject]
-    private IServiceCollection ServiceCollection { get; set; } = null!;
+
+  [Inject]
+  private IServiceCollection ServiceCollection { get; set; } = null!;
 }
+
+<h1>Registered Services</h1>
+<div class="row">
+  @for (int i = 0; i < ServiceCollection.Count; i++)
+  {
+    ServiceDescriptor service = ServiceCollection[i];
+    <div class="col-12 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title mb-0">@(i + 1) - @service.ServiceType</h6>
+        </div>
+        <div class="m-1">
+          <div class="card-text">
+            <span class="text-muted">Lifetime:</span> <span class="fw-bold">@service.Lifetime</span>
+          </div>
+          <div class="card-text">
+            <span class="text-muted">Implementation Type:</span> <span class="fw-bold">@service.ImplementationType</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
 
 <style>
     .card-text, .card-title {
