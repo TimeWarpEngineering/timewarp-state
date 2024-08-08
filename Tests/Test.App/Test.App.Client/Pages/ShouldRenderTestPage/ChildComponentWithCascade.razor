@@ -1,0 +1,6 @@
+@inherits TimeWarpStateComponent
+<div>Child with Cascade: @CascadeValue</div>
+
+@code {
+  [CascadingParameter] public string CascadeValue { get; set; } = "";
+}

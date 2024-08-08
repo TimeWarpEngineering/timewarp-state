@@ -1,0 +1,6 @@
+@inherits TimeWarpStateComponent
+<div @onclick="SomeCallback">Child with EventCallback</div>
+
+@code {
+  [Parameter] public EventCallback<MouseEventArgs> SomeCallback { get; set; }
+}

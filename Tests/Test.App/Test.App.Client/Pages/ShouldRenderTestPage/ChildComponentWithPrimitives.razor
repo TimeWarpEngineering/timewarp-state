@@ -1,0 +1,7 @@
+@inherits TimeWarpStateComponent
+<div>Child with Primitives: Int = @SomeInt, String = @SomeString</div>
+
+@code {
+  [Parameter] public int SomeInt { get; set; }
+  [Parameter] public string SomeString { get; set; } = "";
+}

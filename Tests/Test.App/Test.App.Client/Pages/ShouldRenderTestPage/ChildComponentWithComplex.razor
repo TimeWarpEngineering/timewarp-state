@@ -1,0 +1,6 @@
+@inherits TimeWarpStateComponent
+<div>Child with Complex: @SomeComplex?.Property</div>
+
+@code {
+  [Parameter] public ShouldRenderTestPage.ComplexType? SomeComplex { get; set; }
+}

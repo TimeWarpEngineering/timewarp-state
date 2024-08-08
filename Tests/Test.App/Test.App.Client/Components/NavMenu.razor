@@ -1,5 +1,6 @@
 ﻿@rendermode InteractiveAuto
 @using Test.App.Client.Pages
+@using Test.App.Client.Pages.ShouldRenderTestPage
 @inherits BaseComponent
 
 @code
@@ -35,7 +36,13 @@
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@CounterPage.Title
       </NavLink>
     </div>
-
+    
+    <div class="nav-item px-3">
+      <NavLink class="nav-link" href=@ShouldRenderTestPage.Route>
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@ShouldRenderTestPage.Title
+      </NavLink>
+    </div>
+    
     <div class="nav-item px-3">
       <NavLink class="nav-link" href=@JavaScriptInteropPage.Route>
         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>@JavaScriptInteropPage.Title
