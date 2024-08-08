@@ -1,95 +1,106 @@
+@rendermode InteractiveAuto
 @attribute [Route(Route)]
-@inherits TimeWarpStateComponent
+@inherits BaseComponent
 
 @code
 {
   public const string Title = "ShouldRender Test Page";
   public const string Route = "/should-render-test";
 }
-<h1>ShouldRender Test Page</h1>
+
+<PageTitle>@Title</PageTitle>
+<h1>@Title</h1>
+@RenderModeDisplay
+<hr>
 
 <ul class="render-info">
-    <li>Render Count: @RenderCount</li>
-    <li>Render Reason: @RenderReason</li>
-    <li>Render Reason Detail: @RenderReasonDetail</li>
+  <li>ParentInt: @ParentInt</li>
+  <li>Render Count: @RenderCount</li>
+  <li>Render Reason: @RenderReason</li>
+  <li>Render Reason Detail: @RenderReasonDetail</li>
 </ul>
 
-<button @onclick="TriggerEvent">Trigger Event</button>
-<button @onclick="TriggerParameterChangeOfPrimitiveType">Trigger Primitive Parameter Change</button>
-<button @onclick="TriggerParameterChangeOfComplexType">Trigger Complex Parameter Change</button>
-<button @onclick="TriggerParameterChangeOfEventCallback">Trigger EventCallback Parameter Change</button>
-<button @onclick="TriggerSubscriptionUpdate">Trigger Subscription Update</button>
-<button @onclick="TriggerForceRender">Trigger Force Render</button>
-<button @onclick="TriggerStateHasChanged">Trigger StateHasChanged</button>
+<button @onclick=TriggerEvent>Trigger Event</button>
+<button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
+<button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
+<button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
+<button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
+<button @onclick=TriggerForceRender>Trigger Force Render</button>
+<button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
 
 <ParameterlessChildComponent />
 <ChildComponentWithPrimitives SomeInt="@SomeInt" SomeString="@SomeString" />
 <ChildComponentWithComplex SomeComplex=@SomeComplex />
 <ChildComponentWithEventCallback SomeCallback="@SomeCallback" />
 <CascadingValue Value="@CascadeValue">
-    <ChildComponentWithCascade />
+  <ChildComponentWithCascade />
 </CascadingValue>
-<ChildComponentWithAllParameters 
-    SomeInt="@SomeInt" 
-    SomeComplex="@SomeComplex" 
-    SomeCallback="@SomeCallback" />
+<ChildComponentWithAllParameters
+  SomeInt="@SomeInt"
+  SomeComplex="@SomeComplex"
+  SomeCallback="@SomeCallback" />
 
 @code {
-    private CounterState CounterState => GetState<CounterState>();
 
-    private int SomeInt { get; set; } = 0;
-    private string SomeString { get; set; } = "Initial";
-    private ComplexType SomeComplex { get; set; } = new ComplexType();
-    private EventCallback<MouseEventArgs> SomeCallback { get; set; }
-    private string CascadeValue { get; set; } = "Initial Cascade";
+  private int ParentInt { get; set; } = 0;
+  private int SomeInt { get; set; } = 0;
+  private string SomeString { get; set; } = "Initial";
+  private ComplexType SomeComplex { get; set; } = new ComplexType();
+  private EventCallback<MouseEventArgs> SomeCallback { get; set; }
+  private string CascadeValue { get; set; } = "Initial Cascade";
 
-    protected override void OnInitialized()
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, HandleCallback);
+  }
+
+  private void TriggerEvent()
+  {
+    Console.WriteLine("TriggerEvent");
+    ParentInt++;
+  }
+
+  private void TriggerParameterChangeOfPrimitiveType()
+  {
+    SomeInt++;
+    SomeString = $"Updated {SomeInt}";
+  }
+
+  private void TriggerParameterChangeOfComplexType()
+  {
+    SomeComplex = new ComplexType
     {
-        base.OnInitialized();
-        SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, HandleCallback);
-    }
+      Property = $"Updated {DateTime.Now}"
+    };
+  }
 
-    private void TriggerEvent()
-    {
-        // This method itself is an event handler, so no additional action needed
-    }
+  private void TriggerParameterChangeOfEventCallback()
+  {
+    SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, NewHandleCallback);
+  }
 
-    private void TriggerParameterChangeOfPrimitiveType()
-    {
-        SomeInt++;
-        SomeString = $"Updated {SomeInt}";
-    }
+  private void TriggerSubscriptionUpdate()
+  {
+    Mediator.Send(new CounterState.IncrementCountActionSet.Action());
+  }
 
-    private void TriggerParameterChangeOfComplexType()
-    {
-        SomeComplex = new ComplexType { Property = $"Updated {DateTime.Now}" };
-    }
+  private void TriggerForceRender()
+  {
+    ReRender();
+  }
 
-    private void TriggerParameterChangeOfEventCallback()
-    {
-        SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, NewHandleCallback);
-    }
+  private void TriggerStateHasChanged()
+  {
+    StateHasChanged();
+  }
 
-    private void TriggerSubscriptionUpdate()
-    {
-        Mediator.Send(new CounterState.IncrementCountActionSet.Action());
-    }
+  private void HandleCallback(MouseEventArgs args) {}
+  private void NewHandleCallback(MouseEventArgs args) {}
 
-    private void TriggerForceRender()
-    {
-        ReRender();
-    }
+  public class ComplexType
+  {
+    public string Property { get; set; } = "";
+  }
 
-    private void TriggerStateHasChanged()
-    {
-        StateHasChanged();
-    }
-
-    private void HandleCallback(MouseEventArgs args) { }
-    private void NewHandleCallback(MouseEventArgs args) { }
-
-    public class ComplexType
-    {
-        public string Property { get; set; } = "";
-    }
 }
