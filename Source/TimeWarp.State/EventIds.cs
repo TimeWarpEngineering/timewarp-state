@@ -69,12 +69,13 @@ internal class EventIds
   
   // TimeWarpStateComponent
   public static readonly EventId TimeWarpStateComponent_Constructed = new(700, nameof(TimeWarpStateComponent_Constructed)); 
-  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(701, nameof(TimeWarpStateComponent_ShouldReRender));
-  public static readonly EventId TimeWarpStateComponent_CheckComplexParameter = new(702, nameof(TimeWarpStateComponent_CheckComplexParameter));
-  public static readonly EventId TimeWarpStateComponent_ComplexParameterChanged = new(703, nameof(TimeWarpStateComponent_ComplexParameterChanged));
-  public static readonly EventId TimeWarpStateComponent_ParameterChanged = new(704, nameof(TimeWarpStateComponent_ParameterChanged));
-  public static readonly EventId TimeWarpStateComponent_RenderCount = new(705, nameof(TimeWarpStateComponent_RenderCount));
-  public static readonly EventId TimeWarpStateComponent_Disposing = new(706, nameof(TimeWarpStateComponent_Disposing));
+  public static readonly EventId TimeWarpStateComponent_ShouldRender = new(701, nameof(TimeWarpStateComponent_Disposing));
+  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(702, nameof(TimeWarpStateComponent_ShouldReRender));
+  public static readonly EventId TimeWarpStateComponent_CheckComplexParameter = new(703, nameof(TimeWarpStateComponent_CheckComplexParameter));
+  public static readonly EventId TimeWarpStateComponent_ComplexParameterChanged = new(704, nameof(TimeWarpStateComponent_ComplexParameterChanged));
+  public static readonly EventId TimeWarpStateComponent_ParameterChanged = new(705, nameof(TimeWarpStateComponent_ParameterChanged));
+  public static readonly EventId TimeWarpStateComponent_RenderCount = new(706, nameof(TimeWarpStateComponent_RenderCount));
+  public static readonly EventId TimeWarpStateComponent_Disposing = new(707, nameof(TimeWarpStateComponent_Disposing));
   
   // StateInitializationPreProcessor
   public static readonly EventId StateInitializationPreProcessor_Waiting = new(800, nameof(StateInitializationPreProcessor_Waiting));

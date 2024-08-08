@@ -123,6 +123,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
 
     Logger.LogTrace
     (
+      EventIds.TimeWarpStateComponent_Disposing,
       "ShouldRender triggered: {ComponentId} {RenderDetails}",
       Id,
       new
