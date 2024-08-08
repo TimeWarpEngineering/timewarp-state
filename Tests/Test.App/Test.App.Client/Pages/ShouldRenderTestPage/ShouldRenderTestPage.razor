@@ -8,9 +8,11 @@
 }
 <h1>ShouldRender Test Page</h1>
 
-<p>Render Count: @RenderCount</p>
-<p>Render Reason: @RenderReason</p>
-<p>Render Reason Detail: @RenderReasonDetail</p>
+<ul class="render-info">
+    <li>Render Count: @RenderCount</li>
+    <li>Render Reason: @RenderReason</li>
+    <li>Render Reason Detail: @RenderReasonDetail</li>
+</ul>
 
 <button @onclick="TriggerEvent">Trigger Event</button>
 <button @onclick="TriggerParameterChangeOfPrimitiveType">Trigger Primitive Parameter Change</button>

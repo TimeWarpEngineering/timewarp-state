@@ -1,6 +1,12 @@
 @inherits TimeWarpStateComponent
 <div>Child with Primitives: Int = @SomeInt, String = @SomeString</div>
 
+<ul class="render-info">
+    <li>Render Count: @RenderCount</li>
+    <li>Render Reason: @RenderReason</li>
+    <li>Render Reason Detail: @RenderReasonDetail</li>
+</ul>
+
 @code {
   [Parameter] public int SomeInt { get; set; }
   [Parameter] public string SomeString { get; set; } = "";

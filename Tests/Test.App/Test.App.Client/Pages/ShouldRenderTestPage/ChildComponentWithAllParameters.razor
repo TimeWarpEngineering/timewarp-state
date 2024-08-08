@@ -4,6 +4,12 @@
   <span @onclick="SomeCallback">Click me</span>
 </div>
 
+<ul class="render-info">
+    <li>Render Count: @RenderCount</li>
+    <li>Render Reason: @RenderReason</li>
+    <li>Render Reason Detail: @RenderReasonDetail</li>
+</ul>
+
 @code {
   [Parameter] public int SomeInt { get; set; }
   [Parameter] public ShouldRenderTestPage.ComplexType? SomeComplex { get; set; }
