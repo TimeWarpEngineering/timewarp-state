@@ -43,9 +43,10 @@ public partial class TimeWarpStateComponent
   /// after event handlers complete. For manual re-render requests, prefer using the ReRender()
   /// method instead of calling StateHasChanged() directly.
   /// </remarks>
-  protected new void StateHasChanged()
+  protected new void StateHasChanged([CallerMemberName] string callerName = "")
   {
     StateHasChangedWasCalled = true;
+    RenderReasonDetail = callerName;
     InvokeAsync(base.StateHasChanged);
   }
 
