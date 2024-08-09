@@ -63,7 +63,6 @@
     StateHasChanged();
   }
 
-
   private void HandleCallback(MouseEventArgs args) {}
   private void NewHandleCallback(MouseEventArgs args) {}
 
@@ -119,10 +118,8 @@
       <button @onclick=TriggerParameterChangeOfCollection>Trigger Complex Collection Parameter Change</button>
       <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
       <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
-      <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
       <button @onclick=TriggerForceRender>Trigger Force Render</button>
       <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
-      <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
     </div>
   </div>
 
@@ -142,8 +139,6 @@
         SomeCallback=@SomeCallback 
       />
       <ChildComponentWithCollection SomeComplexCollection=@SomeComplexCollection></ChildComponentWithCollection>
-      <ChildComponentWithCounterStateSubscription/>
-      <ChildComponentWithCounterStateRenderTrigger/>
       <ChildComponentWithComplexConstrained SomeComplex=@SomeComplex />
     </div>
   </div>
