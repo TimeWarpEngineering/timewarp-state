@@ -67,15 +67,20 @@ internal class EventIds
   public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
   public static readonly EventId RenderSubscriptionsPostProcessor_SkippedReRender = new(604, nameof(RenderSubscriptionsPostProcessor_SkippedReRender));
   
-  // TimeWarpStateComponent
-  public static readonly EventId TimeWarpStateComponent_Constructed = new(700, nameof(TimeWarpStateComponent_Constructed)); 
-  public static readonly EventId TimeWarpStateComponent_ShouldRender = new(701, nameof(TimeWarpStateComponent_Disposing));
-  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(702, nameof(TimeWarpStateComponent_ShouldReRender));
-  public static readonly EventId TimeWarpStateComponent_CheckComplexParameter = new(703, nameof(TimeWarpStateComponent_CheckComplexParameter));
-  public static readonly EventId TimeWarpStateComponent_ComplexParameterChanged = new(704, nameof(TimeWarpStateComponent_ComplexParameterChanged));
-  public static readonly EventId TimeWarpStateComponent_ParameterChanged = new(705, nameof(TimeWarpStateComponent_ParameterChanged));
-  public static readonly EventId TimeWarpStateComponent_RenderCount = new(706, nameof(TimeWarpStateComponent_RenderCount));
+  #region TimeWarpStateComponent
+  public static readonly EventId TimeWarpStateComponent_Constructed = new(700, nameof(TimeWarpStateComponent_Constructed));
+  // SetParametersAsync begin
+  public static readonly EventId TimeWarpStateComponent_CheckComplexParameter = new(701, nameof(TimeWarpStateComponent_CheckComplexParameter));
+  public static readonly EventId TimeWarpStateComponent_ComplexParameterChanged = new(702, nameof(TimeWarpStateComponent_ComplexParameterChanged));
+  public static readonly EventId TimeWarpStateComponent_ParameterChanged = new(703, nameof(TimeWarpStateComponent_ParameterChanged));
+  // SetParametersAsync end
+  // State Change Subscriptions
+  public static readonly EventId TimeWarpStateComponent_ShouldReRender = new(704, nameof(TimeWarpStateComponent_ShouldReRender));
+  // State Change Subscriptions End
+  public static readonly EventId TimeWarpStateComponent_ShouldRender = new(705, nameof(TimeWarpStateComponent_Disposing));
+  public static readonly EventId TimeWarpStateComponent_OnAfterRender = new(706, nameof(TimeWarpStateComponent_OnAfterRender));
   public static readonly EventId TimeWarpStateComponent_Disposing = new(707, nameof(TimeWarpStateComponent_Disposing));
+  #endregion
   
   // StateInitializationPreProcessor
   public static readonly EventId StateInitializationPreProcessor_Waiting = new(800, nameof(StateInitializationPreProcessor_Waiting));

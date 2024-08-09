@@ -5,6 +5,7 @@ public abstract partial class TimeWarpStateComponent
   private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>> TypeParameterProperties = new();
   private bool ParameterTriggered;
   private bool SetParametersAsyncWasCalled;
+  public string? SetParametersAsyncWasCalledBy  { get; private set; }
 
   private Dictionary<string, PropertyInfo> ParameterProperties => 
     TypeParameterProperties.GetOrAdd(GetType(), type => 
@@ -14,16 +15,16 @@ public abstract partial class TimeWarpStateComponent
         .ToDictionary(p => p.Name)
     );
 
-  protected override void OnInitialized()
-  {
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "{Id}: created", Id);
-    base.OnInitialized();
-    // The ParameterProperties will be lazily initialized when first accessed
-  }
-
   public override Task SetParametersAsync(ParameterView parameters)
   {
+    if (Constructed)
+    {
+      // Logger is property injected so not available in constructor.
+      Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "{ComponentId}: created", Id);
+      Constructed = false;
+    }
     SetParametersAsyncWasCalled = true;
+    SetParametersAsyncWasCalledBy = new StackTrace().GetFrame(1)?.GetMethod()?.Name ?? "Unknown";
     foreach (ParameterValue parameter in parameters)
     {
       if (CheckParameterChanged(parameter))
@@ -46,9 +47,10 @@ public abstract partial class TimeWarpStateComponent
     {
       Logger.LogDebug
       (
-        EventIds.TimeWarpStateComponent_ParameterChanged,
-        "Unregistered parameter detected: {ParameterName}"
-        , parameter.Name
+        EventIds.TimeWarpStateComponent_ParameterChanged
+        ,"{ComponentId}: Unregistered parameter detected: {ParameterName}"
+        ,Id
+        ,parameter.Name
       );
       
       return HandleUnregisteredParameter(parameter);
@@ -67,12 +69,6 @@ public abstract partial class TimeWarpStateComponent
     if (currentValue == null || newValue == null)
     {
       SetRenderReasonForParameterChange(parameter.Name, "Null value change");
-      Logger.LogDebug
-      (
-        EventIds.TimeWarpStateComponent_ParameterChanged,
-        "Null value change detected for parameter: {ParameterName}",
-        parameter.Name
-      );
       return true; // Consider it changed if one is null and the other isn't
     }
     
@@ -96,9 +92,10 @@ public abstract partial class TimeWarpStateComponent
       SetRenderReasonForParameterChange(parameter.Name);
       Logger.LogDebug
       (
-        EventIds.TimeWarpStateComponent_ParameterChanged,
-        "Parameter changed: {ParameterName}",
-        parameter.Name
+        EventIds.TimeWarpStateComponent_ParameterChanged
+        ,"{ComponentId}: Parameter changed: {ParameterName}"
+        ,Id
+        ,parameter.Name
       );
     }
 
@@ -106,7 +103,7 @@ public abstract partial class TimeWarpStateComponent
   }
 
   private void SetRenderReasonForParameterChange(string parameterName, string detail = "")
-  {
+  { 
     RenderReason = RenderReasonCategory.ParameterChanged;
     RenderReasonDetail = string.IsNullOrEmpty(detail) 
       ? $"Parameter '{parameterName}' changed" 
@@ -114,10 +111,14 @@ public abstract partial class TimeWarpStateComponent
 
     Logger.LogDebug
     (
-      EventIds.TimeWarpStateComponent_ParameterChanged,
-      "Parameter changed: {ParameterName}. {Detail}",
-      parameterName,
-      detail
+      EventIds.TimeWarpStateComponent_ParameterChanged
+      ,"{ComponentId}: Parameter changed: {ParameterDetails}"
+      ,Id
+      ,new
+      {
+        Name = parameterName
+        ,Detail = detail  
+      }
     );
   }
   
@@ -151,10 +152,14 @@ public abstract partial class TimeWarpStateComponent
   {
     Logger.LogDebug
     (
-      EventIds.TimeWarpStateComponent_CheckComplexParameter,
-      "Checking complex parameter: Current Value Type: {CurrentType}, New Value Type: {NewType}",
-      currentValue?.GetType().Name ?? "null",
-      newValue?.GetType().Name ?? "null"
+      EventIds.TimeWarpStateComponent_CheckComplexParameter
+      ,"{ComponentId}: Checking complex parameter: {ValueTypes}"
+      ,Id
+      ,new
+      {
+        CurrentType = currentValue?.GetType().Name ?? "null",
+        NewType = newValue?.GetType().Name ?? "null"
+      }
     );
 
     bool changed = !ReferenceEquals(currentValue, newValue);
@@ -163,10 +168,14 @@ public abstract partial class TimeWarpStateComponent
     {
       Logger.LogDebug
       (
-        EventIds.TimeWarpStateComponent_ComplexParameterChanged,
-        "Complex parameter changed: Current Value: {CurrentValue}, New Value: {NewValue}",
-        currentValue,
-        newValue
+        EventIds.TimeWarpStateComponent_ComplexParameterChanged
+        ,"{ComponentId}: Complex parameter changed: {Values}"
+        ,Id
+        ,new
+        {
+          CurrentValue = currentValue,
+          NewValue = newValue
+        }
       );
     }
 

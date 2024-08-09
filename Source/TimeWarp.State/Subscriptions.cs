@@ -56,7 +56,7 @@ public class Subscriptions
     Logger.LogDebug
     (
       EventIds.Subscriptions_RemovingComponentSubscriptions,
-      "Removing Subscription for {timeWarpStateComponent_Id}",
+      "{ComponentId}: Removing Subscriptions",
       timeWarpStateComponent.Id
     );
 

@@ -11,6 +11,7 @@ public partial class TimeWarpStateComponent
   private bool SubscriptionTriggered;
   private bool ShouldReRenderWasCalled;
   private bool StateHasChangedWasCalled;
+  public string? StateHasChangedWasCalledBy  { get; private set; }
 
   /// <summary>
   /// Triggers a re-render of the component by setting the ReRenderWasCalled flag
@@ -43,10 +44,14 @@ public partial class TimeWarpStateComponent
   /// after event handlers complete. For manual re-render requests, prefer using the ReRender()
   /// method instead of calling StateHasChanged() directly.
   /// </remarks>
-  protected new void StateHasChanged([CallerMemberName] string callerName = "")
+  protected new void StateHasChanged()
   {
+    StackFrame? frame = new StackTrace().GetFrame(1);
+    MethodBase? method = frame?.GetMethod();
+    string className = method?.DeclaringType?.Name ?? "Unknown";
+    string methodName = method?.Name ?? "Unknown";
+    StateHasChangedWasCalledBy = $"{className}.{methodName}";
     StateHasChangedWasCalled = true;
-    RenderReasonDetail = callerName;
     InvokeAsync(base.StateHasChanged);
   }
 
@@ -87,11 +92,14 @@ public partial class TimeWarpStateComponent
     if (result) RenderReason = RenderReasonCategory.RenderTrigger;
     Logger.LogDebug
     (
-      EventIds.TimeWarpStateComponent_ShouldReRender,
-      "{Id}: ShouldReRender,  StateType: {StateType} Result: {Result}",
-      Id,
-      stateType.FullName,
-      result
+      EventIds.TimeWarpStateComponent_ShouldReRender
+      ,"{ComponentId}: ShouldReRender {Details}"
+      ,Id
+      ,new
+        {
+          StateName = stateType.FullName
+          ,Result = result
+        }
     );
 
     return result;

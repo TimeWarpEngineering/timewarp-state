@@ -21,6 +21,8 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;
   
   private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
+  private bool Constructed;
+
   /// <summary>
   ///   A generated unique Id based on the Class name and number of times they have been created
   /// </summary>
@@ -36,11 +38,21 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     string name = GetType().Name;
     int count = InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
     Id = $"{name}-{count}";
+    Constructed = true;
   }
 
   public virtual void Dispose()
   {
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Disposing, "{Id}: Disposing, removing subscriptions. Total renders: {RenderCount}", Id, RenderCount);
+    Logger.LogDebug
+    (
+      EventIds.TimeWarpStateComponent_Disposing
+      ,"{ComponentId}: Disposing {Details}"
+      ,Id
+      ,new
+      {
+        RenderCount
+      }
+    );
     Subscriptions.Remove(this);
     RenderCounts.TryRemove(Id, out _);
 
@@ -80,6 +92,12 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   
   protected override bool ShouldRender()
   {
+    StackFrame? frame = new StackTrace().GetFrame(1);
+    MethodBase? method = frame?.GetMethod();
+    string className = method?.DeclaringType?.Name ?? "Unknown";
+    string methodName = method?.Name ?? "Unknown";
+
+    ShouldRenderWasCalledBy = $"{className}.{methodName}";
     // Determine render trigger:
     // 1. Event: If neither ShouldReRender, SetParametersAsync, nor ReRender (StateHasChanged) was called,
     //    it's likely an event-triggered render that directly called Blazor's StateHasChanged.
@@ -120,11 +138,13 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
       RenderReason = RenderReasonCategory.StateHasChanged;
       shouldRender = true;
     }
-
+    
+    // TODO: Remove one line below
+    if (ParameterTriggered && RenderReasonDetail is null) throw new Exception("WTF");
     Logger.LogTrace
     (
-      EventIds.TimeWarpStateComponent_Disposing,
-      "ShouldRender triggered: {ComponentId} {RenderDetails}",
+      EventIds.TimeWarpStateComponent_ShouldRender,
+      "{ComponentId}: ShouldRender triggered: {RenderDetails}",
       Id,
       new
       {
@@ -136,6 +156,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
         SubscriptionTriggered,
         StateHasChangedWasCalled,
         RenderReason,
+        RenderReasonDetail,
         ShouldRender = shouldRender
       }
     );
