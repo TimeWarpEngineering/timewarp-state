@@ -1,4 +1,4 @@
-@rendermode InteractiveAuto
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @attribute [Route(Route)]
 @inherits BaseComponent
 
@@ -12,7 +12,7 @@
   private string SomeString { get; set; } = "Initial";
   private ComplexType SomeComplex { get; set; } = new ComplexType();
   private EventCallback<MouseEventArgs> SomeCallback { get; set; }
-  private string CascadeValue { get; set; } = "Initial Cascade";
+  private int CascadeValue { get; set; }
 
   protected override void OnInitialized()
   {
@@ -22,7 +22,6 @@
 
   private void TriggerEvent()
   {
-    Console.WriteLine("TriggerEvent");
     ParentInt++;
   }
 
@@ -36,7 +35,7 @@
   {
     SomeComplex = new ComplexType
     {
-      Property = $"Updated {DateTime.Now}"
+      Property = SomeComplex.Property + 1
     };
   }
 
@@ -45,6 +44,10 @@
     SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, NewHandleCallback);
   }
 
+  private void TriggerParameterChangeOfCascadingParameter()
+  {
+    CascadeValue ++;
+  }
   private void TriggerSubscriptionUpdate()
   {
     Mediator.Send(new CounterState.IncrementCountActionSet.Action());
@@ -65,7 +68,7 @@
 
   public class ComplexType
   {
-    public string Property { get; set; } = "";
+    public int Property { get; init; }
   }
 
   private void TriggerCounterStateChange()
@@ -76,50 +79,62 @@
 
 <PageTitle>@Title</PageTitle>
 <div class=@Id>
-
-
   <h1>@Title</h1>
   @RenderModeDisplay
   <hr>
 
   <ul class="render-info">
-    <li>ParentInt: @ParentInt</li>
-    <li>Render Count: @(RenderCount+1)</li>
+    <li>Component State, ParentInt: @ParentInt</li>
+    <li>Render Count (2): @(RenderCount+1)</li>
     <li>Render Reason: @RenderReason</li>
     <li>Render Reason Detail: @RenderReasonDetail</li>
+    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
+    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
+    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
   </ul>
 
-  <button @onclick=TriggerEvent>Trigger Event</button>
-  <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
-  <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
-  <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
-  <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
-  <button @onclick=TriggerForceRender>Trigger Force Render</button>
-  <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
-  <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
-
+  <hr>
+  <div class="button-container">
+    <button @onclick=TriggerEvent>Trigger Event (Increment ParentInt)</button>
+    <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
+    <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
+    <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
+    <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
+    <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
+    <button @onclick=TriggerForceRender>Trigger Force Render</button>
+    <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
+    <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
+  </div>
+  <hr>
   <div class="grid-container">
     <ChildComponentParameterless />
-    <ChildComponentWithPrimitives SomeInt="@SomeInt" SomeString="@SomeString" />
+    <ChildComponentWithPrimitives SomeInt=@SomeInt SomeString=@SomeString />
     <ChildComponentWithComplex SomeComplex=@SomeComplex />
-    <ChildComponentWithEventCallback SomeCallback="@SomeCallback" />
-    <CascadingValue Value="@CascadeValue">
-      <ChildComponentWithCascade />
-    </CascadingValue>
-    <ChildComponentWithAllParameters
-      SomeInt="@SomeInt"
-      SomeComplex="@SomeComplex"
-      SomeCallback="@SomeCallback" />
-
-    <ChildComponentWithCounterStateSubscription/>
-    <ChildComponentWithCounterStateRenderTrigger/>
+    @* <ChildComponentWithEventCallback SomeCallback=@SomeCallback /> *@
+    @* <CascadingValue Value=@CascadeValue> *@
+    @*   <ChildComponentWithCascade /> *@
+    @* </CascadingValue> *@
+    @* <ChildComponentWithAllParameters *@
+    @*   SomeInt=@SomeInt *@
+    @*   SomeComplex=@SomeComplex *@
+    @*   SomeCallback=@SomeCallback /> *@
+    @* *@
+    @* <ChildComponentWithCounterStateSubscription/> *@
+    @* <ChildComponentWithCounterStateRenderTrigger/> *@
   </div>
 </div>
 
 <style>
   @($@"
 
+    .{Id} .button-container {{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }}
+
     .{Id} .grid-container {{
+      margin-top: 1rem;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 1rem;

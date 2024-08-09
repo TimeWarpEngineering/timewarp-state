@@ -1,10 +1,27 @@
 @inherits TimeWarpStateComponent
-<div>
+<div class=@Id>
   <div>Child Component Parameterless</div>
 
   <ul class="render-info">
     <li>Render Count: @(RenderCount+1)</li>
     <li>Render Reason: @RenderReason</li>
     <li>Render Reason Detail: @RenderReasonDetail</li>
+    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
+    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
+    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
   </ul>
+  
+  <p>
+    <strong>Assert:</strong>
+    Render Count should stay at 1 after clicking all of the buttons.
+  </p>
 </div>
+
+<style>
+  @($@"
+    .{Id} {{
+      border: 1px solid;
+      padding: 1rem;            
+    }}
+  ")
+</style>

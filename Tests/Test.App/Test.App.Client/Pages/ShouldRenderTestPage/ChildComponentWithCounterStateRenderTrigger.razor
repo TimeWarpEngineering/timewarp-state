@@ -10,7 +10,7 @@
   }
 }
 
-<div >
+<div class=@Id>
   <div>Child with CounterState Subscription Register Render Triggers </div>
   <code>
     RegisterRenderTrigger&lt;CounterState&gt;(p =&gt; p.Count);
@@ -23,5 +23,17 @@
     <li>Render Count: @(RenderCount+1)</li>
     <li>Render Reason: @RenderReason</li>
     <li>Render Reason Detail: @RenderReasonDetail</li>
+    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
+    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
+    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
   </ul>
 </div>
+
+<style>
+  @($@"
+    .{Id} {{
+      border: 1px solid;
+      padding: 1rem;            
+    }}
+  ")
+</style>

@@ -1,14 +1,27 @@
 @inherits TimeWarpStateComponent
-<div >
+@code 
+{
+  [Parameter] public EventCallback<MouseEventArgs> SomeCallback { get; set; }
+}
+
+<div class=@Id>
   <div @onclick="SomeCallback">Child with EventCallback</div>
 
   <ul class="render-info">
     <li>Render Count: @(RenderCount+1)</li>
     <li>Render Reason: @RenderReason</li>
     <li>Render Reason Detail: @RenderReasonDetail</li>
+    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
+    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
+    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
   </ul>
 </div>
 
-@code {
-  [Parameter] public EventCallback<MouseEventArgs> SomeCallback { get; set; }
-}
+<style>
+  @($@"
+    .{Id} {{
+      border: 1px solid;
+      padding: 1rem;            
+    }}
+  ")
+</style>

@@ -1,5 +1,11 @@
 @inherits TimeWarpStateComponent
-<div>
+@code
+{
+  [Parameter] public int SomeInt { get; set; }
+  [Parameter] public ShouldRenderTestPage.ComplexType? SomeComplex { get; set; }
+  [Parameter] public EventCallback<MouseEventArgs> SomeCallback { get; set; }
+}
+<div class=@Id>
   <div>
     Child with All: Int = @SomeInt, Complex = @SomeComplex?.Property
     <span @onclick="SomeCallback">Click me</span>
@@ -9,11 +15,18 @@
     <li>Render Count: @(RenderCount+1)</li>
     <li>Render Reason: @RenderReason</li>
     <li>Render Reason Detail: @RenderReasonDetail</li>
+    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
+    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
+    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
   </ul>
 </div>
 
-@code {
-  [Parameter] public int SomeInt { get; set; }
-  [Parameter] public ShouldRenderTestPage.ComplexType? SomeComplex { get; set; }
-  [Parameter] public EventCallback<MouseEventArgs> SomeCallback { get; set; }
-}
+<style>
+  @($@"
+    .{Id} {{
+      border: 1px solid;
+      padding: 1rem;            
+    }}
+  ")
+</style>
+
