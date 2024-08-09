@@ -44,10 +44,4 @@
     <!-- 👇 Exclude everything in the base folder -->
     <Compile Remove="$(GeneratedFolder)/**/*.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="Pages\ShouldRenderTestPage\ShouldRenderTestPage.razor" />
-  </ItemGroup>
-
-
 </Project>
