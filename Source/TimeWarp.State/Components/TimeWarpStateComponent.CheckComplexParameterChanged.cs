@@ -3,6 +3,7 @@ namespace TimeWarp.State;
 public abstract partial class TimeWarpStateComponent
 {
   private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyInfo>> TypeParameterProperties = new();
+  private static readonly ConcurrentDictionary<Type, bool> HasOverriddenMethods = new();
   private bool ParameterTriggered;
   private bool SetParametersAsyncWasCalled;
   public string? SetParametersAsyncWasCalledBy  { get; private set; }
@@ -23,6 +24,13 @@ public abstract partial class TimeWarpStateComponent
       Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "{ComponentId}: created", Id);
       Constructed = false;
     }
+    
+    if (!CheckForOverriddenMethods())
+    {
+      // If no methods are overridden, we can return the base result immediately
+      // In Should render this won't have set the SetParametersAsyncWasCalled and thus will look like the base behaviour.
+      return base.SetParametersAsync(parameters);
+    }
     SetParametersAsyncWasCalled = true;
     SetParametersAsyncWasCalledBy = new StackTrace().GetFrame(1)?.GetMethod()?.Name ?? "Unknown";
     foreach (ParameterValue parameter in parameters)
@@ -36,12 +44,37 @@ public abstract partial class TimeWarpStateComponent
     return base.SetParametersAsync(parameters);
   }
   
+  private bool CheckForOverriddenMethods()
+  {
+    return HasOverriddenMethods.GetOrAdd(GetType(), type =>
+    {
+      var baseType = typeof(TimeWarpStateComponent);
+      var virtualMethods = new[] 
+      { 
+        nameof(CheckPrimitiveParameterChanged),
+        nameof(CheckCollectionParameterChanged),
+        nameof(CheckComplexParameterChanged),
+        nameof(HandleUnregisteredParameter)
+      };
+
+      foreach (var methodName in virtualMethods)
+      {
+        var method = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        if (method != null && method.DeclaringType != baseType)
+        {
+          return true; // Found an overridden method
+        }
+      }
+      return false; // No overridden methods found
+    });
+  }
+  
   /// <summary>
   /// Checks if a parameter has changed.
   /// </summary>
   /// <param name="parameter">The parameter to check.</param>
   /// <returns>True if the parameter has changed, false otherwise.</returns>
-  protected bool CheckParameterChanged(ParameterValue parameter)
+  private bool CheckParameterChanged(ParameterValue parameter)
   {
     if (!ParameterProperties.TryGetValue(parameter.Name, out PropertyInfo? property))
     {
@@ -56,8 +89,8 @@ public abstract partial class TimeWarpStateComponent
       return HandleUnregisteredParameter(parameter);
     }
 
-    object? currentValue = property.GetValue(this);
-    object? newValue = parameter.Value;
+    object? newValue = property.GetValue(this);
+    object? currentValue = parameter.Value;
     
     // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
     if (currentValue == null && newValue == null)
