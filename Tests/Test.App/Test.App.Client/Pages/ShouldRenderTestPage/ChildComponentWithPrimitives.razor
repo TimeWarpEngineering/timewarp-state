@@ -1,30 +1,32 @@
 @inherits TimeWarpStateComponent
-@code 
+
+@code
 {
   [Parameter] public int SomeInt { get; set; }
   [Parameter] public string SomeString { get; set; } = "";
 }
 
-<div class=@Id >
-  <div>Child with Primitives: SomeInt = @SomeInt, SomeString = @SomeString</div>
+<div class=@Id>
+  <h6>Child with Primitives</h6>
+  <div>SomeInt = @SomeInt, SomeString = @SomeString</div>
 
-  <ul class="render-info">
-    <li>Render Count: @(RenderCount+1)</li>
-    <li>Render Reason: @RenderReason</li>
-    <li>Render Reason Detail: @RenderReasonDetail</li>
-    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
-    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
-    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
-  </ul>
-  
-  <p>
-    <strong>Assert:</strong><br/>
-    Render Count: should initially be 1.<br/>
-    Render Count: should increment by 1 on each click of the `Trigger Primitive Parameter Change` button. <br/>
-    Render Reason: should be `ParameterChanged` always.<br/>
-    Render Reason Detail: should initially be `Parameter 'SomeString' changed`<br/>
+  <div class="child-render-info-container">
+    <div>Render Count: @(RenderCount + 1)</div>
+    <div>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</div>
+    <div>Render Reason: @RenderReason</div>
+    <div>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</div>
+    <div>Render Reason Detail: @RenderReasonDetail</div>
+    <div>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</div>
+  </div>
+
+  <div>
+    <strong>Assert:</strong><br />
+    Render Count: should initially be 1.<br />
+    Render Count: should increment by 1 on each click of the `Trigger Primitive Parameter Change` button. <br />
+    Render Reason: should be `ParameterChanged` always.<br />
+    Render Reason Detail: should initially be `Parameter 'SomeString' changed`<br />
     Render Reason Detail: should be `Parameter 'SomeInt' changed` on all other Renders.
-  </p>
+  </div>
 </div>
 
 <style>
@@ -32,6 +34,18 @@
     .{Id} {{
       border: 1px solid;
       padding: 1rem;            
+    }}
+
+    .{Id} > .child-render-info-container {{
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 0px;
+    }}
+
+    .{Id} > .child-render-info-container > div {{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }}
   ")
 </style>

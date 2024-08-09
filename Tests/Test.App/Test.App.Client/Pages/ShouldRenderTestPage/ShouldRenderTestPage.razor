@@ -10,10 +10,10 @@
   private int ParentInt { get; set; } = 0;
   private int SomeInt { get; set; } = 0;
   private string SomeString { get; set; } = "Initial";
-  private ComplexType SomeComplex { get; set; } = new ComplexType();
+  private ComplexType SomeComplex { get; set; } = new();
   private EventCallback<MouseEventArgs> SomeCallback { get; set; }
   private int CascadeValue { get; set; }
-
+  private List<ComplexType> SomeComplexCollection = [];
   protected override void OnInitialized()
   {
     base.OnInitialized();
@@ -46,7 +46,7 @@
 
   private void TriggerParameterChangeOfCascadingParameter()
   {
-    CascadeValue ++;
+    CascadeValue++;
   }
   private void TriggerSubscriptionUpdate()
   {
@@ -63,69 +63,116 @@
     StateHasChanged();
   }
 
+
   private void HandleCallback(MouseEventArgs args) {}
   private void NewHandleCallback(MouseEventArgs args) {}
 
   public class ComplexType
   {
     public int Property { get; init; }
+    public int ConstrainedProperty { get; init; }
   }
 
   private void TriggerCounterStateChange()
   {
     Send(new CounterState.IncrementCountActionSet.Action());
   }
+  private void TriggerParameterChangeOfCollection()
+  {
+    // This is creating a new instance of ComplexType every time.
+    SomeComplexCollection =
+    [
+      new ComplexType
+      {
+        Property = 1
+      }
+    ];
+    // TODO: change existing instance
+    // TODO: add new instance to collection
+    // TODO: remove instance from collection
+    // TODO: change existing instance in collection
+  }
 }
 
 <PageTitle>@Title</PageTitle>
 <div class=@Id>
-  <h1>@Title</h1>
-  @RenderModeDisplay
-  <hr>
+  <div class="fixed-content">
+    <h4>@Title</h4>
+    @RenderModeDisplay
+    <hr>
 
-  <ul class="render-info">
-    <li>Component State, ParentInt: @ParentInt</li>
-    <li>Render Count (2): @(RenderCount+1)</li>
-    <li>Render Reason: @RenderReason</li>
-    <li>Render Reason Detail: @RenderReasonDetail</li>
-    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
-    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
-    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
-  </ul>
+    <div class="render-info-container">
+      <div>Component State, ParentInt: @ParentInt</div>
+      <div>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</div>
+      <div>Render Count (2): @(RenderCount+1)</div>
+      <div>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</div>
+      <div>Render Reason: @RenderReason</div>
+      <div>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</div>
+      <div>Render Reason Detail: @RenderReasonDetail</div>
+    </div>
 
-  <hr>
-  <div class="button-container">
-    <button @onclick=TriggerEvent>Trigger Event (Increment ParentInt)</button>
-    <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
-    <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
-    <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
-    <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
-    <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
-    <button @onclick=TriggerForceRender>Trigger Force Render</button>
-    <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
-    <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
+    <hr>
+    <div class="button-container">
+      <button @onclick=TriggerEvent>Trigger Event (Increment ParentInt)</button>
+      <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfCollection>Trigger Complex Collection Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
+      <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
+      <button @onclick=TriggerForceRender>Trigger Force Render</button>
+      <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
+      <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
+    </div>
   </div>
-  <hr>
-  <div class="grid-container">
-    <ChildComponentParameterless />
-    <ChildComponentWithPrimitives SomeInt=@SomeInt SomeString=@SomeString />
-    <ChildComponentWithComplex SomeComplex=@SomeComplex />
-    @* <ChildComponentWithEventCallback SomeCallback=@SomeCallback /> *@
-    @* <CascadingValue Value=@CascadeValue> *@
-    @*   <ChildComponentWithCascade /> *@
-    @* </CascadingValue> *@
-    @* <ChildComponentWithAllParameters *@
-    @*   SomeInt=@SomeInt *@
-    @*   SomeComplex=@SomeComplex *@
-    @*   SomeCallback=@SomeCallback /> *@
-    @* *@
-    @* <ChildComponentWithCounterStateSubscription/> *@
-    @* <ChildComponentWithCounterStateRenderTrigger/> *@
+
+  <div class="scrollable-content">
+
+    <div class="grid-container">
+      <ChildComponentParameterless />
+      <ChildComponentWithPrimitives SomeInt=@SomeInt SomeString=@SomeString />
+      <ChildComponentWithComplex SomeComplex=@SomeComplex />
+      <ChildComponentWithEventCallback SomeCallback=@SomeCallback />
+      <CascadingValue Value=@CascadeValue>
+        <ChildComponentWithCascade />
+      </CascadingValue>
+      <ChildComponentWithAllParameters
+        SomeInt=@SomeInt
+        SomeComplex=@SomeComplex
+        SomeCallback=@SomeCallback 
+      />
+      <ChildComponentWithCollection SomeComplexCollection=@SomeComplexCollection></ChildComponentWithCollection>
+      <ChildComponentWithCounterStateSubscription/>
+      <ChildComponentWithCounterStateRenderTrigger/>
+      <ChildComponentWithComplexConstrained SomeComplex=@SomeComplex />
+    </div>
   </div>
 </div>
 
 <style>
   @($@"
+    .{Id} {{
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-size: 0.750rem; /* Adjust the font size as needed */
+      margin-bottom: 1rem;
+    }}
+
+    .{Id} .fixed-content {{
+      flex-shrink: 0;
+    }}
+
+    .{Id} .render-info-container {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0px;
+    }}
+
+    .{Id} .scrollable-content {{
+      flex-grow: 1;
+      overflow-y: auto;
+    }}
 
     .{Id} .button-container {{
       display: grid;
