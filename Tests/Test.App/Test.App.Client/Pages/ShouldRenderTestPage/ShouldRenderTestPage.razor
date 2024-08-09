@@ -48,11 +48,7 @@
   {
     CascadeValue++;
   }
-  private void TriggerSubscriptionUpdate()
-  {
-    Mediator.Send(new CounterState.IncrementCountActionSet.Action());
-  }
-
+  
   private void TriggerForceRender()
   {
     ReRender();
@@ -82,15 +78,23 @@
         Property = 1
       }
     ];
-    // TODO: change existing instance
+    // TODO: change existing collection instance
     // TODO: add new instance to collection
     // TODO: remove instance from collection
     // TODO: change existing instance in collection
   }
-  private void TriggerParameterChangeOfConstrainedComplexType()
+  private void ReplaceComplexTypeWithIncrementedConstrainedProperty()
   {
+    // Replace the Reference
+    SomeComplex = new ComplexType(){ ConstrainedProperty = SomeComplex.ConstrainedProperty++ };
+  }
+  
+  private void IncrementConstrainedPropertyOfExistingComplexType()
+  {
+    // Mutate the existing instance
     SomeComplex.ConstrainedProperty++;
   }
+  
 }
 
 <PageTitle>@Title</PageTitle>
@@ -115,12 +119,13 @@
       <button @onclick=TriggerEvent>Trigger Event (Increment ParentInt)</button>
       <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
       <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
-      <button @onclick=TriggerParameterChangeOfConstrainedComplexType>Trigger Complex Constrained Parameter Change</button>
+      <button @onclick=ReplaceComplexTypeWithIncrementedConstrainedProperty>Trigger Complex Constrained Parameter Change</button>
       <button @onclick=TriggerParameterChangeOfCollection>Trigger Complex Collection Parameter Change</button>
       <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
       <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
       <button @onclick=TriggerForceRender>Trigger Force Render</button>
       <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
+      <button @onclick=IncrementConstrainedPropertyOfExistingComplexType>Increment ConstrainedProperty of existing ComplexType</button>
     </div>
   </div>
 
@@ -130,6 +135,7 @@
       <ChildComponentParameterless />
       <ChildComponentWithPrimitives SomeInt=@SomeInt SomeString=@SomeString />
       <ChildComponentWithComplex SomeComplex=@SomeComplex />
+      <ChildComponentWithComplexConstrained SomeComplex=@SomeComplex />
       <ChildComponentWithEventCallback SomeCallback=@SomeCallback />
       <CascadingValue Value=@CascadeValue>
         <ChildComponentWithCascade />
@@ -140,7 +146,6 @@
         SomeCallback=@SomeCallback 
       />
       <ChildComponentWithCollection SomeComplexCollection=@SomeComplexCollection></ChildComponentWithCollection>
-      <ChildComponentWithComplexConstrained SomeComplex=@SomeComplex />
     </div>
   </div>
 </div>
