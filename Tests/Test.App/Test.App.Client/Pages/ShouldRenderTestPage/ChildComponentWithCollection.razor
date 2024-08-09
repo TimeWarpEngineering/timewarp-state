@@ -1,0 +1,38 @@
+@inherits BaseComponent
+
+@code
+{
+  [Parameter] public IEnumerable<ShouldRenderTestPage.ComplexType>? SomeComplexCollection { get; set; }
+}
+
+<div class=@Id>
+  <div>Child with a Collection of Complex Objects Property</div>
+  <div>Value: @SomeComplexCollection?.Count()</div>
+
+  <ul class="render-info">
+    <li>Render Count: @(RenderCount + 1)</li>
+    <li>Render Reason: @RenderReason</li>
+    <li>Render Reason Detail: @RenderReasonDetail</li>
+    <li>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</li>
+    <li>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</li>
+    <li>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</li>
+  </ul>
+
+  <p>
+    <strong>Assert:</strong><br />
+    Render Count: should initially be 1. (Parent renders twice)<br />
+    Render Count: should increment by 1 on each click of the `Trigger Complex Parameter Change` button. <br />
+    Render Reason: should be `ParameterChanged` always.<br />
+    Render Reason Detail: should initially be `Parameter 'SomeComplex' changed: Null value change`<br />
+    Render Reason Detail: should be `Parameter 'SomeComplex' changed` on all other Renders.
+  </p>
+</div>
+
+<style>
+  @($@"
+    .{Id} {{
+      border: 1px solid;
+      padding: 1rem;            
+    }}
+  ")
+</style>
