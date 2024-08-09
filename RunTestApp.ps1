@@ -2,6 +2,7 @@ $Env:ASPNETCORE_ENVIRONMENT = "Development"
 
 Push-Location $PSScriptRoot
 try {
+  Clear-Host
   # The analyzer is not directly referenced by the test app, so we need to build it first
   dotnet build ./Source/TimeWarp.State.Analyzer/TimeWarp.State.Analyzer.csproj
   dotnet build ./Source/TimeWarp.State.SourceGenerator/TimeWarp.State.SourceGenerator.csproj
