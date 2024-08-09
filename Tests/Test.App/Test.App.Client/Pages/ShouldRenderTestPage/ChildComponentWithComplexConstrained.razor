@@ -1,8 +1,22 @@
+@using Test.App.Client.Pages.ShouldRenderStateTriggersTestPage
+@using static Test.App.Client.Pages.ShouldRenderStateTriggersTestPage.ShouldRenderStateTriggersTestPage
 @inherits BaseComponent
 
 @code
 {
   [Parameter] public ShouldRenderTestPage.ComplexType? SomeComplex { get; set; }
+  
+  protected override bool CheckComplexParameterChanged(string parameterName, object currentValue, object incomingValue)
+  {
+    return parameterName switch
+    {
+      nameof(SomeComplex)
+        when currentValue is ComplexType current &&
+        incomingValue is ComplexType incoming
+        => current.ConstrainedProperty != incoming.ConstrainedProperty,
+      _ => false
+    };
+  }
 }
 
 <div class=@Id>

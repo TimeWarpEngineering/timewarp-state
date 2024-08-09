@@ -84,7 +84,7 @@ public abstract partial class TimeWarpStateComponent
     }
     else
     {
-      changed = CheckComplexParameterChanged(currentValue, newValue);
+      changed = CheckComplexParameterChanged(parameter.Name, currentValue, newValue);
     }
     
     if (changed)
@@ -137,8 +137,9 @@ public abstract partial class TimeWarpStateComponent
   /// <summary>
   /// Checks if a complex parameter has changed.
   /// </summary>
+  /// <param name="parameterName"></param>
   /// <param name="currentValue">The current value of the parameter.</param>
-  /// <param name="newValue">The new value of the parameter.</param>
+  /// <param name="incomingValue">The new value of the parameter.</param>
   /// <returns>
   /// True if the parameter has changed, false otherwise.
   /// </returns>
@@ -148,7 +149,7 @@ public abstract partial class TimeWarpStateComponent
   /// Note: When overriding, be mindful of the performance implications of your custom comparison logic,
   /// especially for large or deeply nested objects.
   /// </remarks>
-  protected virtual bool CheckComplexParameterChanged(object? currentValue, object? newValue)
+  protected virtual bool CheckComplexParameterChanged(string parameterName, object currentValue, object incomingValue)
   {
     Logger.LogDebug
     (
@@ -157,12 +158,13 @@ public abstract partial class TimeWarpStateComponent
       ,Id
       ,new
       {
+        ParameterName = parameterName,
         CurrentType = currentValue?.GetType().Name ?? "null",
-        NewType = newValue?.GetType().Name ?? "null"
+        IncomingType = incomingValue?.GetType().Name ?? "null"
       }
     );
 
-    bool changed = !ReferenceEquals(currentValue, newValue);
+    bool changed = !ReferenceEquals(currentValue, incomingValue);
 
     if (changed)
     {
@@ -174,7 +176,7 @@ public abstract partial class TimeWarpStateComponent
         ,new
         {
           CurrentValue = currentValue,
-          NewValue = newValue
+          IncomingValue = incomingValue
         }
       );
     }

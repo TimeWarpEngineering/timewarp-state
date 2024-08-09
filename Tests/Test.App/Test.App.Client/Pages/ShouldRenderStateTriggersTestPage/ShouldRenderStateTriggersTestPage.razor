@@ -4,8 +4,8 @@
 
 @code
 {
-  public const string Title = "ShouldRender Test Page";
-  public const string Route = "/should-render-test";
+  public const string Title = "RenderTriggers";
+  public const string Route = "/render-triggers-test";
 
   private int ParentInt { get; set; } = 0;
   private int SomeInt { get; set; } = 0;
@@ -68,10 +68,20 @@
 
   public class ComplexType
   {
-    public int Property { get; set; }
-    public int ConstrainedProperty { get; set; }
+    public int Property { get; init; }
+    public int ConstrainedProperty { get; init; }
   }
-  
+
+  public class DifferentComplexType
+  {
+    public int Property { get; init; }
+    public int AnotherProperty { get; init; }
+  }
+
+  private void TriggerCounterStateChange()
+  {
+    Send(new CounterState.IncrementCountActionSet.Action());
+  }
   private void TriggerParameterChangeOfCollection()
   {
     // This is creating a new instance of ComplexType every time.
@@ -86,10 +96,6 @@
     // TODO: add new instance to collection
     // TODO: remove instance from collection
     // TODO: change existing instance in collection
-  }
-  private void TriggerParameterChangeOfConstrainedComplexType()
-  {
-    SomeComplex.ConstrainedProperty++;
   }
 }
 
@@ -113,34 +119,17 @@
     <hr>
     <div class="button-container">
       <button @onclick=TriggerEvent>Trigger Event (Increment ParentInt)</button>
-      <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
-      <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
-      <button @onclick=TriggerParameterChangeOfConstrainedComplexType>Trigger Complex Constrained Parameter Change</button>
-      <button @onclick=TriggerParameterChangeOfCollection>Trigger Complex Collection Parameter Change</button>
-      <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
-      <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
+      <button @onclick=TriggerSubscriptionUpdate>Trigger Subscription Update</button>
       <button @onclick=TriggerForceRender>Trigger Force Render</button>
-      <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
+      <button @onclick=TriggerCounterStateChange>Trigger a CounterState Change</button>
     </div>
   </div>
 
   <div class="scrollable-content">
 
     <div class="grid-container">
-      <ChildComponentParameterless />
-      <ChildComponentWithPrimitives SomeInt=@SomeInt SomeString=@SomeString />
-      <ChildComponentWithComplex SomeComplex=@SomeComplex />
-      <ChildComponentWithEventCallback SomeCallback=@SomeCallback />
-      <CascadingValue Value=@CascadeValue>
-        <ChildComponentWithCascade />
-      </CascadingValue>
-      <ChildComponentWithAllParameters
-        SomeInt=@SomeInt
-        SomeComplex=@SomeComplex
-        SomeCallback=@SomeCallback 
-      />
-      <ChildComponentWithCollection SomeComplexCollection=@SomeComplexCollection></ChildComponentWithCollection>
-      <ChildComponentWithComplexConstrained SomeComplex=@SomeComplex />
+      <ChildComponentWithCounterStateSubscription/>
+      <ChildComponentWithCounterStateRenderTrigger/>
     </div>
   </div>
 </div>
