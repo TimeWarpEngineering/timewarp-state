@@ -10,7 +10,7 @@ public partial class TimeWarpStateComponent
   
   private bool UsesRenderMode;
   private bool HasRendered;
-
+  
   protected string ConfiguredRenderMode =>
     ConfiguredRenderModeCache.GetOrAdd(this.GetType(), type =>
     {
@@ -64,7 +64,23 @@ public partial class TimeWarpStateComponent
     base.OnAfterRender(firstRender);
     IncrementRenderCount();
     int renderCount = RenderCounts[Id];
-    Logger.LogTrace(EventIds.TimeWarpStateComponent_RenderCount, "{Id}: Rendered, RenderCount: {RenderCount}", Id, renderCount);
+    
+    Logger.LogTrace
+    (
+      EventIds.TimeWarpStateComponent_OnAfterRender, 
+      "{ComponentId}: Rendered, {Details} ",
+      Id,
+      new
+      {
+        RenderCount = renderCount,
+        RenderReason,
+        RenderReasonDetail,
+        ShouldRenderWasCalledBy,
+        SetParametersAsyncWasCalledBy,
+      }
+    );
+    ResetLifeCycleProperties();
+    
     if (!firstRender) return;
     HasRendered = true;
     if (UsesRenderMode)
@@ -72,7 +88,21 @@ public partial class TimeWarpStateComponent
       StateHasChanged();
     }
   }
-  
+  private void ResetLifeCycleProperties()
+  {
+    ParameterTriggered = false;
+    ReRenderWasCalled = false;
+    RenderReason = RenderReasonCategory.None;
+    RenderReasonDetail = null;
+    SetParametersAsyncWasCalled = false;
+    SetParametersAsyncWasCalledBy = null;
+    ShouldReRenderWasCalled = false;
+    ShouldRenderWasCalledBy = null;
+    StateHasChangedWasCalled = false;
+    StateHasChangedWasCalledBy = null;
+    SubscriptionTriggered = false;
+  }
+
   private void IncrementRenderCount()
   {
     RenderCounts.AddOrUpdate(Id, 1, (_, count) => count + 1);

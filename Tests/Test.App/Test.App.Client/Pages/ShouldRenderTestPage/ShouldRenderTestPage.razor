@@ -1,0 +1,200 @@
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+@code
+{
+  public const string Title = "ShouldRender Test Page";
+  public const string Route = "/should-render-test";
+
+  private int ParentInt { get; set; } = 0;
+  private int SomeInt { get; set; } = 0;
+  private string SomeString { get; set; } = "Initial";
+  private ComplexType SomeComplex { get; set; } = new();
+  private EventCallback<MouseEventArgs> SomeCallback { get; set; }
+  private int CascadeValue { get; set; }
+  private List<ComplexType> SomeComplexCollection = [];
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, HandleCallback);
+  }
+
+  private void TriggerEvent()
+  {
+    ParentInt++;
+  }
+
+  private void TriggerParameterChangeOfPrimitiveType()
+  {
+    SomeInt++;
+    SomeString = $"Updated {SomeInt}";
+  }
+
+  private void TriggerParameterChangeOfComplexType()
+  {
+    SomeComplex = new ComplexType
+    {
+      Property = SomeComplex.Property + 1
+    };
+  }
+
+  private void TriggerParameterChangeOfEventCallback()
+  {
+    SomeCallback = EventCallback.Factory.Create<MouseEventArgs>(this, NewHandleCallback);
+  }
+
+  private void TriggerParameterChangeOfCascadingParameter()
+  {
+    CascadeValue++;
+  }
+  
+  private void TriggerForceRender()
+  {
+    ReRender();
+  }
+
+  private void TriggerStateHasChanged()
+  {
+    StateHasChanged();
+  }
+
+  private void HandleCallback(MouseEventArgs args) {}
+  private void NewHandleCallback(MouseEventArgs args) {}
+
+  public class ComplexType
+  {
+    public int Property { get; set; }
+    public int ConstrainedProperty { get; set; }
+  }
+  
+  private void TriggerParameterChangeOfCollection()
+  {
+    // This is creating a new instance of ComplexType every time.
+    SomeComplexCollection =
+    [
+      new ComplexType
+      {
+        Property = 1
+      }
+    ];
+    // TODO: change existing collection instance
+    // TODO: add new instance to collection
+    // TODO: remove instance from collection
+    // TODO: change existing instance in collection
+  }
+  private void ReplaceComplexTypeWithIncrementedConstrainedProperty()
+  {
+    // Replace the Reference
+    SomeComplex = new ComplexType(){ ConstrainedProperty = SomeComplex.ConstrainedProperty++ };
+  }
+  
+  private void IncrementConstrainedPropertyOfExistingComplexType()
+  {
+    // Mutate the existing instance
+    SomeComplex.ConstrainedProperty++;
+  }
+  
+}
+
+<PageTitle>@Title</PageTitle>
+<div class=@Id>
+  <div class="fixed-content">
+    <h4>@Title</h4>
+    @RenderModeDisplay
+    <hr>
+
+    <div class="render-info-container">
+      <div>Component State, ParentInt: @ParentInt</div>
+      <div>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</div>
+      <div>Render Count (2): @(RenderCount+1)</div>
+      <div>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</div>
+      <div>Render Reason: @RenderReason</div>
+      <div>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</div>
+      <div>Render Reason Detail: @RenderReasonDetail</div>
+    </div>
+
+    <hr>
+    <div class="button-container">
+      <button @onclick=TriggerEvent>Trigger Event (Increment ParentInt)</button>
+      <button @onclick=TriggerParameterChangeOfPrimitiveType>Trigger Primitive Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfComplexType>Trigger Complex Parameter Change</button>
+      <button @onclick=ReplaceComplexTypeWithIncrementedConstrainedProperty>Trigger Complex Constrained Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfCollection>Trigger Complex Collection Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfEventCallback>Trigger EventCallback Parameter Change</button>
+      <button @onclick=TriggerParameterChangeOfCascadingParameter>Trigger Cascading Parameter Change</button>
+      <button @onclick=TriggerForceRender>Trigger Force Render</button>
+      <button @onclick=TriggerStateHasChanged>Trigger StateHasChanged</button>
+      <button @onclick=IncrementConstrainedPropertyOfExistingComplexType>Increment ConstrainedProperty of existing ComplexType</button>
+    </div>
+  </div>
+
+  <div class="scrollable-content">
+
+    <div class="grid-container">
+      <ChildComponentParameterless />
+      <ChildComponentWithPrimitives SomeInt=@SomeInt SomeString=@SomeString />
+      <ChildComponentWithComplex SomeComplex=@SomeComplex />
+      <ChildComponentWithComplexConstrained SomeComplex=@SomeComplex />
+      <ChildComponentWithEventCallback SomeCallback=@SomeCallback />
+      <CascadingValue Value=@CascadeValue>
+        <ChildComponentWithCascade />
+      </CascadingValue>
+      <ChildComponentWithAllParameters
+        SomeInt=@SomeInt
+        SomeComplex=@SomeComplex
+        SomeCallback=@SomeCallback 
+      />
+      <ChildComponentWithCollection SomeComplexCollection=@SomeComplexCollection></ChildComponentWithCollection>
+    </div>
+  </div>
+</div>
+
+<style>
+  @($@"
+    .{Id} {{
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      font-size: 0.750rem; /* Adjust the font size as needed */
+      margin-bottom: 1rem;
+    }}
+
+    .{Id} .fixed-content {{
+      flex-shrink: 0;
+    }}
+
+    .{Id} .render-info-container {{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0px;
+    }}
+
+    .{Id} .scrollable-content {{
+      flex-grow: 1;
+      overflow-y: auto;
+    }}
+
+    .{Id} .button-container {{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }}
+
+    .{Id} .grid-container {{
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }}
+
+    .{Id} .grid-container * {{
+      min-width: 0;
+    }}
+
+    /* Ensure the last child (Counter) spans full width if odd number of children */
+    .{Id} .grid-container > :last-child:nth-child(odd) {{
+      grid-column: 1 / -1;
+    }}
+  ")
+</style>

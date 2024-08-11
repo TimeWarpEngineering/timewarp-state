@@ -21,6 +21,8 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;
   
   private static readonly ConcurrentDictionary<string, int> InstanceCounts = new();
+  private bool Constructed;
+
   /// <summary>
   ///   A generated unique Id based on the Class name and number of times they have been created
   /// </summary>
@@ -36,16 +38,21 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     string name = GetType().Name;
     int count = InstanceCounts.AddOrUpdate(name, 1, updateValueFactory: (_, value) => value + 1);
     Id = $"{name}-{count}";
-  }
-
-  protected override void OnInitialized()
-  {
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Constructed, "TimeWarpStateComponent created: {Id}", Id);
+    Constructed = true;
   }
 
   public virtual void Dispose()
   {
-    Logger.LogDebug(EventIds.TimeWarpStateComponent_Disposing, "{Id}: Disposing, removing subscriptions. Total renders: {RenderCount}", Id, RenderCount);
+    Logger.LogDebug
+    (
+      EventIds.TimeWarpStateComponent_Disposing
+      ,"{ComponentId}: Disposing {Details}"
+      ,Id
+      ,new
+      {
+        RenderCount
+      }
+    );
     Subscriptions.Remove(this);
     RenderCounts.TryRemove(Id, out _);
 
@@ -81,5 +88,86 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   protected void RemoveState<TState>() where TState : IState
   {
     Store.RemoveState<TState>();
+  }
+  
+  protected override bool ShouldRender()
+  {
+    StackFrame? frame = new StackTrace().GetFrame(1);
+    MethodBase? method = frame?.GetMethod();
+    string className = method?.DeclaringType?.Name ?? "Unknown";
+    string methodName = method?.Name ?? "Unknown";
+
+    ShouldRenderWasCalledBy = $"{className}.{methodName}";
+    // Determine render trigger:
+    // 1. Event: If neither ShouldReRender, SetParametersAsync, nor ReRender (StateHasChanged) was called,
+    //    it's likely an event-triggered render that directly called Blazor's StateHasChanged.
+    // 2. Parameter change: Detected when SetParametersAsync was called, setting ParameterTriggered.
+    // 3. Subscription update: When a subscribed state changes, setting SubscriptionTriggered.
+    // 4. Forced render: Explicit request to re-render, setting ForceRender.
+    // 5. Manual StateHasChanged: Detected when ReRender was called, typically from custom logic.
+    
+    bool shouldRender = false;
+
+    bool eventTriggered =
+      !SetParametersAsyncWasCalled && // Came from Parent
+      !ShouldReRenderWasCalled && // Came from State Subscription
+      !ReRenderWasCalled; // Could have been called from custom logic
+
+    if (eventTriggered)
+    {
+      RenderReason = RenderReasonCategory.Event;
+      shouldRender = true;
+    }
+    else if (ParameterTriggered)
+    {
+      RenderReason = RenderReasonCategory.ParameterChanged;
+      shouldRender = true;
+    }
+    else if (SubscriptionTriggered)
+    {
+      RenderReason = RenderReasonCategory.Subscription;
+      shouldRender = true;
+    }
+    else if (ReRenderWasCalled)
+    {
+      RenderReason = RenderReasonCategory.Forced;
+      shouldRender = true;
+    }
+    else if (StateHasChangedWasCalled)
+    {
+      RenderReason = RenderReasonCategory.StateHasChanged;
+      shouldRender = true;
+    }
+    
+    // TODO: Remove one line below
+    if (ParameterTriggered && RenderReasonDetail is null) throw new Exception("WTF");
+    Logger.LogTrace
+    (
+      EventIds.TimeWarpStateComponent_ShouldRender,
+      "{ComponentId}: ShouldRender triggered: {RenderDetails}",
+      Id,
+      new
+      {
+        EventTriggered = eventTriggered,
+        SetParametersAsyncWasCalled,
+        ShouldReRenderWasCalled,
+        ReRenderWasCalled,
+        ParameterTriggered,
+        SubscriptionTriggered,
+        StateHasChangedWasCalled,
+        RenderReason,
+        RenderReasonDetail,
+        ShouldRender = shouldRender
+      }
+    );
+    
+    // Reset flags for next render cycle
+    ShouldReRenderWasCalled = false;
+    SetParametersAsyncWasCalled = false;
+    ReRenderWasCalled = false;
+    ParameterTriggered = false;
+    SubscriptionTriggered = false;
+
+    return shouldRender;
   }
 }

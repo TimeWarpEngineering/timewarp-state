@@ -17,6 +17,8 @@ public static partial class Policies
         t => t
           .That()
           .ImplementInterface(typeof(IAction))
+          .And()
+          .AreNotInterfaces()
           .Should()
           .HaveName("Action"),
         "Action Naming", 
@@ -27,6 +29,8 @@ public static partial class Policies
         t => t
           .That()
           .ImplementInterface(typeof(IAction))
+          .And()
+          .AreNotInterfaces()
           .Should()
           .MeetCustomRule(beNestedInActionSet),
         "Action Nesting", 
@@ -37,6 +41,8 @@ public static partial class Policies
         t => t
           .That()
           .ImplementInterface(typeof(IAction))
+          .And()
+          .AreNotInterfaces()
           .Should()
           .MeetCustomRule(beNestedInState),
         "Action Nesting", 
@@ -47,6 +53,8 @@ public static partial class Policies
         t => t
           .That()
           .ImplementInterface(typeof(IAction))
+          .And()
+          .AreNotInterfaces()
           .Should()
           .BeSealed()
           .And()

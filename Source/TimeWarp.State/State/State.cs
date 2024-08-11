@@ -4,9 +4,10 @@ using System.Text.Json.Serialization;
 
 public abstract class State<TState> : IState<TState>, IDisposable
 {
-  protected CancellationTokenSource CancellationTokenSource { get; } = new();
+  private CancellationTokenSource CancellationTokenSource { get; } = new();
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;
-  protected bool IsDisposed = false;
+  protected bool IsDisposed;
+
   #region JsonIgnore
 
   // JsonIgnore is used to prevent serialization of the property by both AnyClone and ReduxDevTools 
@@ -65,7 +66,7 @@ public abstract class State<TState> : IState<TState>, IDisposable
   /// Override this to Set the initial state
   /// </summary>
   public abstract void Initialize();
-  
+
   public void CancelOperations()
   {
     if (!CancellationTokenSource.IsCancellationRequested)
@@ -73,7 +74,7 @@ public abstract class State<TState> : IState<TState>, IDisposable
       CancellationTokenSource.Cancel();
     }
   }
-  
+
   protected virtual void Dispose(bool disposing)
   {
     if (IsDisposed) return;
