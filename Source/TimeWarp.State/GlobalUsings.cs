@@ -24,6 +24,7 @@ global using System;
 global using System.Collections;
 global using System.Linq.Expressions;
 global using System.Runtime.CompilerServices;
+global using System.Text.Json.Serialization;
 global using TimeWarp.Features.Developer;
 global using TimeWarp.Features.JavaScriptInterop;
 global using TimeWarp.Features.ReduxDevTools;

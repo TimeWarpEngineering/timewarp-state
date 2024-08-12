@@ -1,6 +1,6 @@
 namespace TimeWarp.State.Plus.State;
 
-public abstract class TimeWarpCacheableState<TState> : State<TState>, ITimeWarpCacheableState
+public abstract class TimeWarpCacheableState<TState> : State<TimeWarpCacheableState<TState>>, ITimeWarpCacheableState
 where TState : IState
 {
   public string? CacheKey { get; private set; }

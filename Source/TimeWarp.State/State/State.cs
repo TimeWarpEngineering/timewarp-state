@@ -1,8 +1,7 @@
 namespace TimeWarp.State;
 
-using System.Text.Json.Serialization;
-
 public abstract class State<TState> : IState<TState>, IDisposable
+where TState : State<TState>
 {
   private CancellationTokenSource CancellationTokenSource { get; } = new();
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;
