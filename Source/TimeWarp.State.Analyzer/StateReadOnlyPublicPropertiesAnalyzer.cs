@@ -12,7 +12,7 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
     private static readonly LocalizableString Description = "Public properties in classes inheriting from State should be read-only to enforce immutability.";
     private const string Category = "Design";
 
-    private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+    private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
