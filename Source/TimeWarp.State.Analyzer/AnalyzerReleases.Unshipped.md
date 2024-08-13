@@ -6,5 +6,6 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 StateInheritanceRule | Design | Error | StateInheritanceAnalyzer
+StateReadOnlyPublicPropertiesRule | Design | Error | StateReadOnlyPublicPropertiesAnalyzer
 TW0001 | TimeWarp.State | Error | TimeWarpStateActionAnalyzer
 TWD001 | Debug | Info | TimeWarpStateActionAnalyzer

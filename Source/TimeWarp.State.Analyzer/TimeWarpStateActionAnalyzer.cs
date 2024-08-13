@@ -1,10 +1,6 @@
 ﻿namespace TimeWarp.State.Analyzer;
 
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
