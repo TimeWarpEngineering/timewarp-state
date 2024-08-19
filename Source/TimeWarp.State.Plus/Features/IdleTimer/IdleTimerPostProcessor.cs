@@ -1,138 +1,71 @@
 namespace TimeWarp.State.Plus.Features.IdleTimer;
-
 using System.Timers;
-using Microsoft.Extensions.Options;
 
-public class IdleTimerPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>, IDisposable
   where TRequest : notnull
 {
-  private readonly ILogger<IdleTimerPostProcessor<TRequest, TResponse>> Logger;
-  private readonly Timer Timer;
-  private readonly IPublisher Publisher;
+  private readonly ILogger<MultiTimerPostProcessor<TRequest, TResponse>> Logger;
+  private readonly IMediator Mediator;
+  private readonly Dictionary<string, (Timer Timer, TimerConfig Config)> Timers;
   private bool IsDisposed;
 
-  public IdleTimerPostProcessor
+  public MultiTimerPostProcessor
   (
-    ILogger<IdleTimerPostProcessor<TRequest, TResponse>> logger,
-    IOptions<IdleTimerOptions> options,
-    IPublisher publisher
+    ILogger<MultiTimerPostProcessor<TRequest, TResponse>> logger,
+    IOptions<MultiTimerOptions> options,
+    IMediator mediator
   )
   {
     Logger = logger;
-    Publisher = publisher;
-    double timeoutDuration = options.Value.TimeoutDuration;
+    Mediator = mediator;
+    Timers = new Dictionary<string, (Timer, TimerConfig)>();
 
-    Timer = new Timer(timeoutDuration);
-    Timer.Elapsed += OnTimerElapsed;
-    Timer.AutoReset = false;
-    Timer.Start();
-    Logger.LogDebug("Idle timer started with timeout of {TimeoutDuration} ms", timeoutDuration);
-  }
-
-  public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
-  {
-    Timer.Stop();
-    Timer.Start();// Reset timer on activity
-    Logger.LogDebug("Idle timer reset");
-
-    return Task.CompletedTask;
-  }
-
-  private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
-  {
-    Logger.LogInformation("Idle timeout elapsed");
-    Publisher.Publish(new IdleTimeoutElapsed());
-  }
-  public void Dispose()
-  {
-    Dispose(true);
-    GC.SuppressFinalize(this);
-  }
-
-  protected virtual void Dispose(bool disposing)
-  {
-    if (IsDisposed) return;
-    if (disposing) Timer?.Dispose();
-    IsDisposed = true;
-  }
-}
-
-internal class IdleTimeoutElapsed:INotification;
-
-public class IdleTimerOptions
-{
-  public double TimeoutDuration { get; set; } = 600000; // Default to 10 min
-}
-
-namespace TimeWarp.State.Plus.Features.IdleTimer;
-
-using System.Timers;
-
-public class IdleTimerPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>, IDisposable
-  where TRequest : notnull
-{
-  private readonly ILogger<IdleTimerPostProcessor<TRequest, TResponse>> Logger;
-  private readonly NavigationManager NavigationManager;
-  private readonly IStore Store;
-  private Timer? Timer;
-  private bool IsDisposed;
-
-  private AuthorizationState AuthorizationState => Store.GetState<AuthorizationState>();
-
-  public IdleTimerPostProcessor
-  (
-    IStore store,
-    ILogger<IdleTimerPostProcessor<TRequest, TResponse>> logger,
-    NavigationManager navigationManager
-  )
-  {
-    Store = store;
-    Logger = logger;
-    NavigationManager = navigationManager;
-  }
-
-  public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
-  {
-    if (AuthorizationState.IdleTimeoutDuration.HasValue)
+    foreach ((string timerName, TimerConfig config) in options.Value.Timers)
     {
-      var timespan = TimeSpan.FromSeconds(AuthorizationState.IdleTimeoutDuration.Value);
+      var timer = new Timer(config.Duration);
+      timer.Elapsed += (sender, e) => OnTimerElapsed(timerName);
+      timer.AutoReset = false;
+      timer.Start();
+      Timers[timerName] = (timer, config);
+      Logger.LogDebug("{TimerName} started with timeout of {TimeoutDuration} ms, ResetOnActivity: {ResetOnActivity}", 
+        timerName, config.Duration, config.ResetOnActivity);
+    }
+  }
 
-      if (Timer is null)
+  public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
+  {
+    foreach ((string timerName, (Timer timer, TimerConfig config)) in Timers)
+    {
+      if (config.ResetOnActivity)
       {
-        CreateTimer(timespan);
-      }
-      else
-      {
-        if (Timer.Interval != timespan.TotalMilliseconds)
-        {
-          Timer.Dispose();
-          CreateTimer(timespan);
-        }
-        else
-        {
-          Timer.Stop();
-          Timer.Start(); // Reset timer on activity
-          Logger.LogDebug("Idle timer reset");
-        }
+        RestartTimer(timerName);
       }
     }
 
     return Task.CompletedTask;
   }
 
-  private void CreateTimer(TimeSpan timespan)
+  private async void OnTimerElapsed(string timerName)
   {
-    Timer = new Timer(timespan.TotalMilliseconds);
-    Timer.Elapsed += OnTimerElapsed;
-    Timer.AutoReset = false;
-    Timer.Start();
-    Logger.LogDebug("Idle timer started with timeout of {TimeoutDuration} seconds", timespan.TotalSeconds);
+    Logger.LogInformation("{TimerName} elapsed", timerName);
+    var notification = new TimerElapsedNotification(timerName, () => RestartTimer(timerName));
+    await Mediator.Publish(notification);
   }
 
-  private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
+  private void RestartTimer(string timerName)
   {
-    Logger.LogInformation("Idle timeout elapsed, navigating to logout");
-    NavigationManager.NavigateToLogout("authentication/logout");
+    if (Timers.TryGetValue(timerName, out (Timer Timer, TimerConfig Config) timerData))
+    {
+      (Timer timer, TimerConfig config) = timerData;
+      timer.Stop();
+      timer.Interval = config.Duration;
+      timer.Start();
+      Logger.LogDebug("{TimerName} restarted", timerName);
+    }
+    else
+    {
+      Logger.LogWarning("Attempted to restart non-existent timer: {TimerName}", timerName);
+    }
   }
 
   public void Dispose()
@@ -144,7 +77,36 @@ public class IdleTimerPostProcessor<TRequest, TResponse> : IRequestPostProcessor
   protected virtual void Dispose(bool disposing)
   {
     if (IsDisposed) return;
-    if (disposing) Timer?.Dispose();
+    if (disposing)
+    {
+      foreach ((Timer timer, TimerConfig _) in Timers.Values)
+      {
+        timer.Dispose();
+      }
+    }
     IsDisposed = true;
+  }
+}
+
+public class MultiTimerOptions
+{
+  public Dictionary<string, TimerConfig> Timers { get; set; } = new();
+}
+
+public class TimerConfig
+{
+  public double Duration { get; set; }
+  public bool ResetOnActivity { get; set; } = true;
+}
+
+public class TimerElapsedNotification : INotification
+{
+  public string TimerName { get; }
+  public Action RestartTimer { get; }
+
+  public TimerElapsedNotification(string timerName, Action restartTimer)
+  {
+    TimerName = timerName;
+    RestartTimer = restartTimer;
   }
 }
