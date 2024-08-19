@@ -5,7 +5,7 @@ public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcesso
   where TRequest : notnull
 {
   private readonly ILogger<MultiTimerPostProcessor<TRequest, TResponse>> Logger;
-  private readonly IMediator Mediator;
+  private readonly IPublisher Publisher;
   private readonly Dictionary<string, (Timer Timer, TimerConfig Config)> Timers;
   private bool IsDisposed;
 
@@ -13,11 +13,11 @@ public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcesso
   (
     ILogger<MultiTimerPostProcessor<TRequest, TResponse>> logger,
     IOptions<MultiTimerOptions> options,
-    IMediator mediator
+    IPublisher publisher
   )
   {
     Logger = logger;
-    Mediator = mediator;
+    Publisher = publisher;
     Timers = new Dictionary<string, (Timer, TimerConfig)>();
 
     foreach ((string timerName, TimerConfig config) in options.Value.Timers)
@@ -49,7 +49,7 @@ public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcesso
   {
     Logger.LogInformation("{TimerName} elapsed", timerName);
     var notification = new TimerElapsedNotification(timerName, () => RestartTimer(timerName));
-    await Mediator.Publish(notification);
+    await Publisher.Publish(notification);
   }
 
   private void RestartTimer(string timerName)
