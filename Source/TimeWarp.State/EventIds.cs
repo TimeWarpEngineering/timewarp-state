@@ -1,6 +1,6 @@
 ﻿namespace TimeWarp.State;
 
-internal class EventIds
+internal static class EventIds
 {
   // Store - TimeWarp State Specific
   public static readonly EventId Store_Constructing = new(100, nameof(Store_Constructing));
