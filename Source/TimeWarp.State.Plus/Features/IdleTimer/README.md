@@ -1,6 +1,6 @@
 # MultiTimer System
 
-The MultiTimer System provides a flexible framework for managing multiple timers in your application. This feature is versatile and can be used for various purposes such as implementing timeout functionality, scheduling regular events, auto-save features, or any scenario where you need to track and respond to timed events.
+The MultiTimer System is a feature of TimeWarp.State.Plus that provides a flexible framework for managing multiple timers in your application. This system can be used for various purposes such as implementing timeout functionality, scheduling regular events, auto-save features, or any scenario where you need to track and respond to timed events.
 
 ## Features
 
@@ -8,18 +8,13 @@ The MultiTimer System provides a flexible framework for managing multiple timers
 - Configure each timer independently
 - Optionally reset timers on activity
 - Publish notifications when timers elapse
-- Easily integrate with dependency injection
-
-## Installation
-
-1. Add the `TimeWarp.State.Plus.Features.MultiTimer` namespace to your project.
-2. Register the necessary services in your dependency injection container (see Usage section).
+- Seamless integration with TimeWarp.State.Plus and dependency injection
 
 ## Usage
 
 ### Configuration
 
-First, configure your timers in your `appsettings.json` file:
+Configure your timers in your `appsettings.json` file:
 
 ```json
 {
@@ -49,7 +44,7 @@ In your `Startup.cs` or wherever you configure your services:
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.Configure<MultiTimerOptions>(Configuration.GetSection("MultiTimerOptions"));
+    services.Configure<MultiTimerOptions>(Configuration.GetSection(nameof(MultiTimerOptions)));
     services.AddScoped(typeof(IRequestPostProcessor<,>), typeof(MultiTimerPostProcessor<,>));
     
     // Register your notification handlers
