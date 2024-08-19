@@ -1,18 +1,18 @@
-# IdleTimer Feature
+# MultiTimer System
 
-The IdleTimer feature provides a flexible system for managing multiple timers in your application. It's particularly useful for implementing idle timeout functionality, auto-save features, or any scenario where you need to track and respond to periods of inactivity.
+The MultiTimer System provides a flexible framework for managing multiple timers in your application. This feature is versatile and can be used for various purposes such as implementing timeout functionality, scheduling regular events, auto-save features, or any scenario where you need to track and respond to timed events.
 
 ## Features
 
 - Manage multiple timers simultaneously
 - Configure each timer independently
-- Automatically reset timers on activity
+- Optionally reset timers on activity
 - Publish notifications when timers elapse
 - Easily integrate with dependency injection
 
 ## Installation
 
-1. Add the `TimeWarp.State.Plus.Features.IdleTimer` namespace to your project.
+1. Add the `TimeWarp.State.Plus.Features.MultiTimer` namespace to your project.
 2. Register the necessary services in your dependency injection container (see Usage section).
 
 ## Usage
@@ -25,16 +25,16 @@ First, configure your timers in your `appsettings.json` file:
 {
   "MultiTimerOptions": {
     "Timers": {
-      "WarningTimer": {
+      "ActivityWarningTimer": {
         "Duration": 300000,
         "ResetOnActivity": true
       },
-      "LogoutTimer": {
+      "SessionExpirationTimer": {
         "Duration": 600000,
         "ResetOnActivity": true
       },
-      "AutoSaveTimer": {
-        "Duration": 60000,
+      "PeriodicBackupTimer": {
+        "Duration": 900000,
         "ResetOnActivity": false
       }
     }
@@ -77,14 +77,14 @@ public class YourTimerElapsedHandler : INotificationHandler<TimerElapsedNotifica
 
         switch (notification.TimerName)
         {
-            case "WarningTimer":
-                // Show a warning to the user
+            case "ActivityWarningTimer":
+                // Show a warning to the user about impending session expiration
                 break;
-            case "LogoutTimer":
-                // Log out the user
+            case "SessionExpirationTimer":
+                // End the user's session
                 break;
-            case "AutoSaveTimer":
-                // Perform auto-save
+            case "PeriodicBackupTimer":
+                // Perform a periodic backup
                 // Note: This timer doesn't reset on activity, so it will fire regularly
                 break;
         }
