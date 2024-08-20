@@ -4,7 +4,7 @@ namespace TimeWarp.State.SourceGenerator;
 public class ActionSetMethodSourceGenerator : ISourceGenerator
 {
   public void Initialize(GeneratorInitializationContext context) =>
-      context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
+    context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
 
   public void Execute(GeneratorExecutionContext context)
   {
@@ -33,77 +33,77 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
   private static void ReportUniqueHintNameDiagnostic(GeneratorExecutionContext context, string uniqueHintName)
   {
-      var diagnostic = 
-        Diagnostic.Create
+    var diagnostic =
+      Diagnostic.Create
+      (
+        new DiagnosticDescriptor
         (
-          new DiagnosticDescriptor
-          (
-              id: "SG002",
-              title: "Unique Hint Name",
-              messageFormat: "Unique hint name for generated file: {0}",
-              category: "SourceGeneratorDebug",
-              defaultSeverity: DiagnosticSeverity.Info,
-              isEnabledByDefault: true
-          ),
-          location: Location.None,
-          uniqueHintName
-        );
+          id: "SG002",
+          title: "Unique Hint Name",
+          messageFormat: "Unique hint name for generated file: {0}",
+          category: "SourceGeneratorDebug",
+          defaultSeverity: DiagnosticSeverity.Info,
+          isEnabledByDefault: true
+        ),
+        location: Location.None,
+        uniqueHintName
+      );
 
-      context.ReportDiagnostic(diagnostic);
+    context.ReportDiagnostic(diagnostic);
   }
 
   private static string GenerateMethodCode
   (
-    string namespaceName, 
-    string className, 
-    string methodName, 
-    List<(string Type, string Name, string? DefaultValue)> parameters, 
+    string namespaceName,
+    string className,
+    string methodName,
+    List<(string Type, string Name, string? DefaultValue)> parameters,
     string parentClassName
   )
   {
     string parameterList =
       string.Join
       (
-        separator: ", ", 
+        separator: ", ",
         parameters.Select(p => $"{p.Type} {p.Name}{(p.DefaultValue != null ? $" = {p.DefaultValue}" : "")}")
       );
-      
+
     string argumentList = string.Join(separator: ", ", parameters.Select(p => p.Name));
 
     return $$"""
-    #nullable enable
+      #nullable enable
 
-    #pragma warning disable CS1591
-    namespace {{namespaceName}};
+      #pragma warning disable CS1591
+      namespace {{namespaceName}};
 
-    using System.Threading;
-    using System.Threading.Tasks;
+      using System.Threading;
+      using System.Threading.Tasks;
 
-    public partial class {{parentClassName}}
-    {
-        public async Task {{methodName}}({{parameterList}}{{(parameters.Any() ? ", " : "")}}CancellationToken? externalCancellationToken = null)
-        {
-            using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
-                ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
-                : null;
-
-            await Sender.Send
-            (
-                new {{className}}.Action({{argumentList}}),
-                linkedCts?.Token ?? CancellationToken
-            );
-        }
-    }
-    #pragma warning restore CS1591
-    """;
+      public partial class {{parentClassName}}
+      {
+          public async Task {{methodName}}({{parameterList}}{{(parameters.Any() ? ", " : "")}}CancellationToken? externalCancellationToken = null)
+          {
+              using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+                  ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+                  : null;
+      
+              await Sender.Send
+              (
+                  new {{className}}.Action({{argumentList}}),
+                  linkedCts?.Token ?? CancellationToken
+              );
+          }
+      }
+      #pragma warning restore CS1591
+      """;
   }
 
   private static string GetNamespace(SyntaxNode? node)
   {
-    while 
+    while
     (
-      node != null 
-      && node is not NamespaceDeclarationSyntax 
+      node != null
+      && node is not NamespaceDeclarationSyntax
       && node is not FileScopedNamespaceDeclarationSyntax
     )
     {
@@ -126,13 +126,13 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
   private static List<(string Type, string Name, string? DefaultValue)> GetActionConstructorParameters
   (
-    ClassDeclarationSyntax actionClass, 
+    ClassDeclarationSyntax actionClass,
     SemanticModel semanticModel
   )
   {
-    ConstructorDeclarationSyntax? constructor = 
+    ConstructorDeclarationSyntax? constructor =
       actionClass.DescendantNodes().OfType<ConstructorDeclarationSyntax>().FirstOrDefault();
-    
+
     if (constructor == null)
       return new List<(string, string, string?)>();
 
@@ -141,11 +141,11 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
       p =>
       {
         var parameterSymbol = semanticModel.GetDeclaredSymbol(p) as IParameterSymbol;
-        
-        string fullTypeName = 
-          parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) 
+
+        string fullTypeName =
+          parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
           ?? "System.Object";
-        
+
         string? defaultValue = p.Default?.Value?.ToString();
         return (fullTypeName, p.Identifier.Text, defaultValue);
       }
@@ -159,9 +159,9 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
       if (syntaxNode is not ClassDeclarationSyntax classDeclarationSyntax) return;
-      if 
+      if
       (
-        classDeclarationSyntax.Identifier.Text.EndsWith("ActionSet") 
+        classDeclarationSyntax.Identifier.Text.EndsWith("ActionSet")
         && classDeclarationSyntax.Parent is ClassDeclarationSyntax
       )
       {
