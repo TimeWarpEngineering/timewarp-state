@@ -41,17 +41,4 @@ public partial class ActionTrackingState
       }
     }
   }
-  
-  public async Task CompleteProcessing(IAction theAction, CancellationToken? externalCancellationToken = null)
-  {
-    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
-      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
-      : null;
-
-    await Sender.Send
-    (
-      new ActionTrackingState.CompleteProcessingActionSet.Action(theAction),
-      linkedCts?.Token ?? CancellationToken
-    );
-  }
 }

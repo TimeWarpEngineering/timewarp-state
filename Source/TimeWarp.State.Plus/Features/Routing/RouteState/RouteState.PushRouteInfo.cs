@@ -45,16 +45,4 @@ public partial class RouteState
       }
     }
   }
-  public async Task PushRouteInfo(CancellationToken? externalCancellationToken = null)
-  {
-    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
-      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
-      : null;
-
-    await Sender.Send
-    (
-      new PushRouteInfoActionSet.Action(),
-      linkedCts?.Token ?? CancellationToken
-    );
-  }
 }
