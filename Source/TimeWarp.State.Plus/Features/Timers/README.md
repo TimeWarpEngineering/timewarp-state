@@ -59,16 +59,16 @@ Create a handler to respond to timer elapsed events:
 ```csharp
 public class YourTimerElapsedHandler : INotificationHandler<TimerElapsedNotification>
 {
-    private readonly ILogger<YourTimerElapsedHandler> _logger;
+    private readonly ILogger<YourTimerElapsedHandler> Logger;
 
     public YourTimerElapsedHandler(ILogger<YourTimerElapsedHandler> logger)
     {
-        _logger = logger;
+        Logger = logger;
     }
 
     public Task Handle(TimerElapsedNotification notification, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Timer {TimerName} has elapsed", notification.TimerName);
+        Logger.LogInformation("Timer {TimerName} has elapsed", notification.TimerName);
 
         switch (notification.TimerName)
         {
