@@ -94,10 +94,27 @@ public class YourTimerElapsedHandler : INotificationHandler<TimerElapsedNotifica
 
 ## How It Works
 
-1. The `MultiTimerPostProcessor` initializes timers based on the configuration in `MultiTimerOptions`.
-2. When a request is processed, timers configured to reset on activity are restarted.
-3. When a timer elapses, a `TimerElapsedNotification` is published.
-4. Your notification handler(s) respond to the elapsed timer, performing appropriate actions.
+1. The `TimerState` initializes timers based on the configuration in `MultiTimerOptions`.
+2. The `MultiTimerPostProcessor` processes requests and triggers the `ResetTimersOnActivity` ActionSet.
+3. The `ResetTimersOnActivityActionSet` resets timers configured to reset on activity.
+4. When a timer elapses, a `TimerElapsedNotification` is published.
+5. Your notification handler(s) respond to the elapsed timer, performing appropriate actions.
+
+## ActionSets
+
+The system uses ActionSets to manage timer operations:
+
+- `AddTimerActionSet`: Adds a new timer to the `TimerState`.
+- `RemoveTimerActionSet`: Removes a timer from the `TimerState`.
+- `UpdateTimerActionSet`: Updates an existing timer's configuration.
+- `ResetTimersOnActivityActionSet`: Resets timers configured to reset on activity.
+
+To use these ActionSets, you can send actions to the `TimerState`:
+
+```csharp
+await TimerState.AddTimer("NewTimer", new TimerConfig { Duration = 5000, ResetOnActivity = true });
+await TimerState.ResetTimersOnActivity();
+```
 
 ## Best Practices
 
