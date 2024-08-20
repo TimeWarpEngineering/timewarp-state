@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Plus.Features.IdleTimer;
+namespace TimeWarp.State.Plus.Features.Timers;
 using System.Timers;
 
 public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>, IDisposable
@@ -12,7 +12,7 @@ public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcesso
   public MultiTimerPostProcessor
   (
     ILogger<MultiTimerPostProcessor<TRequest, TResponse>> logger,
-    IOptions<MultiTimerOptions> options,
+    IOptions<MultiTimerOptions> multiTimerOptionsAccessor,
     IPublisher publisher
   )
   {
@@ -20,7 +20,7 @@ public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcesso
     Publisher = publisher;
     Timers = new Dictionary<string, (Timer, TimerConfig)>();
 
-    foreach ((string timerName, TimerConfig timerConfig) in options.Value.Timers)
+    foreach ((string timerName, TimerConfig timerConfig) in multiTimerOptionsAccessor.Value.Timers)
     {
       var timer = new Timer(timerConfig.Duration);
       timer.Elapsed += (_, _) => OnTimerElapsed(timerName);

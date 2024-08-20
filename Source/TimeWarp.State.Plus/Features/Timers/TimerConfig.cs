@@ -1,4 +1,4 @@
-namespace TimeWarp.State.Plus.Features.IdleTimer;
+namespace TimeWarp.State.Plus.Features.Timers;
 
 public class TimerConfig
 {
