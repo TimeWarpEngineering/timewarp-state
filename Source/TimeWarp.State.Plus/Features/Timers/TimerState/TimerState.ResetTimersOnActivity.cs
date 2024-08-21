@@ -1,13 +1,11 @@
 namespace TimeWarp.State.Plus.Features.Timers;
 
+using System.Timers;
 public partial class TimerState
 {
   public static class ResetTimersOnActivityActionSet
   {
-    internal sealed class Action : IAction
-    {
-      // No additional properties needed for this action
-    }
+    internal sealed class Action : IAction;
 
     internal sealed class Handler : ActionHandler<Action>
     {
