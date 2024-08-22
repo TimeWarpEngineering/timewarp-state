@@ -2,7 +2,7 @@ namespace TimeWarp.State.Plus.Features.Timers;
 
 using System.Timers;
 
-public partial class TimerState : State<TimerState>
+public sealed partial class TimerState : State<TimerState>
 {
   private readonly ILogger<TimerState> Logger;
   private readonly IPublisher Publisher;
