@@ -30,11 +30,13 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
         if (!InheritsFromState(classDeclaration, context.SemanticModel))
             return;
 
+        bool isAbstract = classDeclaration.Modifiers.Any(SyntaxKind.AbstractKeyword);
+
         foreach (MemberDeclarationSyntax member in classDeclaration.Members)
         {
             if (member is PropertyDeclarationSyntax propertyDeclaration)
             {
-                AnalyzeProperty(propertyDeclaration, context);
+                AnalyzeProperty(propertyDeclaration, context, isAbstract);
             }
         }
     }
@@ -56,7 +58,7 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
         return false;
     }
 
-    private static void AnalyzeProperty(PropertyDeclarationSyntax propertyDeclaration, SyntaxNodeAnalysisContext context)
+    private static void AnalyzeProperty(PropertyDeclarationSyntax propertyDeclaration, SyntaxNodeAnalysisContext context, bool isAbstractClass)
     {
         if (!propertyDeclaration.Modifiers.Any(SyntaxKind.PublicKeyword)) return;
         
@@ -64,10 +66,16 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
           propertyDeclaration.AccessorList?.Accessors
             .FirstOrDefault(a => a.IsKind(SyntaxKind.SetAccessorDeclaration));
         
-        if (setter != null && !setter.Modifiers.Any(SyntaxKind.PrivateKeyword))
+        if (setter != null)
         {
-            var diagnostic = Diagnostic.Create(Rule, propertyDeclaration.Identifier.GetLocation(), propertyDeclaration.Identifier.Text);
-            context.ReportDiagnostic(diagnostic);
+            bool isSetterPrivate = setter.Modifiers.Any(SyntaxKind.PrivateKeyword);
+            bool isSetterProtected = setter.Modifiers.Any(SyntaxKind.ProtectedKeyword);
+
+            if (!isSetterPrivate && !(isAbstractClass && isSetterProtected))
+            {
+                var diagnostic = Diagnostic.Create(Rule, propertyDeclaration.Identifier.GetLocation(), propertyDeclaration.Identifier.Text);
+                context.ReportDiagnostic(diagnostic);
+            }
         }
     }
 }
