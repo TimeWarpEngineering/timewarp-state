@@ -5,16 +5,21 @@ using Microsoft.CodeAnalysis.CSharp;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class StateInheritanceAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "StateInheritanceRule";
+    public const string InheritanceDiagnosticId = "StateInheritanceTypeArgumentRule";
+    public const string SealedDiagnosticId = "StateSealedClassRule";
 
-    private static readonly LocalizableString Title = "Incorrect State<T> inheritance";
-    private static readonly LocalizableString MessageFormat = "The type argument for State<T> must be the derived class itself";
-    private static readonly LocalizableString Description = "When inheriting from State<T>, T must be the name of the derived class.";
+    private static readonly LocalizableString InheritanceTitle = "Incorrect State<T> inheritance";
+    private static readonly LocalizableString InheritanceMessageFormat = "The type argument for State<T> must be the derived class itself";
+    private static readonly LocalizableString InheritanceDescription = "When inheriting from State<T>, T must be the name of the derived class.";
     private const string Category = "Design";
 
-    private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
+    private static readonly DiagnosticDescriptor InheritanceRule = new(InheritanceDiagnosticId, InheritanceTitle, InheritanceMessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: InheritanceDescription);
+    private static readonly LocalizableString SealedTitle = "Non-abstract State<T> class should be sealed";
+    private static readonly LocalizableString SealedMessageFormat = "The class '{0}' inheriting from State<T> should be sealed";
+    private static readonly LocalizableString SealedDescription = "Non-abstract classes inheriting from State<T> should be sealed to prevent further inheritance.";
+    private static readonly DiagnosticDescriptor SealedRule = new(SealedDiagnosticId, SealedTitle, SealedMessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: SealedDescription);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(InheritanceRule, SealedRule);
 
     public override void Initialize(AnalysisContext context)
     {
@@ -41,8 +46,15 @@ public class StateInheritanceAnalyzer : DiagnosticAnalyzer
 
         if (!SymbolEqualityComparer.Default.Equals(typeArg, derivedTypeSymbol))
         {
-            var diagnostic = Diagnostic.Create(Rule, classDeclaration.Identifier.GetLocation());
+            var diagnostic = Diagnostic.Create(InheritanceRule, classDeclaration.Identifier.GetLocation());
             context.ReportDiagnostic(diagnostic);
+        }
+
+        // Check if the class should be sealed
+        if (derivedTypeSymbol is { IsAbstract: false, IsSealed: false })
+        {
+            var sealedDiagnostic = Diagnostic.Create(SealedRule, classDeclaration.Identifier.GetLocation(), derivedTypeSymbol.Name);
+            context.ReportDiagnostic(sealedDiagnostic);
         }
     }
 }

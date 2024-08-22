@@ -20,6 +20,12 @@
 
 TimeWarp.State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
 
+### TimeWarp.State.Plus
+
+TimeWarp.State.Plus extends the core functionality with additional features:
+
+- **MultiTimer System**: A flexible framework for managing multiple timers in your application. It supports configurable timers, activity-based resets, and seamless integration with the TimeWarp.State architecture.
+
 ## Give a Star! :star:
 
 If you find this project useful, please give it a star. Thanks!

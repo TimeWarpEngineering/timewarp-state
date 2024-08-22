@@ -21,4 +21,11 @@ internal class EventIds
   public static readonly EventId PersistenceService_LoadState = new(1300, nameof(PersistenceService_LoadState));
   public static readonly EventId PersistenceService_LoadState_SerializedState = new(1301, nameof(PersistenceService_LoadState_SerializedState));
   public static readonly EventId PersistenceService_LoadState_DeserializationError = new(1302, nameof(PersistenceService_LoadState_DeserializationError));
+  
+  // Feature - MultiTimerPostProcessor
+  public static readonly EventId MultiTimerPostProcessor_TimerStarted = new(1400, nameof(MultiTimerPostProcessor_TimerStarted));
+  public static readonly EventId MultiTimerPostProcessor_TimerElapsed = new(1401, nameof(MultiTimerPostProcessor_TimerElapsed));
+  public static readonly EventId MultiTimerPostProcessor_TimerRestarted = new(1402, nameof(MultiTimerPostProcessor_TimerRestarted));
+  public static readonly EventId MultiTimerPostProcessor_TimerRestartAttemptFailed = new(1403, nameof(MultiTimerPostProcessor_TimerRestartAttemptFailed));
+  public static readonly EventId MultiTimerPostProcessor_ProcessingRequest = new(1404, nameof(MultiTimerPostProcessor_ProcessingRequest));
 }

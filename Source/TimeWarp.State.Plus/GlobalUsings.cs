@@ -7,6 +7,7 @@ global using MediatR;
 global using MediatR.Pipeline;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;
 global using Microsoft.JSInterop;
 global using System.Reflection;
 global using System.Text.Json;
