@@ -55,13 +55,4 @@ where TState : IState
     CacheKey = null;
     TimeStamp = null;
   }
-
-  protected void UpdateCacheDuration(TimeSpan newDuration)
-  {
-    if (newDuration < TimeSpan.Zero)
-    {
-      throw new ArgumentException("Cache duration cannot be negative", nameof(newDuration));
-    }
-    CacheDuration = newDuration;
-  }
 }
