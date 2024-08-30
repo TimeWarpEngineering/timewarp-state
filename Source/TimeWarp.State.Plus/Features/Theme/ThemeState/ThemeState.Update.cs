@@ -7,7 +7,11 @@ public partial class ThemeState
   {
     internal sealed class Action : IAction
     {
-      public Theme NewTheme { get; init; }
+      public Theme NewTheme { get; }
+      public Action(Theme newTheme) 
+      {
+        NewTheme = newTheme;
+      }
     }
     
     internal sealed class Handler
@@ -28,18 +32,5 @@ public partial class ThemeState
         return Task.CompletedTask;
       }
     }
-  }
-  
-  public async Task Update(Theme newTheme, CancellationToken? externalCancellationToken = null)
-  {
-    using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
-      ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
-      : null;
-
-    await Sender.Send
-    (
-      new UpdateActionSet.Action { NewTheme = newTheme },
-      linkedCts?.Token ?? CancellationToken
-    );
   }
 }

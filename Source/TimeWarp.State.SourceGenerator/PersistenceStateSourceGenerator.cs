@@ -1,4 +1,4 @@
-﻿namespace TimeWarp.State.SourceGenerator;
+namespace TimeWarp.State.SourceGenerator;
 
 [Generator]
 public class PersistenceStateSourceGenerator : ISourceGenerator
@@ -57,6 +57,16 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
       public partial class {{{className}}}
       {
+        internal sealed class StateLoadedNotification : INotification
+        {
+          public string TypeName { get; }
+
+          public StateLoadedNotification(string typeName)
+          {
+            TypeName = typeName;
+          }
+        }
+
         internal static class LoadActionSet
         {
           internal sealed class Action : IAction;
@@ -65,16 +75,19 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
           {
             private readonly IPersistenceService PersistenceService;
             private readonly ILogger<Handler> Logger;
+            private readonly IPublisher Publisher;
             
             public Handler
             (
               IStore store,
               IPersistenceService persistenceService,
-              ILogger<Handler> logger
+              ILogger<Handler> logger,
+              IPublisher publisher
             ) : base(store)
             {
               PersistenceService = persistenceService;
               Logger = logger;
+              Publisher = publisher;
             }
             
             public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
@@ -82,13 +95,26 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
               try
               {
                   object? state = await PersistenceService.LoadState(typeof({{{className}}}), PersistentStateMethod.{{{persistentStateMethod}}});
-                  if (state is {{{className}}} {{{camelCaseClassName}}}) Store.SetState({{{camelCaseClassName}}});
-                  else Logger.LogTrace("{{{className}}} is null");
+                  if (state is {{{className}}} {{{camelCaseClassName}}})
+                  {
+                    Store.SetState({{{camelCaseClassName}}});
+                    Logger.LogTrace("{{{className}}} loaded successfully");
+                  }
+                  else
+                  {
+                    Logger.LogTrace("{{{className}}} is null");
+                  }
+                  
+                  // Send notification regardless of whether state was found or not
+                  await Publisher.Publish(new StateLoadedNotification(typeof({{{className}}}).FullName!), cancellationToken);
               }
               catch (Exception exception)
               {
                 Logger.LogError(exception, "Error loading {{{className}}}");
                 // if this is a JavaScript not available exception then we are prerendering and just swallow it
+                
+                // Send notification even if an error occurred
+                await Publisher.Publish(new StateLoadedNotification(typeof({{{className}}}).FullName!), cancellationToken);
               }
             }
           }
