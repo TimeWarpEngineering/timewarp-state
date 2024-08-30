@@ -18,12 +18,21 @@
 
 TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.
 
+### TimeWarp.State.Plus
+
+TimeWarp.State.Plus extends the core functionality with additional features:
+
+
 ## Available Middleware
 
 - **PersistentState**
   - **Key Feature**: Automates the persistence of state in browser storage.
   - **Usage**: Annotate state classes with `[PersistentState]` to enable.
   - **Storage Options**: Supports both `LocalStorage` and `SessionStorage`.
+- 
+- **MultiTimer System**: A flexible framework for managing multiple timers in your application. 
+  - It supports configurable timers 
+  - Activity-based resets.
 
 Example:
 
