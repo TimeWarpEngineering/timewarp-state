@@ -22,10 +22,17 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
     MultiTimerOptions = multiTimerOptionsAccessor.Value;
   }
 
-  // We actually are NOT cloning this state. 
-  // So if an error were to occur in an action it would NOT rollback.
-  // This is acceptable.  We don't want old timers firing and fighting race conditions.
-  // And the Actions are tested and reliable so we don't expect any to fail.
+  /// <summary>
+  /// Creates a new instance of TimerState with the same configuration and Timer instances.
+  /// </summary>
+  /// <remarks>
+  /// This method performs a shallow clone of the state.
+  /// It reuses the existing Timer instances and configuration.
+  /// If an error occurs in an action, it will not rollback to the previous state.
+  /// This approach is intentional to maintain consistency of timer states across clones.
+  /// Actions are expected to be well-tested and reliable, minimizing the risk of failures.
+  /// </remarks>
+  /// <returns>A new TimerState instance with the same configuration and Timer instances.</returns>
   public object Clone()
   {
     return new TimerState
