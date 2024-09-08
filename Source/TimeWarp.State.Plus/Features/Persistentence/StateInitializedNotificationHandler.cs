@@ -20,13 +20,29 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
     string assemblyQualifiedName = stateInitializedNotification.StateType.AssemblyQualifiedName ?? throw new InvalidOperationException();
     
     string typeName = assemblyQualifiedName.Replace(fullName, $"{fullName}+LoadActionSet+Action");
-    Logger.LogDebug(EventIds.StateInitializedNotificationHandler_Handling, "StateInitializedNotificationHandler: {StateTypeName}", stateInitializedNotification.StateType.Name);
+    
+    Logger.LogDebug
+    (
+      EventIds.StateInitializedNotificationHandler_Handling, 
+      message: "StateInitializedNotificationHandler: {StateTypeName}", 
+      stateInitializedNotification.StateType.Name
+    );
+    
     var actionType = Type.GetType(typeName);
     
     if (actionType != null)
     {
       object action = Activator.CreateInstance(actionType) ?? throw new InvalidOperationException();
       await Sender.Send(action, cancellationToken);
+    }
+    else
+    {
+      Logger.LogDebug
+      (
+        EventIds.StateInitializedNotificationHandler_LoadActionSetNotFound, 
+        message: "StateInitializedNotificationHandler: {LoadActionSetTypeName} not found.", 
+        typeName
+      );
     }
   }
 }

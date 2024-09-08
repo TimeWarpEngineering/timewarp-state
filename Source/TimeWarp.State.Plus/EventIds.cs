@@ -16,6 +16,7 @@ internal class EventIds
   
   // Feature - StateInitializedNotificationHandler
   public static readonly EventId StateInitializedNotificationHandler_Handling = new(1200, nameof(StateInitializedNotificationHandler_Handling));
+  public static readonly EventId StateInitializedNotificationHandler_LoadActionSetNotFound = new(1201, nameof(StateInitializedNotificationHandler_LoadActionSetNotFound));
   
   // Feature - PersistenceService
   public static readonly EventId PersistenceService_LoadState = new(1300, nameof(PersistenceService_LoadState));

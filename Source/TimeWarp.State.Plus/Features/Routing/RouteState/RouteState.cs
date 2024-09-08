@@ -1,7 +1,5 @@
 namespace TimeWarp.Features.Routing;
 
-using System.Text.Json.Serialization;
-
 /// <summary>
 /// Maintain the Route in TimeWarp.State
 /// </summary>
