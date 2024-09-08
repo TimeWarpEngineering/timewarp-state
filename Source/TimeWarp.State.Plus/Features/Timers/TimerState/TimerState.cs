@@ -1,13 +1,15 @@
 namespace TimeWarp.State.Plus.Features.Timers;
 
+using Microsoft.Extensions.Options;
 using System.Timers;
 
-public sealed partial class TimerState : State<TimerState>
+public sealed partial class TimerState : State<TimerState>, ICloneable
 {
   private readonly ILogger<TimerState> Logger;
   private readonly IPublisher Publisher;
   private readonly MultiTimerOptions MultiTimerOptions;
   private Dictionary<string, (Timer Timer, TimerConfig TimerConfig)> Timers = new();
+
   public TimerState
   (
     IOptions<MultiTimerOptions> multiTimerOptionsAccessor,
@@ -19,6 +21,24 @@ public sealed partial class TimerState : State<TimerState>
     Publisher = publisher;
     MultiTimerOptions = multiTimerOptionsAccessor.Value;
   }
+
+  // We actually are NOT cloning this state. 
+  // So if an error were to occur in an action it would NOT rollback.
+  // This is acceptable.  We don't want old timers firing and fighting race conditions.
+  // And the Actions are tested and reliable so we don't expect any to fail.
+  public object Clone()
+  {
+    return new TimerState
+    (
+      new OptionsWrapper<MultiTimerOptions>(MultiTimerOptions),
+      Logger,
+      Publisher
+    )
+    {
+      Timers = this.Timers
+    };
+  }
+
   public override void Initialize()
   {
     Timers.Clear();
