@@ -1,4 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <Title>TimeWarp State</Title>
+    <Description>A Blazor state management library by TimeWarp</Description>
+    <PackageId>TimeWarp.State</PackageId>
+    <AssemblyName>TimeWarp.State</AssemblyName>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
+    <Nullable>disable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  
   <!-- Blazor Library Template parameters-->
   <!--https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/RazorClassLibrary-CSharp.csproj.in -->
   <PropertyGroup>
@@ -12,19 +23,7 @@
   <!-- End Blazor Library Template parameters-->
 
   <PropertyGroup>
-    <Title>TimeWarp State</Title>
-    <Description>A Blazor state management library by TimeWarp</Description>
-    <PackageId>TimeWarp.State</PackageId>
-    <AssemblyName>TimeWarp.State</AssemblyName>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
-
-  <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-  <!--  dotnet 8 no longer requires configuration for Source Link it is automatic if on GitHub, Azure, GitLab, or Bitbucket-->
-
-  <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
   </PropertyGroup>
