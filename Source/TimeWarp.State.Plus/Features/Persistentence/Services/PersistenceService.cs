@@ -24,9 +24,9 @@ public class PersistenceService : IPersistenceService
   {
     string typeName =
       stateType.Name ??
-      throw new InvalidOperationException("The type provided has a null full name, which is not supported for persistence operations.");
+      throw new InvalidOperationException(message: "The type provided has a null full name, which is not supported for persistence operations.");
 
-    Logger.LogInformation(EventIds.PersistenceService_LoadState, "Loading State for {stateType}", stateType);
+    Logger.LogInformation(EventIds.PersistenceService_LoadState, message: "Loading State for {stateType}", stateType);
 
     string? serializedState = persistentStateMethod switch
     {
@@ -40,7 +40,7 @@ public class PersistenceService : IPersistenceService
     Logger.LogTrace
     (
       EventIds.PersistenceService_LoadState_SerializedState,
-      "Serialized State: {serializedState}",
+      message: "Serialized State: {serializedState}",
       serializedState
     );
 
@@ -51,9 +51,15 @@ public class PersistenceService : IPersistenceService
       {
         result = JsonSerializer.Deserialize(serializedState, stateType, JsonSerializerOptions);
       }
-      catch (JsonException ex)
+      catch (JsonException jsonException)
       {
-        Logger.LogError(EventIds.PersistenceService_LoadState_DeserializationError, ex, "Error deserializing state for {stateType}", stateType);
+        Logger.LogError
+        (
+          EventIds.PersistenceService_LoadState_DeserializationError, 
+          jsonException, 
+          message: "Error deserializing state for {stateType}",
+          stateType
+        );
         throw;
       }
     }

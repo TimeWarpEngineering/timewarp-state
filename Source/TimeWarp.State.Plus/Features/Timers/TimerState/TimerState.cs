@@ -1,13 +1,15 @@
 namespace TimeWarp.State.Plus.Features.Timers;
 
+using Microsoft.Extensions.Options;
 using System.Timers;
 
-public sealed partial class TimerState : State<TimerState>
+public sealed partial class TimerState : State<TimerState>, ICloneable
 {
   private readonly ILogger<TimerState> Logger;
   private readonly IPublisher Publisher;
   private readonly MultiTimerOptions MultiTimerOptions;
   private Dictionary<string, (Timer Timer, TimerConfig TimerConfig)> Timers = new();
+
   public TimerState
   (
     IOptions<MultiTimerOptions> multiTimerOptionsAccessor,
@@ -19,6 +21,31 @@ public sealed partial class TimerState : State<TimerState>
     Publisher = publisher;
     MultiTimerOptions = multiTimerOptionsAccessor.Value;
   }
+
+  /// <summary>
+  /// Creates a new instance of TimerState with the same configuration and Timer instances.
+  /// </summary>
+  /// <remarks>
+  /// This method performs a shallow clone of the state.
+  /// It reuses the existing Timer instances and configuration.
+  /// If an error occurs in an action, it will not rollback to the previous state.
+  /// This approach is intentional to maintain consistency of timer states across clones.
+  /// Actions are expected to be well-tested and reliable, minimizing the risk of failures.
+  /// </remarks>
+  /// <returns>A new TimerState instance with the same configuration and Timer instances.</returns>
+  public object Clone()
+  {
+    return new TimerState
+    (
+      new OptionsWrapper<MultiTimerOptions>(MultiTimerOptions),
+      Logger,
+      Publisher
+    )
+    {
+      Timers = this.Timers
+    };
+  }
+
   public override void Initialize()
   {
     Timers.Clear();

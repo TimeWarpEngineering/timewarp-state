@@ -5,6 +5,10 @@ public sealed partial class ThemeState : State<ThemeState>
   public Theme CurrentTheme { get; private set; }
 
   public ThemeState(ISender sender) : base(sender) {}
+  
+  [JsonConstructor]
+  public ThemeState() {}
+  
   public override void Initialize() => CurrentTheme = Theme.System;
   
   /// <summary>

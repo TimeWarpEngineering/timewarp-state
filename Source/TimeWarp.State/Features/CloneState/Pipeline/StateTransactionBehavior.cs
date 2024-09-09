@@ -37,7 +37,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     Logger.LogDebug
     (
       EventIds.StateTransactionBehavior_Constructing,
-      "constructing {ClassName}<{RequestType},{ResponseType}>",
+      message: "constructing {ClassName}<{RequestType},{ResponseType}>",
       className,
       typeof(TRequest).Name,
       typeof(TResponse).Name
@@ -53,14 +53,14 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
   {
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
-    var originalState = (IState)Store.GetState(enclosingStateType)!;// Not null because of Analyzer
+    var originalState = (IState)Store.GetState(enclosingStateType);
     IState newState = (originalState is ICloneable cloneable) ?
       (IState)cloneable.Clone() :
       originalState.Clone
       (
         (ex, path, _, _) =>
         {
-          Logger.LogWarning("Cloning error: {path} {Message}", path, ex.Message);
+          Logger.LogWarning(message: "Cloning error: {path} {Message}", path, ex.Message);
         }
       );
 
@@ -75,7 +75,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     Logger.LogDebug
     (
       EventIds.StateTransactionBehavior_Cloning,
-      "Cloned State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
+      message: "Cloned State of type {declaringType} originalState.Guid:{originalState_Guid} newState.Guid:{newState_Guid}",
       enclosingStateType,
       originalState.Guid,
       newState.Guid
@@ -94,7 +94,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       (
         EventIds.StateTransactionBehavior_Exception,
         exception,
-        "Error cloning State. Type:{enclosingStateType}",
+        message: "Error cloning State. Type:{enclosingStateType}",
         enclosingStateType
       );
 
@@ -102,7 +102,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       Logger.LogInformation
       (
         EventIds.StateTransactionBehavior_Restoring,
-        "Attempting to restore State of type: {enclosingStateType}",
+        message: "Attempting to restore State of type: {enclosingStateType}",
         enclosingStateType
       );
 
