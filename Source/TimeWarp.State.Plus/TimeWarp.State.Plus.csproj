@@ -9,11 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
-  </ItemGroup>
-  <!-- End Source Link -->
-
-  <ItemGroup>
     <PackageReference Include="Blazored.SessionStorage"/>
     <PackageReference Include="Blazored.LocalStorage"/>
   </ItemGroup>
