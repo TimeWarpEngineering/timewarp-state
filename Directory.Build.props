@@ -1,7 +1,7 @@
 <Project>
   <!-- Set common properties regarding assembly information and nuget packages -->
   <PropertyGroup>
-    <TimeWarpStateVersion>11.0.0-beta.86+8.0.400</TimeWarpStateVersion>
+    <TimeWarpStateVersion>11.0.0-beta.87+8.0.400</TimeWarpStateVersion>
     <Authors>Steven T. Cramer</Authors>
     <Product>TimeWarp State</Product>
     <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
@@ -37,8 +37,24 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
+  <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
+  <PropertyGroup>
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
+    <DebugType>embedded</DebugType>
+
+    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  
+  <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
   <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" Condition="'$(NCrunch)' != '1'">
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
