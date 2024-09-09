@@ -4,48 +4,23 @@
     <Description>TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.</Description>
     <PackageId>TimeWarp.State.Plus</PackageId>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Middleware; Redux; Flux; Features; Plus</PackageTags>
-  </PropertyGroup>
-  
-  <PropertyGroup>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.SessionStorage"/>
+    <PackageReference Include="Blazored.LocalStorage"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimeWarp.State\TimeWarp.State.csproj"/>
+    <ProjectReference Include="..\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="TimeWarp.State.Plus.Tests"/>
-  </ItemGroup>
-
-  <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-  <PropertyGroup>
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-
-    <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
-    <DebugType>embedded</DebugType>
-
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link --> 
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
-  </ItemGroup>
-  <!-- End Source Link -->
-  
-  <ItemGroup>
-    <PackageReference Include="Blazored.SessionStorage" />
-    <PackageReference Include="Blazored.LocalStorage" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\TimeWarp.State\TimeWarp.State.csproj" />
-    <ProjectReference Include="..\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,18 +28,18 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath="" />
+    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <Target Name="CopyPackage" AfterTargets="Pack">
     <ItemGroup>
-      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
+      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg"/>
     </ItemGroup>
-    <MakeDir Directories="$(ProjectDir)..\..\LocalNugetFeed\" />
+    <MakeDir Directories="$(ProjectDir)..\..\LocalNugetFeed\"/>
     <Copy
       SourceFiles="@(PackageFiles)"
       DestinationFolder="$(ProjectDir)..\..\LocalNugetFeed\"
     />
   </Target>
-  
+
 </Project>
