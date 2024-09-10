@@ -22,7 +22,7 @@ public partial class CloneableState
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
   /// <param name="count"></param>
-  [UsedImplicitly] public void Initialize(int count)
+  public void Initialize(int count)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
     Count = count;

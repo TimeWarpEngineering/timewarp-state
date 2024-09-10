@@ -20,8 +20,7 @@ public partial class ColorState
     
     return colorState;
   }
-
-  [UsedImplicitly]
+  
   public void Initialize(Color color, string myColorName)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());

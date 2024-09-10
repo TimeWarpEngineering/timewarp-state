@@ -4,7 +4,6 @@ public partial class RouteState
 {
   public static class GoBackActionSet
   {
-    [UsedImplicitly]
     internal sealed class Action : IAction
     {
       public int Amount { get; }

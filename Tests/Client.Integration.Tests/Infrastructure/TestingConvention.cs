@@ -1,6 +1,5 @@
 namespace Client.Integration.Tests.Infrastructure;
 
-[UsedImplicitly]
 public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdditionalServicesCallback)
 {
   private static void ConfigureAdditionalServicesCallback(ServiceCollection serviceCollection)

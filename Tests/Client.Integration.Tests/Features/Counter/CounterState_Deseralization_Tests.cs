@@ -2,7 +2,6 @@
 
 using Test.App.Client.Features.Counter;
 
-[UsedImplicitly]
 public class JsonSerializer_Should : BaseTest
 {
   private CounterState CounterState { get; }

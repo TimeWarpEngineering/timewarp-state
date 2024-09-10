@@ -1,6 +1,5 @@
 namespace TimeWarp.Features.Theme;
 
-[UsedImplicitly]
 public partial class ThemeState
 {
   public static class UpdateActionSet
@@ -20,8 +19,7 @@ public partial class ThemeState
     ): ActionHandler<Action>(store)
     {
       private ThemeState ThemeState => Store.GetState<ThemeState>();
-
-      [UsedImplicitly]
+      
       public override Task Handle
       (
         Action action,

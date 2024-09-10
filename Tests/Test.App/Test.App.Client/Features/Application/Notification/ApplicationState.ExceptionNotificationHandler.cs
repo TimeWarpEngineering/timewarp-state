@@ -2,7 +2,6 @@ namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState
 {
-  [UsedImplicitly]
   internal class ExceptionNotificationHandler
   (
     ILogger<ExceptionNotificationHandler> Logger,

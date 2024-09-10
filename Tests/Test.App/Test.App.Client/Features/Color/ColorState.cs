@@ -2,7 +2,6 @@ namespace Test.App.Client.Features.Counter;
 
 using System.Drawing;
 
-[UsedImplicitly]
 public sealed partial class ColorState : State<ColorState>
 {
   public string MyColorName { get; private set; } = null!;

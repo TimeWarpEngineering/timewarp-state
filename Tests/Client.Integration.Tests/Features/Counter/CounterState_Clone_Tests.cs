@@ -2,7 +2,6 @@ namespace CounterState;
 
 using Test.App.Client.Features.Counter;
 
-[UsedImplicitly]
 public class Clone_Should : BaseTest
 {
   public Clone_Should(ClientHost webAssemblyHost) : base(webAssemblyHost)

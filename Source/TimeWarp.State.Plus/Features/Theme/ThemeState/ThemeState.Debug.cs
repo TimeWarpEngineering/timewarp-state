@@ -29,7 +29,6 @@ public partial class ThemeState
   /// Use in Tests ONLY, to initialize the State
   /// </summary>
   /// <param name="currentTheme"></param>
-  [UsedImplicitly]
   public void Initialize(Theme currentTheme)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());
