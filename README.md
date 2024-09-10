@@ -19,6 +19,8 @@
 
 TimeWarp.State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
 
+We also offer [TimeWarp.State.Plus](/Source/TimeWarp.State.Plus), which extends the core functionality with additional features, middleware, and components to simplify and enhance your Blazor applications.
+
 ## Give a Star! :star:
 
 If you find this project useful, please give it a star. Thanks!
@@ -33,11 +35,13 @@ To quickly get started I recommend the [tutorial](https://timewarpengineering.gi
 
 ```console
 dotnet add package TimeWarp.State
+dotnet add package TimeWarp.State.Plus
 ```
 
 Check out the latest NuGet packages on the [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
 * [TimeWarp.State](https://www.nuget.org/packages/TimeWarp.State/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
+* [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 
 ## Releases
 
