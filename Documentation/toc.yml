@@ -1,13 +1,11 @@
 ﻿# auto-generated
 - name: Overview
-  topicUid: BlazorState:Overview.md
+  topicUid: TimeWarpState:Overview.md
 - name: Tutorial
-  topicUid: BlazorState:Tutorial.md
+  topicUid: TimeWarpState:Tutorial.md
 - name: Topics
   href: Topics/
 - name: Release Notes
   href: ReleaseNotes/
 - name: Migrations
   href: Migrations/
-- name: Api
-  href: Blazor-State/api/
