@@ -15,7 +15,7 @@ This is quite handy for debugging.
 
 Redux Dev Tools are disabled by default.  Update the options passed to the `AddTimeWarpState` extension method to set `UseReduxDevToolsBehavior` to true, as show here in the sample application:
 
-[!code-csharp[Startup](../../Samples/01-StateActionsHandlers/Sample/Client/Program.cs?highlight=16 "Code Link")]
+[!code-csharp[Startup](../../Samples/00-StateActionsHandlers/Sample/Client/Program.cs?highlight=16 "Code Link")]
 
 ### Initialize in App Component
 

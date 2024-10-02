@@ -1,0 +1,7 @@
+---
+scripts:
+pwsh:
+- 
+dotnet:
+
+---
