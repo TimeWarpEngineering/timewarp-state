@@ -8,5 +8,4 @@ namespace Test.App.Client;
 /// where a stable, known type is required to locate the assembly at runtime. The class is sealed to indicate it is not
 /// designed for inheritance or extension, reinforcing its role as a simple marker.
 /// </remarks>
-[UsedImplicitly]
 public sealed class AssemblyMarker { }

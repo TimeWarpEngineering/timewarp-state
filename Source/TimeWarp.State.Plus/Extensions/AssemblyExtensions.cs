@@ -3,10 +3,8 @@ namespace TimeWarp.State.Plus.Extensions;
 using System.Resources;
 using System.Runtime.CompilerServices;
 
-[UsedImplicitly]
 public static class AssemblyExtensions
 {
-  [UsedImplicitly]
   public static AssemblyInfo GetAssemblyInfo(this Assembly assembly) => new(assembly);
 }
 
@@ -29,7 +27,7 @@ public class AssemblyInfo
     Assembly = assembly;
     Metadata = assembly
       .GetCustomAttributes<AssemblyMetadataAttribute>()
-      .ToDictionary(attr => attr.Key, attr => attr.Value);
+      .ToDictionary(keySelector: attr => attr.Key, elementSelector: attr => attr.Value);
   }
 
   /// <summary>
@@ -51,10 +49,14 @@ public class AssemblyInfo
   public string? Culture => Assembly.GetCustomAttribute<AssemblyCultureAttribute>()?.Culture;
   public string? Version => Assembly.GetName().Version?.ToString();
   public string? FileVersion => Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
-  [UsedImplicitly] public string? InformationalVersion => Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-  public string? NeutralResourcesLanguage => Assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>()?.CultureName;
+  [UsedImplicitly] public string? InformationalVersion => 
+    Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+  public string? NeutralResourcesLanguage => 
+    Assembly.GetCustomAttribute<NeutralResourcesLanguageAttribute>()?.CultureName;
   public string? ClsCompliant => Assembly.GetCustomAttribute<CLSCompliantAttribute>()?.IsCompliant.ToString();
-  public string InternalsVisibleTo => string.Join(", ", Assembly.GetCustomAttributes<InternalsVisibleToAttribute>().Select(a => a.AssemblyName));
+  public string InternalsVisibleTo => 
+    string.Join
+      (separator: ", ", Assembly.GetCustomAttributes<InternalsVisibleToAttribute>().Select(a => a.AssemblyName));
   public string? DelaySign => Assembly.GetCustomAttribute<AssemblyDelaySignAttribute>()?.DelaySign.ToString();
   public string? KeyFile => Assembly.GetCustomAttribute<AssemblyKeyFileAttribute>()?.KeyFile;
   public string? KeyName => Assembly.GetCustomAttribute<AssemblyKeyNameAttribute>()?.KeyName;

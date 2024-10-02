@@ -20,7 +20,7 @@ title: TimeWarp.State Overview
 # TimeWarp.State
 
 
-![TimeWarp Logo](/Assets/Logo.png)
+![TimeWarp Logo](Assets/Logo.svg)
 
 Previously known as Blazor-State. [![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 

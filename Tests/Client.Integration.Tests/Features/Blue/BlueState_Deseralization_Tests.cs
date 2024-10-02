@@ -2,7 +2,6 @@
 
 using Test.App.Client.Features.Blue;
 
-[UsedImplicitly]
 public class JsonSerializer_Should : BaseTest
 {
   private BlueState BlueState { get; }

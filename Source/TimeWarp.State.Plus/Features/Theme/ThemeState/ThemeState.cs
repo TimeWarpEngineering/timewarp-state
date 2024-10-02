@@ -16,8 +16,8 @@ public sealed partial class ThemeState : State<ThemeState>
   /// </summary>
   public enum Theme
   {
-    [UsedImplicitly] Light,
-    [UsedImplicitly] Dark,
-    [UsedImplicitly] System
+    Light,
+    Dark,
+    System
   }
 }
