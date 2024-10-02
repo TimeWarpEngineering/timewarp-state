@@ -12,11 +12,21 @@ references:
       - TypeScript Handbook: https://www.typescriptlang.org/docs/handbook/intro.html
       - TypeScript Deep Dive: https://basarat.gitbook.io/typescript/
 
+  - name: TimeWarp.Fixie
+    relationship: Use this NuGet for creating a testing convention for integration and unit tests.
+    resources:
+      - TimeWarp Fixie testing convention: https://github.com/TimeWarpEngineering/timewarp-fixie
+
   - name: Fixie
     relationship: Testing framework for integration and unit tests
     resources:
       - Official Documentation: https://github.com/fixie/fixie/wiki
-      - TimeWarp Fixie testing convention: https://github.com/TimeWarpEngineering/timewarp-fixie
+
+  - name: FluentAssertions
+    relationship: Assertion library used for tests
+    resources:
+      - Official Documentation: https://fluentassertions.com/introduction
+      - GitHub Repository: https://github.com/fluentassertions/fluentassertions
 
   - name: Playwright for .NET
     relationship: End to end testing framework
@@ -56,7 +66,7 @@ references:
       - Mastering Markdown: https://guides.github.com/features/mastering-markdown/
 ---
 
-This file contains a list of external dependencies and libraries used in the Codebase Context Specification project.
+This file contains a list of external dependencies and libraries.
 The YAML front-matter above provides structured data about each dependency, 
 including its relationship to the project and links to relevant resources. 
 These resources include official documentation, articles, blogs, and Stack Overflow posts. 

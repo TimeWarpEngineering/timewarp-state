@@ -12,8 +12,14 @@ naming_conventions:
   type_names: Explicit unless obvious from context
   namespaces: File-scoped
   private_fields: No underscore prefix
+  variables: prefer naming the variable after the type
   class_scoped: PascalCase (fields, properties, methods, events)
   local_scoped: camelCase (variables inside methods)
+
+language_features:
+  - use targeted type new
+  - use explicit types over var
+  - prefer global usings (GlobalUsings.cs)
 ---
 
 # C# Coding Standards
