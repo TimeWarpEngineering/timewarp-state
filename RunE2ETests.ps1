@@ -1,3 +1,7 @@
+param(
+    [switch]$ManualStart
+)
+
 # Configuration variables
 $SutProjectDir = "$PSScriptRoot/Tests/Test.App/Test.App.Server"
 $OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
@@ -165,18 +169,15 @@ Build-SourceGenerator
 Build-And-Publish-Sut
 Build-Test
 
-# Ask user if they want to start SUT manually
-$manualStart = Read-Host "Do you want to start the SUT manually? (y/n)"
-$manualStart = $manualStart.ToLower() -eq 'y'
-
-$sutProcess = Start-Sut -Manual:$manualStart
+# Use the $ManualStart parameter to determine if SUT should be started manually
+$sutProcess = Start-Sut -Manual:$ManualStart
 
 try {
   Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
   Run-Tests
 }
 finally {
-  if (-not $manualStart) {
+  if (-not $ManualStart) {
     Kill-Sut -sutProcess $sutProcess
   } else {
     Write-Host "Please remember to stop the manually started SUT process."
