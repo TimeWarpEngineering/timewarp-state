@@ -84,11 +84,22 @@ function Build-Test {
 }
 
 function Start-Sut {
-  # Start the SUT in the background
-  Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-  $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
+  param (
+    [switch]$Manual
+  )
 
-  return $sutProcess
+  if ($Manual) {
+    Write-Host "Please start the SUT in another console using the following command:"
+    Write-Host "${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
+    Write-Host "Press Enter when the SUT is ready..."
+    Read-Host | Out-Null
+    return $null
+  } else {
+    # Start the SUT in the background
+    Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
+    $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
+    return $sutProcess
+  }
 }
 
 function Wait-For-Sut {
@@ -121,7 +132,7 @@ function Wait-For-Sut {
 function Run-Tests {
   Push-Location $TestProjectDir
   try {
-    $settings = @("edge.runsettings")
+    $settings = @("chrome.runsettings")
 
     Write-Host "Running E2E tests"
     foreach ($setting in $settings) {
@@ -154,12 +165,20 @@ Build-SourceGenerator
 Build-And-Publish-Sut
 Build-Test
 
-$sutProcess = Start-Sut
+# Ask user if they want to start SUT manually
+$manualStart = Read-Host "Do you want to start the SUT manually? (y/n)"
+$manualStart = $manualStart.ToLower() -eq 'y'
+
+$sutProcess = Start-Sut -Manual:$manualStart
 
 try {
   Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
   Run-Tests
 }
 finally {
-  Kill-Sut -sutProcess $sutProcess
+  if (-not $manualStart) {
+    Kill-Sut -sutProcess $sutProcess
+  } else {
+    Write-Host "Please remember to stop the manually started SUT process."
+  }
 }
