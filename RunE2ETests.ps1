@@ -1,7 +1,3 @@
-param(
-    [switch]$ManualStart
-)
-
 # Configuration variables
 $SutProjectDir = "$PSScriptRoot/Tests/Test.App/Test.App.Server"
 $OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
@@ -13,6 +9,7 @@ $SourceGeneratorProjectPath = "$PSScriptRoot/Source/TimeWarp.State.SourceGenerat
 $SutPort = 7011
 $MaxRetries = 30
 $RetryInterval = 1
+$ManualStart = $false
 
 function Restore-Tools-And-Cleanup {
   Push-Location $PSScriptRoot
@@ -169,7 +166,6 @@ Build-SourceGenerator
 Build-And-Publish-Sut
 Build-Test
 
-# Use the $ManualStart parameter to determine if SUT should be started manually
 $sutProcess = Start-Sut -Manual:$ManualStart
 
 try {
