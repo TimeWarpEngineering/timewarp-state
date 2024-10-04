@@ -129,11 +129,26 @@ function Start-Sut {
       Write-Host "Changing directory to: $OutputPath"
       Push-Location $OutputPath
       try {
+        Write-Host "Current directory: $(Get-Location)"
         Write-Host "Current directory contents:"
         Get-ChildItem | ForEach-Object { Write-Host $_.Name }
-        Write-Host "Starting SUT: Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-        $sutProcess = Start-Process -NoNewWindow -FilePath "Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
+        
+        $exePath = ".\Test.App.Server.exe"
+        Write-Host "Executable path: $exePath"
+        
+        if (Test-Path $exePath) {
+          Write-Host "Executable file exists"
+        } else {
+          Write-Host "Executable file does not exist"
+        }
+        
+        Write-Host "Starting SUT: $exePath --urls ${SutUrl}:${SutPort}"
+        $sutProcess = Start-Process -NoNewWindow -FilePath $exePath -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
         return $sutProcess
+      }
+      catch {
+        Write-Host "An error occurred: $_"
+        Write-Host "Stack trace: $($_.ScriptStackTrace)"
       }
       finally {
         Pop-Location
