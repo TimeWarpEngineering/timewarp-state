@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
 
 env:
-  DOTNET_NOLOGO: true                     # Disable the .NET logo in the console output
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true 
-  NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
+  NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}
 
 jobs:
   build:
@@ -29,50 +29,9 @@ jobs:
         run: ./.github/workflows/build-and-test.ps1
         working-directory: ${{ github.workspace }}
 
-    # End to End Tests
-#      - name: Test.App.EndToEnd.Tests
-#        run: |
-#          cd ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/
-#          dotnet build
-#
-#      - name: Ensure browsers are installed
-#        run: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/bin/Debug/net8.0/playwright.ps1 install --with-deps
-#        
-#      - name: Run End-to-End Tests against all settings
-#        run: ./RunE2ETests.ps1
-#        working-directory: ${{ github.workspace }}
-        
-#      - name: list files in the repository
-#        run: |
-#          ls ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output
-#          
-#      - name: Generate Code Coverage Summary Report
-#        id: coverage-summary
-#        uses: irongut/CodeCoverageSummary@v1.3.0
-#        with:
-#          filename: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/Cobertura.xml
-#          badge: true
-#          format: markdown
-#          output: both
-#    
-#      - name: Add Coverage PR Comment
-#        if: github.event_name == 'pull_request'
-#        uses: marocchino/sticky-pull-request-comment@v2
-#        with:
-#          recreate: true
-#          message: |
-#            ## Code Coverage Summary
-#            ${{ steps.coverage-summary.outputs.report }}
-#    
-#      - name: Update Actions Summary
-#        run: |
-#          echo "## Code Coverage Summary" >> $GITHUB_STEP_SUMMARY
-#          echo '${{ steps.coverage-summary.outputs.report }}' >> $GITHUB_STEP_SUMMARY
-#          
-#      - name: Publish Code Coverage Results
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: coverage-report
-#          path: ${{ github.workspace }}/Tests/Test.App.EndToEnd.Tests/Output/coverageReport.html          
+      # End to End Tests
+      - name: Run End-to-End Tests
+        run: ./RunE2ETests.ps1
+        working-directory: ${{ github.workspace }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

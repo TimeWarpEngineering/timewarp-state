@@ -11,6 +11,17 @@ $MaxRetries = 30
 $RetryInterval = 1
 $RunMode = "Auto"  # Possible values: "Auto", "Manual", "Development", "Release"
 
+function Ensure-Browsers-Installed {
+  $playwrightPath = "$TestProjectDir/bin/Debug/net8.0/playwright.ps1"
+  if (Test-Path $playwrightPath) {
+    Write-Host "Installing Playwright browsers..."
+    & $playwrightPath install --with-deps
+  } else {
+    Write-Error "Playwright script not found at $playwrightPath. Make sure the Test.App.EndToEnd.Tests project is built."
+    exit 1
+  }
+}
+
 function Restore-Tools-And-Cleanup {
   Push-Location $PSScriptRoot
   try {
@@ -210,6 +221,8 @@ Build-Analyzer
 Build-SourceGenerator
 Build-And-Publish-Sut
 Build-Test
+
+Ensure-Browsers-Installed
 
 $sutProcess = Start-Sut -Mode $RunMode
 
