@@ -9,7 +9,7 @@ $SourceGeneratorProjectPath = "$PSScriptRoot/Source/TimeWarp.State.SourceGenerat
 $SutPort = 7011
 $MaxRetries = 30
 $RetryInterval = 1
-$ManualStart = $false
+$RunMode = "Auto"  # Possible values: "Auto", "Manual", "Development"
 
 function Restore-Tools-And-Cleanup {
   Push-Location $PSScriptRoot
@@ -86,20 +86,35 @@ function Build-Test {
 
 function Start-Sut {
   param (
-    [switch]$Manual
+    [string]$Mode
   )
 
-  if ($Manual) {
-    Write-Host "Please start the SUT in another console using the following command:"
-    Write-Host "${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-    Write-Host "Press Enter when the SUT is ready..."
-    Read-Host | Out-Null
-    return $null
-  } else {
-    # Start the SUT in the background
-    Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-    $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
-    return $sutProcess
+  switch ($Mode) {
+    "Manual" {
+      Write-Host "Please start the SUT in another console using the following command:"
+      Write-Host "${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
+      Write-Host "Press Enter when the SUT is ready..."
+      Read-Host | Out-Null
+      return $null
+    }
+    "Development" {
+      $Env:ASPNETCORE_ENVIRONMENT = "Development"
+      Write-Host "Starting SUT in Development mode..."
+      Push-Location $SutProjectDir
+      try {
+        Start-Process pwsh -ArgumentList "-Command", "dotnet watch run --urls ${SutUrl}:${SutPort}" -NoNewWindow
+      }
+      finally {
+        Pop-Location
+      }
+      return $null
+    }
+    default {
+      # Auto mode
+      Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
+      $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
+      return $sutProcess
+    }
   }
 }
 
@@ -160,22 +175,37 @@ function Kill-Sut {
 }
 
 # Main script execution
-Restore-Tools-And-Cleanup
-Build-Analyzer
-Build-SourceGenerator
-Build-And-Publish-Sut
-Build-Test
-
-$sutProcess = Start-Sut -Manual:$ManualStart
-
-try {
-  Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
-  Run-Tests
+if ($RunMode -eq "Development") {
+  Build-Analyzer
+  Build-SourceGenerator
+  $sutProcess = Start-Sut -Mode $RunMode
+  try {
+    Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
+    Write-Host "SUT is running in Development mode. Press Ctrl+C to stop."
+    while ($true) { Start-Sleep -Seconds 1 }
+  }
+  finally {
+    Write-Host "Please remember to stop the SUT process running in Development mode."
+  }
 }
-finally {
-  if (-not $ManualStart) {
-    Kill-Sut -sutProcess $sutProcess
-  } else {
-    Write-Host "Please remember to stop the manually started SUT process."
+else {
+  Restore-Tools-And-Cleanup
+  Build-Analyzer
+  Build-SourceGenerator
+  Build-And-Publish-Sut
+  Build-Test
+
+  $sutProcess = Start-Sut -Mode $RunMode
+
+  try {
+    Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
+    Run-Tests
+  }
+  finally {
+    if ($RunMode -eq "Auto") {
+      Kill-Sut -sutProcess $sutProcess
+    } else {
+      Write-Host "Please remember to stop the manually started SUT process."
+    }
   }
 }
