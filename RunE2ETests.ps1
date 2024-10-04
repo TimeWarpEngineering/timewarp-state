@@ -126,9 +126,18 @@ function Start-Sut {
       Write-Host "Starting SUT in Auto mode..."
       $Env:ASPNETCORE_ENVIRONMENT = "Development"
       Write-Host "ASPNETCORE_ENVIRONMENT set to: $Env:ASPNETCORE_ENVIRONMENT"
-      Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-      $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
-      return $sutProcess
+      Write-Host "Changing directory to: $OutputPath"
+      Push-Location $OutputPath
+      try {
+        Write-Host "Current directory contents:"
+        Get-ChildItem | ForEach-Object { Write-Host $_.Name }
+        Write-Host "Starting SUT: Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
+        $sutProcess = Start-Process -NoNewWindow -FilePath "Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
+        return $sutProcess
+      }
+      finally {
+        Pop-Location
+      }
     }
   }
 }
