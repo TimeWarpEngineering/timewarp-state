@@ -144,9 +144,22 @@ function Start-Sut {
         Write-Host "Current directory contents:"
         Get-ChildItem | ForEach-Object { Write-Host $_.Name }
         
-        Write-Host "Starting SUT: .\Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-        $sutProcess = Start-Process -NoNewWindow -FilePath ".\Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
-        return $sutProcess
+        if ($IsWindows) {
+          $executableName = "Test.App.Server.exe"
+        } else {
+          $executableName = "Test.App.Server"
+        }
+        
+        $executablePath = Join-Path $OutputPath $executableName
+        
+        if (Test-Path $executablePath) {
+          Write-Host "Starting SUT: $executablePath --urls ${SutUrl}:${SutPort}"
+          $sutProcess = Start-Process -NoNewWindow -FilePath $executablePath -ArgumentList "--urls", "${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
+          return $sutProcess
+        } else {
+          Write-Error "Executable not found at $executablePath"
+          exit 1
+        }
       }
       catch {
         Write-Host "An error occurred: $_"
