@@ -102,7 +102,7 @@ function Start-Sut {
       Write-Host "Starting SUT in Development mode..."
       Push-Location $SutProjectDir
       try {
-        Start-Process pwsh -ArgumentList "-Command", "dotnet watch run --urls ${SutUrl}:${SutPort}" -NoNewWindow
+        Start-Process pwsh -ArgumentList "-Command", "dotnet run --urls ${SutUrl}:${SutPort}" -NoNewWindow
       }
       finally {
         Pop-Location
