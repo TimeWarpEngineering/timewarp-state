@@ -123,8 +123,11 @@ function Start-Sut {
     }
     default {
       # Auto mode
+      Write-Host "Starting SUT in Auto mode..."
+      $Env:ASPNETCORE_ENVIRONMENT = "Development"
+      Write-Host "ASPNETCORE_ENVIRONMENT set to: $Env:ASPNETCORE_ENVIRONMENT"
       Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
-      $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru
+      $sutProcess = Start-Process -NoNewWindow -FilePath "${OutputPath}/Test.App.Server.exe" -ArgumentList "--urls ${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
       return $sutProcess
     }
   }
@@ -197,6 +200,12 @@ $sutProcess = Start-Sut -Mode $RunMode
 
 try {
   Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
+  if ($RunMode -eq "Auto") {
+    Write-Host "SUT Output:"
+    Get-Content "sut_output.log"
+    Write-Host "SUT Error Output:"
+    Get-Content "sut_error.log"
+  }
   Run-Tests
 
   if ($RunMode -eq "Development" -or $RunMode -eq "Release") {
