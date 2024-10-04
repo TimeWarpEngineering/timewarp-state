@@ -175,38 +175,27 @@ function Kill-Sut {
 }
 
 # Main script execution
-if ($RunMode -eq "Development") {
-  Build-Analyzer
-  Build-SourceGenerator
-  $sutProcess = Start-Sut -Mode $RunMode
-  try {
-    Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
-    Run-Tests
+Restore-Tools-And-Cleanup
+Build-Analyzer
+Build-SourceGenerator
+Build-And-Publish-Sut
+Build-Test
+
+$sutProcess = Start-Sut -Mode $RunMode
+
+try {
+  Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
+  Run-Tests
+
+  if ($RunMode -eq "Development") {
     Write-Host "Tests completed. SUT is still running in Development mode. Press Ctrl+C to stop."
     while ($true) { Start-Sleep -Seconds 1 }
   }
-  finally {
-    Write-Host "Please remember to stop the SUT process running in Development mode."
-  }
 }
-else {
-  Restore-Tools-And-Cleanup
-  Build-Analyzer
-  Build-SourceGenerator
-  Build-And-Publish-Sut
-  Build-Test
-
-  $sutProcess = Start-Sut -Mode $RunMode
-
-  try {
-    Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
-    Run-Tests
-  }
-  finally {
-    if ($RunMode -eq "Auto") {
-      Kill-Sut -sutProcess $sutProcess
-    } else {
-      Write-Host "Please remember to stop the manually started SUT process."
-    }
+finally {
+  if ($RunMode -eq "Auto") {
+    Kill-Sut -sutProcess $sutProcess
+  } else {
+    Write-Host "Please remember to stop the SUT process running in $RunMode mode."
   }
 }
