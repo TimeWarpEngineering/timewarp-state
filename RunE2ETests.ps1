@@ -9,7 +9,7 @@ $SourceGeneratorProjectPath = "$PSScriptRoot/Source/TimeWarp.State.SourceGenerat
 $SutPort = 7011
 $MaxRetries = 30
 $RetryInterval = 1
-$RunMode = "Auto"  # Possible values: "Auto", "Manual", "Development"
+$RunMode = "Development"  # Possible values: "Auto", "Manual", "Development"
 
 function Restore-Tools-And-Cleanup {
   Push-Location $PSScriptRoot
