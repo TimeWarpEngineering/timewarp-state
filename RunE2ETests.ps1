@@ -9,7 +9,7 @@ $SourceGeneratorProjectPath = "$PSScriptRoot/Source/TimeWarp.State.SourceGenerat
 $SutPort = 7011
 $MaxRetries = 30
 $RetryInterval = 1
-$RunMode = "Development"  # Possible values: "Auto", "Manual", "Development"
+$RunMode = "Release"  # Possible values: "Auto", "Manual", "Development", "Release"
 
 function Restore-Tools-And-Cleanup {
   Push-Location $PSScriptRoot
@@ -109,6 +109,18 @@ function Start-Sut {
       }
       return $null
     }
+    "Release" {
+      $Env:ASPNETCORE_ENVIRONMENT = "Development"
+      Write-Host "Starting SUT in Release configuration..."
+      Push-Location $SutProjectDir
+      try {
+        Start-Process pwsh -ArgumentList "-Command", "dotnet run --configuration Release --urls ${SutUrl}:${SutPort}" -NoNewWindow
+      }
+      finally {
+        Pop-Location
+      }
+      return $null
+    }
     default {
       # Auto mode
       Write-Host "Starting SUT: ${OutputPath}/Test.App.Server.exe --urls ${SutUrl}:${SutPort}"
@@ -187,8 +199,8 @@ try {
   Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
   Run-Tests
 
-  if ($RunMode -eq "Development") {
-    Write-Host "Tests completed. SUT is still running in Development mode. Press Ctrl+C to stop."
+  if ($RunMode -eq "Development" -or $RunMode -eq "Release") {
+    Write-Host "Tests completed. SUT is still running in $RunMode mode. Press Ctrl+C to stop."
     while ($true) { Start-Sleep -Seconds 1 }
   }
 }
