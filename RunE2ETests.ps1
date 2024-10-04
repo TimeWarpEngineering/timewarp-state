@@ -181,7 +181,8 @@ if ($RunMode -eq "Development") {
   $sutProcess = Start-Sut -Mode $RunMode
   try {
     Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
-    Write-Host "SUT is running in Development mode. Press Ctrl+C to stop."
+    Run-Tests
+    Write-Host "Tests completed. SUT is still running in Development mode. Press Ctrl+C to stop."
     while ($true) { Start-Sleep -Seconds 1 }
   }
   finally {
