@@ -33,5 +33,7 @@ jobs:
       - name: Run End-to-End Tests
         run: ./RunE2ETests.ps1
         working-directory: ${{ github.workspace }}
+        env:
+          UseHttp: "true"
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

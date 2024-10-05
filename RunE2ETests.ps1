@@ -1,7 +1,9 @@
 # Configuration variables
 $SutProjectDir = "$PSScriptRoot/Tests/Test.App/Test.App.Server"
 $OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
-$SutUrl = "http://localhost"
+$UseHttp = $env:UseHttp -eq "true"
+$Protocol = if ($UseHttp) { "http" } else { "https" }
+$SutUrl = "${Protocol}://localhost"
 $TestProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
 $TestProjectPath = "$TestProjectDir/Test.App.EndToEnd.Tests.csproj"
 $AnalyzerProjectPath = "$PSScriptRoot/Source/TimeWarp.State.Analyzer/TimeWarp.State.Analyzer.csproj"
@@ -184,6 +186,7 @@ function Start-Sut {
           Write-Host "Starting SUT: $executablePath --urls ${SutUrl}:${SutPort}"
           Write-Host "Output log: $outputLogPath"
           Write-Host "Error log: $errorLogPath"
+          $env:UseHttp = $UseHttp.ToString().ToLower()
           $sutProcess = Start-Process -NoNewWindow -FilePath $executablePath -ArgumentList "--urls", "${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput $outputLogPath -RedirectStandardError $errorLogPath
           return $sutProcess
         } else {

@@ -5,7 +5,7 @@
     <RootNamespace>Test.App</RootNamespace>
     <PublishSingleFile>false</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
-    <UseHttp>true</UseHttp>
+    <UseHttp Condition="'$(UseHttp)' == ''">false</UseHttp>
   </PropertyGroup>
 
   <ItemGroup>
