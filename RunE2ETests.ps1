@@ -15,7 +15,7 @@ function Setup-DeveloperCertificate {
   Write-Host "Setting up ASP.NET Core developer certificate..."
   
   # Check if the certificate exists and is valid
-  $certCheck = dotnet dev-certs https --check --quiet
+  dotnet dev-certs https --check --quiet
   
   if ($LASTEXITCODE -ne 0) {
     Write-Host "Developer certificate not found or not valid. Creating a new one..."
