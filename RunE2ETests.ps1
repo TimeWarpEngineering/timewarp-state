@@ -153,8 +153,12 @@ function Start-Sut {
         $executablePath = Join-Path $OutputPath $executableName
         
         if (Test-Path $executablePath) {
+          $outputLogPath = Join-Path $OutputPath "sut_output.log"
+          $errorLogPath = Join-Path $OutputPath "sut_error.log"
           Write-Host "Starting SUT: $executablePath --urls ${SutUrl}:${SutPort}"
-          $sutProcess = Start-Process -NoNewWindow -FilePath $executablePath -ArgumentList "--urls", "${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput "sut_output.log" -RedirectStandardError "sut_error.log"
+          Write-Host "Output log: $outputLogPath"
+          Write-Host "Error log: $errorLogPath"
+          $sutProcess = Start-Process -NoNewWindow -FilePath $executablePath -ArgumentList "--urls", "${SutUrl}:${SutPort}" -PassThru -RedirectStandardOutput $outputLogPath -RedirectStandardError $errorLogPath
           return $sutProcess
         } else {
           Write-Error "Executable not found at $executablePath"
@@ -242,10 +246,24 @@ $sutProcess = Start-Sut -Mode $RunMode
 try {
   Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
   if ($RunMode -eq "Auto") {
-    Write-Host "SUT Output:"
-    Get-Content "sut_output.log"
-    Write-Host "SUT Error Output:"
-    Get-Content "sut_error.log"
+    $outputLogPath = Join-Path $OutputPath "sut_output.log"
+    $errorLogPath = Join-Path $OutputPath "sut_error.log"
+    
+    Write-Host "Attempting to read SUT Output from: $outputLogPath"
+    if (Test-Path $outputLogPath) {
+      Write-Host "SUT Output:"
+      Get-Content $outputLogPath
+    } else {
+      Write-Host "SUT Output log file not found."
+    }
+    
+    Write-Host "Attempting to read SUT Error Output from: $errorLogPath"
+    if (Test-Path $errorLogPath) {
+      Write-Host "SUT Error Output:"
+      Get-Content $errorLogPath
+    } else {
+      Write-Host "SUT Error log file not found."
+    }
   }
   Run-Tests
 
@@ -253,6 +271,10 @@ try {
     Write-Host "Tests completed. SUT is still running in $RunMode mode. Press Ctrl+C to stop."
     while ($true) { Start-Sleep -Seconds 1 }
   }
+}
+catch {
+  Write-Host "An error occurred during test execution: $_"
+  Write-Host "Stack trace: $($_.ScriptStackTrace)"
 }
 finally {
   if ($RunMode -eq "Auto") {
