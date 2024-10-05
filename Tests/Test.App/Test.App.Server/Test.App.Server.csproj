@@ -5,6 +5,7 @@
     <RootNamespace>Test.App</RootNamespace>
     <PublishSingleFile>false</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
+    <UseHttp>true</UseHttp>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 # Configuration variables
 $SutProjectDir = "$PSScriptRoot/Tests/Test.App/Test.App.Server"
 $OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
-$SutUrl = "https://localhost"
+$SutUrl = "http://localhost"
 $TestProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
 $TestProjectPath = "$TestProjectDir/Test.App.EndToEnd.Tests.csproj"
 $AnalyzerProjectPath = "$PSScriptRoot/Source/TimeWarp.State.Analyzer/TimeWarp.State.Analyzer.csproj"
@@ -212,7 +212,7 @@ function Wait-For-Sut {
   $retries = 0
   while ($retries -lt $maxRetries) {
     try {
-      $response = Invoke-WebRequest -Uri $url -UseBasicParsing -SkipCertificateCheck:$IsLinux -TimeoutSec 5
+      $response = Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 5
       if ($response.StatusCode -eq 200) {
         Write-Host "SUT is ready."
         return $true
