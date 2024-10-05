@@ -11,6 +11,32 @@ $MaxRetries = 30
 $RetryInterval = 1
 $RunMode = "Auto"  # Possible values: "Auto", "Manual", "Development", "Release"
 
+function Setup-DeveloperCertificate {
+  Write-Host "Setting up ASP.NET Core developer certificate..."
+  
+  # Check if the certificate exists and is valid
+  $certCheck = dotnet dev-certs https --check --quiet
+  
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host "Developer certificate not found or not valid. Creating a new one..."
+    
+    # Clean any existing certificates
+    dotnet dev-certs https --clean --quiet
+    
+    # Create and trust the developer certificate
+    dotnet dev-certs https --trust --quiet
+    
+    if ($LASTEXITCODE -eq 0) {
+      Write-Host "Developer certificate created and trusted successfully."
+    } else {
+      Write-Error "Failed to create or trust the developer certificate."
+      exit 1
+    }
+  } else {
+    Write-Host "Valid developer certificate already exists."
+  }
+}
+
 function Ensure-Browsers-Installed {
   $playwrightPath = "$TestProjectDir/bin/Debug/net8.0/playwright.ps1"
   if (Test-Path $playwrightPath) {
@@ -186,13 +212,13 @@ function Wait-For-Sut {
   $retries = 0
   while ($retries -lt $maxRetries) {
     try {
-      $response = Invoke-WebRequest -Uri $url -UseBasicParsing -SkipCertificateCheck -TimeoutSec 5
+      $response = Invoke-WebRequest -Uri $url -UseBasicParsing -SkipCertificateCheck:$IsLinux -TimeoutSec 5
       if ($response.StatusCode -eq 200) {
         Write-Host "SUT is ready."
         return $true
       }
     } catch {
-      # Ignore the error and retry
+      Write-Host "Attempt $($retries + 1) failed: $_"
     }
 
     Start-Sleep -Seconds $retryInterval
@@ -240,6 +266,8 @@ Build-And-Publish-Sut
 Build-Test
 
 Ensure-Browsers-Installed
+
+Setup-DeveloperCertificate
 
 $sutProcess = Start-Sut -Mode $RunMode
 
