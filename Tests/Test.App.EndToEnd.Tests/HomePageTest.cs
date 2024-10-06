@@ -8,8 +8,8 @@ public class Should_ : PageTest
   {
     string sutBaseUrl = Configuration.GetSutBaseUrl() ?? throw new InvalidOperationException("SUT base URL is not configured. Please check your test configuration.");
     await Page.GotoAsync(sutBaseUrl);
-    Console.WriteLine($"Browser: {Page.Context.Browser.BrowserType.Name}");
-    Console.WriteLine($"Browser Version: {Page.Context.Browser.Version}");
+    Console.WriteLine($"Browser: {Page.Context.Browser?.BrowserType.Name}");
+    Console.WriteLine($"Browser Version: {Page.Context.Browser?.Version}");
     Console.WriteLine($"User Agent: {await Page.EvaluateAsync<string>("() => navigator.userAgent")}");
 
     await Expect(Page).ToHaveTitleAsync("TimeWarp.State Test App");

@@ -4,11 +4,6 @@ namespace CacheableWeatherPageTests;
 public class CacheableWeatherTests : PageTest
 {
   private string SutBaseUrl = null!;
-  
-  [TestInitialize]
-  public async Task Initialize()
-  {
-    SutBaseUrl = Configuration.GetSutBaseUrl() ?? throw new InvalidOperationException("SUT base URL is not configured.");
   private ILocator CacheKeyLocator = null!;
   private ILocator CacheDurationLocator = null!;
   private ILocator TimeStampLocator = null!;
@@ -107,7 +102,7 @@ public class CacheableWeatherTests : PageTest
 
     // Validate the timestamp
     Console.WriteLine("Checking timestamp");
-    string currentTimestamp = await TimeStampLocator.TextContentAsync();
+    string? currentTimestamp = await TimeStampLocator.TextContentAsync();
     Console.WriteLine($"Current timestamp: {currentTimestamp}");
     
     if (isCached && previousTimeStamp != null)
