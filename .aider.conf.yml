@@ -268,14 +268,19 @@ gitignore: false
 #file: [xxx,yyyy,zzz]
 
 ## specify a read-only file (can be used multiple times)
-read: [.editorconfig, Source/TimeWarp.Tool/README.md] 
-#read:
-#  - .ai/**/*.*
-#  - .editorconfig
-#  - Source/TimeWarp.Tool/README.md
-
-# /.ai/dotnet-conventions.md, /.ai/environment.md, /.ai/project-structure.md, /.ai/references.md, /.ai/shell-commands.md, /.ai/tools.md, /Source/TimeWarp.Tool/README.md]
-# read: [ /.ai/index.md, /.ai/ai-instructions.md, /.ai/csharp-coding-standards.md, /.ai/dotnet-conventions.md, /.ai/environment.md, /.ai/project-structure.md, /.ai/references.md, /.ai/shell-commands.md, /.ai/tools.md, /Source/TimeWarp.Tool/README.md]
+read:
+ - .editorconfig
+ - README.md
+ - .ai/index.md
+ - .ai/ai-instructions.md
+ - .ai/csharp-coding-standards.md
+ - .ai/dotnet-conventions.md
+ - .ai/environment.md
+ - .ai/project-structure.md
+ - .ai/references.md
+ - .ai/shell-commands.md
+ - .ai/tools.md
+ - Source/TimeWarp.Tool/README.md 
 
 ## Use VI editing mode in the terminal (default: False)
 #vim: false
