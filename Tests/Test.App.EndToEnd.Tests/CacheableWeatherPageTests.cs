@@ -91,7 +91,7 @@ public class CacheableWeatherTests : PageTest
 
     // Validate the weather table
     Console.WriteLine("Checking if weather table is visible");
-    var isWeatherTableVisible = await WeatherTableLocator.IsVisibleAsync();
+    bool isWeatherTableVisible = await WeatherTableLocator.IsVisibleAsync();
     Console.WriteLine($"Weather table visibility: {isWeatherTableVisible}");
     await Expect(WeatherTableLocator).ToBeVisibleAsync();
     Console.WriteLine("Weather table visibility check completed");
@@ -99,7 +99,7 @@ public class CacheableWeatherTests : PageTest
     // Validate the cache key
     const string expectedCacheKey = "Test.App.Client.Features.WeatherForecast.CacheableWeatherState+FetchWeatherForecastsActionSet+Action|{}";
     Console.WriteLine($"Checking cache key. Expected: {expectedCacheKey}");
-    var actualCacheKey = await CacheKeyLocator.TextContentAsync();
+    string? actualCacheKey = await CacheKeyLocator.TextContentAsync();
     Console.WriteLine($"Actual cache key: {actualCacheKey}");
     await Expect(CacheKeyLocator).ToHaveTextAsync(expectedCacheKey);
     Console.WriteLine("Cache key check completed");
