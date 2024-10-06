@@ -310,3 +310,9 @@ __pycache__/
 /Tests/Test.App/Test.App.Client/Generated/**
 /Tests/Test.App.EndToEnd.Tests/Output/**
 /Tests/Test.App/Output/**
+
+/.aider.input.history.md
+/.aider.chat.history.md
+/.aider.tags.cache.v3/cache.db
+/.aider.tags.cache.v3/cache.db-shm
+/.aider.tags.cache.v3/cache.db-wal
