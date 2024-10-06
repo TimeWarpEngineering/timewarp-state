@@ -47,6 +47,8 @@ internal class Program
     // Define the /api/weather endpoint
     app.MapGet("/api/weather", () =>
     {
+      Console.WriteLine("Weather API endpoint called at: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+      
       var startDate = DateOnly.FromDateTime(DateTime.Now);
       string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
       GetWeatherForecasts.WeatherForecastDto[] forecasts = 
@@ -61,7 +63,9 @@ internal class Program
                 Random.Shared.Next(-20, 55)
               )
           ).ToArray();
-        
+      
+      Console.WriteLine($"Generated {forecasts.Length} weather forecasts");
+      
       return Results.Ok(forecasts);
     });
 
