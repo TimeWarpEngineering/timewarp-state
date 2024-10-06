@@ -168,10 +168,6 @@ function Start-Sut {
       Write-Host "Changing directory to: $OutputPath"
       Push-Location $OutputPath
       try {
-        Write-Host "Current directory: $(Get-Location)"
-        Write-Host "Current directory contents:"
-        Get-ChildItem | ForEach-Object { Write-Host $_.Name }
-        
         if ($IsWindows) {
           $executableName = "Test.App.Server.exe"
         } else {
