@@ -91,47 +91,33 @@ public class CacheableWeatherTests : PageTest
 
     // Validate the weather table
     Console.WriteLine("Checking if weather table is visible");
-    bool isWeatherTableVisible = await WeatherTableLocator.IsVisibleAsync();
-    Console.WriteLine($"Weather table visibility: {isWeatherTableVisible}");
     await Expect(WeatherTableLocator).ToBeVisibleAsync();
     Console.WriteLine("Weather table visibility check completed");
 
     // Validate the cache key
     const string expectedCacheKey = "Test.App.Client.Features.WeatherForecast.CacheableWeatherState+FetchWeatherForecastsActionSet+Action|{}";
     Console.WriteLine($"Checking cache key. Expected: {expectedCacheKey}");
-    string? actualCacheKey = await CacheKeyLocator.TextContentAsync();
-    Console.WriteLine($"Actual cache key: {actualCacheKey}");
     await Expect(CacheKeyLocator).ToHaveTextAsync(expectedCacheKey);
     Console.WriteLine("Cache key check completed");
 
     // Validate the timestamp
     Console.WriteLine("Checking timestamp");
-    string? currentTimestamp = await TimeStampLocator.TextContentAsync();
+    string currentTimestamp = await TimeStampLocator.TextContentAsync();
     Console.WriteLine($"Current timestamp: {currentTimestamp}");
     
-    if (isCached)
+    if (isCached && previousTimeStamp != null)
     {
-      if (previousTimeStamp != null)
-      {
-        Console.WriteLine($"Expecting timestamp to match previous: {previousTimeStamp}");
-        await Expect(TimeStampLocator).ToHaveTextAsync(previousTimeStamp);
-      }
-      else
-      {
-        Console.WriteLine("Previous timestamp is null, skipping comparison");
-      }
+      Console.WriteLine($"Expecting timestamp to match previous: {previousTimeStamp}");
+      await Expect(TimeStampLocator).ToHaveTextAsync(previousTimeStamp);
+    }
+    else if (!isCached && previousTimeStamp != null)
+    {
+      Console.WriteLine($"Expecting timestamp to be different from previous: {previousTimeStamp}");
+      await Expect(TimeStampLocator).Not.ToHaveTextAsync(previousTimeStamp);
     }
     else
     {
-      if (previousTimeStamp != null)
-      {
-        Console.WriteLine($"Expecting timestamp to be different from previous: {previousTimeStamp}");
-        await Expect(TimeStampLocator).Not.ToHaveTextAsync(previousTimeStamp);
-      }
-      else
-      {
-        Console.WriteLine("Previous timestamp is null, skipping comparison");
-      }
+      Console.WriteLine("Previous timestamp is null, skipping comparison");
     }
     Console.WriteLine("Timestamp check completed");
 
