@@ -43,7 +43,7 @@ public class CacheableWeatherTests : PageTest
 
     // Validate weather forecasts and cache state
     Console.WriteLine("Step 3: Validating weather forecasts and cache state (first fetch)");
-    await LogPageContentOnFailure(async () => await ValidateWeatherForecastsAndCacheState(true));
+    await ValidateWeatherForecastsAndCacheState(true);
     Console.WriteLine("First fetch validated");
 
     // Click the button a second time within the CacheDuration
@@ -53,7 +53,7 @@ public class CacheableWeatherTests : PageTest
 
     // Validate weather forecasts and cache state again
     Console.WriteLine("Step 5: Validating weather forecasts and cache state (second fetch)");
-    await LogPageContentOnFailure(async () => await ValidateWeatherForecastsAndCacheState(true));
+    await ValidateWeatherForecastsAndCacheState(true);
     Console.WriteLine("Second fetch validated");
 
     // Wait longer than cache duration and then click the button a third time
@@ -67,7 +67,7 @@ public class CacheableWeatherTests : PageTest
 
     // Validate new weather forecasts and cache state
     Console.WriteLine("Step 8: Validating new weather forecasts and cache state");
-    await LogPageContentOnFailure(async () => await ValidateWeatherForecastsAndCacheState(false));
+    await ValidateWeatherForecastsAndCacheState(false);
     Console.WriteLine("Third fetch validated");
 
     Console.WriteLine("TestCacheableWeather completed successfully");
@@ -104,7 +104,7 @@ public class CacheableWeatherTests : PageTest
     Console.WriteLine("Checking timestamp");
     string? currentTimestamp = await TimeStampLocator.TextContentAsync();
     Console.WriteLine($"Current timestamp: {currentTimestamp}");
-    
+
     if (isCached && previousTimeStamp != null)
     {
       Console.WriteLine($"Expecting timestamp to match previous: {previousTimeStamp}");
