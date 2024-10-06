@@ -13,12 +13,12 @@ internal class Program
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents()
         .AddInteractiveWebAssemblyComponents();
-    
+
     Client.Program.ConfigureServices(builder.Services);
     builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
-    
+
     WebApplication app = builder.Build();
-    
+
     ILogger<Program> logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
     builder.Services.LogTimeWarpStateMiddleware(logger);
 
@@ -34,7 +34,7 @@ internal class Program
       app.UseHsts();
     }
 
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
 
     app.UseStaticFiles();
     app.UseAntiforgery();
@@ -44,18 +44,17 @@ internal class Program
         .AddInteractiveWebAssemblyRenderMode()
         .AddAdditionalAssemblies(typeof(Test.App.Client.AssemblyMarker).Assembly);
 
-    // Define the /api/weather endpoint
-    app.MapGet("/api/weather", () =>
+    app.MapGet(GetWeatherForecasts.Query.RouteTemplate, () =>
     {
       Console.WriteLine("Weather API endpoint called at: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-      
+
       var startDate = DateOnly.FromDateTime(DateTime.Now);
       string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
-      GetWeatherForecasts.WeatherForecastDto[] forecasts = 
+      GetWeatherForecasts.WeatherForecastDto[] forecasts =
         Enumerable.Range(1, 5)
           .Select
           (
-            index => 
+            index =>
               new GetWeatherForecasts.WeatherForecastDto
               (
                 startDate.AddDays(index),
@@ -63,13 +62,13 @@ internal class Program
                 Random.Shared.Next(-20, 55)
               )
           ).ToArray();
-      
+
       Console.WriteLine($"Generated {forecasts.Length} weather forecasts");
-      
+
       return Results.Ok(forecasts);
     });
 
     app.Run();
-    
+
   }
 }
