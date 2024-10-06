@@ -4,6 +4,11 @@ namespace CacheableWeatherPageTests;
 public class CacheableWeatherTests : PageTest
 {
   private string SutBaseUrl = null!;
+  
+  [TestInitialize]
+  public async Task Initialize()
+  {
+    SutBaseUrl = Configuration.GetSutBaseUrl() ?? throw new InvalidOperationException("SUT base URL is not configured.");
   private ILocator CacheKeyLocator = null!;
   private ILocator CacheDurationLocator = null!;
   private ILocator TimeStampLocator = null!;
