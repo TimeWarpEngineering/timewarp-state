@@ -280,7 +280,6 @@ read:
  - .ai/references.md
  - .ai/shell-commands.md
  - .ai/tools.md
- - Source/TimeWarp.Tool/README.md 
 
 ## Use VI editing mode in the terminal (default: False)
 #vim: false
