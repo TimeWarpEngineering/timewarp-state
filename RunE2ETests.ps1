@@ -13,6 +13,14 @@ $MaxRetries = 30
 $RetryInterval = 1
 $RunMode = "Auto"  # Possible values: "Auto", "Manual", "Development", "Release"
 
+function Write-StepHeader($stepName) {
+    Write-Host "`n========== Starting: $stepName ==========" -ForegroundColor Cyan
+}
+
+function Write-StepFooter($stepName) {
+    Write-Host "========== Completed: $stepName ==========`n" -ForegroundColor Green
+}
+
 function Setup-DeveloperCertificate {
   Write-Host "Setting up ASP.NET Core developer certificate..."
   
@@ -258,17 +266,37 @@ function Kill-Sut {
 }
 
 # Main script execution
+Write-StepHeader "Restore-Tools-And-Cleanup"
 Restore-Tools-And-Cleanup
+Write-StepFooter "Restore-Tools-And-Cleanup"
+
+Write-StepHeader "Build-Analyzer"
 Build-Analyzer
+Write-StepFooter "Build-Analyzer"
+
+Write-StepHeader "Build-SourceGenerator"
 Build-SourceGenerator
+Write-StepFooter "Build-SourceGenerator"
+
+Write-StepHeader "Build-And-Publish-Sut"
 Build-And-Publish-Sut
+Write-StepFooter "Build-And-Publish-Sut"
+
+Write-StepHeader "Build-Test"
 Build-Test
+Write-StepFooter "Build-Test"
 
+Write-StepHeader "Ensure-Browsers-Installed"
 Ensure-Browsers-Installed
+Write-StepFooter "Ensure-Browsers-Installed"
 
+Write-StepHeader "Setup-DeveloperCertificate"
 Setup-DeveloperCertificate
+Write-StepFooter "Setup-DeveloperCertificate"
 
+Write-StepHeader "Start-Sut"
 $sutProcess = Start-Sut -Mode $RunMode
+Write-StepFooter "Start-Sut"
 
 try {
   Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
