@@ -275,14 +275,7 @@ function Run-Tests {
             }
         }
 
-        if ($testsFailed) {
-            Write-Host "Tests failed." -ForegroundColor Red
-            if ($RunMode -eq "Auto") {
-                $outputLogPath = Join-Path $OutputPath "sut_output.log"
-                $errorLogPath = Join-Path $OutputPath "sut_error.log"
-                Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
-            }
-        }
+        return $testsFailed
     }
     finally {
         Pop-Location
@@ -337,12 +330,22 @@ Write-StepFooter "Start-Sut"
 
 try {
     Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
+    
+    $testsFailed = Run-Tests
+
     if ($RunMode -eq "Auto") {
         $outputLogPath = Join-Path $OutputPath "sut_output.log"
         $errorLogPath = Join-Path $OutputPath "sut_error.log"
-        Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
+        
+        if ($testsFailed) {
+            Write-Host "Tests failed. Displaying SUT logs:" -ForegroundColor Red
+            Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
+        } else {
+            Write-Host "Tests passed. SUT logs available at:" -ForegroundColor Green
+            Write-Host "Output log: $outputLogPath" -ForegroundColor Cyan
+            Write-Host "Error log: $errorLogPath" -ForegroundColor Cyan
+        }
     }
-    Run-Tests
 
     if ($RunMode -eq "Development" -or $RunMode -eq "Release") {
         Write-Host "Tests completed. SUT is still running in $RunMode mode. Press Ctrl+C to stop."
