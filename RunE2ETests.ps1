@@ -236,20 +236,57 @@ function Wait-For-Sut {
   exit 1
 }
 
-function Run-Tests {
-  Push-Location $TestProjectDir
-  try {
-    $settings = @("chrome.runsettings")
+function Display-SutLogs {
+    param (
+        [string]$outputLogPath,
+        [string]$errorLogPath
+    )
 
-    Write-Host "Running E2E tests"
-    foreach ($setting in $settings) {
-      $targetArguments = @("--no-build", "--settings:PlaywrightSettings\$setting", "./Test.App.EndToEnd.Tests.csproj")
-      dotnet test $targetArguments
+    Write-Host "Displaying SUT logs:" -ForegroundColor Yellow
+
+    if (Test-Path $outputLogPath) {
+        Write-Host "SUT Output:" -ForegroundColor Cyan
+        Get-Content $outputLogPath
+    } else {
+        Write-Host "SUT Output log file not found at: $outputLogPath" -ForegroundColor Red
     }
-  }
-  finally {
-    Pop-Location
-  }
+    
+    if (Test-Path $errorLogPath) {
+        Write-Host "SUT Error Output:" -ForegroundColor Cyan
+        Get-Content $errorLogPath
+    } else {
+        Write-Host "SUT Error log file not found at: $errorLogPath" -ForegroundColor Red
+    }
+}
+
+function Run-Tests {
+    Push-Location $TestProjectDir
+    try {
+        $settings = @("chrome.runsettings")
+        $testsFailed = $false
+
+        Write-Host "Running E2E tests"
+        foreach ($setting in $settings) {
+            $targetArguments = @("--no-build", "--settings:PlaywrightSettings\$setting", "./Test.App.EndToEnd.Tests.csproj")
+            dotnet test $targetArguments
+            if ($LASTEXITCODE -ne 0) {
+                $testsFailed = $true
+                break
+            }
+        }
+
+        if ($testsFailed) {
+            Write-Host "Tests failed." -ForegroundColor Red
+            if ($RunMode -eq "Auto") {
+                $outputLogPath = Join-Path $OutputPath "sut_output.log"
+                $errorLogPath = Join-Path $OutputPath "sut_error.log"
+                Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
+            }
+        }
+    }
+    finally {
+        Pop-Location
+    }
 }
 
 function Kill-Sut {
@@ -299,37 +336,27 @@ $sutProcess = Start-Sut -Mode $RunMode
 Write-StepFooter "Start-Sut"
 
 try {
-  Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
-  if ($RunMode -eq "Auto") {
-    $outputLogPath = Join-Path $OutputPath "sut_output.log"
-    $errorLogPath = Join-Path $OutputPath "sut_error.log"
-    
-    Write-Host "Attempting to read SUT Output from: $outputLogPath"
-    if (Test-Path $outputLogPath) {
-      Write-Host "SUT Output:"
-      Get-Content $outputLogPath
-    } else {
-      Write-Host "SUT Output log file not found."
+    Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
+    if ($RunMode -eq "Auto") {
+        $outputLogPath = Join-Path $OutputPath "sut_output.log"
+        $errorLogPath = Join-Path $OutputPath "sut_error.log"
+        Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
     }
-    
-    Write-Host "Attempting to read SUT Error Output from: $errorLogPath"
-    if (Test-Path $errorLogPath) {
-      Write-Host "SUT Error Output:"
-      Get-Content $errorLogPath
-    } else {
-      Write-Host "SUT Error log file not found."
-    }
-  }
-  Run-Tests
+    Run-Tests
 
-  if ($RunMode -eq "Development" -or $RunMode -eq "Release") {
-    Write-Host "Tests completed. SUT is still running in $RunMode mode. Press Ctrl+C to stop."
-    while ($true) { Start-Sleep -Seconds 1 }
-  }
+    if ($RunMode -eq "Development" -or $RunMode -eq "Release") {
+        Write-Host "Tests completed. SUT is still running in $RunMode mode. Press Ctrl+C to stop."
+        while ($true) { Start-Sleep -Seconds 1 }
+    }
 }
 catch {
-  Write-Host "An error occurred during test execution: $_"
-  Write-Host "Stack trace: $($_.ScriptStackTrace)"
+    Write-Host "An error occurred during test execution: $_" -ForegroundColor Red
+    Write-Host "Stack trace: $($_.ScriptStackTrace)" -ForegroundColor Red
+    if ($RunMode -eq "Auto") {
+        $outputLogPath = Join-Path $OutputPath "sut_output.log"
+        $errorLogPath = Join-Path $OutputPath "sut_error.log"
+        Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
+    }
 }
 finally {
   if ($RunMode -eq "Auto") {
