@@ -36,6 +36,13 @@
         "reportgenerator"
       ],
       "rollForward": false
+    },
+    "linux-dev-certs": {
+      "version": "0.3.0",
+      "commands": [
+        "dotnet-linux-dev-certs"
+      ],
+      "rollForward": false
     }
   }
 }
