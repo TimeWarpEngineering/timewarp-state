@@ -295,10 +295,31 @@ function Kill-Sut {
   }
 }
 
+function Install-LinuxDevCerts {
+    if ($IsLinux) {
+        Write-StepHeader "Install-LinuxDevCerts"
+        Write-Host "Installing Linux development certificates..."
+        dotnet tool run dotnet-dev-certs install
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Linux development certificates installed successfully."
+        } else {
+            Write-Error "Failed to install Linux development certificates."
+            exit 1
+        }
+        Write-StepFooter "Install-LinuxDevCerts"
+    } else {
+        Write-Host "Skipping Linux development certificate installation (not running on Linux)."
+    }
+}
+
 # Main script execution
 Write-StepHeader "Restore-Tools-And-Cleanup"
 Restore-Tools-And-Cleanup
 Write-StepFooter "Restore-Tools-And-Cleanup"
+
+Write-StepHeader "Install-LinuxDevCerts"
+Install-LinuxDevCerts
+Write-StepFooter "Install-LinuxDevCerts"
 
 Write-StepHeader "Build-Analyzer"
 Build-Analyzer
