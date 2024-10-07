@@ -297,7 +297,6 @@ function Kill-Sut {
 
 function Install-LinuxDevCerts {
     if ($IsLinux) {
-        Write-StepHeader "Install-LinuxDevCerts"
         Write-Host "Installing Linux development certificates..."
         dotnet tool run dotnet-dev-certs install
         if ($LASTEXITCODE -eq 0) {
@@ -306,7 +305,6 @@ function Install-LinuxDevCerts {
             Write-Error "Failed to install Linux development certificates."
             exit 1
         }
-        Write-StepFooter "Install-LinuxDevCerts"
     } else {
         Write-Host "Skipping Linux development certificate installation (not running on Linux)."
     }
