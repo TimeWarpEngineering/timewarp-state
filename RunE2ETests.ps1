@@ -263,19 +263,19 @@ function Run-Tests {
     Push-Location $TestProjectDir
     try {
         $settings = @("chrome.runsettings")
-        $testsFailed = $false
+        $global:testsFailed = $false
 
-        Write-Host "Running E2E tests"
+        Write-Host "Running E2E tests" -ForegroundColor Cyan
         foreach ($setting in $settings) {
-            $targetArguments = @("--no-build", "--settings:PlaywrightSettings\$setting", "./Test.App.EndToEnd.Tests.csproj")
-            dotnet test $targetArguments
+            $targetArguments = @("test", "--no-build", "--settings:PlaywrightSettings\$setting", "./Test.App.EndToEnd.Tests.csproj")
+            Write-Host "Executing: dotnet $($targetArguments -join ' ')" -ForegroundColor Yellow
+            
+            dotnet @targetArguments
             if ($LASTEXITCODE -ne 0) {
-                $testsFailed = $true
+                $global:testsFailed = $true
                 break
             }
         }
-
-        return $testsFailed
     }
     finally {
         Pop-Location
@@ -331,13 +331,13 @@ Write-StepFooter "Start-Sut"
 try {
     Wait-For-Sut -url "${SutUrl}:${SutPort}" -maxRetries $MaxRetries -retryInterval $RetryInterval
     
-    $testsFailed = Run-Tests
+    Run-Tests
 
     if ($RunMode -eq "Auto") {
         $outputLogPath = Join-Path $OutputPath "sut_output.log"
         $errorLogPath = Join-Path $OutputPath "sut_error.log"
         
-        if ($testsFailed) {
+        if ($global:testsFailed) {
             Write-Host "Tests failed. Displaying SUT logs:" -ForegroundColor Red
             Display-SutLogs -outputLogPath $outputLogPath -errorLogPath $errorLogPath
         } else {
@@ -362,9 +362,9 @@ catch {
     }
 }
 finally {
-  if ($RunMode -eq "Auto") {
-    Kill-Sut -sutProcess $sutProcess
-  } else {
-    Write-Host "Please remember to stop the SUT process running in $RunMode mode."
-  }
+    if ($RunMode -eq "Auto") {
+        Kill-Sut -sutProcess $sutProcess
+    } else {
+        Write-Host "Please remember to stop the SUT process running in $RunMode mode."
+    }
 }
