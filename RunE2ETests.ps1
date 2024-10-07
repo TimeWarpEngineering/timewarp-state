@@ -298,7 +298,7 @@ function Kill-Sut {
 function Install-LinuxDevCerts {
     if ($IsLinux) {
         Write-Host "Installing Linux development certificates..."
-        dotnet tool run dotnet-dev-certs install
+        dotnet linux-dev-certs install
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Linux development certificates installed successfully."
         } else {
