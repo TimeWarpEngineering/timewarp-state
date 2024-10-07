@@ -100,6 +100,13 @@ function Build-SourceGenerator {
   }
 }
 
+function Update-ClientAppSettings {
+    $appSettingsPath = "$PSScriptRoot/Tests/Test.App/Test.App.Client/wwwroot/appsettings.json"
+    $appSettings = Get-Content $appSettingsPath | ConvertFrom-Json
+    $appSettings.UseHttp = $UseHttp
+    $appSettings | ConvertTo-Json | Set-Content $appSettingsPath
+}
+
 function Build-And-Publish-Sut {
   Push-Location $SutProjectDir
   try {
@@ -326,6 +333,10 @@ Write-StepFooter "Build-Analyzer"
 Write-StepHeader "Build-SourceGenerator"
 Build-SourceGenerator
 Write-StepFooter "Build-SourceGenerator"
+
+Write-StepHeader "Update-ClientAppSettings"
+Update-ClientAppSettings
+Write-StepFooter "Update-ClientAppSettings"
 
 Write-StepHeader "Build-And-Publish-Sut"
 Build-And-Publish-Sut
