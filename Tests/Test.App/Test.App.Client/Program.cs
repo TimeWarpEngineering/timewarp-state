@@ -8,12 +8,12 @@ public class Program
     builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
     SetIsoCulture();
     ConfigureServices(builder.Services);
-    
+
     WebAssemblyHost webAssemblyHost = builder.Build();
     ILogger<Program> logger = webAssemblyHost.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
     logger.LogInformation("Starting up Client...");
     builder.Services.LogTimeWarpStateMiddleware(logger);
-       
+
     await webAssemblyHost.RunAsync();
   }
   public static void ConfigureServices(IServiceCollection serviceCollection)
@@ -29,10 +29,10 @@ public class Program
         options
         .UseReduxDevTools
         (
-          reduxDevToolsOptions => 
+          reduxDevToolsOptions =>
             {
               reduxDevToolsOptions.Name = "Test App";
-              reduxDevToolsOptions.Trace = true; 
+              reduxDevToolsOptions.Trace = true;
             }
         );
         options.Assemblies =
@@ -57,7 +57,7 @@ public class Program
         BaseAddress = new Uri("https://localhost:7011")
       });
   }
-  
+
   private static void SetIsoCulture()
   {
     var isoCulture =
