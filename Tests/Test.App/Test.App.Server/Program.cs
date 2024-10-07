@@ -14,7 +14,7 @@ internal class Program
         .AddInteractiveServerComponents()
         .AddInteractiveWebAssemblyComponents();
 
-    Client.Program.ConfigureServices(builder.Services);
+    Client.Program.ConfigureServices(builder.Services, builder.Configuration);
     builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
 
     WebApplication app = builder.Build();
