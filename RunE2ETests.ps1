@@ -21,31 +21,6 @@ function Write-StepFooter($stepName) {
     Write-Host "========== Completed: $stepName ==========`n" -ForegroundColor Green
 }
 
-function Setup-DeveloperCertificate {
-  Write-Host "Setting up ASP.NET Core developer certificate..."
-  
-  # Check if the certificate exists and is valid
-  dotnet dev-certs https --check --quiet
-  
-  if ($LASTEXITCODE -ne 0) {
-    Write-Host "Developer certificate not found or not valid. Creating a new one..."
-    
-    # Clean any existing certificates
-    dotnet dev-certs https --clean --quiet
-    
-    # Create and trust the developer certificate
-    dotnet dev-certs https --trust --quiet
-    
-    if ($LASTEXITCODE -eq 0) {
-      Write-Host "Developer certificate created and trusted successfully."
-    } else {
-      Write-Error "Failed to create or trust the developer certificate."
-      exit 1
-    }
-  } else {
-    Write-Host "Valid developer certificate already exists."
-  }
-}
 
 function Ensure-Browsers-Installed {
   $playwrightPath = "$TestProjectDir/bin/Debug/net8.0/playwright.ps1"
@@ -350,9 +325,6 @@ Write-StepHeader "Ensure-Browsers-Installed"
 Ensure-Browsers-Installed
 Write-StepFooter "Ensure-Browsers-Installed"
 
-Write-StepHeader "Setup-DeveloperCertificate"
-Setup-DeveloperCertificate
-Write-StepFooter "Setup-DeveloperCertificate"
 
 Write-StepHeader "Start-Sut"
 $sutProcess = Start-Sut -Mode $RunMode
