@@ -34,6 +34,6 @@ jobs:
         run: ./RunE2ETests.ps1
         working-directory: ${{ github.workspace }}
         env:
-          UseHttp: "true"
+          UseHttp: "false"
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
