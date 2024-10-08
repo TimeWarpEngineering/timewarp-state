@@ -18,7 +18,7 @@
 
   private async Task HandleFetchWeatherForecasts()
   {
-    await Mediator.Send(new CacheableWeatherState.FetchWeatherForecastsActionSet.Action());
+    await CacheableWeatherState.FetchWeatherForecasts();
   }
 }
 

@@ -7,14 +7,15 @@ public partial class WeatherForecastsState
   public static class FetchWeatherForecastsActionSet
   {
     internal sealed class Action : IAction;
-    
-    internal sealed  class Handler
-    (
-      IStore store,
-      HttpClient httpClient
-    ) : BaseActionHandler<Action>(store)
+
+    internal sealed  class Handler : BaseActionHandler<Action>
     {
-      private readonly HttpClient HttpClient = httpClient;
+      private readonly HttpClient HttpClient;
+
+      public Handler(IStore store, HttpClient httpClient) : base(store)
+      {
+        HttpClient = httpClient;
+      }
 
       public override async Task Handle
       (

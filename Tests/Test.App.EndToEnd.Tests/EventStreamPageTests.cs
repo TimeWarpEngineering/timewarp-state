@@ -53,8 +53,9 @@ public class EventStreamTests : PageTest
 
   private async Task ValidateEventsList()
   {
-    string eventsText = await EventsListLocator.TextContentAsync() ?? throw new InvalidOperationException("Events list text content is null.");
-    Assert.IsTrue(eventsText.Contains("Start:Test.App.Client.Features.Counter.CounterState+IncrementCountActionSet+Action"), "Start event not found.");
-    Assert.IsTrue(eventsText.Contains("Completed:Test.App.Client.Features.Counter.CounterState+IncrementCountActionSet+Action"), "Completed event not found.");
+    await Expect(EventsListLocator).ToContainTextAsync("Start:Test.App.Client.Features.Counter.CounterState+IncrementCountActionSet+Action");
+    await Expect(EventsListLocator).ToContainTextAsync("Completed:Test.App.Client.Features.Counter.CounterState+IncrementCountActionSet+Action");
   }
+
 }
+ 

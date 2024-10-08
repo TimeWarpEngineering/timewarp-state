@@ -17,7 +17,7 @@ public partial class ApplicationState
       CancellationToken cancellationToken
     )
     {
-      Logger.LogWarning("aExceptionNotification.Exception.Message: {ExceptionMessage}", exceptionNotification.Exception.Message);
+      Logger.LogWarning("exceptionNotification.Exception.Message: {ExceptionMessage}", exceptionNotification.Exception.Message);
       ApplicationState.ExceptionMessage = exceptionNotification.Exception.Message;
       return Task.CompletedTask;
     }

@@ -1,4 +1,5 @@
 $Env:ASPNETCORE_ENVIRONMENT = "Development"
+$Env:UseHttp = "false"  # Set to "true" if you want to use HTTP locally
 
 Push-Location $PSScriptRoot
 try {
@@ -11,4 +12,3 @@ try {
 finally {
   Pop-Location
 }
-    
