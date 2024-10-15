@@ -59,8 +59,8 @@
     ],
     "dest": "_site",
     "globalMetadata": {
-      "_appFaviconPath": "Assets/Logo.png",
-      "_appLogoPath":"Assets/Logo.png"
+      "_appFaviconPath": "Assets/Logo.svg",
+      "_appLogoPath":"Assets/Logo.svg"
     },
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
@@ -73,7 +73,7 @@
       "markdigExtensions": [
         "footnotes"
       ]
-    },    
+    },
     "noLangKeyword": false,
     "keepFileLink": false,
     "cleanupCacheHistory": false,
