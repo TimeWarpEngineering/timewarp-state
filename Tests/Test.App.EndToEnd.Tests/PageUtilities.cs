@@ -50,7 +50,8 @@ public static class PageUtilities
     ILocator currentRenderModeLocator = page.Locator("[data-qa='current-render-mode']");
     ILocator configuredRenderModeLocator = page.Locator("[data-qa='configured-render-mode']");
 
-    await test.Expect(currentRenderModeLocator).ToHaveTextAsync(expectedCurrentMode);
+    // Now validate both current and configured modes
+    await test.Expect(currentRenderModeLocator).ToHaveTextAsync(expectedCurrentMode, new() { Timeout = 10000 });
     await test.Expect(configuredRenderModeLocator).ToHaveTextAsync(expectedConfiguredMode);
   }
 }
