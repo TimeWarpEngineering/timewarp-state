@@ -28,7 +28,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x' # Specify the version you need
+          dotnet-version: '8.0.403' # Specify the exact version we want
 
       - name: Run Build and Test Script
         run: ./.github/workflows/build-and-test.ps1
