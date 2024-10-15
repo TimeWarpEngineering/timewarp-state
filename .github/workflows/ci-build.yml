@@ -1,13 +1,13 @@
 name: Build and Test
 
 on:
-  pull_request:      
+  pull_request:
   workflow_dispatch:
 
 env:
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true 
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
   NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}
 
 jobs:
@@ -23,12 +23,12 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."   
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.403' # Specify the exact version we want
+          dotnet-version: '8.0.403'
 
       - name: Run Build and Test Script
         run: ./.github/workflows/build-and-test.ps1
