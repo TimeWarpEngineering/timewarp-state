@@ -18,6 +18,10 @@ try {
     }
   }
 
+  # List installed .NET SDKs
+  Write-Host "Listing installed .NET SDKs:"
+  Invoke-CommandWithExit "dotnet --list-sdks"
+
   # Restore Dotnet Tools
   Invoke-CommandWithExit "dotnet tool restore"
   Invoke-CommandWithExit "dotnet cleanup -y"
