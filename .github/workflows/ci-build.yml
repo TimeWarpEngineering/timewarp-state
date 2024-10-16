@@ -30,8 +30,12 @@ jobs:
         with:
           dotnet-version: '8.0.403'
 
-      - name: Run Build and Test Script
-        run: ./.github/workflows/build-and-test.ps1
+      - name: Run Build Script
+        run: ./.github/workflows/build.ps1
+        working-directory: ${{ github.workspace }}
+
+      - name: Run Test Script
+        run: ./.github/workflows/test.ps1
         working-directory: ${{ github.workspace }}
 
       # End to End Tests
