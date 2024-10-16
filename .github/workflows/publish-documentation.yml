@@ -47,23 +47,9 @@ jobs:
         with:
           dotnet-version: '8.0.403'
 
-      - name: Restore .NET tools
-        run: dotnet tool restore
-
-      - name: Build
-        run: |
-          cd ${{ github.workspace }}/Source/TimeWarp.State.Analyzer/
-          dotnet clean --configuration Release
-          dotnet build --configuration Release
-          cd ${{ github.workspace }}/Source/TimeWarp.State.SourceGenerator/
-          dotnet clean --configuration Release
-          dotnet build --configuration Release
-          cd ${{ github.workspace }}/Source/TimeWarp.State/
-          dotnet clean  --configuration Release
-          dotnet build --configuration Release
-          cd ${{ github.workspace }}/Source/TimeWarp.State.Plus/
-          dotnet clean  --configuration Release
-          dotnet build --configuration Release
+      - name: Run Build Script
+        run: ./.github/workflows/build.ps1
+        working-directory: ${{ github.workspace }}
 
       - name: DocFX Build
         working-directory: Documentation
