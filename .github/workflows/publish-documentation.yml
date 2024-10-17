@@ -56,6 +56,12 @@ jobs:
         run: dotnet tool run docfx docfx.json
         continue-on-error: false
 
+      - name: Check if _site directory was generated
+        run: |
+          if (!(Test-Path -Path './Documentation/_site')) {
+            throw "DocFX did not generate the _site directory. Aborting!"
+          }
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
