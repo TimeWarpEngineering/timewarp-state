@@ -1,77 +1,41 @@
-﻿name: Publish Documentation
+﻿name: Deploy Documentation to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches:
       - master
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-env:
-  DOTNET_NOLOGO: true                     # Disable the .NET logo in the console output
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
   deploy:
-    defaults:
-      run:
-        shell: pwsh
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: windows-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+    runs-on: ubuntu-latest
 
-      - name: Check out repository code
+    permissions:
+      pages: write  # Grants access to publish to Pages
+      id-token: write
+
+    steps:
+      - name: Checkout the repository
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.403'
 
-      - name: Run Build Script
-        run: ./.github/workflows/build.ps1
-        working-directory: ${{ github.workspace }}
-
-      - name: DocFX Build
-        working-directory: Documentation
-        run: dotnet tool run docfx docfx.json
-        continue-on-error: false
-
-      - name: Check if _site directory was generated
+      - name: Build Documentation
         run: |
-          if (!(Test-Path -Path './Documentation/_site')) {
-            throw "DocFX did not generate the _site directory. Aborting!"
-          }
+          dotnet tool install --global docfx
+          docfx docfx.json --output ./_site
+        working-directory: Documentation
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v2
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-artifact@v4
         with:
-          path: './Documentation/_site'
           name: 'github-pages'
+          path: './Documentation/_site'
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+        uses: actions/deploy-pages@v1
+        with:
+          artifact_name: 'github-pages'
