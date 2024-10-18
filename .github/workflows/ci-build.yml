@@ -6,7 +6,6 @@ on:
       - 'Source/**'
       - 'Tests/**'
       - '.github/workflows/ci-build.yml'
-      - '*.sln'
       - '*.props'
       - '*.targets'
   workflow_dispatch:

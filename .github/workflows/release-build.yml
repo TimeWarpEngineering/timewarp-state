@@ -9,7 +9,6 @@ on:
       - 'Tests/**'
       - '.github/workflows/release-build.yml'
       - 'Directory.Build.props'
-      - '*.sln'
       - '*.props'
       - '*.targets'
   release:
