@@ -2,6 +2,12 @@ name: Build and Test
 
 on:
   pull_request:
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/ci-build.yml'
+      - '*.props'
+      - '*.targets'
   workflow_dispatch:
 
 env:
