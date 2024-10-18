@@ -6,6 +6,7 @@ on:
       - 'Documentation/**'
       - '.github/workflows/publish-documentation.yml'
       - '.github/workflows/release-build.yml'
+      - '.ai/**'
   workflow_dispatch:
 
 env:
