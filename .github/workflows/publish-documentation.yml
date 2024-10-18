@@ -11,7 +11,7 @@ on:
 env:
   DOTNET_NOLOGO: true                     # Disable the .NET logo in the console output
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
-  DOTNET_CLI_TELEMETRY_OPTOUT: true 
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -22,16 +22,16 @@ permissions:
 # Allow one concurrent deployment
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  publish-docs:
     defaults:
       run:
         shell: pwsh
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}  
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: windows-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -39,16 +39,21 @@ jobs:
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
 
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
 
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - name: Setup DocFX
-        uses: crazy-max/ghaction-chocolatey@v2
+      - name: Dotnet Setup
+        uses: actions/setup-dotnet@v4
         with:
-          args: install docfx
+          dotnet-version: 8.x
+
+#      - name: Setup DocFX
+#        uses: crazy-max/ghaction-chocolatey@v2
+#        with:
+#          args: install docfx
+
+      - name: Setup DocFX
+        run: dotnet tool update --global docfx
 
       - name: Run Build Script
         run: ./.github/workflows/build.ps1
@@ -62,13 +67,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
           path: './Documentation/_site'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
