@@ -2,11 +2,13 @@ name: Build and Test
 
 on:
   pull_request:
-    paths-ignore:
-      - 'Documentation/**'
-      - '.github/workflows/publish-documentation.yml'
-      - '.github/workflows/release-build.yml'
-      - '.ai/**'
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/ci-build.yml'
+      - '*.sln'
+      - '*.props'
+      - '*.targets'
   workflow_dispatch:
 
 env:
