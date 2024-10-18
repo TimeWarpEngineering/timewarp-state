@@ -4,13 +4,23 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/release-build.yml'
+      - 'Directory.Build.props'
+      - '*.sln'
+      - '*.props'
+      - '*.targets'
+  release:
+    types: [created]
   workflow_dispatch:
 
 env:
-  DOTNET_NOLOGO: true                     # Disable the .NET logo in the console output
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true # Disable the .NET first time experience to skip caching NuGet packages and speed up the build
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}     # <-- This is the token for the GitHub account you want to use.
+  NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TO_NUGET_ORG}}
 
 jobs:
   build:
