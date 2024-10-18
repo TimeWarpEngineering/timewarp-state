@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - 'Documentation/**'
       - '.github/workflows/publish-documentation.yml'
+      - '.github/workflows/release-build.yml'
   workflow_dispatch:
 
 env:
