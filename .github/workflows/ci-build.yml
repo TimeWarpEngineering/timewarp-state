@@ -4,6 +4,7 @@ on:
   pull_request:
     paths-ignore:
       - 'Documentation/**'
+      - '.github/workflows/publish-documentation.yml'
   workflow_dispatch:
 
 env:
