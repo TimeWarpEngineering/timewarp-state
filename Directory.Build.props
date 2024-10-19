@@ -32,7 +32,12 @@
     <Nullable>disable</Nullable>
     <TargetFramework>net8.0</TargetFramework>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/ supports caching of nugets in CI builds -->
+  <PropertyGroup>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">true</RestoreLockedMode>
   </PropertyGroup>
 
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
