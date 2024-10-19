@@ -5,4 +5,8 @@
     <InformationalVersion>$(Version)</InformationalVersion>
     <FileVersion>$(Version)</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Update="packages.lock.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
 </Project>
