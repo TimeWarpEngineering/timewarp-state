@@ -16,7 +16,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
   </PropertyGroup>
-  
+
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -32,6 +32,7 @@
     <Nullable>disable</Nullable>
     <TargetFramework>net8.0</TargetFramework>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
@@ -52,7 +53,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
   </ItemGroup>
   <!-- End Source Link -->
-  
+
   <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
   <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" >
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
@@ -77,7 +78,7 @@
     <!--    <Message Importance="high" Text="OS: $(OS)" />-->
     <!--    <Message Importance="high" Text="CommitDate: $(LastCommitDate)" />-->
   </Target>
-  
+
 <!--  Common analyzers and code fixes-->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
