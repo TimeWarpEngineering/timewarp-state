@@ -59,8 +59,8 @@
     ],
     "dest": "_site",
     "globalMetadata": {
-      "_appFaviconPath": "Assets/Logo.png",
-      "_appLogoPath":"Assets/Logo.png"
+      "_appFaviconPath": "https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoWordsOrShadow.svg",
+      "_appLogoPath":"https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoWordsOrShadow.svg"
     },
     "globalMetadataFiles": [],
     "fileMetadataFiles": [],
