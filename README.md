@@ -15,7 +15,7 @@
 
 # TimeWarp.State
 
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
+![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoMarginNoShadow.svg)
 
 TimeWarp.State is a State Management architecture utilizing the MediatR pipeline to implement the flux pattern.
 
