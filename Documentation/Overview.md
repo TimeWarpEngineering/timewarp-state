@@ -17,9 +17,9 @@ title: TimeWarp.State Overview
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
 [![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
 
-# TimeWarp.State
+![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoMarginNoShadow.svg)
 
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
+# TimeWarp.State
 
 Previously known as Blazor-State. [![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 
