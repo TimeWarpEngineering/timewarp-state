@@ -19,7 +19,7 @@ All of the behaviors are written as middleware to the MediatR pipeline.
 
 Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/timewarp-state)** for source and filing of issues.
 
-[!include[Badges](Partials/Badges.md)]
+[!include[Installation](Partials/Installation.md)]
 
 ## Getting Started
 

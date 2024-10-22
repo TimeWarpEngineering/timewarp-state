@@ -6,18 +6,18 @@ try {
 
   # Define the list of files to include in the README.md in the desired order.
   $files = @(
-    "../Partials/Badges.md",
-    "../Partials/Summary.md",
-    "../Partials/GettingStarted.md",
-    "../Partials/Installation.md",
-    "../Partials/Releases.md",
-    "../Partials/License.md",
-    "../Partials/Contributing.md",
-    "../Partials/Contact.md"
+    "../Documentation/Partials/Badges.md",
+    "../Documentation/Partials/Summary.md",
+    "../Documentation/Partials/GettingStarted.md",
+    "../Documentation/Partials/Installation.md",
+    "../Documentation/Partials/Releases.md",
+    "../Documentation/Partials/License.md",
+    "../Documentation/Partials/Contributing.md",
+    "../Documentation/Partials/Contact.md"
   )
 
   # Define the output file.
-  $outputFile = "README.md"
+  $outputFile = "GeneratedREADME.md"
 
   # Remove the existing README.md if it exists to start fresh.
   if (Test-Path $outputFile) {
