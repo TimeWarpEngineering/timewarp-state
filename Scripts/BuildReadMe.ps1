@@ -26,7 +26,7 @@ try {
     )
 
     # Define the output file.
-    $outputFile = "README.md"
+    $outputFile = "GeneratedREADME.md"
 
     # Remove the existing README.md if it exists to start fresh.
     if (Test-Path $outputFile) {
@@ -39,8 +39,6 @@ try {
             $content = Get-Content $file -Raw
             $contentWithoutFrontMatter = Remove-YamlFrontMatter $content
             $contentWithoutFrontMatter | Add-Content $outputFile
-            # Add an empty line between sections for better readability.
-            Add-Content $outputFile "`n"
         }
         else {
             Write-Host "Warning: $file does not exist and will be skipped."
