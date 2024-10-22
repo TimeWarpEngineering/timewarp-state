@@ -20,11 +20,8 @@ Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/timewarp-s
 
 [!include[Installation](Partials/Installation.md)]
 
-## Getting Started
+[!include[Installation](Partials/GettingStarted.md)]
 
-If you are just beginning with Blazor then I recommend you start at the [dotnet blazor site](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor).
-
-If you already know a bit about Blazor then I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md)
 
 ### Tutorial
 
