@@ -17,6 +17,7 @@ try {
     $files = @(
         "../Documentation/Partials/Badges.md",
         "../Documentation/Partials/Summary.md",
+        "../Documentation/Partials/GiveAStar.md",
         "../Documentation/Partials/GettingStarted.md",
         "../Documentation/Partials/Installation.md",
         "../Documentation/Partials/Releases.md",

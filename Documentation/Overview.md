@@ -4,7 +4,6 @@ title: TimeWarp.State Overview
 ---
 [!include[Badges](Partials/Badges.md)]
 
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoMarginNoShadow.svg)
 
 # TimeWarp.State
 
