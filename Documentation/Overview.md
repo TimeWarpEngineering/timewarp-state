@@ -2,24 +2,10 @@
 uid: TimeWarpState:Overview.md
 title: TimeWarp.State Overview
 ---
+[!include[Badges](Partials/Badges.md)]
 
-[![Dotnet](https://img.shields.io/badge/dotnet-6.0-blue)](https://dotnet.microsoft.com)
-[![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/timewarp-state?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state)
-[![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
-[![workflow](https://github.com/TimeWarpEngineering/timewarp-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/timewarp-state/actions)
-[![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
-[![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
-[![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/timewarp-state.svg?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
-[![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/timewarp-state)](https://github.com/TimeWarpEngineering/timewarp-state)
-[![License](https://img.shields.io/github/license/TimeWarpEngineering/timewarp-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
-[![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Fblazor-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
-
-[![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
-[![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
 
 # TimeWarp.State
-
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
 
 Previously known as Blazor-State. [![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 
@@ -32,21 +18,10 @@ All of the behaviors are written as middleware to the MediatR pipeline.
 
 Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/timewarp-state)** for source and filing of issues.
 
-## Installation
+[!include[Installation](Partials/Installation.md)]
 
-You can get the latest NuGet packages from the official [TimeWarp NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
+[!include[Installation](Partials/GettingStarted.md)]
 
-* [TimeWarp.State](https://www.nuget.org/packages/TimeWarp.State/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
-
-```console
-dotnet add package TimeWarp.State
-```
-
-## Getting Started
-
-If you are just beginning with Blazor then I recommend you start at the [dotnet blazor site](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor).
-
-If you already know a bit about Blazor then I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md)
 
 ### Tutorial
 
@@ -134,13 +109,11 @@ Thus, async calls to fetch data, send emails, or just update local state
 are implemented in the same manner. Although the developer **should** be aware when Handlers have side effects and
 if the developer chose they could mark the Requests as such. For example **IActionWithSideEffect**
 
-[!include[Contributing](Partials/acknowledgements.md)]
+[!include[Acknowledgements](Partials/Acknowledgements.md)]
 
-## UnLicense
+[!include[License](Partials/License.md)]
 
-[The Unlicense](https://choosealicense.com/licenses/unlicense/)
-
-[!include[Contributing](Partials/contributing.md)]
+[!include[Contributing](Partials/Contributing.md)]
 
 #### Footnotes:
 
