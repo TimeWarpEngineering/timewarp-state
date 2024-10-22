@@ -6,14 +6,14 @@ try {
 
   # Define the list of files to include in the README.md in the desired order.
   $files = @(
-    "Badges.md",
-    "Summary.md",
-    "GettingStarted.md",
-    "Installation.md",
-    "Releases.md",
-    "License.md",
-    "Contributing.md",
-    "Contact.md"
+    "../Partials/Badges.md",
+    "../Partials/Summary.md",
+    "../Partials/GettingStarted.md",
+    "../Partials/Installation.md",
+    "../Partials/Releases.md",
+    "../Partials/License.md",
+    "../Partials/Contributing.md",
+    "../Partials/Contact.md"
   )
 
   # Define the output file.
