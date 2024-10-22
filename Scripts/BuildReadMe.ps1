@@ -27,7 +27,7 @@ try {
     )
 
     # Define the output file.
-    $outputFile = "GeneratedREADME.md"
+    $outputFile = "../README.md"
 
     # Remove the existing README.md if it exists to start fresh.
     if (Test-Path $outputFile) {
