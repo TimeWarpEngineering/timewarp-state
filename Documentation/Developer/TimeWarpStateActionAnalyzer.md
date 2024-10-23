@@ -4,7 +4,19 @@
 The TimeWarp State Action Analyzer enforces the architectural pattern where Action types must be nested within their corresponding State types. This analyzer helps maintain a clean and consistent codebase by ensuring proper organization of state-related code.
 
 ## Purpose
-This analyzer validates that any class, record, or struct implementing `IAction` is defined as a nested type within a class that implements `IState`. This enforces a clean architectural boundary and maintains clear relationships between Actions and their States.
+The analyzer ensures proper architectural boundaries by requiring that any class, record, or struct implementing `IAction` is defined as a nested type within a class that implements `IState`. This maintains clear relationships between Actions and their States and promotes a consistent codebase structure.
+
+## Rules
+
+### TW0001 - Action Nesting Rule
+- **Severity**: Error
+- **Category**: TimeWarp.State
+- **Description**: Actions in TimeWarp.State must be defined as nested types within their corresponding State classes.
+
+### TWD001 - Debug Diagnostic
+- **Severity**: Info
+- **Category**: Debug
+- **Description**: Provides debug information during analyzer execution. Useful for troubleshooting and development.
 
 ## Diagnostic Rules
 
