@@ -18,4 +18,11 @@ public static class TypeExtensions
 
     return type;
   }
+
+  public static string GetSimpleName(this Type type)
+  {
+    ReadOnlySpan<char> nameSpan = type.Name.AsSpan();
+    int backtickIndex = nameSpan.IndexOf('`');
+    return backtickIndex >= 0 ? nameSpan[..backtickIndex].ToString() : nameSpan.ToString();
+  }
 }

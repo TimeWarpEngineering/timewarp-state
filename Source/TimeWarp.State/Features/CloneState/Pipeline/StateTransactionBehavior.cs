@@ -12,7 +12,7 @@ namespace TimeWarp.Features.StateTransactions;
 ///   proceeding. If an action fails, the system reverts to the cloned state, thus preventing partial state updates
 ///   from corrupting the application state. It uses MediatR's pipeline behavior feature to hook into the request handling
 ///   process.
-/// </remarks> 
+/// </remarks>
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
@@ -33,7 +33,8 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     Store = store;
     Publisher = publisher;
 
-    string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
+    string className = typeof(ReduxDevToolsBehavior<,>).GetSimpleName();
+
     Logger.LogDebug
     (
       EventIds.StateTransactionBehavior_Constructing,
@@ -107,7 +108,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       );
 
       Store.SetState(originalState);
-      
+
       var exceptionNotification = new ExceptionNotification
       (
         requestName: nameof(StateTransactionBehavior<TRequest, TResponse>),
@@ -115,7 +116,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       );
 
       await Publisher.Publish(exceptionNotification, cancellationToken);
-      
+
       return default!;// It can be null, but we don't care since MediatR handles null values gracefully.
     }
   }
