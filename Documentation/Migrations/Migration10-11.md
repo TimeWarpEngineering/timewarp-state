@@ -9,4 +9,4 @@ title: Migrate From 10.X to 11.X
 
 Update your project to use .NET 8.0 or later.
 
-Change AddBlazorState to AddTimeWarpState<YourState> in your Startup.cs.
+Change AddBlazorState to AddTimeWarpState<YourState>.

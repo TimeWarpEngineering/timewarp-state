@@ -22,6 +22,7 @@ See [Migrations](xref:BlazorState:Migration10-11.md) for instructions on how to 
 
 ### New Features
 
+- Enabled chained inherits from State<> - so users can make/use their own BaseState<>
 - Introduced `TimeWarp.State.Plus` NuGet package with additional features.
 - Added `TimeWarp.State.Policies` NuGet package for architecture policies.
 - Implemented ActionSet source generator for simplified action creation.
@@ -48,12 +49,15 @@ See [Migrations](xref:BlazorState:Migration10-11.md) for instructions on how to 
 - Added support for central package management.
 - Improved developer tooling, including updated EditorConfig and coding standards.
 - Enhanced source generators for better development productivity.
+- Added TimeWarp.State.Analyzer for code analysis.
+  - ActionAnalyzer.
 
 ### Other Changes
 
 - Removed time travel debugging feature to optimize performance and reduce complexity.
 - Updated all dependencies to their latest stable versions.
 - Improved error handling and exception reporting throughout the library.
+- Added .ai folder to the repository for prompting AI-generated content.
 
 ### Migration Guide
 

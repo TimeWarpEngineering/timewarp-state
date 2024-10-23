@@ -3,6 +3,9 @@
 ## Overview
 The TimeWarp State Action Analyzer enforces the architectural pattern where Action types must be nested within their corresponding State types. This analyzer helps maintain a clean and consistent codebase by ensuring proper organization of state-related code.
 
+## Purpose
+The analyzer ensures proper architectural boundaries by requiring that any class, record, or struct implementing `IAction` is defined as a nested type within a class that implements `IState`. This maintains clear relationships between Actions and their States and promotes a consistent codebase structure.
+
 ## Rules
 
 ### TW0001 - Action Nesting Rule
@@ -14,6 +17,40 @@ The TimeWarp State Action Analyzer enforces the architectural pattern where Acti
 - **Severity**: Info
 - **Category**: Debug
 - **Description**: Provides debug information during analyzer execution. Useful for troubleshooting and development.
+
+## Diagnostic Rules
+
+### TW0001: Action Must Be Nested in State
+- **Severity**: Error
+- **Title**: TimeWarp.State Action should be a nested type of its State
+- **Description**: TimeWarp.State Actions should be nested types of their corresponding States.
+- **Message Format**: The Action '{0}' is not a nested type of its State
+
+### TWD001: Debug Information
+- **Severity**: Info
+- **Category**: Debug
+- **Description**: Provides debug information during analyzer execution. Useful for troubleshooting and development.
+- **Usage**: Not intended for end users
+
+## Implementation Details
+
+The analyzer:
+1. Registers for syntax node analysis of:
+  - Class declarations
+  - Record declarations
+  - Struct declarations
+
+2. For each type declaration, it:
+  - Checks if the type implements `IAction` (directly or through inheritance)
+  - Verifies the type is not abstract
+  - Ensures the type is nested within a class implementing `IState`
+
+## Key Methods
+
+- `Initialize`: Sets up the analyzer configuration and registers syntax node actions
+- `AnalyzeTypeDeclaration`: Main analysis logic for type declarations
+- `ImplementsIAction`: Recursively checks if a type implements IAction
+- `IsNestedInIState`: Verifies if the type is nested within an IState implementation
 
 ## Valid Code Examples
 
@@ -57,43 +94,26 @@ public class BaseState : IState
 
 ## Invalid Code Examples
 ```csharp
-// Error: Action not nested in State
-public class IncrementAction : IAction { }
+// ❌ Invalid - Action not nested in State
+public record InvalidAction : IAction { }
 
-// Error: Action not nested in State
-public record UpdateTemperatureAction(double Temperature) : IAction;
+// ❌ Invalid - Action not nested in State
+public class MyAction : IAction { }
 
-// Error: Action not nested in State, even with inheritance
+// ❌ Invalid - Action not nested in State, even with inheritance
 public abstract class BaseAction : IAction { }
 public class ConcreteAction : BaseAction { }
 ```
 
-## Implementation Details
-The analyzer performs several sophisticated checks:
+## Testing
 
-1. **Type Detection**
-   - Analyzes classes, records, and structs
-   - Identifies implementations of `IAction` interface
-   - Exempts abstract classes from the nesting requirement
+The analyzer includes comprehensive tests covering various scenarios:
+- Invalid record actions
+- Invalid class actions
+- Invalid struct actions
+- Invalid descendant class actions
 
-2. **Inheritance Handling**
-   - Recursively checks base types for `IAction` implementation
-   - Allows for complex inheritance hierarchies while maintaining nesting rules
-
-3. **State Validation**
-   - Traverses the type hierarchy to find parent types
-   - Verifies parent types implement `IState` interface
-   - Ensures proper nesting relationship
-
-4. **Debug Support**
-   - Includes debug diagnostic (TWD001) for development
-   - Provides detailed context during analysis
-   - Helps identify complex analysis scenarios
-
-## Configuration
-- Rules are enabled by default
-- No configuration options are currently supported
-- Debug diagnostics can be filtered using standard analyzer configuration
+See `TimeWarpStateActionAnalyser_Tests.cs` for specific test cases.
 
 ## Best Practices
 1. Always nest action types within their corresponding state

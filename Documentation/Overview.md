@@ -4,32 +4,13 @@ title: TimeWarp.State Overview
 ---
 [!include[Badges](Partials/Badges.md)]
 
-
-# TimeWarp.State
-
-Previously known as Blazor-State. [![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
-
-TimeWarp.State is a State Management architecture utilizing the MediatR pipeline.
-
-If you are familiar with MediatR [^1], Redux [^2],
-or the Command Pattern [^3]
-you will feel right at home.
-All of the behaviors are written as middleware to the MediatR pipeline.
+[!include[Installation](Partials/Summary.md)]
 
 Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/timewarp-state)** for source and filing of issues.
 
 [!include[Installation](Partials/Installation.md)]
 
 [!include[Installation](Partials/GettingStarted.md)]
-
-
-### Tutorial
-
-If you would like a basic step by step on building blazor app with TimeWarp.State then follow this [tutorial](xref:TimeWarp.State:00-StateActionHandler.md).
-
-### TimeWarp Architecture Template
-
-To create a distributed application that utilizes TimeWarp.State see the [timewarp-architecture template.](https://timewarpengineering.github.io/timewarp-architecture/TimeWarpBlazorTemplate/Overview.html)
 
 ## The TimeWarp.State Architecture
 
@@ -56,7 +37,7 @@ or move the GetState functionality into your component
 
 ### Pipeline
 
-TimeWarp.State utilizes the MediatR pipeline which allows for middleware integration
+**TimeWarp.State** utilizes the MediatR pipeline which allows for middleware integration
 by registering an interface with the dependency injection container [^4].
 TimeWarp.State provides the extension method [^5] , `AddTimeWarpState`, which registers behaviors on the pipeline.
 
@@ -110,10 +91,6 @@ are implemented in the same manner. Although the developer **should** be aware w
 if the developer chose they could mark the Requests as such. For example **IActionWithSideEffect**
 
 [!include[Acknowledgements](Partials/Acknowledgements.md)]
-
-[!include[License](Partials/License.md)]
-
-[!include[Contributing](Partials/Contributing.md)]
 
 #### Footnotes:
 

@@ -15,7 +15,7 @@
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
 [![Twitter](https://img.shields.io/twitter/follow/TheFreezeTeam1.svg)](https://twitter.com/intent/follow?screen_name=TheFreezeTeam1)
 
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoMarginNoShadow.svg)
+<img src="https://raw.githubusercontent.com/TimeWarpEngineering/timewarpengineering.github.io/refs/heads/master/images/LogoNoMarginNoShadow.svg" alt="logo" height="120" style="float: right" />
 
 # TimeWarp.State
 
@@ -31,11 +31,11 @@ If you find this project useful, please give it a star. Thanks!
 
 ## Getting Started
 
-If you are just beginning with Blazor then I recommend you start at the [dotnet blazor site](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor).
+I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md) for a step-by-step guide to building a Blazor app with TimeWarp.State.
 
-If you already know a bit about Blazor then I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md)
+See full [documentation](https://timewarpengineering.github.io/timewarp-state/).
 
-![TimeWarpStateOneWayFlow.drawio.svg](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/refs/heads/master/Documentation/Images/TimeWarpStateOneWayFlow.drawio.svg)
+<img src="https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/refs/heads/master/Documentation/Images/TimeWarpStateOneWayFlow.drawio.svg" alt="logo" height="400" style="" />
 
 ## Installation
 
