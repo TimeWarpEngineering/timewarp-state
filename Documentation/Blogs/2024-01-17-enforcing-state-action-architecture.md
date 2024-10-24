@@ -1,17 +1,3 @@
----
-Title: Enforcing State-Action Architecture with TimeWarp.State Analyzer
-Published: 2024-01-17
-Tags: 
-- .NET
-- C#
-- TimeWarp.State
-- Roslyn
-- Static Analysis
-Author: Steven T. Cramer
-Description: Learn how TimeWarp.State's analyzer ensures proper architectural boundaries by enforcing Actions to be nested within their State classes.
-Image: /assets/posts/2024/timewarp-state-analyzer.png
----
-
 # Enforcing State-Action Architecture with TimeWarp.State Analyzer
 
 TimeWarp.State enforces a clean architectural pattern where Actions must be nested within their corresponding State types. This design decision helps maintain clear boundaries and relationships between States and their Actions. Let's explore how the TimeWarp.State Analyzer enforces this pattern through static code analysis.
