@@ -1,6 +1,6 @@
 namespace Sample00.Client.Features.Counter;
 
-internal partial class CounterState
+public sealed partial class CounterState
 {
     public static class IncrementCountActionSet
     {
