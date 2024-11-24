@@ -35,7 +35,7 @@ This tutorial will walk you through the steps to create a Blazor application wit
 Add the TimeWarp.State NuGet package to the Client project:
 
 ```bash
-dotnet add ./Sample00.Client/Sample00.Client.csproj package TimeWarp.State
+dotnet add ./Sample00.Client/Sample00.Client.csproj package TimeWarp.State --prerelease
 ```
 
 Note: The Server project doesn't need the package directly as it takes a dependency on the Client project.
