@@ -272,6 +272,7 @@ read:
  - .editorconfig
  - README.md
  - .ai/index.md
+ - .ai/blog.md
  - .ai/ai-instructions.md
  - .ai/csharp-coding-standards.md
  - .ai/dotnet-conventions.md
