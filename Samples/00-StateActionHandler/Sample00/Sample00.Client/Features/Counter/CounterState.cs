@@ -1,6 +1,6 @@
 namespace Sample00.Client.Features.Counter;
 
-public sealed partial class CounterState : State<CounterState>
+internal sealed partial class CounterState : State<CounterState>
 {
     public int Count { get; private set; }
     public override void Initialize()
