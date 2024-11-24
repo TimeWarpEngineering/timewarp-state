@@ -25,7 +25,4 @@ public sealed partial class CounterState
             }
         }
     }
-    
-    public async Task IncrementCount(int amount = 1, CancellationToken cancellationToken = default) =>
-        await Sender.Send(new IncrementCountActionSet.Action(amount), cancellationToken);
 }
