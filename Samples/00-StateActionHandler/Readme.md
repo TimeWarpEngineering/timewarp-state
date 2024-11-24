@@ -307,7 +307,13 @@ private async Task IncrementCount()
 
 ### Validate
 
-Execute the app and confirm that the "Click me" button properly increments the value.
-And when you navigate away from the page and back, the value is still there.
+When you run the application with Interactive Auto render mode, you'll notice the following behavior:
+
+1. On initial load, the app starts on the server and the counter works as expected.
+2. The first time you navigate away from the counter page and back, the app transitions from Server to WebAssembly rendering. During this one-time transition, the counter state will reset.
+3. After this initial transition to WebAssembly, all subsequent navigation will maintain the counter's value, as the app continues running in WebAssembly mode.
+
+> [!NOTE]
+> This behavior is expected with Blazor's Interactive Auto render mode. The state reset occurs only during the one-time transition from Server to WebAssembly rendering. After that, the state persists across navigation as the application continues running in WebAssembly mode.
 
 Congratulations, that is the basics of TimeWarp.State.
