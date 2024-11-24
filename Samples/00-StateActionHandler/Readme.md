@@ -40,13 +40,26 @@ dotnet add ./Sample00.Client/Sample00.Client.csproj package TimeWarp.State --pre
 
 Note: The Server project doesn't need the package directly as it takes a dependency on the Client project.
 
-2. Create GlobalUsings.cs in the Client project to centralize common using statements:
+2. Create GlobalUsings.cs files to centralize common using statements:
 
+For the Client project:
 ```csharp
 // Sample00.Client/GlobalUsings.cs
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
+global using TimeWarp.State;
+```
+
+For the Server project:
+```csharp
+// Sample00/GlobalUsings.cs
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.Extensions.DependencyInjection;
+global using Sample00.Client.Pages;
+global using Sample00.Components;
 global using TimeWarp.State;
 ```
 
@@ -87,9 +100,6 @@ public class Program
 ```csharp
 // Sample00/Program.cs
 namespace Sample00;
-
-using Sample00.Client.Pages;
-using Sample00.Components;
 
 public class Program
 {
