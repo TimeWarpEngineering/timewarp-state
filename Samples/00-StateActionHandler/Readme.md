@@ -1,13 +1,18 @@
 ---
 uid: TimeWarp.State:00-StateActionHandler.md
 title: TimeWarp.State Blazor Interactive Auto Tutorial
+renderMode: InteractiveAuto
+description: Learn TimeWarp.State basics using Blazor with Interactive Auto render mode
 ---
 
 # TimeWarp.State Blazor Interactive Auto Tutorial
 
 ## State, Actions, and Handlers
 
-This tutorial will walk you through the steps to create a Blazor application with TimeWarp.State.
+This tutorial will walk you through the steps to create a Blazor application with TimeWarp.State using Interactive Auto render mode.
+
+> [!NOTE]
+> This tutorial uses Blazor's Interactive Auto render mode. For tutorials covering other render modes (Server-only or WebAssembly-only), please see the respective tutorials in this series.
 
 ### Prerequisites
 
@@ -15,9 +20,9 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Creating the Project
 
-- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample`
-- Navigate to the new project: `cd Sample`
-- Test the application: `dotnet run --project ./Sample/Sample.csproj`
+- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample00`
+- Navigate to the new project: `cd Sample00`
+- Test the application: `dotnet run --project ./Sample00/Sample00.csproj`
 - Open the URL shown in the command output (e.g., <http://localhost:5256>) and test the counter functionality. Note: Your URL will differ.
 
 > [!NOTE]
@@ -29,7 +34,7 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 Make TimeWarp.State functionality available from both Client and Server.
 
-#### Sample.Client Program.cs
+#### Sample00.Client Program.cs
 
 - Add required usings
 - Create `ConfigureServices` method
@@ -37,8 +42,8 @@ Make TimeWarp.State functionality available from both Client and Server.
 - Call `ConfigureServices` from `Main`
 
 ```csharp
-// Sample.Client/Program.cs
-namespace Sample.Client;
+// Sample00.Client/Program.cs
+namespace Sample00.Client;
 
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TimeWarp.State;
@@ -59,17 +64,17 @@ public class Program
 }
 ```
 
-#### Sample Program.cs
+#### Sample00 Program.cs
 
 - Add required usings.
-- Call `ConfigureServices` from `Sample.Client` `Program.cs`
+- Call `ConfigureServices` from `Sample00.Client` `Program.cs`
 
 ```csharp
-// Sample/Program.cs
-namespace Sample;
+// Sample00/Program.cs
+namespace Sample00;
 
-using Sample.Client.Pages;
-using Sample.Components;
+using Sample00.Client.Pages;
+using Sample00.Components;
 
 public class Program
 {
@@ -82,7 +87,7 @@ public class Program
       .AddInteractiveServerComponents()
       .AddInteractiveWebAssemblyComponents();
     
-    Sample.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
+    Sample00.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
 
     var app = builder.Build();
 
@@ -111,14 +116,14 @@ public class Program
 }
 ```
 
-#### Sample/Components/Routes.razor
+#### Sample00/Components/Routes.razor
 
-Because we had to make the `Client` `Program` public, we need to qualify `Program` with `Sample.Program`.
+Because we had to make the `Client` `Program` public, we need to qualify `Program` with `Sample00.Program`.
 
 ```html
-@* Sample/Components/Routes.razor *@
+@* Sample00/Components/Routes.razor *@
 
-<Router AppAssembly="typeof(Sample.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+<Router AppAssembly="typeof(Sample00.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
@@ -141,7 +146,7 @@ Validate the application still runs.
 
 ```csharp
 // CounterState.cs
-namespace Sample.Client.Features.Counter;
+namespace Sample00.Client.Features.Counter;
 
 using TimeWarp.State;
 
@@ -158,7 +163,7 @@ internal sealed partial class CounterState : State<CounterState>
 #### UI Integration
 
 Modify `Pages/Counter.razor`:
-- Add `@using Sample.Client.Features.Counter`
+- Add `@using Sample00.Client.Features.Counter`
 - Inherit from `TimeWarpStateComponent`.
 - Add a property to access `CounterState`.
 - Update display to use `CounterState`.
@@ -172,7 +177,7 @@ The code should look as follows:
 ```csharp
 @page "/counter"
 @rendermode InteractiveAuto
-@using Sample.Client.Features.Counter
+@using Sample00.Client.Features.Counter
 
 @inherits TimeWarp.State.TimeWarpStateComponent
 
@@ -218,7 +223,7 @@ In this file, the `Action` class should:
 
 * Be a nested class within `IncrementCount`, which in turn is a static class nested in `CounterState`.
 * Inherit from `IAction`.
-* Be part of the `Sample.Client.Features.Counter` namespace.
+* Be part of the `Sample00.Client.Features.Counter` namespace.
 * Contain the `Amount` property.
 
 The `Handler` class should:
@@ -231,7 +236,7 @@ The `Handler` class should:
 
 ```csharp
 // CounterState.IncrementCount.cs
-namespace Sample.Client.Features.Counter;
+namespace Sample00.Client.Features.Counter;
 
 using TimeWarp.State;
 
