@@ -276,9 +276,10 @@ partial class CounterState
     
     public sealed class Handler : ActionHandler<Action>
     {
-      public Handler(IStore store) : base(store) {}
+      public Handler(IStore store) : base(store) {}      
       
       private CounterState CounterState => Store.GetState<CounterState>();
+
       public override Task Handle(Action action, CancellationToken cancellationToken)
       {
         CounterState.Count += action.Amount;
@@ -286,9 +287,6 @@ partial class CounterState
       }
     }
   }
-  
-  public async Task IncrementCount(int amount = 1, CancellationToken cancellationToken = default) =>
-    await Sender.Send(new IncrementCountActionSet.Action(amount), cancellationToken);
 }
 
 ```

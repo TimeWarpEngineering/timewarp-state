@@ -18,6 +18,7 @@ partial class CounterState
             public Handler(IStore store) : base(store) { }
             
             private CounterState CounterState => Store.GetState<CounterState>();
+            
             public override Task Handle(Action action, CancellationToken cancellationToken)
             {
                 CounterState.Count += action.Amount;
