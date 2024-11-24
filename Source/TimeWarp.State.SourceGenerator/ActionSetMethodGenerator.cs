@@ -79,7 +79,7 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
       using System.Threading;
       using System.Threading.Tasks;
 
-      public partial class {{parentClassName}}
+      partial class {{parentClassName}}
       {
           public async Task {{methodName}}({{parameterList}}{{(parameters.Any() ? ", " : "")}}CancellationToken? externalCancellationToken = null)
           {

@@ -261,7 +261,7 @@ The `Handler` class should:
 // CounterState.IncrementCount.cs
 namespace Sample00.Client.Features.Counter;
 
-internal partial class CounterState
+partial class CounterState
 {
   public static class IncrementCountActionSet
   {
