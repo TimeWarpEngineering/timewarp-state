@@ -32,7 +32,7 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Install TimeWarp.State Package
 
-Add the TimeWarp.State NuGet package to the Client project:
+1. Add the TimeWarp.State NuGet package to the Client project:
 
 ```bash
 dotnet add ./Sample00.Client/Sample00.Client.csproj package TimeWarp.State --prerelease
@@ -40,23 +40,29 @@ dotnet add ./Sample00.Client/Sample00.Client.csproj package TimeWarp.State --pre
 
 Note: The Server project doesn't need the package directly as it takes a dependency on the Client project.
 
+2. Create GlobalUsings.cs in the Client project to centralize common using statements:
+
+```csharp
+// Sample00.Client/GlobalUsings.cs
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Microsoft.Extensions.DependencyInjection;
+global using TimeWarp.State;
+```
+
 ### Configure Services
 
 Make TimeWarp.State functionality available from both Client and Server.
 
 #### Sample00.Client Program.cs
 
-- Add required usings
-- Create `ConfigureServices` method
 - Make `Program` Public
+- Create `ConfigureServices` method
 - Call `ConfigureServices` from `Main`
 
 ```csharp
 // Sample00.Client/Program.cs
 namespace Sample00.Client;
-
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using TimeWarp.State;
 
 public class Program
 {
@@ -76,7 +82,6 @@ public class Program
 
 #### Sample00 Program.cs
 
-- Add required usings.
 - Call `ConfigureServices` from `Sample00.Client` `Program.cs`
 
 ```csharp
@@ -157,8 +162,6 @@ Validate the application still runs.
 ```csharp
 // CounterState.cs
 namespace Sample00.Client.Features.Counter;
-
-using TimeWarp.State;
 
 internal sealed partial class CounterState : State<CounterState>
 {
@@ -247,8 +250,6 @@ The `Handler` class should:
 ```csharp
 // CounterState.IncrementCount.cs
 namespace Sample00.Client.Features.Counter;
-
-using TimeWarp.State;
 
 internal partial class CounterState
 {
