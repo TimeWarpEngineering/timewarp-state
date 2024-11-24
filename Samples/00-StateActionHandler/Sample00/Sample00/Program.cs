@@ -1,6 +1,3 @@
-using Sample00.Client.Pages;
-using Sample00.Components;
-
 namespace Sample00;
 
 public class Program
@@ -13,6 +10,8 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
+        
+        Sample00.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
 
         var app = builder.Build();
 
