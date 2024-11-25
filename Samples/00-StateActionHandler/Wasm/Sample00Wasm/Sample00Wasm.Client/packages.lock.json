@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net8.0": {},
+    "net8.0/browser-wasm": {}
+  }
+}
