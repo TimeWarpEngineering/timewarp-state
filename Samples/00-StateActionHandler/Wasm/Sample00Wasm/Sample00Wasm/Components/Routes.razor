@@ -1,8 +1,0 @@
-﻿@* Sample00Wasm/Components/Routes.razor *@
-
-<Router AppAssembly="typeof(Sample00Wasm.Program).Assembly" AdditionalAssemblies="new[] { typeof(Sample00Wasm.Client._Imports).Assembly }">
-    <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-</Router>
