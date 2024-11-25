@@ -1,13 +1,13 @@
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-
 namespace Sample00Wasm.Client;
 
-class Program
+public class Program
 {
-    static async Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
+        
+        builder.Services.AddTimeWarpState();
+        
         await builder.Build().RunAsync();
     }
 }

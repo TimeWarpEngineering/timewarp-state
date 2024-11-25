@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="TimeWarp.State" Version="11.0.0-beta.91" />
   </ItemGroup>
 
 </Project>
