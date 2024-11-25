@@ -1,18 +1,18 @@
 ---
 uid: TimeWarp.State:00-StateActionHandler-Wasm.md
-title: TimeWarp.State Blazor Interactive WebAssembly Tutorial
-renderMode: InteractiveWebAssembly
-description: Learn TimeWarp.State basics using Blazor with Interactive WebAssembly render mode
+title: TimeWarp.State Blazor WebAssembly Tutorial
+renderMode: WebAssembly
+description: Learn TimeWarp.State basics using Blazor WebAssembly
 ---
 
-# TimeWarp.State Blazor Interactive WebAssembly Tutorial
+# TimeWarp.State Blazor WebAssembly Tutorial
 
 ## State, Actions, and Handlers
 
-This tutorial will walk you through the steps to create a Blazor application with TimeWarp.State using Interactive WebAssembly render mode.
+This tutorial will walk you through the steps to create a Blazor WebAssembly application with TimeWarp.State.
 
 > [!NOTE]
-> This tutorial uses Blazor's Interactive WebAssembly render mode. For tutorials covering other render modes (Auto or Server-only), please see the respective tutorials in this series.
+> This tutorial uses Blazor WebAssembly standalone mode. For tutorials covering other modes (Auto or Server), please see the respective tutorials in this series.
 
 ### Prerequisites
 
@@ -20,9 +20,9 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Creating the Project
 
-1. Create a new Blazor project:
+1. Create a new Blazor WebAssembly project:
 ```bash
-dotnet new blazor --use-program-main --interactivity WebAssembly -n Sample00Wasm
+dotnet new blazorwasm -n Sample00Wasm
 ```
 
 2. Navigate to the project directory:
@@ -32,10 +32,10 @@ cd Sample00Wasm
 
 3. Test the application:
 ```bash
-dotnet run --project ./Sample00Wasm/Sample00Wasm.csproj
+dotnet run
 ```
 
-4. Open the URL shown in the command output (e.g., http://localhost:5256) and test the counter functionality.
+4. Open the URL shown in the command output (e.g., http://localhost:5000) and test the counter functionality.
 
 > [!NOTE]
 > The counter resets to zero when you navigate away and return because each time you leave the page,
@@ -44,53 +44,47 @@ dotnet run --project ./Sample00Wasm/Sample00Wasm.csproj
 
 ### Install TimeWarp.State Package
 
-Add the TimeWarp.State NuGet package to the Client project:
+Add the TimeWarp.State NuGet package:
 
 ```bash
-dotnet add ./Sample00Wasm.Client/Sample00Wasm.Client.csproj package TimeWarp.State --prerelease
+dotnet add package TimeWarp.State --prerelease
 ```
 
 ### Configure Services
 
-Create GlobalUsings.cs files to centralize common using statements:
+Create GlobalUsings.cs to centralize common using statements:
 
-For the Client project:
 ```csharp
-// Sample00Wasm.Client/GlobalUsings.cs
+// GlobalUsings.cs
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.State;
 ```
 
-Update Program.cs in the Client project:
+Update Program.cs to add TimeWarp.State services:
 
 ```csharp
-// Sample00Wasm.Client/Program.cs
-namespace Sample00Wasm.Client;
+// Program.cs
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-public class Program
-{
-    public static async Task Main(string[] args)
-    {
-        var builder = WebAssemblyHostBuilder.CreateDefault(args);
-        
-        builder.Services.AddTimeWarpState();
-        
-        await builder.Build().RunAsync();
-    }
-}
+builder.Services.AddTimeWarpState();
+
+await builder.Build().RunAsync();
 ```
 
 ### Add Features
 
-1. Create a `Features` folder in the Client project.
+1. Create a `Features` folder in the project root.
 2. Inside `Features`, add a `Counter` folder.
 3. Inside `Counter`, add `CounterState.cs`:
 
 ```csharp
 // CounterState.cs
-namespace Sample00Wasm.Client.Features.Counter;
+namespace Sample00Wasm.Features.Counter;
 
 internal sealed partial class CounterState : State<CounterState>
 {
@@ -105,12 +99,11 @@ internal sealed partial class CounterState : State<CounterState>
 
 ### UI Integration
 
-Modify `Pages/Counter.razor` in the Client project:
+Modify `Pages/Counter.razor`:
 
 ```razor
 @page "/counter"
-@rendermode InteractiveWebAssembly
-@using Sample00Wasm.Client.Features.Counter
+@using Sample00Wasm.Features.Counter
 @inherits TimeWarp.State.TimeWarpStateComponent
 
 <PageTitle>Counter</PageTitle>
@@ -125,9 +118,9 @@ Modify `Pages/Counter.razor` in the Client project:
     CounterState CounterState => GetState<CounterState>();
     private int currentCount => CounterState.Count;
 
-    private void IncrementCount()
+    private async Task IncrementCount()
     {
-        // Empty for now
+        await CounterState.IncrementCount(amount: 5);
     }
 }
 ```
@@ -137,7 +130,7 @@ Modify `Pages/Counter.razor` in the Client project:
 Create `CounterState.IncrementCount.cs` in the Counter folder:
 
 ```csharp
-namespace Sample00Wasm.Client.Features.Counter;
+namespace Sample00Wasm.Features.Counter;
 
 partial class CounterState
 {
@@ -166,17 +159,6 @@ partial class CounterState
             }
         }
     }
-}
-```
-
-### Update Counter Component
-
-Update the `IncrementCount` method in `Counter.razor`:
-
-```razor
-private async Task IncrementCount()
-{
-    await CounterState.IncrementCount(amount: 5);
 }
 ```
 
