@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Sample00Wasm.Components;
+
 namespace Sample00Wasm;
 
 public class Program
