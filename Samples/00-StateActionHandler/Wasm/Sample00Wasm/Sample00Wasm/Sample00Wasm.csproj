@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sample00Wasm.Client\Sample00Wasm.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" VersionOverride="8.0.0" />
   </ItemGroup>
 
 </Project>
