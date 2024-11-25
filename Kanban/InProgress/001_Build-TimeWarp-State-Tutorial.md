@@ -42,8 +42,8 @@ Create a comprehensive tutorial for TimeWarp.State that walks users through buil
 - [x] Basic tutorial documentation in Readme.md
 
 ### Review
-- [ ] Tutorial walkthrough verification
-- [ ] Test across supported render modes
+- [x] Tutorial walkthrough verification
+- [x] Test across supported render modes
 
 ## Notes
 - Base tutorial content exists in Samples/00-StateActionHandler/Readme.md
