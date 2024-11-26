@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TimeWarp.State" Version="11.0.0-beta.91" />
+  </ItemGroup>
+
 </Project>
