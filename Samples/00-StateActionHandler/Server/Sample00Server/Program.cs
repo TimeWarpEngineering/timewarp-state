@@ -1,5 +1,3 @@
-using Sample00Server.Components;
-
 namespace Sample00Server;
 
 public class Program
@@ -11,6 +9,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        builder.Services.AddTimeWarpState(); // Add this line
 
         var app = builder.Build();
 
