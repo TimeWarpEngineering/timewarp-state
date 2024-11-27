@@ -17,8 +17,24 @@ This tutorial demonstrates how to add Redux DevTools support to your TimeWarp.St
 
 ## Enable Redux DevTools
 
-1. Update Program.cs to enable Redux DevTools:
+1. Add the TimeWarp.State.Plus package:
+```bash
+dotnet add package TimeWarp.State.Plus --prerelease
+```
 
+2. Update GlobalUsings.cs to include necessary namespaces:
+```csharp
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Web;
+global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+global using Microsoft.Extensions.DependencyInjection;
+global using TimeWarp.State;
+global using System.Reflection;
+global using TimeWarp.Features.Routing;
+global using Sample01Wasm;
+```
+
+3. Update Program.cs to enable Redux DevTools:
 ```csharp
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -39,36 +55,23 @@ builder.Services.AddTimeWarpState
 await builder.Build().RunAsync();
 ```
 
-## Set up JavaScript Interop
+4. Add Redux DevTools components to App.razor:
+```razor
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(Layout.MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
 
-Create App.razor.cs in the same directory as App.razor to handle JavaScript interop initialization:
-
-```csharp
-using Microsoft.AspNetCore.Components;
-using TimeWarp.State.Pipeline.ReduxDevTools;
-using TimeWarp.State.Features.JavaScriptInterop;
-using TimeWarp.State.Features.Routing;
-
-namespace Sample00Wasm;
-
-public partial class App : ComponentBase
-{
-    [Inject] private JsonRequestHandler JsonRequestHandler { get; set; } = null!;
-    [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; } = null!;
-
-    [Inject]
-    private RouteManager RouteManager { get; set; } = null!;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await ReduxDevToolsInterop.InitAsync();
-            await JsonRequestHandler.InitAsync();
-        }
-        await base.OnAfterRenderAsync(firstRender);
-    }
-}
+<TimeWarpJavaScriptInterop @rendermode=RenderMode.InteractiveWebAssembly></TimeWarpJavaScriptInterop>
+<ReduxDevTools @rendermode=RenderMode.InteractiveWebAssembly></ReduxDevTools>
 ```
 
 ## Using Redux DevTools
@@ -120,7 +123,7 @@ This view demonstrates how TimeWarp.State automatically maintains route informat
    - Check browser console for JavaScript errors
 
 2. **Actions Not Appearing**
-   - Confirm JavaScript interop initialization in App.razor.cs
+   - Verify TimeWarpJavaScriptInterop and ReduxDevTools components are added to App.razor
    - Verify inheritance from TimeWarpStateComponent
    - Check action handler registration
 
