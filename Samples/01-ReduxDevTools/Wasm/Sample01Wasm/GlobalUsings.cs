@@ -4,6 +4,6 @@ global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.State;
 global using System.Reflection;
+global using TimeWarp.Features.JavaScriptInterop;
+global using TimeWarp.Features.Routing;
 global using TimeWarp.State.Pipeline.ReduxDevTools;
-global using TimeWarp.State.Features.JavaScriptInterop;
-global using TimeWarp.State.Features.Routing;
