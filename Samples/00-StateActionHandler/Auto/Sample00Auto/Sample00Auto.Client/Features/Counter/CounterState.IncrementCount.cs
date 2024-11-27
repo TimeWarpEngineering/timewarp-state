@@ -1,4 +1,4 @@
-namespace Sample00.Client.Features.Counter;
+namespace Sample00Auto.Client.Features.Counter;
 
 partial class CounterState
 {

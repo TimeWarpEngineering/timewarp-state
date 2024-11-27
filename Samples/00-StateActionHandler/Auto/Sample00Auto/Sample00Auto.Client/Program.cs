@@ -1,4 +1,4 @@
-namespace Sample00.Client;
+namespace Sample00Auto.Client;
 
 public class Program
 {

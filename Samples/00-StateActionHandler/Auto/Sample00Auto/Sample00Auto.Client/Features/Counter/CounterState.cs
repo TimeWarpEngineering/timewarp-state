@@ -1,4 +1,4 @@
-namespace Sample00.Client.Features.Counter;
+namespace Sample00Auto.Client.Features.Counter;
 
 internal sealed partial class CounterState : State<CounterState>
 {

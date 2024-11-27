@@ -1,4 +1,4 @@
-namespace Sample00;
+namespace Sample00Auto;
 
 public class Program
 {
@@ -11,7 +11,7 @@ public class Program
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
         
-        Sample00.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
+        Sample00Auto.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
 
         var app = builder.Build();
 
