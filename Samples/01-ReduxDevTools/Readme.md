@@ -1,87 +1,139 @@
 ---
-uid: TimeWarp.State:Tutorial.md
-title: TimeWarp.State Adding ReduxDevTools
+uid: TimeWarp.State:01-ReduxDevTools.md
+title: Adding Redux DevTools to TimeWarp.State
+renderMode: WebAssembly
+description: Learn how to integrate Redux DevTools with TimeWarp.State for enhanced debugging
 ---
 
-### Prerequisites
+# Adding Redux DevTools to TimeWarp.State
 
-00-StateActionSet
+This tutorial demonstrates how to add Redux DevTools support to your TimeWarp.State Blazor WebAssembly application. Redux DevTools provides powerful debugging capabilities, allowing you to monitor state changes, inspect actions, and understand your application's behavior.
 
-## ReduxDevTools JavaScript Interop and RouteState
+## Prerequisites
 
-To [enable ReduxDevTools](xref:TimeWarp.State:AddReduxDevTools.md) update `Program.cs` as follows:
+- Completed [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler-Wasm.md)
+- Understanding of basic TimeWarp.State concepts (State, Actions, and Handlers)
+- [Redux DevTools Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) installed in Chrome
+
+## Enable Redux DevTools
+
+1. Update Program.cs to enable Redux DevTools:
 
 ```csharp
-using TimeWarp.State;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Sample.Client;
-using System.Reflection;
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
-
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 builder.Services.AddTimeWarpState
 (
     options =>
     {
-        options.UseReduxDevTools(); // <== Add this line
-        options.Assemblies =
-        new Assembly[]
+        options.UseReduxDevTools(); // Enable Redux DevTools
+        options.Assemblies = new Assembly[]
         {
-            typeof(Program).GetTypeInfo().Assembly,
+            typeof(Program).Assembly,
         };
     }
 );
 
-await builder.Build().RunAsync();    
+await builder.Build().RunAsync();
 ```
 
-To facilitate JavaScript Interop, enable ReduxDevTools, and manage RouteState, add `App.razor.cs` in the same directory as `App.razor` as follows:
+## Set up JavaScript Interop
+
+Create App.razor.cs in the same directory as App.razor to handle JavaScript interop initialization:
 
 ```csharp
-namespace Sample.Client;
-
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 using TimeWarp.State.Pipeline.ReduxDevTools;
 using TimeWarp.State.Features.JavaScriptInterop;
 using TimeWarp.State.Features.Routing;
-using Microsoft.AspNetCore.Components;
+
+namespace Sample00Wasm;
 
 public partial class App : ComponentBase
 {
-  [Inject] private JsonRequestHandler JsonRequestHandler { get; set; } = null!;
-  [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; } = null!;
+    [Inject] private JsonRequestHandler JsonRequestHandler { get; set; } = null!;
+    [Inject] private ReduxDevToolsInterop ReduxDevToolsInterop { get; set; } = null!;
 
-  [Inject]
-  [System.Diagnostics.CodeAnalysis.SuppressMessage
-    (
-      "CodeQuality", 
-      "IDE0051:Remove unused private members", 
-      Justification = "It is used, the constructor has side effects "
-    )
-  ]
-  private RouteManager RouteManager { get; set; } = null!;
+    [Inject]
+    private RouteManager RouteManager { get; set; } = null!;
 
-  protected override async Task OnAfterRenderAsync(bool firstRender)
-  {
-    await ReduxDevToolsInterop.InitAsync();
-    await JsonRequestHandler.InitAsync();
-  }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ReduxDevToolsInterop.InitAsync();
+            await JsonRequestHandler.InitAsync();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
 }
 ```
 
-Now run your app again and then Open the Redux Dev Tools (a tab in Chrome Dev Tools) and you should see Actions as they are executed.
+## Using Redux DevTools
 
-![ReduxDevTools](Images/ReduxDevTools.png)
-If you inspect the State in the DevTools you will also notice it maintains the current Route in RouteState.
+1. Run the application:
+```bash
+dotnet run
+```
 
-![ReduxRouteState](Images/ReduxRouteState.png)
+2. Open Chrome DevTools (F12) and navigate to the Redux tab.
 
-Congratulations that is the basics of TimeWarp.State.
+3. Interact with the Counter page and observe in Redux DevTools:
 
+![Redux DevTools Interface](../../Documentation/Images/ReduxDevTools.png)
 
-[^1]: https://github.com/TimeWarpEngineering/timewarp-architecture/blob/master/TimeWarp.Architecture/Documentation/Developer/Conceptual/ArchitecturalDecisionRecords/ProjectStructureAndConventions/ProjectStructureAndConventions.md
+As shown above, Redux DevTools provides a comprehensive view of:
+- Actions being dispatched (left panel)
+- Current state tree (right panel)
+- Action payloads and timestamps
+- State changes over time
+
+The interface also shows the RouteState being tracked:
+
+![Route State in Redux DevTools](../../Documentation/Images/ReduxRouteState.png)
+
+This view demonstrates how TimeWarp.State automatically maintains route information in the state tree, making it easy to debug navigation-related issues.
+
+### Key Features in Redux DevTools
+
+1. **Action List**: View a chronological list of dispatched actions
+2. **State Tree**: Inspect the current state structure
+3. **Action Details**: See the payload and effects of each action
+4. **Time Travel**: Jump to any previous state
+5. **Route State**: Monitor navigation changes through RouteState
+
+### Debugging Tips
+
+1. Use the "State" tab to inspect current values
+2. Check "Action" tab for payload details
+3. Use time-travel debugging to reproduce issues
+4. Monitor RouteState for navigation-related bugs
+5. Export/Import state for sharing bug reports
+
+## Common Issues and Solutions
+
+1. **Redux DevTools Not Showing**
+   - Ensure the Chrome extension is installed
+   - Verify UseReduxDevTools() is called in Program.cs
+   - Check browser console for JavaScript errors
+
+2. **Actions Not Appearing**
+   - Confirm JavaScript interop initialization in App.razor.cs
+   - Verify inheritance from TimeWarpStateComponent
+   - Check action handler registration
+
+3. **State Not Updating**
+   - Ensure proper action dispatch
+   - Verify handler implementation
+   - Check for exceptions in browser console
+
+## Next Steps
+
+- Explore advanced Redux DevTools features
+- Implement complex state management patterns
+- Add custom middleware for logging
+- Integrate with existing debugging workflows
+
+This implementation demonstrates how Redux DevTools enhances the development experience with TimeWarp.State by providing powerful debugging and state inspection capabilities.
