@@ -1,11 +1,17 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Sample01Wasm;
-
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddTimeWarpState
+(
+    options =>
+    {
+        options.UseReduxDevTools(); // Enable Redux DevTools
+        options.Assemblies = new Assembly[]
+        {
+            typeof(Program).Assembly,
+        };
+    }
+);
 
 await builder.Build().RunAsync();
