@@ -23,8 +23,8 @@ This is particularly useful for:
 
 ## Prerequisites
 
-- An existing TimeWarp.State application
-- TimeWarp.State.Plus package
+- Completed [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler-Wasm.md)
+- Understanding of basic TimeWarp.State concepts (State, Actions, and Handlers)
 
 ## Implementation Steps
 
