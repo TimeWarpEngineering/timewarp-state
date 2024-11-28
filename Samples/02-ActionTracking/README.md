@@ -28,7 +28,17 @@ This is particularly useful for:
 
 ## Implementation Steps
 
-### 1. Install TimeWarp.State.Plus Package
+### 1. Complete Sample00 Tutorial
+
+First, complete the [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler-Wasm.md), but use `Sample02ActionTracking` as the project name instead of `Sample00Wasm`:
+
+```bash
+dotnet new blazorwasm -n Sample02ActionTracking --use-program-main
+```
+
+Follow all steps in the Sample00 tutorial until you have a working counter application. This will be our starting point for adding Action Tracking.
+
+### 2. Add TimeWarp.State.Plus
 
 Add the TimeWarp.State.Plus NuGet package to your project:
 
@@ -36,7 +46,7 @@ Add the TimeWarp.State.Plus NuGet package to your project:
 dotnet add package TimeWarp.State.Plus --prerelease
 ```
 
-### 2. Configure Services
+### 3. Update Services
 
 Update your Program.cs to add TimeWarp.State.Plus services:
 
@@ -45,89 +55,163 @@ builder.Services.AddTimeWarpState();
 builder.Services.AddTimeWarpStatePlus(); // Adds Action Tracking and other Plus features
 ```
 
-### 3. Create Trackable Actions
+### 4. Create Demo State and Actions
 
-To make an action trackable, add the `[TrackAction]` attribute to your action class:
+Create a new file `Features/Demo/DemoState.cs`:
 
 ```csharp
-namespace YourApp.Features.YourFeature;
+namespace Sample02ActionTracking.Features.Demo;
 
-partial class YourState
+internal sealed partial class DemoState : State<DemoState>
 {
-    public static class LongRunningTaskActionSet
+    public DemoState(ISender sender) : base(sender) { }
+
+    public override void Initialize() { }
+
+    public Task StartQuickAction() => 
+        Sender.Send(new QuickActionSet.Action());
+
+    public Task StartLongAction() => 
+        Sender.Send(new LongActionSet.Action());
+}
+```
+
+Create `Features/Demo/DemoState.QuickAction.cs`:
+
+```csharp
+namespace Sample02ActionTracking.Features.Demo;
+
+partial class DemoState
+{
+    public static class QuickActionSet
     {
-        [TrackAction] // Mark the action for tracking
-        public sealed class Action : IAction
-        {
-            public int Duration { get; }
-            
-            public Action(int duration)
-            {
-                Duration = duration;
-            }
-        }
+        [TrackAction]
+        public sealed class Action : IAction { }
         
         public sealed class Handler : ActionHandler<Action>
         {
             public Handler(IStore store) : base(store) { }
 
-            public override async Task Handle(Action action, CancellationToken cancellationToken)
+            public override async Task Handle
+            (
+                Action action,
+                CancellationToken cancellationToken
+            )
             {
-                // Simulate long-running task
-                await Task.Delay(action.Duration, cancellationToken);
+                // Simulate a 2-second action
+                await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
             }
         }
     }
 }
 ```
 
-### 4. Access Action Tracking State
+Create `Features/Demo/DemoState.LongAction.cs`:
 
-In your components, inject and use the ActionTrackingState to monitor active actions:
+```csharp
+namespace Sample02ActionTracking.Features.Demo;
 
-```razor
-@using TimeWarp.Features.ActionTracking
-@inherits TimeWarpStateComponent
-
-<h3>Active Actions</h3>
-
-@if (ActionTrackingState.IsActive)
+partial class DemoState
 {
-    <p>Currently running actions:</p>
-    @foreach(IAction action in ActionTrackingState.ActiveActions)
+    public static class LongActionSet
     {
-        <p>@action.GetType().Name</p>
-    }
-}
-else
-{
-    <p>No active actions</p>
-}
+        [TrackAction]
+        public sealed class Action : IAction { }
+        
+        public sealed class Handler : ActionHandler<Action>
+        {
+            public Handler(IStore store) : base(store) { }
 
-@code {
-    ActionTrackingState ActionTrackingState => GetState<ActionTrackingState>();
-
-    private async Task StartLongRunningTask()
-    {
-        await YourState.LongRunningTask(duration: 5000); // 5 seconds
+            public override async Task Handle
+            (
+                Action action,
+                CancellationToken cancellationToken
+            )
+            {
+                // Simulate a 5-second action
+                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            }
+        }
     }
 }
 ```
 
-### 5. Track Specific Action Types
+### 5. Create Demo Page
 
-You can check if specific types of actions are running:
+Create `Pages/Demo.razor`:
 
 ```razor
+@page "/demo"
+@using Sample02ActionTracking.Features.Demo
+@using TimeWarp.Features.ActionTracking
+@inherits TimeWarpStateComponent
+
+<PageTitle>Action Tracking Demo</PageTitle>
+
+<h1>Action Tracking Demo</h1>
+
+<div class="mb-3">
+    <h3>Action Status</h3>
+    <p><strong>Any Active Actions:</strong> @ActionTrackingState.IsActive</p>
+    <p><strong>Quick Action Running:</strong> @IsQuickActionRunning</p>
+    <p><strong>Long Action Running:</strong> @IsLongActionRunning</p>
+</div>
+
+<div class="mb-3">
+    <h3>Active Actions</h3>
+    @if (ActionTrackingState.IsActive)
+    {
+        foreach (var action in ActionTrackingState.ActiveActions)
+        {
+            <div class="alert alert-info">
+                Running: @action.GetType().Name
+            </div>
+        }
+    }
+    else
+    {
+        <p>No active actions</p>
+    }
+</div>
+
+<div class="mb-3">
+    <button class="btn btn-primary me-2" @onclick="StartQuickAction">
+        Start 2-Second Action
+    </button>
+    <button class="btn btn-primary" @onclick="StartLongAction">
+        Start 5-Second Action
+    </button>
+</div>
+
 @code {
-    bool IsLoadingData => ActionTrackingState.IsAnyActive
+    DemoState DemoState => GetState<DemoState>();
+    ActionTrackingState ActionTrackingState => GetState<ActionTrackingState>();
+
+    bool IsQuickActionRunning => ActionTrackingState.IsAnyActive
     (
-        [
-            typeof(LoadDataActionSet.Action),
-            typeof(RefreshDataActionSet.Action)
-        ]
+        [typeof(DemoState.QuickActionSet.Action)]
     );
+
+    bool IsLongActionRunning => ActionTrackingState.IsAnyActive
+    (
+        [typeof(DemoState.LongActionSet.Action)]
+    );
+
+    private async Task StartQuickAction() => await DemoState.StartQuickAction();
+    private async Task StartLongAction() => await DemoState.StartLongAction();
 }
+```
+
+### 6. Update Navigation
+
+Update the navigation menu in `Shared/NavMenu.razor` to include the Demo page:
+
+```razor
+<div class="nav-item px-3">
+    <NavLink class="nav-link" href="demo">
+        <span class="oi oi-timer" aria-hidden="true"></span> Demo
+    </NavLink>
+</div>
 ```
 
 ## Best Practices
@@ -165,75 +249,22 @@ You can check if specific types of actions are running:
    - This is expected behavior if the same action is dispatched multiple times
    - Implement logic to prevent duplicate actions if needed
 
-## Example Implementation
-
-Here's a complete example of a tracked action:
-
-```csharp
-public sealed partial class ApplicationState : State<ApplicationState>
-{
-    public static class FiveSecondTaskActionSet
-    {
-        [TrackAction]
-        public sealed class Action : IAction { }
-        
-        public sealed class Handler : ActionHandler<Action>
-        {
-            public Handler(IStore store) : base(store) { }
-
-            public override async Task Handle
-            (
-                Action action,
-                CancellationToken cancellationToken
-            )
-            {
-                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
-            }
-        }
-    }
-
-    public Task FiveSecondTask() => 
-        Sender.Send(new FiveSecondTaskActionSet.Action());
-}
-```
-
-And its usage in a component:
-
-```razor
-@if (ActionTrackingState.IsActive)
-{
-    <div class="alert alert-info">
-        Processing @ActionTrackingState.ActiveActions.Count action(s)...
-    </div>
-}
-
-<button @onclick=FiveSecondTaskButtonClick>
-    Start 5-Second Task
-</button>
-
-@code {
-    private async Task FiveSecondTaskButtonClick() =>
-        await ApplicationState.FiveSecondTask();
-}
-```
-
 ## Advanced Usage
 
-### Concurrent Action Management
+### Track Multiple Action Types
 
-You can track multiple actions concurrently:
+You can track multiple types of actions:
 
-```csharp
-bool IsBusy => ActionTrackingState.IsActive;
-bool IsLoadingUsers => ActionTrackingState.IsAnyActive([typeof(LoadUsersAction)]);
-bool IsLoadingOrders => ActionTrackingState.IsAnyActive([typeof(LoadOrdersAction)]);
-bool IsAnyLoading => ActionTrackingState.IsAnyActive
-(
-    [
-        typeof(LoadUsersAction),
-        typeof(LoadOrdersAction)
-    ]
-);
+```razor
+@code {
+    bool IsAnyActionRunning => ActionTrackingState.IsAnyActive
+    (
+        [
+            typeof(DemoState.QuickActionSet.Action),
+            typeof(DemoState.LongActionSet.Action)
+        ]
+    );
+}
 ```
 
 ### Custom Action Tracking UI
@@ -262,4 +293,4 @@ Create reusable components for action tracking:
 }
 ```
 
-This tutorial demonstrates the core concepts and implementation details of Action Tracking in TimeWarp.State applications. By following these patterns, you can effectively manage and monitor long-running operations in your application.
+This tutorial demonstrates how to add Action Tracking to an existing TimeWarp.State application. The example shows how to track and monitor actions of varying durations, providing real-time feedback to users about the application's state.
