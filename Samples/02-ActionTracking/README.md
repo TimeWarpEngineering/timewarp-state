@@ -67,12 +67,6 @@ internal sealed partial class DemoState : State<DemoState>
     public DemoState(ISender sender) : base(sender) { }
 
     public override void Initialize() { }
-
-    public Task StartQuickAction() => 
-        Sender.Send(new QuickActionSet.Action());
-
-    public Task StartLongAction() => 
-        Sender.Send(new LongActionSet.Action());
 }
 ```
 
@@ -197,8 +191,11 @@ Create `Pages/Demo.razor`:
         [typeof(DemoState.LongActionSet.Action)]
     );
 
-    private async Task StartQuickAction() => await DemoState.StartQuickAction();
-    private async Task StartLongAction() => await DemoState.StartLongAction();
+    private async Task StartQuickAction() => 
+        await DemoState.QuickAction();
+
+    private async Task StartLongAction() => 
+        await DemoState.LongAction();
 }
 ```
 
