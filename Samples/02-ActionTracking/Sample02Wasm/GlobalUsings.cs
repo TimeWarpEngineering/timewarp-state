@@ -5,3 +5,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.State;
 global using TimeWarp.Features.ActionTracking;
 global using Sample02Wasm;
+global using MediatR;
