@@ -1,14 +1,15 @@
 # Task 007: Build Action Tracking Tutorial
 
 ## Description
-Create a comprehensive tutorial that demonstrates how to use TimeWarp.State's Action Tracking feature. This tutorial will show users how to track and monitor action states, implement loading indicators, and manage concurrent actions in their Blazor applications.
+Create a comprehensive tutorial that demonstrates how to use TimeWarp.State.Plus's Action Tracking feature. This tutorial will show users how to track and monitor action states, implement loading indicators, and manage concurrent actions in their Blazor applications.
 
 ## Requirements
 - Prerequisites must be clearly stated:
   1. Completed Sample00 StateActionHandler tutorial
   2. Understanding of basic TimeWarp.State concepts
+  3. TimeWarp.State.Plus package installed
 - Tutorial must cover:
-  1. Setting up Action Tracking
+  1. Setting up Action Tracking with TimeWarp.State.Plus
   2. Using the TrackAction attribute
   3. Implementing loading states
   4. Monitoring concurrent actions
@@ -31,8 +32,8 @@ Create a comprehensive tutorial that demonstrates how to use TimeWarp.State's Ac
 - [ ] Create sample scenarios for concurrent actions
 
 ### Implementation
-- [ ] Basic project setup instructions
-- [ ] Action Tracking configuration
+- [ ] Basic project setup instructions including TimeWarp.State.Plus installation
+- [ ] Action Tracking configuration with TimeWarp.State.Plus
 - [ ] Sample tracked action implementation
 - [ ] Loading indicator components
 - [ ] Concurrent action handling
@@ -55,10 +56,11 @@ Create a comprehensive tutorial that demonstrates how to use TimeWarp.State's Ac
   1. Test.App.Client/Features/Application/ApplicationState
   2. Test.App.Client/Pages/ActiveActionsPage.razor
 - Key concepts to document:
-  1. TrackAction attribute usage
-  2. ActionTrackingState integration
-  3. UI feedback patterns
-  4. Concurrent action management
+  1. TimeWarp.State.Plus package setup and configuration
+  2. TrackAction attribute usage
+  3. ActionTrackingState integration
+  4. UI feedback patterns
+  5. Concurrent action management
 - Include examples showing:
   1. Simple tracked action
   2. Multiple concurrent actions
