@@ -30,10 +30,10 @@ This is particularly useful for:
 
 ### 1. Complete Sample00 Tutorial
 
-First, complete the [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler-Wasm.md), but use `Sample02ActionTracking` as the project name instead of `Sample00Wasm`:
+First, complete the [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler-Wasm.md), but use `Sample02Wasm` as the project name:
 
 ```bash
-dotnet new blazorwasm -n Sample02ActionTracking --use-program-main
+dotnet new blazorwasm -n Sample02Wasm --use-program-main
 ```
 
 Follow all steps in the Sample00 tutorial until you have a working counter application. This will be our starting point for adding Action Tracking.
@@ -60,7 +60,7 @@ builder.Services.AddTimeWarpStatePlus(); // Adds Action Tracking and other Plus 
 Create a new file `Features/Demo/DemoState.cs`:
 
 ```csharp
-namespace Sample02ActionTracking.Features.Demo;
+namespace Sample02Wasm.Features.Demo;
 
 internal sealed partial class DemoState : State<DemoState>
 {
@@ -73,7 +73,7 @@ internal sealed partial class DemoState : State<DemoState>
 Create `Features/Demo/DemoState.QuickAction.cs`:
 
 ```csharp
-namespace Sample02ActionTracking.Features.Demo;
+namespace Sample02Wasm.Features.Demo;
 
 partial class DemoState
 {
@@ -103,7 +103,7 @@ partial class DemoState
 Create `Features/Demo/DemoState.LongAction.cs`:
 
 ```csharp
-namespace Sample02ActionTracking.Features.Demo;
+namespace Sample02Wasm.Features.Demo;
 
 partial class DemoState
 {
@@ -136,7 +136,7 @@ Create `Pages/Demo.razor`:
 
 ```razor
 @page "/demo"
-@using Sample02ActionTracking.Features.Demo
+@using Sample02Wasm.Features.Demo
 @using TimeWarp.Features.ActionTracking
 @inherits TimeWarpStateComponent
 
