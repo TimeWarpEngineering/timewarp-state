@@ -1,52 +1,58 @@
-# Task 007: Create Sample App Demonstrating Action Tracking Feature
+# Task 007: Create Action Tracking Tutorial and Sample
 
 ## Description
 
-Create a new sample application based on Sample00Wasm that demonstrates how to use the Action Tracking Feature from TimeWarp.State.Plus. This sample will help developers understand how to utilize action tracking in their applications by providing a clear, well-documented example.
+Create a step-by-step tutorial in the README explaining how to implement Action Tracking, followed by creating a sample application that demonstrates these concepts. This will help developers understand how to utilize the Action Tracking Feature from TimeWarp.State.Plus in their applications.
 
 ## Requirements
 
-- Create a new sample application based on Sample00Wasm
-- Create a new State (e.g., TaskDemoState) that implements actions to be tracked
-- Demonstrate usage of existing ActionTrackingState from TimeWarp.State.Plus
-- Show how to:
-  - Create trackable actions
-  - Use TrackActionAttribute
-  - Display action tracking information
-  - Handle multiple concurrent actions
+Phase 1 - Tutorial Creation:
+- Create a detailed tutorial in the README that explains:
+  - What Action Tracking is and its benefits
+  - How to use the existing ActionTrackingState from TimeWarp.State.Plus
+  - Step-by-step guide for implementing tracked actions
+  - How to display and manage action tracking information
+
+Phase 2 - Sample Implementation:
+- Create a sample application based on Sample00Wasm that implements the concepts from the tutorial
+- Demonstrate practical usage of action tracking features
 
 ## Checklist
 
-### Design
-- [ ] Review existing Sample00Wasm implementation
-- [ ] Design new State for tracked actions
-- [ ] Plan UI layout for action tracking display
-- [ ] Design sample actions with varying durations
+### Phase 1 - Tutorial
+- [ ] Research and outline tutorial structure
+- [ ] Document Action Tracking concept overview
+- [ ] Write step-by-step implementation guide:
+  - [ ] Adding TimeWarp.State.Plus package
+  - [ ] Creating trackable actions
+  - [ ] Using TrackActionAttribute
+  - [ ] Configuring ActionTrackingBehavior
+  - [ ] Displaying tracking information
+- [ ] Include code snippets and examples
+- [ ] Add troubleshooting section
+- [ ] Review and refine tutorial content
 
-### Implementation
+### Phase 2 - Sample Implementation
 - [ ] Create new sample project based on Sample00Wasm
-- [ ] Add TimeWarp.State.Plus package reference
-- [ ] Create new State for tracked actions (e.g., TaskDemoState)
-- [ ] Implement sample actions (TwoSecondAction, FiveSecondAction)
-- [ ] Add TrackActionAttribute to actions
-- [ ] Configure ActionTrackingBehavior in pipeline
-- [ ] Create UI components for action tracking display
-- [ ] Add action trigger buttons
-- [ ] Implement action status display
-- [ ] Add error handling for failed actions
+- [ ] Implement features following tutorial steps:
+  - [ ] Create State with tracked actions
+  - [ ] Implement sample actions (TwoSecondAction, FiveSecondAction)
+  - [ ] Add tracking configuration
+  - [ ] Create UI components
+- [ ] Verify implementation matches tutorial
+- [ ] Test and validate functionality
 
 ### Documentation
-- [ ] Add detailed comments explaining implementation
-- [ ] Create README with setup instructions
-- [ ] Document how to use action tracking
+- [ ] Update main documentation to reference tutorial
+- [ ] Add inline code comments
+- [ ] Create sample project README
 - [ ] Add usage examples
-- [ ] Update main documentation to reference new sample
 
 ### Review
-- [ ] Test with different action durations
-- [ ] Verify action tracking behavior
-- [ ] Ensure clear error handling
-- [ ] Review code quality and comments
+- [ ] Review tutorial clarity and completeness
+- [ ] Test tutorial steps for accuracy
+- [ ] Verify sample implementation
+- [ ] Review code quality
 - [ ] Test build and run process
 
 ## Notes
@@ -57,20 +63,30 @@ Reference implementations:
 - Source/TimeWarp.State.Plus/Features/ActionTracking/Pipeline/ActionTrackingBehavior.cs
 - Source/TimeWarp.State.Plus/Features/ActionTracking/Pipeline/TrackActionAttribute.cs
 
-The sample should demonstrate:
-- Creating actions that can be tracked
-- Using TrackActionAttribute properly
-- Displaying IsActive state
-- Filtering active actions by type
-- Handling multiple concurrent actions
-- Proper error handling
+Tutorial should cover:
+- Action Tracking concept explanation
+- Using existing ActionTrackingState
+- Creating trackable actions
+- Implementing tracking display
+- Error handling
+- Best practices
+
+Sample should demonstrate:
+- Practical implementation of tutorial concepts
+- Multiple action duration scenarios
+- Concurrent action handling
+- Error handling scenarios
 
 ## Implementation Notes
 
-Key implementation considerations:
-1. Base on Sample00Wasm structure
-2. Create new State with trackable actions
-3. Use existing ActionTrackingState from TimeWarp.State.Plus
-4. Include both quick and long-running actions
-5. Show proper error handling
-6. Demonstrate concurrent action tracking
+Tutorial considerations:
+1. Focus on clarity and step-by-step progression
+2. Include practical examples
+3. Explain why each step is necessary
+4. Address common pitfalls
+
+Sample considerations:
+1. Follow tutorial structure exactly
+2. Demonstrate practical usage
+3. Include error handling examples
+4. Show concurrent action tracking
