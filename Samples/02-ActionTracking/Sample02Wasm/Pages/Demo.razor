@@ -15,6 +15,15 @@
 </div>
 
 <div class="mb-3">
+    <button class="btn btn-primary me-2" @onclick="StartQuickAction">
+        Start 2-Second Action
+    </button>
+    <button class="btn btn-primary" @onclick="StartLongAction">
+        Start 5-Second Action
+    </button>
+</div>
+
+<div class="mb-3">
     <h3>Active Actions</h3>
     @if (ActionTrackingState.IsActive)
     {
@@ -29,15 +38,6 @@
     {
         <p>No active actions</p>
     }
-</div>
-
-<div class="mb-3">
-    <button class="btn btn-primary me-2" @onclick="StartQuickAction">
-        Start 2-Second Action
-    </button>
-    <button class="btn btn-primary" @onclick="StartLongAction">
-        Start 5-Second Action
-    </button>
 </div>
 
 @code {
