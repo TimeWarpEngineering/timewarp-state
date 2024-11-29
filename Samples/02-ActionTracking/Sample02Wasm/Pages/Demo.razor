@@ -10,15 +10,15 @@
 <div class="mb-3">
     <h3>Action Status</h3>
     <p><strong>Any Active Actions:</strong> @ActionTrackingState.IsActive</p>
-    <p><strong>Quick Action Running:</strong> @IsQuickActionRunning</p>
-    <p><strong>Long Action Running:</strong> @IsLongActionRunning</p>
+    <p><strong>Two Second Action Running:</strong> @IsTwoSecondActionRunning</p>
+    <p><strong>Five Second Action Running:</strong> @IsFiveSecondActionRunning</p>
 </div>
 
 <div class="mb-3">
-    <button class="btn btn-primary me-2" @onclick="StartQuickAction">
+    <button class="btn btn-primary me-2" @onclick="StartTwoSecondAction">
         Start 2-Second Action
     </button>
-    <button class="btn btn-primary" @onclick="StartLongAction">
+    <button class="btn btn-primary" @onclick="StartFiveSecondAction">
         Start 5-Second Action
     </button>
 </div>
@@ -44,19 +44,19 @@
     DemoState DemoState => GetState<DemoState>();
     ActionTrackingState ActionTrackingState => GetState<ActionTrackingState>();
 
-    bool IsQuickActionRunning => ActionTrackingState.IsAnyActive
+    bool IsTwoSecondActionRunning => ActionTrackingState.IsAnyActive
     (
-        [typeof(DemoState.QuickActionSet.Action)]
+        [typeof(DemoState.TwoSecondActionSet.Action)]
     );
 
-    bool IsLongActionRunning => ActionTrackingState.IsAnyActive
+    bool IsFiveSecondActionRunning => ActionTrackingState.IsAnyActive
     (
-        [typeof(DemoState.LongActionSet.Action)]
+        [typeof(DemoState.FiveSecondActionSet.Action)]
     );
 
-    private async Task StartQuickAction() => 
-        await DemoState.Quick();
+    private async Task StartTwoSecondAction() => 
+        await DemoState.TwoSecond();
 
-    private async Task StartLongAction() => 
-        await DemoState.Long();
+    private async Task StartFiveSecondAction() => 
+        await DemoState.FiveSecond();
 }

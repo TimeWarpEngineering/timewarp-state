@@ -2,7 +2,7 @@ namespace Sample02Wasm.Features.Demo;
 
 partial class DemoState
 {
-    public static class LongActionSet
+    public static class TwoSecondActionSet
     {
         [TrackAction]
         public sealed class Action : IAction { }
@@ -17,8 +17,8 @@ partial class DemoState
                 CancellationToken cancellationToken
             )
             {
-                // Simulate a 5-second action
-                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                // Simulate a 2-second action
+                await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
             }
         }
     }
