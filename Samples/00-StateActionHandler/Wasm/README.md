@@ -22,7 +22,7 @@ This tutorial will walk you through the steps to create a Blazor WebAssembly app
 
 1. Create a new Blazor WebAssembly project:
 ```bash
-dotnet new blazorwasm -n Sample00Wasm
+dotnet new blazorwasm  -n Sample00Wasm
 ```
 
 2. Navigate to the project directory:
