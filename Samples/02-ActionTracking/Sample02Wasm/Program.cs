@@ -22,6 +22,8 @@ public class Program
             }
         );
 
+        builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ActiveActionBehavior<,>));
+
         await builder.Build().RunAsync();
     }
 }

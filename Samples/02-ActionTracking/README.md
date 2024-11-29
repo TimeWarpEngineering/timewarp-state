@@ -48,7 +48,7 @@ dotnet add package TimeWarp.State.Plus --prerelease
 
 ### 3. Configure Services
 
-Update your Program.cs to register both your application assembly and the TimeWarp.State.Plus assembly:
+Update your Program.cs to register both your application assembly and the TimeWarp.State.Plus assembly, and configure the ActiveActionBehavior:
 
 ```csharp
 namespace Sample02Wasm;
@@ -74,6 +74,9 @@ public class Program
                 };
             }
         );
+
+        // Register the ActiveActionBehavior for action tracking
+        builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ActiveActionBehavior<,>));
 
         await builder.Build().RunAsync();
     }
@@ -259,6 +262,7 @@ Update the navigation menu in `Shared/NavMenu.razor` to include the Demo page:
    - Verify the `[TrackAction]` attribute is applied
    - Ensure TimeWarp.State.Plus assembly is registered in Program.cs
    - Check if the action inherits from IAction
+   - Verify ActiveActionBehavior is registered as a pipeline behavior
 
 2. **Actions Stuck in Tracking**
    - Ensure proper cancellation token handling
