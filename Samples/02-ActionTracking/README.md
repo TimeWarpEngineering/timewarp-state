@@ -38,7 +38,7 @@ dotnet new blazorwasm -n Sample02Wasm --use-program-main
 
 Follow all steps in the Sample00 tutorial until you have a working counter application. This will be our starting point for adding Action Tracking.
 
-### 2. Add TimeWarp.State.Plus
+### 2. Add TimeWarp.State.Plus Package
 
 Add the TimeWarp.State.Plus NuGet package to your project:
 
@@ -46,13 +46,38 @@ Add the TimeWarp.State.Plus NuGet package to your project:
 dotnet add package TimeWarp.State.Plus --prerelease
 ```
 
-### 3. Update Services
+### 3. Configure Services
 
-Update your Program.cs to add TimeWarp.State.Plus services:
+Update your Program.cs to register both your application assembly and the TimeWarp.State.Plus assembly:
 
 ```csharp
-builder.Services.AddTimeWarpState();
-builder.Services.AddTimeWarpStatePlus(); // Adds Action Tracking and other Plus features
+namespace Sample02Wasm;
+
+public class Program
+{
+    public static async Task Main(string[] args)
+    {
+        var builder = WebAssemblyHostBuilder.CreateDefault(args);
+        builder.RootComponents.Add<App>("#app");
+        builder.RootComponents.Add<HeadOutlet>("head::after");
+
+        builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+        
+        builder.Services.AddTimeWarpState
+        (
+            options =>
+            {
+                options.Assemblies = new[]
+                {
+                    typeof(Program).Assembly,
+                    typeof(TimeWarp.State.Plus.AssemblyMarker).Assembly
+                };
+            }
+        );
+
+        await builder.Build().RunAsync();
+    }
+}
 ```
 
 ### 4. Create Demo State and Actions
@@ -64,8 +89,6 @@ namespace Sample02Wasm.Features.Demo;
 
 internal sealed partial class DemoState : State<DemoState>
 {
-    public DemoState(ISender sender) : base(sender) { }
-
     public override void Initialize() { }
 }
 ```
@@ -192,10 +215,10 @@ Create `Pages/Demo.razor`:
     );
 
     private async Task StartQuickAction() => 
-        await DemoState.QuickAction();
+        await DemoState.Quick();
 
     private async Task StartLongAction() => 
-        await DemoState.LongAction();
+        await DemoState.Long();
 }
 ```
 
@@ -234,7 +257,7 @@ Update the navigation menu in `Shared/NavMenu.razor` to include the Demo page:
 
 1. **Actions Not Being Tracked**
    - Verify the `[TrackAction]` attribute is applied
-   - Ensure TimeWarp.State.Plus services are registered
+   - Ensure TimeWarp.State.Plus assembly is registered in Program.cs
    - Check if the action inherits from IAction
 
 2. **Actions Stuck in Tracking**
