@@ -96,14 +96,14 @@ internal sealed partial class DemoState : State<DemoState>
 }
 ```
 
-Create `Features/Demo/DemoState.QuickAction.cs`:
+Create `Features/Demo/DemoState.TwoSecondAction.cs`:
 
 ```csharp
 namespace Sample02Wasm.Features.Demo;
 
 partial class DemoState
 {
-    public static class QuickActionSet
+    public static class TwoSecondActionSet
     {
         [TrackAction]
         public sealed class Action : IAction { }
@@ -126,14 +126,14 @@ partial class DemoState
 }
 ```
 
-Create `Features/Demo/DemoState.LongAction.cs`:
+Create `Features/Demo/DemoState.FiveSecondAction.cs`:
 
 ```csharp
 namespace Sample02Wasm.Features.Demo;
 
 partial class DemoState
 {
-    public static class LongActionSet
+    public static class FiveSecondActionSet
     {
         [TrackAction]
         public sealed class Action : IAction { }
@@ -173,8 +173,8 @@ Create `Pages/Demo.razor`:
 <div class="mb-3">
     <h3>Action Status</h3>
     <p><strong>Any Active Actions:</strong> @ActionTrackingState.IsActive</p>
-    <p><strong>Quick Action Running:</strong> @IsQuickActionRunning</p>
-    <p><strong>Long Action Running:</strong> @IsLongActionRunning</p>
+    <p><strong>Two Second Action Running:</strong> @IsTwoSecondActionRunning</p>
+    <p><strong>Five Second Action Running:</strong> @IsFiveSecondActionRunning</p>
 </div>
 
 <div class="mb-3">
@@ -184,7 +184,7 @@ Create `Pages/Demo.razor`:
         foreach (var action in ActionTrackingState.ActiveActions)
         {
             <div class="alert alert-info">
-                Running: @action.GetType().Name
+                Running: @(action.GetType().FullName.Split("+")[1].Replace("ActionSet.Action", ""))
             </div>
         }
     }
@@ -195,10 +195,10 @@ Create `Pages/Demo.razor`:
 </div>
 
 <div class="mb-3">
-    <button class="btn btn-primary me-2" @onclick="StartQuickAction">
+    <button class="btn btn-primary me-2" @onclick="StartTwoSecondAction">
         Start 2-Second Action
     </button>
-    <button class="btn btn-primary" @onclick="StartLongAction">
+    <button class="btn btn-primary" @onclick="StartFiveSecondAction">
         Start 5-Second Action
     </button>
 </div>
@@ -207,21 +207,21 @@ Create `Pages/Demo.razor`:
     DemoState DemoState => GetState<DemoState>();
     ActionTrackingState ActionTrackingState => GetState<ActionTrackingState>();
 
-    bool IsQuickActionRunning => ActionTrackingState.IsAnyActive
+    bool IsTwoSecondActionRunning => ActionTrackingState.IsAnyActive
     (
-        [typeof(DemoState.QuickActionSet.Action)]
+        [typeof(DemoState.TwoSecondActionSet.Action)]
     );
 
-    bool IsLongActionRunning => ActionTrackingState.IsAnyActive
+    bool IsFiveSecondActionRunning => ActionTrackingState.IsAnyActive
     (
-        [typeof(DemoState.LongActionSet.Action)]
+        [typeof(DemoState.FiveSecondActionSet.Action)]
     );
 
-    private async Task StartQuickAction() => 
-        await DemoState.Quick();
+    private async Task StartTwoSecondAction() => 
+        await DemoState.TwoSecond();
 
-    private async Task StartLongAction() => 
-        await DemoState.Long();
+    private async Task StartFiveSecondAction() => 
+        await DemoState.FiveSecond();
 }
 ```
 
@@ -284,8 +284,8 @@ You can track multiple types of actions:
     bool IsAnyActionRunning => ActionTrackingState.IsAnyActive
     (
         [
-            typeof(DemoState.QuickActionSet.Action),
-            typeof(DemoState.LongActionSet.Action)
+            typeof(DemoState.TwoSecondActionSet.Action),
+            typeof(DemoState.FiveSecondActionSet.Action)
         ]
     );
 }
