@@ -20,6 +20,11 @@ This is particularly useful for:
 - Monitoring background tasks
 - Error handling and recovery
 
+## Demo Video
+
+Check out this quick demonstration of the Action Tracking feature:
+[Action Tracking Demo](https://yoclip.app/share/ejqq4l6k52eca8gth9xnm251?pw=uju1sp3lzuszbfmuffe0c9zk)
+
 ## Prerequisites
 
 - Completed [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler-Wasm.md)
