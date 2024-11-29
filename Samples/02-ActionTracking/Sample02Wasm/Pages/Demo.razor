@@ -30,7 +30,7 @@
         foreach (var action in ActionTrackingState.ActiveActions)
         {
             <div class="alert alert-info">
-                Running: @action.GetType().Name
+                Running: @action.GetType().FullName
             </div>
         }
     }
