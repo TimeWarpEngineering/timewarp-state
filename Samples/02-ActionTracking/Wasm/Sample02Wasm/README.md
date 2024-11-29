@@ -1,4 +1,3 @@
----
 uid: TimeWarp.State:02-ActionTracking.md
 title: TimeWarp.State Action Tracking Tutorial
 description: Learn how to implement Action Tracking in TimeWarp.State applications
@@ -178,13 +177,22 @@ Create `Pages/Demo.razor`:
 </div>
 
 <div class="mb-3">
+    <button class="btn btn-primary me-2" @onclick="StartTwoSecondAction">
+        Start 2-Second Action
+    </button>
+    <button class="btn btn-primary" @onclick="StartFiveSecondAction">
+        Start 5-Second Action
+    </button>
+</div>
+
+<div class="mb-3">
     <h3>Active Actions</h3>
     @if (ActionTrackingState.IsActive)
     {
         foreach (var action in ActionTrackingState.ActiveActions)
         {
             <div class="alert alert-info">
-                Running: @(action.GetType().FullName.Split("+")[1].Replace("ActionSet.Action", ""))
+                Running: @(action.GetType().FullName.Split("+")[1].Replace("ActionSet.Action", "").Replace("ActionSet", ""))
             </div>
         }
     }
@@ -192,15 +200,6 @@ Create `Pages/Demo.razor`:
     {
         <p>No active actions</p>
     }
-</div>
-
-<div class="mb-3">
-    <button class="btn btn-primary me-2" @onclick="StartTwoSecondAction">
-        Start 2-Second Action
-    </button>
-    <button class="btn btn-primary" @onclick="StartFiveSecondAction">
-        Start 5-Second Action
-    </button>
 </div>
 
 @code {
