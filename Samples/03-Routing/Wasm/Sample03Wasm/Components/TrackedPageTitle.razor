@@ -6,23 +6,16 @@
     is updated whenever the title changes.
 
     Usage:
-    <TrackedPageTitle Title="Your Page Title" />
+    <TrackedPageTitle>Your Page Title</TrackedPageTitle>
 *@
 
-<PageTitle>@Title</PageTitle>
+<PageTitle>@ChildContent</PageTitle>
 
 @code {
-    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     private RouteState RouteState => GetState<RouteState>();
-    private string? _previousTitle;
 
-    /// <summary>
-    /// The title to display for the page. This will be shown in the browser's title bar
-    /// and will be tracked in the application's route state.
-    /// </summary>
     [Parameter]
-    [EditorRequired]
-    public string Title { get; set; } = null!;
+    public RenderFragment? ChildContent { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {       
