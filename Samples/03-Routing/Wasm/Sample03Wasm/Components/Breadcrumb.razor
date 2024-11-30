@@ -1,0 +1,23 @@
+@inherits TimeWarp.State.TimeWarpStateComponent
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        @foreach (var route in RouteState.Routes.Reverse())
+        {
+            <li class="breadcrumb-item">
+                <a href="@route.Url" @onclick="@(() => ChangeRoute(route.Url))" @onclick:preventDefault>
+                    @route.PageTitle
+                </a>
+            </li>
+        }
+    </ol>
+</nav>
+
+@code {
+    RouteState RouteState => GetState<RouteState>();
+
+    private async Task ChangeRoute(string url)
+    {
+        await Mediator.Send(new RouteState.ChangeRouteActionSet.Action(url));
+    }
+}
