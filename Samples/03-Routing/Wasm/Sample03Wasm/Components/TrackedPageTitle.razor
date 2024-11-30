@@ -12,6 +12,7 @@
 <PageTitle>@Title</PageTitle>
 
 @code {
+    [Inject] private NavigationManager NavigationManager { get; set; } = null!;
     private RouteState RouteState => GetState<RouteState>();
     private string? _previousTitle;
 
@@ -23,18 +24,9 @@
     [EditorRequired]
     public string Title { get; set; } = null!;
 
-    /// <summary>
-    /// Detects changes to the Title parameter and updates the route state accordingly.
-    /// Only triggers a route state update if the title has actually changed.
-    /// </summary>
-    protected override async Task OnParametersSetAsync()
-    {
-        // Only update if the title has changed
-        if (_previousTitle != Title)
-        {
-            _previousTitle = Title;
-            await RouteState.PushRouteInfo();
-        }
-        await base.OnParametersSetAsync();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {       
+        await base.OnAfterRenderAsync(firstRender);
+        await RouteState.PushRouteInfo();
     }
 }
