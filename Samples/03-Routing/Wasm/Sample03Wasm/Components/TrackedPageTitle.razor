@@ -1,0 +1,40 @@
+@inherits TimeWarp.State.TimeWarpStateComponent
+
+@*
+    A component that automatically updates the page title and route state.
+    This component wraps the built-in PageTitle component and ensures the RouteState
+    is updated whenever the title changes.
+
+    Usage:
+    <TrackedPageTitle Title="Your Page Title" />
+*@
+
+<PageTitle>@Title</PageTitle>
+
+@code {
+    private RouteState RouteState => GetState<RouteState>();
+    private string? _previousTitle;
+
+    /// <summary>
+    /// The title to display for the page. This will be shown in the browser's title bar
+    /// and will be tracked in the application's route state.
+    /// </summary>
+    [Parameter]
+    [EditorRequired]
+    public string Title { get; set; } = null!;
+
+    /// <summary>
+    /// Detects changes to the Title parameter and updates the route state accordingly.
+    /// Only triggers a route state update if the title has actually changed.
+    /// </summary>
+    protected override async Task OnParametersSetAsync()
+    {
+        // Only update if the title has changed
+        if (_previousTitle != Title)
+        {
+            _previousTitle = Title;
+            await RouteState.PushRouteInfo();
+        }
+        await base.OnParametersSetAsync();
+    }
+}

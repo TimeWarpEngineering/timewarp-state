@@ -1,7 +1,7 @@
 ﻿@page "/counter"
 @inherits TimeWarp.State.TimeWarpStateComponent
 
-<PageTitle>Counter</PageTitle>
+<TrackedPageTitle Title="Counter" />
 
 <h1>Counter</h1>
 
@@ -16,14 +16,5 @@
     private void IncrementCount()
     {
         currentCount++;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-        {
-            await RouteState.PushRouteInfo();
-        }
     }
 }
