@@ -10,7 +10,7 @@ public class Program
 
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
         builder.Services.AddTimeWarpState();
-        builder.Services.AddTimeWarpRouting();
+        builder.Services.AddTimeWarpStateRouting();
 
         await builder.Build().RunAsync();
     }
