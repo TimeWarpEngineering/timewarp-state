@@ -12,6 +12,14 @@
 
   RouteState RouteState => GetState<RouteState>();
 
+  private List<RouteState.RouteInfo> Routes => RouteState.Routes.Reverse().ToList();
+
+  private List<RouteState.RouteInfo> DisplayRoutes => MaxLinks > 0 
+    ? Routes.Skip(Math.Max(0, Routes.Count - MaxLinks)).ToList() 
+    : Routes;
+
+  private bool ShowEllipsis => MaxLinks > 0 && Routes.Count > MaxLinks;
+
   /// <summary>
   /// Navigates back in the route history by the specified number of steps
   /// </summary>
@@ -27,31 +35,24 @@
 
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    @{
-      List<RouteState.Route> routes = RouteState.Routes.Reverse().ToList();
-      List<RouteState.Route> displayRoutes = MaxLinks > 0 
-        ? routes.Skip(Math.Max(0, routes.Count - MaxLinks)).ToList() 
-        : routes;
+    @if (ShowEllipsis)
+    {
+      <li class="breadcrumb-item">
+        <span class="text-muted">...</span>
+      </li>
+    }
 
-      if (MaxLinks > 0 && routes.Count > MaxLinks)
-      {
-        <li class="breadcrumb-item">
-          <span class="text-muted">...</span>
-        </li>
-      }
-
-      for (int routeIndex = 0; routeIndex < displayRoutes.Count; routeIndex++)
-      {
-        RouteState.Route route = displayRoutes[routeIndex];
-        int position = MaxLinks > 0 
-          ? routes.Count - displayRoutes.Count + routeIndex 
-          : routeIndex;
-        <li class="breadcrumb-item">
-          <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routes.Count - position - 1))">
-            @route.PageTitle
-          </NavLink>
-        </li>
-      }
+    @for (int routeIndex = 0; routeIndex < DisplayRoutes.Count; routeIndex++)
+    {
+      RouteState.RouteInfo route = DisplayRoutes[routeIndex];
+      int position = MaxLinks > 0 
+        ? Routes.Count - DisplayRoutes.Count + routeIndex 
+        : routeIndex;
+      <li class="breadcrumb-item">
+        <NavLink href="@route.Url" @onclick="@(() => NavigateBack(Routes.Count - position - 1))">
+          @route.PageTitle
+        </NavLink>
+      </li>
     }
   </ol>
 </nav>
