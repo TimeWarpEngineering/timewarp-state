@@ -12,7 +12,7 @@ public partial class RouteState
         Amount = amount;
       }
     }
-    
+
     internal sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
@@ -28,16 +28,17 @@ public partial class RouteState
 
       public override Task Handle(Action action, CancellationToken cancellationToken)
       {
-        if (RouteState.IsRouteStackEmpty) return Task.CompletedTask;
-        
+        if (RouteState.IsRouteStackEmpty || action.Amount == 0) return Task.CompletedTask;
+
         // Pop until we reach the one we want or the stack is empty
         RouteInfo target = null!;
-        for (int i = 0; i <= action.Amount; i++) 
+        for (int i = 0; i <= action.Amount; i++)
         {
           target = RouteState.RouteStack.Pop();
           if (RouteState.IsRouteStackEmpty) break;
         }
 
+        // This will trigger the PushRouteInfo which will push the route back on the stack
         NavigationManager.NavigateTo(target.Url);
         return Task.CompletedTask;
       }
