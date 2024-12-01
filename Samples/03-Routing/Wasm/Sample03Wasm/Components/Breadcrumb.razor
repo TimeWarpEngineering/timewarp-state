@@ -9,7 +9,7 @@
                 var route = routes[i];
                 var position = i;
                 <li class="breadcrumb-item">
-                    <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routes.Count - position - 1))" @onclick:preventDefault>
+                    <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routes.Count - position - 1))">
                         @route.PageTitle
                     </NavLink>
                 </li>
