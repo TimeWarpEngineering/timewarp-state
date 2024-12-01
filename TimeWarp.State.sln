@@ -60,6 +60,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-ReduxDevTools", "01-ReduxDevTools", "{B11F4206-3FE8-48E3-8AAC-E16936F65A2B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wasm", "Wasm", "{28AD5EC5-E3AB-4273-AC0A-87D6B40ADE6E}"
+	ProjectSection(SolutionItems) = preProject
+		Samples\01-ReduxDevTools\Wasm\Readme.md = Samples\01-ReduxDevTools\Wasm\Readme.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample01Wasm", "Samples\01-ReduxDevTools\Wasm\Sample01Wasm\Sample01Wasm.csproj", "{3750AE82-CD96-4E01-80D2-79A276222A3E}"
 EndProject
