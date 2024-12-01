@@ -15,8 +15,8 @@
   private List<RouteState.RouteInfo> Routes => RouteState.Routes.ToList();
 
   private List<RouteState.RouteInfo> DisplayRoutes => MaxLinks > 0 
-    ? Routes.Take(MaxLinks).Reverse().ToList() 
-    : Routes.Reverse().ToList();
+    ? Routes.Take(MaxLinks).AsEnumerable().Reverse().ToList() 
+    : Routes.AsEnumerable().Reverse().ToList();
 
   private bool ShowEllipsis => MaxLinks > 0 && Routes.Count > MaxLinks;
 
