@@ -12,11 +12,11 @@
 
   RouteState RouteState => GetState<RouteState>();
 
-  private List<RouteState.RouteInfo> Routes => RouteState.Routes.Reverse().ToList();
+  private List<RouteState.RouteInfo> Routes => RouteState.Routes.ToList();
 
   private List<RouteState.RouteInfo> DisplayRoutes => MaxLinks > 0 
-    ? Routes.Take(MaxLinks).ToList() 
-    : Routes;
+    ? Routes.Take(MaxLinks).Reverse().ToList() 
+    : Routes.Reverse().ToList();
 
   private bool ShowEllipsis => MaxLinks > 0 && Routes.Count > MaxLinks;
 
