@@ -1,56 +1,57 @@
 @inherits TimeWarp.State.TimeWarpStateComponent
 
-@code {
-    /// <summary>
-    /// Maximum number of breadcrumb links to display. 
-    /// If set to 0 or negative, all links will be shown.
-    /// When limited, shows the most recent navigation links.
-    /// </summary>
-    [Parameter]
-    public int MaxLinks { get; set; }
+@code
+{
+  /// <summary>
+  /// Maximum number of breadcrumb links to display. 
+  /// If set to 0 or negative, all links will be shown.
+  /// When limited, shows the most recent navigation links.
+  /// </summary>
+  [Parameter]
+  public int MaxLinks { get; set; }
 
-    RouteState RouteState => GetState<RouteState>();
+  RouteState RouteState => GetState<RouteState>();
 
-    /// <summary>
-    /// Navigates back in the route history by the specified number of steps
-    /// </summary>
-    /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
-    private async Task NavigateBack(int stepsBack)
+  /// <summary>
+  /// Navigates back in the route history by the specified number of steps
+  /// </summary>
+  /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
+  private async Task NavigateBack(int stepsBack)
+  {
+    if (stepsBack > 0)
     {
-        if (stepsBack > 0)
-        {
-            await RouteState.GoBack(stepsBack);
-        }
+      await RouteState.GoBack(stepsBack);
     }
+  }
 }
 
 <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        @{
-            var routes = RouteState.Routes.Reverse().ToList();
-            var displayRoutes = MaxLinks > 0 
-                ? routes.Skip(Math.Max(0, routes.Count - MaxLinks)).ToList() 
-                : routes;
+  <ol class="breadcrumb">
+    @{
+      List<RouteState.Route> routes = RouteState.Routes.Reverse().ToList();
+      List<RouteState.Route> displayRoutes = MaxLinks > 0 
+        ? routes.Skip(Math.Max(0, routes.Count - MaxLinks)).ToList() 
+        : routes;
 
-            if (MaxLinks > 0 && routes.Count > MaxLinks)
-            {
-                <li class="breadcrumb-item">
-                    <span class="text-muted">...</span>
-                </li>
-            }
+      if (MaxLinks > 0 && routes.Count > MaxLinks)
+      {
+        <li class="breadcrumb-item">
+          <span class="text-muted">...</span>
+        </li>
+      }
 
-            for (int i = 0; i < displayRoutes.Count; i++)
-            {
-                var route = displayRoutes[i];
-                var position = MaxLinks > 0 
-                    ? routes.Count - displayRoutes.Count + i 
-                    : i;
-                <li class="breadcrumb-item">
-                    <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routes.Count - position - 1))">
-                        @route.PageTitle
-                    </NavLink>
-                </li>
-            }
-        }
-    </ol>
+      for (int routeIndex = 0; routeIndex < displayRoutes.Count; routeIndex++)
+      {
+        RouteState.Route route = displayRoutes[routeIndex];
+        int position = MaxLinks > 0 
+          ? routes.Count - displayRoutes.Count + routeIndex 
+          : routeIndex;
+        <li class="breadcrumb-item">
+          <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routes.Count - position - 1))">
+            @route.PageTitle
+          </NavLink>
+        </li>
+      }
+    }
+  </ol>
 </nav>
