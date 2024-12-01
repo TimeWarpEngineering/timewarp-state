@@ -3,7 +3,7 @@
 @code
 {
   /// <summary>
-  /// Maximum number of breadcrumb links to display.
+  /// Maximum number of breadcrumb links to display. 
   /// If set to 0 or negative, all links will be shown.
   /// When limited, shows the most recent navigation links.
   /// </summary>
@@ -14,8 +14,8 @@
 
   private List<RouteState.RouteInfo> Routes => RouteState.Routes.Reverse().ToList();
 
-  private List<RouteState.RouteInfo> DisplayRoutes => MaxLinks > 0
-    ? Routes.Skip(Math.Max(0, Routes.Count - MaxLinks)).ToList()
+  private List<RouteState.RouteInfo> DisplayRoutes => MaxLinks > 0 
+    ? Routes.Take(MaxLinks).ToList() 
     : Routes;
 
   private bool ShowEllipsis => MaxLinks > 0 && Routes.Count > MaxLinks;
@@ -45,11 +45,8 @@
     @for (int routeIndex = 0; routeIndex < DisplayRoutes.Count; routeIndex++)
     {
       RouteState.RouteInfo route = DisplayRoutes[routeIndex];
-      int position = MaxLinks > 0
-        ? Routes.Count - DisplayRoutes.Count + routeIndex
-        : routeIndex;
       <li class="breadcrumb-item">
-        <NavLink href=@route.Url @onclick=@(() => NavigateBack(Routes.Count - position - 1))>
+        <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routeIndex))">
           @route.PageTitle
         </NavLink>
       </li>
