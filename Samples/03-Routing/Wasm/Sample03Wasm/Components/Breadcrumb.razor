@@ -1,5 +1,29 @@
 @inherits TimeWarp.State.TimeWarpStateComponent
 
+@code {
+    /// <summary>
+    /// Maximum number of breadcrumb links to display. 
+    /// If set to 0 or negative, all links will be shown.
+    /// When limited, shows the most recent navigation links.
+    /// </summary>
+    [Parameter]
+    public int MaxLinks { get; set; }
+
+    RouteState RouteState => GetState<RouteState>();
+
+    /// <summary>
+    /// Navigates back in the route history by the specified number of steps
+    /// </summary>
+    /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
+    private async Task NavigateBack(int stepsBack)
+    {
+        if (stepsBack > 0)
+        {
+            await RouteState.GoBack(stepsBack);
+        }
+    }
+}
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         @{
@@ -30,27 +54,3 @@
         }
     </ol>
 </nav>
-
-@code {
-    /// <summary>
-    /// Maximum number of breadcrumb links to display. 
-    /// If set to 0 or negative, all links will be shown.
-    /// When limited, shows the most recent navigation links.
-    /// </summary>
-    [Parameter]
-    public int MaxLinks { get; set; }
-
-    RouteState RouteState => GetState<RouteState>();
-
-    /// <summary>
-    /// Navigates back in the route history by the specified number of steps
-    /// </summary>
-    /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
-    private async Task NavigateBack(int stepsBack)
-    {
-        if (stepsBack > 0)
-        {
-            await RouteState.GoBack(stepsBack);
-        }
-    }
-}
