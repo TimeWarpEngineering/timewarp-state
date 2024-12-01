@@ -1,0 +1,60 @@
+@inherits TimeWarp.State.TimeWarpStateComponent
+
+@code
+{
+  /// <summary>
+  /// Maximum number of breadcrumb links to display.
+  /// If set to 0 or negative, all links will be shown.
+  /// When limited, shows the most recent navigation links.
+  /// </summary>
+  [Parameter]
+  public int MaxLinks { get; set; }
+
+  RouteState RouteState => GetState<RouteState>();
+
+  // Routes comes from a Stack so enumeration is already in newest-to-oldest order
+  private IEnumerable<RouteState.RouteInfo> DisplayRoutes => MaxLinks > 0
+    ? RouteState.Routes.Take(MaxLinks)
+    : RouteState.Routes;
+
+  // Show ellipsis if we're limiting links and have more routes than the limit
+  private bool ShowEllipsis => MaxLinks > 0 && RouteState.Routes.Count() > MaxLinks;
+
+  /// <summary>
+  /// Navigates back in the route history by the specified number of steps
+  /// </summary>
+  /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
+  private async Task NavigateBack(int stepsBack)
+  {
+    Console.WriteLine($"Navigating back {stepsBack} steps");
+    await RouteState.GoBack(stepsBack);
+  }
+}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    @if (ShowEllipsis)
+    {
+      <li class="breadcrumb-item">
+        <span class="text-muted">...</span>
+      </li>
+    }
+
+    @{
+      // Need to materialize the list to get accurate count for goBackSteps calculation
+      var routesList = DisplayRoutes.Reverse().ToList();
+      for (int i = 0; i < routesList.Count; i++)
+      {
+        var route = routesList[i];
+        // Calculate steps back from the end since routes are newest-to-oldest
+        // e.g., for 3 routes: newest is 2 steps back, middle is 1 step back, oldest is 0 steps back
+        int goBackSteps = routesList.Count - i - 1;
+        <li class="breadcrumb-item">
+          <a href=@route.Url @onclick:preventDefault @onclick=@(() => NavigateBack(goBackSteps))>
+              @route.PageTitle (@goBackSteps)
+          </a>
+        </li>
+      }
+    }
+  </ol>
+</nav>

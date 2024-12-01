@@ -28,10 +28,10 @@ global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
-global using TimeWarp.State;
+global using Sample01Wasm;
 global using System.Reflection;
 global using TimeWarp.Features.Routing;
-global using Sample01Wasm;
+global using TimeWarp.State;
 ```
 
 3. Update Program.cs to enable Redux DevTools:
@@ -44,11 +44,7 @@ builder.Services.AddTimeWarpState
 (
     options =>
     {
-        options.UseReduxDevTools(); // Enable Redux DevTools
-        options.Assemblies = new Assembly[]
-        {
-            typeof(Program).Assembly,
-        };
+        options.UseReduxDevTools();
     }
 );
 

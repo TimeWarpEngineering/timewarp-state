@@ -7,15 +7,17 @@ public partial class RouteState
     internal sealed class Action : IAction
     {
       public int Amount { get; }
+
       public Action(int amount = 1)
       {
         Amount = amount;
       }
     }
-    
+
     internal sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
+
       public Handler
       (
         IStore store,
@@ -24,20 +26,23 @@ public partial class RouteState
       {
         NavigationManager = navigationManager;
       }
+
       private RouteState RouteState => Store.GetState<RouteState>();
 
       public override Task Handle(Action action, CancellationToken cancellationToken)
       {
-        if (RouteState.IsRouteStackEmpty) return Task.CompletedTask;
-        
-        // Pop until we reach the one we want or the stack is empty
-        RouteInfo target = null!;
-        for (int i = 0; i <= action.Amount; i++) 
+        if (RouteState.IsRouteStackEmpty || action.Amount == 0) return Task.CompletedTask;
+
+        // Determine how far back we can actually go
+        int amountToGoBack = Math.Min(action.Amount, RouteState.RouteStack.Count);
+
+        // Pop off the routes we don't need
+        for (int i = 0; i < amountToGoBack; i++)
         {
-          target = RouteState.RouteStack.Pop();
-          if (RouteState.IsRouteStackEmpty) break;
+          RouteState.RouteStack.Pop();
         }
 
+        var target = RouteState.RouteStack.Peek();
         NavigationManager.NavigateTo(target.Url);
         return Task.CompletedTask;
       }

@@ -7,10 +7,6 @@ builder.Services.AddTimeWarpState
     options =>
     {
         options.UseReduxDevTools(); // Enable Redux DevTools
-        options.Assemblies = new Assembly[]
-        {
-            typeof(Program).Assembly,
-        };
     }
 );
 
