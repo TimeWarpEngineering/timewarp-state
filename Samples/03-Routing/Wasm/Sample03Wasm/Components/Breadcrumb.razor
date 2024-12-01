@@ -2,13 +2,18 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        @foreach (var route in RouteState.Routes.Reverse())
-        {
-            <li class="breadcrumb-item">
-                <a href="@route.Url" @onclick="@(() => ChangeRoute(route.Url))" @onclick:preventDefault>
-                    @route.PageTitle
-                </a>
-            </li>
+        @{
+            var routes = RouteState.Routes.Reverse().ToList();
+            for (int i = 0; i < routes.Count; i++)
+            {
+                var route = routes[i];
+                var position = i;
+                <li class="breadcrumb-item">
+                    <NavLink href="@route.Url" @onclick="@(() => NavigateBack(routes.Count - position - 1))" @onclick:preventDefault>
+                        @route.PageTitle
+                    </NavLink>
+                </li>
+            }
         }
     </ol>
 </nav>
@@ -16,8 +21,15 @@
 @code {
     RouteState RouteState => GetState<RouteState>();
 
-    private async Task ChangeRoute(string url)
+    /// <summary>
+    /// Navigates back in the route history by the specified number of steps
+    /// </summary>
+    /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
+    private async Task NavigateBack(int stepsBack)
     {
-        await RouteState.ChangeRoute(url);
+        if (stepsBack > 0)
+        {
+            await RouteState.GoBack(stepsBack);
+        }
     }
 }
