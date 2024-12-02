@@ -26,7 +26,6 @@
   /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
   private async Task NavigateBack(int stepsBack)
   {
-    Console.WriteLine($"Navigating back {stepsBack} steps");
     await RouteState.GoBack(stepsBack);
   }
 }
@@ -51,7 +50,7 @@
         int goBackSteps = routesList.Count - i - 1;
         <li class="breadcrumb-item">
           <a href=@route.Url @onclick:preventDefault @onclick=@(() => NavigateBack(goBackSteps))>
-              @route.PageTitle (@goBackSteps)
+              @route.PageTitle
           </a>
         </li>
       }
