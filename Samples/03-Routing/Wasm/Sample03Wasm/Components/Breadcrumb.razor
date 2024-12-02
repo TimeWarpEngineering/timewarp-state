@@ -50,7 +50,7 @@
         int goBackSteps = routesList.Count - i - 1;
         bool isLastItem = goBackSteps == 0;
 
-        <li class="breadcrumb-item @(isLastItem ? "active" : "")" @(isLastItem ? "aria-current=\"page\"" : "")>
+        <li class="breadcrumb-item @(isLastItem ? "active" : "")" aria-current="@(isLastItem ? "page" : null)">
           @if (isLastItem)
           {
             @route.PageTitle
