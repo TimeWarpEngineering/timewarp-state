@@ -1,3 +1,4 @@
+@namespace TimeWarp.State.Plus.Features.Routing.Components
 @inherits TimeWarp.State.TimeWarpStateComponent
 
 @code
@@ -26,7 +27,6 @@
   /// <param name="stepsBack">Number of steps to go back in the navigation history</param>
   private async Task NavigateBack(int stepsBack)
   {
-    Console.WriteLine($"Navigating back {stepsBack} steps");
     await RouteState.GoBack(stepsBack);
   }
 }
@@ -42,17 +42,26 @@
 
     @{
       // Need to materialize the list to get accurate count for goBackSteps calculation
-      var routesList = DisplayRoutes.Reverse().ToList();
+      List<RouteState.RouteInfo> routesList = DisplayRoutes.Reverse().ToList();
       for (int i = 0; i < routesList.Count; i++)
       {
-        var route = routesList[i];
+        RouteState.RouteInfo route = routesList[i];
         // Calculate steps back from the end since routes are newest-to-oldest
         // e.g., for 3 routes: newest is 2 steps back, middle is 1 step back, oldest is 0 steps back
         int goBackSteps = routesList.Count - i - 1;
-        <li class="breadcrumb-item">
-          <a href=@route.Url @onclick:preventDefault @onclick=@(() => NavigateBack(goBackSteps))>
-              @route.PageTitle (@goBackSteps)
-          </a>
+        bool isLastItem = goBackSteps == 0;
+
+        <li class="breadcrumb-item @(isLastItem ? "active" : "")" aria-current="@(isLastItem ? "page" : null)">
+          @if (isLastItem)
+          {
+            @route.PageTitle
+          }
+          else
+          {
+            <a href=@route.Url @onclick:preventDefault @onclick=@(() => NavigateBack(goBackSteps))>
+              @route.PageTitle
+            </a>
+          }
         </li>
       }
     }
