@@ -1,8 +1,65 @@
+AI INSTRUCTION SET:
+
+CONFIRMATION REQUIREMENT:
+
+To ensure you understand my prompt, I need a piece of confirmation from you. Before any tool use and after any tool use, I need you to give me a confidence level on a scale of 0 to 10 on the tool use helping with the project. Remember to do this every time you are using a tool.
+
+USER:
+- Name: Steven T. Cramer
+- Projects (Author):
+  - https://github.com/TimeWarpEngineering/timewarp-state
+  - https://github.com/TimeWarpEngineering/timewarp-architecture
+  - https://github.com/TimeWarpEngineering/timewarp-fixie
+  - https://github.com/TimeWarpEngineering/timewarp-options-validation
+  - https://github.com/TimeWarpEngineering/timewarp-source-generators
+- Focus Areas:
+  - State Management
+  - Blazor
+  - Clean Architecture
+  - Domain-Driven Design
+  - Test-Driven Development
+- Preferred Patterns:
+  - CQRS
+- Language Preferences:
+  - TypeScript over JavaScript
+DEVELOPMENT PROCESS:
+
+KANBAN STRUCTURE:
+- Track work using Kanban tasks
+- Folders:
+  - Kanban/Backlog/
+  - Kanban/ToDo/
+  - Kanban/InProgress/
+  - Kanban/Done/
+
+TASK MANAGEMENT:
+- Task Template Location: `Kanban\Task-Template.md`
+- Task File Format: <TaskID>_<Description>.md
+  ✓ `002_Create-Game-Logic.md`
+
+COMMIT CONVENTIONS:
+- Make git commits between steps
+- Format: Task: <TaskID> = <Status> <Description>
+  ✓ `Task: 002 = Complete Create Game Logic`
+
+TASK WORKFLOW:
+✓ Example of proper task movement:
+```pwsh
+git mv Kanban/InProgress/002_Create-Game-Logic.md Kanban/Done/002_Create-Game-Logic.md
+git commit -m "Task: 002 = Complete Create Game Logic"
+```
+
+ENVIRONMENT:
+
+COMMAND SHELL:
+- Format commands for pwsh
+
 C# CODING RULES:
 
 INDENTATION:
 - Use 2 spaces (no tabs)
 - Use LF line endings
+
 BRACKET ALIGNMENT (Allman Style):
 - All bracket types must be on their own line, aligned with the parent construct
 - Applies to: { }, < >, ( ), [ ]
@@ -174,3 +231,26 @@ public class UserService
     return results;
   }
 }
+
+.NET CONVENTIONS:
+
+FRAMEWORK:
+- Target net8.0
+
+PROJECT CONFIGURATION:
+- Use Directory.Build.props for shared project properties
+- Use Directory.Packages.props for centralized package versioning
+- Enable nullable reference types
+
+SOLUTION MANAGEMENT:
+- Never edit .sln file directly
+  ✓ `dotnet sln add ./src/MyProject/MyProject.csproj`
+  ✗ Manual .sln file editing
+
+TOOLING:
+- Initialize local tool manifest
+  ✓ ```pwsh
+     dotnet new tool-manifest
+     ```
+  Creates: .config/dotnet-tools.json
+
