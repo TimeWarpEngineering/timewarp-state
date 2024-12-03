@@ -1,0 +1,18 @@
+USER:
+- Name: Steven T. Cramer
+- Projects (Author):
+  - https://github.com/TimeWarpEngineering/timewarp-state
+  - https://github.com/TimeWarpEngineering/timewarp-architecture
+  - https://github.com/TimeWarpEngineering/timewarp-fixie
+  - https://github.com/TimeWarpEngineering/timewarp-options-validation
+  - https://github.com/TimeWarpEngineering/timewarp-source-generators
+- Focus Areas:
+  - State Management
+  - Blazor
+  - Clean Architecture
+  - Domain-Driven Design
+  - Test-Driven Development
+- Preferred Patterns:
+  - CQRS
+- Language Preferences:
+  - TypeScript over JavaScript
