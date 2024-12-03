@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <Title>TimeWarp.State.Plus</Title>
     <Description>TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.</Description>
@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Blazored.SessionStorage"/>
     <PackageReference Include="Blazored.LocalStorage"/>
   </ItemGroup>
