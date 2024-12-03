@@ -300,9 +300,9 @@
           "Microsoft.AspNetCore.Components.WebAssembly": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
           "Microsoft.Extensions.Logging.Configuration": "[8.0.0, )",
-          "Test.App.Contracts": "[11.0.0-beta.88, )",
-          "TimeWarp.State": "[11.0.0-beta.88, )",
-          "TimeWarp.State.Plus": "[11.0.0-beta.88, )",
+          "Test.App.Contracts": "[11.0.0-beta.94, )",
+          "TimeWarp.State": "[11.0.0-beta.94, )",
+          "TimeWarp.State.Plus": "[11.0.0-beta.94, )",
           "timewarp-heroicons": "[2.0.19, )"
         }
       },
@@ -331,8 +331,9 @@
         "dependencies": {
           "Blazored.LocalStorage": "[4.5.0, )",
           "Blazored.SessionStorage": "[2.4.0, )",
+          "Microsoft.AspNetCore.Components.Web": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "TimeWarp.State": "[11.0.0-beta.88, )"
+          "TimeWarp.State": "[11.0.0-beta.94, )"
         }
       },
       "AnyClone": {
