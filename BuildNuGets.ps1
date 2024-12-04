@@ -1,7 +1,10 @@
 Push-Location $PSScriptRoot
 try
 {
+  Get-Process dotnet | Stop-Process
+  dotnet nuget locals all --clear
   $Configuration = "Release"
+  dotnet tool restore
   dotnet cleanup -y
   Remove-Item "./LocalNugetFeed" -Recurse -Force -ErrorAction SilentlyContinue
   Remove-Item "./Source/TimeWarp.State/wwwroot\js" -Recurse -Force -ErrorAction SilentlyContinue
