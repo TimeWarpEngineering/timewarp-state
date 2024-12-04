@@ -10,12 +10,12 @@
   /// The title for the page.
   /// </summary>
   public const string Title = "Weather (Wasm)";
-  
+
   /// <summary>
   /// The route for the page.
   /// </summary>
   public const string Route = "/WasmWeatherForecastsPage";
-  
+
   /// <inheritdoc/>
   protected override async Task OnInitializedAsync()
   {
@@ -23,7 +23,7 @@
   }
 }
 
-<PageTitle>@Title</PageTitle>
+<TwPageTitle>@Title</TwPageTitle>
 <h1>Wasm Weather</h1>
 @RenderModeDisplay
 <br/>

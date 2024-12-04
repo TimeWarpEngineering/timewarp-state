@@ -3,7 +3,7 @@
 
 @inherits BaseComponent
 
-<PageTitle>@Title</PageTitle>
+<TwPageTitle>@Title</TwPageTitle>
 <h1>@Title</h1>
 @RenderModeDisplay
 <hr>
@@ -83,8 +83,8 @@
   {
     await ThemeState.Update
     (
-      ThemeState.CurrentTheme == ThemeState.Theme.Light 
-        ? ThemeState.Theme.Dark 
+      ThemeState.CurrentTheme == ThemeState.Theme.Light
+        ? ThemeState.Theme.Dark
         : ThemeState.Theme.Light
     );
   }
