@@ -21,10 +21,11 @@ public abstract class BaseComponent : TimeWarpStateDevComponent
   internal PurpleState PurpleState => GetState<PurpleState>();
   internal ActionTrackingState ActionTrackingState => GetState<ActionTrackingState>();
   internal RouteState RouteState => GetState<RouteState>();
+  internal RouteState NoSubRouteState => GetState<RouteState>(placeSubscription: false);
   internal ThemeState ThemeState => GetState<ThemeState>();
   internal WeatherForecastsState WeatherForecastsState => GetState<WeatherForecastsState>();
   internal CacheableWeatherState CacheableWeatherState => GetState<CacheableWeatherState>();
-  
+
   // ReSharper disable once UnusedMember.Global - Can be used by inheriting classes not in this library.
   protected Task Send(IRequest request) => Mediator.Send(request);
 }
