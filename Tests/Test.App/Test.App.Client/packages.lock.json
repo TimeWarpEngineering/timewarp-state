@@ -373,7 +373,7 @@
           "Blazored.SessionStorage": "[2.4.0, )",
           "Microsoft.AspNetCore.Components.Web": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "TimeWarp.State": "[11.0.0-beta.95, )"
+          "TimeWarp.State": "[11.0.0-beta.96, )"
         }
       },
       "AnyClone": {
