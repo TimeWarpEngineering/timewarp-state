@@ -13,7 +13,7 @@
 <PageTitle>@ChildContent</PageTitle>
 
 @code {
-    private RouteState RouteState => GetState<RouteState>(false); //Don't subscribe to avoid infinite recursion
+    private RouteState RouteState => GetState<RouteState>(placeSubscription:false); //Don't subscribe to avoid infinite recursion
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -21,6 +21,10 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
-        await RouteState.PushRouteInfo();
+
+        if (firstRender)
+        {
+          await RouteState.PushRouteInfo();
+        }
     }
 }
