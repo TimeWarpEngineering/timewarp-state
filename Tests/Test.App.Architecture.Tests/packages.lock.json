@@ -400,9 +400,9 @@
           "Microsoft.AspNetCore.Components.WebAssembly": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
           "Microsoft.Extensions.Logging.Configuration": "[8.0.0, )",
-          "Test.App.Contracts": "[11.0.0-beta.94, )",
-          "TimeWarp.State": "[11.0.0-beta.94, )",
-          "TimeWarp.State.Plus": "[11.0.0-beta.94, )",
+          "Test.App.Contracts": "[11.0.0-beta.95, )",
+          "TimeWarp.State": "[11.0.0-beta.95, )",
+          "TimeWarp.State.Plus": "[11.0.0-beta.95, )",
           "timewarp-heroicons": "[2.0.19, )"
         }
       },
@@ -419,7 +419,7 @@
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "Test.App.Client": "[11.0.0-beta.94, )"
+          "Test.App.Client": "[11.0.0-beta.95, )"
         }
       },
       "timewarp.state": {
@@ -441,7 +441,7 @@
           "Blazored.SessionStorage": "[2.4.0, )",
           "Microsoft.AspNetCore.Components.Web": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "TimeWarp.State": "[11.0.0-beta.94, )"
+          "TimeWarp.State": "[11.0.0-beta.95, )"
         }
       },
       "timewarp.state.policies": {
@@ -450,7 +450,7 @@
           "FluentAssertions": "[6.12.1, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
           "NetArchTest.eNhancedEdition": "[1.4.3, )",
-          "TimeWarp.State": "[11.0.0-beta.94, )"
+          "TimeWarp.State": "[11.0.0-beta.95, )"
         }
       },
       "AnyClone": {

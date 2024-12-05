@@ -5,17 +5,17 @@
 
 @code
 {
-  
+
   /// <summary>
   /// The title for the page.
   /// </summary>
   public const string Title = "Exception Page";
-  
+
   /// <summary>
   /// The route for the page.
   /// </summary>
   public const string Route = "/ThrowExceptionPage";
-  
+
   private async Task SendThrowExceptionAction() =>
     await Mediator.Send
     (
@@ -35,7 +35,7 @@
     );
 }
 
-<PageTitle>@Title</PageTitle>
+<TwPageTitle>@Title</TwPageTitle>
 <h1>@Title</h1>
 @RenderModeDisplay
 <hr>
@@ -87,6 +87,6 @@
 If RenderMode is Server you will see stack trace on Server console<br>
 If RenderMode is Wasm you will see stack trace "warning" on Browser console<br>
 The clone middleware will catch these exceptions and reset the state
-thus the CounterState.Guid should NOT change 
+thus the CounterState.Guid should NOT change
 </div>
 

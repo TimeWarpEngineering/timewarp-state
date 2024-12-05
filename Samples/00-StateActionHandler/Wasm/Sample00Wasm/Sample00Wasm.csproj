@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.11" PrivateAssets="all" />
-    <PackageReference Include="TimeWarp.State" Version="11.0.0-beta.94" />
+    <PackageReference Include="TimeWarp.State" Version="11.0.0-beta.95" />
   </ItemGroup>
 
 </Project>

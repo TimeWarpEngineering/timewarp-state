@@ -30,7 +30,7 @@
         foreach (var action in ActionTrackingState.ActiveActions)
         {
             <div class="alert alert-info">
-                Running: @(action.GetType().FullName.Split("+")[1].Replace("ActionSet.Action", "").Replace("ActionSet", ""))
+                Running: @(action.GetType().FullName?.Split("+")[1].Replace("ActionSet.Action", "").Replace("ActionSet", ""))
             </div>
         }
     }
@@ -54,9 +54,9 @@
         [typeof(DemoState.FiveSecondActionSet.Action)]
     );
 
-    private async Task StartTwoSecondAction() => 
+    private async Task StartTwoSecondAction() =>
         await DemoState.TwoSecond();
 
-    private async Task StartFiveSecondAction() => 
+    private async Task StartFiveSecondAction() =>
         await DemoState.FiveSecond();
 }

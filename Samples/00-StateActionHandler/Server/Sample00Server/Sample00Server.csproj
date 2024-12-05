@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TimeWarp.State" Version="11.0.0-beta.94" />
+    <PackageReference Include="TimeWarp.State" Version="11.0.0-beta.95" />
   </ItemGroup>
 
 </Project>
