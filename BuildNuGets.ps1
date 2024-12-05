@@ -1,7 +1,7 @@
 Push-Location $PSScriptRoot
 try
 {
-  Get-Process dotnet | Stop-Process -ErrorAction SilentlyContinue
+  Get-Process dotnet -ErrorAction SilentlyContinue | Stop-Process -ErrorAction SilentlyContinue
   dotnet nuget locals all --clear
   $Configuration = "Release"
   dotnet tool restore
