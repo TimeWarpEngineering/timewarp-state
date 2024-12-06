@@ -12,6 +12,10 @@ Start with Sample03 project and build it up sequentially:
 2. First implement ALL Sample00 (StateActionHandler) features:
    - Follow ALL steps from ../00-StateActionHandler/README.md
    - Implement in Sample03Wasm project
+   - IMPORTANT: Do NOT create any Extension classes (e.g., CounterStateExtensions)
+     - Methods like IncrementCount() are automatically generated
+     - The TimeWarp.State source generator creates these for you
+     - Just implement the State and Action classes as shown in the tutorial
    - Verify basic state management works
 
 3. Then add ALL Sample01 (ReduxDevTools) features:
@@ -32,10 +36,15 @@ Start with Sample03 project and build it up sequentially:
   2. ../01-ReduxDevTools/README.md
   3. ./README.md
 - DO NOT create separate projects for each sample
+- DO NOT create extension methods - they are source generated
 - Verify each feature set works before proceeding
 - Implementation order: StateActionHandler → ReduxDevTools → Routing
 
-Skipping steps or implementing out of order will result in errors.
+## Source Generation
+- TimeWarp.State includes source generators
+- DO NOT manually create any extension methods
+- All state manipulation methods (e.g., IncrementCount) are auto-generated
+- Just implement the State and Action classes as shown in tutorials
 
 ## Reference Paths
 - StateActionHandler Tutorial: ../00-StateActionHandler/README.md
