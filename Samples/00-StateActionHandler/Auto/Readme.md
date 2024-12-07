@@ -7,6 +7,14 @@ description: Learn TimeWarp.State basics using Blazor with Interactive Auto rend
 
 # TimeWarp.State Blazor Interactive Auto Tutorial
 
+> [!TIP]
+> View the complete reference implementation for this tutorial:
+> - [Sample00Auto Project](./Sample00Auto/)
+> - [Client Project with TimeWarp.State](./Sample00Auto/Sample00Auto.Client/)
+> - [CounterState Implementation](./Sample00Auto/Sample00Auto.Client/Features/Counter/CounterState.cs)
+> - [Counter Page Component](./Sample00Auto/Sample00Auto.Client/Pages/Counter.razor)
+> - [Program.cs with Service Configuration](./Sample00Auto/Sample00Auto/Program.cs)
+
 ## State, Actions, and Handlers
 
 This tutorial will walk you through the steps to create a Blazor application with TimeWarp.State using Interactive Auto render mode.

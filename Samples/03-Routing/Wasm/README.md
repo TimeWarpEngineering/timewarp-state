@@ -6,6 +6,13 @@ description: Learn how to implement stack-based routing in TimeWarp.State applic
 
 # TimeWarp.State Routing Tutorial
 
+> [!TIP]
+> View the complete reference implementation for this tutorial:
+> - [Sample03Wasm Project](./Sample03Wasm/)
+> - [Program.cs with Routing Configuration](./Sample03Wasm/Program.cs)
+> - [MainLayout with TwBreadcrumb](./Sample03Wasm/Layout/MainLayout.razor)
+> - [Example Pages with TwPageTitle](./Sample03Wasm/Pages/)
+
 ## What is Stack-Based Routing?
 
 Stack-based routing in TimeWarp.State.Plus is a comprehensive navigation management system that provides:
