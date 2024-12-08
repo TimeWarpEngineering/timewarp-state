@@ -1,7 +1,7 @@
 <Project>
   <!-- Set common properties regarding assembly information and nuget packages -->
   <PropertyGroup>
-    <TimeWarpStateVersion>11.0.0-beta.96+8.0.403</TimeWarpStateVersion>
+    <TimeWarpStateVersion>11.0.0</TimeWarpStateVersion>
     <Authors>Steven T. Cramer</Authors>
     <Product>TimeWarp State</Product>
     <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
