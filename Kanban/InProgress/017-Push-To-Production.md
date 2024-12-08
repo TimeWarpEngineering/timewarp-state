@@ -12,6 +12,18 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - Verify all samples are working with production version
 - Update release notes
 
+## Summary of Blocking Issues
+
+1. Critical Issues:
+   - Sample03-Routing state persistence issue (state resets during navigation)
+   - Sample00-StateActionHandler Auto project structure needs investigation
+   - Documentation has 36 warnings for invalid links and cross-references
+
+2. Additional Tasks:
+   - Create new tasks for investigating and fixing the routing state persistence
+   - Create new task for resolving Auto sample project structure
+   - Create new task for fixing documentation warnings
+
 ## Checklist
 
 ### Design
