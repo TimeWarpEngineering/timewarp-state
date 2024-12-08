@@ -28,7 +28,7 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - [x] Update package versions in all sample project files to 11.0.0
 - [ ] Run all samples to verify they work with production version
   - [x] Sample00-StateActionHandler Server (Verified working)
-  - [ ] Sample00-StateActionHandler Wasm
+  - [x] Sample00-StateActionHandler Wasm (Verified working)
   - [ ] Sample01-ReduxDevTools
   - [ ] Sample02-ActionTracking
   - [ ] Sample03-Routing
@@ -77,3 +77,4 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - Built and published NuGet packages version 11.0.0 to local feed
 - Verified Sample00-StateActionHandler Server working with production version
 - Noted issue with Sample00-StateActionHandler Auto project structure - needs investigation
+- Verified Sample00-StateActionHandler Wasm working with production version - counter functionality working as expected
