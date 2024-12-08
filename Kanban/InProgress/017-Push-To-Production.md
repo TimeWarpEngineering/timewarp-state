@@ -31,7 +31,7 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
   - [x] Sample00-StateActionHandler Wasm (Verified working)
   - [x] Sample01-ReduxDevTools (Verified working - base functionality works, Redux DevTools warning expected)
   - [x] Sample02-ActionTracking (Verified working - action tracking functionality fully operational)
-  - [ ] Sample03-Routing
+  - [x] Sample03-Routing (Partial - routing works but state persistence issue found)
   - [ ] Sample00-StateActionHandler Auto (Needs investigation - project structure issue)
 - [x] Update packages.lock.json files
 - [ ] Run all tests to ensure everything passes
@@ -60,6 +60,7 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - Documentation should reflect production status
 - Consider creating a release checklist template for future releases
 - Sample00-StateActionHandler Auto needs investigation for project structure issues
+- Sample03-Routing state persistence issue needs investigation before production release
 
 ## Implementation Notes
 
@@ -86,3 +87,8 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
   - Action tracking state updates properly
   - Both 2-second and 5-second actions work as expected
   - Active action status displayed correctly
+- Tested Sample03-Routing with production version:
+  - Basic routing functionality works (navigation and breadcrumbs)
+  - Page titles update correctly
+  - Issue found: State does not persist when navigating between pages
+  - Counter resets to 0 after navigation, should maintain previous value
