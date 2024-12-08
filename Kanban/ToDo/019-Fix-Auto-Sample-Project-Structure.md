@@ -2,48 +2,72 @@
 
 ## Description
 
-Investigate and fix project structure issues in Sample00-StateActionHandler Auto. The project structure needs to be reviewed and aligned with best practices for Blazor Auto projects.
+Implement the project structure defined in the updated Readme for Sample00-StateActionHandler Auto. The documentation now correctly describes the Blazor Auto project structure, and we need to ensure the implementation matches.
 
 ## Requirements
 
-- Investigate current project structure issues
-- Fix project structure to match Blazor Auto best practices
+- Implement project structure as documented in updated Readme
 - Ensure all package references are correct
-- Update documentation to reflect any changes
+- Verify functionality matches documentation
+- Ensure smooth transition between Server and WebAssembly modes
 
 ## Checklist
 
 ### Design
-- [ ] Review current project structure
-- [ ] Compare with Blazor Auto project templates
-- [ ] Identify structural issues
-- [ ] Plan necessary changes
+- [x] Review current project structure
+- [x] Compare with Blazor Auto project templates
+- [x] Identify structural issues
+- [x] Plan necessary changes (documented in Readme)
 
 ### Implementation
-- [ ] Fix project structure issues
-- [ ] Update project references
+- [ ] Create project structure following updated Readme:
+  - [ ] Set up Sample00Auto.Client project
+  - [ ] Set up Sample00Auto server project
+  - [ ] Configure proper project references
+  - [ ] Implement GlobalUsings.cs files
+  - [ ] Configure Program.cs files
+  - [ ] Set up Routes.razor
+- [ ] Update package references to 11.0.0
 - [ ] Verify build process
 - [ ] Test Auto functionality
 
 ### Testing
 - [ ] Verify project builds correctly
-- [ ] Test Auto render mode functionality
-- [ ] Verify state management works in both Server and WebAssembly modes
+- [ ] Test Auto render mode functionality:
+  - [ ] Initial server-side rendering
+  - [ ] Transition to WebAssembly
+  - [ ] State management during transition
+- [ ] Verify state management works in both modes
 - [ ] Run all tests to ensure no regressions
 
 ### Documentation
-- [ ] Update project documentation
-- [ ] Fix any invalid file links
-- [ ] Update sample README
-- [ ] Add notes about Auto project structure
+- [x] Update project documentation
+- [x] Fix any invalid file links
+- [x] Update sample README with correct structure
+- [x] Add notes about Auto project structure
 
 ## Notes
 
-- Issue discovered during production release preparation
-- Project structure may not follow latest Blazor Auto conventions
+- Documentation has been updated with correct project structure
+- Readme now includes:
+  - Proper project organization
+  - Required GlobalUsings.cs configurations
+  - Program.cs setup for both Client and Server
+  - Routes.razor configuration
+  - State management implementation
+- Implementation needs to match updated documentation
 - Part of production readiness requirements
-- May affect sample documentation and file links
 
 ## Implementation Notes
 
-- Add implementation notes as the task progresses
+- Documentation updated with correct project structure and instructions
+- Readme now provides clear guidance for:
+  - Project creation and setup
+  - Package installation
+  - Service configuration
+  - State implementation
+  - Auto render mode behavior
+- Next steps:
+  - Implement project structure as documented
+  - Verify functionality matches documentation
+  - Test state management during render mode transition
