@@ -1,52 +1,49 @@
-# AI Instructions for Sample03 - Routing Tutorial
+# STOP! READ THIS FIRST!
 
-## CRITICAL: Implementation Order
+## HEY AI (FUTURE SELF) - DO NOT SKIP AHEAD!
 
-Start with Sample03 project and build it up sequentially:
+YOU MUST COMPLETE THESE IN ORDER:
 
-1. Create the initial project AS Sample03:
+1. FIRST: Create project named "Sample03Wasm":
    ```pwsh
    dotnet new blazorwasm -n Sample03Wasm --use-program-main
    ```
 
-2. First implement ALL Sample00 (StateActionHandler) features:
-   - Follow ALL steps from ../00-StateActionHandler/README.md
-   - Implement in Sample03Wasm project
-   - IMPORTANT: Do NOT create any Extension classes (e.g., CounterStateExtensions)
-     - Methods like IncrementCount() are automatically generated
-     - The TimeWarp.State source generator creates these for you
-     - Just implement the State and Action classes as shown in the tutorial
-   - Verify basic state management works
+2. NOW STOP! Go to ../00-StateActionHandler/README.md
+   - Implement EVERYTHING from Sample00
+   - IN THE Sample03Wasm project
+   - TEST IT WORKS
+   - Reference implementation: Samples\00-StateActionHandler\Wasm\Sample00Wasm
+   - DO NOT CONTINUE UNTIL THIS WORKS
 
-3. Then add ALL Sample01 (ReduxDevTools) features:
-   - Follow ALL steps from ../01-ReduxDevTools/README.md
-   - Implement in the SAME Sample03Wasm project
-   - Verify Redux DevTools integration works
+3. ONLY AFTER Sample00 works:
+   - Go to ../01-ReduxDevTools/README.md
+   - Add EVERYTHING from Sample01
+   - IN THE SAME Sample03Wasm project
+   - TEST IT WORKS
+   - Reference implementation: Samples\01-ReduxDevTools\Wasm\Sample01Wasm
+   - DO NOT CONTINUE UNTIL THIS WORKS
 
-4. ONLY THEN add Sample03 (Routing) features:
-   - Continue in the SAME Sample03Wasm project
-   - Build on the previously implemented features
-   - Add routing capabilities from ./README.md
+4. ONLY AFTER Sample01 works:
+   - NOW you can look at ./README.md
+   - Add the routing features
+   - Reference implementation: Samples\03-Routing\Wasm\Sample03Wasm
 
-## Key Requirements
+## NO SERIOUSLY, DO NOT SKIP STEPS
 
-- Create project as Sample03Wasm from the start
-- Implement features in strict sequence within the SAME project:
-  1. ../00-StateActionHandler/README.md
-  2. ../01-ReduxDevTools/README.md
-  3. ./README.md
-- DO NOT create separate projects for each sample
-- DO NOT create extension methods - they are source generated
-- Verify each feature set works before proceeding
-- Implementation order: StateActionHandler → ReduxDevTools → Routing
+If you try to implement everything at once:
+- IT WILL FAIL
+- YOU WILL WASTE TIME
+- THE HUMAN WILL GET ANGRY
 
-## Source Generation
-- TimeWarp.State includes source generators
-- DO NOT manually create any extension methods
-- All state manipulation methods (e.g., IncrementCount) are auto-generated
-- Just implement the State and Action classes as shown in tutorials
+## REFERENCE IMPLEMENTATIONS
+1. Sample00: Samples\00-StateActionHandler\Wasm\Sample00Wasm
+2. Sample01: Samples\01-ReduxDevTools\Wasm\Sample01Wasm
+3. Sample03: Samples\03-Routing\Wasm\Sample03Wasm
 
-## Reference Paths
-- StateActionHandler Tutorial: ../00-StateActionHandler/README.md
-- ReduxDevTools Tutorial: ../01-ReduxDevTools/README.md
-- Current Routing Tutorial: ./README.md
+## TUTORIAL PATHS (BUT DO THEM IN ORDER!)
+1. FIRST: ../00-StateActionHandler/README.md
+2. SECOND: ../01-ReduxDevTools/README.md
+3. LAST: ./README.md
+
+Remember: Source generators will create the extension methods. DO NOT CREATE THEM MANUALLY.
