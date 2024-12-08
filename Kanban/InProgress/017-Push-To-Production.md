@@ -27,9 +27,15 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
   - [x] Sample03-Routing
 - [x] Update package versions in all sample project files to 11.0.0
 - [ ] Run all samples to verify they work with production version
-- [ ] Update packages.lock.json files if needed
+  - [x] Sample00-StateActionHandler Server (Verified working)
+  - [ ] Sample00-StateActionHandler Wasm
+  - [ ] Sample01-ReduxDevTools
+  - [ ] Sample02-ActionTracking
+  - [ ] Sample03-Routing
+  - [ ] Sample00-StateActionHandler Auto (Needs investigation - project structure issue)
+- [x] Update packages.lock.json files
 - [ ] Run all tests to ensure everything passes
-- [ ] Build and verify NuGet packages
+- [x] Build and verify NuGet packages
 
 ### Documentation
 - [x] Update Release Notes for 11.0.0
@@ -53,6 +59,7 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - All samples should be updated to use the production version
 - Documentation should reflect production status
 - Consider creating a release checklist template for future releases
+- Sample00-StateActionHandler Auto needs investigation for project structure issues
 
 ## Implementation Notes
 
@@ -67,3 +74,6 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
   - Sample02-ActionTracking
   - Sample03-Routing
   - Updated both TimeWarp.State and TimeWarp.State.Plus where applicable
+- Built and published NuGet packages version 11.0.0 to local feed
+- Verified Sample00-StateActionHandler Server working with production version
+- Noted issue with Sample00-StateActionHandler Auto project structure - needs investigation
