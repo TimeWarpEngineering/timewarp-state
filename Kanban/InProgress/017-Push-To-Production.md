@@ -25,6 +25,7 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
   - [x] Sample01-ReduxDevTools
   - [x] Sample02-ActionTracking
   - [x] Sample03-Routing
+- [x] Update package versions in all sample project files to 11.0.0
 - [ ] Run all samples to verify they work with production version
 - [ ] Update packages.lock.json files if needed
 - [ ] Run all tests to ensure everything passes
@@ -60,3 +61,9 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - Verified no other samples contained prerelease flags
 - Reviewed Release11.0.0.md and confirmed it's comprehensive and up-to-date
 - Searched all documentation for any remaining beta/prerelease references and found none
+- Updated package versions to 11.0.0 in all sample projects:
+  - Sample00-StateActionHandler (Server, Wasm, Auto)
+  - Sample01-ReduxDevTools
+  - Sample02-ActionTracking
+  - Sample03-Routing
+  - Updated both TimeWarp.State and TimeWarp.State.Plus where applicable
