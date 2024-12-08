@@ -7,6 +7,12 @@ description: Learn how to integrate Redux DevTools with TimeWarp.State for enhan
 
 # Adding Redux DevTools to TimeWarp.State
 
+> [!TIP]
+> View the complete reference implementation for this tutorial:
+> - [Sample01Wasm Project](./Sample01Wasm/)
+> - [Program.cs with Redux Configuration](./Sample01Wasm/Program.cs)
+> - [App.razor with Redux Components](./Sample01Wasm/App.razor)
+
 This tutorial demonstrates how to add Redux DevTools support to your TimeWarp.State Blazor WebAssembly application. Redux DevTools provides powerful debugging capabilities, allowing you to monitor state changes, inspect actions, and understand your application's behavior.
 
 ## Prerequisites
