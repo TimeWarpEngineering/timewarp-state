@@ -8,7 +8,11 @@ public class Program
     builder.RootComponents.Add<App>("#app");
     builder.RootComponents.Add<HeadOutlet>("head::after");
 
-    builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+    builder.Services.AddScoped
+    (
+      sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
+    );
+    
     builder.Services.AddTimeWarpState
     (
       options =>
@@ -16,6 +20,7 @@ public class Program
         options.UseReduxDevTools();
       }
     );
+    
     builder.Services.AddTimeWarpStateRouting();
 
     await builder.Build().RunAsync();
