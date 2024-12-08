@@ -29,7 +29,7 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - [ ] Run all samples to verify they work with production version
   - [x] Sample00-StateActionHandler Server (Verified working)
   - [x] Sample00-StateActionHandler Wasm (Verified working)
-  - [ ] Sample01-ReduxDevTools
+  - [x] Sample01-ReduxDevTools (Verified working - base functionality works, Redux DevTools warning expected)
   - [ ] Sample02-ActionTracking
   - [ ] Sample03-Routing
   - [ ] Sample00-StateActionHandler Auto (Needs investigation - project structure issue)
@@ -78,3 +78,6 @@ Prepare TimeWarp.State for production release by updating version numbers, remov
 - Verified Sample00-StateActionHandler Server working with production version
 - Noted issue with Sample00-StateActionHandler Auto project structure - needs investigation
 - Verified Sample00-StateActionHandler Wasm working with production version - counter functionality working as expected
+- Verified Sample01-ReduxDevTools working with production version:
+  - Base counter functionality working correctly
+  - Redux DevTools integration properly warns when DevTools not installed (expected behavior)
