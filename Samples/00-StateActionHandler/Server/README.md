@@ -54,7 +54,7 @@ dotnet run --project ./Sample00Server/Sample00Server.csproj
 Add the TimeWarp.State NuGet package:
 
 ```bash
-dotnet add ./Sample00Server/Sample00Server.csproj package TimeWarp.State --prerelease
+dotnet add ./Sample00Server/Sample00Server.csproj package TimeWarp.State
 ```
 
 ### Configure Services
