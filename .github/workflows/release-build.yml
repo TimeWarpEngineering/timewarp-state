@@ -76,15 +76,18 @@ jobs:
         run: |
           [xml]$xml = Get-Content -Path "Directory.Build.props"
           $version = $xml.Project.PropertyGroup.TimeWarpStateVersion
-          echo "Extracted version: $version"
+          echo "Extracted version (raw): '$version'"
+          $version = $version.Trim()
+          echo "Extracted version (trimmed): '$version'"
           echo "::set-output name=VERSION::$version"
         shell: pwsh
+
 
       - name: Tag commit with version
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          $version = "${{ steps.extract_version.outputs.VERSION }}" -replace "\+.*$",""
+          $version = "${{ steps.extract_version.outputs.VERSION }}" -replace "\+.*$","" -replace "^\s+|\s+$", ""
           git tag -a $version -m "Release $version"
           git push origin $version
         shell: pwsh
