@@ -5,7 +5,7 @@ title: Getting Started
 
 ## Getting Started
 
-I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md) for a step-by-step guide to building a Blazor app with TimeWarp.State.
+I recommend the [samples](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/Samples) for step-by-step guides to building Blazor apps with TimeWarp.State.
 
 👉 Official [documentation](https://timewarpengineering.github.io/timewarp-state/).
 

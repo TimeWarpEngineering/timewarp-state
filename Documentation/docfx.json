@@ -25,10 +25,7 @@
         "exclude": [ "Images/**", "**/Model**", "_site/**" ]
       },
       {
-        "src":"../",
-        "files":[
-          "**/**.md"
-        ]
+        "src":"../"
       }
     ],
     "resource": [
