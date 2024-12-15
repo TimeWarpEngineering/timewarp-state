@@ -1,3 +1,4 @@
+---
 uid: TimeWarpState:Release.11.0.0.md
 title: Release 11.0.0
 ---
@@ -12,7 +13,7 @@ This change reflects our evolving vision and commitment to providing a robust st
 
 ### Breaking Changes
 
-See [Migrations](xref:BlazorState:Migration10-11.md) for instructions on how to migrate from version 10.0 to 11.0.
+See [Migrations](xref:TimeWarpState:Migration10-11.md) for instructions on how to migrate from version 10.0 to 11.0.
 
 - `TimeWarp.State` now requires .NET 8.0 or later. 
 - All references to `BlazorState` should be updated to `TimeWarp.State`.
@@ -85,4 +86,4 @@ See [Migrations](xref:BlazorState:Migration10-11.md) for instructions on how to 
 
 ### Migration Guide
 
-For detailed instructions on how to migrate from Blazor-State to TimeWarp.State, please refer to our [Migration Guide](xref:BlazorState:Migration10-11.md).
+For detailed instructions on how to migrate from Blazor-State to TimeWarp.State, please refer to our [Migration Guide](xref:TimeWarpState:Migration10-11.md).

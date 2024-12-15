@@ -15,13 +15,13 @@ This is quite handy for debugging.
 
 Redux Dev Tools are disabled by default.  Update the options passed to the `AddTimeWarpState` extension method to set `UseReduxDevToolsBehavior` to true, as show here in the sample application:
 
-[!code-csharp[Startup](../../Samples/00-StateActionsHandlers/Sample/Client/Program.cs?highlight=16 "Code Link")]
+[!code-csharp[Startup](../../Samples/01-ReduxDevTools/Wasm/Sample01Wasm/Program.cs?highlight=15 "Code Link")]
 
-### Initialize in App Component
+### Add ReduxDevTools Component
 
-ReduxDevTools requires Javascript interop. Similar to Routing and Javascript interop one must inject and initialize `ReduxDevToolsInterop` in the base Application component.
+Add the ReduxDevTools Component to your App.Razor
 
 See example from the sample app below:
-[!code-csharp[Startup](../../Samples/01-StateActionsHandlers/Sample/Client/App.razor.cs?highlight=12,19 "Code Link")]
+[!code-csharp[Startup](../../Samples/01-ReduxDevTools/Wasm/Sample01Wasm/App.razor?highlight=15,19 "Code Link")]
 
 Now run your app and Open the Redux Dev Tools and you should see Actions as they are executed.
