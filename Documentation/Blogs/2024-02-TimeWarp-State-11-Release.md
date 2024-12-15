@@ -44,7 +44,7 @@ TimeWarp.State 11.0.0 requires .NET 8.0 or later. The rebranding means you'll ne
 - Package references from `Blazor-State` to `TimeWarp.State`
 - Namespace references from `BlazorState` to `TimeWarp.State`
 
-For detailed migration instructions, check our [Migration Guide](https://timewarpengineering.github.io/timewarp-state/Migrations/Migration9-10.html).
+For detailed migration instructions, check our [Migration Guide](https://timewarpengineering.github.io/timewarp-state/Migrations/Migration10-11.html).
 
 ## Looking Forward
 

@@ -1,4 +1,4 @@
-# StateActionHandler Pattern in TimeWarp.State
+# States Actions and Handlers in TimeWarp.State
 
 The StateActionHandler pattern is a fundamental concept in TimeWarp.State that implements unidirectional data flow. This pattern consists of three main components:
 
