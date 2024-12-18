@@ -6,7 +6,7 @@
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/TimeWarpEngineering/timewarp-state/badge)](https://scorecard.dev/viewer/?uri=github.com/TimeWarpEngineering/timewarp-state)
 
 [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
-[![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
+[![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 [![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Ftimewarp-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
