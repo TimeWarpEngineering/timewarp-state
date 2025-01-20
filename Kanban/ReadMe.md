@@ -16,7 +16,7 @@ Each task is represented by a Markdown file, and the status of a task is indicat
 such as `B001_Research-Authentication-Methods.md` or `B002_Design-Game-Rules.md`.
 - When a task becomes "Ready," assign it a unique identifier (without the 'B' prefix) and move it to the ToDo folder, e.g.,
 `001_Implement-User-Registration.md` or `002_Create-Game-Logic.md`.
-- <3 digit Id>_<Short-Description-seperated-by-hyphens>
+- <3 digit Id>_<Short-Description-separated-by-hyphens>
 
 ## Workflow
 
