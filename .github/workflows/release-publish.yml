@@ -69,6 +69,9 @@ jobs:
       - name: Publish TimeWarp.State
         run: |
           cd Source/TimeWarp.State/bin/Release
+          if (!(Test-Path "TimeWarp.State.*.nupkg")) {
+            throw "NuGet package not found for TimeWarp.State"
+          }
           dotnet nuget push TimeWarp.State.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to publish TimeWarp.State"
@@ -78,6 +81,9 @@ jobs:
       - name: Publish TimeWarp.State.Plus
         run: |
           cd Source/TimeWarp.State.Plus/bin/Release
+          if (!(Test-Path "TimeWarp.State.Plus.*.nupkg")) {
+            throw "NuGet package not found for TimeWarp.State.Plus"
+          }
           dotnet nuget push TimeWarp.State.Plus.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to publish TimeWarp.State.Plus"
@@ -87,6 +93,9 @@ jobs:
       - name: Publish TimeWarp.State.Policies
         run: |
           cd Source/TimeWarp.State.Policies/bin/Release
+          if (!(Test-Path "TimeWarp.State.Policies.*.nupkg")) {
+            throw "NuGet package not found for TimeWarp.State.Policies"
+          }
           dotnet nuget push TimeWarp.State.Policies.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to publish TimeWarp.State.Policies"
@@ -96,6 +105,9 @@ jobs:
       - name: Publish TimeWarp.State.Analyzer
         run: |
           cd Source/TimeWarp.State.Analyzer/bin/Release
+          if (!(Test-Path "TimeWarp.State.Analyzer.*.nupkg")) {
+            throw "NuGet package not found for TimeWarp.State.Analyzer"
+          }
           dotnet nuget push TimeWarp.State.Analyzer.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to publish TimeWarp.State.Analyzer"
@@ -105,6 +117,9 @@ jobs:
       - name: Publish TimeWarp.State.SourceGenerator
         run: |
           cd Source/TimeWarp.State.SourceGenerator/bin/Release
+          if (!(Test-Path "TimeWarp.State.SourceGenerator.*.nupkg")) {
+            throw "NuGet package not found for TimeWarp.State.SourceGenerator"
+          }
           dotnet nuget push TimeWarp.State.SourceGenerator.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
           if ($LASTEXITCODE -ne 0) {
             throw "Failed to publish TimeWarp.State.SourceGenerator"
