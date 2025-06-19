@@ -47,15 +47,15 @@
       },
       "Microsoft.Playwright.MSTest": {
         "type": "Direct",
-        "requested": "[1.47.0, )",
-        "resolved": "1.47.0",
-        "contentHash": "3WMicAzMoF3zSuo8fPZSKLfu1iLevOlSRA7OXMjs/X+9kEGmst5ODrJ99K1CaYJ/BPyQ5MqeNN8E11+m+WXg3w==",
+        "requested": "[1.52.0, )",
+        "resolved": "1.52.0",
+        "contentHash": "2/lX1Gh05pT7GMAj8X0Sd6fycHpsoXXPBHSC/ct9i1YaYtNF7nEbKFQFv786+u5nDBJRYVxjfg9KLbLv8xYUeQ==",
         "dependencies": {
           "MSTest.TestAdapter": "2.2.7",
           "MSTest.TestFramework": "2.2.7",
-          "Microsoft.NET.Test.Sdk": "16.11.0",
-          "Microsoft.Playwright": "1.47.0",
-          "Microsoft.Playwright.TestAdapter": "1.47.0"
+          "Microsoft.NET.Test.Sdk": "17.8.0",
+          "Microsoft.Playwright": "1.52.0",
+          "Microsoft.Playwright.TestAdapter": "1.52.0"
         }
       },
       "Microsoft.SourceLink.GitHub": {
@@ -109,10 +109,10 @@
       },
       "Microsoft.Playwright.TestAdapter": {
         "type": "Transitive",
-        "resolved": "1.47.0",
-        "contentHash": "hKZPcPWknCYPSajPr16Xrwh0q3C7hx7GO2bmWLZ2uFMS3y+78UeBUBkMwMUJdtZRkHDtQGKRw7uPX8wEuOiDCw==",
+        "resolved": "1.52.0",
+        "contentHash": "wivJE574i5peAj2gQAmtIfvmiEUphsDrRtAqRsehQeSUOOwzEBJepTvAfLopazODRHU16F6Ex6jv1k48cR9aww==",
         "dependencies": {
-          "Microsoft.Playwright": "1.47.0",
+          "Microsoft.Playwright": "1.52.0",
           "Microsoft.TestPlatform.ObjectModel": "17.3.0"
         }
       },
@@ -240,12 +240,12 @@
       "Microsoft.Playwright": {
         "type": "CentralTransitive",
         "requested": "[1.19.1, )",
-        "resolved": "1.47.0",
-        "contentHash": "D9verOkoSO1vqqAe36jmuQlceEHd2leoYlLOXQkMuVDFTbhvblVk7LOm9LeS50u+5xNcIcJi1+vA2rZxN5tW4A==",
+        "resolved": "1.52.0",
+        "contentHash": "zH8a7OiXtq8BC6i0yYHAG/DSN8J8/bVyQYVESK7mK1ZJF19eY1ca51BAQpQxzF+Qm/A20x6Rsl8cT+QYXSfxbw==",
         "dependencies": {
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
           "System.ComponentModel.Annotations": "5.0.0",
-          "System.Text.Json": "6.0.0"
+          "System.Text.Json": "6.0.10"
         }
       },
       "System.Configuration.ConfigurationManager": {
@@ -260,8 +260,8 @@
       "System.Text.Json": {
         "type": "CentralTransitive",
         "requested": "[8.0.1, )",
-        "resolved": "6.0.0",
-        "contentHash": "zaJsHfESQvJ11vbXnNlkrR46IaMULk/gHxYsJphzSF+07kTjPHv+Oc14w6QEOfo3Q4hqLJgStUaYB9DBl0TmWg==",
+        "resolved": "6.0.10",
+        "contentHash": "NSB0kDipxn2ychp88NXWfFRFlmi1bst/xynOutbnpEfRCT9JZkZ7KOmF/I/hNKo2dILiMGnqblm+j1sggdLB9g==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
           "System.Text.Encodings.Web": "6.0.0"
