@@ -194,12 +194,18 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
       private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
       {
         SyntaxNode? namespaceDeclaration = classDeclaration.Parent;
-        while (namespaceDeclaration != null && namespaceDeclaration is not NamespaceDeclarationSyntax)
+        while (namespaceDeclaration != null
+          && namespaceDeclaration is not NamespaceDeclarationSyntax
+          && namespaceDeclaration is not FileScopedNamespaceDeclarationSyntax)
         {
           namespaceDeclaration = namespaceDeclaration.Parent;
         }
 
-        return namespaceDeclaration is NamespaceDeclarationSyntax namespaceSyntax ? namespaceSyntax.Name.ToString() : string.Empty;
+        return namespaceDeclaration is NamespaceDeclarationSyntax namespaceSyntax
+                        ? namespaceSyntax.Name.ToString()
+                        : namespaceDeclaration is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceSyntax
+                            ? fileScopedNamespaceSyntax.Name.ToString()
+                            : string.Empty;
       }
     }
   }
