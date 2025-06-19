@@ -24,4 +24,4 @@ $combinedContent = $content -join "`n"
 $combinedContent
 
 # Optionally, save to a file
-$combinedContent | Out-File -FilePath ".cline-rules"
+$combinedContent | Out-File -FilePath ".clinerules"
