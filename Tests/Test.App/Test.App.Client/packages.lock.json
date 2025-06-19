@@ -60,15 +60,15 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.11, )",
-        "resolved": "8.0.11",
-        "contentHash": "zk5lnZrYJgtuJG8L4v17Ej8rZ3PUcR2iweNV08BaO5LbYHIi2wNaVNcJoLxvqgQdnjLlKnCCfVGLDr6QHeAarQ=="
+        "requested": "[8.0.17, )",
+        "resolved": "8.0.17",
+        "contentHash": "x5/y4l8AtshpBOrCZdlE4txw8K3e3s9meBFeZeR3l8hbbku2V7kK6ojhXvrbjg1rk3G+JqL1BI26gtgc1ZrdUw=="
       },
       "Microsoft.NET.Sdk.WebAssembly.Pack": {
         "type": "Direct",
-        "requested": "[8.0.11, )",
-        "resolved": "8.0.11",
-        "contentHash": "apyq1nlpnHG64NVs1RpgUJAxM73bu5fLFB/SsIcYYiLKdUxiIMPQQWr9ysRxfJRLlKwLSoJo6LmjhjS9sxC8eg=="
+        "requested": "[8.0.17, )",
+        "resolved": "8.0.17",
+        "contentHash": "wufm5kIsP5PlG54bahrhJDPbN114ru7mIYOdyVQS4sCr3811SLqcn1X6rg3mxZgGxRbyfMcMBXcg5P2HV/MRYQ=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
@@ -373,7 +373,7 @@
           "Blazored.SessionStorage": "[2.4.0, )",
           "Microsoft.AspNetCore.Components.Web": "[8.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "TimeWarp.State": "[11.0.0-beta.96, )"
+          "TimeWarp.State": "[11.0.0, )"
         }
       },
       "AnyClone": {

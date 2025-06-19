@@ -15,21 +15,21 @@
 ## Checklist
 
 ### Design
-- [ ] Analyze current GitHub Actions workflows
-- [ ] Design separate workflow for release publishing
-- [ ] Plan version management strategy
+- [x] Analyze current GitHub Actions workflows
+- [x] Design separate workflow for release publishing
+- [x] Plan version management strategy
 
 ### Implementation
-- [ ] Create new release workflow (.github/workflows/release.yml)
-- [ ] Modify existing master workflow to exclude NuGet publishing
-- [ ] Add release trigger configuration
-- [ ] Update NuGet package versioning logic
+- [x] Create new release workflow (.github/workflows/release-publish.yml)
+- [x] Modify existing master workflow to exclude NuGet publishing
+- [x] Add release trigger configuration
+- [x] Update NuGet package versioning logic
 - [ ] Test workflow with draft release
 
 ### Documentation
 - [ ] Update README.md with new release process
-- [ ] Document release workflow in CLAUDE.md
-- [ ] Update contributor guidelines
+- [x] Document release workflow in Claude.md
+- [x] Update DevOps documentation with release process
 
 ### Review
 - [ ] Consider Security Implications (NuGet API keys, workflow permissions)
@@ -46,6 +46,21 @@
 
 ## Implementation Notes
 
-- Review .github/workflows/ directory for existing workflows
-- Check how NuGet API keys are currently managed in GitHub secrets
-- Ensure release workflow has proper permissions for NuGet publishing
+### Completed Changes:
+1. **Analyzed existing workflows**: 
+   - `release-build.yml` was doing both master builds AND releases
+   - `ci-build.yml` handles PR validation only
+   
+2. **Split workflows**:
+   - Renamed `release-build.yml` to `master-build.yml` - now only builds/tests on master
+   - Created `release-publish.yml` - only publishes NuGet on GitHub release creation
+   
+3. **Key improvements**:
+   - Master workflow now uses same build/test scripts as PR workflow for consistency
+   - Release workflow validates version matches tag before publishing
+   - Added publishing for all packages (Analyzer and SourceGenerator were missing)
+   - Improved output variable syntax (deprecated ::set-output)
+
+### Next Steps:
+- Test with draft release to validate end-to-end workflow
+- Update documentation with new release process

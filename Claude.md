@@ -38,6 +38,11 @@ dotnet watch --project ./Tests/Test.App/Test.App.Server/Test.App.Server.csproj
 dotnet build --project <ProjectPath> --configuration Release
 ```
 
+### Release Process
+- **Master branch**: Builds and tests automatically, no publishing
+- **GitHub Releases**: Trigger automatic NuGet publishing
+- Release workflow validates version matches tag before publishing
+
 ### Analysis
 ```powershell
 # Build and package analyzer
