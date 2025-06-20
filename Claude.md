@@ -53,9 +53,10 @@ dotnet build --project <ProjectPath> --configuration Release
 
 ### Core Libraries (Source/)
 - **TimeWarp.State**: Main library with base classes, Redux DevTools, JavaScript interop
+  - Embeds Analyzer and SourceGenerator as analyzers (not separate packages)
 - **TimeWarp.State.Plus**: Extended functionality with ActionTracking, Routing, Themes
-- **TimeWarp.State.Analyzer**: Roslyn analyzers for code validation
-- **TimeWarp.State.SourceGenerator**: Code generation to reduce boilerplate
+- **TimeWarp.State.Analyzer**: Roslyn analyzers (embedded in main package)
+- **TimeWarp.State.SourceGenerator**: Code generation (embedded in main package)
 - **TimeWarp.State.Policies**: NetArchTest rules for architecture validation
 
 ### Testing Strategy
@@ -143,6 +144,15 @@ Follow structured task workflow using Kanban approach:
 - Task files: `Kanban/<Status>/<TaskID>_<Description>.md`
 - Commit format: `Task: <TaskID> = <Status> <Description>`
 - Move tasks between folders as status changes
+
+## Package Structure
+
+**Published NuGet Packages:**
+- **TimeWarp.State**: Main package (includes embedded Analyzer/SourceGenerator)
+- **TimeWarp.State.Plus**: Extended features package
+- **TimeWarp.State.Policies**: Architecture testing rules
+
+**Note**: Analyzer and SourceGenerator projects are **NOT** published as separate packages - they are embedded in the main TimeWarp.State package as analyzers.
 
 ## Essential Dependencies
 
