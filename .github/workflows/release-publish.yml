@@ -56,8 +56,16 @@ jobs:
           $tagName = "${{ github.event.release.tag_name }}"
           echo "Release version: $releaseVersion"
           echo "Tag name: $tagName"
-          if ($releaseVersion -ne $tagName) {
-            throw "Release version ($releaseVersion) does not match tag name ($tagName)"
+          echo "Event name: ${{ github.event_name }}"
+          
+          # Only validate tag match for actual release events, not manual dispatch
+          if ("${{ github.event_name }}" -eq "release") {
+            if ($releaseVersion -ne $tagName) {
+              throw "Release version ($releaseVersion) does not match tag name ($tagName)"
+            }
+            echo "✅ Release version matches tag name"
+          } else {
+            echo "⚠️ Manual dispatch - skipping tag validation"
           }
         shell: pwsh
 
