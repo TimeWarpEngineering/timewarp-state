@@ -110,28 +110,5 @@ jobs:
           }
         working-directory: ${{ github.workspace }}
 
-      - name: Publish TimeWarp.State.Analyzer
-        run: |
-          cd Source/TimeWarp.State.Analyzer/bin/Release
-          if (!(Test-Path "TimeWarp.State.Analyzer.*.nupkg")) {
-            throw "NuGet package not found for TimeWarp.State.Analyzer"
-          }
-          dotnet nuget push TimeWarp.State.Analyzer.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
-          if ($LASTEXITCODE -ne 0) {
-            throw "Failed to publish TimeWarp.State.Analyzer"
-          }
-        working-directory: ${{ github.workspace }}
-
-      - name: Publish TimeWarp.State.SourceGenerator
-        run: |
-          cd Source/TimeWarp.State.SourceGenerator/bin/Release
-          if (!(Test-Path "TimeWarp.State.SourceGenerator.*.nupkg")) {
-            throw "NuGet package not found for TimeWarp.State.SourceGenerator"
-          }
-          dotnet nuget push TimeWarp.State.SourceGenerator.*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}}
-          if ($LASTEXITCODE -ne 0) {
-            throw "Failed to publish TimeWarp.State.SourceGenerator"
-          }
-        working-directory: ${{ github.workspace }}
 
       - run: echo "🍏 This job's status is ${{ job.status }}."
