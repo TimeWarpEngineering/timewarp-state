@@ -178,28 +178,32 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
         string xNamespace = GetNamespace(x);
         string yNamespace = GetNamespace(y);
-        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace;
+        string xParentClassName = GetParentClassName(x);
+        string yParentClassName = GetParentClassName(y);
+        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace && xParentClassName == yParentClassName;
       }
 
       public int GetHashCode(ClassDeclarationSyntax obj)
       {
         if (ReferenceEquals(obj, null)) return 0;
 
-        int hashClassName = obj.Identifier.ValueText.GetHashCode();
-        int hashNamespace = GetNamespace(obj).GetHashCode();
-
-        return hashClassName ^ hashNamespace;
+        return $"{GetNamespace(obj)}.{GetParentClassName(obj)}.{obj.Identifier.ValueText}".GetHashCode();
       }
 
       private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
       {
         SyntaxNode? namespaceDeclaration = classDeclaration.Parent;
-        while (namespaceDeclaration != null && namespaceDeclaration is not NamespaceDeclarationSyntax)
+        while (namespaceDeclaration is { } nd && nd is not BaseNamespaceDeclarationSyntax)
         {
           namespaceDeclaration = namespaceDeclaration.Parent;
         }
 
-        return namespaceDeclaration is NamespaceDeclarationSyntax namespaceSyntax ? namespaceSyntax.Name.ToString() : string.Empty;
+        return namespaceDeclaration switch
+        {
+          NamespaceDeclarationSyntax namespaceSyntax => namespaceSyntax.Name.ToString(),
+          FileScopedNamespaceDeclarationSyntax fileScopedNamespaceSyntax => fileScopedNamespaceSyntax.Name.ToString(),
+          _ => string.Empty
+        };
       }
     }
   }
