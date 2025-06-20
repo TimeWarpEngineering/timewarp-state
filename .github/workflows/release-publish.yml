@@ -43,7 +43,7 @@ jobs:
         id: extract_version
         run: |
           [xml]$xml = Get-Content -Path "Directory.Build.props"
-          $version = $xml.Project.PropertyGroup.TimeWarpStateVersion
+          $version = $xml.SelectSingleNode("//TimeWarpStateVersion").InnerText
           echo "Extracted version (raw): '$version'"
           $version = $version.Trim()
           echo "Extracted version (trimmed): '$version'"
