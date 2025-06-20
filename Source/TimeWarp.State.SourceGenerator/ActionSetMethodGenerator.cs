@@ -178,32 +178,28 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
         string xNamespace = GetNamespace(x);
         string yNamespace = GetNamespace(y);
-        string xParentClassName = GetParentClassName(x);
-        string yParentClassName = GetParentClassName(y);
-        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace && xParentClassName == yParentClassName;
+        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace;
       }
 
       public int GetHashCode(ClassDeclarationSyntax obj)
       {
         if (ReferenceEquals(obj, null)) return 0;
 
-        return $"{GetNamespace(obj)}.{GetParentClassName(obj)}.{obj.Identifier.ValueText}".GetHashCode();
+        int hashClassName = obj.Identifier.ValueText.GetHashCode();
+        int hashNamespace = GetNamespace(obj).GetHashCode();
+
+        return hashClassName ^ hashNamespace;
       }
 
       private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
       {
         SyntaxNode? namespaceDeclaration = classDeclaration.Parent;
-        while (namespaceDeclaration is { } nd && nd is not BaseNamespaceDeclarationSyntax)
+        while (namespaceDeclaration != null && namespaceDeclaration is not NamespaceDeclarationSyntax)
         {
           namespaceDeclaration = namespaceDeclaration.Parent;
         }
 
-        return namespaceDeclaration switch
-        {
-          NamespaceDeclarationSyntax namespaceSyntax => namespaceSyntax.Name.ToString(),
-          FileScopedNamespaceDeclarationSyntax fileScopedNamespaceSyntax => fileScopedNamespaceSyntax.Name.ToString(),
-          _ => string.Empty
-        };
+        return namespaceDeclaration is NamespaceDeclarationSyntax namespaceSyntax ? namespaceSyntax.Name.ToString() : string.Empty;
       }
     }
   }
