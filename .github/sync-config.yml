@@ -1,0 +1,78 @@
+# Sync configuration for this repository
+# Configure which files to sync from parent repositories
+
+# Default repository configuration
+default_repo: 'TimeWarpEngineering/timewarp-architecture'
+default_branch: 'master'
+
+# Sync schedule configuration
+schedule:
+  cron: '0 9 * * 1'  # Every Monday at 9:00 AM UTC
+
+# Repository-based file sync configuration
+repos:
+  - repo: 'TimeWarpEngineering/timewarp-architecture'
+    branch: 'master'
+    path_transform:
+      remove_prefix: 'TimeWarp.Architecture/'
+    files:
+      # Common development configuration files
+      - source_path: 'TimeWarp.Architecture/.editorconfig'
+      - source_path: 'TimeWarp.Architecture/.gitattributes'
+      
+      # Kanban project management files - uncomment to enable project tracking:
+      # - source_path: 'TimeWarp.Architecture/Kanban/Overview.md'
+      #   dest_path: 'Kanban/Overview.md'
+      # - source_path: 'TimeWarp.Architecture/Kanban/Backlog/Overview.md'
+      #   dest_path: 'Kanban/Backlog/Overview.md'
+      # - source_path: 'TimeWarp.Architecture/Kanban/ToDo/Overview.md'
+      #   dest_path: 'Kanban/ToDo/Overview.md'
+      # - source_path: 'TimeWarp.Architecture/Kanban/InProgress/Overview.md'
+      #   dest_path: 'Kanban/InProgress/Overview.md'
+      # - source_path: 'TimeWarp.Architecture/Kanban/Done/Overview.md'
+      #   dest_path: 'Kanban/Done/Overview.md'
+      # - source_path: 'TimeWarp.Architecture/Kanban/Task-Template.md'
+      #   dest_path: 'Kanban/Task-Template.md'
+      
+      # Uncomment and customize based on your repository type:
+      
+      # .NET repositories - uncomment if this is a .NET project:
+      # - source_path: 'TimeWarp.Architecture/Directory.Build.props'
+      # - source_path: 'TimeWarp.Architecture/Directory.Build.targets'
+      # - source_path: 'TimeWarp.Architecture/global.json'
+      # - source_path: 'TimeWarp.Architecture/NuGet.config'
+      
+      # JavaScript/Node.js repositories - uncomment if this is a JS/Node project:
+      # - source_path: 'TimeWarp.Architecture/.eslintrc.js'
+      # - source_path: 'TimeWarp.Architecture/.prettierrc.json'
+      # - source_path: 'TimeWarp.Architecture/.prettierignore'
+      # - source_path: 'TimeWarp.Architecture/.nvmrc'
+      
+      # GitHub workflow templates (requires SYNC_PAT with workflow scope):
+      # - source_path: 'TimeWarp.Architecture/.github/workflow-templates/'
+      
+      # Documentation templates:
+      # - source_path: 'TimeWarp.Architecture/.templates/'
+
+# Sync options
+sync_options:
+  overwrite_existing: true
+  ignore_missing: false
+  default_dest_to_source: true
+
+# Pull Request configuration
+pull_request:
+  # Branch name prefix for sync PRs
+  branch_prefix: 'sync-configurable-files'
+  
+  # PR title template
+  title: 'Sync configurable files from parent repository'
+  
+  # Auto-merge PRs if all checks pass (requires branch protection rules)
+  auto_merge: false
+  
+  # Labels to add to sync PRs
+  labels:
+    - 'automated'
+    - 'sync'
+    - 'configuration'
