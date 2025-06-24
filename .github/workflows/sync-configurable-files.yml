@@ -1,0 +1,99 @@
+name: Sync Configurable Files from Parent Repository
+
+on:
+  schedule:
+    # Schedule will be dynamically loaded from sync-config.yml if available
+    - cron: '0 9 * * 1' # Default value, overridden by config if present
+  workflow_dispatch:
+    inputs:
+      parent_repo:
+        description: 'Parent repository (owner/repo)'
+        required: false
+        default: ''
+      parent_branch:
+        description: 'Parent repository branch'
+        required: false
+        default: ''
+      files_to_sync:
+        description: 'Comma-separated list of files to sync (leave empty for config file)'
+        required: false
+        default: ''
+      use_config_file:
+        description: 'Use .github/sync-config.yml for configuration'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  CONFIG_FILE: '.github/sync-config.yml'
+
+jobs:
+  sync-files:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SYNC_PAT || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Git and Sync Files with PowerShell
+        id: sync
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.SYNC_PAT || secrets.GITHUB_TOKEN }}
+          HAS_SYNC_PAT: ${{ secrets.SYNC_PAT != '' }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          ./.github/scripts/sync-configurable-files.ps1
+
+      - name: Create Pull Request
+        if: steps.sync.outputs.changes_made == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.SYNC_PAT || secrets.GITHUB_TOKEN }}
+          commit-message: |
+            Sync configurable files from parent repository
+
+            Updated files: ${{ env.CHANGED_FILES }}
+            Source: ${{ steps.sync.outputs.parent_repo }}@${{ steps.sync.outputs.parent_branch }}
+
+            🤖 Generated with GitHub Actions
+          title: 'Sync configurable files from parent repository'
+          body: |
+            ## Sync Configurable Files
+
+            This PR updates configurable files from the parent repository to maintain consistency.
+
+            **Source Repository:** `${{ steps.sync.outputs.parent_repo }}`
+            **Source Branch:** `${{ steps.sync.outputs.parent_branch }}`
+
+            ### Files Updated
+            ${{ env.CHANGED_FILES }}
+
+            ### Files That Failed to Download
+            ${{ env.FAILED_FILES }}
+
+            ### Configuration
+            This workflow can be customized by:
+            - Modifying the `DEFAULT_FILES` environment variable in the workflow
+            - Using the manual trigger with custom file lists
+            - Adjusting the cron schedule for different sync frequencies
+
+            ---
+
+            🤖 This PR was created automatically by the sync-configurable-files workflow.
+          branch: sync-configurable-files
+          branch-suffix: timestamp
+          delete-branch: true
+
+      - name: Output summary (already handled in PowerShell script)
+        shell: pwsh
+        run: |
+          Write-Host "Summary has been written by the PowerShell script."
