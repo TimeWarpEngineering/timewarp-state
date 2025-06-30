@@ -1,0 +1,52 @@
+# Enforce LF line endings for all files across all platforms
+# Modern Windows tools support LF, so there's no need for CRLF conversion
+
+# Default behavior: LF line endings for all text files
+* text=auto eol=lf
+
+# Specific file types - ensure LF line endings
+*.cs text eol=lf
+*.csproj text eol=lf
+*.sln text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.sass text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.ps1 text eol=lf
+*.sh text eol=lf
+*.dockerfile text eol=lf
+*.gitignore text eol=lf
+*.gitattributes text eol=lf
+
+# Configuration files
+*.config text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+*.editorconfig text eol=lf
+
+# Source control files
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binary files - don't convert line endings
+*.dll binary
+*.exe binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.nupkg binary
+*.snupkg binary
