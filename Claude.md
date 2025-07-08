@@ -8,6 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Commands
 
+### Git Workflow
+**Worktree constraints**: Cannot switch/pull/delete branches across worktrees
+- Create PRs: `gh pr create --head <branch> --base master --title "..." --body "..."`
+- Merge PRs: `gh pr merge <PR#> --merge` (no --delete-branch)
+- No squash/rebase commits
+
 ### Testing
 ```powershell
 # Run all tests using Fixie framework
