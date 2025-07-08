@@ -20,10 +20,15 @@
 ### Design
 - [x] Research current MediatR usage across codebase (40+ files identified)
 - [ ] Run all tests to ensure baseline functionality before migration
+  - [ ] Run ./RunTests.ps1 to verify unit tests pass
+  - [ ] Run ./RunE2ETests.ps1 to verify end-to-end tests pass
+  - [ ] Run ./RunTestApp.ps1 to verify test application works
+  - [ ] Verify architecture tests in TimeWarp.State.Policies still pass
 - [ ] Identify TimeWarp.Mediator package version and compatibility
 - [ ] Plan migration strategy for minimal disruption
 
 ### Implementation
+- [ ] Update Directory.Packages.props with TimeWarp.Mediator version
 - [ ] Update package references in 2 .csproj files:
   - [ ] Source/TimeWarp.State/TimeWarp.State.csproj
   - [ ] Tests/Test.App/Test.App.Contracts/Test.App.Contracts.csproj
@@ -41,11 +46,14 @@
 - [ ] Test pre/post processors (6 implementations)
 - [ ] Test notification handlers (9 implementations)
 - [ ] Verify Redux DevTools integration continues to work
+- [ ] Verify all builds pass after package updates
+- [ ] Test NuGet package creation with ./BuildNuGets.ps1
 
 ### Documentation
 - [ ] Create migration guide for TimeWarp.State users
 - [ ] Create general MediatR → TimeWarp.Mediator migration document
 - [ ] Update ai-context.md with new dependency information
+- [ ] Update Claude.md to reflect new TimeWarp.Mediator dependency
 - [ ] Document any breaking changes or API differences
 
 ### Review
