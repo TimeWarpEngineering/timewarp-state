@@ -8,8 +8,8 @@ global using TimeWarp.Features.Routing;
 global using TimeWarp.Features.ReduxDevTools;
 global using FluentAssertions;
 global using JetBrains.Annotations;
-global using MediatR;
-global using MediatR.Pipeline;
+global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Pipeline;
 // ReSharper disable once RedundantUsingDirective.Global
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

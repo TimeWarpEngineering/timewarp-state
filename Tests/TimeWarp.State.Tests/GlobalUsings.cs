@@ -1,5 +1,5 @@
 global using FluentAssertions;
-global using MediatR;
+global using TimeWarp.Mediator;
 global using System.Collections.Concurrent;
 global using System.Linq.Expressions;
 global using System.Reflection;

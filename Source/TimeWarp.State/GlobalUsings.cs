@@ -2,8 +2,8 @@
 global using TimeWarp.State.Extensions;
 global using TimeWarp.State;
 global using JetBrains.Annotations;
-global using MediatR.Pipeline;
-global using MediatR;
+global using TimeWarp.Mediator.Pipeline;
+global using TimeWarp.Mediator;
 global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection.Extensions;
