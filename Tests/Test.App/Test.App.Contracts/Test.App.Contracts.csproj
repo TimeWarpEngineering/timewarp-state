@@ -4,7 +4,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" />
+    <PackageReference Include="TimeWarp.Mediator" />
     <PackageReference Include="System.Net.Http.Json" />
   </ItemGroup>
 

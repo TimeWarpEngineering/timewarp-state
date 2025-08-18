@@ -5,7 +5,7 @@
     <PackageId>TimeWarp.State</PackageId>
     <AssemblyName>TimeWarp.State</AssemblyName>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
+    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; TimeWarp.Mediator; Mediator; Pipeline; Redux; Flux</PackageTags>
     <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -35,7 +35,7 @@
   <ItemGroup>
     <PackageReference Include="AnyClone"/>
     <PackageReference Include="JetBrains.Annotations"/>
-    <PackageReference Include="MediatR"/>
+    <PackageReference Include="TimeWarp.Mediator"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     <PackageReference Include="TypeSupport"/>
