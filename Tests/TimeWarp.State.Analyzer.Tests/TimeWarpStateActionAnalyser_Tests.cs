@@ -26,7 +26,7 @@ public class Should_Trigger_TW0001
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
+    const string MediatRContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -55,7 +55,7 @@ public class Should_Trigger_TW0001
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
+    const string MediatRContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -84,7 +84,7 @@ public class Should_Trigger_TW0001
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
+    const string MediatRContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -114,7 +114,7 @@ public class Should_Trigger_TW0001
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatRContractsAssemblyPath = @"MediatR.Contracts.dll";
+    const string MediatRContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatRContractsAssemblyPath));
 
     await analyzerTest.RunAsync();
