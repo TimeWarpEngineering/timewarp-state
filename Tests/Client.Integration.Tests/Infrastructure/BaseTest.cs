@@ -22,7 +22,7 @@ public abstract class BaseTest
   private IServiceProvider ServiceProvider { get; }
 
   /// <summary>
-  /// Send a request to the MediatR pipeline
+  /// Send a request to the TimeWarp.Mediator pipeline
   /// </summary>
   /// <param name="request"></param>
   protected async Task Send(IRequest request) => await Sender.Send(request);

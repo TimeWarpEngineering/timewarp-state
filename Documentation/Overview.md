@@ -37,7 +37,7 @@ or move the GetState functionality into your component
 
 ### Pipeline
 
-**TimeWarp.State** utilizes the MediatR pipeline which allows for middleware integration
+**TimeWarp.State** utilizes the TimeWarp.Mediator pipeline which allows for middleware integration
 by registering an interface with the dependency injection container [^4].
 TimeWarp.State provides the extension method [^5] , `AddTimeWarpState`, which registers behaviors on the pipeline.
 
@@ -94,7 +94,7 @@ if the developer chose they could mark the Requests as such. For example **IActi
 
 #### Footnotes:
 
-[^1]: https://github.com/jbogard/MediatR
+[^1]: https://github.com/TimeWarpEngineering/timewarp-mediator
 
 [^2]: https://redux.js.org/
 

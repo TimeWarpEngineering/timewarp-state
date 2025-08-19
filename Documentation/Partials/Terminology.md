@@ -5,7 +5,7 @@ title: Terminology
 
 ## Terminology
 
-The pattern used by TimeWarp.State and MediatR has been around for many years and goes by different names.
+The pattern used by TimeWarp.State and TimeWarp.Mediator have been around for many years and goes by different names.
 We list various related terms here and **Bold** indicates the term used in TimeWarp.State.
 
 ### Signals/**Actions**/**Requests**/Commands/
@@ -13,7 +13,7 @@ We list various related terms here and **Bold** indicates the term used in TimeW
 In Redux they call them "Action".  
 In UML they are "Signal".  
 In Command Pattern they are "Command"  
-In MediatR they are `Request`
+In Mediator they are `Request`
 In TimeWarp.State we call them `Actions` when they are handled on the Client and `Requests` if they handled on the Server.
 
 ### Reducer/**Handler**/Executor
@@ -22,7 +22,7 @@ This is the code that processes the `Request/Action` and returns the `Response`.
 
 In Redux they call them "Reducer".
 In Command Pattern we call them "Executor".  
-In MediatR they are `Handler`.  
+In Mediator they are `Handler`.  
 In TimeWarp.State we call them `Handler`.
 
 ### Feature

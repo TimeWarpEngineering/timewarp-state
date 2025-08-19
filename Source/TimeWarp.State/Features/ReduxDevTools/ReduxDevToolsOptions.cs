@@ -17,7 +17,7 @@ public sealed class ReduxDevToolsOptions
     @"^(?:(?!\b" +
     @"System" +
     @"|Microsoft" +
-    @"|MediatR" +
+    @"|TimeWarp.Mediator" +
     @"|ReduxDevTools" +
     @"\b).)*$";
   // serialize is not implemented thus will use JSON.stringy

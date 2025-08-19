@@ -33,11 +33,10 @@ references:
     resources:
       - Official Documentation: https://playwright.dev/dotnet/docs/intro
 
-  - name: MediatR NuGet Library
+  - name: TimeWarp.Mediator NuGet Library
     relationship: Used extensively by TimeWarp.State
     resources:
-      - Official Documentation: https://github.com/jbogard/MediatR/wiki
-      - Authors Blog: https://www.jimmybogard.com/
+      - Official Repository: https://github.com/TimeWarpEngineering/timewarp-mediator
         
   - name: AnyClone NuGet Library
     relationship: Used as the default cloning ability if ICloneable has not been implemented.

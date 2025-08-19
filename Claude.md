@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**TimeWarp.State** is a state management library for Blazor applications implementing the Flux pattern using MediatR pipeline. It handles both client-side (WebAssembly) and server-side Blazor with async state management.
+**TimeWarp.State** is a state management library for Blazor applications implementing the Flux pattern using Mediator pipeline. It handles both client-side (WebAssembly) and server-side Blazor with async state management.
 
 ## Development Commands
 
@@ -74,7 +74,7 @@ dotnet build --project <ProjectPath> --configuration Release
 
 ### Key Patterns
 - **CQRS/Flux**: Unidirectional data flow with Actions/ActionHandlers
-- **MediatR Pipeline**: Middleware-driven architecture
+- **TimeWarp.Mediator Pipeline**: Middleware-driven architecture
 - **Async-First**: All operations are async by design
 - **TypeScript Integration**: Strong typing for JavaScript interop
 
@@ -163,7 +163,7 @@ Follow structured task workflow using Kanban approach:
 ## Essential Dependencies
 
 - **Blazor**: UI framework (Server/WebAssembly)
-- **MediatR**: CQRS/mediator pattern implementation
+- **TimeWarp.Mediator**: CQRS/mediator pattern implementation
 - **Microsoft.JSInterop**: JavaScript interop for browser features
 - **Fixie**: Testing framework
 - **NetArchTest**: Architecture testing

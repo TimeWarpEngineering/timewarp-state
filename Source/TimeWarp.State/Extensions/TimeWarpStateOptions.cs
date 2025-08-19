@@ -6,7 +6,7 @@ namespace TimeWarp.State;
 public class TimeWarpStateOptions
 {
   /// <summary>
-  /// Assemblies to be searched for MediatR Actions and Handlers
+  /// Assemblies to be searched for TimeWarp.Mediator Actions and Handlers
   /// </summary>
   /// <remarks>
   /// Will default to the calling assembly

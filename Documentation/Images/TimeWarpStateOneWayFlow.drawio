@@ -88,7 +88,7 @@
         <mxCell id="pQi_TNxkMac2TIVI0rjQ-33" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;labelPosition=left;verticalLabelPosition=middle;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="110" y="280" width="20" height="440" as="geometry" />
         </mxCell>
-        <mxCell id="pQi_TNxkMac2TIVI0rjQ-36" value="MediatR Pipeline" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxCell id="pQi_TNxkMac2TIVI0rjQ-36" value="Mediator Pipeline" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
           <mxGeometry y="485" width="110" height="30" as="geometry" />
         </mxCell>
         <mxCell id="pQi_TNxkMac2TIVI0rjQ-42" value="SubscriptionNotification" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
