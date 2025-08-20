@@ -58,15 +58,15 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.17, )",
-        "resolved": "8.0.17",
-        "contentHash": "x5/y4l8AtshpBOrCZdlE4txw8K3e3s9meBFeZeR3l8hbbku2V7kK6ojhXvrbjg1rk3G+JqL1BI26gtgc1ZrdUw=="
+        "requested": "[8.0.18, )",
+        "resolved": "8.0.18",
+        "contentHash": "OiXqr2YIBEV9dsAWEtasK470ALyJ0VxJ9k4MotOxlWV6HeEgrJKYMW4HHj1OCCXvqE0/A25wEKPkpfiBARgDZA=="
       },
       "Microsoft.NET.Sdk.WebAssembly.Pack": {
         "type": "Direct",
-        "requested": "[10.0.0-preview.6.25358.103, )",
-        "resolved": "10.0.0-preview.6.25358.103",
-        "contentHash": "6v1v91EdQ/tutKsEVDxbNA+QyIks/gFWgz2+DmdcOgYbHBoGRiB31Nmyyr03z3edmLdoNRwikpiYLcYTqzVNrg=="
+        "requested": "[10.0.0-preview.7.25380.108, )",
+        "resolved": "10.0.0-preview.7.25380.108",
+        "contentHash": "3hfCB8TwhDmqr+WBscm296bdr/gTDndo3Owziioc9h0RJZgnIGZ7gx5vOMQO3IaB95XS7Fx5Jpx+hcPovspWXw=="
       },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
