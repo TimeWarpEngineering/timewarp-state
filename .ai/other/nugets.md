@@ -29,7 +29,7 @@ nuget_categories:
       for: unit testing framework
     - name: NSubstitute
       for: mocking in unit tests
-    - name: FluentAssertions
+    - name: Shouldly
       for: assertion library
     - name: Microsoft.Playwright
       for: end to end testing

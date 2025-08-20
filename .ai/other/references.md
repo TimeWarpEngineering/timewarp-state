@@ -22,12 +22,6 @@ references:
     resources:
       - Official Documentation: https://github.com/fixie/fixie/wiki
 
-  - name: FluentAssertions
-    relationship: Assertion library used for tests
-    resources:
-      - Official Documentation: https://fluentassertions.com/introduction
-      - GitHub Repository: https://github.com/fluentassertions/fluentassertions
-
   - name: Playwright for .NET
     relationship: End to end testing framework
     resources:

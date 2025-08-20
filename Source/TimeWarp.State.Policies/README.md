@@ -27,7 +27,7 @@ This project contains architectural policies and rules that enforce best practic
 - Architectural validation rules
 - Best practice enforcement
 - Integration with NetArchTest.eNhancedEdition for policy checks
-- FluentAssertions for expressive test assertions
+- Shouldly for expressive test assertions
 
 ## Give a Star! :star:
 
