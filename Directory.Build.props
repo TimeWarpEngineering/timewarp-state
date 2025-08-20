@@ -67,7 +67,7 @@
     <Exec Command="git log -1 --format=%ct" ConsoleToMSBuild="true" Condition="'$(OS)' != 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>
-    <Exec Command="pwsh -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildThisFileDirectory)ConvertTimestamp.ps1&quot; -GitCommitTimestamp $(GitCommitTimestamp)" ConsoleToMSBuild="true">
+    <Exec Command="pwsh -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildThisFileDirectory)convert-timestamp.ps1&quot; -GitCommitTimestamp $(GitCommitTimestamp)" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="CommitDate"/>
     </Exec>
     <PropertyGroup>
