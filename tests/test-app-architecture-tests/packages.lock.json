@@ -327,7 +327,8 @@
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "NetArchTest.eNhancedEdition": "[1.4.5, )",
-          "Shouldly": "[4.3.0, )"
+          "Shouldly": "[4.3.0, )",
+          "TimeWarp.State": "[12.0.0-beta.2, )"
         }
       },
       "AnyClone": {
