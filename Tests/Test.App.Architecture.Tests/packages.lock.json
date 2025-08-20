@@ -15,18 +15,18 @@
       },
       "Microsoft.CodeAnalysis.Analyzers": {
         "type": "Direct",
-        "requested": "[3.3.4, )",
-        "resolved": "3.3.4",
-        "contentHash": "AxkxcPR+rheX0SmvpLVIGLhOUXAKG56a64kV9VQZ4y9gR9ZmPXnqZvHJnmwLSwzrEP6junUF11vuc+aqo5r68g=="
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "fCj+MzjJxN/4iYAz7JPLONGKeTomaZNzx4UgGA0AerTrx4Ou6Rw2J5YF4V51vWW+aSQSCv1nnAkCZUw5Z9+3zw=="
       },
       "Microsoft.CodeAnalysis.CSharp": {
         "type": "Direct",
-        "requested": "[4.11.0, )",
-        "resolved": "4.11.0",
-        "contentHash": "6XYi2EusI8JT4y2l/F3VVVS+ISoIX9nqHsZRaG6W5aFeJ5BEuBosHfT/ABb73FN0RZ1Z3cj2j7cL28SToJPXOw==",
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "568a6wcTivauIhbeWcCwfWwIn7UV7MeHEBvFB2uzGIpM2OhJ4eM/FZ8KS0yhPoNxnSpjGzz7x7CIjTxhslojQA==",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Analyzers": "3.3.4",
-          "Microsoft.CodeAnalysis.Common": "[4.11.0]"
+          "Microsoft.CodeAnalysis.Analyzers": "3.11.0",
+          "Microsoft.CodeAnalysis.Common": "[4.14.0]"
         }
       },
       "Microsoft.SourceLink.GitHub": {
@@ -276,19 +276,19 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly": "[9.0.8, )",
-          "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "Microsoft.Extensions.Logging.Configuration": "[9.0.8, )",
           "Shouldly": "[4.3.0, )",
-          "Test.App.Contracts": "[12.0.0-beta.1, )",
-          "TimeWarp.State": "[12.0.0-beta.1, )",
-          "TimeWarp.State.Plus": "[12.0.0-beta.1, )",
+          "Test.App.Contracts": "[12.0.0-beta.2, )",
+          "TimeWarp.State": "[12.0.0-beta.2, )",
+          "TimeWarp.State.Plus": "[12.0.0-beta.2, )",
           "timewarp-heroicons": "[2.0.19, )"
         }
       },
       "test.app.contracts": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "TimeWarp.Mediator": "[13.0.0, )"
         }
       },
@@ -296,8 +296,8 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[9.0.8, )",
-          "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "Test.App.Client": "[12.0.0-beta.1, )"
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
+          "Test.App.Client": "[12.0.0-beta.2, )"
         }
       },
       "timewarp.state": {
@@ -306,7 +306,7 @@
           "AnyClone": "[1.1.6, )",
           "JetBrains.Annotations": "[2025.2.0, )",
           "Microsoft.AspNetCore.Components.Web": "[9.0.8, )",
-          "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.8, )",
           "TimeWarp.Mediator": "[13.0.0, )",
           "TypeSupport": "[1.2.0, )"
@@ -318,17 +318,17 @@
           "Blazored.LocalStorage": "[4.5.0, )",
           "Blazored.SessionStorage": "[2.4.0, )",
           "Microsoft.AspNetCore.Components.Web": "[9.0.8, )",
-          "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
-          "TimeWarp.State": "[12.0.0-beta.1, )"
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
+          "TimeWarp.State": "[12.0.0-beta.2, )"
         }
       },
       "timewarp.state.policies": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[4.11.0, )",
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "NetArchTest.eNhancedEdition": "[1.4.5, )",
           "Shouldly": "[4.3.0, )",
-          "TimeWarp.State": "[12.0.0-beta.1, )"
+          "TimeWarp.State": "[12.0.0-beta.2, )"
         }
       },
       "AnyClone": {
@@ -401,11 +401,11 @@
       },
       "Microsoft.CodeAnalysis.Common": {
         "type": "CentralTransitive",
-        "requested": "[4.11.0, )",
-        "resolved": "4.11.0",
-        "contentHash": "djf8ujmqYImFgB04UGtcsEhHrzVqzHowS+EEl/Yunc5LdrYrZhGBWUTXoCF0NzYXJxtfuD+UVQarWpvrNc94Qg==",
+        "requested": "[4.14.0, )",
+        "resolved": "4.14.0",
+        "contentHash": "PC3tuwZYnC+idaPuoC/AZpEdwrtX7qFpmnrfQkgobGIWiYmGi5MCRtl5mx6QrfMGQpK78X2lfIEoZDLg/qnuHg==",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Analyzers": "3.3.4"
+          "Microsoft.CodeAnalysis.Analyzers": "3.11.0"
         }
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
