@@ -60,8 +60,14 @@ jobs:
           
           # Only validate tag match for actual release events, not manual dispatch
           if ("${{ github.event_name }}" -eq "release") {
-            if ($releaseVersion -ne $tagName) {
-              throw "Release version ($releaseVersion) does not match tag name ($tagName)"
+            # Strip 'v' prefix from tag name if present for comparison
+            $tagNameForComparison = $tagName
+            if ($tagName.StartsWith("v")) {
+              $tagNameForComparison = $tagName.Substring(1)
+            }
+            
+            if ($releaseVersion -ne $tagNameForComparison) {
+              throw "Release version ($releaseVersion) does not match tag name ($tagName - stripped: $tagNameForComparison)"
             }
             echo "✅ Release version matches tag name"
           } else {
