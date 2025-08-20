@@ -9,11 +9,11 @@ description: Learn TimeWarp.State basics using Blazor with Interactive Auto rend
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [Sample00Auto Project](./Sample00Auto/)
-> - [Client Project with TimeWarp.State](./Sample00Auto/Sample00Auto.Client/)
-> - [CounterState Implementation](./Sample00Auto/Sample00Auto.Client/Features/Counter/CounterState.cs)
-> - [Counter Page Component](./Sample00Auto/Sample00Auto.Client/Pages/Counter.razor)
-> - [Program.cs with Service Configuration](./Sample00Auto/Sample00Auto/Program.cs)
+> - [sample-00-auto Project](./sample-00-auto/)
+> - [Client Project with TimeWarp.State](./sample-00-auto/sample-00-auto-client/)
+> - [CounterState Implementation](./sample-00-auto/sample-00-auto-client/Features/Counter/CounterState.cs)
+> - [Counter Page Component](./sample-00-auto/sample-00-auto-client/Pages/Counter.razor)
+> - [Program.cs with Service Configuration](./sample-00-auto/sample-00-auto/Program.cs)
 
 ## State, Actions, and Handlers
 
@@ -28,9 +28,9 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Creating the Project
 
-- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n Sample00Auto`
-- Navigate to the new project: `cd Sample00Auto`
-- Test the application: `dotnet run --project ./Sample00Auto/Sample00Auto.csproj`
+- Create a new Blazor project: `dotnet new blazor --use-program-main --interactivity Auto -n sample-00-auto`
+- Navigate to the new project: `cd sample-00-auto`
+- Test the application: `dotnet run --project ./sample-00-auto/sample-00-auto.csproj`
 - Open the URL shown in the command output (e.g., <http://localhost:5256>) and test the counter functionality. Note: Your URL will differ.
 
 > [!NOTE]
@@ -43,7 +43,7 @@ This tutorial will walk you through the steps to create a Blazor application wit
 1. Add the TimeWarp.State NuGet package to the Client project:
 
 ```bash
-dotnet add ./Sample00Auto.Client/Sample00Auto.Client.csproj package TimeWarp.State
+dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.State
 ```
 
 Note: The Server project doesn't need the package directly as it takes a dependency on the Client project.
@@ -52,7 +52,7 @@ Note: The Server project doesn't need the package directly as it takes a depende
 
 For the Client project:
 ```csharp
-// Sample00Auto.Client/GlobalUsings.cs
+// sample-00-auto-client/GlobalUsings.cs
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
@@ -61,13 +61,13 @@ global using TimeWarp.State;
 
 For the Server project:
 ```csharp
-// Sample00Auto/GlobalUsings.cs
+// sample-00-auto/GlobalUsings.cs
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;
-global using Sample00Auto.Client.Pages;
-global using Sample00Auto.Components;
+global using sample_00_auto.Client.Pages;
+global using sample_00_auto.Components;
 global using TimeWarp.State;
 ```
 
@@ -75,15 +75,15 @@ global using TimeWarp.State;
 
 Make TimeWarp.State functionality available from both Client and Server.
 
-#### Sample00Auto.Client Program.cs
+#### sample-00-auto-client Program.cs
 
 - Make `Program` Public
 - Create `ConfigureServices` method
 - Call `ConfigureServices` from `Main`
 
 ```csharp
-// Sample00Auto.Client/Program.cs
-namespace Sample00Auto.Client;
+// sample-00-auto-client/Program.cs
+namespace sample_00_auto.Client;
 
 public class Program
 {
@@ -101,13 +101,13 @@ public class Program
 }
 ```
 
-#### Sample00Auto Program.cs
+#### sample-00-auto Program.cs
 
-- Call `ConfigureServices` from `Sample00Auto.Client` `Program.cs`
+- Call `ConfigureServices` from `sample-00-auto-client` `Program.cs`
 
 ```csharp
-// Sample00Auto/Program.cs
-namespace Sample00Auto;
+// sample-00-auto/Program.cs
+namespace sample_00_auto;
 
 public class Program
 {
@@ -120,7 +120,7 @@ public class Program
       .AddInteractiveServerComponents()
       .AddInteractiveWebAssemblyComponents();
     
-    Sample00Auto.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
+    sample_00_auto.Client.Program.ConfigureServices(builder.Services); // <=== Add this line.
 
     var app = builder.Build();
 
@@ -149,14 +149,14 @@ public class Program
 }
 ```
 
-#### Sample00Auto/Components/Routes.razor
+#### sample-00-auto/Components/Routes.razor
 
-Because we had to make the `Client` `Program` public, we need to qualify `Program` with `Sample00Auto.Program`.
+Because we had to make the `Client` `Program` public, we need to qualify `Program` with `sample_00_auto.Program`.
 
 ```html
-@* Sample00Auto/Components/Routes.razor *@
+@* sample-00-auto/Components/Routes.razor *@
 
-<Router AppAssembly="typeof(Sample00Auto.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+<Router AppAssembly="typeof(sample_00_auto.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
@@ -179,7 +179,7 @@ Validate the application still runs.
 
 ```csharp
 // CounterState.cs
-namespace Sample00Auto.Client.Features.Counter;
+namespace sample_00_auto.Client.Features.Counter;
 
 internal sealed partial class CounterState : State<CounterState>
 {
@@ -194,7 +194,7 @@ internal sealed partial class CounterState : State<CounterState>
 #### UI Integration
 
 Modify `Pages/Counter.razor`:
-- Add `@using Sample00Auto.Client.Features.Counter`
+- Add `@using sample_00_auto.Client.Features.Counter`
 - Inherit from `TimeWarpStateComponent`.
 - Add a property to access `CounterState`.
 - Update display to use `CounterState`.
@@ -208,7 +208,7 @@ The code should look as follows:
 ```csharp
 @page "/counter"
 @rendermode InteractiveAuto
-@using Sample00Auto.Client.Features.Counter
+@using sample_00_auto.Client.Features.Counter
 
 @inherits TimeWarp.State.TimeWarpStateComponent
 
@@ -254,7 +254,7 @@ In this file, the `Action` class should:
 
 * Be a nested class within `IncrementCount`, which in turn is a static class nested in `CounterState`.
 * Inherit from `IAction`.
-* Be part of the `Sample00Auto.Client.Features.Counter` namespace.
+* Be part of the `sample_00_auto.Client.Features.Counter` namespace.
 * Contain the `Amount` property.
 
 The `Handler` class should:
@@ -267,7 +267,7 @@ The `Handler` class should:
 
 ```csharp
 // CounterState.IncrementCount.cs
-namespace Sample00Auto.Client.Features.Counter;
+namespace sample_00_auto.Client.Features.Counter;
 
 partial class CounterState
 {

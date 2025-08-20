@@ -9,9 +9,9 @@ description: Learn TimeWarp.State basics using Blazor WebAssembly
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [Sample00Wasm Project](./Sample00Wasm/)
-> - [CounterState Implementation](./Sample00Wasm/Features/Counter/CounterState.cs)
-> - [Counter Page Component](./Sample00Wasm/Pages/Counter.razor)
+> - [sample-00-wasm Project](./sample-00-wasm/)
+> - [CounterState Implementation](./sample-00-wasm/features/counter/counter-state.cs)
+> - [Counter Page Component](./sample-00-wasm/pages/counter.razor)
 
 ## State, Actions, and Handlers
 
@@ -28,12 +28,12 @@ This tutorial will walk you through the steps to create a Blazor WebAssembly app
 
 1. Create a new Blazor WebAssembly project:
 ```bash
-dotnet new blazorwasm  -n Sample00Wasm
+dotnet new blazorwasm  -n sample-00-wasm
 ```
 
 2. Navigate to the project directory:
 ```bash
-cd Sample00Wasm
+cd sample-00-wasm
 ```
 
 3. Test the application:

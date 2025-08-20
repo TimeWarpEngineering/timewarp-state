@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample00Auto", "Sample00Auto\Sample00Auto.csproj", "{5B183F83-453C-4FA9-AEE9-D09CFF8C2B3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sample-00-auto", "sample-00-auto\sample-00-auto.csproj", "{5B183F83-453C-4FA9-AEE9-D09CFF8C2B3C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample00Auto.Client", "Sample00Auto.Client\Sample00Auto.Client.csproj", "{8F4BA4BA-FF16-4B7C-BCAC-B00EC9014F6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sample-00-auto-client", "sample-00-auto-client\sample-00-auto-client.csproj", "{8F4BA4BA-FF16-4B7C-BCAC-B00EC9014F6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

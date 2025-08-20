@@ -9,10 +9,10 @@ description: Learn TimeWarp.State basics using Blazor with Interactive Server re
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [Sample00Server Project](./Sample00Server/)
-> - [CounterState Implementation](./Sample00Server/Features/Counter/CounterState.cs)
-> - [Counter Page Component](./Sample00Server/Components/Pages/Counter.razor)
-> - [Program.cs with Service Configuration](./Sample00Server/Program.cs)
+> - [sample-00-server Project](./sample-00-server/)
+> - [CounterState Implementation](./sample-00-server/features/counter/counter-state.cs)
+> - [Counter Page Component](./sample-00-server/components/pages/counter.razor)
+> - [Program.cs with Service Configuration](./sample-00-server/program.cs)
 
 ## State, Actions, and Handlers
 
@@ -29,17 +29,17 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 1. Create a new Blazor project:
 ```bash
-dotnet new blazor --use-program-main --interactivity Server -n Sample00Server
+dotnet new blazor --use-program-main --interactivity Server -n sample-00-server
 ```
 
 2. Navigate to the project directory:
 ```bash
-cd Sample00Server
+cd sample-00-server
 ```
 
 3. Test the application:
 ```bash
-dotnet run --project ./Sample00Server/Sample00Server.csproj
+dotnet run --project ./sample-00-server/sample-00-server.csproj
 ```
 
 4. Open the URL shown in the command output (e.g., http://localhost:5256) and test the counter functionality.
@@ -54,7 +54,7 @@ dotnet run --project ./Sample00Server/Sample00Server.csproj
 Add the TimeWarp.State NuGet package:
 
 ```bash
-dotnet add ./Sample00Server/Sample00Server.csproj package TimeWarp.State
+dotnet add ./sample-00-server/sample-00-server.csproj package TimeWarp.State
 ```
 
 ### Configure Services
@@ -62,7 +62,7 @@ dotnet add ./Sample00Server/Sample00Server.csproj package TimeWarp.State
 Create GlobalUsings.cs to centralize common using statements:
 
 ```csharp
-// Sample00Server/GlobalUsings.cs
+// sample-00-server/GlobalUsings.cs
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
@@ -74,7 +74,7 @@ global using TimeWarp.State;
 Update Program.cs to add TimeWarp.State services:
 
 ```csharp
-// Sample00Server/Program.cs
+// sample-00-server/Program.cs
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

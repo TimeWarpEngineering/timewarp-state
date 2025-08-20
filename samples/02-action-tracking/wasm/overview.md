@@ -7,10 +7,10 @@ description: Learn how to implement Action Tracking in TimeWarp.State applicatio
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [Sample02Wasm Project](./Sample02Wasm/)
-> - [Demo State and Actions](./Sample02Wasm/Features/Demo/)
-> - [Demo Page Component](./Sample02Wasm/Pages/Demo.razor)
-> - [Program.cs with Action Tracking Configuration](./Sample02Wasm/Program.cs)
+> - [sample-02-wasm Project](./sample-02-wasm/)
+> - [Demo State and Actions](./sample-02-wasm/features/demo/)
+> - [Demo Page Component](./sample-02-wasm/pages/demo.razor)
+> - [Program.cs with Action Tracking Configuration](./sample-02-wasm/program.cs)
 
 ## What is Action Tracking?
 
