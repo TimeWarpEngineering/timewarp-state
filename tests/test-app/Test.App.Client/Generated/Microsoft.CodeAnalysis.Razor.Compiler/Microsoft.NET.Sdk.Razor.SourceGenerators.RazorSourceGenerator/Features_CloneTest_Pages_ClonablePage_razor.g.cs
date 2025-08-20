@@ -161,38 +161,41 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (4,15)-(4,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
-__builder.AddContent(1, Title
+#line (4,15)-(4,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h3");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h3");
 #nullable restore
 #line (5,6)-(5,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (6,2)-(6,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, @"<p>
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, @"<p>
   The StateTransactionBehavior middleware in TimeWarp.State is designed to use ICloneable if it is implemented and Anyclone otherwise..<br>
   This test is to verify that the IClonable interface is working as expected.<br>
   The clone method intentionally creates a new instance where the count is always 42.<br>
@@ -203,24 +206,24 @@ __builder.AddContent(6, RenderModeDisplay
 
 
 ");
-            __builder.OpenElement(9, "ul");
-            __builder.OpenElement(10, "li");
-            __builder.AddMarkupContent(11, "<strong>CloneableState.Count:</strong> ");
+            __builder.OpenElement(10, "ul");
+            __builder.OpenElement(11, "li");
+            __builder.AddMarkupContent(12, "<strong>CloneableState.Count:</strong> ");
 #nullable restore
 #line (22,45)-(22,65) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
-__builder.AddContent(12, CloneableState.Count
+__builder.AddContent(13, CloneableState.Count
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(13, "\n  ");
-            __builder.OpenElement(14, "li");
-            __builder.AddMarkupContent(15, "<strong>CloneableState.Guid:</strong> ");
+            __builder.AddMarkupContent(14, "\n  ");
+            __builder.OpenElement(15, "li");
+            __builder.AddMarkupContent(16, "<strong>CloneableState.Guid:</strong> ");
 #nullable restore
 #line (25,44)-(25,63) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
-__builder.AddContent(16, CloneableState.Guid
+__builder.AddContent(17, CloneableState.Guid
 
 #line default
 #line hidden
@@ -228,10 +231,10 @@ __builder.AddContent(16, CloneableState.Guid
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(17, "\n\n\n");
-            __builder.OpenElement(18, "button");
-            __builder.AddAttribute(19, "data-qa", "TestButton");
-            __builder.AddAttribute(20, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(18, "\n\n\n");
+            __builder.OpenElement(19, "button");
+            __builder.AddAttribute(20, "data-qa", "TestButton");
+            __builder.AddAttribute(21, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (30,39)-(30,46) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/CloneTest/Pages/ClonablePage.razor"
 RunTest
@@ -240,11 +243,11 @@ RunTest
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(21, "Run Test");
+            __builder.AddContent(22, "Run Test");
             __builder.CloseElement();
-            __builder.AddMarkupContent(22, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(23, "<p><strong>Act:</strong>Click the `Run Test` button</p>\n\n\n");
-            __builder.AddMarkupContent(24, "<p><strong>Assert:</strong><br>\n  Guid is different\n  Count == 43.\n</p>");
+            __builder.AddMarkupContent(23, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(24, "<p><strong>Act:</strong>Click the `Run Test` button</p>\n\n\n");
+            __builder.AddMarkupContent(25, "<p><strong>Assert:</strong><br>\n  Guid is different\n  Count == 43.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

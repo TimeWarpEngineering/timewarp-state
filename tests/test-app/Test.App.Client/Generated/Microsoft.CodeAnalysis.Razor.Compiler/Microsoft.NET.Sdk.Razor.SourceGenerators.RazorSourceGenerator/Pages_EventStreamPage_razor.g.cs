@@ -161,49 +161,68 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (18,15)-(18,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/EventStreamPage.razor"
-__builder.AddContent(1, Title
+#line (18,15)-(18,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/EventStreamPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h3");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h3");
 #nullable restore
 #line (19,6)-(19,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/EventStreamPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (20,2)-(20,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/EventStreamPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, "<p>EventStream is an example of middleware. It adds each action to the event list. Displayed below</p>\n\n");
-            __builder.OpenElement(9, "EventStream");
-            __builder.AddAttribute(10, "TestId", "events-list");
-            __builder.CloseElement();
-            __builder.AddMarkupContent(11, "\n\n");
-            __builder.OpenElement(12, "Counter");
-            __builder.AddAttribute(13, "TestId", "counter");
-            __builder.CloseElement();
-            __builder.AddMarkupContent(14, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(15, "<p><strong>Act:</strong>Click the `Increment CounterState.Count` Button</p>\n\n\n");
-            __builder.AddMarkupContent(16, "<p><strong>Assert:</strong>\n  Confirm that the `Events` List adds a Start and Completed event for the `CounterState+IncrementCount+Action`.\n</p>\n\n<hr>\n");
-            __builder.AddMarkupContent(17, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, "<p>EventStream is an example of middleware. It adds each action to the event list. Displayed below</p>\n\n");
+            __builder.OpenComponent<global::Test.App.Client.Features.EventStream.Components.EventStream>(10);
+            __builder.AddComponentParameter(11, nameof(global::Test.App.Client.Features.EventStream.Components.EventStream.
+#nullable restore
+#line (26,14)-(26,20) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/EventStreamPage.razor"
+TestId
+
+#line default
+#line hidden
+#nullable disable
+            ), "events-list");
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(12, "\n\n");
+            __builder.OpenComponent<global::Test.App.Client.Features.Counter.Components.Counter>(13);
+            __builder.AddComponentParameter(14, nameof(global::Test.App.Client.Features.Counter.Components.Counter.
+#nullable restore
+#line (28,10)-(28,16) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/EventStreamPage.razor"
+TestId
+
+#line default
+#line hidden
+#nullable disable
+            ), "counter");
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(15, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(16, "<p><strong>Act:</strong>Click the `Increment CounterState.Count` Button</p>\n\n\n");
+            __builder.AddMarkupContent(17, "<p><strong>Assert:</strong>\n  Confirm that the `Events` List adds a Start and Completed event for the `CounterState+IncrementCount+Action`.\n</p>\n\n<hr>\n");
+            __builder.AddMarkupContent(18, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

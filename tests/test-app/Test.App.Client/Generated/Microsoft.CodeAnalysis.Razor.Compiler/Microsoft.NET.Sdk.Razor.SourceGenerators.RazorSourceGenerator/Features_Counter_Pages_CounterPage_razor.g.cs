@@ -168,63 +168,82 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (20,15)-(20,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/Counter/Pages/CounterPage.razor"
-__builder.AddContent(1, Title
+#line (20,15)-(20,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/Counter/Pages/CounterPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h1");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h1");
 #nullable restore
 #line (21,6)-(21,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/Counter/Pages/CounterPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (22,2)-(22,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/Counter/Pages/CounterPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, "<p>Two Counter Components that display and increment the same state</p>\n\n");
-            __builder.OpenElement(9, "div");
-            __builder.AddAttribute(10, "style", "border: 2px solid blue; padding: 10px; margin-bottom: 20px;");
-            __builder.AddMarkupContent(11, "<h3>System Under Test</h3>\n  ");
-            __builder.AddMarkupContent(12, "<h4>Counter TestId=\"Counter1\"</h4>\n  ");
-            __builder.OpenElement(13, "div");
-            __builder.AddAttribute(14, "style", "border: 2px solid gray; padding: 10px; margin-bottom: 20px;");
-            __builder.OpenElement(15, "Counter");
-            __builder.AddAttribute(16, "TestId", "Counter1");
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, "<p>Two Counter Components that display and increment the same state</p>\n\n");
+            __builder.OpenElement(10, "div");
+            __builder.AddAttribute(11, "style", "border: 2px solid blue; padding: 10px; margin-bottom: 20px;");
+            __builder.AddMarkupContent(12, "<h3>System Under Test</h3>\n  ");
+            __builder.AddMarkupContent(13, "<h4>Counter TestId=\"Counter1\"</h4>\n  ");
+            __builder.OpenElement(14, "div");
+            __builder.AddAttribute(15, "style", "border: 2px solid gray; padding: 10px; margin-bottom: 20px;");
+            __builder.OpenComponent<global::Test.App.Client.Features.Counter.Components.Counter>(16);
+            __builder.AddComponentParameter(17, nameof(global::Test.App.Client.Features.Counter.Components.Counter.
+#nullable restore
+#line (32,14)-(32,20) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/Counter/Pages/CounterPage.razor"
+TestId
+
+#line default
+#line hidden
+#nullable disable
+            ), "Counter1");
+            __builder.CloseComponent();
+            __builder.CloseElement();
+            __builder.AddMarkupContent(18, "\n  ");
+            __builder.AddMarkupContent(19, "<h4>Counter TestId=\"Counter2\"</h4>\n  ");
+            __builder.OpenElement(20, "div");
+            __builder.AddAttribute(21, "style", "border: 2px solid gray; padding: 10px; margin-bottom: 20px;");
+            __builder.OpenComponent<global::Test.App.Client.Features.Counter.Components.Counter>(22);
+            __builder.AddComponentParameter(23, nameof(global::Test.App.Client.Features.Counter.Components.Counter.
+#nullable restore
+#line (36,14)-(36,20) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Features/Counter/Pages/CounterPage.razor"
+TestId
+
+#line default
+#line hidden
+#nullable disable
+            ), "Counter2");
+            __builder.CloseComponent();
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(17, "\n  ");
-            __builder.AddMarkupContent(18, "<h4>Counter TestId=\"Counter2\"</h4>\n  ");
-            __builder.OpenElement(19, "div");
-            __builder.AddAttribute(20, "style", "border: 2px solid gray; padding: 10px; margin-bottom: 20px;");
-            __builder.OpenElement(21, "Counter");
-            __builder.AddAttribute(22, "TestId", "Counter2");
-            __builder.CloseElement();
-            __builder.CloseElement();
-            __builder.CloseElement();
-            __builder.AddMarkupContent(23, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(24, "<p><strong>Act:</strong> Click the Counter1 component button</p>\n\n\n");
-            __builder.AddMarkupContent(25, "<p><strong>Assert:</strong>\n  Verify that the CounterState.Count is incremented by 5 on both Counter components\n</p>\n\n\n");
-            __builder.AddMarkupContent(26, "<p><strong>Act:</strong> Click the Counter2 component button</p>\n\n\n");
-            __builder.AddMarkupContent(27, "<p><strong>Assert:</strong>\n  Verify that the CounterState.Count is incremented by 5 on both Counter components\n</p>\n\n<hr>\n");
-            __builder.AddMarkupContent(28, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(24, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(25, "<p><strong>Act:</strong> Click the Counter1 component button</p>\n\n\n");
+            __builder.AddMarkupContent(26, "<p><strong>Assert:</strong>\n  Verify that the CounterState.Count is incremented by 5 on both Counter components\n</p>\n\n\n");
+            __builder.AddMarkupContent(27, "<p><strong>Act:</strong> Click the Counter2 component button</p>\n\n\n");
+            __builder.AddMarkupContent(28, "<p><strong>Assert:</strong>\n  Verify that the CounterState.Count is incremented by 5 on both Counter components\n</p>\n\n<hr>\n");
+            __builder.AddMarkupContent(29, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

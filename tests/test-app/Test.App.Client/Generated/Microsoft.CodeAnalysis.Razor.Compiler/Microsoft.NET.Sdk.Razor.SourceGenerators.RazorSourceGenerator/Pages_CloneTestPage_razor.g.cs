@@ -167,44 +167,47 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (45,15)-(45,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CloneTestPage.razor"
-__builder.AddContent(1, Title
+#line (45,15)-(45,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CloneTestPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h3");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h3");
 #nullable restore
 #line (46,6)-(46,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CloneTestPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (47,2)-(47,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CloneTestPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n\n\n");
-            __builder.AddMarkupContent(8, "<p>Test ability of Any Cone to clone various Types.</p>\n\n\n");
-            __builder.OpenElement(9, "ul");
-            __builder.OpenElement(10, "li");
-            __builder.AddMarkupContent(11, "<strong>TestResult:</strong>");
+            __builder.AddMarkupContent(8, "\n\n\n");
+            __builder.AddMarkupContent(9, "<p>Test ability of Any Cone to clone various Types.</p>\n\n\n");
+            __builder.OpenElement(10, "ul");
+            __builder.OpenElement(11, "li");
+            __builder.AddMarkupContent(12, "<strong>TestResult:</strong>");
 #nullable restore
 #line (55,34)-(55,44) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CloneTestPage.razor"
-__builder.AddContent(12, TestResult
+__builder.AddContent(13, TestResult
 
 #line default
 #line hidden
@@ -212,9 +215,9 @@ __builder.AddContent(12, TestResult
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(13, "\n\n\n");
-            __builder.OpenElement(14, "button");
-            __builder.AddAttribute(15, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(14, "\n\n\n");
+            __builder.OpenElement(15, "button");
+            __builder.AddAttribute(16, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (60,19)-(60,28) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CloneTestPage.razor"
 TestClone
@@ -223,11 +226,11 @@ TestClone
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(16, "Run");
+            __builder.AddContent(17, "Run");
             __builder.CloseElement();
-            __builder.AddMarkupContent(17, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(18, "<p><strong>Act:</strong> Click the `Run` button</p>\n\n\n");
-            __builder.AddMarkupContent(19, "<p><strong>Assert:</strong> TestResult should be `Passed`\n</p>");
+            __builder.AddMarkupContent(18, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(19, "<p><strong>Act:</strong> Click the `Run` button</p>\n\n\n");
+            __builder.AddMarkupContent(20, "<p><strong>Assert:</strong> TestResult should be `Passed`\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

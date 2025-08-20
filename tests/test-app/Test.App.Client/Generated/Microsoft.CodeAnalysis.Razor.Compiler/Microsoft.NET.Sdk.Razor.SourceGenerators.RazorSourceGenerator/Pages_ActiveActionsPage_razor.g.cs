@@ -161,87 +161,90 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (25,15)-(25,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(1, Title
+#line (25,15)-(25,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h3");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h3");
 #nullable restore
 #line (26,6)-(26,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (27,2)-(27,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, "<p>Determine if Active Actions list working correctly</p>\n\n\n");
-            __builder.OpenElement(9, "p");
-            __builder.AddMarkupContent(10, "<strong>ActionTrackingState.IsActive:</strong> ");
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, "<p>Determine if Active Actions list working correctly</p>\n\n\n");
+            __builder.OpenElement(10, "p");
+            __builder.AddMarkupContent(11, "<strong>ActionTrackingState.IsActive:</strong> ");
 #nullable restore
 #line (34,52)-(34,80) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(11, ActionTrackingState.IsActive
+__builder.AddContent(12, ActionTrackingState.IsActive
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(12, "\n");
-            __builder.OpenElement(13, "p");
-            __builder.AddMarkupContent(14, "<strong>ActionTrackingState.IsAnyActive (Two Second Tasks):</strong> ");
+            __builder.AddMarkupContent(13, "\n");
+            __builder.OpenElement(14, "p");
+            __builder.AddMarkupContent(15, "<strong>ActionTrackingState.IsAnyActive (Two Second Tasks):</strong> ");
 #nullable restore
 #line (35,74)-(35,163) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(15, ActionTrackingState.IsAnyActive([typeof(ApplicationState.TwoSecondTaskActionSet.Action)])
+__builder.AddContent(16, ActionTrackingState.IsAnyActive([typeof(ApplicationState.TwoSecondTaskActionSet.Action)])
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(16, "\n");
-            __builder.OpenElement(17, "p");
-            __builder.AddMarkupContent(18, "<strong>ActionTrackingState.IsAnyActive (Five Second Tasks):</strong> ");
+            __builder.AddMarkupContent(17, "\n");
+            __builder.OpenElement(18, "p");
+            __builder.AddMarkupContent(19, "<strong>ActionTrackingState.IsAnyActive (Five Second Tasks):</strong> ");
 #nullable restore
 #line (36,75)-(36,165) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(19, ActionTrackingState.IsAnyActive([typeof(ApplicationState.FiveSecondTaskActionSet.Action)])
+__builder.AddContent(20, ActionTrackingState.IsAnyActive([typeof(ApplicationState.FiveSecondTaskActionSet.Action)])
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(20, "\n");
-            __builder.OpenElement(21, "p");
-            __builder.AddMarkupContent(22, "<strong>ActionTrackingState.IsAnyActive (Two Second or Five Second Tasks):</strong> ");
+            __builder.AddMarkupContent(21, "\n");
+            __builder.OpenElement(22, "p");
+            __builder.AddMarkupContent(23, "<strong>ActionTrackingState.IsAnyActive (Two Second or Five Second Tasks):</strong> ");
 #nullable restore
 #line (37,89)-(37,234) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(23, ActionTrackingState.IsAnyActive([typeof(ApplicationState.FiveSecondTaskActionSet.Action),typeof(ApplicationState.TwoSecondTaskActionSet.Action)])
+__builder.AddContent(24, ActionTrackingState.IsAnyActive([typeof(ApplicationState.FiveSecondTaskActionSet.Action),typeof(ApplicationState.TwoSecondTaskActionSet.Action)])
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(24, "\n");
-            __builder.AddMarkupContent(25, "<p><strong>Active Actions:</strong></p>");
+            __builder.AddMarkupContent(25, "\n");
+            __builder.AddMarkupContent(26, "<p><strong>Active Actions:</strong></p>");
 #nullable restore
 #line (39,2)-(41,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
 foreach(IAction action in ActionTrackingState.ActiveActions)
@@ -251,10 +254,10 @@ foreach(IAction action in ActionTrackingState.ActiveActions)
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(26, "p");
+            __builder.OpenElement(27, "p");
 #nullable restore
 #line (41,8)-(41,33) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
-__builder.AddContent(27, action.GetType().FullName
+__builder.AddContent(28, action.GetType().FullName
 
 #line default
 #line hidden
@@ -269,9 +272,9 @@ __builder.AddContent(27, action.GetType().FullName
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(28, "button");
-            __builder.AddAttribute(29, "data-qa", "FiveSecondButton");
-            __builder.AddAttribute(30, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.OpenElement(29, "button");
+            __builder.AddAttribute(30, "data-qa", "FiveSecondButton");
+            __builder.AddAttribute(31, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (45,45)-(45,70) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
 FiveSecondTaskButtonClick
@@ -280,12 +283,12 @@ FiveSecondTaskButtonClick
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(31, "Launch Five Second Task");
+            __builder.AddContent(32, "Launch Five Second Task");
             __builder.CloseElement();
-            __builder.AddMarkupContent(32, "\n");
-            __builder.OpenElement(33, "button");
-            __builder.AddAttribute(34, "data-qa", "TwoSecondButton");
-            __builder.AddAttribute(35, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(33, "\n");
+            __builder.OpenElement(34, "button");
+            __builder.AddAttribute(35, "data-qa", "TwoSecondButton");
+            __builder.AddAttribute(36, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (46,44)-(46,68) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ActiveActionsPage.razor"
 TwoSecondTaskButtonClick
@@ -294,12 +297,12 @@ TwoSecondTaskButtonClick
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(36, "Launch Two Second Task");
+            __builder.AddContent(37, "Launch Two Second Task");
             __builder.CloseElement();
-            __builder.AddMarkupContent(37, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(38, "<p><strong>Act:</strong><br>\n  Click the `Launch Five Second Task` Button.<br>\n  Click the `Launch Two Second Task` Button.<br></p>\n\n\n");
-            __builder.AddMarkupContent(39, "<p><strong>Assert:</strong>\n  The states transition accordingly.\n</p>\n\n<hr>\n");
-            __builder.AddMarkupContent(40, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(38, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(39, "<p><strong>Act:</strong><br>\n  Click the `Launch Five Second Task` Button.<br>\n  Click the `Launch Two Second Task` Button.<br></p>\n\n\n");
+            __builder.AddMarkupContent(40, "<p><strong>Assert:</strong>\n  The states transition accordingly.\n</p>\n\n<hr>\n");
+            __builder.AddMarkupContent(41, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

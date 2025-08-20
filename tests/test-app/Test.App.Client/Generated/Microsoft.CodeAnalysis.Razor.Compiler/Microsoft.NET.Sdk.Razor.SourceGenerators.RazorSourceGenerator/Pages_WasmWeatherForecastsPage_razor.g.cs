@@ -173,28 +173,31 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (26,15)-(26,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
-__builder.AddContent(1, Title
+#line (26,15)-(26,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.AddMarkupContent(3, "<h1>Wasm Weather</h1>\n");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.AddMarkupContent(4, "<h1>Wasm Weather</h1>\n");
 #nullable restore
 #line (28,2)-(28,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
-__builder.AddContent(4, RenderModeDisplay
+__builder.AddContent(5, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(5, "\n<br>\n");
-            __builder.AddMarkupContent(6, "<div>This component demonstrates fetching data from the server.</div>");
+            __builder.AddMarkupContent(6, "\n<br>\n");
+            __builder.AddMarkupContent(7, "<div>This component demonstrates fetching data from the server.</div>");
 #nullable restore
 #line (32,2)-(34,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
 if (WeatherForecastsState.WeatherForecasts == null)
@@ -204,7 +207,7 @@ if (WeatherForecastsState.WeatherForecasts == null)
 #line hidden
 #nullable disable
 
-            __builder.AddMarkupContent(7, "<p><em>Loading...</em></p>");
+            __builder.AddMarkupContent(8, "<p><em>Loading...</em></p>");
 #nullable restore
 #line (35,1)-(38,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
 }
@@ -215,11 +218,11 @@ else
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(8, "table");
-            __builder.AddAttribute(9, "class", "table");
-            __builder.AddAttribute(10, "data-qa", "WeatherForecastTable");
-            __builder.AddMarkupContent(11, "<thead><tr><th>Date</th>\n        <th>Temp. (C)</th>\n        <th>Temp. (F)</th>\n        <th>Summary</th></tr></thead>\n    ");
-            __builder.OpenElement(12, "tbody");
+            __builder.OpenElement(9, "table");
+            __builder.AddAttribute(10, "class", "table");
+            __builder.AddAttribute(11, "data-qa", "WeatherForecastTable");
+            __builder.AddMarkupContent(12, "<thead><tr><th>Date</th>\n        <th>Temp. (C)</th>\n        <th>Temp. (F)</th>\n        <th>Summary</th></tr></thead>\n    ");
+            __builder.OpenElement(13, "tbody");
 #nullable restore
 #line (48,1)-(48,7) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
       
@@ -237,44 +240,44 @@ foreach (GetWeatherForecasts.WeatherForecastDto forecast in WeatherForecastsStat
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(13, "tr");
-            __builder.OpenElement(14, "td");
+            __builder.OpenElement(14, "tr");
+            __builder.OpenElement(15, "td");
 #nullable restore
 #line (51,16)-(51,49) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
-__builder.AddContent(15, forecast.Date.ToShortDateString()
+__builder.AddContent(16, forecast.Date.ToShortDateString()
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(16, "\n          ");
-            __builder.OpenElement(17, "td");
+            __builder.AddMarkupContent(17, "\n          ");
+            __builder.OpenElement(18, "td");
 #nullable restore
 #line (52,16)-(52,37) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
-__builder.AddContent(18, forecast.TemperatureC
+__builder.AddContent(19, forecast.TemperatureC
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(19, "\n          ");
-            __builder.OpenElement(20, "td");
+            __builder.AddMarkupContent(20, "\n          ");
+            __builder.OpenElement(21, "td");
 #nullable restore
 #line (53,16)-(53,37) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
-__builder.AddContent(21, forecast.TemperatureF
+__builder.AddContent(22, forecast.TemperatureF
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(22, "\n          ");
-            __builder.OpenElement(23, "td");
+            __builder.AddMarkupContent(23, "\n          ");
+            __builder.OpenElement(24, "td");
 #nullable restore
 #line (54,16)-(54,32) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/WasmWeatherForecastsPage.razor"
-__builder.AddContent(24, forecast.Summary
+__builder.AddContent(25, forecast.Summary
 
 #line default
 #line hidden
@@ -300,9 +303,9 @@ __builder.AddContent(24, forecast.Summary
 #line hidden
 #nullable disable
 
-            __builder.AddMarkupContent(25, "<hr>\n\n");
-            __builder.AddMarkupContent(26, "<p><strong>Act:</strong>Load this page</p>\n\n\n");
-            __builder.AddMarkupContent(27, "<p><strong>Assert:</strong>\n  Current Render Mode == Wasm<br>\n  Configured Render Mode: InteractiveWebAssemblyRenderMode<br>\n  The page should render the weather forecast data in a table.\n</p>");
+            __builder.AddMarkupContent(26, "<hr>\n\n");
+            __builder.AddMarkupContent(27, "<p><strong>Act:</strong>Load this page</p>\n\n\n");
+            __builder.AddMarkupContent(28, "<p><strong>Assert:</strong>\n  Current Render Mode == Wasm<br>\n  Configured Render Mode: InteractiveWebAssemblyRenderMode<br>\n  The page should render the weather forecast data in a table.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

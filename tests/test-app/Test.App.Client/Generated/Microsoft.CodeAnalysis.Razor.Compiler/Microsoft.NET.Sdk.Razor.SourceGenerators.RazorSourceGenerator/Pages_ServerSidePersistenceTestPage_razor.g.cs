@@ -161,47 +161,50 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (5,15)-(5,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(1, Title
+#line (5,15)-(5,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h1");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h1");
 #nullable restore
 #line (6,6)-(6,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (7,2)-(7,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, @"<p>
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, @"<p>
   The purpose of this page is to test two different persistent states, LocalStorage and SessionStorage.<br>
   The two counters are independent of each other and will persist across page refreshes.<br>
   Opening a new tab will share the state of the Purple counter (LocalStorage), but not the Blue counter (SessionStorage).
   <br></p>
 ");
-            __builder.OpenElement(9, "div");
-            __builder.AddAttribute(10, "style", "border: 2px solid blue; padding: 10px; margin-bottom: 20px;");
-            __builder.AddMarkupContent(11, "<h2>System Under Test</h2>\n  ");
-            __builder.AddMarkupContent(12, "<h3>Purple (Local)</h3>");
+            __builder.OpenElement(10, "div");
+            __builder.AddAttribute(11, "style", "border: 2px solid blue; padding: 10px; margin-bottom: 20px;");
+            __builder.AddMarkupContent(12, "<h2>System Under Test</h2>\n  ");
+            __builder.AddMarkupContent(13, "<h3>Purple (Local)</h3>");
 #nullable restore
 #line (21,1)-(21,3) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
   
@@ -219,8 +222,8 @@ if (IsPreRendering)
 #line hidden
 #nullable disable
 
-            __builder.AddMarkupContent(13, "<div role=\"status\">PurpleState.Guid: </div>\n    ");
-            __builder.AddMarkupContent(14, "<div role=\"status\">Purple Count: </div>");
+            __builder.AddMarkupContent(14, "<div role=\"status\">PurpleState.Guid: </div>\n    ");
+            __builder.AddMarkupContent(15, "<div role=\"status\">Purple Count: </div>");
 #nullable restore
 #line (25,1)-(28,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
   }
@@ -231,14 +234,14 @@ if (IsPreRendering)
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(15, "div");
-            __builder.AddAttribute(16, "role", "status");
-            __builder.AddContent(17, "PurpleState.Guid: ");
-            __builder.OpenElement(18, "span");
-            __builder.AddAttribute(19, "data-qa", "purple-state-guid");
+            __builder.OpenElement(16, "div");
+            __builder.AddAttribute(17, "role", "status");
+            __builder.AddContent(18, "PurpleState.Guid: ");
+            __builder.OpenElement(19, "span");
+            __builder.AddAttribute(20, "data-qa", "purple-state-guid");
 #nullable restore
 #line (28,77)-(28,93) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(20, PurpleState.Guid
+__builder.AddContent(21, PurpleState.Guid
 
 #line default
 #line hidden
@@ -246,15 +249,15 @@ __builder.AddContent(20, PurpleState.Guid
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(21, "\n    ");
-            __builder.OpenElement(22, "div");
-            __builder.AddAttribute(23, "role", "status");
-            __builder.AddContent(24, "Purple Count: ");
-            __builder.OpenElement(25, "span");
-            __builder.AddAttribute(26, "data-qa", "purple-state-count");
+            __builder.AddMarkupContent(22, "\n    ");
+            __builder.OpenElement(23, "div");
+            __builder.AddAttribute(24, "role", "status");
+            __builder.AddContent(25, "Purple Count: ");
+            __builder.OpenElement(26, "span");
+            __builder.AddAttribute(27, "data-qa", "purple-state-count");
 #nullable restore
 #line (29,74)-(29,91) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(27, PurpleState.Count
+__builder.AddContent(28, PurpleState.Count
 
 #line default
 #line hidden
@@ -262,10 +265,10 @@ __builder.AddContent(27, PurpleState.Count
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(28, "\n    ");
-            __builder.OpenElement(29, "button");
-            __builder.AddAttribute(30, "data-qa", "increment-purple-count");
-            __builder.AddAttribute(31, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(29, "\n    ");
+            __builder.OpenElement(30, "button");
+            __builder.AddAttribute(31, "data-qa", "increment-purple-count");
+            __builder.AddAttribute(32, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (30,56)-(30,76) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
 IncrementPurpleCount
@@ -274,7 +277,7 @@ IncrementPurpleCount
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(32, "Increment Purple Count");
+            __builder.AddContent(33, "Increment Purple Count");
             __builder.CloseElement();
 #nullable restore
 #line (31,1)-(32,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
@@ -284,8 +287,8 @@ IncrementPurpleCount
 #line hidden
 #nullable disable
 
-            __builder.AddMarkupContent(33, "<br>\n  <br>\n\n  ");
-            __builder.AddMarkupContent(34, "<h3>Blue (Session)</h3>");
+            __builder.AddMarkupContent(34, "<br>\n  <br>\n\n  ");
+            __builder.AddMarkupContent(35, "<h3>Blue (Session)</h3>");
 #nullable restore
 #line (36,1)-(36,3) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
   
@@ -303,8 +306,8 @@ if (IsPreRendering)
 #line hidden
 #nullable disable
 
-            __builder.AddMarkupContent(35, "<div role=\"status\">BlueState.Guid: </div>\n    ");
-            __builder.AddMarkupContent(36, "<div role=\"status\">Blue Count: </div>");
+            __builder.AddMarkupContent(36, "<div role=\"status\">BlueState.Guid: </div>\n    ");
+            __builder.AddMarkupContent(37, "<div role=\"status\">Blue Count: </div>");
 #nullable restore
 #line (40,1)-(43,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
   }
@@ -315,14 +318,14 @@ if (IsPreRendering)
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(37, "div");
-            __builder.AddAttribute(38, "role", "status");
-            __builder.AddContent(39, "BlueState.Guid: ");
-            __builder.OpenElement(40, "span");
-            __builder.AddAttribute(41, "data-qa", "blue-state-guid");
+            __builder.OpenElement(38, "div");
+            __builder.AddAttribute(39, "role", "status");
+            __builder.AddContent(40, "BlueState.Guid: ");
+            __builder.OpenElement(41, "span");
+            __builder.AddAttribute(42, "data-qa", "blue-state-guid");
 #nullable restore
 #line (43,73)-(43,87) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(42, BlueState.Guid
+__builder.AddContent(43, BlueState.Guid
 
 #line default
 #line hidden
@@ -330,15 +333,15 @@ __builder.AddContent(42, BlueState.Guid
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(43, "\n    ");
-            __builder.OpenElement(44, "div");
-            __builder.AddAttribute(45, "role", "status");
-            __builder.AddContent(46, "Blue Count: ");
-            __builder.OpenElement(47, "span");
-            __builder.AddAttribute(48, "data-qa", "blue-state-count");
+            __builder.AddMarkupContent(44, "\n    ");
+            __builder.OpenElement(45, "div");
+            __builder.AddAttribute(46, "role", "status");
+            __builder.AddContent(47, "Blue Count: ");
+            __builder.OpenElement(48, "span");
+            __builder.AddAttribute(49, "data-qa", "blue-state-count");
 #nullable restore
 #line (44,70)-(44,85) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
-__builder.AddContent(49, BlueState.Count
+__builder.AddContent(50, BlueState.Count
 
 #line default
 #line hidden
@@ -346,10 +349,10 @@ __builder.AddContent(49, BlueState.Count
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(50, "\n    ");
-            __builder.OpenElement(51, "button");
-            __builder.AddAttribute(52, "data-qa", "increment-blue-count");
-            __builder.AddAttribute(53, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(51, "\n    ");
+            __builder.OpenElement(52, "button");
+            __builder.AddAttribute(53, "data-qa", "increment-blue-count");
+            __builder.AddAttribute(54, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (45,54)-(45,72) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
 IncrementBlueCount
@@ -358,7 +361,7 @@ IncrementBlueCount
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(54, "Increment Blue Count");
+            __builder.AddContent(55, "Increment Blue Count");
             __builder.CloseElement();
 #nullable restore
 #line (46,1)-(47,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ServerSidePersistenceTestPage.razor"
@@ -369,11 +372,11 @@ IncrementBlueCount
 #nullable disable
 
             __builder.CloseElement();
-            __builder.AddMarkupContent(55, "\n<hr>\n\n");
-            __builder.AddMarkupContent(56, "<p><strong>Act:</strong><br>\n  Click the `Increment Purple Count` button<br>\n  Click the `Increment Blue Count` button<br>\n  Make note of the `Guid` and `Count` for both PurpleState and BlueState`<br>\n  Refresh the page<br></p>\n\n\n");
-            __builder.AddMarkupContent(57, "<p><strong>Assert:</strong><br>\n  `Current Render Mode` == Wasm.<br>\n  The `Guid` and `Count` for both PurpleState and BlueState are the same as before the refresh.\n</p>\n\n\n");
-            __builder.AddMarkupContent(58, "<p><strong>Act:</strong>Open a new tab to this page</p>\n\n\n");
-            __builder.AddMarkupContent(59, "<p><strong>Assert:</strong><br> The `Guid` and `Count` for PurpleState are the same as the previous tab. <br>\n  The `Guid` for BlueState is different and the Count is 2.<br></p>\n<hr>");
+            __builder.AddMarkupContent(56, "\n<hr>\n\n");
+            __builder.AddMarkupContent(57, "<p><strong>Act:</strong><br>\n  Click the `Increment Purple Count` button<br>\n  Click the `Increment Blue Count` button<br>\n  Make note of the `Guid` and `Count` for both PurpleState and BlueState`<br>\n  Refresh the page<br></p>\n\n\n");
+            __builder.AddMarkupContent(58, "<p><strong>Assert:</strong><br>\n  `Current Render Mode` == Wasm.<br>\n  The `Guid` and `Count` for both PurpleState and BlueState are the same as before the refresh.\n</p>\n\n\n");
+            __builder.AddMarkupContent(59, "<p><strong>Act:</strong>Open a new tab to this page</p>\n\n\n");
+            __builder.AddMarkupContent(60, "<p><strong>Assert:</strong><br> The `Guid` and `Count` for PurpleState are the same as the previous tab. <br>\n  The `Guid` for BlueState is different and the Count is 2.<br></p>\n<hr>");
         }
         #pragma warning restore 1998
 #nullable restore

@@ -161,41 +161,44 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (20,15)-(20,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ChangeRoutePage.razor"
-__builder.AddContent(1, Title
+#line (20,15)-(20,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ChangeRoutePage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h3");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h3");
 #nullable restore
 #line (21,6)-(21,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ChangeRoutePage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (22,2)-(22,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ChangeRoutePage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, "<p>Test the ChangeRoute Handler</p>\n\n\n");
-            __builder.OpenElement(9, "button");
-            __builder.AddAttribute(10, "data-qa", "change-route-button");
-            __builder.AddAttribute(11, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, "<p>Test the ChangeRoute Handler</p>\n\n\n");
+            __builder.OpenElement(10, "button");
+            __builder.AddAttribute(11, "data-qa", "change-route-button");
+            __builder.AddAttribute(12, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (29,48)-(29,65) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ChangeRoutePage.razor"
 ChangeRouteToHome
@@ -204,12 +207,12 @@ ChangeRouteToHome
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(12, "Change Route to Home");
+            __builder.AddContent(13, "Change Route to Home");
             __builder.CloseElement();
-            __builder.AddMarkupContent(13, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(14, "<p><strong>Act:</strong>Click the Change Route to Home button</p>\n\n\n");
-            __builder.AddMarkupContent(15, "<p><strong>Assert:</strong>\n  Verify that the route changes to the home page.\n</p>\n\n<hr>\n");
-            __builder.AddMarkupContent(16, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(14, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(15, "<p><strong>Act:</strong>Click the Change Route to Home button</p>\n\n\n");
+            __builder.AddMarkupContent(16, "<p><strong>Assert:</strong>\n  Verify that the route changes to the home page.\n</p>\n\n<hr>\n");
+            __builder.AddMarkupContent(17, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

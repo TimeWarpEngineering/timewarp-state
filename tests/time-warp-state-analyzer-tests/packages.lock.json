@@ -389,7 +389,15 @@
         "resolved": "13.0.0",
         "contentHash": "eVdLPCyJZ1GIUUD7HmjT2Pkm9f8zjlZm4ygmRgojOptoxtSSPSEcETVsVyx9H2xVX/zbB7X1aLUHDTEgINyT5g=="
       },
-      "timewarp.state": {
+      "timewarp-state-analyzer": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
+          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[4.14.0, )",
+          "Microsoft.CodeAnalysis.Common": "[4.14.0, )"
+        }
+      },
+      "TimeWarp.State": {
         "type": "Project",
         "dependencies": {
           "AnyClone": "[1.1.6, )",
@@ -399,14 +407,6 @@
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.8, )",
           "TimeWarp.Mediator": "[13.0.0, )",
           "TypeSupport": "[1.2.0, )"
-        }
-      },
-      "timewarp.state.analyzer": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
-          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[4.14.0, )",
-          "Microsoft.CodeAnalysis.Common": "[4.14.0, )"
         }
       },
       "AnyClone": {

@@ -161,19 +161,22 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (102,15)-(102,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(1, Title
+#line (102,15)-(102,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "div");
-            __builder.AddAttribute(4, "class", 
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "div");
+            __builder.AddAttribute(5, "class", 
 #nullable restore
 #line (103,13)-(103,15) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
 Id
@@ -182,107 +185,107 @@ Id
 #line hidden
 #nullable disable
             );
-            __builder.OpenElement(5, "div");
-            __builder.AddAttribute(6, "class", "fixed-content");
-            __builder.OpenElement(7, "h4");
+            __builder.OpenElement(6, "div");
+            __builder.AddAttribute(7, "class", "fixed-content");
+            __builder.OpenElement(8, "h4");
 #nullable restore
 #line (105,10)-(105,15) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(8, Title
+__builder.AddContent(9, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(9, "\n    ");
+            __builder.AddMarkupContent(10, "\n    ");
 #nullable restore
 #line (106,6)-(106,23) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(10, RenderModeDisplay
+__builder.AddContent(11, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(11, "\n    <hr>\n\n    ");
-            __builder.OpenElement(12, "div");
-            __builder.AddAttribute(13, "class", "render-info-container");
-            __builder.OpenElement(14, "div");
-            __builder.AddContent(15, "Component State, ParentInt: ");
+            __builder.AddMarkupContent(12, "\n    <hr>\n\n    ");
+            __builder.OpenElement(13, "div");
+            __builder.AddAttribute(14, "class", "render-info-container");
+            __builder.OpenElement(15, "div");
+            __builder.AddContent(16, "Component State, ParentInt: ");
 #nullable restore
 #line (110,41)-(110,50) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(16, ParentInt
+__builder.AddContent(17, ParentInt
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(17, "\n      ");
-            __builder.OpenElement(18, "div");
-            __builder.AddContent(19, "ShouldRenderWasCalledBy: ");
+            __builder.AddMarkupContent(18, "\n      ");
+            __builder.OpenElement(19, "div");
+            __builder.AddContent(20, "ShouldRenderWasCalledBy: ");
 #nullable restore
 #line (111,38)-(111,61) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(20, ShouldRenderWasCalledBy
+__builder.AddContent(21, ShouldRenderWasCalledBy
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(21, "\n      ");
-            __builder.OpenElement(22, "div");
-            __builder.AddContent(23, "Render Count (2): ");
+            __builder.AddMarkupContent(22, "\n      ");
+            __builder.OpenElement(23, "div");
+            __builder.AddContent(24, "Render Count (2): ");
 #nullable restore
 #line (112,32)-(112,45) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(24, RenderCount+1
+__builder.AddContent(25, RenderCount+1
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(25, "\n      ");
-            __builder.OpenElement(26, "div");
-            __builder.AddContent(27, "SetParametersAsyncWasCalledBy: ");
+            __builder.AddMarkupContent(26, "\n      ");
+            __builder.OpenElement(27, "div");
+            __builder.AddContent(28, "SetParametersAsyncWasCalledBy: ");
 #nullable restore
 #line (113,44)-(113,73) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(28, SetParametersAsyncWasCalledBy
+__builder.AddContent(29, SetParametersAsyncWasCalledBy
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(29, "\n      ");
-            __builder.OpenElement(30, "div");
-            __builder.AddContent(31, "Render Reason: ");
+            __builder.AddMarkupContent(30, "\n      ");
+            __builder.OpenElement(31, "div");
+            __builder.AddContent(32, "Render Reason: ");
 #nullable restore
 #line (114,28)-(114,40) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(32, RenderReason
+__builder.AddContent(33, RenderReason
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(33, "\n      ");
-            __builder.OpenElement(34, "div");
-            __builder.AddContent(35, "StateHasChangedWasCalledBy: ");
+            __builder.AddMarkupContent(34, "\n      ");
+            __builder.OpenElement(35, "div");
+            __builder.AddContent(36, "StateHasChangedWasCalledBy: ");
 #nullable restore
 #line (115,41)-(115,67) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(36, StateHasChangedWasCalledBy
+__builder.AddContent(37, StateHasChangedWasCalledBy
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(37, "\n      ");
-            __builder.OpenElement(38, "div");
-            __builder.AddContent(39, "Render Reason Detail: ");
+            __builder.AddMarkupContent(38, "\n      ");
+            __builder.OpenElement(39, "div");
+            __builder.AddContent(40, "Render Reason Detail: ");
 #nullable restore
 #line (116,35)-(116,53) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(40, RenderReasonDetail
+__builder.AddContent(41, RenderReasonDetail
 
 #line default
 #line hidden
@@ -290,11 +293,11 @@ __builder.AddContent(40, RenderReasonDetail
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(41, "\n\n    <hr>\n    ");
-            __builder.OpenElement(42, "div");
-            __builder.AddAttribute(43, "class", "button-container");
-            __builder.OpenElement(44, "button");
-            __builder.AddAttribute(45, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(42, "\n\n    <hr>\n    ");
+            __builder.OpenElement(43, "div");
+            __builder.AddAttribute(44, "class", "button-container");
+            __builder.OpenElement(45, "button");
+            __builder.AddAttribute(46, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (121,24)-(121,36) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
 TriggerEvent
@@ -303,11 +306,11 @@ TriggerEvent
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(46, "Trigger Event (Increment ParentInt)");
+            __builder.AddContent(47, "Trigger Event (Increment ParentInt)");
             __builder.CloseElement();
-            __builder.AddMarkupContent(47, "\n      ");
-            __builder.OpenElement(48, "button");
-            __builder.AddAttribute(49, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(48, "\n      ");
+            __builder.OpenElement(49, "button");
+            __builder.AddAttribute(50, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (122,24)-(122,49) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
 TriggerSubscriptionUpdate
@@ -316,11 +319,11 @@ TriggerSubscriptionUpdate
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(50, "Trigger Subscription Update");
+            __builder.AddContent(51, "Trigger Subscription Update");
             __builder.CloseElement();
-            __builder.AddMarkupContent(51, "\n      ");
-            __builder.OpenElement(52, "button");
-            __builder.AddAttribute(53, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(52, "\n      ");
+            __builder.OpenElement(53, "button");
+            __builder.AddAttribute(54, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (123,24)-(123,42) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
 TriggerForceRender
@@ -329,11 +332,11 @@ TriggerForceRender
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(54, "Trigger Force Render");
+            __builder.AddContent(55, "Trigger Force Render");
             __builder.CloseElement();
-            __builder.AddMarkupContent(55, "\n      ");
-            __builder.OpenElement(56, "button");
-            __builder.AddAttribute(57, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(56, "\n      ");
+            __builder.OpenElement(57, "button");
+            __builder.AddAttribute(58, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (124,24)-(124,49) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
 TriggerCounterStateChange
@@ -342,28 +345,28 @@ TriggerCounterStateChange
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(58, "Trigger a CounterState Change");
+            __builder.AddContent(59, "Trigger a CounterState Change");
             __builder.CloseElement();
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(59, "\n\n  ");
-            __builder.OpenElement(60, "div");
-            __builder.AddAttribute(61, "class", "scrollable-content");
-            __builder.OpenElement(62, "div");
-            __builder.AddAttribute(63, "class", "grid-container");
-            __builder.OpenElement(64, "ChildComponentWithCounterStateSubscription");
+            __builder.AddMarkupContent(60, "\n\n  ");
+            __builder.OpenElement(61, "div");
+            __builder.AddAttribute(62, "class", "scrollable-content");
+            __builder.OpenElement(63, "div");
+            __builder.AddAttribute(64, "class", "grid-container");
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderStateTriggersTestPage.ChildComponentWithCounterStateSubscription>(65);
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(66, "\n      ");
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderStateTriggersTestPage.ChildComponentWithCounterStateRenderTrigger>(67);
+            __builder.CloseComponent();
             __builder.CloseElement();
-            __builder.AddMarkupContent(65, "\n      ");
-            __builder.OpenElement(66, "ChildComponentWithCounterStateRenderTrigger");
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.CloseElement();
-            __builder.CloseElement();
-            __builder.AddMarkupContent(67, "\n\n");
-            __builder.OpenElement(68, "style");
+            __builder.AddMarkupContent(68, "\n\n");
+            __builder.OpenElement(69, "style");
 #nullable restore
 #line (138,5)-(183,4) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderStateTriggersTestPage/ShouldRenderStateTriggersTestPage.razor"
-__builder.AddContent(69, $@"
+__builder.AddContent(70, $@"
     .{Id} {{
       display: flex;
       flex-direction: column;

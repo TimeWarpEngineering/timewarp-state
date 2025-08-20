@@ -163,56 +163,59 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (6,15)-(6,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
-__builder.AddContent(1, Title
+#line (6,15)-(6,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h1");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h1");
 #nullable restore
 #line (7,6)-(7,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (8,2)-(8,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, "<p>\n  This test page is designed to validate the dynamic style adjustment of a CustomInput component based on the application\'s current theme (Light or Dark).\n</p>\n\n\n");
-            __builder.OpenElement(9, "ul");
-            __builder.OpenElement(10, "li");
-            __builder.AddMarkupContent(11, "<strong>Current Theme:</strong> ");
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, "<p>\n  This test page is designed to validate the dynamic style adjustment of a CustomInput component based on the application\'s current theme (Light or Dark).\n</p>\n\n\n");
+            __builder.OpenElement(10, "ul");
+            __builder.OpenElement(11, "li");
+            __builder.AddMarkupContent(12, "<strong>Current Theme:</strong> ");
 #nullable restore
 #line (19,38)-(19,61) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
-__builder.AddContent(12, ThemeState.CurrentTheme
+__builder.AddContent(13, ThemeState.CurrentTheme
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(13, "\n  ");
-            __builder.OpenElement(14, "li");
-            __builder.AddMarkupContent(15, "<strong>Amount:</strong> ");
+            __builder.AddMarkupContent(14, "\n  ");
+            __builder.OpenElement(15, "li");
+            __builder.AddMarkupContent(16, "<strong>Amount:</strong> ");
 #nullable restore
 #line (22,31)-(22,45) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
-__builder.AddContent(16, MyModel.Amount
+__builder.AddContent(17, MyModel.Amount
 
 #line default
 #line hidden
@@ -220,9 +223,9 @@ __builder.AddContent(16, MyModel.Amount
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(17, "\n\n\n");
-            __builder.OpenElement(18, "button");
-            __builder.AddAttribute(19, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(18, "\n\n\n");
+            __builder.OpenElement(19, "button");
+            __builder.AddAttribute(20, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (27,18)-(27,29) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
 ToggleTheme
@@ -231,14 +234,14 @@ ToggleTheme
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(20, "Toggle Theme");
+            __builder.AddContent(21, "Toggle Theme");
             __builder.CloseElement();
-            __builder.AddMarkupContent(21, "\n<hr>\n\n\n");
-            __builder.OpenElement(22, "div");
-            __builder.AddAttribute(23, "style", "border: 2px solid blue; padding: 10px; margin-bottom: 20px;");
-            __builder.AddMarkupContent(24, "<h2>System Under Test: CustomInput Component</h2>\n  ");
-            __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Forms.EditForm>(25);
-            __builder.AddComponentParameter(26, nameof(global::Microsoft.AspNetCore.Components.Forms.EditForm.
+            __builder.AddMarkupContent(22, "\n<hr>\n\n\n");
+            __builder.OpenElement(23, "div");
+            __builder.AddAttribute(24, "style", "border: 2px solid blue; padding: 10px; margin-bottom: 20px;");
+            __builder.AddMarkupContent(25, "<h2>System Under Test: CustomInput Component</h2>\n  ");
+            __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Forms.EditForm>(26);
+            __builder.AddComponentParameter(27, nameof(global::Microsoft.AspNetCore.Components.Forms.EditForm.
 #nullable restore
 #line (33,13)-(33,21) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
 FormName
@@ -247,7 +250,7 @@ FormName
 #line hidden
 #nullable disable
             ), "TheForm");
-            __builder.AddComponentParameter(27, nameof(global::Microsoft.AspNetCore.Components.Forms.EditForm.
+            __builder.AddComponentParameter(28, nameof(global::Microsoft.AspNetCore.Components.Forms.EditForm.
 #nullable restore
 #line (33,32)-(33,37) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
 Model
@@ -264,9 +267,8 @@ MyModel
 #line hidden
 #nullable disable
             ));
-            __builder.AddAttribute(28, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment<global::Microsoft.AspNetCore.Components.Forms.EditContext>)((context) => (__builder2) => {
-                __builder2.OpenElement(29, "CustomInput");
-                __builder2.AddAttribute(30, "ValidationFor", 
+            __builder.AddAttribute(29, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment<global::Microsoft.AspNetCore.Components.Forms.EditContext>)((context) => (__builder2) => {
+                global::__Blazor.Test.App.Client.Pages.CustomInputExamplePage.TypeInference.CreateCustomInput_0(__builder2, 30, 31, 
 #nullable restore
 #line (34,61)-(34,81) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
 () => MyModel.Amount
@@ -274,20 +276,26 @@ MyModel
 #line default
 #line hidden
 #nullable disable
-                );
-                __builder2.AddAttribute(31, "Label", "Amount");
-                __builder2.CloseElement();
+                , 32, "Amount", 33, 
+#nullable restore
+#line (34,30)-(34,44) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
+MyModel.Amount
+
+#line default
+#line hidden
+#nullable disable
+                , 34, global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create(this, global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.CreateInferredEventCallback(this, __value => MyModel.Amount = __value, MyModel.Amount)), 35, () => MyModel.Amount);
             }
             ));
             __builder.CloseComponent();
             __builder.CloseElement();
-            __builder.AddMarkupContent(32, "\n\n<hr>\n\n");
-            __builder.AddMarkupContent(33, "<p><strong>Act:</strong> Toggle the theme by clicking the \'Toggle Theme\' button.</p>\n\n\n");
-            __builder.AddMarkupContent(34, "<p><strong>Assert:</strong>\n  Verify that the theme changes from Light to Dark or vice versa upon clicking the \'Toggle Theme\' button by\n  inspecting the class on the input element.\n</p>\n\n\n");
-            __builder.AddMarkupContent(35, "<p><strong>Assert:</strong> Verify that the CustomInput component properly reflects the current theme.</p>\n\n\n\n");
-            __builder.AddMarkupContent(36, "<p><strong>Act:</strong> Enter a number into the input box.</p>\n");
-            __builder.AddMarkupContent(37, "<p><strong>Assert:</strong> The Amount value updates on exiting the input.</p>\n\n<hr>\n");
-            __builder.AddMarkupContent(38, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(36, "\n\n<hr>\n\n");
+            __builder.AddMarkupContent(37, "<p><strong>Act:</strong> Toggle the theme by clicking the \'Toggle Theme\' button.</p>\n\n\n");
+            __builder.AddMarkupContent(38, "<p><strong>Assert:</strong>\n  Verify that the theme changes from Light to Dark or vice versa upon clicking the \'Toggle Theme\' button by\n  inspecting the class on the input element.\n</p>\n\n\n");
+            __builder.AddMarkupContent(39, "<p><strong>Assert:</strong> Verify that the CustomInput component properly reflects the current theme.</p>\n\n\n\n");
+            __builder.AddMarkupContent(40, "<p><strong>Act:</strong> Enter a number into the input box.</p>\n");
+            __builder.AddMarkupContent(41, "<p><strong>Assert:</strong> The Amount value updates on exiting the input.</p>\n\n<hr>\n");
+            __builder.AddMarkupContent(42, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore
@@ -331,6 +339,47 @@ MyModel
             private static global::Microsoft.AspNetCore.Components.IComponentRenderMode ModeImpl => InteractiveAuto
             ;
             public override global::Microsoft.AspNetCore.Components.IComponentRenderMode Mode => ModeImpl;
+        }
+    }
+}
+namespace __Blazor.Test.App.Client.Pages.CustomInputExamplePage
+{
+    #line hidden
+    internal static class TypeInference
+    {
+        public static void CreateCustomInput_0<T>(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder, int seq, int __seq0, global::System.Linq.Expressions.Expression<global::System.Func<T>> __arg0, int __seq1, global::System.String __arg1, int __seq2, T __arg2, int __seq3, global::Microsoft.AspNetCore.Components.EventCallback<T> __arg3, int __seq4, global::System.Linq.Expressions.Expression<global::System.Func<T>> __arg4)
+        {
+        __builder.OpenComponent<global::Test.App.Client.Components.CustomInput<T>>(seq);
+        __builder.AddComponentParameter(__seq0, nameof(global::Test.App.Client.Components.CustomInput<T>.
+#nullable restore
+#line (34,45)-(34,58) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
+ValidationFor
+
+#line default
+#line hidden
+#nullable disable
+        ), __arg0);
+        __builder.AddComponentParameter(__seq1, nameof(global::Test.App.Client.Components.CustomInput<T>.
+#nullable restore
+#line (34,83)-(34,88) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
+Label
+
+#line default
+#line hidden
+#nullable disable
+        ), __arg1);
+        __builder.AddComponentParameter(__seq2, nameof(global::Test.App.Client.Components.CustomInput<T>.
+#nullable restore
+#line (34,24)-(34,29) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CustomInputExamplePage.razor"
+Value
+
+#line default
+#line hidden
+#nullable disable
+        ), __arg2);
+        __builder.AddComponentParameter(__seq3, nameof(global::Test.App.Client.Components.CustomInput<T>.ValueChanged), __arg3);
+        __builder.AddComponentParameter(__seq4, nameof(global::Test.App.Client.Components.CustomInput<T>.ValueExpression), __arg4);
+        __builder.CloseComponent();
         }
     }
 }

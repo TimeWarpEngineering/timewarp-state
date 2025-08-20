@@ -173,36 +173,39 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (25,15)-(25,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(1, Title
+#line (25,15)-(25,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.AddMarkupContent(3, "<h3>Cacheable Weather</h3>\n");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.AddMarkupContent(4, "<h3>Cacheable Weather</h3>\n");
 #nullable restore
 #line (27,2)-(27,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(4, RenderModeDisplay
+__builder.AddContent(5, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(5, "\n\n\n");
-            __builder.AddMarkupContent(6, "<p>This page demonstrates fetching data from the server using a ten second cache. </p>\n\n\n");
-            __builder.OpenElement(7, "ul");
-            __builder.OpenElement(8, "li");
-            __builder.AddMarkupContent(9, "<strong>CacheKey:</strong>");
-            __builder.OpenElement(10, "span");
-            __builder.AddAttribute(11, "data-qa", "cache-key");
+            __builder.AddMarkupContent(6, "\n\n\n");
+            __builder.AddMarkupContent(7, "<p>This page demonstrates fetching data from the server using a ten second cache. </p>\n\n\n");
+            __builder.OpenElement(8, "ul");
+            __builder.OpenElement(9, "li");
+            __builder.AddMarkupContent(10, "<strong>CacheKey:</strong>");
+            __builder.OpenElement(11, "span");
+            __builder.AddAttribute(12, "data-qa", "cache-key");
 #nullable restore
 #line (35,58)-(35,88) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(12, CacheableWeatherState.CacheKey
+__builder.AddContent(13, CacheableWeatherState.CacheKey
 
 #line default
 #line hidden
@@ -210,14 +213,14 @@ __builder.AddContent(12, CacheableWeatherState.CacheKey
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(13, "\n  ");
-            __builder.OpenElement(14, "li");
-            __builder.AddMarkupContent(15, "<strong>CacheDuration:</strong>");
-            __builder.OpenElement(16, "span");
-            __builder.AddAttribute(17, "data-qa", "cache-duration");
+            __builder.AddMarkupContent(14, "\n  ");
+            __builder.OpenElement(15, "li");
+            __builder.AddMarkupContent(16, "<strong>CacheDuration:</strong>");
+            __builder.OpenElement(17, "span");
+            __builder.AddAttribute(18, "data-qa", "cache-duration");
 #nullable restore
 #line (38,68)-(38,103) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(18, CacheableWeatherState.CacheDuration
+__builder.AddContent(19, CacheableWeatherState.CacheDuration
 
 #line default
 #line hidden
@@ -225,14 +228,14 @@ __builder.AddContent(18, CacheableWeatherState.CacheDuration
             );
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(19, "\n  ");
-            __builder.OpenElement(20, "li");
-            __builder.AddMarkupContent(21, "<strong>TimeStamp:</strong>");
-            __builder.OpenElement(22, "span");
-            __builder.AddAttribute(23, "data-qa", "timestamp");
+            __builder.AddMarkupContent(20, "\n  ");
+            __builder.OpenElement(21, "li");
+            __builder.AddMarkupContent(22, "<strong>TimeStamp:</strong>");
+            __builder.OpenElement(23, "span");
+            __builder.AddAttribute(24, "data-qa", "timestamp");
 #nullable restore
 #line (41,59)-(41,90) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(24, CacheableWeatherState.TimeStamp
+__builder.AddContent(25, CacheableWeatherState.TimeStamp
 
 #line default
 #line hidden
@@ -241,10 +244,10 @@ __builder.AddContent(24, CacheableWeatherState.TimeStamp
             __builder.CloseElement();
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(25, "\n\n\n");
-            __builder.OpenElement(26, "button");
-            __builder.AddAttribute(27, "data-qa", "fetch-weather-forecasts");
-            __builder.AddAttribute(28, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(26, "\n\n\n");
+            __builder.OpenElement(27, "button");
+            __builder.AddAttribute(28, "data-qa", "fetch-weather-forecasts");
+            __builder.AddAttribute(29, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (46,53)-(46,80) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
 HandleFetchWeatherForecasts
@@ -253,7 +256,7 @@ HandleFetchWeatherForecasts
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(29, "Fetch Weather Forecasts");
+            __builder.AddContent(30, "Fetch Weather Forecasts");
             __builder.CloseElement();
 #nullable restore
 #line (49,2)-(51,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
@@ -264,11 +267,11 @@ if (CacheableWeatherState.WeatherForecasts is not null)
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(30, "table");
-            __builder.AddAttribute(31, "class", "table");
-            __builder.AddAttribute(32, "data-qa", "weather-table");
-            __builder.AddMarkupContent(33, "<thead><tr><th>Date</th>\n      <th>Temp. (C)</th>\n      <th>Temp. (F)</th>\n      <th>Summary</th></tr></thead>\n    ");
-            __builder.OpenElement(34, "tbody");
+            __builder.OpenElement(31, "table");
+            __builder.AddAttribute(32, "class", "table");
+            __builder.AddAttribute(33, "data-qa", "weather-table");
+            __builder.AddMarkupContent(34, "<thead><tr><th>Date</th>\n      <th>Temp. (C)</th>\n      <th>Temp. (F)</th>\n      <th>Summary</th></tr></thead>\n    ");
+            __builder.OpenElement(35, "tbody");
 #nullable restore
 #line (61,1)-(61,5) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
     
@@ -286,44 +289,44 @@ foreach (GetWeatherForecasts.WeatherForecastDto forecast in CacheableWeatherStat
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(35, "tr");
-            __builder.OpenElement(36, "td");
+            __builder.OpenElement(36, "tr");
+            __builder.OpenElement(37, "td");
 #nullable restore
 #line (64,14)-(64,47) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(37, forecast.Date.ToShortDateString()
+__builder.AddContent(38, forecast.Date.ToShortDateString()
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(38, "\n        ");
-            __builder.OpenElement(39, "td");
+            __builder.AddMarkupContent(39, "\n        ");
+            __builder.OpenElement(40, "td");
 #nullable restore
 #line (65,14)-(65,35) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(40, forecast.TemperatureC
+__builder.AddContent(41, forecast.TemperatureC
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(41, "\n        ");
-            __builder.OpenElement(42, "td");
+            __builder.AddMarkupContent(42, "\n        ");
+            __builder.OpenElement(43, "td");
 #nullable restore
 #line (66,14)-(66,35) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(43, forecast.TemperatureF
+__builder.AddContent(44, forecast.TemperatureF
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(44, "\n        ");
-            __builder.OpenElement(45, "td");
+            __builder.AddMarkupContent(45, "\n        ");
+            __builder.OpenElement(46, "td");
 #nullable restore
 #line (67,14)-(67,30) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(46, forecast.Summary
+__builder.AddContent(47, forecast.Summary
 
 #line default
 #line hidden
@@ -349,9 +352,9 @@ __builder.AddContent(46, forecast.Summary
 #line hidden
 #nullable disable
 
-            __builder.AddMarkupContent(47, "<hr>\n\n");
-            __builder.AddMarkupContent(48, "<p><strong>Act: </strong>Load the Page</p>\n\n\n");
-            __builder.AddMarkupContent(49, @"<p><strong>Assert:</strong><br>
+            __builder.AddMarkupContent(48, "<hr>\n\n");
+            __builder.AddMarkupContent(49, "<p><strong>Act: </strong>Load the Page</p>\n\n\n");
+            __builder.AddMarkupContent(50, @"<p><strong>Assert:</strong><br>
   Current Render Mode == Wasm<br>
   Configured Render Mode == InteractiveWebAssemblyRenderMode<br>
   No Weather Forecasts should be displayed.<br>
@@ -361,46 +364,46 @@ __builder.AddContent(46, forecast.Summary
 
 
 ");
-            __builder.AddMarkupContent(50, "<p><strong>Act: </strong>Click the button to fetch weather forecasts</p>\n\n\n");
-            __builder.OpenElement(51, "p");
-            __builder.AddMarkupContent(52, "<strong>Assert:</strong><br>\n  The page should render the weather forecast data in a table.<br>\n  The CacheKey should be `");
+            __builder.AddMarkupContent(51, "<p><strong>Act: </strong>Click the button to fetch weather forecasts</p>\n\n\n");
+            __builder.OpenElement(52, "p");
+            __builder.AddMarkupContent(53, "<strong>Assert:</strong><br>\n  The page should render the weather forecast data in a table.<br>\n  The CacheKey should be `");
 #nullable restore
 #line (96,28)-(96,104) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(53, typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName
+__builder.AddContent(54, typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(54, "|{}`.<br>\n  The TimeStamp should have a value close to the current time.\n");
+            __builder.AddMarkupContent(55, "|{}`.<br>\n  The TimeStamp should have a value close to the current time.\n");
             __builder.CloseElement();
-            __builder.AddMarkupContent(55, "\n\n\n");
-            __builder.AddMarkupContent(56, "<p><strong>Act: </strong>Click the button a second time within the CacheDuration.</p>\n\n\n");
-            __builder.OpenElement(57, "p");
-            __builder.AddMarkupContent(58, "<strong>Assert:</strong><br>\n  The page should render the weather forecast data in a table.<br>\n  The CacheKey should be `");
+            __builder.AddMarkupContent(56, "\n\n\n");
+            __builder.AddMarkupContent(57, "<p><strong>Act: </strong>Click the button a second time within the CacheDuration.</p>\n\n\n");
+            __builder.OpenElement(58, "p");
+            __builder.AddMarkupContent(59, "<strong>Assert:</strong><br>\n  The page should render the weather forecast data in a table.<br>\n  The CacheKey should be `");
 #nullable restore
 #line (107,28)-(107,104) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(59, typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName
+__builder.AddContent(60, typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(60, "|{}`.<br>\n  The TimeStamp should be the same as the first time the button was clicked.<br>\n  The Weather Forecasts should be the same as the first time the button was clicked.\n");
+            __builder.AddMarkupContent(61, "|{}`.<br>\n  The TimeStamp should be the same as the first time the button was clicked.<br>\n  The Weather Forecasts should be the same as the first time the button was clicked.\n");
             __builder.CloseElement();
-            __builder.AddMarkupContent(61, "\n\n\n");
-            __builder.AddMarkupContent(62, "<p><strong>Act: </strong>Wait longer than cache duration and then click button a third time.</p>\n\n\n");
-            __builder.OpenElement(63, "p");
-            __builder.AddMarkupContent(64, "<strong>Assert:</strong><br>\n  The page should render new weather forecast data in a table.<br>\n  The CacheKey should be `");
+            __builder.AddMarkupContent(62, "\n\n\n");
+            __builder.AddMarkupContent(63, "<p><strong>Act: </strong>Wait longer than cache duration and then click button a third time.</p>\n\n\n");
+            __builder.OpenElement(64, "p");
+            __builder.AddMarkupContent(65, "<strong>Assert:</strong><br>\n  The page should render new weather forecast data in a table.<br>\n  The CacheKey should be `");
 #nullable restore
 #line (119,28)-(119,104) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/CachableWeatherForecastsPage.razor"
-__builder.AddContent(65, typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName
+__builder.AddContent(66, typeof(CacheableWeatherState.FetchWeatherForecastsActionSet.Action).FullName
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(66, "|{}`.<br>\n  The TimeStamp should have a value close to the current time and different than the previous value.<br>");
+            __builder.AddMarkupContent(67, "|{}`.<br>\n  The TimeStamp should have a value close to the current time and different than the previous value.<br>");
             __builder.CloseElement();
         }
         #pragma warning restore 1998

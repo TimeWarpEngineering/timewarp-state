@@ -161,46 +161,49 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (5,15)-(5,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/JavaScriptInteropPage.razor"
-__builder.AddContent(1, Title
+#line (5,15)-(5,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/JavaScriptInteropPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h1");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h1");
 #nullable restore
 #line (6,6)-(6,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/JavaScriptInteropPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (7,2)-(7,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/JavaScriptInteropPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n");
-            __builder.AddMarkupContent(8, "<p>Testing ability for Javascript to Dispatch Actions via the include `timewarpState.DispatchRequest` Javascript method.</p>\n\n");
-            __builder.OpenElement(9, "ul");
-            __builder.OpenElement(10, "li");
-            __builder.AddMarkupContent(11, "<strong>CounterState.Count:</strong> ");
-            __builder.OpenElement(12, "span");
-            __builder.AddAttribute(13, "data-qa", "counter-state-count");
+            __builder.AddMarkupContent(8, "\n<hr>\n");
+            __builder.AddMarkupContent(9, "<p>Testing ability for Javascript to Dispatch Actions via the include `timewarpState.DispatchRequest` Javascript method.</p>\n\n");
+            __builder.OpenElement(10, "ul");
+            __builder.OpenElement(11, "li");
+            __builder.AddMarkupContent(12, "<strong>CounterState.Count:</strong> ");
+            __builder.OpenElement(13, "span");
+            __builder.AddAttribute(14, "data-qa", "counter-state-count");
 #nullable restore
 #line (13,77)-(13,95) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/JavaScriptInteropPage.razor"
-__builder.AddContent(14, CounterState.Count
+__builder.AddContent(15, CounterState.Count
 
 #line default
 #line hidden
@@ -209,11 +212,11 @@ __builder.AddContent(14, CounterState.Count
             __builder.CloseElement();
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(15, "\n\n\n\n");
-            __builder.AddMarkupContent(16, "<button data-qa=\"increment-button\" onclick=\"window.InteropTest()\">Increment Count by 7 via JavaScript Interop</button>\n\n<hr>\n\n");
-            __builder.AddMarkupContent(17, "<p><strong>Act:</strong> Click the button</p>\n\n\n");
-            __builder.AddMarkupContent(18, "<p><strong>Assert:</strong>\n  Verify that the CounterState.Count increments by 7.\n</p>\n<hr>\n");
-            __builder.AddMarkupContent(19, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(16, "\n\n\n\n");
+            __builder.AddMarkupContent(17, "<button data-qa=\"increment-button\" onclick=\"window.InteropTest()\">Increment Count by 7 via JavaScript Interop</button>\n\n<hr>\n\n");
+            __builder.AddMarkupContent(18, "<p><strong>Act:</strong> Click the button</p>\n\n\n");
+            __builder.AddMarkupContent(19, "<p><strong>Assert:</strong>\n  Verify that the CounterState.Count increments by 7.\n</p>\n<hr>\n");
+            __builder.AddMarkupContent(20, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore

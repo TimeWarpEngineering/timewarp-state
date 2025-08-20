@@ -432,11 +432,19 @@ IncrementConstrainedPropertyOfExistingComplexType
             __builder.AddAttribute(86, "class", "scrollable-content");
             __builder.OpenElement(87, "div");
             __builder.AddAttribute(88, "class", "grid-container");
-            __builder.OpenElement(89, "ChildComponentParameterless");
-            __builder.CloseElement();
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentParameterless>(89);
+            __builder.CloseComponent();
             __builder.AddMarkupContent(90, "\n      ");
-            __builder.OpenElement(91, "ChildComponentWithPrimitives");
-            __builder.AddAttribute(92, "SomeInt", 
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithPrimitives>(91);
+            __builder.AddComponentParameter(92, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithPrimitives.
+#nullable restore
+#line (136,37)-(136,44) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeInt
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::System.Int32>(
 #nullable restore
 #line (136,46)-(136,53) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeInt
@@ -444,8 +452,16 @@ SomeInt
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.AddAttribute(93, "SomeString", 
+            ));
+            __builder.AddComponentParameter(93, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithPrimitives.
+#nullable restore
+#line (136,54)-(136,64) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeString
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::System.String>(
 #nullable restore
 #line (136,66)-(136,76) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeString
@@ -453,11 +469,19 @@ SomeString
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
+            ));
+            __builder.CloseComponent();
             __builder.AddMarkupContent(94, "\n      ");
-            __builder.OpenElement(95, "ChildComponentWithComplex");
-            __builder.AddAttribute(96, "SomeComplex", 
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithComplex>(95);
+            __builder.AddComponentParameter(96, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithComplex.
+#nullable restore
+#line (137,34)-(137,45) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeComplex
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::Test.App.Client.Pages.ShouldRenderTestPage.ShouldRenderTestPage.ComplexType>(
 #nullable restore
 #line (137,47)-(137,58) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeComplex
@@ -465,11 +489,19 @@ SomeComplex
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
+            ));
+            __builder.CloseComponent();
             __builder.AddMarkupContent(97, "\n      ");
-            __builder.OpenElement(98, "ChildComponentWithComplexConstrained");
-            __builder.AddAttribute(99, "SomeComplex", 
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithComplexConstrained>(98);
+            __builder.AddComponentParameter(99, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithComplexConstrained.
+#nullable restore
+#line (138,45)-(138,56) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeComplex
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::Test.App.Client.Pages.ShouldRenderTestPage.ShouldRenderTestPage.ComplexType>(
 #nullable restore
 #line (138,58)-(138,69) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeComplex
@@ -477,11 +509,19 @@ SomeComplex
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
+            ));
+            __builder.CloseComponent();
             __builder.AddMarkupContent(100, "\n      ");
-            __builder.OpenElement(101, "ChildComponentWithEventCallback");
-            __builder.AddAttribute(102, "SomeCallback", 
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithEventCallback>(101);
+            __builder.AddComponentParameter(102, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithEventCallback.
+#nullable restore
+#line (139,40)-(139,52) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeCallback
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::Microsoft.AspNetCore.Components.EventCallback<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>>(global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (139,54)-(139,66) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeCallback
@@ -489,8 +529,8 @@ SomeCallback
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
+            )));
+            __builder.CloseComponent();
             __builder.AddMarkupContent(103, "\n      ");
             global::__Blazor.Test.App.Client.Pages.ShouldRenderTestPage.ShouldRenderTestPage.TypeInference.CreateCascadingValue_0(__builder, 104, 105, 
 #nullable restore
@@ -501,13 +541,21 @@ CascadeValue
 #line hidden
 #nullable disable
             , 106, (__builder2) => {
-                __builder2.OpenElement(107, "ChildComponentWithCascade");
-                __builder2.CloseElement();
+                __builder2.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithCascade>(107);
+                __builder2.CloseComponent();
             }
             );
             __builder.AddMarkupContent(108, "\n      ");
-            __builder.OpenElement(109, "ChildComponentWithAllParameters");
-            __builder.AddAttribute(110, "SomeInt", 
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithAllParameters>(109);
+            __builder.AddComponentParameter(110, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithAllParameters.
+#nullable restore
+#line (144,9)-(144,16) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeInt
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::System.Int32>(
 #nullable restore
 #line (144,18)-(144,25) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeInt
@@ -515,8 +563,16 @@ SomeInt
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.AddAttribute(111, "SomeComplex", 
+            ));
+            __builder.AddComponentParameter(111, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithAllParameters.
+#nullable restore
+#line (145,9)-(145,20) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeComplex
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::Test.App.Client.Pages.ShouldRenderTestPage.ShouldRenderTestPage.ComplexType>(
 #nullable restore
 #line (145,22)-(145,33) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeComplex
@@ -524,8 +580,16 @@ SomeComplex
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.AddAttribute(112, "SomeCallback", 
+            ));
+            __builder.AddComponentParameter(112, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithAllParameters.
+#nullable restore
+#line (146,9)-(146,21) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeCallback
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::Microsoft.AspNetCore.Components.EventCallback<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>>(global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (146,23)-(146,35) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeCallback
@@ -533,11 +597,19 @@ SomeCallback
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
+            )));
+            __builder.CloseComponent();
             __builder.AddMarkupContent(113, "\n      ");
-            __builder.OpenElement(114, "ChildComponentWithCollection");
-            __builder.AddAttribute(115, "SomeComplexCollection", 
+            __builder.OpenComponent<global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithCollection>(114);
+            __builder.AddComponentParameter(115, nameof(global::Test.App.Client.Pages.ShouldRenderTestPage.ChildComponentWithCollection.
+#nullable restore
+#line (148,37)-(148,58) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
+SomeComplexCollection
+
+#line default
+#line hidden
+#nullable disable
+            ), global::Microsoft.AspNetCore.Components.CompilerServices.RuntimeHelpers.TypeCheck<global::System.Collections.Generic.List<global::Test.App.Client.Pages.ShouldRenderTestPage.ShouldRenderTestPage.ComplexType>>(
 #nullable restore
 #line (148,60)-(148,81) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/ShouldRenderTestPage/ShouldRenderTestPage.razor"
 SomeComplexCollection
@@ -545,8 +617,8 @@ SomeComplexCollection
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
+            ));
+            __builder.CloseComponent();
             __builder.CloseElement();
             __builder.CloseElement();
             __builder.CloseElement();

@@ -161,39 +161,42 @@ BaseComponent
         #pragma warning disable 1998
         protected override void BuildRenderTree(global::Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder __builder)
         {
-            __builder.OpenElement(0, "TwPageTitle");
+            __builder.OpenComponent<global::TimeWarp.Features.Routing.TwPageTitle>(0);
+            __builder.AddAttribute(1, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
 #nullable restore
-#line (21,15)-(21,20) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
-__builder.AddContent(1, Title
+#line (21,15)-(21,20) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
+__builder2.AddContent(2, Title
 
 #line default
 #line hidden
 #nullable disable
-            );
-            __builder.CloseElement();
-            __builder.AddMarkupContent(2, "\n");
-            __builder.OpenElement(3, "h1");
+                );
+            }
+            ));
+            __builder.CloseComponent();
+            __builder.AddMarkupContent(3, "\n");
+            __builder.OpenElement(4, "h1");
 #nullable restore
 #line (22,6)-(22,11) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
-__builder.AddContent(4, Title
+__builder.AddContent(5, Title
 
 #line default
 #line hidden
 #nullable disable
             );
             __builder.CloseElement();
-            __builder.AddMarkupContent(5, "\n");
+            __builder.AddMarkupContent(6, "\n");
 #nullable restore
 #line (23,2)-(23,19) 24 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
-__builder.AddContent(6, RenderModeDisplay
+__builder.AddContent(7, RenderModeDisplay
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddMarkupContent(7, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(8, "<p>Test the GoBack Handler</p>\n<br>\n\n\n");
-            __builder.AddMarkupContent(9, "<h4>Route Stack</h4>");
+            __builder.AddMarkupContent(8, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(9, "<p>Test the GoBack Handler</p>\n<br>\n\n\n");
+            __builder.AddMarkupContent(10, "<h4>Route Stack</h4>");
 #nullable restore
 #line (32,2)-(34,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
 foreach(RouteState.RouteInfo? item in  RouteState.Routes)
@@ -203,25 +206,25 @@ foreach(RouteState.RouteInfo? item in  RouteState.Routes)
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(10, "div");
+            __builder.OpenElement(11, "div");
 #nullable restore
 #line (34,9)-(34,23) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
-__builder.AddContent(11, item.PageTitle
+__builder.AddContent(12, item.PageTitle
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddContent(12, " (");
+            __builder.AddContent(13, " (");
 #nullable restore
 #line (34,26)-(34,34) 25 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
-__builder.AddContent(13, item.Url
+__builder.AddContent(14, item.Url
 
 #line default
 #line hidden
 #nullable disable
             );
-            __builder.AddContent(14, ")");
+            __builder.AddContent(15, ")");
             __builder.CloseElement();
 #nullable restore
 #line (35,1)-(36,1) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
@@ -231,9 +234,9 @@ __builder.AddContent(13, item.Url
 #line hidden
 #nullable disable
 
-            __builder.OpenElement(15, "button");
-            __builder.AddAttribute(16, "data-qa", "go-back-button");
-            __builder.AddAttribute(17, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.OpenElement(16, "button");
+            __builder.AddAttribute(17, "data-qa", "go-back-button");
+            __builder.AddAttribute(18, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (38,45)-(38,60) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
 () => GoBack(1)
@@ -242,12 +245,12 @@ __builder.AddContent(13, item.Url
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(18, "Go Back");
+            __builder.AddContent(19, "Go Back");
             __builder.CloseElement();
-            __builder.AddMarkupContent(19, "\n");
-            __builder.OpenElement(20, "button");
-            __builder.AddAttribute(21, "data-qa", "go-back-button-2");
-            __builder.AddAttribute(22, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
+            __builder.AddMarkupContent(20, "\n");
+            __builder.OpenElement(21, "button");
+            __builder.AddAttribute(22, "data-qa", "go-back-button-2");
+            __builder.AddAttribute(23, "onclick", global::Microsoft.AspNetCore.Components.EventCallback.Factory.Create<global::Microsoft.AspNetCore.Components.Web.MouseEventArgs>(this, 
 #nullable restore
 #line (39,47)-(39,62) "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Pages/GoBackPage.razor"
 () => GoBack(2)
@@ -256,12 +259,12 @@ __builder.AddContent(13, item.Url
 #line hidden
 #nullable disable
             ));
-            __builder.AddContent(23, "Go Back 2");
+            __builder.AddContent(24, "Go Back 2");
             __builder.CloseElement();
-            __builder.AddMarkupContent(24, "\n<hr>\n\n\n");
-            __builder.AddMarkupContent(25, "<p><strong>Act:</strong> Click the `Go Back` button</p>\n\n\n");
-            __builder.AddMarkupContent(26, "<p><strong>Assert:</strong>\n  Verify that the route changes to the proper one in the Route Stack if the `Go Back` button is clicked.\n</p>\n\n<hr>\n");
-            __builder.AddMarkupContent(27, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
+            __builder.AddMarkupContent(25, "\n<hr>\n\n\n");
+            __builder.AddMarkupContent(26, "<p><strong>Act:</strong> Click the `Go Back` button</p>\n\n\n");
+            __builder.AddMarkupContent(27, "<p><strong>Assert:</strong>\n  Verify that the route changes to the proper one in the Route Stack if the `Go Back` button is clicked.\n</p>\n\n<hr>\n");
+            __builder.AddMarkupContent(28, "<p><strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.\n</p>");
         }
         #pragma warning restore 1998
 #nullable restore
