@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TimeWarp.State\TimeWarp.State.csproj"/>
-    <ProjectReference Include="..\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
-    <ProjectReference Include="..\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\timewarp-state\timewarp-state.csproj"/>
+    <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+    <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -29,21 +29,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".\README.md">
+    <None Include=".\read-me.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\assets\logo.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <Target Name="CopyPackage" AfterTargets="Pack">
     <ItemGroup>
       <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg"/>
     </ItemGroup>
-    <MakeDir Directories="$(ProjectDir)..\..\LocalNugetFeed\"/>
+    <MakeDir Directories="$(ProjectDir)..\..\local-nuget-feed\"/>
     <Copy
       SourceFiles="@(PackageFiles)"
-      DestinationFolder="$(ProjectDir)..\..\LocalNugetFeed\"
+      DestinationFolder="$(ProjectDir)..\..\local-nuget-feed\"
     />
   </Target>
 

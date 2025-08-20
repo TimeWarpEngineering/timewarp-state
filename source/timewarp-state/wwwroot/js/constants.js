@@ -5,4 +5,4 @@ export const JsonRequestHandlerMethodName = "Handle";
 export const ReduxDevToolsFactoryName = "ReduxDevToolsFactory";
 export const ReduxDevToolsName = "reduxDevTools";
 export const ReduxExtensionName = "__REDUX_DEVTOOLS_EXTENSION__";
-//# sourceMappingURL=Constants.js.map
+//# sourceMappingURL=constants.js.map

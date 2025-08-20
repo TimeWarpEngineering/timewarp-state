@@ -27,7 +27,7 @@
     "skipLibCheck": false,
   },
   "include": [
-    "wwwroot/TypeScript/**/*.ts"
+    "wwwroot/typescript/**/*.ts"
   ],
   "exclude": [
     "node_modules", // Standard exclude, you might adjust or add more paths as needed.

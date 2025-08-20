@@ -20,4 +20,4 @@ export const log = (tag, message, level = 'info', action) => {
         console.groupEnd();
     }
 };
-//# sourceMappingURL=Logger.js.map
+//# sourceMappingURL=logger.js.map

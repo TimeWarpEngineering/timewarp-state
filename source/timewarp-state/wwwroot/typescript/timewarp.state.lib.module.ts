@@ -1,15 +1,15 @@
 ﻿// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
-import {timeWarpState} from './TimeWarpState.js';
-import {ReduxDevTools} from './ReduxDevTools.js';
-import {log, LogAction} from './Logger.js'
+import {timeWarpState} from './timewarp-state.js';
+import {ReduxDevTools} from './redux-dev-tools.js';
+import {log, LogAction} from './logger.js'
 import {
   TimeWarpStateName,
   InitializeJavaScriptInteropName,
   ReduxDevToolsFactoryName,
   ReduxDevToolsName,
-} from './Constants.js';
-import { DotNetReference } from './DotNetReference.js';
+} from './constants.js';
+import { DotNetReference } from './dot-net-reference.js';
 
 function InitializeJavaScriptInterop(JsonRequestHandler: DotNetReference) {
   log("TimeWarp.State","InitializeJavaScriptInterop","info");

@@ -1,7 +1,7 @@
-import { timeWarpState } from './TimeWarpState.js';
-import { ReduxDevTools } from './ReduxDevTools.js';
-import { log, LogAction } from './Logger.js';
-import { TimeWarpStateName, InitializeJavaScriptInteropName, ReduxDevToolsFactoryName, ReduxDevToolsName, } from './Constants.js';
+import { timeWarpState } from './timewarp-state.js';
+import { ReduxDevTools } from './redux-dev-tools.js';
+import { log, LogAction } from './logger.js';
+import { TimeWarpStateName, InitializeJavaScriptInteropName, ReduxDevToolsFactoryName, ReduxDevToolsName, } from './constants.js';
 function InitializeJavaScriptInterop(JsonRequestHandler) {
     log("TimeWarp.State", "InitializeJavaScriptInterop", "info");
     timeWarpState.jsonRequestHandler = JsonRequestHandler;
@@ -43,4 +43,4 @@ export function beforeServerStart(_options, _extensions) {
 export function afterServerStarted(_blazor) {
     log("TimeWarp.State Server", "afterServerStarted", "info", LogAction.End);
 }
-//# sourceMappingURL=TimeWarp.State.lib.module.js.map
+//# sourceMappingURL=timewarp.state.lib.module.js.map

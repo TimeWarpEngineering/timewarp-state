@@ -1,7 +1,7 @@
-﻿import {JsonRequestHandlerMethodName} from './Constants.js';
-import {DotNetReference} from './DotNetReference';
-import {log} from './Logger.js';
-import {ReduxDevTools} from "./ReduxDevTools";
+﻿import {JsonRequestHandlerMethodName} from './constants.js';
+import {DotNetReference} from './dot-net-reference';
+import {log} from './logger.js';
+import {ReduxDevTools} from "./redux-dev-tools";
 
 export class TimeWarpState {
 

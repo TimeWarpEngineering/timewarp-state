@@ -1,4 +1,4 @@
-import { TimeWarpState } from './TimeWarpState.js';
+import { TimeWarpState } from './timewarp-state.js';
 type Config = any;
 type ConnectResponse = any;
 type ReduxDevtoolsExtension = any;

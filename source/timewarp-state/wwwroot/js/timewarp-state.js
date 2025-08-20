@@ -1,5 +1,5 @@
-import { JsonRequestHandlerMethodName } from './Constants.js';
-import { log } from './Logger.js';
+import { JsonRequestHandlerMethodName } from './constants.js';
+import { log } from './logger.js';
 export class TimeWarpState {
     jsonRequestHandler;
     reduxDevTools;
@@ -13,4 +13,4 @@ export class TimeWarpState {
     }
 }
 export const timeWarpState = new TimeWarpState();
-//# sourceMappingURL=TimeWarpState.js.map
+//# sourceMappingURL=timewarp-state.js.map

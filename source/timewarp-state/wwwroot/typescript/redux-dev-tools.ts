@@ -1,6 +1,6 @@
-﻿import {timeWarpState, TimeWarpState} from './TimeWarpState.js';
-import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
-import { log } from './Logger.js';
+﻿import {timeWarpState, TimeWarpState} from './timewarp-state.js';
+import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './constants.js';
+import { log } from './logger.js';
 // import type { Config } from '@redux-devtools/extension';
 // import type {ConnectResponse, ListenerMessage, ReduxDevtoolsExtension} from './ReduxDevToolsTypes';
 // import { Action } from 'redux';

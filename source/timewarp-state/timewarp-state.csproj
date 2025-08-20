@@ -24,7 +24,7 @@
 
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>read-me.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
   </PropertyGroup>
 
@@ -55,13 +55,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\Assets\Logo.png" Pack="true" PackagePath=""/>
-    <None Include="..\..\README.md" Pack="true" PackagePath=""/>
+    <None Include="..\..\assets\logo.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\read-me.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\TimeWarp.State.Analyzer\bin\$(Configuration)\netstandard2.0\TimeWarp.State.Analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
-    <None Include="..\TimeWarp.State.SourceGenerator\bin\$(Configuration)\netstandard2.0\TimeWarp.State.SourceGenerator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="..\timewarp-state-analyzer\bin\$(Configuration)\netstandard2.0\TimeWarp.State.Analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="..\timewarp-state-source-generator\bin\$(Configuration)\netstandard2.0\TimeWarp.State.SourceGenerator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
   
   <ItemGroup>
@@ -80,10 +80,10 @@
     <ItemGroup>
       <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
     </ItemGroup>
-    <MakeDir Directories="$(ProjectDir)..\..\LocalNugetFeed\" />
+    <MakeDir Directories="$(ProjectDir)..\..\local-nuget-feed\" />
     <Copy
       SourceFiles="@(PackageFiles)"
-      DestinationFolder="$(ProjectDir)..\..\LocalNugetFeed\"
+      DestinationFolder="$(ProjectDir)..\..\local-nuget-feed\"
     />
   </Target>
 

@@ -1,5 +1,5 @@
-import { DotNetReference } from './DotNetReference';
-import { ReduxDevTools } from "./ReduxDevTools";
+import { DotNetReference } from './dot-net-reference';
+import { ReduxDevTools } from "./redux-dev-tools";
 export declare class TimeWarpState {
     jsonRequestHandler: DotNetReference;
     reduxDevTools: ReduxDevTools;

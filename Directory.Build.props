@@ -7,13 +7,13 @@
     <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-state/</PackageProjectUrl>
     <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; TimeWarp.Mediator; Pipeline; Redux; Flux</PackageTags>
-    <PackageIcon>Logo.png</PackageIcon>
+    <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>read-me.md</PackageReadmeFile>
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
   </PropertyGroup>
 

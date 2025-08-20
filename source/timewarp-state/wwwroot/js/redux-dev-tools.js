@@ -1,6 +1,6 @@
-import { timeWarpState } from './TimeWarpState.js';
-import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './Constants.js';
-import { log } from './Logger.js';
+import { timeWarpState } from './timewarp-state.js';
+import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './constants.js';
+import { log } from './logger.js';
 export class ReduxDevTools {
     IsEnabled;
     DevTools;
@@ -97,4 +97,4 @@ export class ReduxDevTools {
         return window[ReduxDevToolsName].StackTrace ?? "None\n  at no stack (noFile:0:0)";
     }
 }
-//# sourceMappingURL=ReduxDevTools.js.map
+//# sourceMappingURL=redux-dev-tools.js.map
