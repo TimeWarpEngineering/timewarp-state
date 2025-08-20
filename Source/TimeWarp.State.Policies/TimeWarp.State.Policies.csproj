@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="NetArchTest.eNhancedEdition" />
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Shouldly" />
   </ItemGroup>
 
   <ItemGroup>

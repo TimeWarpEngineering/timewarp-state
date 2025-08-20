@@ -1,6 +1,6 @@
 global using AnyClone;
 global using TimeWarp.State;
-global using FluentAssertions;
+global using Shouldly;
 global using JetBrains.Annotations;
 global using TimeWarp.Mediator;
 global using Microsoft.AspNetCore.Mvc.Testing;

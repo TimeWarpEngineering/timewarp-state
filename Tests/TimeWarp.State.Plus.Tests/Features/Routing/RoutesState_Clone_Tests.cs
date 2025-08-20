@@ -29,9 +29,9 @@ public class Clone_Should
     RouteState clone = RouteState.Clone();
 
     //Assert
-    clone.Should().NotBeSameAs(RouteState);
-    clone.Sender.Should().BeNull(); // ISender is not cloned
-    clone.Routes.Should().NotBeNull();
-    clone.Guid.Should().NotBe(RouteState.Guid);
+    clone.ShouldNotBeSameAs(RouteState);
+    clone.Sender.ShouldBeNull(); // ISender is not cloned
+    clone.Routes.ShouldNotBeNull();
+    clone.Guid.ShouldNotBe(RouteState.Guid);
   }
 }

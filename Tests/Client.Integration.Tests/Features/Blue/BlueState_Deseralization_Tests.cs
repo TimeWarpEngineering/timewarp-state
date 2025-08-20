@@ -24,9 +24,9 @@ public class JsonSerializer_Should : BaseTest
     var result = (BlueState?)JsonSerializer.Deserialize(serializedData, typeof(BlueState), JsonSerializerOptions);
     
     //Assert
-    result.Should().NotBeNull();
-    result!.Count.Should().Be(8);
-    result.Guid.ToString().Should().Be("e83494e8-d177-42c2-ac6f-22b8ba878935");
+    result.ShouldNotBeNull();
+    result!.Count.ShouldBe(8);
+    result.Guid.ToString().ShouldBe("e83494e8-d177-42c2-ac6f-22b8ba878935");
   }
   
   public void Serialize_And_Deserialize()
@@ -39,7 +39,7 @@ public class JsonSerializer_Should : BaseTest
     BlueState? deserializedBlueState = JsonSerializer.Deserialize<BlueState>(data);
 
     //Assert
-    deserializedBlueState.Should().NotBeNull();
-    deserializedBlueState!.Count.Should().Be(2);
+    deserializedBlueState.ShouldNotBeNull();
+    deserializedBlueState!.Count.ShouldBe(2);
   }
 }

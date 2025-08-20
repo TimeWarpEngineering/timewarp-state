@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fixie.TestAdapter" />
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Shouldly" />
     <PackageReference Include="TimeWarp.Fixie" />
   </ItemGroup>
 

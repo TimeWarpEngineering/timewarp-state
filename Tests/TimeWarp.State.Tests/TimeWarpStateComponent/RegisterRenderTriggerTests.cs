@@ -9,8 +9,7 @@ public class Should_
     Expression<Func<IState, object?>> propertySelector = null!;
 
     // Act and Assert
-    sut.Invoking(c => c.RegisterRenderTrigger(propertySelector))
-      .Should().Throw<ArgumentNullException>();
+    Should.Throw<ArgumentNullException>(() => sut.RegisterRenderTrigger(propertySelector));
   }
 
   public static void Register_RenderTrigger_With_StringProperty_PropertySelector()
@@ -29,12 +28,12 @@ public class Should_
 
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse();
   }
 
   public static void Register_RenderTrigger_With_NullableString_PropertySelector()
@@ -57,12 +56,12 @@ public class Should_
     sut.RegisterRenderTrigger(propertySelector);
 
     // Assert
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // Because PreviousState is null
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue(); // Because PreviousState is null
     store.SetState(state1); 
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // Because the property we are watching has changed
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue(); // Because the property we are watching has changed
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // Because the state has not changed
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse(); // Because the state has not changed
   }
   
   public static void Register_RenderTrigger_With_IntProperty_PropertySelector()
@@ -81,12 +80,12 @@ public class Should_
 
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse();
   }
 
   public static void Register_RenderTrigger_With_NullableIntProperty_PropertySelector()
@@ -105,12 +104,12 @@ public class Should_
 
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse();
   }
 
   public static void Register_RenderTrigger_With_Derived_Bool_PropertySelector()
@@ -134,13 +133,13 @@ public class Should_
 
     // Assert
     store.SetState(state0); // Previous state will be null
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // Because PreviousState is null
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue(); // Because PreviousState is null
     store.SetState(state1); 
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse(); // IsActive should be the same
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue(); // IsActive should have changed
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue(); // IsActive should have changed
     store.SetState(state3);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse(); // IsActive should be the same
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse(); // IsActive should be the same
   }
   
   public static void Register_RenderTrigger_With_NullableReferenceProperty_PropertySelector()
@@ -159,12 +158,12 @@ public class Should_
 
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse();
   }
 
   public static void Register_RenderTrigger_With_ReferenceProperty_PropertySelector()
@@ -183,12 +182,12 @@ public class Should_
 
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse();
   }
 
   public static void Register_RenderTrigger_With_NullableReferenceProperty_NestedProperty_PropertySelector()
@@ -207,12 +206,12 @@ public class Should_
 
     sut.RegisterRenderTrigger(propertySelector);
 
-    sut.Should().NotBeNull();
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldNotBeNull();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state1);
-    sut.ShouldReRender(typeof(TestState)).Should().BeTrue();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeTrue();
     store.SetState(state2);
-    sut.ShouldReRender(typeof(TestState)).Should().BeFalse();
+    sut.ShouldReRender(typeof(TestState)).ShouldBeFalse();
   }
 
   // Test setup code below

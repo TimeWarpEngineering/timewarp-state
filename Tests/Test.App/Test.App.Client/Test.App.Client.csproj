@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Shouldly" />
     <PackageReference Include="timewarp-heroicons" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
 <!--    <PackageReference Include="TimeWarp.State" />-->

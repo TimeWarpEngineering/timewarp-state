@@ -1,4 +1,4 @@
-global using FluentAssertions;
+global using Shouldly;
 global using NetArchTest.Policies;
 global using System.Reflection;
 global using TimeWarp.Fixie;

@@ -26,7 +26,7 @@ public class TypeExtensionsTests
     Type enclosingStateType = nestedClassType.GetEnclosingStateType();
 
     // Assert
-    enclosingStateType.Should().Be(typeof(TestState));
+    enclosingStateType.ShouldBe(typeof(TestState));
   }
     
   public void Should_Get_Enclosing_State_Type_For_Deeply_Nested_Class()
@@ -38,7 +38,7 @@ public class TypeExtensionsTests
     Type enclosingStateType = deeplyNestedClassType.GetEnclosingStateType();
 
     // Assert
-    enclosingStateType.Should().Be(typeof(TestState));
+    enclosingStateType.ShouldBe(typeof(TestState));
   }
     
   public void Should_Throw_Exception_For_Non_Nested_Class()
@@ -47,8 +47,7 @@ public class TypeExtensionsTests
     Type nonNestedClassType = typeof(string); // Example of a non-nested class
 
     // Act & Assert
-    Action act = () => nonNestedClassType.GetEnclosingStateType();
-    act.Should().Throw<NonNestedClassException>()
-      .WithMessage("String must be nested in a class that implements IState");
+    Should.Throw<NonNestedClassException>(() => nonNestedClassType.GetEnclosingStateType())
+      .Message.ShouldBe("String must be nested in a class that implements IState");
   }
 }

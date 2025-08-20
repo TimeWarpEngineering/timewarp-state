@@ -41,7 +41,7 @@ public class ThrowExceptionTests : PageTest
     await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
 
     string? initialGuid = await CounterStateGuidLocator.TextContentAsync();
-    initialGuid.Should().NotBeNull();
+    initialGuid.ShouldNotBeNull();
     
     // Throw client-side exception and validate
     await ThrowClientSideExceptionButtonLocator.ClickAsync();

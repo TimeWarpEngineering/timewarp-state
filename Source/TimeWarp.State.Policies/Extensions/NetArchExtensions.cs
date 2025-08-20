@@ -6,15 +6,14 @@ public static class NetArchExtensions
   {
     result
       .IsSuccessful
-      .Should()
-      .BeTrue(string.Join('\n',result.FailingTypes.Select(t => t.FullName)));
+      .ShouldBeTrue(string.Join('\n',result.FailingTypes.Select(t => t.FullName)));
   }
 
   public static void ShouldBeSuccessful(this PolicyResults results)
   {
     ArgumentNullException.ThrowIfNull(results);
     
-    results.HasViolations.Should().BeFalse(BuildMessage(results));
+    results.HasViolations.ShouldBeFalse(BuildMessage(results));
     return;
 
     string BuildMessage(PolicyResults policyResults)

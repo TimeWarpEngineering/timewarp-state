@@ -6,7 +6,7 @@ global using TimeWarp.State;
 global using TimeWarp.Features.Persistence;
 global using TimeWarp.Features.Routing;
 global using TimeWarp.Features.ReduxDevTools;
-global using FluentAssertions;
+global using Shouldly;
 global using JetBrains.Annotations;
 global using TimeWarp.Mediator;
 global using TimeWarp.Mediator.Pipeline;

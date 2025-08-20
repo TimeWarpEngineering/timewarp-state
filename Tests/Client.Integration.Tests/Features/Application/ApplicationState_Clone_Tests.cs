@@ -19,9 +19,9 @@ public class Clone_Should : BaseTest
     ApplicationState clone = ApplicationState.Clone();
 
     //Assert
-    ApplicationState.Should().NotBeSameAs(clone);
-    ApplicationState.Name.Should().Be(clone.Name);
-    ApplicationState.ExceptionMessage.Should().Be(clone.ExceptionMessage);
-    ApplicationState.Guid.Should().NotBe(clone.Guid);
+    ApplicationState.ShouldNotBeSameAs(clone);
+    ApplicationState.Name.ShouldBe(clone.Name);
+    ApplicationState.ExceptionMessage.ShouldBe(clone.ExceptionMessage);
+    ApplicationState.Guid.ShouldNotBe(clone.Guid);
   }
 }

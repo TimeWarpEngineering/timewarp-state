@@ -1,4 +1,4 @@
-global using FluentAssertions;
+global using Shouldly;
 global using TimeWarp.Mediator;
 global using System.Collections.Concurrent;
 global using System.Linq.Expressions;

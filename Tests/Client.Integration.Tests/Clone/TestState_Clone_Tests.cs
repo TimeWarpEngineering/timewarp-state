@@ -15,6 +15,6 @@ public class Clone_Should
     TestState clone = testState.Clone();
 
     // Assert
-    clone.SortedFruits.Count().Should().Be(7);
+    clone.SortedFruits.Count().ShouldBe(7);
   }
 }
