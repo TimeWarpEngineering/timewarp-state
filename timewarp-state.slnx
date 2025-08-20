@@ -6,15 +6,15 @@
   </Configurations>
   <Folder Name="/Samples/" />
   <Folder Name="/Samples/00-StateActionSet/">
-    <Project Path="Samples\00-StateActionHandler\Sample\Sample.Client\Sample.Client.csproj" Type="Classic C#">
+    <Project Path="samples\00-state-action-handler\auto\sample-00-auto\sample-00-auto-client\sample-00-auto-client.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Samples\00-StateActionHandler\Sample\Sample\Sample.csproj" Type="Classic C#">
+    <Project Path="samples\00-state-action-handler\auto\sample-00-auto\sample-00-auto\sample-00-auto.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
   <Folder Name="/Samples/03-ServerSide/">
-    <Project Path="Samples\03-ServerSide\Sample\Sample.csproj" Type="Classic C#">
+    <Project Path="samples\00-state-action-handler\server\sample-00-server\sample-00-server.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
@@ -25,52 +25,52 @@
     <File Path="Directory.Packages.props" />
     <File Path="Build\documentation.yml" />
     <File Path="global.json" />
-    <File Path="NuGet.config" />
+    <File Path="nuget.config" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="Tests\Client.Integration.Tests\Client.Integration.Tests.csproj" Type="Classic C#">
+    <Project Path="tests\client-integration-tests\Client.Integration.Tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\Test.App.Architecture.Tests\Test.App.Architecture.Tests.csproj" Type="Classic C#">
+    <Project Path="tests\test-app-architecture-tests\Test.App.Architecture.Tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\Test.App.EndToEnd.Tests\Test.App.EndToEnd.Tests.csproj" Type="Classic C#">
+    <Project Path="tests\test-app-end-to-end-tests\Test.App.EndToEnd.Tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\TimeWarp.State.Analyzer.Tests\TimeWarp.State.Analyzer.Tests.csproj">
+    <Project Path="tests\time-warp-state-analyzer-tests\TimeWarp.State.Analyzer.Tests.csproj">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\TimeWarp.State.Plus.Tests\TimeWarp.State.Plus.Tests.csproj" Type="Classic C#">
+    <Project Path="tests\time-warp-state-plus-tests\TimeWarp.State.Plus.Tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\TimeWarp.State.Tests\TimeWarp.State.Tests.csproj" Type="Classic C#">
+    <Project Path="tests\time-warp-state-tests\TimeWarp.State.Tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
   <Folder Name="/Tests/Test.App/">
-    <Project Path="Tests\Test.App\Test.App.Client\Test.App.Client.csproj" Type="Classic C#">
+    <Project Path="tests\test-app\Test.App.Client\Test.App.Client.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\Test.App\Test.App.Contracts\Test.App.Contracts.csproj" Type="Classic C#">
+    <Project Path="tests\test-app\Test.App.Contracts\Test.App.Contracts.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="Tests\Test.App\Test.App.Server\Test.App.Server.csproj" Type="Classic C#">
+    <Project Path="tests\test-app\Test.App.Server\Test.App.Server.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
-  <Project Path="Source\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj">
+  <Project Path="source\timewarp-state-analyzer\timewarp-state-analyzer.csproj">
     <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
   </Project>
-  <Project Path="Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj">
+  <Project Path="source\timewarp-state-plus\timewarp-state-plus.csproj">
     <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
   </Project>
-  <Project Path="Source\TimeWarp.State.Policies\TimeWarp.State.Policies.csproj" Type="Classic C#">
+  <Project Path="source\timewarp-state-policies\timewarp-state-policies.csproj" Type="Classic C#">
     <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
   </Project>
-  <Project Path="Source\TimeWarp.State.SourceGenerator\TimeWarp.State.SourceGenerator.csproj" Type="Classic C#">
+  <Project Path="source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" Type="Classic C#">
     <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
   </Project>
-  <Project Path="Source\TimeWarp.State\TimeWarp.State.csproj">
-    <BuildDependency Project="Source\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" />
+  <Project Path="source\timewarp-state\timewarp-state.csproj">
+    <BuildDependency Project="source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" />
   </Project>
 </Solution>
