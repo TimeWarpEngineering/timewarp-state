@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\TimeWarp.State.Plus\TimeWarp.State.Plus.csproj" />
-    <ProjectReference Include="..\..\Source\TimeWarp.State.Policies\TimeWarp.State.Policies.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state-plus\timewarp-state-plus.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state-policies\timewarp-state-policies.csproj" />
   </ItemGroup>
 </Project>

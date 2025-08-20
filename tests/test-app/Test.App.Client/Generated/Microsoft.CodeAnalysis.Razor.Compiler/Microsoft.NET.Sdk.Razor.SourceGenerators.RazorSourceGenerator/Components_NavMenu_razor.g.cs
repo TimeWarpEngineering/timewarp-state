@@ -167,7 +167,7 @@ BaseComponent
         {
             __builder.OpenElement(0, "div");
             __builder.AddAttribute(1, "class", "top-row ps-3 navbar navbar-dark");
-            __builder.AddAttribute(2, "b-hbye8cfhzn");
+            __builder.AddAttribute(2, "b-mjwtq33kbh");
             __builder.OpenElement(3, "div");
             __builder.AddAttribute(4, "class", "container-fluid");
             __builder.AddAttribute(5, "title", 
@@ -179,8 +179,8 @@ RenderModeDisplayString
 #line hidden
 #nullable disable
             );
-            __builder.AddAttribute(6, "b-hbye8cfhzn");
-            __builder.AddMarkupContent(7, "<a class=\"navbar-brand\" href b-hbye8cfhzn>Test.App.Server</a>\n    ");
+            __builder.AddAttribute(6, "b-mjwtq33kbh");
+            __builder.AddMarkupContent(7, "<a class=\"navbar-brand\" href b-mjwtq33kbh>Test.App.Server</a>\n    ");
             __builder.OpenElement(8, "button");
             __builder.AddAttribute(9, "disabled", 
 #nullable restore
@@ -202,24 +202,24 @@ GoBack
 #nullable disable
             ));
             __builder.AddAttribute(12, "style", "width: 40px; height: 40px;");
-            __builder.AddAttribute(13, "b-hbye8cfhzn");
+            __builder.AddAttribute(13, "b-mjwtq33kbh");
             __builder.OpenComponent<global::TimeWarp.HeroIcons.Mini.Solid.ArrowLeftIcon>(14);
             __builder.AddComponentParameter(15, "class", "icon-size");
             __builder.CloseComponent();
             __builder.CloseElement();
             __builder.CloseElement();
             __builder.CloseElement();
-            __builder.AddMarkupContent(16, "\n\n<input type=\"checkbox\" title=\"Navigation menu\" class=\"navbar-toggler\" b-hbye8cfhzn>\n\n");
+            __builder.AddMarkupContent(16, "\n\n<input type=\"checkbox\" title=\"Navigation menu\" class=\"navbar-toggler\" b-mjwtq33kbh>\n\n");
             __builder.OpenElement(17, "div");
             __builder.AddAttribute(18, "class", "nav-scrollable");
             __builder.AddAttribute(19, "onclick", "document.querySelector(\'.navbar-toggler\').click()");
-            __builder.AddAttribute(20, "b-hbye8cfhzn");
+            __builder.AddAttribute(20, "b-mjwtq33kbh");
             __builder.OpenElement(21, "nav");
             __builder.AddAttribute(22, "class", "flex-column");
-            __builder.AddAttribute(23, "b-hbye8cfhzn");
+            __builder.AddAttribute(23, "b-mjwtq33kbh");
             __builder.OpenElement(24, "div");
             __builder.AddAttribute(25, "class", "nav-item px-3");
-            __builder.AddAttribute(26, "b-hbye8cfhzn");
+            __builder.AddAttribute(26, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(27);
             __builder.AddComponentParameter(28, "class", "nav-link");
             __builder.AddComponentParameter(29, "href", "");
@@ -241,7 +241,7 @@ NavLinkMatch.All
 #nullable disable
             ));
             __builder.AddAttribute(31, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(32, "<span class=\"bi bi-house-door-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> Home\n      ");
+                __builder2.AddMarkupContent(32, "<span class=\"bi bi-house-door-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> Home\n      ");
             }
             ));
             __builder.CloseComponent();
@@ -249,7 +249,7 @@ NavLinkMatch.All
             __builder.AddMarkupContent(33, "\n\n    ");
             __builder.OpenElement(34, "div");
             __builder.AddAttribute(35, "class", "nav-item px-3");
-            __builder.AddAttribute(36, "b-hbye8cfhzn");
+            __builder.AddAttribute(36, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(37);
             __builder.AddComponentParameter(38, "class", "nav-link");
             __builder.AddComponentParameter(39, "href", 
@@ -262,7 +262,7 @@ CounterPage.Route
 #nullable disable
             );
             __builder.AddAttribute(40, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(41, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(41, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (37,82)-(37,99) 26 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(42, CounterPage.Title
@@ -278,7 +278,7 @@ __builder2.AddContent(42, CounterPage.Title
             __builder.AddMarkupContent(43, "\n    \n    ");
             __builder.OpenElement(44, "div");
             __builder.AddAttribute(45, "class", "nav-item px-3");
-            __builder.AddAttribute(46, "b-hbye8cfhzn");
+            __builder.AddAttribute(46, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(47);
             __builder.AddComponentParameter(48, "class", "nav-link");
             __builder.AddComponentParameter(49, "href", 
@@ -291,7 +291,7 @@ ShouldRenderTestPage.Route
 #nullable disable
             );
             __builder.AddAttribute(50, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(51, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(51, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (43,82)-(43,108) 26 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(52, ShouldRenderTestPage.Title
@@ -307,7 +307,7 @@ __builder2.AddContent(52, ShouldRenderTestPage.Title
             __builder.AddMarkupContent(53, "\n\n    ");
             __builder.OpenElement(54, "div");
             __builder.AddAttribute(55, "class", "nav-item px-3");
-            __builder.AddAttribute(56, "b-hbye8cfhzn");
+            __builder.AddAttribute(56, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(57);
             __builder.AddComponentParameter(58, "class", "nav-link");
             __builder.AddComponentParameter(59, "href", 
@@ -320,7 +320,7 @@ ShouldRenderStateTriggersTestPage.Route
 #nullable disable
             );
             __builder.AddAttribute(60, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(61, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(61, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (49,82)-(49,121) 26 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(62, ShouldRenderStateTriggersTestPage.Title
@@ -336,7 +336,7 @@ __builder2.AddContent(62, ShouldRenderStateTriggersTestPage.Title
             __builder.AddMarkupContent(63, "\n    \n    ");
             __builder.OpenElement(64, "div");
             __builder.AddAttribute(65, "class", "nav-item px-3");
-            __builder.AddAttribute(66, "b-hbye8cfhzn");
+            __builder.AddAttribute(66, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(67);
             __builder.AddComponentParameter(68, "class", "nav-link");
             __builder.AddComponentParameter(69, "href", 
@@ -349,7 +349,7 @@ JavaScriptInteropPage.Route
 #nullable disable
             );
             __builder.AddAttribute(70, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(71, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(71, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (55,82)-(55,109) 26 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(72, JavaScriptInteropPage.Title
@@ -365,7 +365,7 @@ __builder2.AddContent(72, JavaScriptInteropPage.Title
             __builder.AddMarkupContent(73, "\n\n    ");
             __builder.OpenElement(74, "div");
             __builder.AddAttribute(75, "class", "nav-item px-3");
-            __builder.AddAttribute(76, "b-hbye8cfhzn");
+            __builder.AddAttribute(76, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(77);
             __builder.AddComponentParameter(78, "class", "nav-link icon-size");
             __builder.AddComponentParameter(79, "href", 
@@ -378,7 +378,7 @@ ThrowExceptionPage.Route
 #nullable disable
             );
             __builder.AddAttribute(80, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(81, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(81, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (61,82)-(61,106) 26 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(82, ThrowExceptionPage.Title
@@ -392,10 +392,10 @@ __builder2.AddContent(82, ThrowExceptionPage.Title
             __builder.CloseComponent();
             __builder.CloseElement();
             __builder.AddMarkupContent(83, "\n\n    ");
-            __builder.AddMarkupContent(84, "<div class=\"nav-section-divider\" b-hbye8cfhzn><hr class=\"nav-divider\" b-hbye8cfhzn>\n      <div class=\"nav-divider-label\" b-hbye8cfhzn>Internal Functionality</div>\n      <hr class=\"nav-divider\" b-hbye8cfhzn></div>\n\n    ");
+            __builder.AddMarkupContent(84, "<div class=\"nav-section-divider\" b-mjwtq33kbh><hr class=\"nav-divider\" b-mjwtq33kbh>\n      <div class=\"nav-divider-label\" b-mjwtq33kbh>Internal Functionality</div>\n      <hr class=\"nav-divider\" b-mjwtq33kbh></div>\n\n    ");
             __builder.OpenElement(85, "div");
             __builder.AddAttribute(86, "class", "nav-item px-3");
-            __builder.AddAttribute(87, "b-hbye8cfhzn");
+            __builder.AddAttribute(87, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(88);
             __builder.AddComponentParameter(89, "class", "nav-link");
             __builder.AddComponentParameter(90, "href", 
@@ -408,7 +408,7 @@ ResetStorePage.Route
 #nullable disable
             );
             __builder.AddAttribute(91, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(92, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(92, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (73,82)-(73,102) 26 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(93, ResetStorePage.Title
@@ -424,7 +424,7 @@ __builder2.AddContent(93, ResetStorePage.Title
             __builder.AddMarkupContent(94, "\n\n    ");
             __builder.OpenElement(95, "div");
             __builder.AddAttribute(96, "class", "nav-item px-3");
-            __builder.AddAttribute(97, "b-hbye8cfhzn");
+            __builder.AddAttribute(97, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(98);
             __builder.AddComponentParameter(99, "class", "nav-link");
             __builder.AddComponentParameter(100, "href", 
@@ -437,7 +437,7 @@ ChangeRoutePage.Route
 #nullable disable
             );
             __builder.AddAttribute(101, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(102, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(102, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (79,82)-(79,103) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(103, ChangeRoutePage.Title
@@ -453,7 +453,7 @@ __builder2.AddContent(103, ChangeRoutePage.Title
             __builder.AddMarkupContent(104, "\n\n    ");
             __builder.OpenElement(105, "div");
             __builder.AddAttribute(106, "class", "nav-item px-3");
-            __builder.AddAttribute(107, "b-hbye8cfhzn");
+            __builder.AddAttribute(107, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(108);
             __builder.AddComponentParameter(109, "class", "nav-link");
             __builder.AddComponentParameter(110, "href", 
@@ -466,7 +466,7 @@ GoBackPage.Route
 #nullable disable
             );
             __builder.AddAttribute(111, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(112, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(112, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (85,83)-(85,99) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(113, GoBackPage.Title
@@ -480,10 +480,10 @@ __builder2.AddContent(113, GoBackPage.Title
             __builder.CloseComponent();
             __builder.CloseElement();
             __builder.AddMarkupContent(114, "\n\n    ");
-            __builder.AddMarkupContent(115, "<div class=\"nav-section-divider\" b-hbye8cfhzn><hr class=\"nav-divider\" b-hbye8cfhzn>\n      <div class=\"nav-divider-label\" b-hbye8cfhzn>Middleware</div>\n      <hr class=\"nav-divider\" b-hbye8cfhzn></div>\n\n    ");
+            __builder.AddMarkupContent(115, "<div class=\"nav-section-divider\" b-mjwtq33kbh><hr class=\"nav-divider\" b-mjwtq33kbh>\n      <div class=\"nav-divider-label\" b-mjwtq33kbh>Middleware</div>\n      <hr class=\"nav-divider\" b-mjwtq33kbh></div>\n\n    ");
             __builder.OpenElement(116, "div");
             __builder.AddAttribute(117, "class", "nav-item px-3");
-            __builder.AddAttribute(118, "b-hbye8cfhzn");
+            __builder.AddAttribute(118, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(119);
             __builder.AddComponentParameter(120, "class", "nav-link");
             __builder.AddComponentParameter(121, "href", 
@@ -496,7 +496,7 @@ EventStreamPage.Route
 #nullable disable
             );
             __builder.AddAttribute(122, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(123, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(123, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (97,83)-(97,104) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(124, EventStreamPage.Title
@@ -510,10 +510,10 @@ __builder2.AddContent(124, EventStreamPage.Title
             __builder.CloseComponent();
             __builder.CloseElement();
             __builder.AddMarkupContent(125, "\n\n    ");
-            __builder.AddMarkupContent(126, "<div class=\"nav-section-divider\" b-hbye8cfhzn><hr class=\"nav-divider\" b-hbye8cfhzn>\n      <div class=\"nav-divider-label\" b-hbye8cfhzn>Persistence</div>\n      <hr class=\"nav-divider\" b-hbye8cfhzn></div>\n\n    ");
+            __builder.AddMarkupContent(126, "<div class=\"nav-section-divider\" b-mjwtq33kbh><hr class=\"nav-divider\" b-mjwtq33kbh>\n      <div class=\"nav-divider-label\" b-mjwtq33kbh>Persistence</div>\n      <hr class=\"nav-divider\" b-mjwtq33kbh></div>\n\n    ");
             __builder.OpenElement(127, "div");
             __builder.AddAttribute(128, "class", "nav-item px-3");
-            __builder.AddAttribute(129, "b-hbye8cfhzn");
+            __builder.AddAttribute(129, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(130);
             __builder.AddComponentParameter(131, "class", "nav-link");
             __builder.AddComponentParameter(132, "href", 
@@ -526,7 +526,7 @@ PersistenceTestPage.Route
 #nullable disable
             );
             __builder.AddAttribute(133, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(134, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(134, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (109,83)-(109,108) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(135, PersistenceTestPage.Title
@@ -542,7 +542,7 @@ __builder2.AddContent(135, PersistenceTestPage.Title
             __builder.AddMarkupContent(136, "\n    \n    ");
             __builder.OpenElement(137, "div");
             __builder.AddAttribute(138, "class", "nav-item px-3");
-            __builder.AddAttribute(139, "b-hbye8cfhzn");
+            __builder.AddAttribute(139, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(140);
             __builder.AddComponentParameter(141, "class", "nav-link");
             __builder.AddComponentParameter(142, "href", 
@@ -555,7 +555,7 @@ ServerSidePersistenceTestPage.Route
 #nullable disable
             );
             __builder.AddAttribute(143, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(144, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(144, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (115,83)-(115,118) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(145, ServerSidePersistenceTestPage.Title
@@ -569,15 +569,15 @@ __builder2.AddContent(145, ServerSidePersistenceTestPage.Title
             __builder.CloseComponent();
             __builder.CloseElement();
             __builder.AddMarkupContent(146, "\n\n    ");
-            __builder.AddMarkupContent(147, "<div class=\"nav-section-divider\" b-hbye8cfhzn><hr class=\"nav-divider\" b-hbye8cfhzn>\n      <div class=\"nav-divider-label\" b-hbye8cfhzn>Render Modes</div>\n      <hr class=\"nav-divider\" b-hbye8cfhzn></div>\n\n    ");
+            __builder.AddMarkupContent(147, "<div class=\"nav-section-divider\" b-mjwtq33kbh><hr class=\"nav-divider\" b-mjwtq33kbh>\n      <div class=\"nav-divider-label\" b-mjwtq33kbh>Render Modes</div>\n      <hr class=\"nav-divider\" b-mjwtq33kbh></div>\n\n    ");
             __builder.OpenElement(148, "div");
             __builder.AddAttribute(149, "class", "nav-item px-3");
-            __builder.AddAttribute(150, "b-hbye8cfhzn");
+            __builder.AddAttribute(150, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(151);
             __builder.AddComponentParameter(152, "class", "nav-link");
             __builder.AddComponentParameter(153, "href", "StaticWeatherForecastsPage");
             __builder.AddAttribute(154, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(155, "<span class=\"bi bi-list-nested-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> Weather (Static)\n      ");
+                __builder2.AddMarkupContent(155, "<span class=\"bi bi-list-nested-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> Weather (Static)\n      ");
             }
             ));
             __builder.CloseComponent();
@@ -585,7 +585,7 @@ __builder2.AddContent(145, ServerSidePersistenceTestPage.Title
             __builder.AddMarkupContent(156, "\n\n    ");
             __builder.OpenElement(157, "div");
             __builder.AddAttribute(158, "class", "nav-item px-3");
-            __builder.AddAttribute(159, "b-hbye8cfhzn");
+            __builder.AddAttribute(159, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(160);
             __builder.AddComponentParameter(161, "class", "nav-link");
             __builder.AddComponentParameter(162, "href", 
@@ -598,7 +598,7 @@ WasmWeatherForecastsPage.Route
 #nullable disable
             );
             __builder.AddAttribute(163, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(164, "<span class=\"bi bi-list-nested-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(164, "<span class=\"bi bi-list-nested-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (133,78)-(133,108) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(165, WasmWeatherForecastsPage.Title
@@ -612,10 +612,10 @@ __builder2.AddContent(165, WasmWeatherForecastsPage.Title
             __builder.CloseComponent();
             __builder.CloseElement();
             __builder.AddMarkupContent(166, "\n\n    ");
-            __builder.AddMarkupContent(167, "<div class=\"nav-section-divider\" b-hbye8cfhzn><hr class=\"nav-divider\" b-hbye8cfhzn>\n      <div class=\"nav-divider-label\" b-hbye8cfhzn>Misc</div>\n      <hr class=\"nav-divider\" b-hbye8cfhzn></div>\n\n    ");
+            __builder.AddMarkupContent(167, "<div class=\"nav-section-divider\" b-mjwtq33kbh><hr class=\"nav-divider\" b-mjwtq33kbh>\n      <div class=\"nav-divider-label\" b-mjwtq33kbh>Misc</div>\n      <hr class=\"nav-divider\" b-mjwtq33kbh></div>\n\n    ");
             __builder.OpenElement(168, "div");
             __builder.AddAttribute(169, "class", "nav-item px-3");
-            __builder.AddAttribute(170, "b-hbye8cfhzn");
+            __builder.AddAttribute(170, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(171);
             __builder.AddComponentParameter(172, "class", "nav-link");
             __builder.AddComponentParameter(173, "href", 
@@ -628,7 +628,7 @@ ActiveActionsPage.Route
 #nullable disable
             );
             __builder.AddAttribute(174, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(175, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(175, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (145,83)-(145,106) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(176, ActiveActionsPage.Title
@@ -644,7 +644,7 @@ __builder2.AddContent(176, ActiveActionsPage.Title
             __builder.AddMarkupContent(177, "\n\n    ");
             __builder.OpenElement(178, "div");
             __builder.AddAttribute(179, "class", "nav-item px-3");
-            __builder.AddAttribute(180, "b-hbye8cfhzn");
+            __builder.AddAttribute(180, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(181);
             __builder.AddComponentParameter(182, "class", "nav-link");
             __builder.AddComponentParameter(183, "href", 
@@ -657,7 +657,7 @@ CachableWeatherForecastsPage.Route
 #nullable disable
             );
             __builder.AddAttribute(184, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(185, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(185, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (151,83)-(151,117) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(186, CachableWeatherForecastsPage.Title
@@ -673,7 +673,7 @@ __builder2.AddContent(186, CachableWeatherForecastsPage.Title
             __builder.AddMarkupContent(187, "\n\n    ");
             __builder.OpenElement(188, "div");
             __builder.AddAttribute(189, "class", "nav-item px-3");
-            __builder.AddAttribute(190, "b-hbye8cfhzn");
+            __builder.AddAttribute(190, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(191);
             __builder.AddComponentParameter(192, "class", "nav-link");
             __builder.AddComponentParameter(193, "href", 
@@ -686,7 +686,7 @@ CloneTestPage.Route
 #nullable disable
             );
             __builder.AddAttribute(194, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(195, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(195, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (157,82)-(157,101) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(196, CloneTestPage.Title
@@ -702,7 +702,7 @@ __builder2.AddContent(196, CloneTestPage.Title
             __builder.AddMarkupContent(197, "\n\n    ");
             __builder.OpenElement(198, "div");
             __builder.AddAttribute(199, "class", "nav-item px-3");
-            __builder.AddAttribute(200, "b-hbye8cfhzn");
+            __builder.AddAttribute(200, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(201);
             __builder.AddComponentParameter(202, "class", "nav-link");
             __builder.AddComponentParameter(203, "href", 
@@ -715,7 +715,7 @@ ClonablePage.Route
 #nullable disable
             );
             __builder.AddAttribute(204, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(205, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span>");
+                __builder2.AddMarkupContent(205, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span>");
 #nullable restore
 #line (163,82)-(163,100) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(206, ClonablePage.Title
@@ -731,7 +731,7 @@ __builder2.AddContent(206, ClonablePage.Title
             __builder.AddMarkupContent(207, "\n\n\n    ");
             __builder.OpenElement(208, "div");
             __builder.AddAttribute(209, "class", "nav-item px-3");
-            __builder.AddAttribute(210, "b-hbye8cfhzn");
+            __builder.AddAttribute(210, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(211);
             __builder.AddComponentParameter(212, "class", "nav-link");
             __builder.AddComponentParameter(213, "href", 
@@ -744,7 +744,7 @@ CustomInputExamplePage.Route
 #nullable disable
             );
             __builder.AddAttribute(214, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(215, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(215, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (170,83)-(170,111) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(216, CustomInputExamplePage.Title
@@ -760,7 +760,7 @@ __builder2.AddContent(216, CustomInputExamplePage.Title
             __builder.AddMarkupContent(217, "\n\n    ");
             __builder.OpenElement(218, "div");
             __builder.AddAttribute(219, "class", "nav-item px-3");
-            __builder.AddAttribute(220, "b-hbye8cfhzn");
+            __builder.AddAttribute(220, "b-mjwtq33kbh");
             __builder.OpenComponent<global::Microsoft.AspNetCore.Components.Routing.NavLink>(221);
             __builder.AddComponentParameter(222, "class", "nav-link");
             __builder.AddComponentParameter(223, "href", 
@@ -773,7 +773,7 @@ ServicesPage.Route
 #nullable disable
             );
             __builder.AddAttribute(224, "ChildContent", (global::Microsoft.AspNetCore.Components.RenderFragment)((__builder2) => {
-                __builder2.AddMarkupContent(225, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-hbye8cfhzn></span> ");
+                __builder2.AddMarkupContent(225, "<span class=\"bi bi-plus-square-fill-nav-menu\" aria-hidden=\"true\" b-mjwtq33kbh></span> ");
 #nullable restore
 #line (176,83)-(176,101) 27 "/home/steventcramer/worktrees/github.com/TimeWarpEngineering/timewarp-state/Cramer-2025-08-12-032migrate-from-mediatr-to-timewarp-mediator/tests/test-app/Test.App.Client/Components/NavMenu.razor"
 __builder2.AddContent(226, ServicesPage.Title
@@ -789,7 +789,7 @@ __builder2.AddContent(226, ServicesPage.Title
             __builder.CloseElement();
             __builder.CloseElement();
             __builder.AddMarkupContent(227, "\n\n");
-            __builder.AddMarkupContent(228, "<style b-hbye8cfhzn>\n    .nav-link {\n        font-size: 0.750rem; /* Adjust the font size as needed */\n    }\n</style>");
+            __builder.AddMarkupContent(228, "<style b-mjwtq33kbh>\n    .nav-link {\n        font-size: 0.750rem; /* Adjust the font size as needed */\n    }\n</style>");
         }
         #pragma warning restore 1998
 #nullable restore

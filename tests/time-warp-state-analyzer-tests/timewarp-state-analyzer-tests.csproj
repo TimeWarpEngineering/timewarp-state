@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\TimeWarp.State.Analyzer\TimeWarp.State.Analyzer.csproj" />
-    <ProjectReference Include="..\..\Source\TimeWarp.State\TimeWarp.State.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state\timewarp-state.csproj" />
   </ItemGroup>
 
 </Project>

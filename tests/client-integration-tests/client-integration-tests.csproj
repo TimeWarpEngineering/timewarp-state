@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Test.App\Test.App.Client\Test.App.Client.csproj" />
-    <ProjectReference Include="..\Test.App\Test.App.Server\Test.App.Server.csproj" />
+    <ProjectReference Include="..\test-app\Test.App.Client\test-app-client.csproj" />
+    <ProjectReference Include="..\test-app\Test.App.Server\test-app-server.csproj" />
   </ItemGroup>
 
 </Project>
