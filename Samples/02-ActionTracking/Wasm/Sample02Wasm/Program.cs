@@ -1,5 +1,7 @@
 namespace Sample02Wasm;
 
+using TimeWarp.Mediator;
+
 public class Program
 {
   public static async Task Main(string[] args)

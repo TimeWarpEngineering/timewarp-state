@@ -10,7 +10,7 @@ namespace TimeWarp.Features.StateTransactions;
 /// <remarks>
 ///   This behavior is part of the TimeWarp.State pipeline, intercepting actions (requests) to clone the relevant state before
 ///   proceeding. If an action fails, the system reverts to the cloned state, thus preventing partial state updates
-///   from corrupting the application state. It uses MediatR's pipeline behavior feature to hook into the request handling
+///   from corrupting the application state. It uses TimeWarp.Mediator's pipeline behavior feature to hook into the request handling
 ///   process.
 /// </remarks>
 /// <typeparam name="TRequest"></typeparam>
@@ -117,7 +117,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
       await Publisher.Publish(exceptionNotification, cancellationToken);
 
-      return default!;// It can be null, but we don't care since MediatR handles null values gracefully.
+      return default!;// It can be null, but we don't care since TimeWarp.Mediator handles null values gracefully.
     }
   }
 }

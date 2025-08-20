@@ -8,7 +8,7 @@ public static partial class ServiceCollectionExtensions
     List<string> middleware = GetComponentOrder(serviceCollection, typeof(IPipelineBehavior<,>));
     List<string> postprocessors = GetComponentOrder(serviceCollection, typeof(IRequestPostProcessor<,>));
 
-    var message = new StringBuilder("TimeWarp State (MediatR) Middleware Registrations:");
+    var message = new StringBuilder("TimeWarp State (TimeWarp.Mediator) Middleware Registrations:");
     message.AppendLine();
     message.AppendLine();
     

@@ -3,7 +3,7 @@
     <Title>TimeWarp.State.Plus</Title>
     <Description>TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.</Description>
     <PackageId>TimeWarp.State.Plus</PackageId>
-    <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Middleware; Redux; Flux; Features; Plus</PackageTags>
+    <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; TimeWarp.Mediator; Mediator; Pipeline; Middleware; Redux; Flux; Features; Plus</PackageTags>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

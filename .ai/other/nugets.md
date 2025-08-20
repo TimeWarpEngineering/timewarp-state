@@ -1,7 +1,7 @@
 ---
 nuget_categories:
   General:
-    - name: MediatR
+    - name: TimeWarp.Mediator
       for: CQRS and mediator pattern
     - name: Riok.Mapperly
       for: object-object mapping

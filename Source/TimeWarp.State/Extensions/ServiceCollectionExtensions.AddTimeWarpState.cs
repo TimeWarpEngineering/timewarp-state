@@ -102,10 +102,10 @@ public static partial class ServiceCollectionExtensions
     if (serviceCollection.HasRegistrationFor(typeof(IMediator))) return;
 
     serviceCollection
-      .AddMediatR
+      .AddMediator
       (
-        mediatRServiceConfiguration =>
-          mediatRServiceConfiguration
+        mediatorServiceConfiguration =>
+          mediatorServiceConfiguration
             .RegisterServicesFromAssemblies(timeWarpStateOptions.Assemblies.ToArray())
             .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
       );

@@ -1,12 +1,12 @@
 <Project>
   <!-- Set common properties regarding assembly information and nuget packages -->
   <PropertyGroup>
-    <TimeWarpStateVersion>11.0.3</TimeWarpStateVersion>
+    <TimeWarpStateVersion>12.0.0-beta.1</TimeWarpStateVersion>
     <Authors>Steven T. Cramer</Authors>
     <Product>TimeWarp State</Product>
     <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
     <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-state/</PackageProjectUrl>
-    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; Pipeline; Redux; Flux</PackageTags>
+    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; TimeWarp.Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>Logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
