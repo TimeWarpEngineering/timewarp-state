@@ -1,43 +1,66 @@
 namespace TimeWarp.State.SourceGenerator;
 
 [Generator]
-public class PersistenceStateSourceGenerator : ISourceGenerator
+public class PersistenceStateSourceGenerator : IIncrementalGenerator
 {
-  public void Initialize(GeneratorInitializationContext context) =>
-    // Register a syntax receiver that will be called for each syntax tree in the compilation
-    context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-
-  public void Execute(GeneratorExecutionContext context)
+  public void Initialize(IncrementalGeneratorInitializationContext context)
   {
-    // Retrieve the populated receiver from the context
-    if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
+    var classDeclarations = context.SyntaxProvider
+      .CreateSyntaxProvider(
+        predicate: static (node, _) => IsCandidateClass(node),
+        transform: static (ctx, _) => GetSemanticTarget(ctx))
+      .Where(static m => m is not null);
 
-    foreach (ClassDeclarationSyntax classDeclaration in receiver.CandidateClasses)
-    {
-      string namespaceName = GetNamespace(classDeclaration);
-      string className = classDeclaration.Identifier.Text;
-      string method = GetPersistentStateMethod(classDeclaration);
-      string generatedCode = GenerateLoadClassCode(namespaceName, className, method);
-      string uniqueHintName = $"{namespaceName}.{className}_Persistence.g.cs";
-      ReportUniqueHintNameDiagnostic(context, uniqueHintName);
-      context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
-    }
+    context.RegisterSourceOutput(classDeclarations,
+      static (spc, source) => Execute(source!, spc));
   }
 
-  private static void ReportUniqueHintNameDiagnostic(GeneratorExecutionContext context, string uniqueHintName)
+  private static bool IsCandidateClass(SyntaxNode node)
+  {
+    if (node is not ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclaration) 
+      return false;
+    
+    return classDeclaration.AttributeLists
+      .SelectMany(attrList => attrList.Attributes)
+      .Any(attr => attr.Name.ToString() == "PersistentState" || attr.Name.ToString().EndsWith(".PersistentState"));
+  }
+
+  private static ClassModel? GetSemanticTarget(GeneratorSyntaxContext context)
+  {
+    var classDeclaration = (ClassDeclarationSyntax)context.Node;
+    
+    string namespaceName = GetNamespace(classDeclaration);
+    string className = classDeclaration.Identifier.Text;
+    string persistentStateMethod = GetPersistentStateMethod(classDeclaration);
+    
+    return new ClassModel(namespaceName, className, persistentStateMethod);
+  }
+
+  private static void Execute(ClassModel model, SourceProductionContext context)
+  {
+    string generatedCode = GenerateLoadClassCode(
+      model.NamespaceName,
+      model.ClassName,
+      model.PersistentStateMethod);
+    
+    string uniqueHintName = $"{model.NamespaceName}.{model.ClassName}_Persistence.g.cs";
+    
+    ReportUniqueHintNameDiagnostic(context, uniqueHintName);
+    context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
+  }
+
+  private static void ReportUniqueHintNameDiagnostic(SourceProductionContext context, string uniqueHintName)
   {
     var diagnostic = Diagnostic.Create(
-    new DiagnosticDescriptor(
-    id: "SG001",
-    title: "Unique Hint Name",
-    messageFormat: "Unique hint name for generated file: {0}",
-    category: "SourceGeneratorDebug",
-    defaultSeverity: DiagnosticSeverity.Info,
-    isEnabledByDefault: true
-    ),
-    location: Location.None,
-    uniqueHintName
-    );
+      new DiagnosticDescriptor(
+        id: "SG001",
+        title: "Unique Hint Name",
+        messageFormat: "Unique hint name for generated file: {0}",
+        category: "SourceGeneratorDebug",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true),
+      location: Location.None,
+      uniqueHintName);
 
     context.ReportDiagnostic(diagnostic);
   }
@@ -148,13 +171,9 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
 
   private static string GetNamespace(SyntaxNode? node)
   {
-    // Traverse up to find the NamespaceDeclarationSyntax, if any
-    while
-    (
-      node != null &&
-      node is not NamespaceDeclarationSyntax &&
-      node is not FileScopedNamespaceDeclarationSyntax
-    )
+    while (node != null 
+           && node is not NamespaceDeclarationSyntax 
+           && node is not FileScopedNamespaceDeclarationSyntax)
     {
       node = node.Parent;
     }
@@ -177,74 +196,28 @@ public class PersistenceStateSourceGenerator : ISourceGenerator
         AttributeArgumentSyntax? argument = attribute.ArgumentList?.Arguments.FirstOrDefault();
         if (argument?.Expression is not null)
         {
-          // Directly use the string representation of the argument
           string methodArgument = argument.Expression.ToString();
-          // Assuming the argument is an enum member access, extract the member name
           string? method = methodArgument.Split('.').LastOrDefault();
-          return method ?? "SessionStorage";// Default to "SessionStorage" if not specified
+          return method ?? "SessionStorage";
         }
-        break;// Break after finding the PersistentState attribute, assuming one attribute per class
+        break;
       }
     }
 
-    // Default to "SessionStorage" if the attribute is not found
     return "SessionStorage";
   }
 
-  class SyntaxReceiver : ISyntaxReceiver
+  private sealed class ClassModel
   {
-    public HashSet<ClassDeclarationSyntax> CandidateClasses { get; } = new(new ClassDeclarationSyntaxComparer());
+    public string NamespaceName { get; }
+    public string ClassName { get; }
+    public string PersistentStateMethod { get; }
 
-    public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+    public ClassModel(string namespaceName, string className, string persistentStateMethod)
     {
-      // Look for class declarations with the [PersistentState] attribute
-      if (syntaxNode is not ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclarationSyntax) return;
-      bool hasPersistentStateAttribute = classDeclarationSyntax.AttributeLists
-        .SelectMany(attrList => attrList.Attributes)
-        .Any(attr => attr.Name.ToString() == "PersistentState" || attr.Name.ToString().EndsWith(".PersistentState"));
-
-      if (hasPersistentStateAttribute)
-      {
-        CandidateClasses.Add(classDeclarationSyntax);
-      }
-    }
-
-    class ClassDeclarationSyntaxComparer : IEqualityComparer<ClassDeclarationSyntax>
-    {
-      public bool Equals(ClassDeclarationSyntax? x, ClassDeclarationSyntax? y)
-      {
-        if (ReferenceEquals(x, y)) return true;
-        if (ReferenceEquals(x, null) || ReferenceEquals(y, null)) return false;
-
-        // Consider classes equal if they have the same name and namespace
-        string xNamespace = GetNamespace(x);
-        string yNamespace = GetNamespace(y);
-        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace;
-      }
-
-      public int GetHashCode(ClassDeclarationSyntax obj)
-      {
-        if (ReferenceEquals(obj, null)) return 0;
-
-        // Use the hash code of the class name and namespace
-        int hashClassName = obj.Identifier.ValueText.GetHashCode();
-        int hashNamespace = GetNamespace(obj).GetHashCode();
-
-        // Calculate a combined hash code
-        return hashClassName ^ hashNamespace;
-      }
-
-      private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
-      {
-        // Walk the syntax tree to find the namespace declaration
-        SyntaxNode? namespaceDeclaration = classDeclaration.Parent;
-        while (namespaceDeclaration != null && !(namespaceDeclaration is NamespaceDeclarationSyntax))
-        {
-          namespaceDeclaration = namespaceDeclaration.Parent;
-        }
-
-        return namespaceDeclaration is NamespaceDeclarationSyntax namespaceSyntax ? namespaceSyntax.Name.ToString() : string.Empty;
-      }
+      NamespaceName = namespaceName;
+      ClassName = className;
+      PersistentStateMethod = persistentStateMethod;
     }
   }
 }
