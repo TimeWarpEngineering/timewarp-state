@@ -1,72 +1,95 @@
 namespace TimeWarp.State.SourceGenerator;
 
 [Generator]
-public class ActionSetMethodSourceGenerator : ISourceGenerator
+public class ActionSetMethodSourceGenerator : IIncrementalGenerator
 {
-  public void Initialize(GeneratorInitializationContext context) =>
-    context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-
-  public void Execute(GeneratorExecutionContext context)
+  public void Initialize(IncrementalGeneratorInitializationContext context)
   {
-    if (context.SyntaxReceiver is not SyntaxReceiver receiver) return;
+    var classDeclarations = context.SyntaxProvider
+      .CreateSyntaxProvider(
+        predicate: static (node, _) => IsCandidateClass(node),
+        transform: static (ctx, _) => GetSemanticTarget(ctx))
+      .Where(static m => m is not null);
 
-    foreach (ClassDeclarationSyntax classDeclaration in receiver.CandidateClasses)
-    {
-      SemanticModel semanticModel = context.Compilation.GetSemanticModel(classDeclaration.SyntaxTree);
-      string namespaceName = GetNamespace(classDeclaration);
-      string className = classDeclaration.Identifier.Text;
-      string methodName = className.Replace(oldValue: "ActionSet", newValue: "");
-      ClassDeclarationSyntax? actionClass = classDeclaration.DescendantNodes().OfType<ClassDeclarationSyntax>()
-        .FirstOrDefault(c => c.Identifier.Text == "Action");
-
-      if (actionClass != null)
-      {
-        List<(string Type, string Name, string? DefaultValue)> parameters = GetActionConstructorParameters(actionClass, semanticModel);
-        string parentClassName = GetParentClassName(classDeclaration);
-        string generatedCode = GenerateMethodCode(namespaceName, className, methodName, parameters, parentClassName);
-        string uniqueHintName = $"{namespaceName}.{parentClassName}.{className}_Method.g.cs";
-        ReportUniqueHintNameDiagnostic(context, uniqueHintName);
-        context.AddSource(uniqueHintName, generatedCode);
-      }
-    }
+    context.RegisterSourceOutput(classDeclarations,
+      static (spc, source) => Execute(source!, spc));
   }
 
-  private static void ReportUniqueHintNameDiagnostic(GeneratorExecutionContext context, string uniqueHintName)
+  private static bool IsCandidateClass(SyntaxNode node)
   {
-    var diagnostic =
-      Diagnostic.Create
-      (
-        new DiagnosticDescriptor
-        (
-          id: "SG002",
-          title: "Unique Hint Name",
-          messageFormat: "Unique hint name for generated file: {0}",
-          category: "SourceGeneratorDebug",
-          defaultSeverity: DiagnosticSeverity.Info,
-          isEnabledByDefault: true
-        ),
-        location: Location.None,
-        uniqueHintName
-      );
+    if (node is not ClassDeclarationSyntax classDeclaration) return false;
+    
+    return classDeclaration.Identifier.Text.EndsWith("ActionSet") 
+           && classDeclaration.Parent is ClassDeclarationSyntax;
+  }
+
+  private static ClassModel? GetSemanticTarget(GeneratorSyntaxContext context)
+  {
+    var classDeclaration = (ClassDeclarationSyntax)context.Node;
+    
+    string namespaceName = GetNamespace(classDeclaration);
+    string className = classDeclaration.Identifier.Text;
+    string methodName = className.Replace(oldValue: "ActionSet", newValue: "");
+    string parentClassName = GetParentClassName(classDeclaration);
+    
+    ClassDeclarationSyntax? actionClass = classDeclaration.DescendantNodes()
+      .OfType<ClassDeclarationSyntax>()
+      .FirstOrDefault(c => c.Identifier.Text == "Action");
+
+    if (actionClass == null) return null;
+
+    List<(string Type, string Name, string? DefaultValue)> parameters = 
+      GetActionConstructorParameters(actionClass, context.SemanticModel);
+
+    return new ClassModel(
+      namespaceName,
+      className,
+      methodName,
+      parentClassName,
+      parameters);
+  }
+
+  private static void Execute(ClassModel model, SourceProductionContext context)
+  {
+    string generatedCode = GenerateMethodCode(
+      model.NamespaceName,
+      model.ClassName,
+      model.MethodName,
+      model.Parameters,
+      model.ParentClassName);
+    
+    string uniqueHintName = $"{model.NamespaceName}.{model.ParentClassName}.{model.ClassName}_Method.g.cs";
+    
+    ReportUniqueHintNameDiagnostic(context, uniqueHintName);
+    context.AddSource(uniqueHintName, generatedCode);
+  }
+
+  private static void ReportUniqueHintNameDiagnostic(SourceProductionContext context, string uniqueHintName)
+  {
+    var diagnostic = Diagnostic.Create(
+      new DiagnosticDescriptor(
+        id: "SG002",
+        title: "Unique Hint Name",
+        messageFormat: "Unique hint name for generated file: {0}",
+        category: "SourceGeneratorDebug",
+        defaultSeverity: DiagnosticSeverity.Info,
+        isEnabledByDefault: true),
+      location: Location.None,
+      uniqueHintName);
 
     context.ReportDiagnostic(diagnostic);
   }
 
-  private static string GenerateMethodCode
-  (
+  private static string GenerateMethodCode(
     string namespaceName,
     string className,
     string methodName,
     List<(string Type, string Name, string? DefaultValue)> parameters,
-    string parentClassName
-  )
+    string parentClassName)
   {
-    string parameterList =
-      string.Join
-      (
-        separator: ", ",
-        parameters.Select(p => $"{p.Type} {p.Name}{(p.DefaultValue != null ? $" = {p.DefaultValue}" : "")}")
-      );
+    string parameterList = string.Join(
+      separator: ", ",
+      parameters.Select(p => $"{p.Type} {p.Name}{(p.DefaultValue != null ? $" = {p.DefaultValue}" : "")}"));
 
     string argumentList = string.Join(separator: ", ", parameters.Select(p => p.Name));
 
@@ -100,12 +123,9 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
 
   private static string GetNamespace(SyntaxNode? node)
   {
-    while
-    (
-      node != null
-      && node is not NamespaceDeclarationSyntax
-      && node is not FileScopedNamespaceDeclarationSyntax
-    )
+    while (node != null 
+           && node is not NamespaceDeclarationSyntax 
+           && node is not FileScopedNamespaceDeclarationSyntax)
     {
       node = node.Parent;
     }
@@ -124,87 +144,49 @@ public class ActionSetMethodSourceGenerator : ISourceGenerator
     return parentClass?.Identifier.Text ?? "UnknownParentClass";
   }
 
-  private static List<(string Type, string Name, string? DefaultValue)> GetActionConstructorParameters
-  (
+  private static List<(string Type, string Name, string? DefaultValue)> GetActionConstructorParameters(
     ClassDeclarationSyntax actionClass,
-    SemanticModel semanticModel
-  )
+    SemanticModel semanticModel)
   {
-    ConstructorDeclarationSyntax? constructor =
-      actionClass.DescendantNodes().OfType<ConstructorDeclarationSyntax>().FirstOrDefault();
+    ConstructorDeclarationSyntax? constructor = actionClass.DescendantNodes()
+      .OfType<ConstructorDeclarationSyntax>()
+      .FirstOrDefault();
 
     if (constructor == null)
       return new List<(string, string, string?)>();
 
-    return constructor.ParameterList.Parameters.Select
-    (
-      p =>
-      {
-        var parameterSymbol = semanticModel.GetDeclaredSymbol(p) as IParameterSymbol;
+    return constructor.ParameterList.Parameters.Select(p =>
+    {
+      var parameterSymbol = semanticModel.GetDeclaredSymbol(p) as IParameterSymbol;
 
-        string fullTypeName =
-          parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-          ?? "System.Object";
+      string fullTypeName = parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) 
+                            ?? "System.Object";
 
-        string? defaultValue = p.Default?.Value?.ToString();
-        return (fullTypeName, p.Identifier.Text, defaultValue);
-      }
-    ).ToList();
+      string? defaultValue = p.Default?.Value?.ToString();
+      return (fullTypeName, p.Identifier.Text, defaultValue);
+    }).ToList();
   }
 
-  class SyntaxReceiver : ISyntaxReceiver
+  private sealed class ClassModel
   {
-    public HashSet<ClassDeclarationSyntax> CandidateClasses { get; } = new(new ClassDeclarationSyntaxComparer());
+    public string NamespaceName { get; }
+    public string ClassName { get; }
+    public string MethodName { get; }
+    public string ParentClassName { get; }
+    public List<(string Type, string Name, string? DefaultValue)> Parameters { get; }
 
-    public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+    public ClassModel(
+      string namespaceName,
+      string className,
+      string methodName,
+      string parentClassName,
+      List<(string Type, string Name, string? DefaultValue)> parameters)
     {
-      if (syntaxNode is not ClassDeclarationSyntax classDeclarationSyntax) return;
-      if
-      (
-        classDeclarationSyntax.Identifier.Text.EndsWith("ActionSet")
-        && classDeclarationSyntax.Parent is ClassDeclarationSyntax
-      )
-      {
-        CandidateClasses.Add(classDeclarationSyntax);
-      }
-    }
-
-    class ClassDeclarationSyntaxComparer : IEqualityComparer<ClassDeclarationSyntax>
-    {
-      public bool Equals(ClassDeclarationSyntax? x, ClassDeclarationSyntax? y)
-      {
-        if (ReferenceEquals(x, y)) return true;
-        if (ReferenceEquals(x, null) || ReferenceEquals(y, null)) return false;
-
-        string xNamespace = GetNamespace(x);
-        string yNamespace = GetNamespace(y);
-        string xParentClassName = GetParentClassName(x);
-        string yParentClassName = GetParentClassName(y);
-        return x.Identifier.ValueText == y.Identifier.ValueText && xNamespace == yNamespace && xParentClassName == yParentClassName;
-      }
-
-      public int GetHashCode(ClassDeclarationSyntax obj)
-      {
-        if (ReferenceEquals(obj, null)) return 0;
-
-        return $"{GetNamespace(obj)}.{GetParentClassName(obj)}.{obj.Identifier.ValueText}".GetHashCode();
-      }
-
-      private static string GetNamespace(ClassDeclarationSyntax classDeclaration)
-      {
-        SyntaxNode? namespaceDeclaration = classDeclaration.Parent;
-        while (namespaceDeclaration is { } nd && nd is not BaseNamespaceDeclarationSyntax)
-        {
-          namespaceDeclaration = namespaceDeclaration.Parent;
-        }
-
-        return namespaceDeclaration switch
-        {
-          NamespaceDeclarationSyntax namespaceSyntax => namespaceSyntax.Name.ToString(),
-          FileScopedNamespaceDeclarationSyntax fileScopedNamespaceSyntax => fileScopedNamespaceSyntax.Name.ToString(),
-          _ => string.Empty
-        };
-      }
+      NamespaceName = namespaceName;
+      ClassName = className;
+      MethodName = methodName;
+      ParentClassName = parentClassName;
+      Parameters = parameters;
     }
   }
 }
