@@ -87,7 +87,7 @@ dotnet run
 
 3. Interact with the Counter page and observe in Redux DevTools:
 
-![Redux DevTools Interface](../../Documentation/Images/ReduxDevTools.png)
+![Redux DevTools Interface](../../documentation/images/redux-dev-tools.png)
 
 As shown above, Redux DevTools provides a comprehensive view of:
 - Actions being dispatched (left panel)
@@ -97,7 +97,7 @@ As shown above, Redux DevTools provides a comprehensive view of:
 
 The interface also shows the RouteState being tracked:
 
-![Route State in Redux DevTools](../../Documentation/Images/ReduxRouteState.png)
+![Route State in Redux DevTools](../../documentation/images/redux-route-state.png)
 
 This view demonstrates how TimeWarp.State automatically maintains route information in the state tree, making it easy to debug navigation-related issues.
 

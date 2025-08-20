@@ -9,4 +9,4 @@ I recommend the [samples](https://github.com/TimeWarpEngineering/timewarp-state/
 
 👉 Official [documentation](https://timewarpengineering.github.io/timewarp-state/).
 
-<img src="https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/refs/heads/master/Documentation/Images/TimeWarpStateOneWayFlow.drawio.svg" alt="logo" height="400" style="" />
+<img src="https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/refs/heads/master/documentation/images/time-warp-state-one-way-flow.drawio.svg" alt="logo" height="400" style="" />
