@@ -1,13 +1,13 @@
 # Configuration variables
-$SutProjectDir = "$PSScriptRoot/Tests/Test.App/Test.App.Server"
-$OutputPath = "$PSScriptRoot/Tests/Test.App/Output"
+$SutProjectDir = "$PSScriptRoot/tests/test-app/test-app-server"
+$OutputPath = "$PSScriptRoot/tests/test-app/output"
 $UseHttp = $env:UseHttp -eq "true"
 $Protocol = if ($UseHttp) { "http" } else { "https" }
 $SutUrl = "${Protocol}://localhost"
-$TestProjectDir = "$PSScriptRoot/Tests/Test.App.EndToEnd.Tests"
-$TestProjectPath = "$TestProjectDir/Test.App.EndToEnd.Tests.csproj"
-$AnalyzerProjectPath = "$PSScriptRoot/Source/TimeWarp.State.Analyzer/TimeWarp.State.Analyzer.csproj"
-$SourceGeneratorProjectPath = "$PSScriptRoot/Source/TimeWarp.State.SourceGenerator/TimeWarp.State.SourceGenerator.csproj"
+$TestProjectDir = "$PSScriptRoot/tests/test-app-end-to-end-tests"
+$TestProjectPath = "$TestProjectDir/test-app-end-to-end-tests.csproj"
+$AnalyzerProjectPath = "$PSScriptRoot/source/timewarp-state-analyzer/timewarp-state-analyzer.csproj"
+$SourceGeneratorProjectPath = "$PSScriptRoot/source/timewarp-state-source-generator/timewarp-state-source-generator.csproj"
 $SutPort = 7011
 $MaxRetries = 30
 $RetryInterval = 1
