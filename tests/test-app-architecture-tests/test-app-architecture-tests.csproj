@@ -13,7 +13,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\source\timewarp-state-policies\timewarp-state-policies.csproj" />
-    <ProjectReference Include="..\test-app\Test.App.Client\test-app-client.csproj" />
-    <ProjectReference Include="..\test-app\Test.App.Server\test-app-server.csproj" />
+    <ProjectReference Include="..\test-app\test-app-client\test-app-client.csproj" />
+    <ProjectReference Include="..\test-app\test-app-server\test-app-server.csproj" />
   </ItemGroup>
 </Project>

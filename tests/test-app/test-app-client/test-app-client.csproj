@@ -22,7 +22,7 @@
     <ProjectReference Include="..\..\..\source\timewarp-state-plus\timewarp-state-plus.csproj" />
     <ProjectReference Include="..\..\..\source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\Test.App.Contracts\test-app-contracts.csproj" />
+    <ProjectReference Include="..\test-app-contracts\test-app-contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
