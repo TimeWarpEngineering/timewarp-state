@@ -57,7 +57,7 @@ jobs:
 
       # End to End Tests
       - name: Run End-to-End Tests
-        run: ./RunE2ETests.ps1
+        run: ./run-e2e-tests.ps1
         working-directory: ${{ github.workspace }}
         env:
           UseHttp: "true"
