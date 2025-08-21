@@ -59,6 +59,15 @@
           "Microsoft.SourceLink.Common": "8.0.0"
         }
       },
+      "TimeWarp.SourceGenerators": {
+        "type": "Direct",
+        "requested": "[1.0.0-beta.4, )",
+        "resolved": "1.0.0-beta.4",
+        "contentHash": "sAHA1UgSgh77jLnEfqXz8ZXZqKcdHZTJQQuZ7hNShBPn/Z9GqF0wPl4HnDypbZWwpHIpzeuOVjVCLNgGNWJiYw==",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.11.0"
+        }
+      },
       "TimeWarp.State": {
         "type": "Direct",
         "requested": "[12.0.0-beta.2, )",

@@ -18,6 +18,26 @@
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
+  <Folder Name="/Samples/00-Wasm/">
+    <Project Path="samples\00-state-action-handler\wasm\sample-00-wasm\sample-00-wasm.csproj" Type="Classic C#">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/Samples/01-ReduxDevTools/">
+    <Project Path="samples\01-redux-dev-tools\wasm\sample-01-wasm\sample-01-wasm.csproj" Type="Classic C#">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/Samples/02-ActionTracking/">
+    <Project Path="samples\02-action-tracking\wasm\sample-02-wasm\sample-02-wasm.csproj" Type="Classic C#">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
+    </Project>
+  </Folder>
+  <Folder Name="/Samples/03-Routing/">
+    <Project Path="samples\03-routing\wasm\sample-03-wasm\sample-03-wasm.csproj" Type="Classic C#">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
+    </Project>
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
