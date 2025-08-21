@@ -14,10 +14,10 @@ try {
   Invoke-CommandWithExit "dotnet fixie timewarp-state-tests"
 
   Invoke-CommandWithExit "dotnet build ./tests/timewarp-state-plus-tests/timewarp-state-plus-tests.csproj"
-  Invoke-CommandWithExit "dotnet fixie TimeWarp.State.Plus.Tests"
+  Invoke-CommandWithExit "dotnet fixie timewarp-state-plus-tests"
 
   Invoke-CommandWithExit "dotnet build ./tests/client-integration-tests/client-integration-tests.csproj"
-  Invoke-CommandWithExit "dotnet fixie Client.Integration.Tests"
+  Invoke-CommandWithExit "dotnet fixie client-integration-tests"
 
   Invoke-CommandWithExit "dotnet build ./tests/test-app-architecture-tests/test-app-architecture-tests.csproj"
   Invoke-CommandWithExit "dotnet fixie test-app-architecture-tests"
