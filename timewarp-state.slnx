@@ -37,13 +37,13 @@
     <Project Path="tests\test-app-end-to-end-tests\test-app-end-to-end-tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="tests\time-warp-state-analyzer-tests\timewarp-state-analyzer-tests.csproj">
+    <Project Path="tests\timewarp-state-analyzer-tests\timewarp-state-analyzer-tests.csproj">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="tests\time-warp-state-plus-tests\timewarp-state-plus-tests.csproj" Type="Classic C#">
+    <Project Path="tests\timewarp-state-plus-tests\timewarp-state-plus-tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="tests\time-warp-state-tests\timewarp-state-tests.csproj" Type="Classic C#">
+    <Project Path="tests\timewarp-state-tests\timewarp-state-tests.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
