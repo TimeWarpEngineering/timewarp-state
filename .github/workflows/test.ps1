@@ -7,20 +7,20 @@ try {
 
     # Build and Run Tests
     Set-Location $env:GITHUB_WORKSPACE
-  Invoke-CommandWithExit "dotnet build ./Tests/TimeWarp.State.Analyzer.Tests/TimeWarp.State.Analyzer.Tests.csproj"
-  Invoke-CommandWithExit "dotnet fixie TimeWarp.State.Analyzer.Tests"
+  Invoke-CommandWithExit "dotnet build ./tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj"
+  Invoke-CommandWithExit "dotnet fixie timewarp-state-analyzer-tests"
 
-  Invoke-CommandWithExit "dotnet build ./Tests/TimeWarp.State.Tests/TimeWarp.State.Tests.csproj"
-  Invoke-CommandWithExit "dotnet fixie TimeWarp.State.Tests"
+  Invoke-CommandWithExit "dotnet build ./tests/timewarp-state-tests/timewarp-state-tests.csproj"
+  Invoke-CommandWithExit "dotnet fixie timewarp-state-tests"
 
-  Invoke-CommandWithExit "dotnet build ./Tests/TimeWarp.State.Plus.Tests/TimeWarp.State.Plus.Tests.csproj"
+  Invoke-CommandWithExit "dotnet build ./tests/timewarp-state-plus-tests/timewarp-state-plus-tests.csproj"
   Invoke-CommandWithExit "dotnet fixie TimeWarp.State.Plus.Tests"
 
-  Invoke-CommandWithExit "dotnet build ./Tests/Client.Integration.Tests/Client.Integration.Tests.csproj"
+  Invoke-CommandWithExit "dotnet build ./tests/client-integration-tests/client-integration-tests.csproj"
   Invoke-CommandWithExit "dotnet fixie Client.Integration.Tests"
 
-  Invoke-CommandWithExit "dotnet build ./Tests/Test.App.Architecture.Tests/Test.App.Architecture.Tests.csproj"
-  Invoke-CommandWithExit "dotnet fixie Test.App.Architecture.Tests"
+  Invoke-CommandWithExit "dotnet build ./tests/test-app-architecture-tests/test-app-architecture-tests.csproj"
+  Invoke-CommandWithExit "dotnet fixie test-app-architecture-tests"
 }
 finally {
   # Return to the original location
