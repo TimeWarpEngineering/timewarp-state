@@ -91,5 +91,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
   </ItemGroup>
 </Project>
