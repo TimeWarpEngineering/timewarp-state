@@ -7,15 +7,15 @@ try
   dotnet tool restore
   dotnet cleanup -y
   Remove-Item "./LocalNugetFeed" -Recurse -Force -ErrorAction SilentlyContinue
-  Remove-Item "./Source/TimeWarp.State/wwwroot\js" -Recurse -Force -ErrorAction SilentlyContinue
+  Remove-Item "./source/timewarp-state/wwwroot\js" -Recurse -Force -ErrorAction SilentlyContinue
   New-Item -ItemType Directory -Force -Path "./LocalNugetFeed"
 
   $projects = @(
-    "./Source/TimeWarp.State.Analyzer/",
-    "./Source/TimeWarp.State.SourceGenerator/",
-    "./Source/TimeWarp.State/",
-    "./Source/TimeWarp.State.Plus/",
-    "./Source/TimeWarp.State.Policies/"
+    "./source/timewarp-state-analyzer/",
+    "./source/timewarp-state-source-generator/",
+    "./source/timewarp-state/",
+    "./source/timewarp-state-plus/",
+    "./source/timewarp-state-policies/"
   )
 
   foreach ($project in $projects) {
