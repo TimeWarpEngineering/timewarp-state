@@ -281,32 +281,32 @@
         "resolved": "13.0.0",
         "contentHash": "eVdLPCyJZ1GIUUD7HmjT2Pkm9f8zjlZm4ygmRgojOptoxtSSPSEcETVsVyx9H2xVX/zbB7X1aLUHDTEgINyT5g=="
       },
-      "test-app-client": {
+      "Test.App.Client": {
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly": "[9.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "Microsoft.Extensions.Logging.Configuration": "[9.0.8, )",
           "Shouldly": "[4.3.0, )",
+          "Test.App.Contracts": "[12.0.0-beta.2, )",
           "TimeWarp.State": "[12.0.0-beta.2, )",
           "TimeWarp.State.Plus": "[12.0.0-beta.2, )",
-          "test-app-contracts": "[12.0.0-beta.2, )",
           "timewarp-heroicons": "[2.0.19, )"
         }
       },
-      "test-app-contracts": {
+      "Test.App.Contracts": {
         "type": "Project",
         "dependencies": {
           "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
           "TimeWarp.Mediator": "[13.0.0, )"
         }
       },
-      "test-app-server": {
+      "Test.App.Server": {
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[9.0.8, )",
           "Microsoft.CodeAnalysis.CSharp": "[4.14.0, )",
-          "test-app-client": "[12.0.0-beta.2, )"
+          "Test.App.Client": "[12.0.0-beta.2, )"
         }
       },
       "TimeWarp.State": {

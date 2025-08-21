@@ -63,7 +63,7 @@
         "resolved": "13.0.0",
         "contentHash": "eVdLPCyJZ1GIUUD7HmjT2Pkm9f8zjlZm4ygmRgojOptoxtSSPSEcETVsVyx9H2xVX/zbB7X1aLUHDTEgINyT5g=="
       },
-      "sample-00-auto-client": {
+      "Sample00Auto.Client": {
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Components.WebAssembly": "[9.0.8, )",
