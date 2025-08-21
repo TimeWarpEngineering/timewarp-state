@@ -4,13 +4,14 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Sample03Wasm</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.8" PrivateAssets="all" />
-    <PackageReference Include="TimeWarp.State" Version="12.0.0-beta.1" />
-    <PackageReference Include="TimeWarp.State.Plus" Version="11.0.0" />
+    <PackageReference Include="TimeWarp.State" Version="12.0.0-beta.2" />
+    <PackageReference Include="TimeWarp.State.Plus" Version="12.0.0-beta.2" />
   </ItemGroup>
 
   <!-- <ItemGroup>
