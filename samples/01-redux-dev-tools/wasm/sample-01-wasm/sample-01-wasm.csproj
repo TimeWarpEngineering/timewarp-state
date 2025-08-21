@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.8" PrivateAssets="all" />
-    <PackageReference Include="TimeWarp.State" Version="12.0.0-beta.2" />
-    <PackageReference Include="TimeWarp.State.Plus" Version="12.0.0-beta.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+    <PackageReference Include="TimeWarp.State" />
+    <PackageReference Include="TimeWarp.State.Plus" />
   </ItemGroup>
 
 </Project>
