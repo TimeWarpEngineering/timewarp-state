@@ -42,7 +42,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.100-preview.7.25380.108'
+          dotnet-version: |
+            9.0.x
+            10.0.100-preview.7.25380.108
 
       - name: Run Build Script
         run: ./.github/workflows/build.ps1
