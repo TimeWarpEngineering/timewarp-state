@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <AssemblyName>Test.App.Server</AssemblyName>
     <Nullable>enable</Nullable>
     <RootNamespace>Test.App</RootNamespace>
     <PublishSingleFile>false</PublishSingleFile>

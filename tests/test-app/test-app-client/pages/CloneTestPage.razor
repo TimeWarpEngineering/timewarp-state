@@ -1,0 +1,70 @@
+﻿@namespace Test.App.Client.Pages
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@using AnyClone.Tests
+@inherits BaseComponent
+
+@code {
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "AnyClone Test Page";
+
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/cloneTest";
+
+  string TestResult = "Not run";
+
+  void TestClone()
+  {
+    try
+    {
+      CloneProviderTests.ModifiedClone_Array_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Basic_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Collection_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_ComplexObject_ShouldNotBeEqual();
+      CloneProviderTests.ModifiedClone_Dictionary_ShouldNotBeEqual();
+      CloneProviderTests.Should_Clone_ArrayObject();
+      CloneProviderTests.Should_Clone_BasicObject();
+      CloneProviderTests.Should_Clone_CollectionObject();
+      CloneProviderTests.Should_Clone_ComplexObject();
+      CloneProviderTests.Should_Clone_CustomCollectionObject();
+      CloneProviderTests.Should_Clone_DictionaryObject();
+      CloneProviderTests.Should_Clone_InterfacesObject();
+      TestResult = "Passed";
+    }
+    catch (Exception)
+    {
+      TestResult = "Failed";
+    }
+  }
+}
+
+
+<TwPageTitle>@Title</TwPageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<!-- Arrange -->
+<!-- Test description -->
+<p>Test ability of Any Cone to clone various Types.</p>
+
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>TestResult:</strong>@TestResult
+  </li>
+</ul>
+
+<!-- Actions to take -->
+<button @onclick="TestClone">Run</button>
+
+<hr/>
+<!-- ACT -->
+<p><strong>Act:</strong> Click the `Run` button</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong> TestResult should be `Passed`
+</p>
