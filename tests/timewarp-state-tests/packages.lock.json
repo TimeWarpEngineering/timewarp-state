@@ -61,6 +61,15 @@
           "Scrutor": "6.0.1"
         }
       },
+      "TimeWarp.SourceGenerators": {
+        "type": "Direct",
+        "requested": "[1.0.0-beta.3, )",
+        "resolved": "1.0.0-beta.3",
+        "contentHash": "TwLLmEGzjsyvUd6lKlKHq+d90XRwD5nWV17U+SaZGXbBQ4ZZxg+Tfyy9zGP1sDE8M0NTel4Dt2IbpgBWxfgFtg==",
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.11.0"
+        }
+      },
       "DiffEngine": {
         "type": "Transitive",
         "resolved": "11.3.0",
@@ -192,7 +201,7 @@
         "resolved": "13.0.0",
         "contentHash": "eVdLPCyJZ1GIUUD7HmjT2Pkm9f8zjlZm4ygmRgojOptoxtSSPSEcETVsVyx9H2xVX/zbB7X1aLUHDTEgINyT5g=="
       },
-      "timewarp.state": {
+      "TimeWarp.State": {
         "type": "Project",
         "dependencies": {
           "AnyClone": "[1.1.6, )",
