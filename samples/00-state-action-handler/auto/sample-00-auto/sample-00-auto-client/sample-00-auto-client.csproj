@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <RootNamespace>Sample00Auto.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

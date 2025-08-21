@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <!-- <ItemGroup>
-    <ProjectReference Include="../../../../Source/TimeWarp.State/TimeWarp.State.csproj" />
-    <ProjectReference Include="../../../../Source/TimeWarp.State.Plus/TimeWarp.State.Plus.csproj" />
+    <ProjectReference Include="../../../../source/timewarp-state/timewarp-state.csproj" />
+    <ProjectReference Include="../../../../source/timewarp-state-plus/timewarp-state-plus.csproj" />
   </ItemGroup> -->
 
 </Project>
