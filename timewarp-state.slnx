@@ -47,14 +47,14 @@
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
-  <Folder Name="/Tests/Test.App/">
-    <Project Path="tests\test-app\Test.App.Client\test-app-client.csproj" Type="Classic C#">
+  <Folder Name="/Tests/test-app/">
+    <Project Path="tests\test-app\test-app-client\test-app-client.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="tests\test-app\Test.App.Contracts\test-app-contracts.csproj" Type="Classic C#">
+    <Project Path="tests\test-app\test-app-contracts\test-app-contracts.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
-    <Project Path="tests\test-app\Test.App.Server\test-app-server.csproj" Type="Classic C#">
+    <Project Path="tests\test-app\test-app-server\test-app-server.csproj" Type="Classic C#">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
