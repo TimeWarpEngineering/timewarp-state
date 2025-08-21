@@ -58,6 +58,6 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.0" />
     <PackageVersion Include="timewarp-heroicons" Version="2.0.19" />
-    <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.3" />
+    <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.4" />
   </ItemGroup>
 </Project>
