@@ -1,6 +1,6 @@
 ﻿@namespace Sample00Auto.Components
 
-<Router AppAssembly="typeof(Sample00Auto.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client._Imports).Assembly }">
+<Router AppAssembly="typeof(Sample00Auto.Program).Assembly" AdditionalAssemblies="new[] { typeof(Client.Program).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
