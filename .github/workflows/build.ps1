@@ -11,26 +11,25 @@ try {
 
   # Restore Dotnet Tools
   Invoke-CommandWithExit "dotnet tool restore"
-  Invoke-CommandWithExit "dotnet cleanup -y"
 
   # Create LocalNugetFeed directory at root
-  New-Item -ItemType Directory -Force -Path ./LocalNugetFeed
+  New-Item -ItemType Directory -Force -Path ./local-nuget-feed
 
   # Build TimeWarp.State.Analyzer
-  Set-Location $env:GITHUB_WORKSPACE/Source/TimeWarp.State.Analyzer/
+  Set-Location $env:GITHUB_WORKSPACE/source/timewarp-state-analyzer/
   Invoke-CommandWithExit "dotnet build --configuration Debug"
 
   # Build TimeWarp.State.SourceGenerator
-  Set-Location $env:GITHUB_WORKSPACE/Source/TimeWarp.State.SourceGenerator/
+  Set-Location $env:GITHUB_WORKSPACE/source/timewarp-state-source-generator/
   Invoke-CommandWithExit "dotnet build --configuration Debug"
 
   # Build and Pack TimeWarp.State
-  Set-Location $env:GITHUB_WORKSPACE/Source/TimeWarp.State/
+  Set-Location $env:GITHUB_WORKSPACE/source/timewarp-state/
   Invoke-CommandWithExit "dotnet build --configuration Debug"
   Invoke-CommandWithExit "dotnet pack --configuration Debug"
 
   # Build and Pack TimeWarp.State.Plus
-  Set-Location $env:GITHUB_WORKSPACE/Source/TimeWarp.State.Plus/
+  Set-Location $env:GITHUB_WORKSPACE/source/timewarp-state-plus/
   Invoke-CommandWithExit "dotnet build --configuration Debug"
   Invoke-CommandWithExit "dotnet pack --configuration Debug"
 }
