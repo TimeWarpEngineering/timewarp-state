@@ -1,0 +1,539 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "Test.App.Server/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.WebAssembly.Server": "9.0.8",
+          "Microsoft.CodeAnalysis.CSharp": "4.14.0",
+          "Test.App.Client": "12.0.0-beta.2",
+          "Test.App.Client.Reference": "1.0.0.0",
+          "Test.App.Contracts.Reference": "1.0.0.0",
+          "timewarp-state-plus": "1.0.0.0",
+          "TimeWarp.State.Reference": "1.0.0.0"
+        },
+        "runtime": {
+          "Test.App.Server.dll": {}
+        }
+      },
+      "AnyClone/1.1.6": {
+        "runtime": {
+          "lib/netstandard2.1/AnyClone.dll": {
+            "assemblyVersion": "1.1.6.0",
+            "fileVersion": "1.1.6.0"
+          }
+        }
+      },
+      "Blazored.LocalStorage/4.5.0": {
+        "runtime": {
+          "lib/net8.0/Blazored.LocalStorage.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Blazored.SessionStorage/2.4.0": {
+        "runtime": {
+          "lib/net7.0/Blazored.SessionStorage.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "DiffEngine/11.3.0": {
+        "dependencies": {
+          "EmptyFiles": "4.4.0",
+          "System.Management": "6.0.1"
+        },
+        "runtime": {
+          "lib/net7.0/DiffEngine.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "EmptyFiles/4.4.0": {
+        "runtime": {
+          "lib/net7.0/EmptyFiles.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "JetBrains.Annotations/2025.2.0": {
+        "runtime": {
+          "lib/netstandard2.0/JetBrains.Annotations.dll": {
+            "assemblyVersion": "4242.42.42.42",
+            "fileVersion": "2025.2.0.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.WebAssembly/9.0.8": {
+        "dependencies": {
+          "Microsoft.JSInterop.WebAssembly": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Components.WebAssembly.dll": {
+            "assemblyVersion": "9.0.8.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.WebAssembly.Server/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Components.WebAssembly.Server.dll": {
+            "assemblyVersion": "9.0.8.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.Common/4.14.0": {
+        "runtime": {
+          "lib/net9.0/Microsoft.CodeAnalysis.dll": {
+            "assemblyVersion": "4.14.0.0",
+            "fileVersion": "4.1400.25.26210"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net9.0/de/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net9.0/es/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net9.0/fr/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net9.0/it/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net9.0/ja/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net9.0/ko/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net9.0/pl/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net9.0/pt-BR/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net9.0/ru/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net9.0/tr/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.CodeAnalysis.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.CodeAnalysis.CSharp/4.14.0": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Common": "4.14.0"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.CodeAnalysis.CSharp.dll": {
+            "assemblyVersion": "4.14.0.0",
+            "fileVersion": "4.1400.25.26210"
+          }
+        },
+        "resources": {
+          "lib/net9.0/cs/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/net9.0/de/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "de"
+          },
+          "lib/net9.0/es/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net9.0/fr/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/net9.0/it/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "it"
+          },
+          "lib/net9.0/ja/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/net9.0/ko/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/net9.0/pl/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/net9.0/pt-BR/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/net9.0/ru/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/net9.0/tr/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/net9.0/zh-Hans/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/net9.0/zh-Hant/Microsoft.CodeAnalysis.CSharp.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        }
+      },
+      "Microsoft.JSInterop.WebAssembly/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.JSInterop.WebAssembly.dll": {
+            "assemblyVersion": "9.0.8.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Shouldly/4.3.0": {
+        "dependencies": {
+          "DiffEngine": "11.3.0",
+          "EmptyFiles": "4.4.0"
+        },
+        "runtime": {
+          "lib/net9.0/Shouldly.dll": {
+            "assemblyVersion": "4.3.0.0",
+            "fileVersion": "4.3.0.0"
+          }
+        }
+      },
+      "System.CodeDom/6.0.0": {
+        "runtime": {
+          "lib/net6.0/System.CodeDom.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "System.Management/6.0.1": {
+        "dependencies": {
+          "System.CodeDom": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/System.Management.dll": {
+            "assemblyVersion": "6.0.0.1",
+            "fileVersion": "6.0.1623.17311"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net6.0/System.Management.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "6.0.0.1",
+            "fileVersion": "6.0.1623.17311"
+          }
+        }
+      },
+      "timewarp-heroicons/2.0.19": {
+        "runtime": {
+          "lib/net6.0/timewarp-heroicons.dll": {
+            "assemblyVersion": "2.0.19.0",
+            "fileVersion": "2.0.19.0"
+          }
+        }
+      },
+      "TimeWarp.Mediator/13.0.0": {
+        "dependencies": {
+          "TimeWarp.Mediator.Contracts": "13.0.0"
+        },
+        "runtime": {
+          "lib/net6.0/TimeWarp.Mediator.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.0.0"
+          }
+        }
+      },
+      "TimeWarp.Mediator.Contracts/13.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/TimeWarp.Mediator.Contracts.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.0.0"
+          }
+        }
+      },
+      "TypeSupport/1.2.0": {
+        "runtime": {
+          "lib/net7.0/TypeSupport.dll": {
+            "assemblyVersion": "1.2.0.0",
+            "fileVersion": "1.2.0.0"
+          }
+        }
+      },
+      "Test.App.Client/12.0.0-beta.2": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.WebAssembly": "9.0.8",
+          "Microsoft.CodeAnalysis.CSharp": "4.14.0",
+          "Shouldly": "4.3.0",
+          "Test.App.Contracts": "12.0.0-beta.2",
+          "TimeWarp.State": "12.0.0-beta.2",
+          "TimeWarp.State.Plus": "12.0.0-beta.2",
+          "timewarp-heroicons": "2.0.19"
+        },
+        "runtime": {
+          "Test.App.Client.dll": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Test.App.Contracts/12.0.0-beta.2": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.14.0",
+          "TimeWarp.Mediator": "13.0.0"
+        },
+        "runtime": {
+          "Test.App.Contracts.dll": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "TimeWarp.State/12.0.0-beta.2": {
+        "dependencies": {
+          "AnyClone": "1.1.6",
+          "JetBrains.Annotations": "2025.2.0",
+          "Microsoft.CodeAnalysis.CSharp": "4.14.0",
+          "TimeWarp.Mediator": "13.0.0",
+          "TypeSupport": "1.2.0"
+        },
+        "runtime": {
+          "TimeWarp.State.dll": {
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "TimeWarp.State.Plus/12.0.0-beta.2": {
+        "dependencies": {
+          "Blazored.LocalStorage": "4.5.0",
+          "Blazored.SessionStorage": "2.4.0",
+          "Microsoft.CodeAnalysis.CSharp": "4.14.0",
+          "TimeWarp.State": "12.0.0-beta.2"
+        },
+        "runtime": {
+          "timewarp-state-plus.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Test.App.Client.Reference/1.0.0.0": {
+        "runtime": {
+          "Test.App.Client.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Test.App.Contracts.Reference/1.0.0.0": {
+        "runtime": {
+          "Test.App.Contracts.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "timewarp-state-plus/1.0.0.0": {
+        "runtime": {
+          "timewarp-state-plus.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "TimeWarp.State.Reference/1.0.0.0": {
+        "runtime": {
+          "TimeWarp.State.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Test.App.Server/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "AnyClone/1.1.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iksQmOt2vCnFupLXxEY/o9PJabQj9N1wzWIMR07QqoY/QWctbKS8KLRHXCvQINH+EJtez5de+Z8+UeyndNhKsw==",
+      "path": "anyclone/1.1.6",
+      "hashPath": "anyclone.1.1.6.nupkg.sha512"
+    },
+    "Blazored.LocalStorage/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6nZuJwA7zNIKx83IsObiHXZb09ponJOpCClU3en+hI8ZFvrOKXeOw+H7TegQZQrvdR1n9fkrVkEBQZg8vx6ZTw==",
+      "path": "blazored.localstorage/4.5.0",
+      "hashPath": "blazored.localstorage.4.5.0.nupkg.sha512"
+    },
+    "Blazored.SessionStorage/2.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-e3XXH+zGGxDq1zC7YzLDD8mfvtoC6ESwTWOGD25H+FbPJlB7yQeL72hDY76tqkcrh98fh+y12r4BNhyQVV9YKw==",
+      "path": "blazored.sessionstorage/2.4.0",
+      "hashPath": "blazored.sessionstorage.2.4.0.nupkg.sha512"
+    },
+    "DiffEngine/11.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-k0ZgZqd09jLZQjR8FyQbSQE86Q7QZnjEzq1LPHtj1R2AoWO8sjV5x+jlSisL7NZAbUOI4y+7Bog8gkr9WIRBGw==",
+      "path": "diffengine/11.3.0",
+      "hashPath": "diffengine.11.3.0.nupkg.sha512"
+    },
+    "EmptyFiles/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gwJEfIGS7FhykvtZoscwXj/XwW+mJY6UbAZk+qtLKFUGWC95kfKXnj8VkxsZQnWBxJemM/q664rGLN5nf+OHZw==",
+      "path": "emptyfiles/4.4.0",
+      "hashPath": "emptyfiles.4.4.0.nupkg.sha512"
+    },
+    "JetBrains.Annotations/2025.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2BvMkOSW+50EbQFhWFIPWTqmcDLiyyjwkMN7lN386bhP2vN/7ts5t59qu11HtenmHFxqDzaD8J1fFoh+QTOzVA==",
+      "path": "jetbrains.annotations/2025.2.0",
+      "hashPath": "jetbrains.annotations.2025.2.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.WebAssembly/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-48tIkTqwYq/DVCxuDIbgz58JN15qveZqsyy+lZG5Lk8/y40JMjTioyOq1bYIX6SNLRRrGfJxZ2loh2w7+x/+4w==",
+      "path": "microsoft.aspnetcore.components.webassembly/9.0.8",
+      "hashPath": "microsoft.aspnetcore.components.webassembly.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.WebAssembly.Server/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HelrX+9Q55A0uGUFsW0t5RbZaOn8pCUGpGk115ByrJQS8TKkKsOzMwhZEcVnZbdMYAhuj0TzHYhzW11LblFi8A==",
+      "path": "microsoft.aspnetcore.components.webassembly.server/9.0.8",
+      "hashPath": "microsoft.aspnetcore.components.webassembly.server.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.Common/4.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-PC3tuwZYnC+idaPuoC/AZpEdwrtX7qFpmnrfQkgobGIWiYmGi5MCRtl5mx6QrfMGQpK78X2lfIEoZDLg/qnuHg==",
+      "path": "microsoft.codeanalysis.common/4.14.0",
+      "hashPath": "microsoft.codeanalysis.common.4.14.0.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.CSharp/4.14.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-568a6wcTivauIhbeWcCwfWwIn7UV7MeHEBvFB2uzGIpM2OhJ4eM/FZ8KS0yhPoNxnSpjGzz7x7CIjTxhslojQA==",
+      "path": "microsoft.codeanalysis.csharp/4.14.0",
+      "hashPath": "microsoft.codeanalysis.csharp.4.14.0.nupkg.sha512"
+    },
+    "Microsoft.JSInterop.WebAssembly/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eevGq068Owgf1q6EswauGQ1JVu5FsM4K52l4H+Lx8/HaU2EUaAs6LzsawJkUOq6bBPxPTwaCsr/Sxv2iEMcm2Q==",
+      "path": "microsoft.jsinterop.webassembly/9.0.8",
+      "hashPath": "microsoft.jsinterop.webassembly.9.0.8.nupkg.sha512"
+    },
+    "Shouldly/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sDetrWXrl6YXZ4HeLsdBoNk3uIa7K+V4uvIJ+cqdRa5DrFxeTED7VkjoxCuU1kJWpUuBDZz2QXFzSxBtVXLwRQ==",
+      "path": "shouldly/4.3.0",
+      "hashPath": "shouldly.4.3.0.nupkg.sha512"
+    },
+    "System.CodeDom/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CPc6tWO1LAer3IzfZufDBRL+UZQcj5uS207NHALQzP84Vp/z6wF0Aa0YZImOQY8iStY0A2zI/e3ihKNPfUm8XA==",
+      "path": "system.codedom/6.0.0",
+      "hashPath": "system.codedom.6.0.0.nupkg.sha512"
+    },
+    "System.Management/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-10J1D0h/lioojphfJ4Fuh5ZUThT/xOVHdV9roGBittKKNP2PMjrvibEdbVTGZcPra1399Ja3tqIJLyQrc5Wmhg==",
+      "path": "system.management/6.0.1",
+      "hashPath": "system.management.6.0.1.nupkg.sha512"
+    },
+    "timewarp-heroicons/2.0.19": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-31AFxvZZ0C7xU6zNa1c6AvZKo4OyB8poxEMzkS1GB1kvFcQC6zg3qW8UgzvJpB2ANnl1Lj6GB5/SOdwyusGLzw==",
+      "path": "timewarp-heroicons/2.0.19",
+      "hashPath": "timewarp-heroicons.2.0.19.nupkg.sha512"
+    },
+    "TimeWarp.Mediator/13.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nOdDmPxMr41ZHu0DBddA5qDxR8nLuVS3KzMZpkZLSdN2hEZ/UIZtSoBAmP/HKA6NoqU/Ln0rFIBEW28dmSajVQ==",
+      "path": "timewarp.mediator/13.0.0",
+      "hashPath": "timewarp.mediator.13.0.0.nupkg.sha512"
+    },
+    "TimeWarp.Mediator.Contracts/13.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eVdLPCyJZ1GIUUD7HmjT2Pkm9f8zjlZm4ygmRgojOptoxtSSPSEcETVsVyx9H2xVX/zbB7X1aLUHDTEgINyT5g==",
+      "path": "timewarp.mediator.contracts/13.0.0",
+      "hashPath": "timewarp.mediator.contracts.13.0.0.nupkg.sha512"
+    },
+    "TypeSupport/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XwwO/N0Sf4gwjkFP2VcclVhbKZV3mNNvtESnkjKHSxw8UuCJiugBUGuoLCFi52YoD4xuLYONSB0iaE5II+Ib3w==",
+      "path": "typesupport/1.2.0",
+      "hashPath": "typesupport.1.2.0.nupkg.sha512"
+    },
+    "Test.App.Client/12.0.0-beta.2": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Test.App.Contracts/12.0.0-beta.2": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TimeWarp.State/12.0.0-beta.2": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TimeWarp.State.Plus/12.0.0-beta.2": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Test.App.Client.Reference/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Test.App.Contracts.Reference/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "timewarp-state-plus/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "TimeWarp.State.Reference/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

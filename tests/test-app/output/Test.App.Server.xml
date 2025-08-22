@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Test.App.Server</name>
+    </assembly>
+    <members>
+        <member name="M:Test.App.Components.Pages.Home.OnInitialized">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

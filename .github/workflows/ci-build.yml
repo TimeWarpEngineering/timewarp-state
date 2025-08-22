@@ -3,8 +3,8 @@ name: Build and Test
 on:
   pull_request:
     paths:
-      - 'Source/**'
-      - 'Tests/**'
+      - 'source/**'
+      - 'tests/**'
       - '.github/workflows/ci-build.yml'
       - '*.props'
       - '*.targets'
