@@ -76,7 +76,7 @@ function Build-SourceGenerator {
 }
 
 function Update-ClientAppSettings {
-    $appSettingsPath = "$PSScriptRoot/Tests/Test.App/Test.App.Client/wwwroot/appsettings.json"
+    $appSettingsPath = "$PSScriptRoot/tests/test-app/test-app-client/wwwroot/appsettings.json"
     $appSettings = Get-Content $appSettingsPath | ConvertFrom-Json
     $appSettings.UseHttp = $UseHttp
     $appSettings | ConvertTo-Json | Set-Content $appSettingsPath
