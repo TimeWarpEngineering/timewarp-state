@@ -26,8 +26,8 @@ function Write-StepFooter($stepName) {
 function Ensure-Browsers-Installed {
   $playwrightPath = "$TestProjectDir/bin/Debug/net9.0/playwright.ps1"
   if (Test-Path $playwrightPath) {
-    Write-Host "Installing Playwright browsers..."
-    & $playwrightPath install --with-deps
+    Write-Host "Installing Playwright Chromium browser..."
+    & $playwrightPath install chromium --with-deps
   } else {
     Write-Error "Playwright script not found at $playwrightPath. Make sure the Test.App.EndToEnd.Tests project is built."
     exit 1
