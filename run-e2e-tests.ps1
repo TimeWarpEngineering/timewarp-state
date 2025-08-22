@@ -249,7 +249,7 @@ function Run-Tests {
 
         Write-Host "Running E2E tests" -ForegroundColor Cyan
         foreach ($setting in $settings) {
-            $targetArguments = @("test", "--no-build", "--settings:PlaywrightSettings\$setting", "./Test.App.EndToEnd.Tests.csproj")
+            $targetArguments = @("test", "--no-build", "--settings:PlaywrightSettings\$setting", "./test-app-end-to-end-tests.csproj")
             Write-Host "Executing: dotnet $($targetArguments -join ' ')" -ForegroundColor Yellow
             
             dotnet @targetArguments
