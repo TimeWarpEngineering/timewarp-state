@@ -16,7 +16,7 @@ public class TimeWarpStateDevComponent : TimeWarpStateComponent
       builder.AddComponentParameter(0, nameof(TimeWarp.Features.Developer.RenderModeDisplay.CurrentRenderMode), CurrentRenderMode);
       builder.AddComponentParameter(0, nameof(TimeWarp.Features.Developer.RenderModeDisplay.ConfiguredRenderMode), ConfiguredRenderMode);
       builder.AddComponentParameter(0, nameof(TimeWarp.Features.Developer.RenderModeDisplay.RendererInfoName), RendererInfo.Name);
-      builder.AddComponentParameter(0, nameof(TimeWarp.Features.Developer.RenderModeDisplay.RendererInfoAssignedMode), AssignedRenderMode?.GetType().Name);
+      builder.AddComponentParameter(0, nameof(TimeWarp.Features.Developer.RenderModeDisplay.AssignedRenderMode), AssignedRenderMode?.GetType().Name);
       builder.AddComponentParameter(0, nameof(TimeWarp.Features.Developer.RenderModeDisplay.RendererInfoIsInteractive), RendererInfo.IsInteractive);
       builder.CloseComponent();
     };

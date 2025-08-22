@@ -17,9 +17,9 @@
   [Parameter] public string? RendererInfoName { get; set; }
   
   /// <summary>
-  /// The assigned render mode from RendererInfo (what it will be after prerendering).
+  /// The assigned render mode from the component (what it will be after prerendering).
   /// </summary>
-  [Parameter] public string? RendererInfoAssignedMode { get; set; }
+  [Parameter] public string? AssignedRenderMode { get; set; }
   
   /// <summary>
   /// Whether the component is currently interactive.
@@ -48,9 +48,9 @@
     {
         <div>RendererInfo.Name: <span data-qa="renderer-info-name">@RendererInfoName</span></div>
     }
-    @if (RendererInfoAssignedMode != null)
+    @if (AssignedRenderMode != null)
     {
-        <div>RendererInfo.AssignedRenderMode: <span data-qa="renderer-info-assigned">@RendererInfoAssignedMode</span></div>
+        <div>AssignedRenderMode: <span data-qa="assigned-render-mode">@AssignedRenderMode</span></div>
     }
     @if (RendererInfoIsInteractive != null)
     {
