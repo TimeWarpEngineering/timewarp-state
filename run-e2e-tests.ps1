@@ -23,7 +23,7 @@ function Write-StepFooter($stepName) {
 
 
 function Ensure-Browsers-Installed {
-  $playwrightPath = "$TestProjectDir/bin/Debug/net8.0/playwright.ps1"
+  $playwrightPath = "$TestProjectDir/bin/Debug/net9.0/playwright.ps1"
   if (Test-Path $playwrightPath) {
     Write-Host "Installing Playwright browsers..."
     & $playwrightPath install --with-deps
