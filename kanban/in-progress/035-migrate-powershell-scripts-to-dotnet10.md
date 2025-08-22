@@ -103,28 +103,34 @@ var result = await Shell.Run("git")
 - Create unit tests where applicable
 - Test TimeWarp.Amuru command execution accuracy
 
-## Migration Phases
+## Migration Strategy
 
-### Phase 1: Critical Infrastructure (HIGH Priority)
-- Create shared library for common functions (from common.ps1)
-- Migrate .github/workflows/build.ps1 → TimeWarp.State.Build
-- Migrate .github/workflows/test.ps1 → TimeWarp.State.Test
-- Migrate run-e2e-tests.ps1 → TimeWarp.State.E2ETestRunner
+Keep all PowerShell scripts and workflows running. Build C# scripts alongside. Test both. Delete old stuff after new stuff works.
 
-### Phase 2: Build Tools (MEDIUM Priority)
-- Migrate build-nugets.ps1 → TimeWarp.State.BuildNugets
-- Migrate build-and-package-analyzer.ps1 → TimeWarp.State.BuildAnalyzer
-- Migrate run-tests.ps1 → TimeWarp.State.TestRunner
+## Phase 1: C# Scripts
 
-### Phase 3: Utilities (LOW Priority)
-- Migrate convert-timestamp.ps1 → TimeWarp.State.TimestampConverter
-- Migrate scripts/build-readme.ps1 → TimeWarp.State.BuildReadme
-- Migrate run-test-app.ps1 → TimeWarp.State.RunTestApp
-- Migrate sample run scripts
+Create in `/scripts/` directory:
+- [ ] `scripts/build.cs` - Build all projects
+- [ ] `scripts/test.cs` - Run tests
+- [ ] `scripts/e2e.cs` - Run E2E tests
+- [ ] `scripts/clean.cs` - Clean solution
+- [ ] `scripts/package.cs` - Create NuGet packages
 
-### Phase 4: Complex Scripts
-- Migrate .github/scripts/sync-configurable-files.ps1 → TimeWarp.State.SyncConfig
-  - Consider using Octokit.NET for GitHub API interactions
+## Phase 2: New Workflow
 
-## Priority
-HIGH - GitHub workflow scripts are critical for CI/CD pipeline. The migration should start with Phase 1 to ensure build and test infrastructure remains functional.
+- [ ] Create `.github/workflows/ci-cd.yml` - Single workflow to replace 8 files
+  - Uses C# scripts from Phase 1
+  - Handles PR, push, release, manual triggers
+  - Copy Nuru/Amuru pattern
+
+## Phase 3: Test
+
+- [ ] Run old and new side by side
+- [ ] Verify both produce same results
+- [ ] Fix any differences
+
+## Phase 4: Delete Old Stuff
+
+- [ ] Delete 13 PowerShell scripts
+- [ ] Delete 7 duplicate workflow YAMLs
+- [ ] Keep only `ci-cd.yml` and `sync-configurable-files.yml`
