@@ -1,0 +1,46 @@
+﻿@namespace Test.App.Client.Pages
+
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Event Stream Page";
+
+
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/EventStreamPage";
+}
+
+<TwPageTitle>@Title</TwPageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<hr/>
+<!-- Arrange -->
+<!-- Test description -->
+<p>EventStream is an example of middleware. It adds each action to the event list. Displayed below</p>
+
+<EventStream TestId="events-list"/>
+<!-- Actions to take -->
+<Counter TestId="counter"/>
+
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong>Click the `Increment CounterState.Count` Button</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  Confirm that the `Events` List adds a Start and Completed event for the `CounterState+IncrementCount+Action`.
+</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
+

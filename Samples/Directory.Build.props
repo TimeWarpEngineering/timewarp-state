@@ -1,6 +1,0 @@
-<!-- Samples Directory.Build.props -->
-<Project>
-  <PropertyGroup>
-    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-  </PropertyGroup>
-</Project>

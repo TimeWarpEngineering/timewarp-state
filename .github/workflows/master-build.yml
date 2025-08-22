@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - 'Source/**'
-      - 'Tests/**'
+      - 'source/**'
+      - 'tests/**'
       - '.github/workflows/master-build.yml'
       - 'Directory.Build.props'
       - '*.props'
@@ -45,7 +45,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.403'
+          dotnet-version: |
+            9.0.x
+            10.0.100-preview.7.25380.108
 
       - name: Run Build Script
         run: ./.github/workflows/build.ps1
@@ -57,7 +59,7 @@ jobs:
 
       # End to End Tests
       - name: Run End-to-End Tests
-        run: ./RunE2ETests.ps1
+        run: ./run-e2e-tests.ps1
         working-directory: ${{ github.workspace }}
         env:
           UseHttp: "true"

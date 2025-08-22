@@ -10,7 +10,7 @@
       "rollForward": false
     },
     "dotnet-outdated-tool": {
-      "version": "4.6.4",
+      "version": "4.6.8",
       "commands": [
         "dotnet-outdated"
       ],

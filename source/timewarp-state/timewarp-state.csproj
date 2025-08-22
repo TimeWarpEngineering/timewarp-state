@@ -1,0 +1,90 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <Title>TimeWarp State</Title>
+    <Description>A Blazor state management library by TimeWarp</Description>
+    <PackageId>TimeWarp.State</PackageId>
+    <AssemblyName>TimeWarp.State</AssemblyName>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; TimeWarp.Mediator; Mediator; Pipeline; Redux; Flux</PackageTags>
+    <Nullable>disable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+  
+  <!-- Blazor Library Template parameters-->
+  <!--https://github.com/dotnet/aspnetcore/blob/main/src/ProjectTemplates/Web.ProjectTemplates/RazorClassLibrary-CSharp.csproj.in -->
+  <PropertyGroup>
+    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
+    <IsPackable>true</IsPackable>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <OutputType>Library</OutputType>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <!-- End Blazor Library Template parameters-->
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
+    <PackageReadmeFile>read-me.md</PackageReadmeFile>
+    <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
+    <DefineConstants>TRACE; EnableRedux</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AnyClone"/>
+    <PackageReference Include="JetBrains.Annotations"/>
+    <PackageReference Include="TimeWarp.Mediator"/>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    <PackageReference Include="TypeSupport"/>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test.App.Client.Integration.Tests"/>
+    <InternalsVisibleTo Include="Client.Integration.Tests"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\assets\logo.png" Pack="true" PackagePath=""/>
+    <None Include="..\..\read-me.md" Pack="true" PackagePath=""/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\timewarp-state-analyzer\bin\$(Configuration)\netstandard2.0\timewarp-state-analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="..\timewarp-state-source-generator\bin\$(Configuration)\netstandard2.0\timewarp-state-source-generator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="build\**" Pack="false"/>
+    <Content Include="buildMultiTargeting\**" Pack="false"/>
+    <Content Include="buildTransitive\**" Pack="false"/>
+  </ItemGroup>
+
+  <Target Name="RemoveTSConfigFileFromPackage" AfterTargets="CompileTypeScriptWithTSConfig">
+    <ItemGroup>
+      <Content Remove="**\tsconfig.json" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CopyPackage" AfterTargets="Pack">
+    <ItemGroup>
+      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
+    </ItemGroup>
+    <MakeDir Directories="$(ProjectDir)..\..\local-nuget-feed\" />
+    <Copy
+      SourceFiles="@(PackageFiles)"
+      DestinationFolder="$(ProjectDir)..\..\local-nuget-feed\"
+    />
+  </Target>
+
+</Project>

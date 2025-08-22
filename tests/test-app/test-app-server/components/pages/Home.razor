@@ -1,0 +1,42 @@
+﻿@namespace Test.App.Components.Pages
+@attribute [Route(Route)]
+@using System.Reflection
+@using TimeWarp.State.Plus.Extensions
+@inherits BaseComponent
+
+<TwPageTitle>@Title</TwPageTitle>
+<h1 data-qa="HomeHeader">@Title (@ApplicationState.Version)</h1>
+@RenderModeDisplay
+<div>Home Page render mode should be "Static" all the time.</div>
+<br/>
+<ul>
+  <li>
+    <a href="https://timewarpengineering.github.io/timewarp-state/">TimeWarp State Documentation</a>
+  </li>
+  <li>
+    <a href="https://github.com/TimeWarpEngineering/timewarp-state">TimeWarp State GitHub project</a>
+  </li>
+  <li>
+    <a href="https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en">Redux Dev Tools Chrome Extension </a>
+  </li>
+</ul>
+
+<ul>
+  <li>Commit Date: @AssemblyInfo?.CommitDate</li>
+  <li>Commit Hash: @AssemblyInfo?.CommitHash</li>
+  <li>RepositoryUrl: @AssemblyInfo?.RepositoryUrl</li>
+  <li><a href=@AssemblyInfo?.CommitUrl>@AssemblyInfo?.CommitUrl</a></li>
+</ul>
+
+@code
+{
+  private string Title => ApplicationState.Name;
+  private const string Route = "/";
+  private AssemblyInfo? AssemblyInfo;
+
+  /// <inheritdoc />
+  protected override void OnInitialized()
+  {
+    AssemblyInfo = typeof(Program).Assembly.GetAssemblyInfo();
+  }
+}

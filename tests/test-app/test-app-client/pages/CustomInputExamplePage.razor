@@ -1,0 +1,92 @@
+﻿@namespace Test.App.Client.Pages
+@rendermode InteractiveAuto
+@page "/customInput"
+
+@inherits BaseComponent
+
+<TwPageTitle>@Title</TwPageTitle>
+<h1>@Title</h1>
+@RenderModeDisplay
+<hr>
+<!-- Arrange -->
+<!-- Test description -->
+<p>
+  This test page is designed to validate the dynamic style adjustment of a CustomInput component based on the application's current theme (Light or Dark).
+</p>
+
+<!-- Values to validate -->
+<ul>
+  <li>
+    <strong>Current Theme:</strong> @ThemeState.CurrentTheme
+  </li>
+  <li>
+    <strong>Amount:</strong> @MyModel.Amount
+  </li>
+</ul>
+
+<!-- Actions to take -->
+<button @onclick=ToggleTheme>Toggle Theme</button>
+<hr>
+
+<!-- System Under Test (SUT) -->
+<div style="border: 2px solid blue; padding: 10px; margin-bottom: 20px;">
+  <h2>System Under Test: CustomInput Component</h2>
+  <EditForm FormName="TheForm" Model=@MyModel>
+    <CustomInput @bind-Value=MyModel.Amount ValidationFor=@(() => MyModel.Amount) Label="Amount"/>
+  </EditForm>
+</div>
+
+<hr>
+<!-- ACT: Toggle Theme -->
+<p><strong>Act:</strong> Toggle the theme by clicking the 'Toggle Theme' button.</p>
+
+<!-- ASSERT: Theme Change Reflected -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the theme changes from Light to Dark or vice versa upon clicking the 'Toggle Theme' button by
+  inspecting the class on the input element.
+</p>
+
+<!-- ASSERT: CustomInput Reflects State -->
+<p><strong>Assert:</strong> Verify that the CustomInput component properly reflects the current theme.</p>
+
+
+<!-- ACT: Enter a number -->
+<p><strong>Act:</strong> Enter a number into the input box.</p>
+<p><strong>Assert:</strong> The Amount value updates on exiting the input.</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
+
+@code {
+  readonly TheModel MyModel = new()
+  {
+    Amount = 10
+  };
+
+  class TheModel
+  {
+    public int Amount { get; set; }
+  }
+
+  /// <summary>
+  /// The title for the page.
+  /// </summary>
+  public const string Title = "Custom Input Test";
+
+  /// <summary>
+  /// The route for the page.
+  /// </summary>
+  public const string Route = "/custominput";
+  private async Task ToggleTheme()
+  {
+    await ThemeState.Update
+    (
+      ThemeState.CurrentTheme == ThemeState.Theme.Light
+        ? ThemeState.Theme.Dark
+        : ThemeState.Theme.Light
+    );
+  }
+}

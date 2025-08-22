@@ -1,0 +1,45 @@
+﻿@namespace Test.App.Client.Pages
+
+@rendermode InteractiveAuto
+@attribute [Route(Route)]
+@inherits BaseComponent
+
+<TwPageTitle>@Title</TwPageTitle>
+<h3>@Title</h3>
+@RenderModeDisplay
+<hr/>
+<!-- Arrange -->
+<!-- Test description -->
+<p>Reset button should clear all state in the Store and return you to the home page</p>
+
+<!-- Actions to take -->
+<ResetButton />
+
+<hr>
+<!-- ACT -->
+<p><strong>Act:</strong> Click the `Reset Store` Button.</p>
+
+<!-- ASSERT -->
+<p>
+  <strong>Assert:</strong>
+  Verify that the route changes to the home page.
+</p>
+
+<hr>
+<p>
+  <strong>Repeat</strong> the above steps where `Current Render Mode` is Server and Wasm.
+</p>
+
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Reset Store Page";
+
+
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/ResetStorePage";
+}

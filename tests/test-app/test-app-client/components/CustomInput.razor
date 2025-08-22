@@ -1,0 +1,37 @@
+﻿@namespace Test.App.Client.Components
+@typeparam T
+@inherits BaseInputComponent<T>
+
+<div>
+  @if (!string.IsNullOrWhiteSpace(Label))
+  {
+    <label for=@Id>@Label</label>
+  }
+  <input class="form-control @GetThemeClass() @CssClass" id=@Id @bind=CurrentValueAsString/>
+</div>
+
+<style>
+  .light {
+      background-color: #ffffff; /* Light background */
+      color: #000000; /* Dark text */
+  }
+  
+  .dark {
+      background-color: #363636; /* Dark background */
+      color: #ffffff; /* Light text */
+  }
+</style>
+@code
+{
+  // set the CssClass based on the CurrentTheme
+  private string GetThemeClass()
+  {
+    return ThemeState.CurrentTheme switch
+    {
+      ThemeState.Theme.Light => "light",
+      ThemeState.Theme.Dark => "dark",
+      ThemeState.Theme.System => "dark",
+      _ => string.Empty
+    };
+  }
+}

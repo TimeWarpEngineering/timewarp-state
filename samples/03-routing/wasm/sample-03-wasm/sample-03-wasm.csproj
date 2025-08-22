@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Sample03Wasm</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
+    <PackageReference Include="TimeWarp.State" />
+    <PackageReference Include="TimeWarp.State.Plus" />
+  </ItemGroup>
+
+  <!-- <ItemGroup>
+    <ProjectReference Include="../../../../source/timewarp-state/timewarp-state.csproj" />
+    <ProjectReference Include="../../../../source/timewarp-state-plus/timewarp-state-plus.csproj" />
+  </ItemGroup> -->
+
+</Project>

@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Test.App.Contracts</AssemblyName>
+    <RootNamespace>Test.App.Contracts</RootNamespace>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="TimeWarp.Mediator" />
+    <PackageReference Include="System.Net.Http.Json" />
+  </ItemGroup>
+
+</Project>

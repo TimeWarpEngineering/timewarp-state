@@ -1,0 +1,36 @@
+@namespace Test.App.Client.Pages.ShouldRenderStateTriggersTestPage
+@inherits BaseComponent
+<div class=@Id>
+  <h6>Child with CounterState Subscription and no RenderTrigger</h6>
+  <div>CounterState.Count: @CounterState.Count</div>
+
+  <div class="child-render-info-container">
+    <div>Render Count: @(RenderCount + 1)</div>
+    <div>ShouldRenderWasCalledBy: @ShouldRenderWasCalledBy</div>
+    <div>Render Reason: @RenderReason</div>
+    <div>SetParametersAsyncWasCalledBy: @SetParametersAsyncWasCalledBy</div>
+    <div>Render Reason Detail: @RenderReasonDetail</div>
+    <div>StateHasChangedWasCalledBy: @StateHasChangedWasCalledBy</div>
+  </div>
+</div>
+
+<style>
+  @($@"
+    .{Id} {{
+      border: 1px solid;
+      padding: 1rem;            
+    }}
+
+    .{Id} > .child-render-info-container {{
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 0px;
+    }}
+
+    .{Id} > .child-render-info-container > div {{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }}
+  ")
+</style>
