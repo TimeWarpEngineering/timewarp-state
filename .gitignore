@@ -307,9 +307,9 @@ __pycache__/
 # Ignore all files in Razor Source Generators directories
 **/Microsoft.NET.Sdk.Razor.SourceGenerators/**
 **/Microsoft.CodeAnalysis.Razor.Compiler.SourceGenerators/**
-/Tests/Test.App/Test.App.Client/Generated/**
-/Tests/Test.App.EndToEnd.Tests/Output/**
-/Tests/Test.App/Output/**
+/tests/test-app/test-app-client/generated/**
+/tests/test-app-end-to-end-tests/output/**
+/tests/test-app/output/**
 
 /.aider.input.history.md
 /.aider.chat.history.md

@@ -1,13 +1,13 @@
 $Env:ASPNETCORE_ENVIRONMENT = "Development"
-$Env:UseHttp = "false"  # Set to "true" if you want to use HTTP locally
+$Env:UseHttp = "true"  # Default to HTTP to avoid certificate issues
 
 Push-Location $PSScriptRoot
 try {
   Clear-Host
   # The analyzer is not directly referenced by the test app, so we need to build it first
-  dotnet build ./Source/TimeWarp.State.Analyzer/TimeWarp.State.Analyzer.csproj
-  dotnet build ./Source/TimeWarp.State.SourceGenerator/TimeWarp.State.SourceGenerator.csproj
-  dotnet run --project ./Tests/Test.App/Test.App.Server/Test.App.Server.csproj --launch-profile http
+  dotnet build ./source/timewarp-state-analyzer/timewarp-state-analyzer.csproj
+  dotnet build ./source/timewarp-state-source-generator/timewarp-state-source-generator.csproj
+  dotnet run --project ./tests/test-app/test-app-server/test-app-server.csproj --launch-profile http
 }
 finally {
   Pop-Location

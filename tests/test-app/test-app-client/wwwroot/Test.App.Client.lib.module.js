@@ -1,5 +1,5 @@
-﻿import { timeWarpState } from '/_content/TimeWarp.State/js/TimeWarpState.js'
-import { log, LogAction } from '/_content/TimeWarp.State/js/Logger.js'
+﻿import { timeWarpState } from '/_content/TimeWarp.State/js/timewarp-state.js'
+import { log, LogAction } from '/_content/TimeWarp.State/js/logger.js'
 
 const dispatchIncrementCountAction = () => {
   log("dispatchIncrementCountAction", "Dispatching IncrementCountAction", "function");

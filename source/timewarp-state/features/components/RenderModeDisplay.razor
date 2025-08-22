@@ -11,6 +11,21 @@
   /// </summary>
   [Parameter, EditorRequired] public string CurrentRenderMode { get; set; } = null!;
 
+  /// <summary>
+  /// The render mode from RendererInfo.Name (new .NET 9 API).
+  /// </summary>
+  [Parameter] public string? RendererInfoName { get; set; }
+  
+  /// <summary>
+  /// The assigned render mode from RendererInfo (what it will be after prerendering).
+  /// </summary>
+  [Parameter] public string? RendererInfoAssignedMode { get; set; }
+  
+  /// <summary>
+  /// Whether the component is currently interactive.
+  /// </summary>
+  [Parameter] public bool? RendererInfoIsInteractive { get; set; }
+
   /// <inheritdoc />
   protected override void OnParametersSet()
   {
@@ -29,4 +44,16 @@
 <div class="render-mode-display">
     <div>Current Render Mode: <span data-qa="current-render-mode">@CurrentRenderMode</span></div>
     <div>Configured Render Mode: <span data-qa="configured-render-mode">@ConfiguredRenderMode</span></div>
+    @if (RendererInfoName != null)
+    {
+        <div>RendererInfo.Name: <span data-qa="renderer-info-name">@RendererInfoName</span></div>
+    }
+    @if (RendererInfoAssignedMode != null)
+    {
+        <div>RendererInfo.AssignedRenderMode: <span data-qa="renderer-info-assigned">@RendererInfoAssignedMode</span></div>
+    }
+    @if (RendererInfoIsInteractive != null)
+    {
+        <div>RendererInfo.IsInteractive: <span data-qa="renderer-info-interactive">@RendererInfoIsInteractive</span></div>
+    }
 </div>
