@@ -1,7 +1,8 @@
 # Configuration variables
 $SutProjectDir = "$PSScriptRoot/tests/test-app/test-app-server"
 $OutputPath = "$PSScriptRoot/tests/test-app/output"
-$UseHttp = $env:UseHttp -eq "true"
+# Always use HTTP to avoid certificate trust issues
+$UseHttp = $true
 $Protocol = if ($UseHttp) { "http" } else { "https" }
 $SutUrl = "${Protocol}://localhost"
 $TestProjectDir = "$PSScriptRoot/tests/test-app-end-to-end-tests"
@@ -248,8 +249,10 @@ function Run-Tests {
         $global:testsFailed = $false
 
         Write-Host "Running E2E tests" -ForegroundColor Cyan
+        # Set UseHttp environment variable for test process
+        $env:UseHttp = $UseHttp.ToString().ToLower()
         foreach ($setting in $settings) {
-            $targetArguments = @("test", "--no-build", "--settings:playwright-settings\$setting", "./test-app-end-to-end-tests.csproj")
+            $targetArguments = @("test", "--no-build", "--settings:playwright-settings\$setting", "-e", "UseHttp=$($UseHttp.ToString().ToLower())", "./test-app-end-to-end-tests.csproj")
             Write-Host "Executing: dotnet $($targetArguments -join ' ')" -ForegroundColor Yellow
             
             dotnet @targetArguments

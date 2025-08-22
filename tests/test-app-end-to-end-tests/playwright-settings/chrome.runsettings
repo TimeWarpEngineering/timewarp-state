@@ -17,10 +17,6 @@
     <ExpectTimeout>5000</ExpectTimeout>
     <LaunchOptions>
       <Headless>true</Headless>
-      <Channel>chrome</Channel>
-      <Args>
-        <Arg>--headless=new</Arg>
-      </Args>
     </LaunchOptions>
   </Playwright>
 </RunSettings>
