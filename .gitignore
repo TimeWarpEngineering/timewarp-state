@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Ignore packages.lock.json except for main libraries
+# Only source libraries need reproducible builds
+packages.lock.json
+!source/**/packages.lock.json
+
 # User-specific files
 *.suo
 *.user
