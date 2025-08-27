@@ -31,20 +31,11 @@ async Task BuildProjects(string configuration, bool pack)
 
 // List installed .NET SDKs
 WriteLine("\nListing installed .NET SDKs:");
-var listSdksResult = await DotNet.WithListSdks().ExecuteAsync();
-listSdksResult.WriteToConsole();
+await DotNet.WithListSdks().RunAsync();
 
 // Restore tools
 WriteLine("\nRestoring dotnet tools...");
-var restoreResult = await DotNet.Tool()
-    .Restore()
-    .ExecuteAsync();
-
-if (!restoreResult.IsSuccess)
-{
-    WriteLine("❌ Failed to restore tools");
-    Environment.Exit(1);
-}
+await DotNet.Tool().Restore().RunAsync();
 // Create local NuGet feed directory
 WriteLine("\nCreating local NuGet feed directory...");
 Directory.CreateDirectory("./local-nuget-feed");
@@ -70,18 +61,11 @@ foreach (var project in projects)
     
     WriteLine($"\nBuilding {Path.GetFileNameWithoutExtension(project)}...");
     
-    var buildResult = await DotNet.Build()
+    await DotNet.Build()
         .WithProject(project)
         .WithConfiguration(configuration)
         .WithVerbosity("minimal")
-        .ExecuteAsync();
-    
-    if (!buildResult.IsSuccess)
-    {
-        WriteLine($"❌ Failed to build {project}");
-        buildResult.WriteToConsole();
-        Environment.Exit(1);
-    }
+        .RunAsync();
     
     WriteLine($"✅ Built {Path.GetFileNameWithoutExtension(project)}");
 }
@@ -103,18 +87,11 @@ foreach (var project in projects)
             
         WriteLine($"\nPacking {Path.GetFileNameWithoutExtension(project)}...");
         
-        var packResult = await DotNet.Pack()
+        await DotNet.Pack()
             .WithProject(project)
             .WithConfiguration(configuration)
             .WithOutput("./local-nuget-feed")
-            .ExecuteAsync();
-        
-        if (!packResult.IsSuccess)
-        {
-            WriteLine($"❌ Failed to pack {project}");
-            packResult.WriteToConsole();
-            Environment.Exit(1);
-        }
+            .RunAsync();
         
         WriteLine($"✅ Packed {Path.GetFileNameWithoutExtension(project)}");
     }
@@ -135,23 +112,20 @@ async Task CleanSolution()
     {
         await Shell.Builder("pkill")
             .WithArguments("-f", "dotnet")
-            .ExecuteAsync();
+            .RunAsync();
     }
     catch { /* Ignore if pkill not found or no processes */ }
-    
+
     // Clear NuGet caches
     WriteLine("Clearing NuGet caches...");
-    var clearResult = await DotNet.NuGet()
+    await DotNet.NuGet()
         .Locals()
         .Clear(NuGetCacheType.All)
-        .ExecuteAsync();
-    clearResult.WriteToConsole();
-    
+        .RunAsync();
+
     // Clean solution
     WriteLine("Cleaning solution...");
-    var cleanResult = await DotNet.Clean()
-        .ExecuteAsync();
-    cleanResult.WriteToConsole();
+    await DotNet.Clean().RunAsync();
     
     // Remove directories
     if (Directory.Exists("./local-nuget-feed"))

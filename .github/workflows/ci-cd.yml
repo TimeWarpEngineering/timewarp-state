@@ -1,0 +1,213 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    paths:
+      - 'source/**'
+      - 'tests/**'
+      - '.github/workflows/ci-cd.yml'
+      - '*.props'
+      - '*.targets'
+      - 'Directory.Build.props'
+  push:
+    branches:
+      - master
+    paths:
+      - 'source/**'
+      - 'tests/**'
+      - '.github/workflows/ci-cd.yml'
+      - 'Directory.Build.props'
+      - '*.props'
+      - '*.targets'
+      - 'Documentation/**'
+  release:
+    types: [created]
+  workflow_dispatch:
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NUGET_AUTH_TOKEN: ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+
+jobs:
+  # CI/CD job for PR and push events
+  ci:
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.100-preview.7.25380.108
+
+      - name: Clean solution
+        run: dotnet run --project ./scripts/clean.cs
+        working-directory: ${{ github.workspace }}
+
+      - name: Build solution
+        run: dotnet run --project ./scripts/build.cs
+        working-directory: ${{ github.workspace }}
+
+      - name: Run tests
+        run: dotnet run --project ./scripts/test.cs
+        working-directory: ${{ github.workspace }}
+
+      - name: Run E2E tests
+        run: dotnet run --project ./scripts/e2e.cs
+        working-directory: ${{ github.workspace }}
+        env:
+          UseHttp: "true"
+
+  # Documentation publishing job
+  docs:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && contains(github.event.head_commit.modified, 'Documentation/')
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Setup DocFX
+        run: dotnet tool update --global docfx
+
+      - name: Build solution
+        run: dotnet run --project ./scripts/build.cs
+        working-directory: ${{ github.workspace }}
+
+      - name: Build documentation
+        working-directory: Documentation
+        run: docfx docfx.json
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload documentation
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './Documentation/_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Release publishing job
+  release:
+    if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.403'
+
+      - name: Extract version from Directory.Build.props
+        id: extract_version
+        run: |
+          [xml]$xml = Get-Content -Path "Directory.Build.props"
+          $version = $xml.SelectSingleNode("//TimeWarpStateVersion").InnerText
+          $version = $version.Trim()
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
+
+      - name: Validate release version matches tag
+        if: github.event_name == 'release'
+        run: |
+          $releaseVersion = "${{ steps.extract_version.outputs.version }}"
+          $tagName = "${{ github.event.release.tag_name }}"
+          $tagNameForComparison = $tagName
+          if ($tagName.StartsWith("v")) {
+            $tagNameForComparison = $tagName.Substring(1)
+          }
+
+          if ($releaseVersion -ne $tagNameForComparison) {
+            throw "Release version ($releaseVersion) does not match tag name ($tagName)"
+          }
+          Write-Host "✅ Release version matches tag name"
+        shell: pwsh
+
+      - name: Create NuGet packages
+        run: dotnet run --project ./scripts/package.cs
+        working-directory: ${{ github.workspace }}
+
+      - name: Publish TimeWarp.State to NuGet
+        run: |
+          $packagePath = "./LocalNugetFeed/TimeWarp.State.*.nupkg"
+          if (!(Test-Path $packagePath)) {
+            throw "NuGet package not found for TimeWarp.State"
+          }
+          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Publish TimeWarp.State.Plus to NuGet
+        run: |
+          $packagePath = "./LocalNugetFeed/TimeWarp.State.Plus.*.nupkg"
+          if (!(Test-Path $packagePath)) {
+            throw "NuGet package not found for TimeWarp.State.Plus"
+          }
+          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+        working-directory: ${{ github.workspace }}
+
+      - name: Publish TimeWarp.State.Policies to NuGet
+        run: |
+          $packagePath = "./LocalNugetFeed/TimeWarp.State.Policies.*.nupkg"
+          if (!(Test-Path $packagePath)) {
+            throw "NuGet package not found for TimeWarp.State.Policies"
+          }
+          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+        working-directory: ${{ github.workspace }}
