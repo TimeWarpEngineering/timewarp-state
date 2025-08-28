@@ -111,9 +111,9 @@ async Task RunE2eTests()
     }
     finally
     {
-        if (runMode == "Auto" && sutProcess.HasValue)
+        if (runMode == "Auto" && sutProcess != null)
         {
-            await KillSut(sutProcess.Value);
+            await KillSut(sutProcess);
         }
         else
         {
@@ -138,11 +138,12 @@ async Task EnsureBrowsersInstalled(string testProjectDir)
     if (File.Exists(playwrightPath))
     {
         WriteLine("Installing Playwright Chromium browser...");
-        var result = await Shell.Run("pwsh", playwrightPath, "install", "chromium", "--with-deps")
-            .ExecuteAsync();
-        if (!result.IsSuccess)
+        var exitCode = await Shell.Builder("pwsh")
+            .WithArguments(playwrightPath, "install", "chromium", "--with-deps")
+            .RunAsync();
+        if (exitCode != 0)
         {
-            WriteLine($"Warning: Playwright installation may have issues: {result.StandardError}");
+            WriteLine($"Warning: Playwright installation may have issues. Exit code: {exitCode}");
         }
     }
     else
@@ -154,12 +155,12 @@ async Task EnsureBrowsersInstalled(string testProjectDir)
 async Task RestoreToolsAndCleanup()
 {
     // Restore .NET tools
-    var result = await DotNet.Tool.Restore().ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+    var exitCode = await DotNet.Tool().Restore().Build().RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 
     // Clean the solution
-    result = await DotNet.Clean().ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+    exitCode = await DotNet.Clean().Build().RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 
     // Clean the Output directory
     if (Directory.Exists("./tests/test-app/output"))
@@ -171,20 +172,22 @@ async Task RestoreToolsAndCleanup()
 
 async Task BuildAnalyzer(string analyzerProjectPath)
 {
-    var result = await DotNet.Build()
+    var exitCode = await DotNet.Build()
         .WithProject(analyzerProjectPath)
         .WithConfiguration("Release")
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 }
 
 async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
 {
-    var result = await DotNet.Build()
+    var exitCode = await DotNet.Build()
         .WithProject(sourceGeneratorProjectPath)
         .WithConfiguration("Release")
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 }
 
 async Task UpdateClientAppSettings(bool useHttp)
@@ -205,42 +208,47 @@ async Task UpdateClientAppSettings(bool useHttp)
 async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
 {
     // Restore dependencies
-    var result = await DotNet.Restore()
+    var exitCode = await DotNet.Restore()
         .WithProject($"{sutProjectDir}/test-app-server.csproj")
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 
     // Build the solution
-    result = await DotNet.Build()
+    exitCode = await DotNet.Build()
         .WithProject($"{sutProjectDir}/test-app-server.csproj")
         .WithConfiguration("Release")
         .WithNoRestore()
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 
     // Publish the SUT
-    result = await DotNet.Publish()
+    exitCode = await DotNet.Publish()
         .WithProject($"{sutProjectDir}/test-app-server.csproj")
         .WithConfiguration("Release")
         .WithOutput(outputPath)
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 }
 
 async Task BuildTest(string testProjectDir)
 {
     // Restore dependencies
-    var result = await DotNet.Restore()
+    var exitCode = await DotNet.Restore()
         .WithProject($"{testProjectDir}/test-app-end-to-end-tests.csproj")
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 
     // Build the test project
-    result = await DotNet.Build()
+    exitCode = await DotNet.Build()
         .WithProject($"{testProjectDir}/test-app-end-to-end-tests.csproj")
         .WithConfiguration("Debug")
-        .ExecuteAsync();
-    if (!result.IsSuccess) Environment.Exit(1);
+        .Build()
+        .RunAsync();
+    if (exitCode != 0) Environment.Exit(1);
 }
 
 async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath, string sutUrl, int sutPort, bool useHttp)
@@ -257,17 +265,19 @@ async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath,
         case "Development":
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
             WriteLine("Starting SUT in Development mode...");
-            var devResult = await Shell.Run("dotnet", "run", "--urls", $"{sutUrl}:{sutPort}")
+            var devExitCode = await Shell.Builder("dotnet")
+                .WithArguments("run", "--urls", $"{sutUrl}:{sutPort}")
                 .WithWorkingDirectory("./tests/test-app/test-app-server")
-                .ExecuteAsync();
+                .RunAsync();
             return null;
 
         case "Release":
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
             WriteLine("Starting SUT in Release configuration...");
-            var releaseResult = await Shell.Run("dotnet", "run", "--configuration", "Release", "--urls", $"{sutUrl}:{sutPort}")
+            var releaseExitCode = await Shell.Builder("dotnet")
+                .WithArguments("run", "--configuration", "Release", "--urls", $"{sutUrl}:{sutPort}")
                 .WithWorkingDirectory("./tests/test-app/test-app-server")
-                .ExecuteAsync();
+                .RunAsync();
             return null;
 
         default:
@@ -389,11 +399,12 @@ async Task<bool> RunTests(string testProjectDir, bool useHttp)
 
         WriteLine($"Executing: dotnet {string.Join(" ", targetArguments)}");
 
-        var result = await Shell.Run("dotnet", targetArguments)
+        var exitCode = await Shell.Builder("dotnet")
+            .WithArguments(targetArguments)
             .WithWorkingDirectory(testProjectDir)
-            .ExecuteAsync();
+            .RunAsync();
 
-        if (!result.IsSuccess)
+        if (exitCode != 0)
         {
             testsFailed = true;
             break;
@@ -417,9 +428,9 @@ async Task InstallLinuxDevCerts()
     if (OperatingSystem.IsLinux())
     {
         WriteLine("Installing Linux development certificates...");
-        var result = await DotNet.DevCerts.Https.Clear().ExecuteAsync();
-        result = await DotNet.DevCerts.Https.Create().ExecuteAsync();
-        if (result.IsSuccess)
+        var exitCode = await DotNet.DevCerts().Https().WithClean().Build().RunAsync();
+        exitCode = await DotNet.DevCerts().Https().WithTrust().Build().RunAsync();
+        if (exitCode == 0)
         {
             WriteLine("Linux development certificates installed successfully.");
         }
