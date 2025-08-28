@@ -67,12 +67,13 @@
     <Exec Command="git log -1 --format=%ct" ConsoleToMSBuild="true" Condition="'$(OS)' != 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
     </Exec>
-    <Exec Command="pwsh -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildThisFileDirectory)convert-timestamp.ps1&quot; -GitCommitTimestamp $(GitCommitTimestamp)" ConsoleToMSBuild="true">
+    <Exec Command="convert-timestamp --GitCommitTimestamp $(GitCommitTimestamp)" ConsoleToMSBuild="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="CommitDate"/>
     </Exec>
     <PropertyGroup>
       <!-- In Visual Studio the below line crashes if they fix VS then we can use this and no need for the powershell script -->
       <!--<LastCommitDate>$([System.DateTime]::UnixEpoch.AddSeconds($(GitCommitTimestamp)).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))</LastCommitDate>-->
+      <LastCommitDate>$(CommitDate)</LastCommitDate>
     </PropertyGroup>
     <ItemGroup>
       <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
