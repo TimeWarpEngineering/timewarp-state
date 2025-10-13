@@ -1,5 +1,18 @@
 <Project>
 
+  <!-- Custom path definitions for repository structure -->
+  <PropertyGroup Label="Custom Repository Variables">
+    <RepositoryName>timewarp-state</RepositoryName>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
+    <TestsDirectory>$(RepositoryRoot)tests/</TestsDirectory>
+    <SamplesDirectory>$(RepositoryRoot)samples/</SamplesDirectory>
+    <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>
+    <SolutionFile>$(RepositoryRoot)timewarp-state.slnx</SolutionFile>
+    <LocalNuGetFeed>$(ArtifactsDirectory)packages/</LocalNuGetFeed>
+    <LocalNuGetCache>$(RepositoryRoot)local-nuget-feed/</LocalNuGetCache>
+  </PropertyGroup>
+
   <!-- NuGet package metadata -->
   <PropertyGroup Label="Package Metadata">
     <TimeWarpStateVersion>12.0.0-beta.3</TimeWarpStateVersion>
