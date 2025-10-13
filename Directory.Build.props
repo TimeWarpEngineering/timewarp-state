@@ -2,6 +2,7 @@
 
   <!-- Custom path definitions for repository structure -->
   <PropertyGroup Label="Custom Repository Variables">
+    <TimeWarpStateVersion>12.0.0-beta.3</TimeWarpStateVersion>
     <RepositoryName>timewarp-state</RepositoryName>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
     <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
@@ -11,28 +12,6 @@
     <SolutionFile>$(RepositoryRoot)timewarp-state.slnx</SolutionFile>
     <LocalNuGetFeed>$(ArtifactsDirectory)packages/</LocalNuGetFeed>
     <LocalNuGetCache>$(RepositoryRoot)local-nuget-feed/</LocalNuGetCache>
-  </PropertyGroup>
-
-  <!-- NuGet package metadata -->
-  <PropertyGroup Label="Package Metadata">
-    <TimeWarpStateVersion>12.0.0-beta.3</TimeWarpStateVersion>
-    <Authors>Steven T. Cramer</Authors>
-    <Product>TimeWarp State</Product>
-    <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
-    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-state/</PackageProjectUrl>
-    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; TimeWarp.Mediator; Pipeline; Redux; Flux</PackageTags>
-    <PackageIcon>logo.png</PackageIcon>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-state.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
-    <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
-    <PackageReadmeFile>read-me.md</PackageReadmeFile>
-    <ContentTargetFolders>contentFiles</ContentTargetFolders>
-  </PropertyGroup>
-
-  <!-- MSBuild and NuGet behavior configuration -->
-  <PropertyGroup Label="MSBuild/NuGet Configuration">
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
@@ -45,7 +24,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
@@ -55,21 +34,6 @@
     <NoWarn>CS7035;NU1503;1503</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-  <PropertyGroup Label="Source Link Configuration">
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <!-- End Source Link -->
 
   <!-- Code analyzers applied to all projects -->
   <ItemGroup Label="Code Analyzers">

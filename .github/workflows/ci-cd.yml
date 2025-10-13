@@ -156,10 +156,10 @@ jobs:
         with:
           dotnet-version: '8.0.403'
 
-      - name: Extract version from Directory.Build.props
+      - name: Extract version from source/Directory.Build.props
         id: extract_version
         run: |
-          [xml]$xml = Get-Content -Path "Directory.Build.props"
+          [xml]$xml = Get-Content -Path "source/Directory.Build.props"
           $version = $xml.SelectSingleNode("//TimeWarpStateVersion").InnerText
           $version = $version.Trim()
           echo "version=$version" >> $env:GITHUB_OUTPUT
@@ -187,7 +187,7 @@ jobs:
 
       - name: Publish TimeWarp.State to NuGet
         run: |
-          $packagePath = "./LocalNugetFeed/TimeWarp.State.*.nupkg"
+          $packagePath = "./artifacts/packages/TimeWarp.State.*.nupkg"
           if (!(Test-Path $packagePath)) {
             throw "NuGet package not found for TimeWarp.State"
           }
@@ -196,7 +196,7 @@ jobs:
 
       - name: Publish TimeWarp.State.Plus to NuGet
         run: |
-          $packagePath = "./LocalNugetFeed/TimeWarp.State.Plus.*.nupkg"
+          $packagePath = "./artifacts/packages/TimeWarp.State.Plus.*.nupkg"
           if (!(Test-Path $packagePath)) {
             throw "NuGet package not found for TimeWarp.State.Plus"
           }
@@ -205,7 +205,7 @@ jobs:
 
       - name: Publish TimeWarp.State.Policies to NuGet
         run: |
-          $packagePath = "./LocalNugetFeed/TimeWarp.State.Policies.*.nupkg"
+          $packagePath = "./artifacts/packages/TimeWarp.State.Policies.*.nupkg"
           if (!(Test-Path $packagePath)) {
             throw "NuGet package not found for TimeWarp.State.Policies"
           }

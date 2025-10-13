@@ -1,0 +1,31 @@
+<Project>
+  <!-- Import parent Directory.Build.props -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <!-- Default package metadata (can be overridden in individual projects) -->
+  <PropertyGroup Label="Package Metadata">
+    <Authors>Steven T. Cramer</Authors>
+    <Product>TimeWarp State</Product>
+    <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
+    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-state/</PackageProjectUrl>
+    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; TimeWarp.Mediator; Pipeline; Redux; Flux</PackageTags>
+    <PackageIcon>logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-state.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
+    <PackageReadmeFile>read-me.md</PackageReadmeFile>
+    <ContentTargetFolders>contentFiles</ContentTargetFolders>
+    <PackageOutputPath>$(LocalNuGetFeed)</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Source Link Configuration">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+</Project>

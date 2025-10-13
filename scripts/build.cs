@@ -7,20 +7,23 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
+// Path constants - aligned with Directory.Build.props variables
+const string artifactsDirectory = "./artifacts";
+const string packagesDirectory = "./artifacts/packages";
+const string analyzersDirectory = "./artifacts/analyzers";
+
 NuruApp app = new NuruAppBuilder()
     .AddRoute("build {configuration?|Build configuration (Debug/Release)}",
-        async (string? configuration) => await BuildProjects(configuration ?? "Release", false))
-    .AddRoute("pack {configuration?|Build configuration (Debug/Release)}",
-        async (string? configuration) => await BuildProjects(configuration ?? "Release", true))
+        async (string? configuration) => await BuildProjects(configuration ?? "Release"))
     .AddRoute("clean", async () => await CleanSolution())
-    .AddDefaultRoute(async () => await BuildProjects("Release", false))  // Default when no args
+    .AddDefaultRoute(async () => await BuildProjects("Release"))  // Default when no args
     .AddAutoHelp()  // Automatically generates help for all routes
     .Build();
 
 return await app.RunAsync(args);
 
-// Build implementation
-async Task BuildProjects(string configuration, bool pack)
+// Build implementation (packages are automatically created via GeneratePackageOnBuild)
+async Task BuildProjects(string configuration)
 {
   // Use ScriptContext to manage directory changes - automatically restores on dispose
   using var context = ScriptContext.FromRelativePath("..");  // Go up one level from scripts/ to repo root
@@ -36,15 +39,10 @@ async Task BuildProjects(string configuration, bool pack)
   // Restore tools
   WriteLine("\nRestoring dotnet tools...");
   await DotNet.Tool().Restore().RunAsync();
-  // Create local NuGet feed directory
-  WriteLine("\nCreating local NuGet feed directory...");
-  Directory.CreateDirectory("./local-nuget-feed");
 
   // Projects to build in order
   string[] projects =
   [
-      "./source/timewarp-state-analyzer/timewarp-state-analyzer.csproj",
-      "./source/timewarp-state-source-generator/timewarp-state-source-generator.csproj",
       "./source/timewarp-state/timewarp-state.csproj",
       "./source/timewarp-state-plus/timewarp-state-plus.csproj",
       "./source/timewarp-state-policies/timewarp-state-policies.csproj"
@@ -70,34 +68,8 @@ async Task BuildProjects(string configuration, bool pack)
     WriteLine($"✅ Built {Path.GetFileNameWithoutExtension(project)}");
   }
 
-  // Pack main projects if requested
-  if (pack)
-  {
-    string[] packProjects = new[]
-    {
-        "./source/timewarp-state/timewarp-state.csproj",
-        "./source/timewarp-state-plus/timewarp-state-plus.csproj",
-        "./source/timewarp-state-policies/timewarp-state-policies.csproj"
-    };
-
-    foreach (string project in packProjects)
-    {
-      if (!File.Exists(project))
-        continue;
-
-      WriteLine($"\nPacking {Path.GetFileNameWithoutExtension(project)}...");
-
-      await DotNet.Pack()
-          .WithProject(project)
-          .WithConfiguration(configuration)
-          .WithOutput("./local-nuget-feed")
-          .RunAsync();
-
-      WriteLine($"✅ Packed {Path.GetFileNameWithoutExtension(project)}");
-    }
-  }
-
   WriteLine("\n✅ Build completed successfully!");
+  WriteLine($"Packages available in: {packagesDirectory}");
 }
 
 // Clean implementation
@@ -128,10 +100,10 @@ async Task CleanSolution()
   await DotNet.Clean().RunAsync();
 
   // Remove directories
-  if (Directory.Exists("./local-nuget-feed"))
+  if (Directory.Exists(artifactsDirectory))
   {
-    WriteLine("Removing local-nuget-feed...");
-    Directory.Delete("./local-nuget-feed", recursive: true);
+    WriteLine("Removing artifacts directory...");
+    Directory.Delete(artifactsDirectory, recursive: true);
   }
 
   if (Directory.Exists("./source/timewarp-state/wwwroot/js"))

@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>true</IncludeBuildOutput>
@@ -32,7 +31,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\assets\logo.png" Pack="true" PackagePath="" />
+    <None Include="$(RepositoryRoot)assets\logo.png" Pack="true" PackagePath="" />
   </ItemGroup>
   
 </Project>

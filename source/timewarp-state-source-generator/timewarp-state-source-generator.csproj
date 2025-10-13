@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <OutputPath>$(ArtifactsDirectory)analyzers\$(Configuration)\</OutputPath>
   </PropertyGroup>
 </Project>

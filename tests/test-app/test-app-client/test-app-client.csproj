@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AssemblyName>Test.App.Client</AssemblyName>
-    <Nullable>enable</Nullable>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
     <RootNamespace>Test.App.Client</RootNamespace>

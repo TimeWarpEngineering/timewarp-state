@@ -6,7 +6,6 @@
     <AssemblyName>TimeWarp.State</AssemblyName>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; TimeWarp.Mediator; Mediator; Pipeline; Redux; Flux</PackageTags>
-    <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   
@@ -18,7 +17,6 @@
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>true</IncludeBuildOutput>
     <OutputType>Library</OutputType>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
   <!-- End Blazor Library Template parameters-->
 
@@ -46,6 +44,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- ProjectReferences to ensure analyzers are built before packing -->
+    <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <SupportedPlatform Include="browser"/>
   </ItemGroup>
 
@@ -55,13 +63,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\assets\logo.png" Pack="true" PackagePath=""/>
-    <None Include="..\..\read-me.md" Pack="true" PackagePath=""/>
+    <None Include="$(RepositoryRoot)assets\logo.png" Pack="true" PackagePath=""/>
+    <None Include="$(RepositoryRoot)read-me.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\timewarp-state-analyzer\bin\$(Configuration)\netstandard2.0\timewarp-state-analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
-    <None Include="..\timewarp-state-source-generator\bin\$(Configuration)\netstandard2.0\timewarp-state-source-generator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="$(ArtifactsDirectory)analyzers\$(Configuration)\netstandard2.0\timewarp-state-analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <None Include="$(ArtifactsDirectory)analyzers\$(Configuration)\netstandard2.0\timewarp-state-source-generator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
   
   <ItemGroup>
@@ -74,17 +82,6 @@
     <ItemGroup>
       <Content Remove="**\tsconfig.json" />
     </ItemGroup>
-  </Target>
-
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <ItemGroup>
-      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg" />
-    </ItemGroup>
-    <MakeDir Directories="$(ProjectDir)..\..\local-nuget-feed\" />
-    <Copy
-      SourceFiles="@(PackageFiles)"
-      DestinationFolder="$(ProjectDir)..\..\local-nuget-feed\"
-    />
   </Target>
 
 </Project>
