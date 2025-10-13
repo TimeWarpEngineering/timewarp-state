@@ -11,13 +11,14 @@
     <PackageVersion Include="timewarp-heroicons" Version="2.0.19" />
 
     <!-- Microsoft ASP.NET Core -->
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Test.App.Server" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Test.App.Server" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="9.0.9" />
+    <PackageVersion Include="System.Collections.Immutable" Version="9.0.9" />
 
     <!-- Microsoft Code Analysis -->
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
@@ -34,25 +35,25 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.9" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.9" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.0" />
 
     <!-- Microsoft Testing & Build Tools -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.19.1" />
-    <PackageVersion Include="Microsoft.Playwright.MSTest" Version="1.54.0" />
+    <PackageVersion Include="Microsoft.Playwright.MSTest" Version="1.55.0" />
     <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.44.0" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.9.2" />
+    <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="5.9.3" />
 
     <!-- Testing Frameworks -->
     <PackageVersion Include="FakeItEasy" Version="8.3.0" />
     <PackageVersion Include="Fixie" Version="3.4.0" />
     <PackageVersion Include="Fixie.TestAdapter" Version="4.1.0" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="3.10.2" />
-    <PackageVersion Include="MSTest.TestFramework" Version="3.10.2" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.0.0" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.0.0" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.5" />
     <PackageVersion Include="NUnit" Version="4.1.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.2.0" />
@@ -72,10 +73,10 @@
 
     <!-- System & Utilities -->
     <PackageVersion Include="AnyClone" Version="1.1.6" />
-    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.0" />
+    <PackageVersion Include="JetBrains.Annotations" Version="2025.2.2" />
     <PackageVersion Include="Scrutor" Version="4.2.2" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="9.0.8" />
+    <PackageVersion Include="System.Net.Http.Json" Version="9.0.9" />
     <PackageVersion Include="System.Text.Json" Version="9.0.0" />
     <PackageVersion Include="TypeSupport" Version="1.2.0" />
   </ItemGroup>
