@@ -1,6 +1,7 @@
 <Project>
-  <!-- Set common properties regarding assembly information and nuget packages -->
-  <PropertyGroup>
+
+  <!-- NuGet package metadata -->
+  <PropertyGroup Label="Package Metadata">
     <TimeWarpStateVersion>12.0.0-beta.3</TimeWarpStateVersion>
     <Authors>Steven T. Cramer</Authors>
     <Product>TimeWarp State</Product>
@@ -10,32 +11,40 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-state.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
     <PackageReadmeFile>read-me.md</PackageReadmeFile>
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
   </PropertyGroup>
 
+  <!-- MSBuild and NuGet behavior configuration -->
+  <PropertyGroup Label="MSBuild/NuGet Configuration">
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
   <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+  <PropertyGroup Label="Continuous Integration" Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <!-- Common compile parameters -->
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  <!-- Default language and framework settings for all projects -->
+  <PropertyGroup Label="Project Defaults">
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <NoWarn>CS7035;NU1503;1503</NoWarn>
     <Nullable>disable</Nullable>
-    <TargetFramework>net9.0</TargetFramework>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <!-- Code quality, analyzers, and warning configuration -->
+  <PropertyGroup Label="Code Quality and Analysis">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>CS7035;NU1503;1503</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-  <PropertyGroup>
+  <PropertyGroup Label="Source Link Configuration">
     <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
 
@@ -47,13 +56,19 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DebugType>portable</DebugType>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
-  </ItemGroup>
   <!-- End Source Link -->
 
-  <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
+  <!-- Code analyzers applied to all projects -->
+  <ItemGroup Label="Code Analyzers">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- This is to add the CommitDate and CommitHash to your assemblyinfo -->
   <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" >
     <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
@@ -79,13 +94,4 @@
     <!--    <Message Importance="high" Text="CommitDate: $(LastCommitDate)" />-->
   </Target>
 
-<!--  Common analyzers and code fixes-->
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
-  </ItemGroup>
 </Project>
