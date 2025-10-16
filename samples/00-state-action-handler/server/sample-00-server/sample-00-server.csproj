@@ -2,9 +2,6 @@
 
   <PropertyGroup>
     <AssemblyName>Sample00Server</AssemblyName>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Sample00Server</RootNamespace>
   </PropertyGroup>
 

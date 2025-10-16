@@ -23,8 +23,9 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 ### 3. Render Mode Management
 
 - Supports multiple render modes: Static, PreRendering, Server, and WebAssembly (Wasm)
-- Caches the reflection information used to determine the `ConfiguredRenderMode`
-- Provides `ConfiguredRenderMode` property for render mode-specific logic
+- Uses .NET 9's `RendererInfo.Name` to determine the current render mode
+- Provides `IsPreRendering` property based on `RendererInfo.IsInteractive`
+- Exposes `AssignedRenderMode` for the component's assigned render mode
 
 ### 4. State Management
 
@@ -96,14 +97,14 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 
 1. Register render triggers for all relevant states in `OnInitialized`
 2. Use `GetState<T>()` to access current state values
-3. Leverage `ConfiguredRenderMode` for render mode-specific optimizations
+3. Leverage `RendererInfo.Name` and `RendererInfo.IsInteractive` for render mode-specific optimizations
 4. Utilize the `TestId` parameter for automated testing scenarios
 5. Use the `RenderCount` property to monitor and optimize component rendering performance
 
 ## Performance Considerations
 
 - The component uses caching mechanisms to optimize repeated operations
-- Reflection is used on if `ConfiguredRenderMode` is accessed and results are cached for performance
+- Uses .NET 9's built-in `RendererInfo` API for efficient render mode detection
 - State comparisons are only performed when necessary, based on registered triggers
 - The component tracks render counts, which can be used to identify unnecessary re-renders and optimize performance
 

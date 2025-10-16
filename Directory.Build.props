@@ -1,91 +1,37 @@
 <Project>
-  <!-- Set common properties regarding assembly information and nuget packages -->
-  <PropertyGroup>
-    <TimeWarpStateVersion>12.0.0-beta.2</TimeWarpStateVersion>
-    <Authors>Steven T. Cramer</Authors>
-    <Product>TimeWarp State</Product>
-    <PackageVersion>$(TimeWarpStateVersion)</PackageVersion>
-    <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-state/</PackageProjectUrl>
-    <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; MediatR; Mediator; TimeWarp.Mediator; Pipeline; Redux; Flux</PackageTags>
-    <PackageIcon>logo.png</PackageIcon>
-    <RepositoryUrl>https://github.com/TimeWarpEngineering/timewarp-state.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
-    <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
-    <PackageReadmeFile>read-me.md</PackageReadmeFile>
-    <ContentTargetFolders>contentFiles</ContentTargetFolders>
+
+  <!-- Custom path definitions for repository structure -->
+  <PropertyGroup Label="Custom Repository Variables">
+    <TimeWarpStateVersion>12.0.0-beta.3</TimeWarpStateVersion>
+    <RepositoryName>timewarp-state</RepositoryName>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
+    <TestsDirectory>$(RepositoryRoot)tests/</TestsDirectory>
+    <SamplesDirectory>$(RepositoryRoot)samples/</SamplesDirectory>
+    <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>
+    <SolutionFile>$(RepositoryRoot)timewarp-state.slnx</SolutionFile>
+    <LocalNuGetFeed>$(ArtifactsDirectory)packages/</LocalNuGetFeed>
+    <LocalNuGetCache>$(RepositoryRoot)local-nuget-feed/</LocalNuGetCache>
   </PropertyGroup>
 
-  <!-- Deterministic Builds  https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/#deterministic-builds -->
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-
-  <!-- Common compile parameters -->
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  <!-- Default language and framework settings for all projects -->
+  <PropertyGroup Label="Project Defaults">
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <NoWarn>CS7035;NU1503;1503</NoWarn>
-    <Nullable>disable</Nullable>
-    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <!-- Code quality, analyzers, and warning configuration -->
+  <PropertyGroup Label="Code Quality and Analysis">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>CS7035;NU1503;1503</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <!-- https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/ supports caching of nugets in CI builds -->
-  <PropertyGroup>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <RestoreLockedMode Condition="'$(ContinuousIntegrationBuild)' == 'true'">false</RestoreLockedMode>
-  </PropertyGroup>
-
-  <!-- Source Link see https://github.com/dotnet/sourcelink/blob/master/README.md -->
-  <PropertyGroup>
-    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-
-    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-
-    <!-- Optional: Build symbol package (.snupkg) to distribute the PDB containing Source Link -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All"/>
-  </ItemGroup>
-  <!-- End Source Link -->
-
-  <!--This is to add the CommitDate and CommitHash to your assemblyinfo -->
-  <Target Name="SetAssemblyMetaData" BeforeTargets="PreBuildEvent" >
-    <Exec Command="git log -1 --format=%%ct" ConsoleToMSBuild="true" Condition="'$(OS)' == 'Windows_NT'">
-      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
-    </Exec>
-    <Exec Command="git log -1 --format=%ct" ConsoleToMSBuild="true" Condition="'$(OS)' != 'Windows_NT'">
-      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitTimestamp"/>
-    </Exec>
-    <Exec Command="pwsh -ExecutionPolicy Bypass -NoProfile -File &quot;$(MSBuildThisFileDirectory)convert-timestamp.ps1&quot; -GitCommitTimestamp $(GitCommitTimestamp)" ConsoleToMSBuild="true">
-      <Output TaskParameter="ConsoleOutput" PropertyName="CommitDate"/>
-    </Exec>
-    <PropertyGroup>
-      <!-- In Visual Studio the below line crashes if they fix VS then we can use this and no need for the powershell script -->
-      <!--<LastCommitDate>$([System.DateTime]::UnixEpoch.AddSeconds($(GitCommitTimestamp)).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK"))</LastCommitDate>-->
-    </PropertyGroup>
-    <ItemGroup>
-      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-        <_Parameter1>CommitDate</_Parameter1>
-        <_Parameter2>$(LastCommitDate)</_Parameter2>
-      </AssemblyAttribute>
-    </ItemGroup>
-    <!--    <Message Importance="high" Text="OS: $(OS)" />-->
-    <!--    <Message Importance="high" Text="CommitDate: $(LastCommitDate)" />-->
-  </Target>
-
-<!--  Common analyzers and code fixes-->
-  <ItemGroup>
+  <!-- Code analyzers applied to all projects -->
+  <ItemGroup Label="Code Analyzers">
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -93,4 +39,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
   </ItemGroup>
+
+  <!-- TimeWarp Build Tasks - Automatically injects git commit metadata into assemblies -->
+  <ItemGroup Label="Build Tools">
+    <PackageReference Include="TimeWarp.Build.Tasks" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>

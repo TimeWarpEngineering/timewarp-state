@@ -1,59 +1,39 @@
 @namespace TimeWarp.Features.Developer
 @code {
-  /// <summary>
-  /// The render mode that is configured for the component.
-  /// </summary>
-  [Parameter, EditorRequired] public string ConfiguredRenderMode { get; set; } = null!;
+   /// <summary>
+   /// The render mode from RendererInfo.Name (new .NET 9 API).
+   /// </summary>
+   [Parameter, EditorRequired] public string RendererInfoName { get; set; } = null!;
 
+   /// <summary>
+   /// The assigned render mode from the component (what it will be after prerendering).
+   /// </summary>
+   [Parameter] public string? AssignedRenderModeName { get; set; }
 
-  /// <summary>
-  /// The render mode that is currently being used by the component.
-  /// </summary>
-  [Parameter, EditorRequired] public string CurrentRenderMode { get; set; } = null!;
+   /// <summary>
+   /// Whether the component is currently interactive.
+   /// </summary>
+   [Parameter] public bool? RendererInfoIsInteractive { get; set; }
 
-  /// <summary>
-  /// The render mode from RendererInfo.Name (new .NET 9 API).
-  /// </summary>
-  [Parameter] public string? RendererInfoName { get; set; }
-  
-  /// <summary>
-  /// The assigned render mode from the component (what it will be after prerendering).
-  /// </summary>
-  [Parameter] public string? AssignedRenderMode { get; set; }
-  
-  /// <summary>
-  /// Whether the component is currently interactive.
-  /// </summary>
-  [Parameter] public bool? RendererInfoIsInteractive { get; set; }
-
-  /// <inheritdoc />
-  protected override void OnParametersSet()
-  {
-    base.OnParametersSet();
-    if(ConfiguredRenderMode == null)
-    {
-      throw new ArgumentNullException(nameof(ConfiguredRenderMode));
-    }
-    if(CurrentRenderMode == null)
-    {
-      throw new ArgumentNullException(nameof(CurrentRenderMode));
-    }
-  }
+   /// <inheritdoc />
+   protected override void OnParametersSet()
+   {
+     base.OnParametersSet();
+     if(RendererInfoName == null)
+     {
+       throw new ArgumentNullException(nameof(RendererInfoName));
+     }
+   }
 }
 
 <div class="render-mode-display">
-    <div>Current Render Mode: <span data-qa="current-render-mode">@CurrentRenderMode</span></div>
-    <div>Configured Render Mode: <span data-qa="configured-render-mode">@ConfiguredRenderMode</span></div>
-    @if (RendererInfoName != null)
+    <div>RendererInfo.Name: <span data-qa="current-render-mode">@RendererInfoName</span></div>
+    @if (AssignedRenderModeName != null)
     {
-        <div>RendererInfo.Name: <span data-qa="renderer-info-name">@RendererInfoName</span></div>
-    }
-    @if (AssignedRenderMode != null)
-    {
-        <div>AssignedRenderMode: <span data-qa="assigned-render-mode">@AssignedRenderMode</span></div>
+        <div>AssignedRenderMode: <span data-qa="configured-render-mode">@AssignedRenderModeName</span></div>
     }
     @if (RendererInfoIsInteractive != null)
     {
-        <div>RendererInfo.IsInteractive: <span data-qa="renderer-info-interactive">@RendererInfoIsInteractive</span></div>
+        <div>RendererInfo.IsInteractive: <span data-qa="renderer-interactive">@RendererInfoIsInteractive</span></div>
     }
 </div>

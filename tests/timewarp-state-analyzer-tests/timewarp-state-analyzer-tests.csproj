@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Nullable>enable</Nullable>
+    <!-- Suppress .NET Framework compatibility warnings from legacy dependencies in Microsoft.CodeAnalysis.CSharp.Analyzer.Testing -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

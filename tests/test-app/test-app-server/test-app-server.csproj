@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AssemblyName>Test.App.Server</AssemblyName>
-    <Nullable>enable</Nullable>
     <RootNamespace>Test.App.Server</RootNamespace>
     <PublishSingleFile>false</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>

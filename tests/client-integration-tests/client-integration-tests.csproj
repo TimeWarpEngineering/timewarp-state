@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AssemblyName>Client.Integration.Tests</AssemblyName>
-    <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 

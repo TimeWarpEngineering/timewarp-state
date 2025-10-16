@@ -4,8 +4,6 @@
     <Description>TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.</Description>
     <PackageId>TimeWarp.State.Plus</PackageId>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; TimeWarp.Mediator; Mediator; Pipeline; Middleware; Redux; Flux; Features; Plus</PackageTags>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,22 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".\read-me.md">
+    <None Include=".\readme.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\assets\logo.png" Pack="true" PackagePath=""/>
+    <None Include="$(RepositoryRoot)assets\logo.png" Pack="true" PackagePath=""/>
   </ItemGroup>
-
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <ItemGroup>
-      <PackageFiles Include="$(ProjectDir)bin\$(Configuration)\$(PackageId).*.nupkg"/>
-    </ItemGroup>
-    <MakeDir Directories="$(ProjectDir)..\..\local-nuget-feed\"/>
-    <Copy
-      SourceFiles="@(PackageFiles)"
-      DestinationFolder="$(ProjectDir)..\..\local-nuget-feed\"
-    />
-  </Target>
 
 </Project>

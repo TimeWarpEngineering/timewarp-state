@@ -1,16 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="NetArchTest.eNhancedEdition" />
     <PackageReference Include="TimeWarp.Fixie" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\..\source\timewarp-state-policies\timewarp-state-policies.csproj" />
     <ProjectReference Include="..\test-app\test-app-client\test-app-client.csproj" />

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AssemblyName>Test.App.Contracts</AssemblyName>
     <RootNamespace>Test.App.Contracts</RootNamespace>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TimeWarp.Mediator" />

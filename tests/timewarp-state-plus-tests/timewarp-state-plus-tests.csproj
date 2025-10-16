@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <AssemblyName>TimeWarp.State.Plus.Tests</AssemblyName>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
