@@ -22,7 +22,7 @@
 
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
-    <PackageReadmeFile>read-me.md</PackageReadmeFile>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
   </PropertyGroup>
 
@@ -64,7 +64,7 @@
 
   <ItemGroup>
     <None Include="$(RepositoryRoot)assets\logo.png" Pack="true" PackagePath=""/>
-    <None Include="$(RepositoryRoot)read-me.md" Pack="true" PackagePath=""/>
+    <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
   <ItemGroup>

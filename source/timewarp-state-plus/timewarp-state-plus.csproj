@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".\read-me.md">
+    <None Include=".\readme.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

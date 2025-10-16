@@ -14,7 +14,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
-    <PackageReadmeFile>read-me.md</PackageReadmeFile>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
     <ContentTargetFolders>contentFiles</ContentTargetFolders>
     <PackageOutputPath>$(LocalNuGetFeed)</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
