@@ -40,7 +40,7 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -94,7 +94,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -141,7 +141,7 @@ jobs:
         shell: pwsh
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
