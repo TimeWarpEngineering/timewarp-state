@@ -14,18 +14,21 @@
 
 ## Checklist
 
-- [ ] Create `tests/client-integration-tests/pipeline/` directory
-- [ ] Create `state-transaction-tests.cs` with 5 tests:
-  - [ ] CloneState_BeforeHandlerExecutes
-  - [ ] PreserveChanges_OnSuccessfulAction
-  - [ ] RollbackState_OnException
-  - [ ] PublishExceptionNotification_OnException
-  - [ ] ContinueWorking_AfterException
-- [ ] Verify all tests pass
+- [x] Create `tests/client-integration-tests/pipeline/` directory
+- [x] Create `state-transaction-tests.cs` with 5 tests:
+  - [x] CloneState_BeforeHandlerExecutes
+  - [x] PreserveChanges_OnSuccessfulAction
+  - [x] RollbackState_OnException
+  - [x] PublishExceptionNotification_OnException
+  - [x] ContinueWorking_AfterException
+- [x] Verify all tests pass
 
 ## Notes
 
 Reference: `.agent/workspace/2025-12-04T16-30-00_integration-tests-implementation.md`
 
 ## Implementation Notes
+
+- Used namespace alias (`using Counter = Test.App.Client.Features.Counter;`) to avoid conflict with existing `CounterState` namespace in other test files
+- All 5 tests passing
 
