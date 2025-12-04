@@ -28,9 +28,16 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
     serviceCollection.AddTimeWarpState
     (
       options => options.Assemblies =
-        new[] { typeof(Test.App.Client.Program).GetTypeInfo().Assembly }
+        new[]
+        {
+          typeof(Test.App.Client.Program).GetTypeInfo().Assembly,
+          typeof(TimeWarp.State.Plus.AssemblyMarker).GetTypeInfo().Assembly
+        }
     );
   
+    // Register ActionTracking behavior for integration tests
+    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TimeWarp.Features.ActionTracking.ActiveActionBehavior<,>));
+    
     serviceCollection.AddSingleton
     (
       new JsonSerializerOptions

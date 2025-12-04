@@ -12,5 +12,7 @@ global using System.Text.Json;
 global using Test.App.Client.Features.Application;
 global using Test.App.Client.Features.Blue;
 global using Test.App.Client.Features.Counter;
+global using Test.App.Client.Features.Purple;
 global using TestApp.Client.Integration.Tests.Infrastructure;
+global using TimeWarp.Features.ActionTracking;
 global using TimeWarp.Fixie;
