@@ -10,5 +10,6 @@ global using System.Net.Http;
 global using System.Reflection;
 global using System.Text.Json;
 global using Test.App.Client.Features.Application;
+global using Test.App.Client.Features.Blue;
 global using TestApp.Client.Integration.Tests.Infrastructure;
 global using TimeWarp.Fixie;
