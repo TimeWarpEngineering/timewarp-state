@@ -15,4 +15,5 @@ global using Test.App.Client.Features.Counter;
 global using Test.App.Client.Features.Purple;
 global using TestApp.Client.Integration.Tests.Infrastructure;
 global using TimeWarp.Features.ActionTracking;
+global using TimeWarp.Features.RenderSubscriptions;
 global using TimeWarp.Fixie;

@@ -12,17 +12,20 @@
 
 ## Checklist
 
-- [ ] Create `render-subscription-context-tests.cs` in `pipeline/` directory with 4 tests:
-  - [ ] ReturnTrue_ForUnregisteredAction
-  - [ ] ReturnFalse_WhenRegisteredWithFalse
-  - [ ] ReturnTrue_WhenRegisteredWithTrue
-  - [ ] ReturnTrue_AfterReset
-- [ ] Add `global using TimeWarp.Features.RenderSubscriptions;` to global-usings.cs
-- [ ] Verify all tests pass
+- [x] Create `render-subscription-context-tests.cs` in `pipeline/` directory with 4 tests:
+  - [x] ReturnTrue_ForUnregisteredAction
+  - [x] ReturnFalse_WhenRegisteredWithFalse
+  - [x] ReturnTrue_WhenRegisteredWithTrue
+  - [x] ReturnTrue_AfterReset
+- [x] Add `global using TimeWarp.Features.RenderSubscriptions;` to global-usings.cs
+- [x] Verify all tests pass
 
 ## Notes
 
 Reference: `.agent/workspace/2025-12-04T16-30-00_integration-tests-implementation.md`
 
 ## Implementation Notes
+
+- Added RenderSubscriptionContext property to BaseTest
+- All 4 tests passing
 

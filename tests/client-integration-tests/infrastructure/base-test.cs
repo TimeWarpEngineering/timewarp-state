@@ -8,6 +8,7 @@ public abstract class BaseTest
   private readonly ISender Sender;
   protected readonly IStore Store;
   protected readonly Subscriptions Subscriptions;
+  protected readonly RenderSubscriptionContext RenderSubscriptionContext;
 
   protected BaseTest(ClientHost clientHost)
   {
@@ -18,6 +19,7 @@ public abstract class BaseTest
     Sender = ServiceProvider.GetService<ISender>()!;
     Store = ServiceProvider.GetService<IStore>()!;
     Subscriptions = ServiceProvider.GetService<Subscriptions>()!;
+    RenderSubscriptionContext = ServiceProvider.GetService<RenderSubscriptionContext>()!;
   }
 
   private IServiceProvider ServiceProvider { get; }
