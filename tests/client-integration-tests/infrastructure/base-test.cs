@@ -7,7 +7,7 @@ public abstract class BaseTest
 {
   private readonly ISender Sender;
   protected readonly IStore Store;
-  //protected readonly HttpClient HttpClient;
+  protected readonly Subscriptions Subscriptions;
 
   protected BaseTest(ClientHost clientHost)
   {
@@ -17,6 +17,7 @@ public abstract class BaseTest
     ServiceProvider = serviceScope.ServiceProvider;
     Sender = ServiceProvider.GetService<ISender>()!;
     Store = ServiceProvider.GetService<IStore>()!;
+    Subscriptions = ServiceProvider.GetService<Subscriptions>()!;
   }
 
   private IServiceProvider ServiceProvider { get; }

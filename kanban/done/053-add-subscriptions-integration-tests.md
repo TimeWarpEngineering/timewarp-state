@@ -14,15 +14,15 @@
 
 ## Checklist
 
-- [ ] Create `tests/client-integration-tests/subscriptions/` directory
-- [ ] Create `subscriptions-tests.cs` with 6 tests:
-  - [ ] AddSubscription_AndTriggerReRender
-  - [ ] NotAddDuplicate_ForSameComponentAndState
-  - [ ] RemoveAllSubscriptions_ForComponent
-  - [ ] RespectShouldReRender_ReturnValue
-  - [ ] OnlyReRender_MatchingStateType
-  - [ ] ReRenderMultipleComponents_ForSameState
-- [ ] Verify all tests pass
+- [x] Create `tests/client-integration-tests/subscriptions/` directory
+- [x] Create `subscriptions-tests.cs` with 6 tests:
+  - [x] AddSubscription_AndTriggerReRender
+  - [x] NotAddDuplicate_ForSameComponentAndState
+  - [x] RemoveAllSubscriptions_ForComponent
+  - [x] RespectShouldReRender_ReturnValue
+  - [x] OnlyReRender_MatchingStateType
+  - [x] ReRenderMultipleComponents_ForSameState
+- [x] Verify all tests pass
 
 ## Notes
 
@@ -44,3 +44,6 @@ Reference: `.agent/workspace/2025-12-04T16-30-00_integration-tests-implementatio
 
 ## Implementation Notes
 
+- Added Subscriptions to BaseTest class for easy access in tests
+- Added Counter namespace to global-usings.cs
+- All 6 tests passing
