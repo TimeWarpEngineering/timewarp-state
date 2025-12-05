@@ -2,7 +2,7 @@ global using AnyClone;
 global using TimeWarp.State;
 global using Shouldly;
 global using JetBrains.Annotations;
-global using TimeWarp.Mediator;
+global using Mediator;
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Linq;

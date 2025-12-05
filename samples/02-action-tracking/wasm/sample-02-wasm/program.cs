@@ -1,6 +1,6 @@
 namespace Sample02Wasm;
 
-using TimeWarp.Mediator;
+using Mediator;
 
 public class Program
 {
