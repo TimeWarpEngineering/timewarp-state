@@ -1,13 +1,30 @@
 # Task 036: Create Mediator Pipeline Tests Before Migration
 
-## Description
+**STATUS: CANCELLED**
+
+## Reason for Cancellation
+
+This task called for mock-based unit tests (~55 tests with FakeStore, FakeSender, FakePublisher). After clarifying the testing philosophy (no mocks of code we control, prefer integration tests), this approach was replaced by tasks 052-057 which implemented 31 integration tests using real infrastructure:
+
+- Task 052: Store lifecycle tests (8 tests) - replaces "Store Unit Tests"
+- Task 053: Subscriptions tests (6 tests) - replaces "Subscriptions Tests"
+- Task 054: State transaction tests (5 tests) - replaces "Pipeline Behavior Tests"
+- Task 055: Action tracking tests (4 tests) - additional coverage
+- Task 056: Cacheable state tests (4 tests) - additional coverage
+- Task 057: RenderSubscriptionContext tests (4 tests) - replaces "Pre/Post Processor Tests"
+
+The integration test approach provides better coverage of real use cases without the maintenance burden of mock infrastructure.
+
+---
+
+## Original Description
 
 - Create unit and integration tests for the mediator pipeline components before migrating to martinothamar/Mediator
 - Current test coverage for pipeline behaviors, pre/post processors, and Store is essentially non-existent
 - These tests will serve as regression tests during and after migration
 - See `.agent/workspace/2025-12-04T10-00-00_test-coverage-analysis.md` for full analysis
 
-## Requirements
+## Original Requirements
 
 - Create test infrastructure (fakes/mocks for Store, Sender, Publisher)
 - Add unit tests for StateTransactionBehavior
