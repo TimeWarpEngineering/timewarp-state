@@ -7,7 +7,11 @@
     <PackageVersion Include="TimeWarp.Amuru" Version="1.0.0-beta.5" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
-    <PackageVersion Include="TimeWarp.Mediator" Version="13.0.0" />
+    <PackageVersion Include="Mediator.Abstractions" Version="3.0.1" />
+    <PackageVersion Include="Mediator.SourceGenerator" Version="3.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageVersion>
     <PackageVersion Include="TimeWarp.Nuru" Version="2.1.0-beta.8" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.4" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
