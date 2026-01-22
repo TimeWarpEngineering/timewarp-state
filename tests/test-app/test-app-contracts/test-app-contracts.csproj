@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>Test.App.Contracts</AssemblyName>
     <RootNamespace>Test.App.Contracts</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TimeWarp.Mediator" />
+    <PackageReference Include="Mediator.Abstractions" />
     <PackageReference Include="System.Net.Http.Json" />
   </ItemGroup>
 

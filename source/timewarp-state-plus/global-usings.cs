@@ -1,10 +1,9 @@
-﻿global using Blazored.LocalStorage;
+global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
 global using TimeWarp.State;
 global using TimeWarp.Features.Persistence;
 global using JetBrains.Annotations;
-global using TimeWarp.Mediator;
-global using TimeWarp.Mediator.Pipeline;
+global using Mediator;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;

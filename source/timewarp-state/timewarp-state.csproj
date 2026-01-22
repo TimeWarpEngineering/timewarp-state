@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <Title>TimeWarp State</Title>
     <Description>A Blazor state management library by TimeWarp</Description>
@@ -33,7 +33,8 @@
   <ItemGroup>
     <PackageReference Include="AnyClone"/>
     <PackageReference Include="JetBrains.Annotations"/>
-    <PackageReference Include="TimeWarp.Mediator"/>
+    <PackageReference Include="Mediator.Abstractions"/>
+    <PackageReference Include="Mediator.SourceGenerator"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     <PackageReference Include="TypeSupport"/>
