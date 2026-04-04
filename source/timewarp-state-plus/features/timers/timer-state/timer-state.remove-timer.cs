@@ -26,6 +26,7 @@ public partial class TimerState
       {
         if (TimerState.Timers.TryGetValue(action.TimerName, out (Timer Timer, TimerConfig TimerConfig) timerTuple))
         {
+          timerTuple.Timer.Stop();
           timerTuple.Timer.Dispose();
           TimerState.Timers.Remove(action.TimerName);
         }

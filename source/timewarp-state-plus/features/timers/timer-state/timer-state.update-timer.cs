@@ -28,9 +28,9 @@ public partial class TimerState
       {
         if (TimerState.Timers.TryGetValue(action.TimerName, out (Timer Timer, TimerConfig TimerConfig) timerTuple))
         {
+          timerTuple.Timer.Stop();
           timerTuple.Timer.Dispose();
-          Timer newTimer = new(action.NewTimerConfig.Duration);
-          TimerState.Timers[action.TimerName] = (newTimer, action.NewTimerConfig);
+          TimerState.CreateAndStartTimer(action.TimerName, action.NewTimerConfig);
         }
         return Task.CompletedTask;
       }
