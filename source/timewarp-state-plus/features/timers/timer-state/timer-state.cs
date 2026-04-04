@@ -48,24 +48,34 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
 
   public override void Initialize()
   {
+    foreach ((_, (Timer timer, TimerConfig _)) in Timers)
+    {
+      timer.Stop();
+      timer.Dispose();
+    }
     Timers.Clear();
     // Load from options
     foreach ((string timerName, TimerConfig timerConfig) in MultiTimerOptions.Timers)
     {
-      var timer = new Timer(timerConfig.Duration);
-      timer.Elapsed += (_, _) => OnTimerElapsed(timerName);
-      timer.AutoReset = false;
-      timer.Start();
-      Timers[timerName] = (timer, timerConfig);
-      Logger.LogDebug
-      (
-        EventIds.MultiTimerPostProcessor_TimerStarted,
-        message: "{TimerName} started with timeout of {TimeoutDuration} ms, ResetOnActivity: {ResetOnActivity}",
-        timerName,
-        timerConfig.Duration,
-        timerConfig.ResetOnActivity
-      );
+      CreateAndStartTimer(timerName, timerConfig);
     }
+  }
+
+  private void CreateAndStartTimer(string timerName, TimerConfig timerConfig)
+  {
+    var timer = new Timer(timerConfig.Duration);
+    timer.Elapsed += (_, _) => OnTimerElapsed(timerName);
+    timer.AutoReset = false;
+    timer.Start();
+    Timers[timerName] = (timer, timerConfig);
+    Logger.LogDebug
+    (
+      EventIds.MultiTimerPostProcessor_TimerStarted,
+      message: "{TimerName} started with timeout of {TimeoutDuration} ms, ResetOnActivity: {ResetOnActivity}",
+      timerName,
+      timerConfig.Duration,
+      timerConfig.ResetOnActivity
+    );
   }
   
   private async void OnTimerElapsed(string timerName)
