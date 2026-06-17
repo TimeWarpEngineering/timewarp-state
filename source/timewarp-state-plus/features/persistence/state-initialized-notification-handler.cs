@@ -1,5 +1,8 @@
 namespace TimeWarp.State.Plus.PersistentState;
 
+// Disambiguate from Microsoft.AspNetCore.Components.PersistentStateAttribute (added in .NET 10).
+using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAttribute;
+
 public class StateInitializedNotificationHandler : INotificationHandler<StateInitializedNotification>
 {
   private readonly ISender Sender;
@@ -16,33 +19,17 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
 
   public async ValueTask Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
   {
-    string fullName = stateInitializedNotification.StateType.FullName ?? throw new InvalidOperationException();
-    string assemblyQualifiedName = stateInitializedNotification.StateType.AssemblyQualifiedName ?? throw new InvalidOperationException();
-    
-    string typeName = assemblyQualifiedName.Replace(fullName, $"{fullName}+LoadActionSet+Action");
-    
+    // Only persistent states auto-load; skip the dispatch entirely for the common (non-persistent) case.
+    if (stateInitializedNotification.StateType.GetCustomAttribute<PersistentStateAttribute>() is null) return;
+
     Logger.LogDebug
     (
-      EventIds.StateInitializedNotificationHandler_Handling, 
-      message: "StateInitializedNotificationHandler: {StateTypeName}", 
+      EventIds.StateInitializedNotificationHandler_Handling,
+      message: "StateInitializedNotificationHandler: {StateTypeName}",
       stateInitializedNotification.StateType.Name
     );
-    
-    var actionType = Type.GetType(typeName);
-    
-    if (actionType != null)
-    {
-      object action = Activator.CreateInstance(actionType) ?? throw new InvalidOperationException();
-      await Sender.Send(action, cancellationToken);
-    }
-    else
-    {
-      Logger.LogDebug
-      (
-        EventIds.StateInitializedNotificationHandler_LoadActionSetNotFound, 
-        message: "StateInitializedNotificationHandler: {LoadActionSetTypeName} not found.", 
-        typeName
-      );
-    }
+
+    // Load via a hand-written Mediator request whose handler IS registered (see LoadPersistentStateRequest).
+    await Sender.Send(new LoadPersistentStateRequest(stateInitializedNotification.StateType), cancellationToken);
   }
 }
