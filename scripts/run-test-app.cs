@@ -1,4 +1,4 @@
-#!/usr/bin/dotnet --
+#!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
