@@ -40,14 +40,14 @@ test-app fixes applied to get there:
 - [x] `base-component.cs` `Send` helper: `Mediator.Send(request)` now returns `ValueTask<Unit>` → added `.AsTask()`
 
 REMAINING:
-- [ ] **6 samples** — same pattern as test-app: reference `Mediator.SourceGenerator`; add `AddMediator(o => { o.ServiceLifetime = Scoped; o.GenerateTypesAsInternal = true; o.Assemblies = [...] })`; the sync-handler return fix is already applied. (Mechanical, parallelizable.)
+- [ ] **6 samples** — split out into its own task **076** (migrate samples to Mediator). Not tracked here anymore.
 - [ ] `tests/timewarp-state-analyzer-tests` — references `TimeWarp.Mediator.Contracts.dll` (×4 string paths) → task **048** territory.
 - [ ] `client-integration-tests`, `test-app-architecture-tests` — now unblocked (test-app builds); run + fix.
 - [ ] `test-app-end-to-end-tests` — project builds, but the MSTest/Playwright runner reports "No test is available" (test-discovery/adapter issue under .NET 10, unrelated to the migration). Browser validation was done directly via Playwright instead; revisit the runner setup.
 
 ### Review
 - [x] Behavioral change documented: pre/post-pipeline notifications are non-generic now (fire for all actions, handlers filter by type); Action/Handler types are `public` (was `internal`); architecture policy updated to match.
-- [ ] Run remaining test projects (integration, architecture) and the 6 samples.
+- [ ] Run remaining test projects (integration, architecture). Samples are now task 076.
 
 ## Notes
 
