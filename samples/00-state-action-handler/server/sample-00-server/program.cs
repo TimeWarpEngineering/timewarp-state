@@ -10,6 +10,16 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
+        builder.Services.AddMediator
+        (
+          options =>
+          {
+            options.ServiceLifetime = ServiceLifetime.Scoped;
+            options.GenerateTypesAsInternal = true;
+            options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker)];
+          }
+        );
+
         builder.Services.AddTimeWarpState(); // Add this line
 
         var app = builder.Build();

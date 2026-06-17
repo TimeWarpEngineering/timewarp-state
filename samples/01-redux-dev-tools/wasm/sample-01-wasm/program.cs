@@ -8,6 +8,16 @@ public class Program
     builder.RootComponents.Add<App>("#app");
     builder.RootComponents.Add<HeadOutlet>("head::after");
 
+    builder.Services.AddMediator
+    (
+      options =>
+      {
+        options.ServiceLifetime = ServiceLifetime.Scoped;
+        options.GenerateTypesAsInternal = true;
+        options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker)];
+      }
+    );
+
     builder.Services.AddTimeWarpState
     (
       options =>

@@ -13,6 +13,16 @@ public class Program
       sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
     );
     
+    builder.Services.AddMediator
+    (
+      options =>
+      {
+        options.ServiceLifetime = ServiceLifetime.Scoped;
+        options.GenerateTypesAsInternal = true;
+        options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker), typeof(TimeWarp.State.Plus.AssemblyMarker)];
+      }
+    );
+
     builder.Services.AddTimeWarpState
     (
       options =>
