@@ -33,8 +33,14 @@
   <ItemGroup>
     <PackageReference Include="AnyClone"/>
     <PackageReference Include="JetBrains.Annotations"/>
+    <!--
+      The library references ONLY Mediator.Abstractions (the interfaces). It must NOT reference
+      Mediator.SourceGenerator: the generator emits a public AddMediator(...)/Mediator into the
+      assembly, which would (a) be dead code here (the library never calls AddMediator) and (b)
+      collide with the consuming app's own generated AddMediator. Each consuming application
+      references Mediator.SourceGenerator itself and owns the AddMediator(...) call.
+    -->
     <PackageReference Include="Mediator.Abstractions"/>
-    <PackageReference Include="Mediator.SourceGenerator"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
     <PackageReference Include="TypeSupport"/>

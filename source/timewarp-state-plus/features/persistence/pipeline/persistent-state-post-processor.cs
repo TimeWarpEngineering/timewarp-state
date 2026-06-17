@@ -1,8 +1,11 @@
 namespace TimeWarp.State.Plus;
 
 using TimeWarp.State.Extensions;
+// Disambiguate from Microsoft.AspNetCore.Components.PersistentStateAttribute (added in .NET 10),
+// which collides with TimeWarp's attribute under the global Components using.
+using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAttribute;
 
-public class PersistentStatePostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+public sealed class PersistentStatePostProcessor<TRequest, TResponse> : MessagePostProcessor<TRequest, TResponse>
   where TRequest : IAction
 {
   private readonly ILogger Logger;
@@ -23,7 +26,7 @@ public class PersistentStatePostProcessor<TRequest, TResponse> : IRequestPostPro
     Logger = logger;
   }
 
-  public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
+  protected override async ValueTask Handle(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
 
     Type currentType = typeof(TRequest).GetEnclosingStateType();

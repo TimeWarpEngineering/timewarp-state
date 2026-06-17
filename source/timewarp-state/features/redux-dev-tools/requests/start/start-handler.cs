@@ -4,7 +4,7 @@ namespace TimeWarp.Features.ReduxDevTools;
 /// Redux Devtools will send the Request once on startup
 /// </summary>
 /// <remarks>currently we do nothing at start up other than log</remarks>
-internal class StartHandler : IRequestHandler<StartRequest>
+public class StartHandler : IRequestHandler<StartRequest>
 {
   private readonly ILogger Logger;
 
@@ -23,6 +23,6 @@ internal class StartHandler : IRequestHandler<StartRequest>
   /// <param name="request"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public Task Handle(StartRequest request, CancellationToken cancellationToken) =>
-    Task.CompletedTask;
+  public ValueTask<Unit> Handle(StartRequest request, CancellationToken cancellationToken) =>
+    new(Unit.Value);
 }

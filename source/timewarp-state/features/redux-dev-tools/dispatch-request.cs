@@ -1,6 +1,6 @@
 namespace TimeWarp.Features.ReduxDevTools;
 
-internal class DispatchRequest<TPayload>
+public class DispatchRequest<TPayload>
 {
   protected DispatchRequest(int id, TPayload payload, string source, string state, string type)
   {

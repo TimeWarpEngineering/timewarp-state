@@ -5,14 +5,14 @@ public partial class TimerState
 {
   public static class ResetTimersOnActivityActionSet
   {
-    internal sealed class Action : IAction;
+    public sealed class Action : IAction;
 
-    internal sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : ActionHandler<Action>
     {
       private TimerState TimerState => Store.GetState<TimerState>();
       public Handler(IStore store) : base(store) { }
 
-      public override Task Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
       {
         foreach ((string timerName, (Timer _, TimerConfig timerConfig)) in TimerState.Timers)
         {
@@ -21,7 +21,7 @@ public partial class TimerState
             TimerState.RestartTimer(timerName);
           }
         }
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

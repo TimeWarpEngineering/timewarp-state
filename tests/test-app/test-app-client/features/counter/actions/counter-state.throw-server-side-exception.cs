@@ -29,7 +29,7 @@ public partial class CounterState
       /// <summary>
       /// Intentionally throw so we can test exception handling.
       /// </summary>
-      public override async Task Handle
+      public override async ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken
@@ -42,6 +42,7 @@ public partial class CounterState
           throwServerSideExceptionRequest.GetRoute()
           , cancellationToken: cancellationToken
         );
+        return Unit.Value;
       }
     }
   }

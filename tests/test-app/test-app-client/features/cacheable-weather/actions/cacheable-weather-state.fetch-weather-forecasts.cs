@@ -20,13 +20,14 @@ public partial class CacheableWeatherState
         HttpClient = httpClient;
       }
 
-      public override async Task Handle
+      public override async ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         await CacheableWeatherState.HandleWithCaching(action, UpdateStateAsync, cancellationToken);
+        return Unit.Value;
       }
 
       private async Task UpdateStateAsync<TAction>(TAction action, CancellationToken cancellationToken)

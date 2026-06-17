@@ -39,10 +39,10 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     );
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
@@ -52,7 +52,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     int maxItems = ReduxDevToolsOptions.TraceLimit == 0 ? int.MaxValue : ReduxDevToolsOptions.TraceLimit;
 
     if (ReduxDevToolsOptions.Trace) stackTrace = BuildStackTrace(maxItems);
-    TResponse response = await next();
+    TResponse response = await next(request, cancellationToken);
 
     try
     {

@@ -4,17 +4,16 @@ public static partial class ServiceCollectionExtensions
 {
   public static void LogTimeWarpStateMiddleware(this IServiceCollection serviceCollection, ILogger logger)
   {
-    List<string> preprocessors = GetComponentOrder(serviceCollection, typeof(IRequestPreProcessor<>));
+    // With Mediator (martinothamar), pre- and post-processors are themselves IPipelineBehavior
+    // implementations (MessagePreProcessor / MessagePostProcessor), so a single ordered list of
+    // IPipelineBehavior registrations reflects the full pipeline.
     List<string> middleware = GetComponentOrder(serviceCollection, typeof(IPipelineBehavior<,>));
-    List<string> postprocessors = GetComponentOrder(serviceCollection, typeof(IRequestPostProcessor<,>));
 
-    var message = new StringBuilder("TimeWarp State (TimeWarp.Mediator) Middleware Registrations:");
+    var message = new StringBuilder("TimeWarp State (Mediator) Pipeline Behavior Registrations:");
     message.AppendLine();
     message.AppendLine();
-    
-    AppendComponentOrder(message, "Preprocessors", preprocessors);
-    AppendComponentOrder(message, "Behaviors", middleware);
-    AppendComponentOrder(message, "Postprocessors", postprocessors);
+
+    AppendComponentOrder(message, "Behaviors (in pipeline order)", middleware);
 
     logger.LogInformation(message.ToString());
   }

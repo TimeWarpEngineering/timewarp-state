@@ -20,14 +20,14 @@ public partial class EventStreamState
     ) : BaseActionHandler<Action>(store)
     {
 
-      public override Task Handle
+      public override ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         EventStreamState.EventList.Add(action.Message);
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

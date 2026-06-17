@@ -14,10 +14,10 @@ public partial class PurpleState
       public Handler(IStore store) : base(store) {}
       PurpleState PurpleState => Store.GetState<PurpleState>();
 
-      public override Task Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
       {
         PurpleState.Count += action.Amount;
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

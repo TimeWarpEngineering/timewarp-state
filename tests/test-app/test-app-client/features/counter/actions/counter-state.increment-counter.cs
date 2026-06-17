@@ -17,14 +17,14 @@ public partial class CounterState
     {
       private CounterState CounterState => Store.GetState<CounterState>();
       
-      public override Task Handle
+      public override ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         CounterState.Count += action.Amount;
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

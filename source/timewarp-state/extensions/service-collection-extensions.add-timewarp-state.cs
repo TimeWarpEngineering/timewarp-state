@@ -43,15 +43,22 @@ public static partial class ServiceCollectionExtensions
     EnsureLogger(serviceCollection);
     EnsureHttpClient(serviceCollection);
     EnsureStates(serviceCollection, timeWarpStateOptions);
-    EnsureMediator(serviceCollection, timeWarpStateOptions);
-    
-    serviceCollection.AddTransient(typeof(IRequestPreProcessor<>), typeof(StateInitializationPreProcessor<>));
-    
+
+    // Mediator (martinothamar) registers handlers at compile time via its source generator, so the
+    // consuming application is responsible for calling AddMediator(...) with compile-time assembly
+    // markers for the assemblies that contain its handlers (its own, TimeWarp.State, TimeWarp.State.Plus,
+    // and any feature libraries). TimeWarp.State only registers its own pipeline behaviors below.
+    //
+    // Pipeline behaviors are resolved from DI at runtime in registration order, which IS the pipeline
+    // order: state-initialization (pre) -> state-transaction -> render-subscriptions (post).
+    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateInitializationPreProcessor<,>));
+
     if (timeWarpStateOptions.UseStateTransactionBehavior)
     {
       serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
     }
-    
+
+    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsPostProcessor<,>));
 
     return serviceCollection;
   }
@@ -90,26 +97,6 @@ public static partial class ServiceCollectionExtensions
     {
       serviceCollection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
     }
-  }
-
-  /// <summary>
-  /// Scan Assemblies for Handlers.
-  /// </summary>
-  /// <param name="serviceCollection"></param>
-  /// <param name="timeWarpStateOptions"></param>
-  private static void EnsureMediator(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
-  {
-    if (serviceCollection.HasRegistrationFor(typeof(IMediator))) return;
-
-    serviceCollection
-      .AddMediator
-      (
-        mediatorServiceConfiguration =>
-          mediatorServiceConfiguration
-            .RegisterServicesFromAssemblies(timeWarpStateOptions.Assemblies.ToArray())
-            .AddOpenRequestPostProcessor(typeof(RenderSubscriptionsPostProcessor<,>))
-      );
-    serviceCollection.TryAddEnumerable(new ServiceDescriptor(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>), ServiceLifetime.Transient));
   }
 
   private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)

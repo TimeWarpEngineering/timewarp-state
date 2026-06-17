@@ -14,7 +14,7 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
     Logger = logger;
   }
 
-  public async Task Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
+  public async ValueTask Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
   {
     string fullName = stateInitializedNotification.StateType.FullName ?? throw new InvalidOperationException();
     string assemblyQualifiedName = stateInitializedNotification.StateType.AssemblyQualifiedName ?? throw new InvalidOperationException();

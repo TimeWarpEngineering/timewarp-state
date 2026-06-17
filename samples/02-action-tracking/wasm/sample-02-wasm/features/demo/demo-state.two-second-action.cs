@@ -11,7 +11,7 @@ partial class DemoState
         {
             public Handler(IStore store) : base(store) { }
 
-            public override async Task Handle
+            public override async ValueTask<Unit> Handle
             (
                 Action action,
                 CancellationToken cancellationToken
@@ -19,6 +19,7 @@ partial class DemoState
             {
                 // Simulate a 2-second action
                 await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+                return Unit.Value;
             }
         }
     }

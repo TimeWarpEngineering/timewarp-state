@@ -29,9 +29,9 @@ public static partial class Policies
           .Should()
           .BeSealed()
           .And()
-          .BeInternal(),
-        "internal sealed Handler",
-        "Handler should be `internal sealed`."
+          .BePublic(),
+        "public sealed Handler",
+        "Handler should be `public sealed` (Mediator's source generator registers them cross-assembly)."
       );
   }
 }

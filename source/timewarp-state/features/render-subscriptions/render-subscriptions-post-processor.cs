@@ -1,6 +1,6 @@
 namespace TimeWarp.Features.RenderSubscriptions;
 
-internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
+internal sealed class RenderSubscriptionsPostProcessor<TRequest, TResponse> : MessagePostProcessor<TRequest, TResponse>
   where TRequest : IAction
 {
   private readonly ILogger Logger;
@@ -19,7 +19,7 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
     RenderSubscriptionContext = renderSubscriptionContext;
   }
 
-  public Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
+  protected override ValueTask Handle(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
     Type requestType = typeof(TRequest);
     Type enclosingStateType = requestType.GetEnclosingStateType();
@@ -50,6 +50,6 @@ internal class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IRequestP
       );
       throw;
     }
-    return Task.CompletedTask;
+    return default;
   }
 }

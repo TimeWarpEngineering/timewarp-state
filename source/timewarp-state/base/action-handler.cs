@@ -7,5 +7,5 @@ public abstract class ActionHandler<TAction>
 {
   protected IStore Store { get; set; } = store;
 
-  public abstract Task Handle(TAction action, CancellationToken cancellationToken);
+  public abstract ValueTask<Unit> Handle(TAction action, CancellationToken cancellationToken);
 }

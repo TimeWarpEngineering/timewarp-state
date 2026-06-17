@@ -13,13 +13,13 @@
 ## Checklist
 
 ### Implementation
-- [ ] Update `source/timewarp-state/base/action-handler.cs`:
-  - [ ] Change return type from `Task` to `ValueTask<Unit>`
-  - [ ] Update method signature
-- [ ] Verify `source/timewarp-state/base/action.cs` (`IAction : IRequest`) is compatible
+- [x] Update `source/timewarp-state/base/action-handler.cs`:
+  - [x] Change return type from `Task` to `ValueTask<Unit>`
+  - [x] Update method signature
+- [x] Verify `source/timewarp-state/base/action.cs` (`IAction : IRequest`) is compatible — non-generic `Mediator.IRequest` exists and extends `IRequest<Unit>`; no change needed
 
 ### Review
-- [ ] Verify all derived handlers will need updates (handled in separate tasks)
+- [x] Verify all derived handlers will need updates (handled in separate tasks) — confirmed: derived `ActionHandler<>` subclasses in timewarp-state-plus, samples, and tests still override `Task Handle` and will be migrated in tasks 041–045
 
 ## Notes
 

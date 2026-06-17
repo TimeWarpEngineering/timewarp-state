@@ -17,17 +17,17 @@ public class EventStreamBehavior<TRequest, TResponse>
 {
   private readonly ILogger Logger = logger;
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
     Logger.LogDebug("{classname}: Handle", GetType().FullName);
     ArgumentNullException.ThrowIfNull(next);
     await AddEventToStream(request, "Start");
-    TResponse response = await next();
+    TResponse response = await next(request, cancellationToken);
     await AddEventToStream(request, "Completed");
     return response;
   }

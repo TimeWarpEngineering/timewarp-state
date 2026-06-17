@@ -12,16 +12,30 @@
 - Rename method from `Process()` to `Handle()` (protected override)
 - Change return type from `Task` to `ValueTask`
 
+## Verified API (Mediator.Abstractions 3.0.2, by reflection)
+
+`MessagePreProcessor<TMessage, TResponse>` is an `abstract class` implementing `IPipelineBehavior<TMessage, TResponse>`. Override:
+
+```csharp
+protected override ValueTask Handle(TMessage message, CancellationToken cancellationToken)
+```
+
+(the public `Handle(message, next, cancellationToken)` is sealed by the base, which calls this override then `next`). `IRequestPreProcessor<T>` no longer exists. `IPublisher.Publish` returns `ValueTask`, so file 2 can `return Publisher.Publish(...)` directly. The task doc's pattern was accurate this time.
+
 ## Checklist
 
 ### Implementation
-- [ ] Update `source/timewarp-state/features/state-initialization/state-initialization-pre-processor.cs`:
-  - [ ] Change base from `IRequestPreProcessor<TRequest>` to `MessagePreProcessor<TRequest, TResponse>`
-  - [ ] Add `TResponse` generic parameter
-  - [ ] Rename `Process()` to `protected override ValueTask Handle()`
-  - [ ] Change return from `Task` to `ValueTask`
-- [ ] Update `tests/test-app/test-app-client/pipeline/notification-pre-processor/pre-pipeline-notification-request-pre-processor.cs`:
-  - [ ] Apply same changes as above
+- [x] Update `source/timewarp-state/features/state-initialization/state-initialization-pre-processor.cs`:
+  - [x] Change base from `IRequestPreProcessor<TRequest>` to `MessagePreProcessor<TMessage, TResponse>`
+  - [x] Add `TResponse` generic parameter
+  - [x] Rename `Process()` to `protected override ValueTask Handle()`
+  - [x] Change return from `Task` to `ValueTask` (body kept `await initializationTask`)
+- [x] Update `tests/test-app/test-app-client/pipeline/notification-pre-processor/pre-pipeline-notification-request-pre-processor.cs`:
+  - [x] Apply same changes as above
+
+### Verification
+- [x] Core project (`timewarp-state`) builds with no error on `state-initialization-pre-processor.cs`; remaining errors are post-processors (043), request handlers (045), service registration (046) only
+- [ ] test-app file compiles — deferred; that project builds at task 049 once registration (046) lands
 
 ## Notes
 

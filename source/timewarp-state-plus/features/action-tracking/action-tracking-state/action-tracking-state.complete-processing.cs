@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public static class CompleteProcessingActionSet
   {
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public IAction TheAction { get; }
       public Action(IAction theAction)
@@ -13,7 +13,7 @@ public partial class ActionTrackingState
       }
     }
     
-    internal sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : ActionHandler<Action>
     {
       private readonly ILogger<Handler> Logger;
       public Handler(IStore store, ILogger<Handler> logger) : base(store)
@@ -22,10 +22,10 @@ public partial class ActionTrackingState
       }
       private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
 
-      public override Task Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
       {
         bool wasRemoved = ActionTrackingState.ActiveActionList.Remove(action.TheAction);
-        if (wasRemoved) return Task.CompletedTask;
+        if (wasRemoved) return new ValueTask<Unit>(Unit.Value);
 
         // I want to know if this ever happens
         Logger.LogDebug
