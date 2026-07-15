@@ -6,7 +6,6 @@ using Microsoft.CodeAnalysis.CSharp;
 public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
-  public const string DebugDiagnosticId = "TWD001";
   public const string IActionDefinition = "TimeWarp.State.IAction";
   public const string IStateDefinition = "TimeWarp.State.IState";
 
@@ -27,40 +26,15 @@ public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
       description: Description
     );
 
-  private static readonly DiagnosticDescriptor DebugRule =
-    new
-    (
-      id: DebugDiagnosticId,
-      title: "TimeWarpStateAnalyzerDebug",
-      messageFormat: "{0}",
-      category: "Debug",
-      defaultSeverity: DiagnosticSeverity.Info,
-      isEnabledByDefault: true
-    );
-
-  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule, DebugRule);
+  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
   public override void Initialize(AnalysisContext context)
   {
-    // LaunchDebugger();
-
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
     context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.ClassDeclaration);
     context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.RecordDeclaration);
     context.RegisterSyntaxNodeAction(AnalyzeTypeDeclaration, SyntaxKind.StructDeclaration);
-  }
-
-  private static void LaunchDebugger()
-  {
-    if (!System.Diagnostics.Debugger.IsAttached)
-      System.Diagnostics.Debugger.Launch();
-  }
-
-  private static void ReportDebugInformation(SyntaxNodeAnalysisContext context, string message)
-  {
-    var debugDiagnostic = Diagnostic.Create(DebugRule, context.Node.GetLocation(), message);
-    context.ReportDiagnostic(debugDiagnostic);
   }
 
   private static void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
@@ -118,7 +92,7 @@ public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 
   private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
   {
-    var diagnostic = Diagnostic.Create(Rule, identifier.GetLocation(), identifier.Text);
+    Diagnostic diagnostic = Diagnostic.Create(Rule, identifier.GetLocation(), identifier.Text);
     context.ReportDiagnostic(diagnostic);
   }
 }

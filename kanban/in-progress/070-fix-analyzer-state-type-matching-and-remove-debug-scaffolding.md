@@ -16,10 +16,10 @@ Any consumer deriving from a *different* library's `State<T>` base gets error-se
 
 ## Checklist
 
-- [ ] Metadata-name matching in all three analyzers (shared helper)
-- [ ] Analyzer test: a foreign `State<T>` base class produces no diagnostics
-- [ ] Existing analyzer tests still pass for real TimeWarp states
-- [ ] Delete TWD001 scaffolding and LaunchDebugger
+- [x] Metadata-name matching in all three analyzers (shared helper)
+- [x] Analyzer test: a foreign `State<T>` base class produces no diagnostics
+- [x] Existing analyzer tests still pass for real TimeWarp states
+- [x] Delete TWD001 scaffolding and LaunchDebugger
 
 ## Notes
 

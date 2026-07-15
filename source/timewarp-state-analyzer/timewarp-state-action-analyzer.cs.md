@@ -13,11 +13,6 @@ The analyzer ensures proper architectural boundaries by requiring that any class
 - **Category**: TimeWarp.State
 - **Description**: Actions in TimeWarp.State must be defined as nested types within their corresponding State classes.
 
-### TWD001 - Debug Diagnostic
-- **Severity**: Info
-- **Category**: Debug
-- **Description**: Provides debug information during analyzer execution. Useful for troubleshooting and development.
-
 ## Diagnostic Rules
 
 ### TW0001: Action Must Be Nested in State
@@ -25,12 +20,6 @@ The analyzer ensures proper architectural boundaries by requiring that any class
 - **Title**: TimeWarp.State Action should be a nested type of its State
 - **Description**: TimeWarp.State Actions should be nested types of their corresponding States.
 - **Message Format**: The Action '{0}' is not a nested type of its State
-
-### TWD001: Debug Information
-- **Severity**: Info
-- **Category**: Debug
-- **Description**: Provides debug information during analyzer execution. Useful for troubleshooting and development.
-- **Usage**: Not intended for end users
 
 ## Implementation Details
 

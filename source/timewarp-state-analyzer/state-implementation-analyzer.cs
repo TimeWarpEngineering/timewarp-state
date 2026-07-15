@@ -19,29 +19,30 @@ public class StateImplementationAnalyzer : DiagnosticAnalyzer
     context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
     context.EnableConcurrentExecution();
 
-    context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
-  }
-
-  private static void AnalyzeSymbol(SymbolAnalysisContext context)
-  {
-    var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
-
-    if (IsStateImplementation(namedTypeSymbol))
+    context.RegisterCompilationStartAction(static compilationStartContext =>
     {
-      if (!ImplementsICloneable(namedTypeSymbol) && !HasParameterlessConstructor(namedTypeSymbol))
-      {
-        var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
-        context.ReportDiagnostic(diagnostic);
-      }
-    }
+      INamedTypeSymbol? timeWarpState = StateSymbolHelpers.GetTimeWarpStateType(compilationStartContext.Compilation);
+      if (timeWarpState is null)
+        return;
+
+      compilationStartContext.RegisterSymbolAction(
+        symbolContext => AnalyzeSymbol(symbolContext, timeWarpState),
+        SymbolKind.NamedType);
+    });
   }
 
-  private static bool IsStateImplementation(INamedTypeSymbol symbol)
+  private static void AnalyzeSymbol(SymbolAnalysisContext context, INamedTypeSymbol timeWarpState)
   {
-    if (symbol.BaseType == null)
-      return false;
+    INamedTypeSymbol namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
 
-    return symbol.BaseType.Name == "State" && symbol.BaseType.TypeArguments.Length == 1;
+    if (!StateSymbolHelpers.IsTimeWarpState(namedTypeSymbol.BaseType, timeWarpState))
+      return;
+
+    if (!ImplementsICloneable(namedTypeSymbol) && !HasParameterlessConstructor(namedTypeSymbol))
+    {
+      Diagnostic diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
+      context.ReportDiagnostic(diagnostic);
+    }
   }
 
   private static bool ImplementsICloneable(INamedTypeSymbol symbol)
