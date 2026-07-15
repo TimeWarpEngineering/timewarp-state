@@ -259,3 +259,38 @@ rg 'TWD001|LaunchDebugger|DebugRule|ReportDebugInformation' source/timewarp-stat
 - Analyzer test: foreign State&lt;T&gt; → no diagnostics
 - Existing analyzer tests still pass for real TimeWarp states (+ new positives)
 - TWD001 scaffolding and LaunchDebugger deleted (code + Unshipped + docs)
+
+## Results
+
+### What was implemented
+1. **Shared helper** (`state-symbol-helpers.cs`) — resolve `TimeWarp.State.State`1` once per compilation via `GetTypeByMetadataName`; match with `SymbolEqualityComparer` on `OriginalDefinition`.
+2. **Three state analyzers** — switched to `RegisterCompilationStartAction`; early-out if TimeWarp.State is missing; inheritance depth preserved per analyzer (immediate base / first BaseList / full chain).
+3. **TWD001 cleanup** — removed `DebugRule`, `LaunchDebugger`, `ReportDebugInformation`, Unshipped row, docs, and orphaned `.editorconfig` severity.
+4. **Tests** — foreign `OtherLib.State<T>` negatives + real TimeWarp positives for each of the three analyzers.
+
+### Files changed
+**Created:**
+- `source/timewarp-state-analyzer/state-symbol-helpers.cs`
+- `tests/timewarp-state-analyzer-tests/state-implementation-analyzer-tests.cs`
+- `tests/timewarp-state-analyzer-tests/state-inheritance-analyzer-tests.cs`
+- `tests/timewarp-state-analyzer-tests/state-read-only-public-properties-analyzer-tests-new.cs`
+
+**Modified:**
+- `source/timewarp-state-analyzer/state-implementation-analyzer.cs`
+- `source/timewarp-state-analyzer/state-inheritance-analyzer.cs`
+- `source/timewarp-state-analyzer/state-read-only-public-properties-analyzer.cs`
+- `source/timewarp-state-analyzer/timewarp-state-action-analyzer.cs`
+- `source/timewarp-state-analyzer/AnalyzerReleases.Unshipped.md`
+- `source/timewarp-state-analyzer/timewarp-state-action-analyzer.cs.md`
+- `.editorconfig` (orphaned TWD001 severity removed)
+
+### Key decisions
+- Metadata-name match only; no simple-name fallback when reference is missing.
+- Per-analyzer inheritance depth preserved (not unified).
+- Old fully-commented read-only suite left alone; new focused tests in `*-tests-new.cs`.
+- ICloneable / IAction / IState string matching left out of scope.
+
+### Test outcomes
+- **10/10 passed** (`dotnet test` on `timewarp-state-analyzer-tests`)
+- Grep gates clean for simple-name `"State"` matching and TWD001 scaffolding in analyzer source
+- Review: **PASS** (one minor editorconfig leftover fixed)
