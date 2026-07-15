@@ -275,7 +275,6 @@ dotnet_naming_style.local_function_style.capitalization = pascal_case
 # dotnet_diagnostic options
 dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.TW0001.severity = error
-dotnet_diagnostic.TWD001.severity = warning
 
 #### Analyizer settings ####
 dotnet_code_quality.null_check_validation_methods = NotNull
