@@ -189,7 +189,6 @@ jobs:
         shell: pwsh
 
       - name: Validate release version matches tag
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
         if: github.event_name == 'release'
         run: |
           $releaseVersion = "${{ steps.extract_version.outputs.version }}"
@@ -222,7 +221,6 @@ jobs:
         run: echo "Trusted publishing OK — OIDC exchange succeeded for this repo + workflow.yml."
 
       - name: Publish TimeWarp.State to NuGet
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
         if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
         run: |
           $packagePath = "./artifacts/packages/TimeWarp.State.*.nupkg"
@@ -233,7 +231,6 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Publish TimeWarp.State.Plus to NuGet
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
         if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
         run: |
           $packagePath = "./artifacts/packages/TimeWarp.State.Plus.*.nupkg"
@@ -244,7 +241,6 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Publish TimeWarp.State.Policies to NuGet
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
         if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
         run: |
           $packagePath = "./artifacts/packages/TimeWarp.State.Policies.*.nupkg"
