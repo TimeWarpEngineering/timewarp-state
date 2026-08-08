@@ -11,6 +11,16 @@ public class Program
 
     public static void ConfigureServices(IServiceCollection serviceCollection)
     {
+        serviceCollection.AddMediator
+        (
+          options =>
+          {
+            options.ServiceLifetime = ServiceLifetime.Scoped;
+            options.GenerateTypesAsInternal = true;
+            options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker)];
+          }
+        );
+
         serviceCollection.AddTimeWarpState();
     }
 }

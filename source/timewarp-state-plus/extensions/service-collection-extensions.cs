@@ -16,9 +16,9 @@ public static class ServiceCollectionExtensions
     if (serviceCollection.HasRegistrationFor(typeof(RouteState))) return serviceCollection;
 
     serviceCollection.AddScoped<RouteState>();
-    serviceCollection.AddTransient<IRequestHandler<ChangeRouteActionSet.Action>, ChangeRouteActionSet.Handler>();
-    serviceCollection.AddTransient<IRequestHandler<GoBackActionSet.Action>, GoBackActionSet.Handler>();
-    serviceCollection.AddTransient<IRequestHandler<PushRouteInfoActionSet.Action>, PushRouteInfoActionSet.Handler>();
+    // The routing action handlers (ChangeRoute/GoBack/PushRouteInfo) are registered by the consuming
+    // application's AddMediator(...) call via the TimeWarp.State.Plus assembly marker; Mediator's source
+    // generator discovers them at compile time, so manual handler registration here is no longer needed.
 
     return serviceCollection;
   }

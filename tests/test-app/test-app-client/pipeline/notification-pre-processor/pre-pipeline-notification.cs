@@ -1,6 +1,8 @@
 namespace Test.App.Client.Pipeline.NotificationPreProcessor;
 
-public class PrePipelineNotification<TRequest> : INotification
+// Non-generic so Mediator's source generator can emit Publish/handler wiring for it.
+// (Open-generic INotification types produce invalid generated code.)
+public class PrePipelineNotification : INotification
 {
-  public required TRequest Request { get; init; }
+  public required object Request { get; init; }
 }

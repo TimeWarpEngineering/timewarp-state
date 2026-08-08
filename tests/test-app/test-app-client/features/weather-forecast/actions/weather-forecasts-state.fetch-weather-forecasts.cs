@@ -17,7 +17,7 @@ public partial class WeatherForecastsState
         HttpClient = httpClient;
       }
 
-      public override async Task Handle
+      public override async ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken
@@ -38,6 +38,7 @@ public partial class WeatherForecastsState
         ArgumentNullException.ThrowIfNull(getWeatherForecastsResponse);
 
         WeatherForecastsState.WeatherForecastList = getWeatherForecastsResponse;
+        return Unit.Value;
       }
     }
   }

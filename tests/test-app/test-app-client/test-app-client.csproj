@@ -13,6 +13,9 @@
     <PackageReference Include="Shouldly" />
     <PackageReference Include="timewarp-heroicons" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
+    <!-- The consuming app owns Mediator's source generator: it runs here and AddMediator(...) registers
+         handlers from this app plus the referenced TimeWarp.State / TimeWarp.State.Plus assemblies. -->
+    <PackageReference Include="Mediator.SourceGenerator" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
 <!--    <PackageReference Include="TimeWarp.State" />-->
 <!--    <PackageReference Include="TimeWarp.State.Plus" />-->
   </ItemGroup>

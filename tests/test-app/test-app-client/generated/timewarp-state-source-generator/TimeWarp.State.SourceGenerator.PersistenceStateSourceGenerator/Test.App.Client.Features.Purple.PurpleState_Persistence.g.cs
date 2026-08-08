@@ -18,11 +18,11 @@ public partial class PurpleState
     }
   }
 
-  internal static class LoadActionSet
+  public static class LoadActionSet
   {
-    internal sealed class Action : IAction;
+    public sealed class Action : IAction;
 
-    internal sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : ActionHandler<Action>
     {
       private readonly IPersistenceService PersistenceService;
       private readonly ILogger<Handler> Logger;
@@ -41,7 +41,7 @@ public partial class PurpleState
         Publisher = publisher;
       }
       
-      public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
+      public override async System.Threading.Tasks.ValueTask<global::Mediator.Unit> Handle(Action action, System.Threading.CancellationToken cancellationToken)
       {
         try
         {
@@ -67,6 +67,8 @@ public partial class PurpleState
           // Send notification even if an error occurred
           await Publisher.Publish(new StateLoadedNotification(typeof(PurpleState).FullName!), cancellationToken);
         }
+
+        return global::Mediator.Unit.Value;
       }
     }
   }

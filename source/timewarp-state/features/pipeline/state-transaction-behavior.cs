@@ -45,10 +45,10 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     );
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
@@ -86,7 +86,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
     try
     {
-      TResponse response = await next();
+      TResponse response = await next(request, cancellationToken);
       return response;
     }
     catch (Exception exception)

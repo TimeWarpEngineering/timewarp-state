@@ -4,6 +4,9 @@ global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
 global using TimeWarp.State;
 global using TimeWarp.Features.Persistence;
+// .NET 10 added Microsoft.AspNetCore.Components.PersistentStateAttribute, which collides with
+// TimeWarp's under the global Components using. Alias [PersistentState] to TimeWarp's attribute.
+global using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAttribute;
 global using TimeWarp.Features.Routing;
 global using TimeWarp.Features.ReduxDevTools;
 global using Shouldly;

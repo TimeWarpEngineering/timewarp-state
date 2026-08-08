@@ -12,16 +12,22 @@
 ## Checklist
 
 ### Implementation
-- [ ] Update `source/timewarp-state-plus/features/persistence/state-initialized-notification-handler.cs`:
-  - [ ] Change return type from `Task` to `ValueTask`
-  - [ ] Change `return Task.CompletedTask;` to `return default;`
-- [ ] Update `tests/test-app/test-app-client/features/counter/notification/increment-count-notification-handler.cs`:
-  - [ ] Apply same changes
-- [ ] Update `tests/test-app/test-app-client/features/counter/notification/pre-increment-count-notification-handler.cs`:
-  - [ ] Apply same changes
-- [ ] Update `tests/test-app/test-app-client/features/application/notification/application-state.exception-notification-handler.cs`:
-  - [ ] Apply same changes
-- [ ] Search for any other `INotificationHandler` implementations and update them
+- [x] Update `source/timewarp-state-plus/features/persistence/state-initialized-notification-handler.cs`:
+  - [x] Change return type from `Task` to `ValueTask` (`async ValueTask`; awaits, no `Task.CompletedTask`)
+  - [x] Change `return Task.CompletedTask;` to `return default;`
+- [x] Update `tests/test-app/test-app-client/features/counter/notification/increment-count-notification-handler.cs`:
+  - [x] Apply same changes
+- [x] Update `tests/test-app/test-app-client/features/counter/notification/pre-increment-count-notification-handler.cs`:
+  - [x] Apply same changes
+- [x] Update `tests/test-app/test-app-client/features/application/notification/application-state.exception-notification-handler.cs`:
+  - [x] Apply same changes
+- [x] Search for any other `INotificationHandler` implementations and update them — swept `source/`, `tests/`, AND `samples/`; exactly these 4 exist, none in core or samples
+
+### Verification
+- [x] `INotificationHandler.Handle` return type confirmed `ValueTask` by reflecting Mediator.Abstractions 3.0.2
+- [x] No `Task.CompletedTask` / `Task Handle` remains in the 4 handlers
+- [x] Core project unchanged (only request-handler 045 + registration 046 errors remain)
+- [ ] `-plus` handler + 3 test-app handlers compile — deferred to task 049 (build through the core project, which needs 045/046)
 
 ## Notes
 

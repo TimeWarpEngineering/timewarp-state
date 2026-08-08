@@ -4,7 +4,7 @@ public partial class RouteState
 {
   public static class GoBackActionSet
   {
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public int Amount { get; }
 
@@ -14,7 +14,7 @@ public partial class RouteState
       }
     }
 
-    internal sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : ActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
 
@@ -29,12 +29,14 @@ public partial class RouteState
 
       private RouteState RouteState => Store.GetState<RouteState>();
 
-      public override Task Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
       {
-        if (RouteState.IsRouteStackEmpty || action.Amount == 0) return Task.CompletedTask;
+        if (RouteState.IsRouteStackEmpty || action.Amount == 0) return new ValueTask<Unit>(Unit.Value);
 
-        // Determine how far back we can actually go
-        int amountToGoBack = Math.Min(action.Amount, RouteState.RouteStack.Count);
+        // Determine how far back we can actually go. The current page occupies the top of the stack,
+        // so the destination must remain — clamp to Count - 1 (matches CanGoBack => Count > 1).
+        int amountToGoBack = Math.Min(action.Amount, RouteState.RouteStack.Count - 1);
+        if (amountToGoBack <= 0) return new ValueTask<Unit>(Unit.Value);
 
         // Pop off the routes we don't need
         for (int i = 0; i < amountToGoBack; i++)
@@ -44,7 +46,7 @@ public partial class RouteState
 
         var target = RouteState.RouteStack.Peek();
         NavigationManager.NavigateTo(target.Url);
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

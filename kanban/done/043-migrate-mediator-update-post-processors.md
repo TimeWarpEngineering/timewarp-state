@@ -11,19 +11,33 @@
 - Rename method from `Process()` to `Handle()` (protected override)
 - Change return type from `Task` to `ValueTask`
 
+## Verified API (Mediator.Abstractions 3.0.2, by reflection)
+
+`MessagePostProcessor<TMessage, TResponse>` is an `abstract class : IPipelineBehavior<TMessage, TResponse>`. Override:
+
+```csharp
+protected override ValueTask Handle(TMessage message, TResponse response, CancellationToken cancellationToken)
+```
+
+Note `response` is the SECOND parameter (post-processors see the handler result). Kept existing `TRequest`/`request` type/param names (overrides need not match base param names) to minimize churn; added `sealed`; `Task.CompletedTask` → `default`. `IPublisher.Publish` returns `ValueTask`, so the test-app file's `return Publisher.Publish(...)` is unchanged.
+
 ## Checklist
 
 ### Implementation
-- [ ] Update `source/timewarp-state/features/render-subscriptions/render-subscriptions-post-processor.cs`:
-  - [ ] Change base from `IRequestPostProcessor<TRequest, TResponse>` to `MessagePostProcessor<TRequest, TResponse>`
-  - [ ] Rename `Process()` to `protected override ValueTask Handle()`
-  - [ ] Change return from `Task` to `ValueTask`
-- [ ] Update `source/timewarp-state-plus/features/persistence/pipeline/persistent-state-post-processor.cs`:
-  - [ ] Apply same changes as above
-- [ ] Update `source/timewarp-state-plus/features/timers/multi-timer-post-processor.cs`:
-  - [ ] Apply same changes as above
-- [ ] Update `tests/test-app/test-app-client/pipeline/notification-post-processor/post-pipeline-notification-request-post-processor.cs`:
-  - [ ] Apply same changes as above
+- [x] Update `source/timewarp-state/features/render-subscriptions/render-subscriptions-post-processor.cs`:
+  - [x] Change base from `IRequestPostProcessor<TRequest, TResponse>` to `MessagePostProcessor<TRequest, TResponse>`
+  - [x] Rename `Process()` to `protected override ValueTask Handle()`
+  - [x] Change return from `Task` to `ValueTask` (`Task.CompletedTask` → `default`)
+- [x] Update `source/timewarp-state-plus/features/persistence/pipeline/persistent-state-post-processor.cs`:
+  - [x] Apply same changes as above (async `ValueTask`, early `return;` kept)
+- [x] Update `source/timewarp-state-plus/features/timers/multi-timer-post-processor.cs`:
+  - [x] Apply same changes as above (async `ValueTask`)
+- [x] Update `tests/test-app/test-app-client/pipeline/notification-post-processor/post-pipeline-notification-request-post-processor.cs`:
+  - [x] Apply same changes as above
+
+### Verification
+- [x] Core project (`timewarp-state`) builds with no error on `render-subscriptions-post-processor.cs`; remaining errors are request handlers (045) and service registration (046) only
+- [ ] `-plus` post-processors + test-app file compile — deferred to task 049 (both build through the core project, which doesn't compile until 045/046 land)
 
 ## Notes
 

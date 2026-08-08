@@ -22,12 +22,15 @@ public class Should_Trigger_TW0001
     };
    
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
+    // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
+    // net10 TimeWarp.State (and net8 Mediator) assemblies referenced below (otherwise CS1705).
+    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
         
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string TimeWarpMediatorContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpMediatorContractsAssemblyPath));
+    const string MediatorAssemblyPath = @"Mediator.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
   }
@@ -51,12 +54,15 @@ public class Should_Trigger_TW0001
     };
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
+    // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
+    // net10 TimeWarp.State (and net8 Mediator) assemblies referenced below (otherwise CS1705).
+    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
     
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string TimeWarpMediatorContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpMediatorContractsAssemblyPath));
+    const string MediatorAssemblyPath = @"Mediator.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
   }
@@ -80,12 +86,15 @@ public class Should_Trigger_TW0001
     };
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
+    // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
+    // net10 TimeWarp.State (and net8 Mediator) assemblies referenced below (otherwise CS1705).
+    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
     
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string TimeWarpMediatorContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpMediatorContractsAssemblyPath));
+    const string MediatorAssemblyPath = @"Mediator.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
   }
@@ -110,12 +119,15 @@ public class Should_Trigger_TW0001
     };
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
+    // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
+    // net10 TimeWarp.State (and net8 Mediator) assemblies referenced below (otherwise CS1705).
+    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
     
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string TimeWarpMediatorContractsAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpMediatorContractsAssemblyPath));
+    const string MediatorAssemblyPath = @"Mediator.dll";
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
   }

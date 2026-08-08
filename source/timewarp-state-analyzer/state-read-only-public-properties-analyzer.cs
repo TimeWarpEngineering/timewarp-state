@@ -5,77 +5,74 @@ using Microsoft.CodeAnalysis.CSharp;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "StateReadOnlyPublicPropertiesRule";
+  public const string DiagnosticId = "StateReadOnlyPublicPropertiesRule";
 
-    private static readonly LocalizableString Title = "Public property in State class should be read-only";
-    private static readonly LocalizableString MessageFormat = "The public property '{0}' in State-derived class should be read-only";
-    private static readonly LocalizableString Description = "Public properties in classes inheriting from State should be read-only to enforce immutability.";
-    private const string Category = "Design";
+  private static readonly LocalizableString Title = "Public property in State class should be read-only";
+  private static readonly LocalizableString MessageFormat = "The public property '{0}' in State-derived class should be read-only";
+  private static readonly LocalizableString Description = "Public properties in classes inheriting from State should be read-only to enforce immutability.";
+  private const string Category = "Design";
 
-    private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
+  private static readonly DiagnosticDescriptor Rule = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+  public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
-    public override void Initialize(AnalysisContext context)
+  public override void Initialize(AnalysisContext context)
+  {
+    context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+    context.EnableConcurrentExecution();
+    context.RegisterCompilationStartAction(static compilationStartContext =>
     {
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.EnableConcurrentExecution();
-        context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.ClassDeclaration);
+      INamedTypeSymbol? timeWarpState = StateSymbolHelpers.GetTimeWarpStateType(compilationStartContext.Compilation);
+      if (timeWarpState is null)
+        return;
+
+      compilationStartContext.RegisterSyntaxNodeAction(
+        syntaxContext => AnalyzeNode(syntaxContext, timeWarpState),
+        SyntaxKind.ClassDeclaration);
+    });
+  }
+
+  private static void AnalyzeNode(SyntaxNodeAnalysisContext context, INamedTypeSymbol timeWarpState)
+  {
+    ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)context.Node;
+
+    if (!StateSymbolHelpers.InheritsFromTimeWarpState(
+      context.SemanticModel.GetDeclaredSymbol(classDeclaration),
+      timeWarpState))
+    {
+      return;
     }
 
-    private static void AnalyzeNode(SyntaxNodeAnalysisContext context)
+    bool isAbstract = classDeclaration.Modifiers.Any(SyntaxKind.AbstractKeyword);
+
+    foreach (MemberDeclarationSyntax member in classDeclaration.Members)
     {
-        var classDeclaration = (ClassDeclarationSyntax)context.Node;
-        
-        if (!InheritsFromState(classDeclaration, context.SemanticModel))
-            return;
-
-        bool isAbstract = classDeclaration.Modifiers.Any(SyntaxKind.AbstractKeyword);
-
-        foreach (MemberDeclarationSyntax member in classDeclaration.Members)
-        {
-            if (member is PropertyDeclarationSyntax propertyDeclaration)
-            {
-                AnalyzeProperty(propertyDeclaration, context, isAbstract);
-            }
-        }
+      if (member is PropertyDeclarationSyntax propertyDeclaration)
+      {
+        AnalyzeProperty(propertyDeclaration, context, isAbstract);
+      }
     }
+  }
 
-    private static bool InheritsFromState(ClassDeclarationSyntax classDeclaration, SemanticModel semanticModel)
+  private static void AnalyzeProperty(PropertyDeclarationSyntax propertyDeclaration, SyntaxNodeAnalysisContext context, bool isAbstractClass)
+  {
+    if (!propertyDeclaration.Modifiers.Any(SyntaxKind.PublicKeyword))
+      return;
+
+    AccessorDeclarationSyntax? setter =
+      propertyDeclaration.AccessorList?.Accessors
+        .FirstOrDefault(a => a.IsKind(SyntaxKind.SetAccessorDeclaration));
+
+    if (setter is null)
+      return;
+
+    bool isSetterPrivate = setter.Modifiers.Any(SyntaxKind.PrivateKeyword);
+    bool isSetterProtected = setter.Modifiers.Any(SyntaxKind.ProtectedKeyword);
+
+    if (!isSetterPrivate && !(isAbstractClass && isSetterProtected))
     {
-        INamedTypeSymbol? classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-        if (classSymbol == null)
-            return false;
-
-        INamedTypeSymbol? baseType = classSymbol.BaseType;
-        while (baseType != null)
-        {
-            if (baseType.Name == "State" && baseType.TypeArguments.Length == 1)
-                return true;
-            baseType = baseType.BaseType;
-        }
-
-        return false;
+      Diagnostic diagnostic = Diagnostic.Create(Rule, propertyDeclaration.Identifier.GetLocation(), propertyDeclaration.Identifier.Text);
+      context.ReportDiagnostic(diagnostic);
     }
-
-    private static void AnalyzeProperty(PropertyDeclarationSyntax propertyDeclaration, SyntaxNodeAnalysisContext context, bool isAbstractClass)
-    {
-        if (!propertyDeclaration.Modifiers.Any(SyntaxKind.PublicKeyword)) return;
-        
-        AccessorDeclarationSyntax? setter = 
-          propertyDeclaration.AccessorList?.Accessors
-            .FirstOrDefault(a => a.IsKind(SyntaxKind.SetAccessorDeclaration));
-        
-        if (setter != null)
-        {
-            bool isSetterPrivate = setter.Modifiers.Any(SyntaxKind.PrivateKeyword);
-            bool isSetterProtected = setter.Modifiers.Any(SyntaxKind.ProtectedKeyword);
-
-            if (!isSetterPrivate && !(isAbstractClass && isSetterProtected))
-            {
-                var diagnostic = Diagnostic.Create(Rule, propertyDeclaration.Identifier.GetLocation(), propertyDeclaration.Identifier.Text);
-                context.ReportDiagnostic(diagnostic);
-            }
-        }
-    }
+  }
 }

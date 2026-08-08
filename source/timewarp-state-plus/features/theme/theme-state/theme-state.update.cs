@@ -4,7 +4,7 @@ public partial class ThemeState
 {
   public static class UpdateActionSet
   {
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public Theme NewTheme { get; }
       public Action(Theme newTheme) 
@@ -13,21 +13,21 @@ public partial class ThemeState
       }
     }
     
-    internal sealed class Handler
+    public sealed class Handler
     (
       IStore store
     ): ActionHandler<Action>(store)
     {
       private ThemeState ThemeState => Store.GetState<ThemeState>();
       
-      public override Task Handle
+      public override ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         ThemeState.CurrentTheme = action.NewTheme;
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

@@ -21,7 +21,7 @@ public partial class CounterState
       /// <summary>
       /// Intentionally throw so we can test exception handling.
       /// </summary>
-      public override Task<Unit> Handle
+      public override ValueTask<Unit> Handle
       (
         Action action,
         CancellationToken cancellationToken

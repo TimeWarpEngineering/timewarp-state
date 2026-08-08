@@ -1,8 +1,8 @@
 namespace TimeWarp.Features.ReduxDevTools;
 
-internal class CommitRequest : DispatchRequest<CommitRequest.PayloadClass>, IRequest, IReduxRequest
+public class CommitRequest : DispatchRequest<CommitRequest.PayloadClass>, IRequest, IReduxRequest
 {
-  internal class PayloadClass
+  public class PayloadClass
   {
     public PayloadClass(string type) 
     {

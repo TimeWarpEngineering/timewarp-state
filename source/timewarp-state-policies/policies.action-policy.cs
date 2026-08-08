@@ -58,9 +58,9 @@ public static partial class Policies
           .Should()
           .BeSealed()
           .And()
-          .BeInternal(),
-        "Action class Modifiers", 
-        "Actions should be `internal sealed`."
+          .BePublic(),
+        "Action class Modifiers",
+        "Actions should be `public sealed` (Mediator's source generator registers them cross-assembly)."
       );
   }
 }

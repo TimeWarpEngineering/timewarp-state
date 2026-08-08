@@ -12,11 +12,11 @@ public partial class CounterState
   ) : BaseActionHandler<ImproperNestedAction>(store)
   {
 
-    public override Task<Unit> Handle
+    public override ValueTask<Unit> Handle
     (
       ImproperNestedAction action,
       CancellationToken cancellationToken
-    ) => Unit.Task;
+    ) => new ValueTask<Unit>(Unit.Value);
   }
 }
 #endif

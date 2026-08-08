@@ -6,7 +6,7 @@ public partial class TimerState
 {
   public static class UpdateTimerActionSet
   {
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public string TimerName { get; }
       public TimerConfig NewTimerConfig { get; }
@@ -18,13 +18,13 @@ public partial class TimerState
       }
     }
 
-    internal sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : ActionHandler<Action>
     {
       private TimerState TimerState => Store.GetState<TimerState>();
       
       public Handler(IStore store) : base(store) { }
 
-      public override Task Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
       {
         if (TimerState.Timers.TryGetValue(action.TimerName, out (Timer Timer, TimerConfig TimerConfig) timerTuple))
         {
@@ -32,7 +32,7 @@ public partial class TimerState
           Timer newTimer = new(action.NewTimerConfig.Duration);
           TimerState.Timers[action.TimerName] = (newTimer, action.NewTimerConfig);
         }
-        return Task.CompletedTask;
+        return new ValueTask<Unit>(Unit.Value);
       }
     }
   }

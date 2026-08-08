@@ -7,7 +7,7 @@ namespace Test.App.Client.Pipeline;
 /// <typeparam name="TResponse"></typeparam>
 /// <remarks>see TimeWarp.Mediator for more examples</remarks>
 public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull
+  where TRequest : IMessage
 {
   private readonly ILogger Logger;
   public Guid Guid { get; } = Guid.NewGuid();
@@ -21,17 +21,17 @@ public class MyBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResp
     Logger.LogDebug("{classname}: Constructor", GetType().Name);
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
     Logger.LogDebug("{classname}: Start", GetType().Name);
 
     Logger.LogDebug("{classname}: Call next", GetType().Name);
-    TResponse newState = await next();
+    TResponse newState = await next(request, cancellationToken);
     Logger.LogDebug("{classname}: Start Post Processing", GetType().Name);
     // Constrain here based on a type or anything you want.
     if (typeof(IState).IsAssignableFrom(typeof(TResponse)))

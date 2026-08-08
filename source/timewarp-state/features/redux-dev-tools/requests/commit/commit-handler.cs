@@ -1,6 +1,6 @@
 namespace TimeWarp.Features.ReduxDevTools;
 
-internal class CommitHandler : IRequestHandler<CommitRequest>
+public class CommitHandler : IRequestHandler<CommitRequest>
 {
   private readonly ILogger Logger;
   private readonly IReduxDevToolsStore Store;
@@ -19,7 +19,7 @@ internal class CommitHandler : IRequestHandler<CommitRequest>
     ReduxDevToolsInterop = reduxDevToolsInterop;
   }
 
-  public async Task Handle(CommitRequest commitRequest, CancellationToken cancellationToken)
+  public async ValueTask<Unit> Handle(CommitRequest commitRequest, CancellationToken cancellationToken)
   {
     Logger.LogDebug
     (
@@ -37,5 +37,7 @@ internal class CommitHandler : IRequestHandler<CommitRequest>
       "Received Id:{aJumpToStateRequest_Id}",
       commitRequest.Id
     );
+
+    return Unit.Value;
   }
 }

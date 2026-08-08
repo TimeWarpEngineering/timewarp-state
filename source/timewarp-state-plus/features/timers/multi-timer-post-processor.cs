@@ -1,7 +1,7 @@
 namespace TimeWarp.State.Plus.Features.Timers;
 
-public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcessor<TRequest, TResponse>
-  where TRequest : notnull
+public sealed class MultiTimerPostProcessor<TRequest, TResponse> : MessagePostProcessor<TRequest, TResponse>
+  where TRequest : IMessage
 {
   private readonly ILogger<MultiTimerPostProcessor<TRequest, TResponse>> Logger;
   private readonly TimerState TimerState;
@@ -16,7 +16,7 @@ public class MultiTimerPostProcessor<TRequest, TResponse> : IRequestPostProcesso
     TimerState = timerState;
   }
 
-  public async Task Process(TRequest request, TResponse response, CancellationToken cancellationToken)
+  protected override async ValueTask Handle(TRequest request, TResponse response, CancellationToken cancellationToken)
   {
     Logger.LogDebug(EventIds.MultiTimerPostProcessor_ProcessingRequest, message: "Processing request and checking timers");
     await TimerState.ResetTimersOnActivity();

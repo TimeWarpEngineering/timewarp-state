@@ -67,90 +67,28 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
 
   private static string GenerateLoadClassCode(string namespaceName, string className, string persistentStateMethod)
   {
-    string camelCaseClassName = ToCamelCase(className);
-
     return $$$"""
       #nullable enable
 
       #pragma warning disable CS1591
       namespace {{{namespaceName}}};
-      
-      using TimeWarp.Features.Persistence;
-      using TimeWarp.State;
 
       public partial class {{{className}}}
       {
-        internal sealed class StateLoadedNotification : INotification
-        {
-          public string TypeName { get; }
-
-          public StateLoadedNotification(string typeName)
-          {
-            TypeName = typeName;
-          }
-        }
-
-        internal static class LoadActionSet
-        {
-          internal sealed class Action : IAction;
-      
-          internal sealed class Handler : ActionHandler<Action>
-          {
-            private readonly IPersistenceService PersistenceService;
-            private readonly ILogger<Handler> Logger;
-            private readonly IPublisher Publisher;
-            
-            public Handler
-            (
-              IStore store,
-              IPersistenceService persistenceService,
-              ILogger<Handler> logger,
-              IPublisher publisher
-            ) : base(store)
-            {
-              PersistenceService = persistenceService;
-              Logger = logger;
-              Publisher = publisher;
-            }
-            
-            public override async System.Threading.Tasks.Task Handle(Action action, System.Threading.CancellationToken cancellationToken)
-            {
-              try
-              {
-                  object? state = await PersistenceService.LoadState(typeof({{{className}}}), PersistentStateMethod.{{{persistentStateMethod}}});
-                  if (state is {{{className}}} {{{camelCaseClassName}}})
-                  {
-                    Store.SetState({{{camelCaseClassName}}});
-                    Logger.LogTrace("{{{className}}} loaded successfully");
-                  }
-                  else
-                  {
-                    Logger.LogTrace("{{{className}}} is null");
-                  }
-                  
-                  // Send notification regardless of whether state was found or not
-                  await Publisher.Publish(new StateLoadedNotification(typeof({{{className}}}).FullName!), cancellationToken);
-              }
-              catch (Exception exception)
-              {
-                Logger.LogError(exception, "Error loading {{{className}}}");
-                // if this is a JavaScript not available exception then we are prerendering and just swallow it
-                
-                // Send notification even if an error occurred
-                await Publisher.Publish(new StateLoadedNotification(typeof({{{className}}}).FullName!), cancellationToken);
-              }
-            }
-          }
-        }
+        /// <summary>
+        /// (Re)loads this [PersistentState] state from its configured persistence store.
+        /// </summary>
         public async Task Load(CancellationToken? externalCancellationToken = null)
         {
           using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
             ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
             : null;
-        
+
+          // Load is dispatched through a single hand-written Mediator request whose handler is
+          // registered by Mediator's generator (a per-state generated handler would not be).
           await Sender.Send
           (
-            new LoadActionSet.Action(),
+            new global::TimeWarp.State.Plus.PersistentState.LoadPersistentStateRequest(typeof({{{className}}})),
             linkedCts?.Token ?? CancellationToken
           );
         }

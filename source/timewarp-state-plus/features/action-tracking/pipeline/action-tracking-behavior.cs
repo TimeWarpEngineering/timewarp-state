@@ -13,10 +13,10 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     Logger = logger;
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TAction action,
-    RequestHandlerDelegate<TResponse> nextHandler,
+    MessageHandlerDelegate<TAction, TResponse> nextHandler,
     CancellationToken cancellationToken
   )
   {
@@ -43,7 +43,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
       TResponse? response; 
       try
       {
-        response = await nextHandler();
+        response = await nextHandler(action, cancellationToken);
       }
       finally // If an exception is thrown, we still want to complete the tracking
       {
@@ -66,7 +66,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     }
     else
     { 
-      TResponse response = await nextHandler();
+      TResponse response = await nextHandler(action, cancellationToken);
       return response;
     }
   }

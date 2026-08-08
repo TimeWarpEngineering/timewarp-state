@@ -11,11 +11,12 @@ public partial class ApplicationState
     {
       public Handler(IStore store) : base(store) {}
 
-      public override async Task Handle(Action action, CancellationToken cancellationToken)
+      public override async ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
       {
         Console.WriteLine("Start five second task");
         await Task.Delay(millisecondsDelay: 5000, cancellationToken: cancellationToken);
         Console.WriteLine("Five second task complete");
+        return Unit.Value;
       }
     }
   }
