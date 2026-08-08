@@ -21,14 +21,25 @@ on:
       - '*.targets'
       - 'Documentation/**'
   release:
-    types: [created]
+    types: [published]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Pipeline mode. merge = no publish (default). release = break-glass publish; also requires confirm.'
+        type: choice
+        options:
+          - merge
+          - release
+        default: merge
+      confirm:
+        description: 'Break-glass guard: type the word release to confirm publishing when mode is release. Ignored otherwise.'
+        type: string
+        default: ''
 
 env:
   DOTNET_NOLOGO: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  NUGET_AUTH_TOKEN: ${{ secrets.PUBLISH_TO_NUGET_ORG }}
 
 jobs:
   # CI/CD job for PR and push events
@@ -136,10 +147,20 @@ jobs:
   release:
     if: github.event_name == 'release' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # Required for NuGet Trusted Publishing (OIDC)
     defaults:
       run:
         shell: pwsh
     steps:
+      - name: Validate break-glass confirmation
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm != 'release'
+        shell: bash
+        run: |
+          echo "::error::mode=release requires confirm=release. Refusing to run a break-glass release."
+          exit 1
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -185,29 +206,39 @@ jobs:
         run: dotnet run --project ./scripts/package.cs
         working-directory: ${{ github.workspace }}
 
+      - name: NuGet login (OIDC Trusted Publishing)
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
+        id: nuget-login
+        uses: nuget/login@v1
+        with:
+          user: TimeWarp.Enterprises
+
       - name: Publish TimeWarp.State to NuGet
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
         run: |
           $packagePath = "./artifacts/packages/TimeWarp.State.*.nupkg"
           if (!(Test-Path $packagePath)) {
             throw "NuGet package not found for TimeWarp.State"
           }
-          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         working-directory: ${{ github.workspace }}
 
       - name: Publish TimeWarp.State.Plus to NuGet
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
         run: |
           $packagePath = "./artifacts/packages/TimeWarp.State.Plus.*.nupkg"
           if (!(Test-Path $packagePath)) {
             throw "NuGet package not found for TimeWarp.State.Plus"
           }
-          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         working-directory: ${{ github.workspace }}
 
       - name: Publish TimeWarp.State.Policies to NuGet
+        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
         run: |
           $packagePath = "./artifacts/packages/TimeWarp.State.Policies.*.nupkg"
           if (!(Test-Path $packagePath)) {
             throw "NuGet package not found for TimeWarp.State.Policies"
           }
-          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.PUBLISH_TO_NUGET_ORG }}
+          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         working-directory: ${{ github.workspace }}
