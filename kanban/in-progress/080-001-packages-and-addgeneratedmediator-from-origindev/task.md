@@ -66,6 +66,9 @@ Smoke (from the task worktree; the local feed folder must exist):
 
 ```bash
 mkdir -p artifacts/packages
+# The samples restore TimeWarp.State 12.0.0-beta.3 from artifacts/packages; drop any cached copy from a
+# pre-migration build so the NuGet cache cannot serve the stale assembly (no MediatorAssembly marker).
+rm -rf ~/.nuget/packages/timewarp.state ~/.nuget/packages/timewarp.state.plus
 dotnet build timewarp-state.slnx -c Debug
 dotnet tool restore
 dotnet fixie timewarp-state-analyzer-tests

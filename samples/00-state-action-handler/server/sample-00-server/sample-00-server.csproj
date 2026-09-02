@@ -3,6 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Sample00Server</AssemblyName>
     <RootNamespace>Sample00Server</RootNamespace>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

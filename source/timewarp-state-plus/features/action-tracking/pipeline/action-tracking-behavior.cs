@@ -4,7 +4,7 @@ using static ActionTrackingState;
 
 /// <summary>
 /// Pipeline behavior that tracks <c>[TrackAction]</c> actions in <see cref="ActionTrackingState"/>.
-/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), Order = ...)]</c>.
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), order: ...)]</c>.
 /// </summary>
 public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
   where TAction : notnull, IAction

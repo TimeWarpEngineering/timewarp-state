@@ -38,7 +38,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     string className = typeof(ReduxDevToolsBehavior<,>).Name.Split('`')[0];
     Logger.LogDebug
     (
-      EventIds.StateTransactionBehavior_Constructing,
+      EventIds.ReduxDevToolsBehavior_Constructing,
       "constructing {ClassName}<{RequestType},{ResponseType}>",
       className, 
       typeof(TRequest).Name,

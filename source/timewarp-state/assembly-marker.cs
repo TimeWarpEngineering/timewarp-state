@@ -8,7 +8,7 @@ using TimeWarp.State;
 // generator links the handlers below (ReduxDevTools Commit/Start) and weaves these behaviors.
 // Order is the pipeline order (lower = outermost), matching the previous DI registration order:
 // ReduxDevTools -> StateInitialization -> StateTransaction -> RenderSubscriptions -> handler.
-// Hosts declare their own behaviors with Order >= 500 so they run inside the State pipeline.
+// Hosts declare their own behaviors with order >= 500 so they run inside the State pipeline.
 [assembly: MediatorAssembly]
 [assembly: MediatorBehavior(typeof(ReduxDevToolsBehavior<,>), order: 100)]
 [assembly: MediatorBehavior(typeof(StateInitializationPreProcessor<,>), order: 200)]

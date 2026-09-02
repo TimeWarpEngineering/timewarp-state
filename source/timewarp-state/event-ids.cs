@@ -61,10 +61,10 @@ internal static class EventIds
   public static readonly EventId CommitHandler_RequestHandled = new(542, nameof(CommitHandler_RequestHandled));
 
   //   RenderSubscriptions
-  public static readonly EventId RenderSubscriptionsPostProcessor_Constructing = new(600, nameof(ReduxDevToolsBehavior_Constructing));
-  public static readonly EventId RenderSubscriptionsPostProcessor_Begin = new(601, nameof(ReduxDevToolsBehavior_Constructing));
-  public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(ReduxDevToolsBehavior_Constructing));
-  public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(ReduxDevToolsBehavior_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_Constructing = new(600, nameof(RenderSubscriptionsPostProcessor_Constructing));
+  public static readonly EventId RenderSubscriptionsPostProcessor_Begin = new(601, nameof(RenderSubscriptionsPostProcessor_Begin));
+  public static readonly EventId RenderSubscriptionsPostProcessor_End = new(602, nameof(RenderSubscriptionsPostProcessor_End));
+  public static readonly EventId RenderSubscriptionsPostProcessor_Exception = new(603, nameof(RenderSubscriptionsPostProcessor_Exception));
   public static readonly EventId RenderSubscriptionsPostProcessor_SkippedReRender = new(604, nameof(RenderSubscriptionsPostProcessor_SkippedReRender));
   
   #region TimeWarpStateComponent

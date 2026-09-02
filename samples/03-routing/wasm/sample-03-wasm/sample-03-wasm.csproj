@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Sample03Wasm</RootNamespace>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

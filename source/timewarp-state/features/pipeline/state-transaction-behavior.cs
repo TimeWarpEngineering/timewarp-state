@@ -37,7 +37,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     // The behavior is woven at compile time; TimeWarpStateOptions.UseStateTransactionBehavior turns it off at runtime.
     Enabled = timeWarpStateOptions.UseStateTransactionBehavior;
 
-    string className = typeof(ReduxDevToolsBehavior<,>).GetSimpleName();
+    string className = typeof(StateTransactionBehavior<,>).GetSimpleName();
 
     Logger.LogDebug
     (

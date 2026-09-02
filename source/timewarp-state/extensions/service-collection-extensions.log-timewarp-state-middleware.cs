@@ -6,6 +6,7 @@ public static partial class ServiceCollectionExtensions
   {
     // TimeWarp.Mediator's generator registers each closed behavior it wove (AddScoped<Behavior<TRequest,TResponse>>)
     // in compile-time pipeline order, so the distinct open-generic names, in registration order, reflect the pipeline.
+    // Open-generic IPipelineBehavior<,> registrations are ignored: the generated mediator never runs them.
     List<string> middleware = GetComponentOrder(serviceCollection, typeof(IPipelineBehavior<,>));
 
     var message = new StringBuilder("TimeWarp State (TimeWarp.Mediator) Pipeline Behavior Registrations:");
@@ -17,13 +18,15 @@ public static partial class ServiceCollectionExtensions
     logger.LogInformation(message.ToString());
   }
 
+  // Only closed constructed generic implementation types are considered; open-generic registrations
+  // (e.g. IPipelineBehavior<,>) have no concrete type name to report and are skipped.
   public static List<string> GetComponentOrder(this IServiceCollection serviceCollection, Type componentType)
   {
     return serviceCollection
       .Where
       (
         sd =>
-          sd.ImplementationType is { IsGenericType: true } implementationType &&
+          sd.ImplementationType is { IsConstructedGenericType: true } implementationType &&
           implementationType.GetInterfaces().Any
           (
             i => i.IsGenericType && i.GetGenericTypeDefinition() == componentType

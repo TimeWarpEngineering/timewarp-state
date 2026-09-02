@@ -60,32 +60,38 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
         // TODO: 
         break;
       case PersistentStateMethod.SessionStorage:
-        Logger.LogTrace
-        (
-          EventIds.PersistentStatePostProcessor_SaveToSessionStorage
-          ,"Save {StateTypeName} to Session Storage with value {json}"
-          , currentType.Name
-          , JsonSerializer.Serialize(state)
-        );
         if (SessionStorageService is null)
         {
           LogMissingStorage<ISessionStorageService>(currentType);
           break;
         }
+        if (Logger.IsEnabled(LogLevel.Trace))
+        {
+          Logger.LogTrace
+          (
+            EventIds.PersistentStatePostProcessor_SaveToSessionStorage
+            ,"Save {StateTypeName} to Session Storage with value {json}"
+            , currentType.Name
+            , JsonSerializer.Serialize(state)
+          );
+        }
         await SessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.LocalStorage:
-        Logger.LogTrace
-        (
-          EventIds.PersistentStatePostProcessor_SaveToLocalStorage
-          ,"Save {StateTypeName} to Local Storage with value {json}"
-          , currentType.Name
-          , JsonSerializer.Serialize(state)
-        );
         if (LocalSessionStorageService is null)
         {
           LogMissingStorage<ILocalStorageService>(currentType);
           break;
+        }
+        if (Logger.IsEnabled(LogLevel.Trace))
+        {
+          Logger.LogTrace
+          (
+            EventIds.PersistentStatePostProcessor_SaveToLocalStorage
+            ,"Save {StateTypeName} to Local Storage with value {json}"
+            , currentType.Name
+            , JsonSerializer.Serialize(state)
+          );
         }
         await LocalSessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
