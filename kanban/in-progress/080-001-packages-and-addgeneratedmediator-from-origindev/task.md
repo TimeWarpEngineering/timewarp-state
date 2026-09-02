@@ -32,6 +32,7 @@ Wait for mediator **005-003** (package on nuget.org) unless the operator waives 
 
 - Created: 154892 (2026-09-01)
 - 2026-09-03: implementer (Claude Fable, ganda task work) claimed; TimeWarp.Mediator 14.0.0-beta.1 confirmed on nuget.org (mediator 005-003 done), no project-reference waiver needed.
+- 2026-09-03: review oracle (Claude Fable, ganda task work) ran tw-implementation-review, effort 1 (general reviewer: Claude Opus subagent; fixes: Claude Sonnet subagent). Artifacts under `review/`.
 
 ## Results
 
@@ -45,7 +46,7 @@ TimeWarp.State, TimeWarp.State.Plus and TimeWarp.State.Policies now build agains
 - `TimeWarp.State.IAction` is deleted; `TimeWarp.Mediator.IAction` is the marker (State analyzer TW0001 now checks `TimeWarp.Mediator.IAction`). `TimeWarp.State.ActionHandler<T>` is renamed **`StateActionHandler<T>(IStore)`** deriving from `TimeWarp.Mediator.ActionHandler<T>` (`ValueTask Handle`), because `ActionHandler<T>` in both namespaces is ambiguous for every consumer that imports both. Void handlers return `Task`, notification handlers return `Task`, `ISender.Send`/`IPublisher.Publish` return `Task` (no `.AsTask()`).
 - `RenderSubscriptionsPostProcessor` is now public: the host's generated code references closed behavior types by name.
 - Manual `IRequestHandler`/`IPipelineBehavior<,>` DI registrations removed from `AddTimeWarpState`/`UseReduxDevTools`; `LogTimeWarpStateMiddleware` lists the generator's closed behavior registrations.
-- Policies: `CreateActionHandlerPolicy` targets `TimeWarp.Mediator.ActionHandler<>` and the "public sealed Handler" rule is now "sealed Handler" (app handlers resolve inside the host assembly and may stay internal; library handlers must be public).
+- Policies: `CreateActionHandlerPolicy` targets `TimeWarp.Mediator.ActionHandler<>`. The default overload keeps the "public sealed Handler" rule (library handlers such as TimeWarp.State.Plus are referenced by the host's generated code); `CreateActionHandlerPolicy(requirePublicHandlers: false, ...)` relaxes it to "sealed Handler" for app assemblies whose handlers resolve inside the host and may stay internal (test-app-architecture-tests uses this).
 
 ### Hosts (tests/, samples/)
 
@@ -59,6 +60,17 @@ TimeWarp.State, TimeWarp.State.Plus and TimeWarp.State.Policies now build agains
 - `scripts/test.cs` no longer compiles against the floating `TimeWarp.Amuru` package (`ExecuteAsync` missing) — pre-existing, unrelated; the five suites were run individually.
 - `ganda repo audit` reports pre-existing repo items (Nuru outdated, tools/dev-cli missing, journal gitignore patterns, `<Version>` in source/Directory.Build.props) — untouched.
 - Scoped `ISender<ClientPipeline>`/`ServerPipeline` is 080-002; docs/readme and 049–051 disposition are 080-003.
+- `tests/test-app/test-app-client/generated/**` is gitignored but 99 files are tracked (pre-existing on origin/dev), so builds churn the embedded worktree path. Review finding M6, accepted exception; 080-003 to untrack (or make emitted paths deterministic).
+- Parallel `dotnet build --no-incremental` of the full solution can hit a pre-existing StaticWebAssets race in source/timewarp-state (wwwroot/js deleted before DefineStaticWebAssets); `git checkout -- source/timewarp-state/wwwroot/` restores. Not caused by this task.
+
+### Review disposition
+
+- Body: tw-implementation-review, effort 1, roster `general`; 2 rounds (round 2 = re-verification of fixes).
+- Round 1: 0 bug, 6 suggestion, 4 nit. Round 2: all prior verified; 1 new nit.
+- Final: 0 open; 5 suggestion fixed, 1 suggestion wontfix (M6, generated/ tracking, deferred to 080-003), 5 nit fixed.
+- **Disposition: accepted-exceptions** (`review/disposition.md`).
+- Fixes landed on this task in a0e0d707 (policy `requirePublicHandlers` overload, `order:` docs, PersistentStatePostProcessor trace guard, GetComponentOrder closed-type filter, constructor log names/event ids, integration-test comment, NoWarn 1591 on generator hosts, 066 warning on MultiTimerPostProcessor) plus the M11 comment reword. All five suites re-run green after the fixes; CS1591 count 0 (was 376).
+- Paths: `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/disposition.md`.
 
 ### How to validate
 

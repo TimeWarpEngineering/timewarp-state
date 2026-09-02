@@ -18,8 +18,9 @@ public static partial class ServiceCollectionExtensions
     logger.LogInformation(message.ToString());
   }
 
-  // Only closed constructed generic implementation types are considered; open-generic registrations
-  // (e.g. IPipelineBehavior<,>) have no concrete type name to report and are skipped.
+  // Only closed constructed implementation types are considered: those are what TimeWarp.Mediator's generator
+  // registers and runs. A legacy open-generic registration (AddScoped(typeof(IPipelineBehavior<,>), typeof(X<,>)))
+  // is inert under the generated mediator, so listing it here would misreport the pipeline.
   public static List<string> GetComponentOrder(this IServiceCollection serviceCollection, Type componentType)
   {
     return serviceCollection
