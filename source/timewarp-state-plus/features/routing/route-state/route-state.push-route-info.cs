@@ -6,7 +6,7 @@ public partial class RouteState
   {
     public sealed class Action : IAction;
 
-    public sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : StateActionHandler<Action>
     {
       private readonly NavigationManager NavigationManager;
       private readonly IJSRuntime JsRuntime;
@@ -17,10 +17,10 @@ public partial class RouteState
       }
       private RouteState RouteState => Store.GetState<RouteState>();
 
-      public override async ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
+      public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         SemaphoreSlim? semaphoreSlim = Store.GetSemaphore(typeof(RouteState));
-        if (semaphoreSlim == null) return Unit.Value;
+        if (semaphoreSlim == null) return;
         await semaphoreSlim.WaitAsync(cancellationToken);
         try
         {
@@ -33,7 +33,7 @@ public partial class RouteState
             RouteState.RouteStack.Pop();
             var newRouteInfo = new RouteInfo(currentUri, title);
             RouteState.RouteStack.Push(newRouteInfo);
-            return Unit.Value;
+            return;
           }
 
           RouteState.RouteStack.Push(new RouteInfo(currentUri, title));
@@ -42,8 +42,6 @@ public partial class RouteState
         {
           semaphoreSlim.Release();
         }
-
-        return Unit.Value;
       }
     }
   }

@@ -1,5 +1,5 @@
 global using Shouldly;
-global using Mediator;
+global using TimeWarp.Mediator;
 global using System.Collections.Concurrent;
 global using System.Linq.Expressions;
 global using System.Reflection;

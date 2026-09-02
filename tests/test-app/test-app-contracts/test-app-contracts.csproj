@@ -5,7 +5,7 @@
     <RootNamespace>Test.App.Contracts</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Mediator.Abstractions" />
+    <PackageReference Include="TimeWarp.Mediator.Contracts" />
     <PackageReference Include="System.Net.Http.Json" />
   </ItemGroup>
 

@@ -13,15 +13,9 @@ public class Program
       sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) }
     );
     
-    builder.Services.AddMediator
-    (
-      options =>
-      {
-        options.ServiceLifetime = ServiceLifetime.Scoped;
-        options.GenerateTypesAsInternal = true;
-        options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker), typeof(TimeWarp.State.Plus.AssemblyMarker)];
-      }
-    );
+    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into
+    // this host assembly.
+    builder.Services.AddGeneratedMediator();
 
     builder.Services.AddTimeWarpState
     (

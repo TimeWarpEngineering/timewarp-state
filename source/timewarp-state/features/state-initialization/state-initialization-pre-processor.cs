@@ -1,7 +1,12 @@
 namespace TimeWarp.State;
 
-public sealed class StateInitializationPreProcessor<TMessage, TResponse> : MessagePreProcessor<TMessage, TResponse>
-  where TMessage : IAction
+/// <summary>
+/// Pipeline behavior that waits for the enclosing state's initialization (persistence load, etc.)
+/// to complete before an action is handled. Woven by <c>[assembly: MediatorBehavior]</c> in
+/// assembly-marker.cs; closes only onto <see cref="IAction"/> requests.
+/// </summary>
+public sealed class StateInitializationPreProcessor<TMessage, TResponse> : IPipelineBehavior<TMessage, TResponse>
+  where TMessage : notnull, IAction
 {
   private readonly IStore Store;
   private readonly ILogger<StateInitializationPreProcessor<TMessage, TResponse>> Logger;
@@ -12,7 +17,12 @@ public sealed class StateInitializationPreProcessor<TMessage, TResponse> : Messa
     Logger = logger;
   }
 
-  protected override async ValueTask Handle(TMessage message, CancellationToken cancellationToken)
+  public async Task<TResponse> Handle
+  (
+    TMessage message,
+    RequestHandlerDelegate<TResponse> next,
+    CancellationToken cancellationToken
+  )
   {
     string typeName = typeof(TMessage).GetEnclosingStateType().FullName ?? throw new InvalidOperationException();
 
@@ -43,5 +53,7 @@ public sealed class StateInitializationPreProcessor<TMessage, TResponse> : Messa
         throw;
       }
     }
+
+    return await next(cancellationToken);
   }
 }

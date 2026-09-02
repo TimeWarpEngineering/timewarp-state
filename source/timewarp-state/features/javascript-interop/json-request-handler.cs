@@ -70,7 +70,7 @@ public class JsonRequestHandler
       instance = JsonSerializer.Deserialize(requestAsJson, requestType, JsonSerializerOptions) ?? throw new InvalidOperationException("Deserialization resulted in a null object.");
     }
     
-    Task<object?> result = Sender.Send(instance).AsTask();
+    Task<object?> result = Sender.Send(instance);
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
   }

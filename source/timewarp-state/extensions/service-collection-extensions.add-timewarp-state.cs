@@ -44,21 +44,13 @@ public static partial class ServiceCollectionExtensions
     EnsureHttpClient(serviceCollection);
     EnsureStates(serviceCollection, timeWarpStateOptions);
 
-    // Mediator (martinothamar) registers handlers at compile time via its source generator, so the
-    // consuming application is responsible for calling AddMediator(...) with compile-time assembly
-    // markers for the assemblies that contain its handlers (its own, TimeWarp.State, TimeWarp.State.Plus,
-    // and any feature libraries). TimeWarp.State only registers its own pipeline behaviors below.
-    //
-    // Pipeline behaviors are resolved from DI at runtime in registration order, which IS the pipeline
-    // order: state-initialization (pre) -> state-transaction -> render-subscriptions (post).
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateInitializationPreProcessor<,>));
-
-    if (timeWarpStateOptions.UseStateTransactionBehavior)
-    {
-      serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(StateTransactionBehavior<,>));
-    }
-
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(RenderSubscriptionsPostProcessor<,>));
+    // TimeWarp.Mediator links handlers and pipeline behaviors at compile time. The consuming
+    // application references TimeWarp.Mediator.Generators and calls the generated
+    // AddGeneratedMediator(); this assembly joins that graph via [assembly: MediatorAssembly] and
+    // declares its behaviors with [assembly: MediatorBehavior] (see assembly-marker.cs), in pipeline
+    // order: redux-dev-tools -> state-initialization -> state-transaction -> render-subscriptions.
+    // Nothing mediator-related is registered here. UseStateTransactionBehavior is honored at
+    // runtime by StateTransactionBehavior itself (it reads TimeWarpStateOptions).
 
     return serviceCollection;
   }

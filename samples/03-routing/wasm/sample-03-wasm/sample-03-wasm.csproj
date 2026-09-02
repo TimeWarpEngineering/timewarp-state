@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
     <PackageReference Include="TimeWarp.State" />
     <PackageReference Include="TimeWarp.State.Plus" />
-    <PackageReference Include="Mediator.SourceGenerator" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
+    <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- <ItemGroup>

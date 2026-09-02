@@ -11,7 +11,7 @@ public static partial class Policies
       (
         t => t
           .That()
-          .Inherit(typeof(ActionHandler<>))
+          .Inherit(typeof(TimeWarp.Mediator.ActionHandler<>))
           .And()
           .AreNotAbstract()
           .Should()
@@ -23,15 +23,13 @@ public static partial class Policies
       (
         t => t
           .That()
-          .Inherit(typeof(ActionHandler<>))
+          .Inherit(typeof(TimeWarp.Mediator.ActionHandler<>))
           .And()
           .AreNotAbstract()
           .Should()
-          .BeSealed()
-          .And()
-          .BePublic(),
-        "public sealed Handler",
-        "Handler should be `public sealed` (Mediator's source generator registers them cross-assembly)."
+          .BeSealed(),
+        "sealed Handler",
+        "Handler should be `sealed`. The TimeWarp.Mediator generated mediator resolves handlers by concrete type inside the host assembly, so app handlers may stay internal; handlers shipped in a referenced library (e.g. TimeWarp.State.Plus) must be public so the host's generated code can reference them."
       );
   }
 }

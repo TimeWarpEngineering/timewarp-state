@@ -15,11 +15,11 @@ public static partial class ServiceCollectionExtensions
     var reduxDevToolsOptions = new ReduxDevToolsOptions();
     reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
 
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ReduxDevToolsBehavior<,>));
+    // ReduxDevToolsBehavior is woven at compile time ([assembly: MediatorBehavior] in
+    // assembly-marker.cs) and CommitHandler/StartHandler are linked by the host's generator.
+    // Registering ReduxDevToolsOptions here is what switches the behavior on: it resolves the
+    // options as an optional dependency and is a pass-through when UseReduxDevTools was not called.
     serviceCollection.AddScoped<ReduxDevToolsInterop>();
-
-    serviceCollection.AddTransient<IRequestHandler<CommitRequest>, CommitHandler>();
-    serviceCollection.AddTransient<IRequestHandler<StartRequest>, StartHandler>();
     serviceCollection.AddScoped(serviceProvider => (IReduxDevToolsStore)serviceProvider.GetRequiredService<IStore>());
 
     serviceCollection.AddSingleton(reduxDevToolsOptions);

@@ -4,20 +4,20 @@ public partial class PurpleState
 {
   public static class IncrementCountActionSet
   {
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public int Amount { get; init; }
     }
-    
-    internal sealed class Handler : ActionHandler<Action>
+
+    internal sealed class Handler : StateActionHandler<Action>
     {
       public Handler(IStore store) : base(store) {}
       PurpleState PurpleState => Store.GetState<PurpleState>();
 
-      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         PurpleState.Count += action.Amount;
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

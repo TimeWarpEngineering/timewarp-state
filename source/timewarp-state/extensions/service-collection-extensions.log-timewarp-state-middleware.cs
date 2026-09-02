@@ -4,12 +4,11 @@ public static partial class ServiceCollectionExtensions
 {
   public static void LogTimeWarpStateMiddleware(this IServiceCollection serviceCollection, ILogger logger)
   {
-    // With Mediator (martinothamar), pre- and post-processors are themselves IPipelineBehavior
-    // implementations (MessagePreProcessor / MessagePostProcessor), so a single ordered list of
-    // IPipelineBehavior registrations reflects the full pipeline.
+    // TimeWarp.Mediator's generator registers each closed behavior it wove (AddScoped<Behavior<TRequest,TResponse>>)
+    // in compile-time pipeline order, so the distinct open-generic names, in registration order, reflect the pipeline.
     List<string> middleware = GetComponentOrder(serviceCollection, typeof(IPipelineBehavior<,>));
 
-    var message = new StringBuilder("TimeWarp State (Mediator) Pipeline Behavior Registrations:");
+    var message = new StringBuilder("TimeWarp State (TimeWarp.Mediator) Pipeline Behavior Registrations:");
     message.AppendLine();
     message.AppendLine();
 
@@ -21,10 +20,17 @@ public static partial class ServiceCollectionExtensions
   public static List<string> GetComponentOrder(this IServiceCollection serviceCollection, Type componentType)
   {
     return serviceCollection
-      .Where(sd => sd.ServiceType.IsGenericType && 
-        sd.ServiceType.GetGenericTypeDefinition() == componentType)
-      .Select(sd => sd.ImplementationType?.Name ?? "Unknown")
-      .Select(name => name.Split('`')[0])
+      .Where
+      (
+        sd =>
+          sd.ImplementationType is { IsGenericType: true } implementationType &&
+          implementationType.GetInterfaces().Any
+          (
+            i => i.IsGenericType && i.GetGenericTypeDefinition() == componentType
+          )
+      )
+      .Select(sd => sd.ImplementationType!.Name.Split('`')[0])
+      .Distinct()
       .ToList();
   }
 

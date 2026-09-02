@@ -17,7 +17,7 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
     Logger = logger;
   }
 
-  public async ValueTask Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
+  public async Task Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
   {
     // Only persistent states auto-load; skip the dispatch entirely for the common (non-persistent) case.
     if (stateInitializedNotification.StateType.GetCustomAttribute<PersistentStateAttribute>() is null) return;
@@ -29,7 +29,7 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
       stateInitializedNotification.StateType.Name
     );
 
-    // Load via a hand-written Mediator request whose handler IS registered (see LoadPersistentStateRequest).
+    // Load via a hand-written mediator request whose handler IS linked (see LoadPersistentStateRequest).
     await Sender.Send(new LoadPersistentStateRequest(stateInitializedNotification.StateType), cancellationToken);
   }
 }

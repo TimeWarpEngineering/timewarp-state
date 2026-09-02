@@ -25,6 +25,12 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
   {
     // Need an HttpClient to talk to the Server side configured before calling AddTimeWarpState.
     serviceCollection.AddSingleton(serverHttpClient);
+
+    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into
+    // the Test.App.Client assembly; the ActiveActionBehavior pipeline behavior it weaves in is
+    // declared at compile time via that assembly's [assembly: MediatorBehavior] attribute.
+    serviceCollection.AddGeneratedMediator();
+
     serviceCollection.AddTimeWarpState
     (
       options => options.Assemblies =
@@ -34,10 +40,7 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
           typeof(TimeWarp.State.Plus.AssemblyMarker).GetTypeInfo().Assembly
         }
     );
-  
-    // Register ActionTracking behavior for integration tests
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TimeWarp.Features.ActionTracking.ActiveActionBehavior<,>));
-    
+
     serviceCollection.AddSingleton
     (
       new JsonSerializerOptions

@@ -8,15 +8,9 @@ public class Program
     builder.RootComponents.Add<App>("#app");
     builder.RootComponents.Add<HeadOutlet>("head::after");
 
-    builder.Services.AddMediator
-    (
-      options =>
-      {
-        options.ServiceLifetime = ServiceLifetime.Scoped;
-        options.GenerateTypesAsInternal = true;
-        options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker)];
-      }
-    );
+    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into
+    // this host assembly.
+    builder.Services.AddGeneratedMediator();
 
     builder.Services.AddTimeWarpState
     (

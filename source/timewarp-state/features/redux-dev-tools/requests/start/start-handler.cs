@@ -23,6 +23,5 @@ public class StartHandler : IRequestHandler<StartRequest>
   /// <param name="request"></param>
   /// <param name="cancellationToken"></param>
   /// <returns></returns>
-  public ValueTask<Unit> Handle(StartRequest request, CancellationToken cancellationToken) =>
-    new(Unit.Value);
+  public Task Handle(StartRequest request, CancellationToken cancellationToken) => Task.CompletedTask;
 }
