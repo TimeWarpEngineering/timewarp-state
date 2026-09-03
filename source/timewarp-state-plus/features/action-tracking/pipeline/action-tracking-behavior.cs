@@ -1,17 +1,18 @@
-﻿namespace TimeWarp.Features.ActionTracking;
+namespace TimeWarp.Features.ActionTracking;
 
 using static ActionTrackingState;
 
 /// <summary>
 /// Pipeline behavior that tracks <c>[TrackAction]</c> actions in <see cref="ActionTrackingState"/>.
-/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), order: ...)]</c>.
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), order: ..., Scope = typeof(ClientPipeline))]</c>.
+/// Re-entrant sends (start/complete tracking) stay on the <see cref="ClientPipeline"/>.
 /// </summary>
 public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
   where TAction : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly ISender Sender;
-  public ActiveActionBehavior(ISender sender, ILogger<ActiveActionBehavior<TAction, TResponse>> logger)
+  private readonly ISender<ClientPipeline> Sender;
+  public ActiveActionBehavior(ISender<ClientPipeline> sender, ILogger<ActiveActionBehavior<TAction, TResponse>> logger)
   {
     Sender = sender;
     Logger = logger;

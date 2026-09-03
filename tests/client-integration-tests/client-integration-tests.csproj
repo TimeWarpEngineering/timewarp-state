@@ -15,7 +15,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\test-app\test-app-client\test-app-client.csproj" />
-    <ProjectReference Include="..\test-app\test-app-server\test-app-server.csproj" />
+    <!-- Alias keeps Test.App.Server's GeneratedMediatorServiceCollectionExtensions out of the
+         global Microsoft.Extensions.DependencyInjection namespace so AddGeneratedMediator&lt;ClientPipeline&gt;()
+         binds to Test.App.Client (avoids CS0121). -->
+    <ProjectReference Include="..\test-app\test-app-server\test-app-server.csproj" Aliases="TestAppServer" />
   </ItemGroup>
 
 </Project>

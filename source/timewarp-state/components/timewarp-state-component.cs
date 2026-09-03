@@ -1,7 +1,7 @@
 namespace TimeWarp.State;
 
 /// <summary>
-///   A non required Base Class that injects Mediator and Store.
+///   A non required Base Class that injects the store pipeline Sender and Store.
 ///   And exposes StateHasChanged
 /// </summary>
 /// <remarks>Implements ITimeWarpStateComponent by Injecting</remarks>
@@ -15,7 +15,10 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   ///   Is updated by using the GetState method
   /// </summary>
   [Inject] private Subscriptions Subscriptions { get; set; } = null!;
-  [Inject] protected IMediator Mediator { get; set; } = null!;
+  /// <summary>
+  ///   The store pipeline sender (<see cref="ClientPipeline"/>). Send actions with <c>Sender.Send(...)</c>.
+  /// </summary>
+  [Inject] protected ISender<ClientPipeline> Sender { get; set; } = null!;
 
   protected CancellationTokenSource CancellationTokenSource { get; } = new();
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;

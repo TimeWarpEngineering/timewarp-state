@@ -2,7 +2,11 @@ namespace TimeWarp.State;
 
 public interface IState
 {
-  ISender Sender { get; set; }
+  /// <summary>
+  /// The store pipeline sender. States dispatch re-entrant actions through the same
+  /// <see cref="ClientPipeline"/> they were handled on.
+  /// </summary>
+  ISender<ClientPipeline> Sender { get; set; }
   Guid Guid { get; }
   // string? CacheKey { get; }
   // DateTime? TimeStamp { get; }

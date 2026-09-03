@@ -20,7 +20,7 @@ public class GoBack_Should
   private static (RouteState.GoBackActionSet.Handler Handler, RecordingNavigationManager Nav, RouteState RouteState)
     CreateHandler(params RouteState.RouteInfo[] stackBottomToTop)
   {
-    ISender sender = A.Fake<ISender>();
+    ISender<ClientPipeline> sender = A.Fake<ISender<ClientPipeline>>();
     var routeState = new RouteState(sender);
 
     Stack<RouteState.RouteInfo> seed = new();

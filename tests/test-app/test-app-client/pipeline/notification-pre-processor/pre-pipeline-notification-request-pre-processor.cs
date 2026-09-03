@@ -4,11 +4,11 @@ internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResp
   where TMessage : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly IPublisher Publisher;
+  private readonly IPublisher<ClientPipeline> Publisher;
   public PrePipelineNotificationRequestPreProcessor
   (
     ILogger<PrePipelineNotificationRequestPreProcessor<TMessage, TResponse>> logger,
-    IPublisher publisher
+    IPublisher<ClientPipeline> publisher
   )
   {
     Publisher = publisher;

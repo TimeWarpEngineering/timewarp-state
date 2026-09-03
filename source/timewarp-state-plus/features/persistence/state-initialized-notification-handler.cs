@@ -5,11 +5,11 @@ using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAt
 
 public class StateInitializedNotificationHandler : INotificationHandler<StateInitializedNotification>
 {
-  private readonly ISender Sender;
+  private readonly ISender<ClientPipeline> Sender;
   private readonly ILogger<StateInitializedNotificationHandler> Logger;
   public StateInitializedNotificationHandler
   (
-    ISender sender,
+    ISender<ClientPipeline> sender,
     ILogger<StateInitializedNotificationHandler> logger
   )
   {

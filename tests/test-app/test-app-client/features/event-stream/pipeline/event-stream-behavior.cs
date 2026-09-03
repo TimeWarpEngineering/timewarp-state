@@ -11,7 +11,7 @@ using static EventStreamState;
 public class EventStreamBehavior<TRequest, TResponse>
 (
   ILogger<EventStreamBehavior<TRequest, TResponse>> logger,
-  ISender Sender
+  ISender<ClientPipeline> Sender
 ) : IPipelineBehavior<TRequest, TResponse>
   where TRequest : notnull, IAction
 {

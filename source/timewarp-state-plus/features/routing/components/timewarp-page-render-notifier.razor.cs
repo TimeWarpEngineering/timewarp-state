@@ -22,7 +22,7 @@ namespace TimeWarp.Features.Routing;
 /// </example>
 public class TimeWarpPageRenderNotifier : ComponentBase
 {
-  [Inject] private ISender Sender { get; set; } = null!;
+  [Inject] private ISender<ClientPipeline> Sender { get; set; } = null!;
     
   /// <summary>
   /// The Nonce is used to ensure that the correct page title is set.

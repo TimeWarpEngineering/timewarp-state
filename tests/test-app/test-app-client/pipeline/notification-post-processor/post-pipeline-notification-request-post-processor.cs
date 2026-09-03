@@ -3,7 +3,7 @@ namespace Test.App.Client.Pipeline.NotificationPostProcessor;
 internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>
 (
   ILogger<PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>> logger,
-  IPublisher Publisher
+  IPublisher<ClientPipeline> Publisher
 ) :
   IPipelineBehavior<TRequest, TResponse>
   where TRequest : notnull

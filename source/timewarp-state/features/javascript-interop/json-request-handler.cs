@@ -5,12 +5,12 @@ public class JsonRequestHandler
   private readonly JsonSerializerOptions JsonSerializerOptions;
   private readonly IJSRuntime JsRuntime;
   private readonly ILogger Logger;
-  private readonly ISender Sender;
+  private readonly ISender<ClientPipeline> Sender;
 
   public JsonRequestHandler
   (
     ILogger<JsonRequestHandler> logger,
-    ISender sender,
+    ISender<ClientPipeline> sender,
     IJSRuntime jsRuntime,
     TimeWarpStateOptions timeWarpStateOptions
   )

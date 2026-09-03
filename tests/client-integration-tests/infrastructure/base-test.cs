@@ -5,7 +5,7 @@ namespace TestApp.Client.Integration.Tests.Infrastructure;
 /// </summary>
 public abstract class BaseTest
 {
-  private readonly ISender Sender;
+  private readonly ISender<ClientPipeline> Sender;
   protected readonly IStore Store;
   protected readonly Subscriptions Subscriptions;
   protected readonly RenderSubscriptionContext RenderSubscriptionContext;
@@ -16,7 +16,7 @@ public abstract class BaseTest
     IServiceScopeFactory serviceScopeFactory = clientHost.ServiceProvider.GetService<IServiceScopeFactory>()!;
     IServiceScope serviceScope = serviceScopeFactory.CreateScope();
     ServiceProvider = serviceScope.ServiceProvider;
-    Sender = ServiceProvider.GetService<ISender>()!;
+    Sender = ServiceProvider.GetService<ISender<ClientPipeline>>()!;
     Store = ServiceProvider.GetService<IStore>()!;
     Subscriptions = ServiceProvider.GetService<Subscriptions>()!;
     RenderSubscriptionContext = ServiceProvider.GetService<RenderSubscriptionContext>()!;
