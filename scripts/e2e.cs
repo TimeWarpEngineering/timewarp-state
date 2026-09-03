@@ -41,7 +41,14 @@ async Task RunE2eTests()
     await WriteStepFooter("Restore-Tools-And-Cleanup");
 
     await WriteStepHeader("Install-LinuxDevCerts");
-    await InstallLinuxDevCerts();
+    if (useHttp)
+    {
+        WriteLine("Skipping dev-certs trust: E2E runs over http (UseHttp=true).");
+    }
+    else
+    {
+        await InstallLinuxDevCerts();
+    }
     await WriteStepFooter("Install-LinuxDevCerts");
 
     await WriteStepHeader("Build-Analyzer");
@@ -208,9 +215,7 @@ async Task UpdateClientAppSettings(bool useHttp)
     if (File.Exists(appSettingsPath))
     {
         var json = File.ReadAllText(appSettingsPath);
-        var appSettings = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
-        // In a real implementation, you'd properly update the JSON
-        // For now, we'll use a simple string replacement
+        // Plain string replacement: reflection-based System.Text.Json is disabled for this runfile.
         var updatedJson = json.Replace("\"UseHttp\": false", "\"UseHttp\": true")
                              .Replace("\"UseHttp\": true", $"\"UseHttp\": {useHttp.ToString().ToLower()}");
         File.WriteAllText(appSettingsPath, updatedJson);
