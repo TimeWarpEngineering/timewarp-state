@@ -22,6 +22,7 @@ Wait for mediator **005-003** (package on nuget.org) unless the operator waives 
 - [x] Package refs
 - [x] Generated registration + membership
 - [x] Solution builds (handlers discovered)
+- [ ] PR #575 CI green on `feature/080-timewarp-mediator-14-beta` so overnight `--into` merge can run
 
 ## Out of scope
 
@@ -33,6 +34,7 @@ Wait for mediator **005-003** (package on nuget.org) unless the operator waives 
 - Created: 154892 (2026-09-01)
 - 2026-09-03: implementer (Claude Fable, ganda task work) claimed; TimeWarp.Mediator 14.0.0-beta.1 confirmed on nuget.org (mediator 005-003 done), no project-reference waiver needed.
 - 2026-09-03: review oracle (Claude Fable, ganda task work) ran tw-implementation-review, effort 1 (general reviewer: Claude Opus subagent; fixes: Claude Sonnet subagent). Artifacts under `review/`.
+- 2026-09-03: cockpit resume of 080 work-set. `--into` merge of PR #575 refused: CI red. Remaining on this id (not 080-002): make GitHub `ci` green on base `feature/080-timewarp-mediator-14-beta`. Failure is `dotnet run --project ./scripts/clean.cs` → MSB4025 (runfile, not an MSBuild project). Actions installs SDK `10.0.100-preview.7.25380.108`; `global.json` wants `10.0.301`. Same `workflow.yml` step exists on origin/dev (pre-existing). Align setup-dotnet with `global.json` and invoke the runfile as a file (`dotnet run --file` / `dotnet scripts/clean.cs`), not `--project`. Do not merge to master.
 
 ## Results
 
