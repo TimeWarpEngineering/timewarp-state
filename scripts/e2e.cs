@@ -7,6 +7,10 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
+// SUT log writers must outlive StartSut: the OutputDataReceived handlers keep writing until the SUT exits.
+StreamWriter? sutOutputWriter = null;
+StreamWriter? sutErrorWriter = null;
+
 var app = new NuruAppBuilder()
     .AddDefaultRoute(async () => await RunE2eTests())
     .AddAutoHelp()
@@ -326,11 +330,12 @@ async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath,
 
                 if (process != null)
                 {
-                    // Redirect output to files
-                    using var outputWriter = new StreamWriter(outputLogPath);
-                    using var errorWriter = new StreamWriter(errorLogPath);
-                    process.OutputDataReceived += (sender, e) => { if (e.Data != null) outputWriter.WriteLine(e.Data); };
-                    process.ErrorDataReceived += (sender, e) => { if (e.Data != null) errorWriter.WriteLine(e.Data); };
+                    // Redirect output to files. The writers are disposed in KillSut, not here: disposing them on
+                    // return made the first SUT output line throw ObjectDisposedException on a thread-pool thread.
+                    sutOutputWriter = new StreamWriter(outputLogPath) { AutoFlush = true };
+                    sutErrorWriter = new StreamWriter(errorLogPath) { AutoFlush = true };
+                    process.OutputDataReceived += (sender, e) => { if (e.Data != null) { try { sutOutputWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
+                    process.ErrorDataReceived += (sender, e) => { if (e.Data != null) { try { sutErrorWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                 }
@@ -436,8 +441,14 @@ async Task KillSut(System.Diagnostics.Process sutProcess)
     if (!sutProcess.HasExited)
     {
         sutProcess.Kill();
+        sutProcess.WaitForExit();
         WriteLine("SUT process terminated.");
     }
+
+    sutOutputWriter?.Dispose();
+    sutErrorWriter?.Dispose();
+    sutOutputWriter = null;
+    sutErrorWriter = null;
 }
 
 async Task InstallLinuxDevCerts()
