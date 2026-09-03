@@ -1,3 +1,11 @@
+using TimeWarp.Mediator;
+
+// Member of the TimeWarp.Mediator compile-time graph so the host's generator links the handlers in
+// this assembly (routing, timers, theme, action tracking, persistence). The Plus pipeline behaviors
+// (ActiveActionBehavior, PersistentStatePostProcessor, MultiTimerPostProcessor) are opt-in: the host
+// declares the ones it wants with [assembly: MediatorBehavior(typeof(...<,>), order: ...)].
+[assembly: MediatorAssembly]
+
 namespace TimeWarp.State.Plus;
 
 /// <summary>

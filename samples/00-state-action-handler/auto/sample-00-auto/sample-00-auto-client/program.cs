@@ -11,15 +11,9 @@ public class Program
 
     public static void ConfigureServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddMediator
-        (
-          options =>
-          {
-            options.ServiceLifetime = ServiceLifetime.Scoped;
-            options.GenerateTypesAsInternal = true;
-            options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker)];
-          }
-        );
+        // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator
+        // into this host assembly.
+        serviceCollection.AddGeneratedMediator();
 
         serviceCollection.AddTimeWarpState();
     }

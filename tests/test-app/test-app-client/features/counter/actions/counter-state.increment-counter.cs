@@ -5,7 +5,7 @@ public partial class CounterState
   public static class IncrementCountActionSet
   {
     
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public int Amount { get; init; }
     }
@@ -13,18 +13,18 @@ public partial class CounterState
     internal sealed class Handler
     (
       IStore store
-    ) : ActionHandler<Action>(store)
+    ) : StateActionHandler<Action>(store)
     {
       private CounterState CounterState => Store.GetState<CounterState>();
-      
-      public override ValueTask<Unit> Handle
+
+      public override ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         CounterState.Count += action.Amount;
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

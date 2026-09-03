@@ -11,7 +11,7 @@ public partial class ApplicationState
     private readonly ILogger Logger = Logger;
     private ApplicationState ApplicationState => Store.GetState<ApplicationState>();
 
-    public ValueTask Handle
+    public Task Handle
     (
       ExceptionNotification exceptionNotification,
       CancellationToken cancellationToken
@@ -19,7 +19,7 @@ public partial class ApplicationState
     {
       Logger.LogWarning("exceptionNotification.Exception.Message: {ExceptionMessage}", exceptionNotification.Exception.Message);
       ApplicationState.ExceptionMessage = exceptionNotification.Exception.Message;
-      return default;
+      return Task.CompletedTask;
     }
   }
 }

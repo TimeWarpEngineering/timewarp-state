@@ -13,7 +13,7 @@ public class Should_
   public static void FollowActionHandlerPolicy()
   {
     Assembly sut = typeof(Test.App.Client.AssemblyMarker).Assembly;
-    PolicyDefinition policy = Policies.CreateActionHandlerPolicy(sut);
+    PolicyDefinition policy = Policies.CreateActionHandlerPolicy(requirePublicHandlers: false, sut);
     PolicyResults results = policy.Evaluate();
     results.ShouldBeSuccessful();
   }

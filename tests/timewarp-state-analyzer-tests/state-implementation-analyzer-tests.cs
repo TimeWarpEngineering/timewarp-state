@@ -27,7 +27,7 @@ public class Should_Not_Trigger_TWS001
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"Mediator.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -65,7 +65,7 @@ public class Should_Trigger_TWS001
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"Mediator.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();

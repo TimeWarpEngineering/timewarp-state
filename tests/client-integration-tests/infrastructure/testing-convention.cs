@@ -25,6 +25,15 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
   {
     // Need an HttpClient to talk to the Server side configured before calling AddTimeWarpState.
     serviceCollection.AddSingleton(serverHttpClient);
+
+    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into the
+    // Test.App.Client assembly. It weaves in every behavior that assembly declares at compile time via
+    // [assembly: MediatorBehavior] (mediator-behaviors.cs): PrePipelineNotificationRequestPreProcessor,
+    // PostPipelineNotificationRequestPostProcessor, PersistentStatePostProcessor, ActiveActionBehavior and
+    // EventStreamBehavior. This host registers no Blazored storage services, so PersistentStatePostProcessor
+    // is intentionally inert here (it logs PersistentStatePostProcessor_StorageNotRegistered and skips the save).
+    serviceCollection.AddGeneratedMediator();
+
     serviceCollection.AddTimeWarpState
     (
       options => options.Assemblies =
@@ -34,10 +43,7 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
           typeof(TimeWarp.State.Plus.AssemblyMarker).GetTypeInfo().Assembly
         }
     );
-  
-    // Register ActionTracking behavior for integration tests
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(TimeWarp.Features.ActionTracking.ActiveActionBehavior<,>));
-    
+
     serviceCollection.AddSingleton
     (
       new JsonSerializerOptions

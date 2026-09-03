@@ -140,7 +140,6 @@ internal partial class Store : IStore
 
         // Publish the state initialization notification asynchronously
         Task initializationTask = Publisher.Publish(new StateInitializedNotification(stateType))
-          .AsTask()
           .ContinueWith
           (
             t =>

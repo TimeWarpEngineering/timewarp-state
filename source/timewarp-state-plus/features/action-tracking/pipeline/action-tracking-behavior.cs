@@ -2,8 +2,12 @@
 
 using static ActionTrackingState;
 
+/// <summary>
+/// Pipeline behavior that tracks <c>[TrackAction]</c> actions in <see cref="ActionTrackingState"/>.
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), order: ...)]</c>.
+/// </summary>
 public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
-  where TAction : IAction
+  where TAction : notnull, IAction
 {
   private readonly ILogger Logger;
   private readonly ISender Sender;
@@ -13,10 +17,10 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     Logger = logger;
   }
 
-  public async ValueTask<TResponse> Handle
+  public async Task<TResponse> Handle
   (
     TAction action,
-    MessageHandlerDelegate<TAction, TResponse> nextHandler,
+    RequestHandlerDelegate<TResponse> next,
     CancellationToken cancellationToken
   )
   {
@@ -43,7 +47,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
       TResponse? response; 
       try
       {
-        response = await nextHandler(action, cancellationToken);
+        response = await next(cancellationToken);
       }
       finally // If an exception is thrown, we still want to complete the tracking
       {
@@ -66,7 +70,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     }
     else
     { 
-      TResponse response = await nextHandler(action, cancellationToken);
+      TResponse response = await next(cancellationToken);
       return response;
     }
   }

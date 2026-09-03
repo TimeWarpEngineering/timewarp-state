@@ -13,15 +13,15 @@ public partial class ActionTrackingState
       public IAction TheAction { get; }
     }
 
-    public sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : StateActionHandler<Action>
     {
       public Handler(IStore store) : base(store) {}
       private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
 
-      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         ActionTrackingState.ActiveActionList.Add(action.TheAction);
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

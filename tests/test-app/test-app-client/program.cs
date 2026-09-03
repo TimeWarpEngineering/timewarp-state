@@ -22,25 +22,11 @@ public class Program
     serviceCollection.AddBlazoredSessionStorage();
     serviceCollection.AddBlazoredLocalStorage();
 
-    // Mediator (martinothamar) registers handlers at compile time via its source generator. The
-    // assembly markers below must be compile-time `typeof(...)` constants identifying every assembly
-    // whose handlers should be registered: this app, TimeWarp.State, and TimeWarp.State.Plus.
-    serviceCollection.AddMediator
-    (
-      options =>
-      {
-        options.ServiceLifetime = ServiceLifetime.Scoped;
-        // Keep the generated Mediator (and its Send overloads) internal so this app's own
-        // internal action types don't trip CS0051 (less-accessible-than-public-method).
-        options.GenerateTypesAsInternal = true;
-        options.Assemblies =
-        [
-          typeof(Test.App.Client.AssemblyMarker),
-          typeof(TimeWarp.State.AssemblyMarker),
-          typeof(TimeWarp.State.Plus.AssemblyMarker)
-        ];
-      }
-    );
+    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into
+    // this host assembly. It registers handlers discovered in this app plus every referenced
+    // assembly carrying [assembly: MediatorAssembly] (TimeWarp.State, TimeWarp.State.Plus). Pipeline
+    // behaviors are declared at compile time via [assembly: MediatorBehavior] (see mediator-behaviors.cs).
+    serviceCollection.AddGeneratedMediator();
 
     serviceCollection.AddTimeWarpState
     (
@@ -63,13 +49,6 @@ public class Program
           };
       }
     );
-    // Pre/post processors are IPipelineBehavior implementations under Mediator; register them as such,
-    // in the desired pipeline order (resolved from DI at runtime in registration order).
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(PrePipelineNotificationRequestPreProcessor<,>));
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(PostPipelineNotificationRequestPostProcessor<,>));
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(PersistentStatePostProcessor<,>));
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(ActiveActionBehavior<,>));
-    serviceCollection.AddScoped(typeof(IPipelineBehavior<,>), typeof(EventStreamBehavior<,>));
     serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddSingleton(serviceCollection);
     serviceCollection.AddTimeWarpStateRouting();

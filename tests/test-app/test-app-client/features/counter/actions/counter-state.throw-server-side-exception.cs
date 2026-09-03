@@ -5,15 +5,15 @@ public partial class CounterState
   public static class ThrowServerSideExceptionActionSet
   {
 
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public string Message { get; }
-      public Action(string message) 
+      public Action(string message)
       {
         Message = message;
       }
     }
-    
+
     internal sealed class Handler : BaseActionHandler<Action>
     {
       private readonly HttpClient HttpClient;
@@ -29,7 +29,7 @@ public partial class CounterState
       /// <summary>
       /// Intentionally throw so we can test exception handling.
       /// </summary>
-      public override async ValueTask<Unit> Handle
+      public override async ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
@@ -42,7 +42,6 @@ public partial class CounterState
           throwServerSideExceptionRequest.GetRoute()
           , cancellationToken: cancellationToken
         );
-        return Unit.Value;
       }
     }
   }

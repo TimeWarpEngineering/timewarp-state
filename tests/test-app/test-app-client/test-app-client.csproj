@@ -5,7 +5,7 @@
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
     <RootNamespace>Test.App.Client</RootNamespace>
-    <NoWarn>CS1591</NoWarn>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,9 +13,10 @@
     <PackageReference Include="Shouldly" />
     <PackageReference Include="timewarp-heroicons" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
-    <!-- The consuming app owns Mediator's source generator: it runs here and AddMediator(...) registers
-         handlers from this app plus the referenced TimeWarp.State / TimeWarp.State.Plus assemblies. -->
-    <PackageReference Include="Mediator.SourceGenerator" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
+    <!-- The consuming app owns the TimeWarp.Mediator source generator: it runs here and this app's
+         AddGeneratedMediator() call registers handlers from this app plus the referenced
+         TimeWarp.State / TimeWarp.State.Plus assemblies. -->
+    <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
 <!--    <PackageReference Include="TimeWarp.State" />-->
 <!--    <PackageReference Include="TimeWarp.State.Plus" />-->
   </ItemGroup>

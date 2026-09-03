@@ -28,6 +28,10 @@ async Task BuildProjects(string configuration)
   // Use ScriptContext to manage directory changes - automatically restores on dispose
   using var context = ScriptContext.FromRelativePath("..");  // Go up one level from scripts/ to repo root
 
+  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+  // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
+  Directory.CreateDirectory(packagesDirectory);
+
   WriteLine($"Script location: {context.ScriptDirectory}");
   WriteLine($"Working from: {Directory.GetCurrentDirectory()}");
   WriteLine($"Configuration: {configuration}");
@@ -88,12 +92,19 @@ async Task CleanSolution()
   }
   catch { /* Ignore if pkill not found or no processes */ }
 
-  // Clear NuGet caches
-  WriteLine("Clearing NuGet caches...");
-  await DotNet.NuGet()
-      .Locals()
-      .Clear(NuGetCacheType.All)
-      .RunAsync();
+  // Clear NuGet caches (skipped under CI so the restored actions/cache is reused)
+  if (Environment.GetEnvironmentVariable("CI") == "true")
+  {
+    WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
+  }
+  else
+  {
+    WriteLine("Clearing NuGet caches...");
+    await DotNet.NuGet()
+        .Locals()
+        .Clear(NuGetCacheType.All)
+        .RunAsync();
+  }
 
   // Clean solution
   WriteLine("Cleaning solution...");
@@ -105,6 +116,10 @@ async Task CleanSolution()
     WriteLine("Removing artifacts directory...");
     Directory.Delete(artifactsDirectory, recursive: true);
   }
+
+  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+  // The guard protects later child `dotnet` invocations, not this runfile's own `#:package` restore.
+  Directory.CreateDirectory(packagesDirectory);
 
   if (Directory.Exists("./source/timewarp-state/wwwroot/js"))
   {

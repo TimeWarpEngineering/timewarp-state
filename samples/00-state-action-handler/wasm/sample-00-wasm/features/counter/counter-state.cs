@@ -1,6 +1,6 @@
 namespace Sample00Wasm.Features.Counter;
 
-internal sealed partial class CounterState : State<CounterState>
+public sealed partial class CounterState : State<CounterState>
 {
     public int Count { get; private set; }
     

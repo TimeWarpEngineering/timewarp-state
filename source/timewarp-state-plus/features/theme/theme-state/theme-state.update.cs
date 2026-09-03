@@ -16,18 +16,18 @@ public partial class ThemeState
     public sealed class Handler
     (
       IStore store
-    ): ActionHandler<Action>(store)
+    ): StateActionHandler<Action>(store)
     {
       private ThemeState ThemeState => Store.GetState<ThemeState>();
       
-      public override ValueTask<Unit> Handle
+      public override ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         ThemeState.CurrentTheme = action.NewTheme;
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

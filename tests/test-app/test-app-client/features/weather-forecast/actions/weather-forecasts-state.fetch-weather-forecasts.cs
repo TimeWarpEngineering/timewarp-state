@@ -6,7 +6,7 @@ public partial class WeatherForecastsState
 {
   public static class FetchWeatherForecastsActionSet
   {
-    internal sealed class Action : IAction;
+    public sealed class Action : IAction;
 
     internal sealed  class Handler : BaseActionHandler<Action>
     {
@@ -17,7 +17,7 @@ public partial class WeatherForecastsState
         HttpClient = httpClient;
       }
 
-      public override async ValueTask<Unit> Handle
+      public override async ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
@@ -38,7 +38,6 @@ public partial class WeatherForecastsState
         ArgumentNullException.ThrowIfNull(getWeatherForecastsResponse);
 
         WeatherForecastsState.WeatherForecastList = getWeatherForecastsResponse;
-        return Unit.Value;
       }
     }
   }
