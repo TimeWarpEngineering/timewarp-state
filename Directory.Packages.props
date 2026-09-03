@@ -58,8 +58,10 @@
     <PackageVersion Include="FakeItEasy" Version="8.3.0" />
     <PackageVersion Include="Fixie" Version="3.4.0" />
     <PackageVersion Include="Fixie.TestAdapter" Version="4.1.0" />
-    <PackageVersion Include="MSTest.TestAdapter" Version="4.0.0" />
-    <PackageVersion Include="MSTest.TestFramework" Version="4.0.0" />
+    <!-- Keep MSTest on 3.x: Microsoft.Playwright.MSTest (1.55 through 1.62) binds Microsoft.VisualStudio.TestPlatform.TestFramework 14.0.0.0,
+         which MSTest 4 renamed to MSTest.TestFramework; on 4.x every PageTest subclass fails to load and E2E discovers zero tests. -->
+    <PackageVersion Include="MSTest.TestAdapter" Version="3.11.1" />
+    <PackageVersion Include="MSTest.TestFramework" Version="3.11.1" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.5" />
     <PackageVersion Include="NUnit" Version="4.1.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.2.0" />
