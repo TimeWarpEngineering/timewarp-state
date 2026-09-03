@@ -7,7 +7,7 @@ using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAt
 
 /// <summary>
 /// Pipeline behavior that saves a <c>[PersistentState]</c> state to its configured store after each of its actions.
-/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor&lt;,&gt;), order: ...)]</c>
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor&lt;,&gt;), order: ..., Scope = typeof(ClientPipeline))]</c>
 /// and registers the Blazored storage services it uses. The behavior is woven at compile time for every
 /// host of that assembly (including test hosts), so the storage services are optional dependencies: when
 /// a <c>[PersistentState]</c> state is handled and its storage service is not registered, the save is

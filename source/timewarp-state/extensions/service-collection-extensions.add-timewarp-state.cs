@@ -46,9 +46,11 @@ public static partial class ServiceCollectionExtensions
 
     // TimeWarp.Mediator links handlers and pipeline behaviors at compile time. The consuming
     // application references TimeWarp.Mediator.Generators and calls the generated
-    // AddGeneratedMediator(); this assembly joins that graph via [assembly: MediatorAssembly] and
-    // declares its behaviors with [assembly: MediatorBehavior] (see assembly-marker.cs), in pipeline
-    // order: redux-dev-tools -> state-initialization -> state-transaction -> render-subscriptions.
+    // AddGeneratedMediator<ClientPipeline>(); this assembly joins that graph via
+    // [assembly: MediatorAssembly], is scoped to the ClientPipeline via [assembly: MediatorScope] and
+    // declares its behaviors with [assembly: MediatorBehavior(..., Scope = typeof(ClientPipeline))]
+    // (see assembly-marker.cs), in pipeline order:
+    // redux-dev-tools -> state-initialization -> state-transaction -> render-subscriptions.
     // Nothing mediator-related is registered here. UseStateTransactionBehavior is honored at
     // runtime by StateTransactionBehavior itself (it reads TimeWarpStateOptions).
 

@@ -1,10 +1,13 @@
+extern alias TestAppServer;
+
 namespace Client.Integration.Tests.Infrastructure;
 
 public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdditionalServicesCallback)
 {
   private static void ConfigureAdditionalServicesCallback(ServiceCollection serviceCollection)
   {
-    var serverWebApplicationFactory = new WebApplicationFactory<Test.App.Server.Program>();
+    WebApplicationFactory<TestAppServer::Test.App.Server.Program> serverWebApplicationFactory =
+      new WebApplicationFactory<TestAppServer::Test.App.Server.Program>();
     HttpClient serverHttpClient = serverWebApplicationFactory.CreateClient();
   
     ConfigureWebAssemblyHost(serviceCollection, serverHttpClient);
@@ -14,7 +17,7 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
   
   private static void ConfigureWebAssemblyHost(IServiceCollection serviceCollection, HttpClient serverHttpClient)
   {
-    var clientHostBuilder = ClientHostBuilder.CreateDefault();
+    ClientHostBuilder clientHostBuilder = ClientHostBuilder.CreateDefault();
     ConfigureServices(clientHostBuilder.Services, serverHttpClient);
   
     ClientHost clientHost = clientHostBuilder.Build();
@@ -26,13 +29,15 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
     // Need an HttpClient to talk to the Server side configured before calling AddTimeWarpState.
     serviceCollection.AddSingleton(serverHttpClient);
 
-    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into the
-    // Test.App.Client assembly. It weaves in every behavior that assembly declares at compile time via
-    // [assembly: MediatorBehavior] (mediator-behaviors.cs): PrePipelineNotificationRequestPreProcessor,
+    // AddGeneratedMediator<ClientPipeline>() is emitted by the TimeWarp.Mediator.Generators source
+    // generator into the Test.App.Client assembly. It weaves in every behavior that assembly declares
+    // at compile time via [assembly: MediatorBehavior] (mediator-behaviors.cs): PrePipelineNotificationRequestPreProcessor,
     // PostPipelineNotificationRequestPostProcessor, PersistentStatePostProcessor, ActiveActionBehavior and
-    // EventStreamBehavior. This host registers no Blazored storage services, so PersistentStatePostProcessor
-    // is intentionally inert here (it logs PersistentStatePostProcessor_StorageNotRegistered and skips the save).
-    serviceCollection.AddGeneratedMediator();
+    // EventStreamBehavior, all scoped to the client-scoped pipeline. This host registers no Blazored storage
+    // services, so PersistentStatePostProcessor is intentionally inert here (it logs
+    // PersistentStatePostProcessor_StorageNotRegistered and skips the save).
+    // Test.App.Server is referenced with Aliases=TestAppServer so its DI extension is not in scope.
+    serviceCollection.AddGeneratedMediator<ClientPipeline>();
 
     serviceCollection.AddTimeWarpState
     (

@@ -3,7 +3,7 @@ namespace TimeWarp.Features.ActionTracking;
 public sealed partial class ActionTrackingState : State<ActionTrackingState>, ICloneable
 {
   private List<IAction> ActiveActionList = [];
-  public ActionTrackingState(ISender sender) : base(sender) {}
+  public ActionTrackingState(ISender<ClientPipeline> sender) : base(sender) {}
   public bool IsActive => ActiveActionList.Count > 0;
   public bool IsAnyActive(params Type[] actionTypes) => 
     ActiveActionList.Any(action => actionTypes.Any(type => type.IsInstanceOfType(action)));

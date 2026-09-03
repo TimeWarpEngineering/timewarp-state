@@ -2,7 +2,7 @@ namespace TimeWarp.State.Plus.Features.Timers;
 
 /// <summary>
 /// Pipeline behavior that resets the activity timers after every request.
-/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(MultiTimerPostProcessor&lt;,&gt;), order: ...)]</c>.
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(MultiTimerPostProcessor&lt;,&gt;), order: ..., Scope = typeof(ClientPipeline))]</c>.
 /// <para>
 /// Warning: do not enable this behavior yet. <see cref="TimerState.ResetTimersOnActivity"/> dispatches
 /// <c>ResetTimersOnActivityActionSet.Action</c> back through the same pipeline and nothing breaks the cycle,

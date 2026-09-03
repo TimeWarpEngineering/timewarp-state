@@ -5,8 +5,8 @@ namespace TimeWarp.Features.ReduxDevTools;
 /// browser extension.
 /// </summary>
 /// <remarks>
-/// Woven at compile time by <c>[assembly: MediatorBehavior]</c> (assembly-marker.cs), so it is present in
-/// every host pipeline. It is active only when <see cref="ServiceCollectionExtensions.UseReduxDevTools"/>
+/// Woven at compile time by <c>[assembly: MediatorBehavior]</c> (assembly-marker.cs) into the
+/// <see cref="ClientPipeline"/> of every host. It is active only when <see cref="ServiceCollectionExtensions.UseReduxDevTools"/>
 /// registered <see cref="ReduxDevToolsOptions"/> (and its interop/store services); otherwise the
 /// optional dependencies resolve to <c>null</c> and the behavior is a pass-through.
 /// </remarks>

@@ -4,7 +4,7 @@ public sealed partial class ThemeState : State<ThemeState>
 {
   public Theme CurrentTheme { get; private set; }
 
-  public ThemeState(ISender sender) : base(sender) {}
+  public ThemeState(ISender<ClientPipeline> sender) : base(sender) {}
   
   [JsonConstructor]
   public ThemeState() {}

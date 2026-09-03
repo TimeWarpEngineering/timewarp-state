@@ -14,8 +14,8 @@
     <PackageReference Include="timewarp-heroicons" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
     <!-- The consuming app owns the TimeWarp.Mediator source generator: it runs here and this app's
-         AddGeneratedMediator() call registers handlers from this app plus the referenced
-         TimeWarp.State / TimeWarp.State.Plus assemblies. -->
+         AddGeneratedMediator<ClientPipeline>() call registers handlers from this app plus the
+         referenced TimeWarp.State / TimeWarp.State.Plus assemblies. -->
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
 <!--    <PackageReference Include="TimeWarp.State" />-->
 <!--    <PackageReference Include="TimeWarp.State.Plus" />-->

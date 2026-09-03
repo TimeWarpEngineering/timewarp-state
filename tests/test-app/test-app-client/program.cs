@@ -22,11 +22,13 @@ public class Program
     serviceCollection.AddBlazoredSessionStorage();
     serviceCollection.AddBlazoredLocalStorage();
 
-    // AddGeneratedMediator() is emitted by the TimeWarp.Mediator.Generators source generator into
-    // this host assembly. It registers handlers discovered in this app plus every referenced
-    // assembly carrying [assembly: MediatorAssembly] (TimeWarp.State, TimeWarp.State.Plus). Pipeline
+    // AddGeneratedMediator<ClientPipeline>() is emitted by the TimeWarp.Mediator.Generators source
+    // generator into this host assembly. It registers ISender<ClientPipeline>/IPublisher<ClientPipeline>
+    // plus the client-scoped handlers of this app, TimeWarp.State and TimeWarp.State.Plus. Pipeline
     // behaviors are declared at compile time via [assembly: MediatorBehavior] (see mediator-behaviors.cs).
-    serviceCollection.AddGeneratedMediator();
+    // The unscoped AddGeneratedMediator() is intentionally not called so an accidental ISender
+    // injection fails fast.
+    serviceCollection.AddGeneratedMediator<ClientPipeline>();
 
     serviceCollection.AddTimeWarpState
     (

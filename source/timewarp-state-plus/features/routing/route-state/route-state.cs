@@ -6,7 +6,7 @@ namespace TimeWarp.Features.Routing;
 public sealed partial class RouteState : State<RouteState>
 {
   private readonly Stack<RouteInfo> RouteStack = new();
-  public RouteState(ISender sender) : base(sender) {}
+  public RouteState(ISender<ClientPipeline> sender) : base(sender) {}
 
   [JsonConstructor]
   public RouteState() {}

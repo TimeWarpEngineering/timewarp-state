@@ -37,10 +37,11 @@
       The library references ONLY TimeWarp.Mediator.Contracts (the interfaces and membership
       attributes) plus TimeWarp.Mediator.Analyzers (TWM001-TWM004 diagnostics). It must NOT
       reference TimeWarp.Mediator.Generators: the generator emits a public
-      AddGeneratedMediator()/Mediator into the host assembly, which would be dead code here and
-      collide with the consuming app's own generated mediator. Each consuming application
-      references TimeWarp.Mediator.Generators itself and owns the AddGeneratedMediator() call;
-      this assembly joins that compile-time graph through [assembly: MediatorAssembly].
+      AddGeneratedMediator()/AddGeneratedMediator&lt;TScope&gt;()/Mediator into the host assembly,
+      which would be dead code here and collide with the consuming app's own generated mediator.
+      Each consuming application references TimeWarp.Mediator.Generators itself and owns the
+      AddGeneratedMediator&lt;ClientPipeline&gt;() (or unscoped) call; this assembly joins that
+      compile-time graph through [assembly: MediatorAssembly] and MediatorScope(ClientPipeline).
     -->
     <PackageReference Include="TimeWarp.Mediator.Contracts"/>
     <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all"/>

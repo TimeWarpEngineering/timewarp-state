@@ -19,7 +19,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
   where TRequest : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly IPublisher Publisher;
+  private readonly IPublisher<ClientPipeline> Publisher;
   private readonly IStore Store;
   private readonly bool Enabled;
 
@@ -27,7 +27,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
   (
     ILogger<StateTransactionBehavior<TRequest, TResponse>> logger,
     IStore store,
-    IPublisher publisher,
+    IPublisher<ClientPipeline> publisher,
     TimeWarpStateOptions timeWarpStateOptions
   )
   {

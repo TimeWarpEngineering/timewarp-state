@@ -4,13 +4,14 @@ namespace RouteState_;
 using AnyClone;
 using FakeItEasy;
 using TimeWarp.Mediator;
+using TimeWarp.State;
 using TimeWarp.Features.Routing;
 
-public class Clone_Should 
+public class Clone_Should
 {
-  public Clone_Should() 
+  public Clone_Should()
   {
-    ISender sender = A.Fake<ISender>();
+    ISender<ClientPipeline> sender = A.Fake<ISender<ClientPipeline>>();
     RouteState = new RouteState(sender);
   }
 
@@ -30,7 +31,7 @@ public class Clone_Should
 
     //Assert
     clone.ShouldNotBeSameAs(RouteState);
-    clone.Sender.ShouldBeNull(); // ISender is not cloned
+    clone.Sender.ShouldBeNull(); // ISender<ClientPipeline> is not cloned
     clone.Routes.ShouldNotBeNull();
     clone.Guid.ShouldNotBe(RouteState.Guid);
   }
