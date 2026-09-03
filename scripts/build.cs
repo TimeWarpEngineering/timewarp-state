@@ -29,6 +29,7 @@ async Task BuildProjects(string configuration)
   using var context = ScriptContext.FromRelativePath("..");  // Go up one level from scripts/ to repo root
 
   // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+  // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
   Directory.CreateDirectory(packagesDirectory);
 
   WriteLine($"Script location: {context.ScriptDirectory}");
@@ -108,6 +109,10 @@ async Task CleanSolution()
     WriteLine("Removing artifacts directory...");
     Directory.Delete(artifactsDirectory, recursive: true);
   }
+
+  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+  // The guard protects later child `dotnet` invocations, not this runfile's own `#:package` restore.
+  Directory.CreateDirectory(packagesDirectory);
 
   if (Directory.Exists("./source/timewarp-state/wwwroot/js"))
   {

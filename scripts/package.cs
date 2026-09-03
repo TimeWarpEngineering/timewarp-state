@@ -18,6 +18,10 @@ async Task PackageNuGets()
 {
     using var context = ScriptContext.FromRelativePath("..");
 
+    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
+    Directory.CreateDirectory("./artifacts/packages");
+
     var configuration = "Release";
     var packageOutputPath = "./Nuget";
     var localSourcePath = "./LocalNugetFeed";
@@ -34,8 +38,15 @@ async Task PackageNuGets()
         // Ignore errors on non-Windows or if no processes found
     }
 
-    // Clear NuGet locals
-    await DotNet.NuGet().Locals().Clear(NuGetCacheType.All).RunAsync();
+    // Clear NuGet locals (skipped under CI so the restored actions/cache is reused)
+    if (Environment.GetEnvironmentVariable("CI") == "true")
+    {
+        WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
+    }
+    else
+    {
+        await DotNet.NuGet().Locals().Clear(NuGetCacheType.All).RunAsync();
+    }
 
     // Clean and setup
     await DotNet.Clean().RunAsync();

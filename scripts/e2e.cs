@@ -23,12 +23,14 @@ async Task RunE2eTests()
     using var context = ScriptContext.FromRelativePath("..");
 
     // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
     Directory.CreateDirectory("./artifacts/packages");
 
     // Configuration variables
     var sutProjectDir = "./tests/test-app/test-app-server";
     var outputPath = "./tests/test-app/output";
-    var useHttp = true;
+    // workflow.yml sets UseHttp; default to http when the variable is unset or unparseable.
+    bool useHttp = !bool.TryParse(Environment.GetEnvironmentVariable("UseHttp"), out bool parsedUseHttp) || parsedUseHttp;
     var protocol = useHttp ? "http" : "https";
     var sutUrl = $"{protocol}://localhost";
     var testProjectDir = "./tests/test-app-end-to-end-tests";
@@ -458,9 +460,11 @@ async Task KillSut(System.Diagnostics.Process sutProcess)
     if (!sutProcess.HasExited)
     {
         sutProcess.Kill();
-        sutProcess.WaitForExit();
         WriteLine("SUT process terminated.");
     }
+
+    // Wait on both paths: the OutputDataReceived handlers may still be draining into the writers below.
+    sutProcess.WaitForExit();
 
     sutOutputWriter?.Dispose();
     sutErrorWriter?.Dispose();
@@ -473,7 +477,7 @@ async Task InstallLinuxDevCerts()
     if (OperatingSystem.IsLinux())
     {
         WriteLine("Installing Linux development certificates...");
-        // Best effort: the E2E run uses http (UseHttp=true), so a partially trusted cert must not fail the run.
+        // Best effort: a partially trusted cert must not fail the run.
         // `dotnet dev-certs https --trust` exits 4 on Linux when OpenSSL trust needs SSL_CERT_DIR (GitHub runners),
         // and this Amuru line throws on a non-zero exit instead of returning it.
         try

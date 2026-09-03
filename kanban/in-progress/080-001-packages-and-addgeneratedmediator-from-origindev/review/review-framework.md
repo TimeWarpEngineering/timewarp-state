@@ -15,3 +15,10 @@
 - Do not invent issues to fill space; zero issues is a valid outcome
 - Address the diff and surrounding call sites; re-verify falsifiable claims against the repo
 - Prior rounds are immutable; new work goes in `round-(N+1)/`
+
+## Round 3 addendum (2026-09-03)
+
+**Diff scope:** post-disposition delta a6700c2f..HEAD excluding kanban/ (CI workflow, scripts/{build,clean,test,e2e}.cs, Directory.Packages.props MSTest pin, .gitignore). Rounds 1–2 covered the mediator swap (9d05efa5 + fix a0e0d707) and are frozen.
+**Effort:** 1 (general only)
+**Reviewer roster:** general (Claude Opus subagent, read-only)
+**Session IDs:** review oracle — Claude Fable 5.1 (ganda task work, 2026-09-03, round 3)

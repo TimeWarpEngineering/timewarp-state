@@ -24,7 +24,14 @@ async Task CleanSolution()
     await DotNet.Clean().RunAsync();
 
     // Clean NuGet cache
-    await DotNet.NuGet().Locals().Clear(NuGetCacheType.All).RunAsync();
+    if (Environment.GetEnvironmentVariable("CI") == "true")
+    {
+        WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
+    }
+    else
+    {
+        await DotNet.NuGet().Locals().Clear(NuGetCacheType.All).RunAsync();
+    }
 
     // Remove common build artifacts
     var directoriesToRemove = new[]
@@ -57,6 +64,7 @@ async Task CleanSolution()
     }
 
     // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    // The guard protects later child `dotnet` invocations, not this runfile's own `#:package` restore.
     Directory.CreateDirectory("./artifacts/packages");
 
     WriteLine("Solution cleaned successfully.");
