@@ -2,12 +2,20 @@
 
 **Date:** 2026-09-03
 **Outcome:** accepted-exceptions
-**Rounds:** 2
+**Rounds:** 4
 **Final open count:** 0
 
 ## Summary
 
-Effort 1 (general reviewer, Claude Opus) over the mediator swap (9d05efa5) found 0 bugs, 6 suggestions and 4 nits; the reviewer independently re-derived the behavior pipeline order, confirmed each rewritten behavior is semantically equivalent to its MessagePre/PostProcessor predecessor, and reproduced the Results test counts. Nine findings were fixed on this task (a0e0d707) and verified in round 2, which added one comment-wording nit (M11, fixed). One suggestion (M6) is an accepted exception.
+Rounds 1–2 (effort 1, general reviewer) covered the mediator swap (9d05efa5, fix a0e0d707): 0 bugs, 6 suggestions, 5 nits; all fixed except M6 (accepted exception). Rounds 3–4 covered the post-disposition CI delta (workflow.yml, runfile scripts, MSTest pin, .gitignore): 0 bugs, 3 suggestions, 3 nits, all fixed in 2d9fec36 and the follow-up M17 commit and verified in round 4. The reviewer re-verified the NU1301 premise on a cold cache, that Amuru beta.5 `RunAsync` throws on non-zero exit, that Nuru returns exit 1 on a handler exception, and that the MSTest 3.11.1 pin satisfies Playwright.MSTest's `>= 2.2.7` floor with exactly one consuming project.
+
+## Final rollup (all rounds)
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 0 | 0 | 0 |
+| suggestion | 0 | 8 | 1 |
+| nit | 0 | 8 | 0 |
 
 ## Exception log (if accepted-exceptions)
 

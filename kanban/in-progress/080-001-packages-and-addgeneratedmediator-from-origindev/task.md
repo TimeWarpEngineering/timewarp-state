@@ -96,13 +96,10 @@ The workflow's `Run E2E tests` step is `continue-on-error: true` with that ratio
 
 ### Review disposition
 
-- Body: tw-implementation-review, effort 1, roster `general`; 2 rounds (round 2 = re-verification of fixes).
-- Round 1: 0 bug, 6 suggestion, 4 nit. Round 2: all prior verified; 1 new nit.
-- Final: 0 open; 5 suggestion fixed, 1 suggestion wontfix (M6, generated/ tracking, deferred to 080-003), 5 nit fixed.
-- **Disposition: accepted-exceptions** (`review/disposition.md`).
-- Fixes landed on this task in a0e0d707 (policy `requirePublicHandlers` overload, `order:` docs, PersistentStatePostProcessor trace guard, GetComponentOrder closed-type filter, constructor log names/event ids, integration-test comment, NoWarn 1591 on generator hosts, 066 warning on MultiTimerPostProcessor) plus the M11 comment reword. All five suites re-run green after the fixes; CS1591 count 0 (was 376).
-- Paths: `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/disposition.md`.
-
+- Body: tw-implementation-review, effort 1, roster `general` (Claude Opus subagents, read-only); 4 rounds. Rounds 1–2: mediator swap (9d05efa5 + fix a0e0d707). Rounds 3–4: post-disposition CI delta (workflow.yml, scripts/*.cs, MSTest pin, .gitignore); round 3 fixes in 2d9fec36, round 4 re-verified all and added one nit (M17, fixed in the follow-up commit).
+- Round 1: 0 bug, 6 suggestion, 4 nit. Round 2: all prior verified; 1 new nit. Round 3: 0 bug, 3 suggestion, 2 nit (M12 `UseHttp` env var never read; M13 dead exit-code guards in test.cs; M14 CI clean step wiped the restored NuGet cache; M15 package.cs/build.cs missing the artifacts/packages guard; M16 SUT log truncation on crash). Round 4: M12–M16 verified; M17 build.cs clean route cache clear, fixed.
+- Final (all rounds): 0 open; 8 suggestion fixed, 1 suggestion wontfix (M6, generated/ tracking, deferred to 080-003), 8 nit fixed.
+- **Disposition: accepted-exceptions** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-4/merged.md`).
 ### How to validate
 
 Smoke (from the task worktree; the local feed folder must exist):

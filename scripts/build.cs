@@ -92,12 +92,19 @@ async Task CleanSolution()
   }
   catch { /* Ignore if pkill not found or no processes */ }
 
-  // Clear NuGet caches
-  WriteLine("Clearing NuGet caches...");
-  await DotNet.NuGet()
-      .Locals()
-      .Clear(NuGetCacheType.All)
-      .RunAsync();
+  // Clear NuGet caches (skipped under CI so the restored actions/cache is reused)
+  if (Environment.GetEnvironmentVariable("CI") == "true")
+  {
+    WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
+  }
+  else
+  {
+    WriteLine("Clearing NuGet caches...");
+    await DotNet.NuGet()
+        .Locals()
+        .Clear(NuGetCacheType.All)
+        .RunAsync();
+  }
 
   // Clean solution
   WriteLine("Cleaning solution...");
