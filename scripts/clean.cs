@@ -56,5 +56,8 @@ async Task CleanSolution()
         }
     }
 
+    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    Directory.CreateDirectory("./artifacts/packages");
+
     WriteLine("Solution cleaned successfully.");
 }

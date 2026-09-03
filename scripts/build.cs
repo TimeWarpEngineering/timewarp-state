@@ -28,6 +28,9 @@ async Task BuildProjects(string configuration)
   // Use ScriptContext to manage directory changes - automatically restores on dispose
   using var context = ScriptContext.FromRelativePath("..");  // Go up one level from scripts/ to repo root
 
+  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+  Directory.CreateDirectory(packagesDirectory);
+
   WriteLine($"Script location: {context.ScriptDirectory}");
   WriteLine($"Working from: {Directory.GetCurrentDirectory()}");
   WriteLine($"Configuration: {configuration}");

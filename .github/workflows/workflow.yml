@@ -5,20 +5,24 @@ on:
     paths:
       - 'source/**'
       - 'tests/**'
+      - 'scripts/**'
       - '.github/workflows/workflow.yml'
       - '*.props'
       - '*.targets'
       - 'Directory.Build.props'
+      - 'global.json'
   push:
     branches:
       - master
     paths:
       - 'source/**'
       - 'tests/**'
+      - 'scripts/**'
       - '.github/workflows/workflow.yml'
       - 'Directory.Build.props'
       - '*.props'
       - '*.targets'
+      - 'global.json'
       - 'Documentation/**'
   release:
     types: [published]
@@ -65,24 +69,28 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            9.0.x
-            10.0.100-preview.7.25380.108
+          global-json-file: global.json
+
+      # nuget.config lists artifacts/packages as a local source; a fresh checkout has no such folder and
+      # restore (including the runfile scripts' own restore) fails with NU1301 when it is missing.
+      - name: Ensure local NuGet feed folder
+        run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
+        working-directory: ${{ github.workspace }}
 
       - name: Clean solution
-        run: dotnet run --project ./scripts/clean.cs
+        run: dotnet run --file ./scripts/clean.cs
         working-directory: ${{ github.workspace }}
 
       - name: Build solution
-        run: dotnet run --project ./scripts/build.cs
+        run: dotnet run --file ./scripts/build.cs
         working-directory: ${{ github.workspace }}
 
       - name: Run tests
-        run: dotnet run --project ./scripts/test.cs
+        run: dotnet run --file ./scripts/test.cs
         working-directory: ${{ github.workspace }}
 
       - name: Run E2E tests
-        run: dotnet run --project ./scripts/e2e.cs
+        run: dotnet run --file ./scripts/e2e.cs
         working-directory: ${{ github.workspace }}
         env:
           UseHttp: "true"
@@ -119,13 +127,17 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.x
+          global-json-file: global.json
 
       - name: Setup DocFX
         run: dotnet tool update --global docfx
 
+      - name: Ensure local NuGet feed folder
+        run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
+        working-directory: ${{ github.workspace }}
+
       - name: Build solution
-        run: dotnet run --project ./scripts/build.cs
+        run: dotnet run --file ./scripts/build.cs
         working-directory: ${{ github.workspace }}
 
       - name: Build documentation
@@ -176,7 +188,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.403'
+          global-json-file: global.json
+
+      - name: Ensure local NuGet feed folder
+        run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
+        working-directory: ${{ github.workspace }}
 
       - name: Extract version from source/Directory.Build.props
         if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
@@ -206,7 +222,7 @@ jobs:
 
       - name: Create NuGet packages
         if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
-        run: dotnet run --project ./scripts/package.cs
+        run: dotnet run --file ./scripts/package.cs
         working-directory: ${{ github.workspace }}
 
       - name: NuGet login (OIDC Trusted Publishing)

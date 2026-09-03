@@ -18,58 +18,61 @@ static async Task RunTests()
 {
   using var context = ScriptContext.FromRelativePath("..");
 
-  // Build and run analyzer tests
-  var result = await DotNet.Build()
-    .WithProject("./tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+  Directory.CreateDirectory("./artifacts/packages");
 
-  result = await Shell.Builder("dotnet")
+  // Build and run analyzer tests
+  int exitCode = await DotNet.Build()
+    .WithProject("./tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj")
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
+
+  exitCode = await Shell.Builder("dotnet")
     .WithArguments("fixie", "timewarp-state-analyzer-tests")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
   // Build and run state tests
-  result = await DotNet.Build()
+  exitCode = await DotNet.Build()
     .WithProject("./tests/timewarp-state-tests/timewarp-state-tests.csproj")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
-  result = await Shell.Builder("dotnet")
+  exitCode = await Shell.Builder("dotnet")
     .WithArguments("fixie", "timewarp-state-tests")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
   // Build and run plus tests
-  result = await DotNet.Build()
+  exitCode = await DotNet.Build()
     .WithProject("./tests/timewarp-state-plus-tests/timewarp-state-plus-tests.csproj")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
-  result = await Shell.Builder("dotnet")
+  exitCode = await Shell.Builder("dotnet")
     .WithArguments("fixie", "timewarp-state-plus-tests")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
   // Build and run integration tests
-  result = await DotNet.Build()
+  exitCode = await DotNet.Build()
     .WithProject("./tests/client-integration-tests/client-integration-tests.csproj")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
-  result = await Shell.Builder("dotnet")
+  exitCode = await Shell.Builder("dotnet")
     .WithArguments("fixie", "client-integration-tests")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
   // Build and run architecture tests
-  result = await DotNet.Build()
+  exitCode = await DotNet.Build()
     .WithProject("./tests/test-app-architecture-tests/test-app-architecture-tests.csproj")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 
-  result = await Shell.Builder("dotnet")
+  exitCode = await Shell.Builder("dotnet")
     .WithArguments("fixie", "test-app-architecture-tests")
-    .ExecuteAsync();
-  if (!result.IsSuccess) Environment.Exit(1);
+    .RunAsync();
+  if (exitCode != 0) Environment.Exit(1);
 }

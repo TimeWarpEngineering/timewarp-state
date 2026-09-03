@@ -18,6 +18,9 @@ async Task RunE2eTests()
 {
     using var context = ScriptContext.FromRelativePath("..");
 
+    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    Directory.CreateDirectory("./artifacts/packages");
+
     // Configuration variables
     var sutProjectDir = "./tests/test-app/test-app-server";
     var outputPath = "./tests/test-app/output";
@@ -134,7 +137,7 @@ async Task WriteStepFooter(string stepName)
 
 async Task EnsureBrowsersInstalled(string testProjectDir)
 {
-    var playwrightPath = $"{testProjectDir}/bin/Debug/net9.0/playwright.ps1";
+    var playwrightPath = $"{testProjectDir}/bin/Debug/net10.0/playwright.ps1";
     if (File.Exists(playwrightPath))
     {
         WriteLine("Installing Playwright Chromium browser...");
