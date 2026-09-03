@@ -22,29 +22,23 @@ Do **not** commit journal contents.
 
 ## Requirements
 
-Root `.gitignore` must contain these exact basename lines (comments/blanks ok):
+Root `.gitignore` must contain this glob (comments/blanks ok):
 
 ```
-task-work.journal.json
-stacked-task-set.journal.json
-planning.journal.json
-rfc.journal.json
-debate.journal.json
-advisor.journal.json
+*.journal.json
 ```
+
+One line covers every routine journal (`task-work`, stacked-task-set, planning,
+rfc, debate, advisor, and the next one). Ganda **268** updates the audit check
+to PASS on this glob; do not add the six 262 exact names.
 
 Prefer `ganda repo audit --fix --checks routine-journals-gitignore` (this
 CLI requires `--fix` when `--checks` is set) so the commented block matches
 other origins:
 
 ```gitignore
-# Task-work resume journal beside kitchens (local; not product)
-task-work.journal.json
-stacked-task-set.journal.json
-planning.journal.json
-rfc.journal.json
-debate.journal.json
-advisor.journal.json
+# Routine journals beside kitchens (local; not product)
+*.journal.json
 ```
 
 Then:
@@ -58,7 +52,7 @@ Then:
 
 ## Checklist
 
-- [ ] Root `.gitignore` has the six routine-journal basenames
+- [ ] Root `.gitignore` has `*.journal.json`
 - [ ] `git ls-files '*.journal.json'` is empty
 - [ ] Audit `routine-journals-gitignore` PASSes
 - [ ] `git check-ignore -v` confirms ignore; porcelain does not list journals
@@ -77,7 +71,7 @@ Then:
 **Automated**
 ```bash
 git check-ignore -v kanban/to-do/task-work.journal.json || true
-# expect: .gitignore:…:task-work.journal.json (path may be untracked)
+# expect: .gitignore:…:*.journal.json (path may be untracked)
 
 git ls-files '*.journal.json'
 # expect: empty
@@ -94,3 +88,4 @@ clean; host unstage-all (ganda).
 - Created: grok `01a06304-cbf6-7d83-b5a2-4a99e9d09d40` (2026-09-03) cockpit timewarp-flow
 - Trigger: `/tw-merge` software 033 — GC refused, then leftover journal
   committed; 262 left consumer sweep out of scope
+- Pattern: `*.journal.json` (cockpit, 2026-09-03) — one glob, not six names
