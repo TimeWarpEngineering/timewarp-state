@@ -141,12 +141,21 @@ async Task EnsureBrowsersInstalled(string testProjectDir)
     if (File.Exists(playwrightPath))
     {
         WriteLine("Installing Playwright Chromium browser...");
-        var exitCode = await Shell.Builder("pwsh")
-            .WithArguments(playwrightPath, "install", "chromium", "--with-deps")
-            .RunAsync();
-        if (exitCode != 0)
+        // Best effort: --with-deps needs passwordless sudo (GitHub runners have it; a dev box may not) and this
+        // Amuru line throws on a non-zero exit. A cached browser still lets the tests run, so only warn here.
+        try
         {
-            WriteLine($"Warning: Playwright installation may have issues. Exit code: {exitCode}");
+            var exitCode = await Shell.Builder("pwsh")
+                .WithArguments(playwrightPath, "install", "chromium", "--with-deps")
+                .RunAsync();
+            if (exitCode != 0)
+            {
+                WriteLine($"Warning: Playwright installation may have issues. Exit code: {exitCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            WriteLine($"Warning: Playwright installation may have issues. {ex.Message.Split('\n')[0]}");
         }
     }
     else
@@ -431,15 +440,25 @@ async Task InstallLinuxDevCerts()
     if (OperatingSystem.IsLinux())
     {
         WriteLine("Installing Linux development certificates...");
-        var exitCode = await DotNet.DevCerts().Https().WithClean().Build().RunAsync();
-        exitCode = await DotNet.DevCerts().Https().WithTrust().Build().RunAsync();
-        if (exitCode == 0)
+        // Best effort: the E2E run uses http (UseHttp=true), so a partially trusted cert must not fail the run.
+        // `dotnet dev-certs https --trust` exits 4 on Linux when OpenSSL trust needs SSL_CERT_DIR (GitHub runners),
+        // and this Amuru line throws on a non-zero exit instead of returning it.
+        try
         {
-            WriteLine("Linux development certificates installed successfully.");
+            await DotNet.DevCerts().Https().WithClean().Build().RunAsync();
+            var exitCode = await DotNet.DevCerts().Https().WithTrust().Build().RunAsync();
+            if (exitCode == 0)
+            {
+                WriteLine("Linux development certificates installed successfully.");
+            }
+            else
+            {
+                WriteLine($"Warning: dev-certs trust exited with {exitCode}; continuing (E2E runs over http).");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            WriteLine("Failed to install Linux development certificates.");
+            WriteLine($"Warning: dev-certs trust failed; continuing (E2E runs over http). {ex.Message.Split('\n')[0]}");
         }
     }
     else
