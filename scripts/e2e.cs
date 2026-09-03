@@ -83,11 +83,13 @@ async Task RunE2eTests()
     var sutProcess = await StartSut(runMode, outputPath, sutUrl, sutPort, useHttp);
     await WriteStepFooter("Start-Sut");
 
+    var runFailed = false;
     try
     {
         await WaitForSut($"{sutUrl}:{sutPort}", maxRetries, retryInterval);
 
         var testsFailed = await RunTests(testProjectDir, useHttp);
+        runFailed = testsFailed;
 
         if (runMode == "Auto")
         {
@@ -115,6 +117,7 @@ async Task RunE2eTests()
     }
     catch (Exception ex)
     {
+        runFailed = true;
         WriteLine($"An error occurred during test execution: {ex.Message}");
         if (runMode == "Auto")
         {
@@ -133,6 +136,14 @@ async Task RunE2eTests()
         {
             WriteLine($"Please remember to stop the SUT process running in {runMode} mode.");
         }
+    }
+
+    // A failed or aborted test run must fail the script; the Amuru line in use throws on a non-zero
+    // dotnet test exit, which previously landed in the catch above and left the exit code at 0.
+    if (runFailed)
+    {
+        WriteLine("E2E tests failed.");
+        Environment.Exit(1);
     }
 }
 
@@ -421,16 +432,22 @@ async Task<bool> RunTests(string testProjectDir, bool useHttp)
 
         WriteLine($"Executing: dotnet {string.Join(" ", targetArguments)}");
 
-        var exitCode = await Shell.Builder("dotnet")
-            .WithArguments(targetArguments)
-            .WithWorkingDirectory(testProjectDir)
-            .RunAsync();
-
-        if (exitCode != 0)
+        try
         {
-            testsFailed = true;
-            break;
+            var exitCode = await Shell.Builder("dotnet")
+                .WithArguments(targetArguments)
+                .WithWorkingDirectory(testProjectDir)
+                .RunAsync();
+            if (exitCode != 0) testsFailed = true;
         }
+        catch (Exception ex)
+        {
+            // Non-zero dotnet test exit surfaces as an exception on this Amuru line.
+            WriteLine($"dotnet test failed: {ex.Message.Split('\n')[0]}");
+            testsFailed = true;
+        }
+
+        if (testsFailed) break;
     }
 
     return testsFailed;
