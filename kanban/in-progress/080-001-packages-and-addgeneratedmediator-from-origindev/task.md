@@ -100,6 +100,7 @@ The workflow's `Run E2E tests` step is `continue-on-error: true` with that ratio
 - Round 1: 0 bug, 6 suggestion, 4 nit. Round 2: all prior verified; 1 new nit. Round 3: 0 bug, 3 suggestion, 2 nit (M12 `UseHttp` env var never read; M13 dead exit-code guards in test.cs; M14 CI clean step wiped the restored NuGet cache; M15 package.cs/build.cs missing the artifacts/packages guard; M16 SUT log truncation on crash). Round 4: M12–M16 verified; M17 build.cs clean route cache clear, fixed.
 - Final (all rounds): 0 open; 8 suggestion fixed, 1 suggestion wontfix (M6, generated/ tracking, deferred to 080-003), 8 nit fixed.
 - **Disposition: accepted-exceptions** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-4/merged.md`).
+
 ### How to validate
 
 Smoke (from the task worktree; the local feed folder must exist):
