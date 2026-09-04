@@ -3,6 +3,7 @@ namespace TimeWarp.State;
 public abstract class State<TState> : IState<TState>, IDisposable
 where TState : State<TState>
 {
+  [IgnoreDataMember]
   private CancellationTokenSource CancellationTokenSource { get; } = new();
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;
   protected bool IsDisposed;

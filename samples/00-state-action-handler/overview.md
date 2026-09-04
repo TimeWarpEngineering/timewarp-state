@@ -14,12 +14,12 @@ The StateActionHandler pattern is a fundamental concept in TimeWarp.State that i
 - Represents an intent to change the state
 - Contains any data needed to perform the state change
 - Is immutable
-- Implements `IAction`
+- Implements `TimeWarp.Mediator.IAction`
 
 ### 3. Handler
 - Processes the Action and updates the State
 - Is the only component allowed to modify State
-- Inherits from `ActionHandler<TAction>`
+- Inherits from `StateActionHandler<TAction>`
 
 ## Flow
 

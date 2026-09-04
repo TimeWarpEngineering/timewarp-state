@@ -15,30 +15,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - No squash/rebase commits
 
 ### Testing
-```powershell
+```bash
 # Run all tests using Fixie framework
-./RunTests.ps1
+dotnet run --file ./scripts/test.cs
 
 # Run end-to-end tests using Playwright
-./RunE2ETests.ps1
+UseHttp=true dotnet run --file ./scripts/e2e.cs
 
 # Run specific test project
 dotnet fixie <ProjectName>
 ```
 
 ### Development Server
-```powershell
-# Run test application with watch mode
-./RunTestApp.ps1
+```bash
+# Run test application
+dotnet run --file ./scripts/run-test-app.cs
 
 # Manual test app run
-dotnet watch --project ./Tests/Test.App/Test.App.Server/Test.App.Server.csproj
+dotnet watch --project ./tests/test-app/test-app-server/test-app-server.csproj
 ```
 
 ### Build & Package
-```powershell
+```bash
 # Build NuGet packages
-./BuildNuGets.ps1
+dotnet run --file ./scripts/package.cs
 
 # Build individual project
 dotnet build --project <ProjectPath> --configuration Release
@@ -73,8 +73,8 @@ dotnet build --project <ProjectPath> --configuration Release
 - **Test.App**: Comprehensive test application (Client/Server/Contracts)
 
 ### Key Patterns
-- **CQRS/Flux**: Unidirectional data flow with Actions/ActionHandlers
-- **TimeWarp.Mediator Pipeline**: Middleware-driven architecture
+- **CQRS/Flux**: Unidirectional data flow with Actions/StateActionHandlers
+- **TimeWarp.Mediator 14.0.0-beta**: Generated `AddGeneratedMediator<TScope>()`, `ISender<ClientPipeline>` / `ISender<ServerPipeline>` (not reflection `AddMediator()`)
 - **Async-First**: All operations are async by design
 - **TypeScript Integration**: Strong typing for JavaScript interop
 
@@ -121,8 +121,8 @@ public class UserService
 ## Project Configuration
 
 ### Framework
-- **Target**: .NET 8.0 (`net8.0`)
-- **SDK**: 8.0.100 with latest features
+- **Target**: .NET 10 (`net10.0`)
+- **SDK**: 10.0.301 from `global.json` (rollForward latestMinor)
 - **Nullable**: Disabled project-wide
 - **ImplicitUsings**: Enabled
 
@@ -147,7 +147,7 @@ Uses **Fixie** testing framework instead of standard xUnit/NUnit. Test projects 
 ## Task Management
 
 Follow structured task workflow using Kanban approach:
-- Task files: `Kanban/<Status>/<TaskID>_<Description>.md`
+- Task files: `kanban/<column>/NNN-title/`
 - Commit format: `Task: <TaskID> = <Status> <Description>`
 - Move tasks between folders as status changes
 
@@ -163,7 +163,7 @@ Follow structured task workflow using Kanban approach:
 ## Essential Dependencies
 
 - **Blazor**: UI framework (Server/WebAssembly)
-- **TimeWarp.Mediator**: CQRS/mediator pattern implementation
+- **TimeWarp.Mediator 14.0.0-beta**: CQRS/mediator via generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`); not `AddMediator()`
 - **Microsoft.JSInterop**: JavaScript interop for browser features
 - **Fixie**: Testing framework
 - **NetArchTest**: Architecture testing

@@ -28,10 +28,7 @@
 
 <div class="render-mode-display">
     <div>RendererInfo.Name: <span data-qa="current-render-mode">@RendererInfoName</span></div>
-    @if (AssignedRenderModeName != null)
-    {
-        <div>AssignedRenderMode: <span data-qa="configured-render-mode">@AssignedRenderModeName</span></div>
-    }
+    <div>AssignedRenderMode: <span data-qa="configured-render-mode">@(AssignedRenderModeName ?? "None")</span></div>
     @if (RendererInfoIsInteractive != null)
     {
         <div>RendererInfo.IsInteractive: <span data-qa="renderer-interactive">@RendererInfoIsInteractive</span></div>

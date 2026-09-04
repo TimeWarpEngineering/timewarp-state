@@ -8,9 +8,9 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <UseHttp Condition="'$(UseHttp)' == ''">false</UseHttp>
     <!-- Distinct namespace for generated Mediator/Sender/Publisher types. DI extension methods
-         still land in Microsoft.Extensions.DependencyInjection (generator limitation in
-         14.0.0-beta.1), so program.cs uses AddServerPipelineMediator() to avoid CS0121 with
-         Test.App.Client's AddGeneratedMediator. -->
+         still land in Microsoft.Extensions.DependencyInjection (TimeWarp.Mediator 14.0.0-beta.1;
+         https://github.com/TimeWarpEngineering/timewarp-mediator/issues/63), so program.cs uses
+         AddServerPipelineMediator() to avoid CS0121 with Test.App.Client's AddGeneratedMediator. -->
     <TimeWarpMediatorNamespace>Test.App.Server.Generated</TimeWarpMediatorNamespace>
   </PropertyGroup>
 

@@ -38,7 +38,7 @@ public class ThrowExceptionTests : PageTest
 
   private async Task ValidateExceptionHandling(string expectedCurrentMode)
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
 
     string? initialGuid = await CounterStateGuidLocator.TextContentAsync();
     initialGuid.ShouldNotBeNull();

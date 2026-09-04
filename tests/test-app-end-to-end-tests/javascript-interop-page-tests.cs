@@ -35,7 +35,8 @@ public class JavaScriptInteropTests : PageTest
   }
   private async Task ValidateJavaScript(string expectedCurrentMode)
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
+    await PageUtilities.WaitForJavaScriptInteropReadyAsync(Page);
     await ValidateCounterStateAsync("3");
     await IncrementButtonLocator.ClickAsync();
     await ValidateCounterStateAsync("10");

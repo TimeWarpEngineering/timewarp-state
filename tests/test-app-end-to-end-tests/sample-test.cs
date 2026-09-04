@@ -1,6 +1,7 @@
 namespace Test.App.EndToEnd.Tests;
 
 [TestClass]
+[Ignore("Playwright sample against playwright.dev; not the TimeWarp.State SUT.")]
 public class ExampleTest : PageTest
 {
   [TestMethod]
