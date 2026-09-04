@@ -1,35 +1,48 @@
 name: CI/CD Pipeline
 
+# Thin trigger. Pipeline lives in C# (`dev workflow`).
+# PR/merge: assert-version-ssot → clean → build → test → e2e → verify-samples → pack.
+# Release: promote CI Packages-* artifact (no rebuild). Docs job deferred.
 on:
   pull_request:
     paths:
       - 'source/**'
       - 'tests/**'
+      - 'samples/**'
       - 'scripts/**'
-      - '.github/workflows/workflow.yml'
+      - 'tools/**'
+      - 'msbuild/**'
+      - '.github/workflows/**'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - 'timewarp-state.slnx'
       - '*.props'
       - '*.targets'
-      - 'Directory.Build.props'
+      - 'nuget.config'
       - 'global.json'
   push:
-    branches:
-      - master
+    branches: [master]
     paths:
       - 'source/**'
       - 'tests/**'
+      - 'samples/**'
       - 'scripts/**'
-      - '.github/workflows/workflow.yml'
+      - 'tools/**'
+      - 'msbuild/**'
+      - '.github/workflows/**'
       - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - 'timewarp-state.slnx'
       - '*.props'
       - '*.targets'
+      - 'nuget.config'
       - 'global.json'
-      - 'Documentation/**'
   release:
     types: [published]
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Pipeline mode. merge = no publish (default). release = break-glass publish; also requires confirm. probe = trusted-publishing check only (OIDC login, no build, no publish).'
+        description: 'Pipeline mode. merge = build and test only (default). release = break-glass publish; also requires confirm. probe = trusted-publishing check only (OIDC login, no build, no publish).'
         type: choice
         options:
           - merge
@@ -47,199 +60,30 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  # CI/CD job for PR and push events
   ci:
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+    name: CI
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          global-json-file: global.json
-
-      # nuget.config lists artifacts/packages as a local source; a fresh checkout has no such folder and
-      # restore (including the runfile scripts' own restore) fails with NU1301 when it is missing.
-      - name: Ensure local NuGet feed folder
-        run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
-        working-directory: ${{ github.workspace }}
-
-      - name: Assert pack Version matches TimeWarpStateVersion
-        run: |
-          [xml]$sourceXml = Get-Content -Path "source/Directory.Build.props"
-          [xml]$repoXml = Get-Content -Path "msbuild/repository.props"
-          $version = $sourceXml.SelectSingleNode("//Version").InnerText.Trim()
-          $cpmVersion = $repoXml.SelectSingleNode("//TimeWarpStateVersion").InnerText.Trim()
-          if ($version -ne $cpmVersion) {
-            throw "Version SSOT mismatch: source/Directory.Build.props Version='$version' vs msbuild/repository.props TimeWarpStateVersion='$cpmVersion'. Align both."
-          }
-          Write-Host "Version SSOT aligned: $version"
-        working-directory: ${{ github.workspace }}
-
-      - name: Clean solution
-        run: dotnet run --file ./scripts/clean.cs
-        working-directory: ${{ github.workspace }}
-
-      - name: Build solution
-        run: dotnet run --file ./scripts/build.cs
-        working-directory: ${{ github.workspace }}
-
-      - name: Run tests
-        run: dotnet run --file ./scripts/test.cs
-        working-directory: ${{ github.workspace }}
-
-      - name: Run E2E tests
-        run: dotnet run --file ./scripts/e2e.cs
-        working-directory: ${{ github.workspace }}
-        env:
-          UseHttp: "true"
-
-  # Documentation publishing job
-  docs:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && contains(github.event.head_commit.modified, 'Documentation/')
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
     permissions:
       contents: read
-      pages: write
       id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      actions: read
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
 
-      - name: Setup DocFX
-        run: dotnet tool update --global docfx
-
-      - name: Ensure local NuGet feed folder
-        run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
-        working-directory: ${{ github.workspace }}
-
-      - name: Build solution
-        run: dotnet run --file ./scripts/build.cs
-        working-directory: ${{ github.workspace }}
-
-      - name: Build documentation
-        working-directory: Documentation
-        run: docfx docfx.json
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload documentation
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './Documentation/_site'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-  # Release publishing job
-  release:
-    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'probe')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write   # Required for NuGet Trusted Publishing (OIDC)
-    defaults:
-      run:
-        shell: pwsh
-    steps:
       - name: Validate break-glass confirmation
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm != 'release'
-        shell: bash
         run: |
           echo "::error::mode=release requires confirm=release. Refusing to run a break-glass release."
           exit 1
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          global-json-file: global.json
-
-      - name: Ensure local NuGet feed folder
-        run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
-        working-directory: ${{ github.workspace }}
-
-      - name: Extract version from source/Directory.Build.props
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
-        id: extract_version
-        run: |
-          [xml]$sourceXml = Get-Content -Path "source/Directory.Build.props"
-          [xml]$repoXml = Get-Content -Path "msbuild/repository.props"
-          $version = $sourceXml.SelectSingleNode("//Version").InnerText.Trim()
-          $cpmVersion = $repoXml.SelectSingleNode("//TimeWarpStateVersion").InnerText.Trim()
-          if ($version -ne $cpmVersion) {
-            throw "Version SSOT mismatch: source/Directory.Build.props Version='$version' vs msbuild/repository.props TimeWarpStateVersion='$cpmVersion'. Align both."
-          }
-          echo "version=$version" >> $env:GITHUB_OUTPUT
-        shell: pwsh
-
-      - name: Validate release version matches tag
-        if: github.event_name == 'release'
-        run: |
-          $releaseVersion = "${{ steps.extract_version.outputs.version }}"
-          $tagName = "${{ github.event.release.tag_name }}"
-          $tagNameForComparison = $tagName
-          if ($tagName.StartsWith("v")) {
-            $tagNameForComparison = $tagName.Substring(1)
-          }
-
-          if ($releaseVersion -ne $tagNameForComparison) {
-            throw "Release version ($releaseVersion) does not match tag name ($tagName)"
-          }
-          Write-Host "✅ Release version matches tag name"
-        shell: pwsh
-
-      - name: Create NuGet packages
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
-        run: dotnet run --file ./scripts/package.cs
-        working-directory: ${{ github.workspace }}
 
       - name: NuGet login (OIDC Trusted Publishing)
         if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'probe')
@@ -250,34 +94,33 @@ jobs:
 
       - name: Trusted publishing probe result
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'probe'
-        run: echo "Trusted publishing OK — OIDC exchange succeeded for this repo + workflow.yml."
+        run: echo "Trusted publishing OK — OIDC exchange succeeded for this repo + workflow.yml. (A failure of the NuGet login step above means the policy is missing or misconfigured on NuGet.org.)"
 
-      - name: Publish TimeWarp.State to NuGet
-        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
+      - name: Run CI Pipeline
+        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          UseHttp: "true"
         run: |
-          $packagePath = "./artifacts/packages/TimeWarp.State.*.nupkg"
-          if (!(Test-Path $packagePath)) {
-            throw "NuGet package not found for TimeWarp.State"
-          }
-          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
-        working-directory: ${{ github.workspace }}
+          # nuget.config lists artifacts/packages as a local source; missing folder fails runfile restore (NU1301).
+          mkdir -p artifacts/packages
+          if [ "${{ github.event_name }}" == "release" ]; then
+            dotnet run --file tools/dev-cli/dev.cs -- workflow --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
+          elif [ "${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release' }}" == "true" ]; then
+            dotnet run --file tools/dev-cli/dev.cs -- workflow --mode release --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
+          else
+            dotnet run --file tools/dev-cli/dev.cs -- workflow
+          fi
 
-      - name: Publish TimeWarp.State.Plus to NuGet
-        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
-        run: |
-          $packagePath = "./artifacts/packages/TimeWarp.State.Plus.*.nupkg"
-          if (!(Test-Path $packagePath)) {
-            throw "NuGet package not found for TimeWarp.State.Plus"
-          }
-          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
-        working-directory: ${{ github.workspace }}
-
-      - name: Publish TimeWarp.State.Policies to NuGet
-        if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release')
-        run: |
-          $packagePath = "./artifacts/packages/TimeWarp.State.Policies.*.nupkg"
-          if (!(Test-Path $packagePath)) {
-            throw "NuGet package not found for TimeWarp.State.Policies"
-          }
-          dotnet nuget push $packagePath --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
-        working-directory: ${{ github.workspace }}
+      - name: Upload Artifacts
+        # Skip release (promote the already-uploaded merge artifact) and probe
+        # (pipeline is skipped, so artifacts/packages is empty).
+        if: >-
+          success() &&
+          github.event_name != 'release' &&
+          !(github.event_name == 'workflow_dispatch' && (inputs.mode == 'release' || inputs.mode == 'probe'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: Packages-${{ github.run_number }}
+          path: artifacts/packages/*.nupkg
+          if-no-files-found: error

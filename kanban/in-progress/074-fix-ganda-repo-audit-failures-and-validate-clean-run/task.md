@@ -89,15 +89,15 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 ## Checklist
 
 - [x] Audit scaffolding / `tools/dev-cli` present / `ganda repo audit` exit 0 (first implement)
-- [ ] `.github/workflows/workflow.yml` is the Nuru/Ganda thin trigger; `dev workflow` is the only pipeline step
-- [ ] `dev workflow` PR/merge includes **e2e** and **pack**
-- [ ] `dev workflow --mode release` promotes CI artifacts (or documents why State must rebuild, then still one C# command)
-- [ ] No `shell: pwsh` job default; no YAML `scripts/*.cs`; path filters include `tools/**`
-- [ ] Docs job: `dev docs` or explicit deferral in Results
-- [ ] `dev e2e` fails the process when tests fail
-- [ ] Duplicate `kanban/done/074-…` kitchen gone
-- [ ] Did not cut a State NuGet
-- [ ] Results + How to validate updated for **this** remaining slice
+- [x] `.github/workflows/workflow.yml` is the Nuru/Ganda thin trigger; `dev workflow` is the only pipeline step
+- [x] `dev workflow` PR/merge includes **e2e** and **pack**
+- [x] `dev workflow --mode release` promotes CI artifacts (or documents why State must rebuild, then still one C# command)
+- [x] No `shell: pwsh` job default; no YAML `scripts/*.cs`; path filters include `tools/**`
+- [x] Docs job: `dev docs` or explicit deferral in Results
+- [x] `dev e2e` fails the process when tests fail
+- [x] Duplicate `kanban/done/074-…` kitchen gone
+- [x] Did not cut a State NuGet
+- [x] Results + How to validate updated for **this** remaining slice
 
 ## Out of scope
 
@@ -119,3 +119,91 @@ Local vs CI: `bin/dev` is gitignored; CI uses `dotnet run --file tools/dev-cli/d
 - Created: 2026-06-12 (original audit)
 - 2026-09-04: first implement (Grok) — audit scaffolding; YAML **not** converted; marked done too early
 - 2026-09-04: cockpit — moved back to in-progress; remaining brief is thin YAML + `dev workflow`; duplicate done kitchen to remove
+- Implementer: grok (2026-09-04) — thin YAML + dev workflow promote
+
+## Results
+
+### What was implemented
+
+- Rewrote `.github/workflows/workflow.yml` as a single `ci` job thin trigger (bash, no pwsh): checkout `fetch-depth: 0`, `setup-dotnet` via `global.json`, break-glass confirm, OIDC nuget/login, probe echo, one `dotnet run --file tools/dev-cli/dev.cs -- workflow` step, upload `Packages-*` (skipped on release). Path filters include `tools/**` / `scripts/**` / `samples/**` / `msbuild/**` / `global.json`; dropped `Documentation/**`.
+- Added `dev e2e` (`tools/dev-cli/endpoints/e2e-command.cs`) wrapping `scripts/e2e.cs`; defaults `UseHttp=true`; sets `Environment.ExitCode` on child non-zero.
+- Added `dev pack` (`tools/dev-cli/endpoints/pack-command.cs`): clears `artifacts/packages`, packs derived IsPackable set, verifies with `CiRunPromotion.VerifyPackageSet`.
+- Rewrote `dev workflow`: PR/merge = assert-version-ssot → clean → build → test → e2e → verify-samples → pack; release = tag-gate → check-version → locate-run → download-artifact → verify → push (promote, no rebuild/pack). No attestation.
+- Explicit IsPackable: analyzer/generator `false`; Plus `true` (State/Policies already true). Packable set: TimeWarp.State, TimeWarp.State.Plus, TimeWarp.State.Policies.
+- Fixed leftover `scripts/package.cs`: output to `./artifacts/packages`, three packable projects only; removed `taskkill` / `NuGet locals clear all`.
+
+### Files changed
+
+- `.github/workflows/workflow.yml`
+- `tools/dev-cli/endpoints/e2e-command.cs` (new)
+- `tools/dev-cli/endpoints/pack-command.cs` (new)
+- `tools/dev-cli/endpoints/workflow-command.cs`
+- `tools/dev-cli/global-usings.cs`
+- `tools/dev-cli/dev.cs` (Design region)
+- `source/timewarp-state-analyzer/timewarp-state-analyzer.csproj`
+- `source/timewarp-state-source-generator/timewarp-state-source-generator.csproj`
+- `source/timewarp-state-plus/timewarp-state-plus.csproj`
+- `scripts/package.cs`
+- `kanban/in-progress/074-…/task.md`
+
+### Key decisions
+
+- Copied Nuru/Ganda **promote** (download CI Packages-* artifact), not Amuru/Terminal/Mediator rebuild-on-release.
+- Release GitHub tags must be `v{Version}` (`TagAssertion` from TimeWarp.Nuru.DevCli). 11.x used unprefixed tags; recent betas already use `v`.
+- Docs GitHub Pages job **deferred**: old windows/docfx/SDK-8 job removed so it cannot keep running; no `dev docs` endpoint added.
+- Probe `workflow_dispatch` skips artifact upload (pipeline does not pack).
+- Did **not** cut a State NuGet / did not `dotnet nuget push`.
+- Duplicate `kanban/done/074-*` kitchen already absent on this branch (reopen hygiene).
+
+### Validation run
+
+- `dotnet run --file tools/dev-cli/dev.cs -- --help` — lists workflow, e2e, pack
+- `workflow` / `e2e` / `pack --help` — OK
+- YAML rg: no `shell: pwsh` / `scripts/*.cs` / `packages.lock.json`
+- `ganda repo audit` — exit 0 (2 advisory warnings: kebab path Test.App.Client.lib.module.js, memsearch scaffold)
+- `dev build` then `dev pack` — produced the three expected nupkgs (snupkgs present but excluded from VerifyPackageSet)
+- Did **not** run full `dev workflow` e2e in this session
+
+### How to validate
+
+**Smoke**
+
+```bash
+# help lists new endpoints
+dotnet run --file tools/dev-cli/dev.cs -- --help
+# expect: workflow, e2e, pack among routes; no crash
+
+# YAML is thin
+rg -n "shell: pwsh|scripts/.*\\.cs|packages.lock.json" .github/workflows/workflow.yml
+# expect: no matches
+
+rg -n "tools/\\*\\*|dev.cs -- workflow" .github/workflows/workflow.yml
+# expect: tools/** in path filters; pipeline calls tools/dev-cli/dev.cs -- workflow
+
+# packable set
+dotnet msbuild source/timewarp-state-analyzer/timewarp-state-analyzer.csproj -nologo -getProperty:IsPackable
+dotnet msbuild source/timewarp-state-source-generator/timewarp-state-source-generator.csproj -nologo -getProperty:IsPackable
+dotnet msbuild source/timewarp-state-plus/timewarp-state-plus.csproj -nologo -getProperty:IsPackable
+# expect: analyzer/generator False; plus True
+
+# pack layout (after a Release pack)
+mkdir -p artifacts/packages
+dotnet run --file tools/dev-cli/dev.cs -- build
+dotnet run --file tools/dev-cli/dev.cs -- pack
+# expect: artifacts/packages/TimeWarp.State.12.0.0-beta.3.nupkg
+#         TimeWarp.State.Plus.12.0.0-beta.3.nupkg
+#         TimeWarp.State.Policies.12.0.0-beta.3.nupkg
+#         no analyzer/generator nupkgs
+
+ganda repo audit
+# expect: exit 0
+```
+
+**Expect**
+
+- Help routes include `workflow`, `e2e`, `pack`
+- Thin YAML: no pwsh default, no `scripts/*.cs` steps, no lockfile cache; `tools/**` filtered; single pipeline step
+- IsPackable False/False/True for analyzer/generator/plus
+- Pack emits exactly the three product nupkgs under `artifacts/packages` (sibling `.snupkg` files are not uploaded or promoted)
+- `ganda repo audit` exits 0
+- A published GitHub Release tag must be `v12.0.0-beta.3` (not `12.0.0-beta.3`) to pass the release tag-gate
