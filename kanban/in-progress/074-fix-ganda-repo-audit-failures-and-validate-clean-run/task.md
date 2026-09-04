@@ -98,7 +98,7 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 - [x] Duplicate `kanban/done/074-…` kitchen gone
 - [x] Did not cut a State NuGet
 - [x] Results + How to validate updated for **this** remaining slice
-- [x] Implementation review round 3 disposition clean (same task id)
+- [x] Implementation review round 4 disposition clean (same task id)
 - [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after. GitHub `ci` green is the next run after this commit.
 
 ## Out of scope
@@ -116,7 +116,7 @@ Template: `timewarp-ganda/source/timewarp-ganda/templates/dev-cli/`.
 
 Local vs CI: `bin/dev` is gitignored; CI uses `dotnet run --file tools/dev-cli/dev.cs -- workflow`.
 
-Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposition.md` (round 3 clean).
+Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposition.md` (round 4 clean).
 
 ## Session
 
@@ -127,6 +127,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 3
 - 2026-09-04: `/tw-merge` refused — PR #581 `ci` red (run 33834323550). `dev build` of `timewarp-state.slnx` NU1102 on samples (`TimeWarp.State`/`Plus` 12.0.0-beta.3 not on nuget.org; LocalNuGetFeed empty). Pack currently runs **after** build.
 - Implementer: grok (2026-09-04) — NU1102 remaining slice: omit samples from `dev build`; pack LocalNuGetFeed before verify-samples
+- Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 4 (NU1102 follow-up)
 
 ## Results
 
@@ -169,11 +170,11 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 ### Review disposition
 
 - **Outcome:** clean (0 open)
-- **Rounds:** 3 · **Effort:** 1 · **Roster:** general
+- **Rounds:** 4 · **Effort:** 1 · **Roster:** general
 - **Final counts:** bug 0/0/0 open/fixed/wontfix · suggestion 0 open / 1 fixed (M1, rounds 1–2) / 0 wontfix · nit 0/0/0
-- Round 3 (thin-YAML remaining slice) raised no new issues. M1 still holds via DevCli `AssertVersionSsot` after YAML Version extract was removed.
-- Artifacts: `review/review-framework.md`, `review/round-3/general.md`, `review/round-3/merged.md`, `review/disposition.md` (rounds 1–2 frozen)
-- This NU1102 follow-up is after round 3; host `review` node runs next if required.
+- Round 3 (thin-YAML remaining slice) raised no new issues. Round 4 (NU1102 follow-up: slnf omits samples; pack before verify-samples) raised no new issues.
+- M1 still holds via DevCli `AssertVersionSsot` after YAML Version extract was removed.
+- Artifacts: `review/review-framework.md`, `review/round-4/general.md`, `review/round-4/merged.md`, `review/disposition.md` (rounds 1–3 frozen)
 
 ### Validation run
 
