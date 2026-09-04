@@ -99,6 +99,7 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 - [x] Did not cut a State NuGet
 - [x] Results + How to validate updated for **this** remaining slice
 - [x] Implementation review round 3 disposition clean (same task id)
+- [ ] GitHub `ci` green — NU1102: samples restore `TimeWarp.State >= 12.0.0-beta.3` from nuget.org / LocalNuGetFeed before pack. nuget.org nearest is **12.0.0-beta.1**; feed is empty at `dev build`. Old `scripts/build.cs` did **not** include samples in the CI build. `dev workflow` must pack the local feed **before** sample restore/build (library build → pack → samples / verify-samples), or exclude samples from the first slnx restore.
 
 ## Out of scope
 
@@ -124,6 +125,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - 2026-09-04: cockpit — moved back to in-progress; remaining brief is thin YAML + `dev workflow`; duplicate done kitchen to remove
 - Implementer: grok (2026-09-04) — thin YAML + dev workflow promote
 - Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 3
+- 2026-09-04: `/tw-merge` refused — PR #581 `ci` red (run 33834323550). `dev build` of `timewarp-state.slnx` NU1102 on samples (`TimeWarp.State`/`Plus` 12.0.0-beta.3 not on nuget.org; LocalNuGetFeed empty). Pack currently runs **after** build.
 
 ## Results
 
