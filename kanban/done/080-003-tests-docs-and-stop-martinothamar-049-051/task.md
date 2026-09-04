@@ -23,6 +23,7 @@ Parent: **080**. Prove the 14-beta path in test-app / integration / e2e as this 
 - [x] Docs
 - [x] 049–051 disposition
 - [x] Feedback list for mediator (if any)
+- [ ] CI `ci` on PR #578 green (E2E now gates; `TestJavaScriptInterop` failed)
 
 ## Out of scope
 
@@ -34,6 +35,7 @@ Parent: **080**. Prove the 14-beta path in test-app / integration / e2e as this 
 - Created: 154892 (2026-09-01)
 - 2026-09-04: implementer (Grok 4.6, ganda task work) soaked 14-beta in Fixie + Playwright, retargeted docs, archived 049–051, filed mediator issues 63–65. `ganda kanban move 080-003 in-progress` refused (080-002 not on origin-home); kitchen moved with `git mv` on the task branch.
 - 2026-09-04: review oracle (Grok 4.6, ganda task work) — effort 1 general, kitchen `review/`.
+- 2026-09-04: cockpit dispatch — `--into` merge of [PR #578](https://github.com/TimeWarpEngineering/timewarp-state/pull/578) refused: Actions `ci` red. E2E 9 passed / 1 failed / 3 skipped. Failure: `JavaScriptInteropPageTests.TestJavaScriptInterop` — `[data-qa='counter-state-count']` expected `10`, got `3`. SUT also logged `StateTransactionBehavior` clone errors on `CounterState` and HTTP 404 from `ThrowServerSideException`. Local soak had 10/3; CI is one click-path short. Stay on `feature/080-timewarp-mediator-14-beta`; do not retarget master. Fix, push, wait green, then `--into` merge.
 
 ## Results
 
