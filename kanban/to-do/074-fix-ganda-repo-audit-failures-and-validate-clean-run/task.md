@@ -45,6 +45,7 @@ Note: introducing BannedApiAnalyzers may surface new build warnings/errors acros
 - [x] Bump TimeWarp.Nuru to 3.0.0-beta.x and migrate `scripts/*.cs` to the new API
 - [x] Rename `.github/workflows/ci-cd.yml` → `workflow.yml`; fix references
 - [x] **Validate:** `ganda repo audit` reports 0 failed (warnings at most) — paste the clean output into this task before moving to done
+- [x] Implementation review disposition **clean** (effort 1, 2 rounds, M1 fixed)
 
 ## Notes
 
@@ -52,9 +53,12 @@ Ordering: do the scaffolding/file items anytime; do BannedApiAnalyzers and the C
 
 `workflow.yml` already existed on this branch (task 078). Remaining audit debt after this implement: kebab-path-names warning on the Blazor JS initializer `Test.App.Client.lib.module.js` (assembly-name contract; severity lowered in `.editorconfig`), and memsearch-scaffold warning (not in the original brief).
 
+Review kitchen: `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/` (effort 1, general only, 2 rounds, disposition **clean**).
+
 ## Session
 
 - Implementer: grok session (2026-09-04)
+- Review oracle: Grok 4.6 (ganda task work, 2026-09-04) — effort 1 general, rounds 1–2
 
 ## Results
 
@@ -74,14 +78,14 @@ Brought timewarp-state onto the TimeWarp repo-audit baseline used by timewarp-me
 ### Files changed
 
 - New: `tools/dev-cli/**`, `msbuild/repository.props`, `BannedSymbols.txt`, `.envrc`, `skills/.gitkeep`, `.vscode/*`, `scripts/Directory.Build.props`
-- Edited: `Directory.Build.props`, `Directory.Packages.props`, `source/Directory.Build.props`, `scripts/*.cs`, `.editorconfig`, `.gitignore`, `.github/workflows/workflow.yml`, product csproj logo packing
+- Edited: `Directory.Build.props`, `Directory.Packages.props`, `source/Directory.Build.props`, `scripts/*.cs`, `.editorconfig`, `.gitignore`, `.github/workflows/workflow.yml` (version extract + M1 SSOT assert), `tools/dev-cli/endpoints/workflow-command.cs` (M1), product csproj logo packing
 - Removed: `.github/pull_request_template.md`, `kanban/backlog/_._`
 
 ### Key decisions
 
 - Dev CLI mirrors timewarp-mediator (package TimeWarp.Nuru.DevCli, not in-repo DevCli sources).
 - Did not rewrite GitHub `workflow.yml` CI steps onto `./bin/dev workflow`; existing `dotnet run --file ./scripts/*.cs` path still works after the Nuru 3 migration. `dev workflow` is available for local/CI later.
-- `TimeWarpStateVersion` stays in `msbuild/repository.props` for CPM pins of TimeWarp.State; packable `<Version>` is the literal in `source/Directory.Build.props` (must stay in sync).
+- `TimeWarpStateVersion` stays in `msbuild/repository.props` for CPM pins of TimeWarp.State; packable `<Version>` is the literal in `source/Directory.Build.props` (must stay in sync). Review M1 added CI/DevCli asserts that fail on drift.
 - kebab-path-names is **warning** only because the Blazor JS initializer cannot be kebab-renamed without changing `AssemblyName` and assembly-qualified type strings in E2E.
 
 ### Test outcomes
@@ -121,6 +125,36 @@ test -x ./bin/dev && ./bin/dev --help
 **Depends on:** `artifacts/packages/` must exist before restore (`nuget.config` lists it as a local source). `bin/dev` is gitignored; bootstrap with `dotnet run --file tools/dev-cli/dev.cs -- self-install` on a fresh clone.
 
 **Not in scope:** memsearch `.githooks` scaffold; renaming `Test.App.Client` assembly / JS initializer; converting GitHub Actions jobs from `scripts/*.cs` to `./bin/dev workflow`.
+
+**Version SSOT (review M1)**
+
+```bash
+python3 - <<'PY'
+from xml.etree import ElementTree as ET
+source = ET.parse("source/Directory.Build.props")
+repo = ET.parse("msbuild/repository.props")
+version = source.find(".//Version").text.strip()
+cpm = repo.find(".//TimeWarpStateVersion").text.strip()
+print(f"pack={version} cpm={cpm}")
+raise SystemExit(0 if version == cpm else 1)
+PY
+# expect: pack=12.0.0-beta.3 cpm=12.0.0-beta.3 and exit 0
+```
+
+### Review disposition
+
+- **Outcome:** clean
+- **Effort / roster:** 1, general only
+- **Rounds:** 2
+- **Final counts:** bug 0; suggestion 1 fixed (M1); nit 0; **open 0**; wontfix 0
+- **M1:** dual `TimeWarpStateVersion` vs source `<Version>` had no gate. Fixed with `AssertVersionSsot` in `tools/dev-cli/endpoints/workflow-command.cs` (PR + release) and matching pwsh asserts in `.github/workflows/workflow.yml` (ci job + release `extract_version`). Round 2 verified-fixed.
+- **Paths:**
+  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/review-framework.md`
+  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-1/general.md`
+  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-1/merged.md`
+  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-2/general.md`
+  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-2/merged.md`
+  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/disposition.md`
 
 ### Audit output (2026-09-04)
 
