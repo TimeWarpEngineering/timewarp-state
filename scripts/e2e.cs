@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,19 +8,23 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-// SUT log writers must outlive StartSut: the OutputDataReceived handlers keep writing until the SUT exits.
-StreamWriter? sutOutputWriter = null;
-StreamWriter? sutErrorWriter = null;
-
-var app = new NuruAppBuilder()
-    .AddDefaultRoute(async () => await RunE2eTests())
-    .AddAutoHelp()
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("")
+    .WithHandler(App.Run)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-async Task RunE2eTests()
+static class App
 {
+  // SUT log writers must outlive StartSut: the OutputDataReceived handlers keep writing until the SUT exits.
+  static StreamWriter? SutOutputWriter;
+  static StreamWriter? SutErrorWriter;
+
+  public static async Task Run()
+  {
     using var context = ScriptContext.FromRelativePath("..");
 
     // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
@@ -149,17 +154,17 @@ async Task RunE2eTests()
     }
 }
 
-async Task WriteStepHeader(string stepName)
+  static async Task WriteStepHeader(string stepName)
 {
     WriteLine($"\n========== Starting: {stepName} ==========");
 }
 
-async Task WriteStepFooter(string stepName)
+  static async Task WriteStepFooter(string stepName)
 {
     WriteLine($"========== Completed: {stepName} ==========\n");
 }
 
-async Task EnsureBrowsersInstalled(string testProjectDir)
+  static async Task EnsureBrowsersInstalled(string testProjectDir)
 {
     var playwrightPath = $"{testProjectDir}/bin/Debug/net10.0/playwright.ps1";
     if (File.Exists(playwrightPath))
@@ -188,7 +193,7 @@ async Task EnsureBrowsersInstalled(string testProjectDir)
     }
 }
 
-async Task RestoreToolsAndCleanup()
+  static async Task RestoreToolsAndCleanup()
 {
     // Restore .NET tools
     var exitCode = await DotNet.Tool().Restore().Build().RunAsync();
@@ -206,7 +211,7 @@ async Task RestoreToolsAndCleanup()
     }
 }
 
-async Task BuildAnalyzer(string analyzerProjectPath)
+  static async Task BuildAnalyzer(string analyzerProjectPath)
 {
     var exitCode = await DotNet.Build()
         .WithProject(analyzerProjectPath)
@@ -216,7 +221,7 @@ async Task BuildAnalyzer(string analyzerProjectPath)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
+  static async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
 {
     var exitCode = await DotNet.Build()
         .WithProject(sourceGeneratorProjectPath)
@@ -226,7 +231,7 @@ async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task UpdateClientAppSettings(bool useHttp)
+  static async Task UpdateClientAppSettings(bool useHttp)
 {
     var appSettingsPath = "./tests/test-app/test-app-client/wwwroot/appsettings.json";
     if (File.Exists(appSettingsPath))
@@ -239,7 +244,7 @@ async Task UpdateClientAppSettings(bool useHttp)
     }
 }
 
-async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
+  static async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
 {
     // Restore dependencies
     var exitCode = await DotNet.Restore()
@@ -267,7 +272,7 @@ async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task BuildTest(string testProjectDir)
+  static async Task BuildTest(string testProjectDir)
 {
     // Restore dependencies
     var exitCode = await DotNet.Restore()
@@ -285,7 +290,7 @@ async Task BuildTest(string testProjectDir)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath, string sutUrl, int sutPort, bool useHttp)
+  static async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath, string sutUrl, int sutPort, bool useHttp)
 {
     switch (mode)
     {
@@ -345,10 +350,10 @@ async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath,
                 {
                     // Redirect output to files. The writers are disposed in KillSut, not here: disposing them on
                     // return made the first SUT output line throw ObjectDisposedException on a thread-pool thread.
-                    sutOutputWriter = new StreamWriter(outputLogPath) { AutoFlush = true };
-                    sutErrorWriter = new StreamWriter(errorLogPath) { AutoFlush = true };
-                    process.OutputDataReceived += (sender, e) => { if (e.Data != null) { try { sutOutputWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
-                    process.ErrorDataReceived += (sender, e) => { if (e.Data != null) { try { sutErrorWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
+                    SutOutputWriter = new StreamWriter(outputLogPath) { AutoFlush = true };
+                    SutErrorWriter = new StreamWriter(errorLogPath) { AutoFlush = true };
+                    process.OutputDataReceived += (sender, e) => { if (e.Data != null) { try { SutOutputWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
+                    process.ErrorDataReceived += (sender, e) => { if (e.Data != null) { try { SutErrorWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                 }
@@ -362,7 +367,7 @@ async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath,
     }
 }
 
-async Task WaitForSut(string url, int maxRetries, int retryInterval)
+  static async Task WaitForSut(string url, int maxRetries, int retryInterval)
 {
     using var client = new HttpClient();
     client.Timeout = TimeSpan.FromSeconds(5);
@@ -389,7 +394,7 @@ async Task WaitForSut(string url, int maxRetries, int retryInterval)
     throw new Exception("SUT did not become ready in time.");
 }
 
-async Task DisplaySutLogs(string outputLogPath, string errorLogPath)
+  static async Task DisplaySutLogs(string outputLogPath, string errorLogPath)
 {
     WriteLine("Displaying SUT logs:");
 
@@ -414,7 +419,7 @@ async Task DisplaySutLogs(string outputLogPath, string errorLogPath)
     }
 }
 
-async Task<bool> RunTests(string testProjectDir, bool useHttp)
+  static async Task<bool> RunTests(string testProjectDir, bool useHttp)
 {
     var settings = new[] { "chrome.runsettings" };
     var testsFailed = false;
@@ -455,7 +460,7 @@ async Task<bool> RunTests(string testProjectDir, bool useHttp)
     return testsFailed;
 }
 
-async Task KillSut(System.Diagnostics.Process sutProcess)
+  static async Task KillSut(System.Diagnostics.Process sutProcess)
 {
     if (!sutProcess.HasExited)
     {
@@ -466,13 +471,13 @@ async Task KillSut(System.Diagnostics.Process sutProcess)
     // Wait on both paths: the OutputDataReceived handlers may still be draining into the writers below.
     sutProcess.WaitForExit();
 
-    sutOutputWriter?.Dispose();
-    sutErrorWriter?.Dispose();
-    sutOutputWriter = null;
-    sutErrorWriter = null;
+    SutOutputWriter?.Dispose();
+    SutErrorWriter?.Dispose();
+    SutOutputWriter = null;
+    SutErrorWriter = null;
 }
 
-async Task InstallLinuxDevCerts()
+  static async Task InstallLinuxDevCerts()
 {
     if (OperatingSystem.IsLinux())
     {
@@ -502,4 +507,5 @@ async Task InstallLinuxDevCerts()
     {
         WriteLine("Skipping Linux development certificate installation (not running on Linux).");
     }
+  }
 }

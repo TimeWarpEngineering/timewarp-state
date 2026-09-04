@@ -1,0 +1,31 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#9b6bdb",
+    "activityBar.background": "#9b6bdb",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#ecb2be",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#9b6bdb",
+    "statusBar.background": "#7c3aed",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#9b6bdb",
+    "statusBarItem.remoteBackground": "#c084fc",
+    "statusBarItem.remoteForeground": "#15202b",
+    "titleBar.activeBackground": "#7c3aed",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#7c3aed99",
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "activityBarTop.activeBackground": "#9b6bdb",
+    "activityBarTop.background": "#9b6bdb",
+    "activityBarTop.foreground": "#e7e7e7",
+    "activityBarTop.inactiveForeground": "#e7e7e799",
+    "commandCenter.foreground": "#e7e7e7",
+    "statusBar.debuggingBackground": "#7c3aed",
+    "statusBar.debuggingForeground": "#e7e7e7"
+  },
+  "peacock.remoteColor": "#7C3AED",
+  "timewarp.blurImagePath": "assets/timewarp-state-avatar.svg",
+  "window.title": "timewarp-state · ${rootName}${separator}${activeEditorShort}"
+}

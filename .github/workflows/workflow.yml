@@ -77,6 +77,18 @@ jobs:
         run: New-Item -ItemType Directory -Force -Path artifacts/packages | Out-Null
         working-directory: ${{ github.workspace }}
 
+      - name: Assert pack Version matches TimeWarpStateVersion
+        run: |
+          [xml]$sourceXml = Get-Content -Path "source/Directory.Build.props"
+          [xml]$repoXml = Get-Content -Path "msbuild/repository.props"
+          $version = $sourceXml.SelectSingleNode("//Version").InnerText.Trim()
+          $cpmVersion = $repoXml.SelectSingleNode("//TimeWarpStateVersion").InnerText.Trim()
+          if ($version -ne $cpmVersion) {
+            throw "Version SSOT mismatch: source/Directory.Build.props Version='$version' vs msbuild/repository.props TimeWarpStateVersion='$cpmVersion'. Align both."
+          }
+          Write-Host "Version SSOT aligned: $version"
+        working-directory: ${{ github.workspace }}
+
       - name: Clean solution
         run: dotnet run --file ./scripts/clean.cs
         working-directory: ${{ github.workspace }}
@@ -198,9 +210,13 @@ jobs:
         if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
         id: extract_version
         run: |
-          [xml]$xml = Get-Content -Path "source/Directory.Build.props"
-          $version = $xml.SelectSingleNode("//TimeWarpStateVersion").InnerText
-          $version = $version.Trim()
+          [xml]$sourceXml = Get-Content -Path "source/Directory.Build.props"
+          [xml]$repoXml = Get-Content -Path "msbuild/repository.props"
+          $version = $sourceXml.SelectSingleNode("//Version").InnerText.Trim()
+          $cpmVersion = $repoXml.SelectSingleNode("//TimeWarpStateVersion").InnerText.Trim()
+          if ($version -ne $cpmVersion) {
+            throw "Version SSOT mismatch: source/Directory.Build.props Version='$version' vs msbuild/repository.props TimeWarpStateVersion='$cpmVersion'. Align both."
+          }
           echo "version=$version" >> $env:GITHUB_OUTPUT
         shell: pwsh
 

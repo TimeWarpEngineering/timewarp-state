@@ -74,7 +74,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="$(RepositoryRoot)assets\logo.png" Pack="true" PackagePath=""/>
     <None Include="$(RepositoryRoot)readme.md" Pack="true" PackagePath=""/>
   </ItemGroup>
 
