@@ -1,198 +1,251 @@
-# Fix ganda repo audit failures and validate clean run
+# Convert State CI to thin YAML + `dev workflow`
 
 ## Description
 
-`ganda repo audit` (run 2026-06-12) reports **4 passed, 12 failed, 2 skipped** with blocking failures. Bring the repo up to the TimeWarp repository conventions the audit enforces, then validate with a clean re-run.
+**074 was marked done too early.** Audit scaffolding landed on master via [PR #579](https://github.com/TimeWarpEngineering/timewarp-state/pull/579) / child #580. `tools/dev-cli` exists and `ganda repo audit` exits 0. **CI is still old-school YAML.**
 
-Failures, grouped by kind:
+This remaining slice is the hole the 2026-09-04 rewrite asked for: Nuru / Ganda / Amuru / Terminal run
 
-### Missing conventional files/directories (org-standard scaffolding)
+```bash
+dotnet run --file tools/dev-cli/dev.cs -- workflow
+dotnet run --file tools/dev-cli/dev.cs -- workflow --mode release --api-key "$NUGET_API_KEY"
+```
 
-- **bin-dev** — `bin/dev` is missing (also blocks the `dev-cli-capabilities` check, which runs `bin/dev --capabilities`)
-- **region-annotations** — `tools/dev-cli` is missing
-- **msbuild-repository-props** — `msbuild/repository.props` is missing (its absence also causes the `repository-...` check to SKIP)
-- **envrc** — `.envrc` is missing
-- **directory-structure** — missing `skills/` and `kanban/archived/`
-- **vscode-window-icon** (Warning) — `.vscode/tasks.json` and `.vscode/settings.json` are missing
+State `.github/workflows/workflow.yml` still:
 
-These are structural conventions from the newer TimeWarp repo template — copy/adapt from a repo that passes the audit (e.g. wherever `ganda` itself or a recently scaffolded TimeWarp repo lives) rather than inventing them.
+- `defaults.run.shell: pwsh` on `ci`, `docs`, and `release`
+- `dotnet run --file ./scripts/{clean,build,test,e2e,package}.cs` as separate YAML steps
+- NuGet cache keyed on **non-existent** `packages.lock.json`
+- Docs job: `windows-latest`, SDK **8.x**, global `docfx`
+- Release job: pwsh XML SSOT assert, `scripts/package.cs`, **three** `dotnet nuget push` globs
+- Path filters omit `tools/**` so a `dev-cli` change does not run `ci`
+- `dev workflow` (already in tree) is **never called** from YAML
 
-### Banned-API enforcement not wired
+`dev workflow` today is also incomplete vs State’s real pipeline:
 
-- **banned-api-analyzers** — `Directory.Build.props` is missing the BannedApiAnalyzers configuration
-- **banned-symbols** — `BannedSymbols.txt` is missing
+- PR/merge: `assert-version-ssot → clean → build → test → verify-samples` — **no e2e, no pack**
+- Release: `assert-version-ssot → clean → build → check-version` — **no pack, no promote**; comment says “NuGet push stays in workflow.yml”
 
-Note: introducing BannedApiAnalyzers may surface new build warnings/errors across `source/` — budget for fixing or baselining those, and do it after the mediator migration (tasks 040–049) restores the build so violations are even visible.
+Finish 074 on **this same id**. Do not mint a sibling “apply 074” task. Same-task-through-fold-in.
 
-### Package hygiene
+Copy **Nuru/Ganda** YAML + artifact **promote** (no rebuild on release). Mediator **006-002** is the library-repo analogue. Do **not** copy Amuru/Terminal rebuild-on-release.
 
-- **cpm-consistency** — 23 orphaned `PackageVersion` entries in `Directory.Packages.props` (Microsoft.CodeAnalysis.*, Microsoft.Extensions.* 9.0.0 pins, Playwright 1.19.1 + Playwright.NUnit 1.44.0, Fixie 3.4.0, NUnit trio, coverlet, Blazor.SessionStorage.WebAssembly, Serilog pair, Scrutor, System.Text.Json, etc.). Verify each is truly unreferenced before deleting — some may be transitive pins on purpose (e.g. System.Text.Json security floor) and some may come back into use as the mediator migration and e2e test work proceed. Delete the dead ones; comment the deliberate pins if the tool supports exemptions.
-- **nuru** — TimeWarp.Nuru outdated: 2.1.0-beta.8 → 3.0.0-beta.70. Consumed by the runfile scripts (`scripts/build.cs` etc. use `#:package TimeWarp.Nuru`); a major-version jump likely changes the `NuruAppBuilder` API, so update the scripts alongside the bump.
+## Already on master (do not redo)
 
-### CI
+- `tools/dev-cli/` (Nuru 3 + TimeWarp.Nuru.DevCli): `build`, `test` (wraps `scripts/test.cs`), `verify-samples`, `workflow`, shared `clean` / `self-install` / `check-version`
+- `msbuild/repository.props`, `.envrc`, `BannedSymbols.txt`, `skills/`, vscode window icon
+- Nuru **3.0.0-beta.76**, Amuru 1.0; `scripts/*.cs` migrated to `NuruApp.CreateBuilder()`
+- Literal `<Version>` in `source/Directory.Build.props` + SSOT assert vs `TimeWarpStateVersion`
+- 080 soak (Mediator 14-beta named pipelines) — already merged
 
-- **workflow-file** — legacy `ci-cd.yml` found; rename to `workflow.yml` (update any references to the old name in docs/badges).
+## Requirements
+
+### 1. YAML is a thin trigger
+
+One `ci` job, `ubuntu-latest`, **bash** (not pwsh):
+
+1. `actions/checkout` with `fetch-depth: 0`
+2. `actions/setup-dotnet` with `global-json-file: global.json`
+3. Break-glass confirm (keep)
+4. `nuget/login@v1` gated on release/probe (keep 077 OIDC)
+5. Probe echo (keep)
+6. **One** pipeline step:
+
+```bash
+dotnet run --file tools/dev-cli/dev.cs -- workflow
+# release:
+dotnet run --file tools/dev-cli/dev.cs -- workflow --mode release --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
+```
+
+7. Upload `artifacts/packages/*.nupkg` on merge (skip on release — promote that artifact)
+8. `permissions`: `contents: read`, `id-token: write`, `actions: read` (promote needs `GH_TOKEN`)
+9. Path filters **include** `tools/**`, `scripts/**`, `global.json`
+
+Drop: pwsh default, NuGet cache-on-lockfile, YAML `scripts/*.cs` steps, pwsh XML version extract, three YAML `nuget push`es.
+
+Docs: thin second job calling `dev docs`, **or** fold later. No SDK 8 / global `docfx` / `scripts/build.cs`.
+
+### 2. `dev workflow` is the real pipeline
+
+**PR/merge:** assert-version-ssot → clean → build → test → **e2e** → verify-samples → **pack** (layout under `artifacts/packages`).
+
+**Release:** promote CI nupkgs (Nuru 458 / Ganda 209) — tag-gate → check-version → locate successful `workflow.yml` run → download artifact → verify → push with `--api-key`. **No** `scripts/package.cs` in YAML. **No** rebuild if promote is viable.
+
+Add a `dev e2e` endpoint (or `test --e2e`) that **fails the process** on test failure. Do not carry master `scripts/e2e.cs` silent-success. Playwright path must be `net10.0`.
+
+`dev test` / `dev build` may keep wrapping `scripts/*.cs` **for now** if those scripts are honest; YAML must not call them. Prefer folding into endpoints.
+
+### 3. Do not carry script bugs
+
+- `scripts/package.cs` output vs `artifacts/packages/` — pack where `IPackableProjectService` / YAML upload look
+- `scripts/clean.cs` wiping all NuGet locals / `pkill -f dotnet` — use DevCli `IRepoCleanService`
+- `scripts/build.cs` 3-project loop — `dev build` already names `timewarp-state.slnx`; YAML must use that
+- Analyzer/generator `IsPackable` explicit so release does not pack the wrong set (today: State / Plus / Policies)
+
+### 4. Board hygiene
+
+Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement). This branch must have **one** 074 folder (in-progress). Remove the stale `kanban/done/074-…` duplicate.
 
 ## Checklist
 
-- [x] Scaffold `bin/dev` + `tools/dev-cli` (dev-cli-capabilities and region-annotations should then pass)
-- [x] Add `msbuild/repository.props` (un-skips the repository props content check — fix whatever it then reports)
-- [x] Add `.envrc`
-- [x] Create `skills/` and `kanban/archived/`
-- [x] Add `.vscode/tasks.json` + `.vscode/settings.json` window-icon config
-- [x] Wire BannedApiAnalyzers in `Directory.Build.props` + add `BannedSymbols.txt`; fix surfaced violations
-- [x] Prune/justify the 23 orphaned PackageVersion entries
-- [x] Bump TimeWarp.Nuru to 3.0.0-beta.x and migrate `scripts/*.cs` to the new API
-- [x] Rename `.github/workflows/ci-cd.yml` → `workflow.yml`; fix references
-- [x] **Validate:** `ganda repo audit` reports 0 failed (warnings at most) — paste the clean output into this task before moving to done
-- [x] Implementation review disposition **clean** (effort 1, 2 rounds, M1 fixed)
+- [x] Audit scaffolding / `tools/dev-cli` present / `ganda repo audit` exit 0 (first implement)
+- [x] `.github/workflows/workflow.yml` is the Nuru/Ganda thin trigger; `dev workflow` is the only pipeline step
+- [x] `dev workflow` PR/merge includes **e2e** and **pack**
+- [x] `dev workflow --mode release` promotes CI artifacts (or documents why State must rebuild, then still one C# command)
+- [x] No `shell: pwsh` job default; no YAML `scripts/*.cs`; path filters include `tools/**`
+- [x] Docs job: `dev docs` or explicit deferral in Results
+- [x] `dev e2e` fails the process when tests fail
+- [x] Duplicate `kanban/done/074-…` kitchen gone
+- [x] Did not cut a State NuGet
+- [x] Results + How to validate updated for **this** remaining slice
+- [x] Implementation review round 4 disposition clean (same task id)
+- [x] Implementation review round 5 disposition clean (same task id) — Fixie restore before first `dotnet fixie`
+- [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after.
+- [x] Restore local tools (`fixie.console` in `.config/dotnet-tools.json`) before the first Fixie invoke — `dev test` and `scripts/test.cs` (`dotnet tool restore`). Old `scripts/build.cs` did this; YAML no longer calls it.
+- [ ] GitHub `ci` green — next Actions run after tool restore (run 33836414684 was fixie missing)
+
+## Out of scope
+
+- TimeWarp.State NuGet release
+- Mediator 14.0.0 stable
+- 082 board close (gitignore may already be on master)
+- Org-wide audit sweep of other repos
 
 ## Notes
 
-Ordering: do the scaffolding/file items anytime; do BannedApiAnalyzers and the CPM prune after the mediator migration (tasks 040–049) restores a green build, otherwise violations and true package usage can't be verified by compiling.
+Reference YAML: `timewarp-nuru` / `timewarp-ganda` `.github/workflows/workflow.yml`.  
+Reference CLI: `timewarp-nuru/tools/dev-cli/endpoints/workflow-command.cs` (promote).  
+Template: `timewarp-ganda/source/timewarp-ganda/templates/dev-cli/`.
 
-`workflow.yml` already existed on this branch (task 078). Remaining audit debt after this implement: kebab-path-names warning on the Blazor JS initializer `Test.App.Client.lib.module.js` (assembly-name contract; severity lowered in `.editorconfig`), and memsearch-scaffold warning (not in the original brief).
+Local vs CI: `bin/dev` is gitignored; CI uses `dotnet run --file tools/dev-cli/dev.cs -- workflow`.
 
-Review kitchen: `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/` (effort 1, general only, 2 rounds, disposition **clean**).
+Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposition.md` (round 5 clean).
 
 ## Session
 
-- Implementer: grok session (2026-09-04)
-- Review oracle: Grok 4.6 (ganda task work, 2026-09-04) — effort 1 general, rounds 1–2
+- Created: 2026-06-12 (original audit)
+- 2026-09-04: first implement (Grok) — audit scaffolding; YAML **not** converted; marked done too early
+- 2026-09-04: cockpit — moved back to in-progress; remaining brief is thin YAML + `dev workflow`; duplicate done kitchen to remove
+- Implementer: grok (2026-09-04) — thin YAML + dev workflow promote
+- Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 3
+- 2026-09-04: `/tw-merge` refused — PR #581 `ci` red (run 33834323550). `dev build` of `timewarp-state.slnx` NU1102 on samples (`TimeWarp.State`/`Plus` 12.0.0-beta.3 not on nuget.org; LocalNuGetFeed empty). Pack currently runs **after** build.
+- Implementer: grok (2026-09-04) — NU1102 remaining slice: omit samples from `dev build`; pack LocalNuGetFeed before verify-samples
+- Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 4 (NU1102 follow-up)
+- 2026-09-04: `/tw-merge` refused again — PR #581 `ci` red (run 33836414684). Analyzer tests: `dotnet tool restore` required for `fixie`.
+- Implementer: grok (2026-09-04) — restore local tools before first Fixie invoke (`dev test` + `scripts/test.cs`)
+- Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 5 (Fixie restore follow-up)
 
 ## Results
 
-Brought timewarp-state onto the TimeWarp repo-audit baseline used by timewarp-mediator / timewarp-architecture / timewarp-nuru. `ganda repo audit` now **exits 0**: 24 passed, 2 advisory warning failures, 1 skipped.
-
 ### What was implemented
 
-- Scaffolded `tools/dev-cli` (Nuru 3 endpoint DSL + TimeWarp.Nuru.DevCli shared commands) and AOT-installed `bin/dev`.
-- Added `msbuild/repository.props` and imported it from root `Directory.Build.props`. `source/Directory.Build.props` now has a literal `<Version>12.0.0-beta.3</Version>` (check-version contract) and packs `assets/logo.png`.
-- Added `.envrc` (`PATH_add bin`), `skills/.gitkeep`, `.vscode/tasks.json` + `.vscode/settings.json` (window icon + title).
-- Wired `Microsoft.CodeAnalysis.BannedApiAnalyzers` + `BannedSymbols.txt` (Console / ProcessStartInfo). Product `source/` had no violations. Runfiles suppress RS0030 in `scripts/Directory.Build.props`.
-- Deleted 23 orphaned CPM `PackageVersion` entries (no exemption API). Added versions for Nuru.DevCli, Amuru.Tools, Terminal, BannedApiAnalyzers.
-- Bumped TimeWarp.Nuru **2.1.0-beta.8 → 3.0.0-beta.76** and TimeWarp.Amuru **1.0.0-beta.5 → 1.0.0** (DotNet API lives in Amuru.Tools). Migrated `scripts/*.cs` from `NuruAppBuilder` to `NuruApp.CreateBuilder()` fluent Map API; handlers moved to static classes so Nuru interceptors compile.
-- `workflow.yml` was already the canonical name. Release version extract now reads `<Version>` from `source/Directory.Build.props`.
-- Kebab: renamed `.ai/Index.md` → `index.md`; replaced `kanban/backlog/_._` with `.gitkeep`; moved GitHub PR template to `.github/PULL_REQUEST_TEMPLATE/default.md` and pruned that directory. Left `Test.App.Client.lib.module.js` (Blazor `{AssemblyName}.lib.module.js` contract) as a documented warning.
+- Rewrote `.github/workflows/workflow.yml` as a single `ci` job thin trigger (bash, no pwsh): checkout `fetch-depth: 0`, `setup-dotnet` via `global.json`, break-glass confirm, OIDC nuget/login, probe echo, one `dotnet run --file tools/dev-cli/dev.cs -- workflow` step, upload `Packages-*` (skipped on release). Path filters include `tools/**` / `scripts/**` / `samples/**` / `msbuild/**` / `global.json`; dropped `Documentation/**`.
+- Added `dev e2e` (`tools/dev-cli/endpoints/e2e-command.cs`) wrapping `scripts/e2e.cs`; defaults `UseHttp=true`; sets `Environment.ExitCode` on child non-zero.
+- Added `dev pack` (`tools/dev-cli/endpoints/pack-command.cs`): clears `artifacts/packages`, packs derived IsPackable set, verifies with `CiRunPromotion.VerifyPackageSet`.
+- Rewrote `dev workflow`: PR/merge = assert-version-ssot → clean → build → test → e2e → pack → verify-samples; release = tag-gate → check-version → locate-run → download-artifact → verify → push (promote, no rebuild/pack). No attestation.
+- Explicit IsPackable: analyzer/generator `false`; Plus `true` (State/Policies already true). Packable set: TimeWarp.State, TimeWarp.State.Plus, TimeWarp.State.Policies.
+- Fixed leftover `scripts/package.cs`: output to `./artifacts/packages`, three packable projects only; removed `taskkill` / `NuGet locals clear all`.
+- **NU1102 remaining slice:** `dev build` writes `artifacts/timewarp-state.build.slnf` from `timewarp-state.slnx` omitting `samples/**` (14 source+test projects). Samples PackageReference `TimeWarp.State` / `Plus` at `TimeWarpStateVersion`; nuget.org nearest is 12.0.0-beta.1 and LocalNuGetFeed is empty until pack. Workflow packs, then `verify-samples` is the sample restore/build gate. Filter JSON is handwritten (PublishAot disables reflection `JsonSerializer`).
+- **Fixie remaining slice:** `dev test` runs `dotnet tool restore` from repo root before wrapping `scripts/test.cs`. `scripts/test.cs` also restores before the first `dotnet fixie` so a direct runfile invoke works on a clean checkout. Manifest is `.config/dotnet-tools.json` (`fixie.console` 3.4.0). YAML does not call `scripts/build.cs`, which is where restore used to happen.
 
 ### Files changed
 
-- New: `tools/dev-cli/**`, `msbuild/repository.props`, `BannedSymbols.txt`, `.envrc`, `skills/.gitkeep`, `.vscode/*`, `scripts/Directory.Build.props`
-- Edited: `Directory.Build.props`, `Directory.Packages.props`, `source/Directory.Build.props`, `scripts/*.cs`, `.editorconfig`, `.gitignore`, `.github/workflows/workflow.yml` (version extract + M1 SSOT assert), `tools/dev-cli/endpoints/workflow-command.cs` (M1), product csproj logo packing
-- Removed: `.github/pull_request_template.md`, `kanban/backlog/_._`
+- `.github/workflows/workflow.yml`
+- `tools/dev-cli/endpoints/e2e-command.cs` (new)
+- `tools/dev-cli/endpoints/pack-command.cs` (new)
+- `tools/dev-cli/endpoints/workflow-command.cs`
+- `tools/dev-cli/endpoints/build-command.cs`
+- `tools/dev-cli/endpoints/test-command.cs`
+- `tools/dev-cli/endpoints/verify-samples-command.cs`
+- `tools/dev-cli/global-usings.cs`
+- `tools/dev-cli/dev.cs` (Design region)
+- `source/timewarp-state-analyzer/timewarp-state-analyzer.csproj`
+- `source/timewarp-state-source-generator/timewarp-state-source-generator.csproj`
+- `source/timewarp-state-plus/timewarp-state-plus.csproj`
+- `scripts/package.cs`
+- `scripts/test.cs`
+- `kanban/in-progress/074-…/task.md`
 
 ### Key decisions
 
-- Dev CLI mirrors timewarp-mediator (package TimeWarp.Nuru.DevCli, not in-repo DevCli sources).
-- Did not rewrite GitHub `workflow.yml` CI steps onto `./bin/dev workflow`; existing `dotnet run --file ./scripts/*.cs` path still works after the Nuru 3 migration. `dev workflow` is available for local/CI later.
-- `TimeWarpStateVersion` stays in `msbuild/repository.props` for CPM pins of TimeWarp.State; packable `<Version>` is the literal in `source/Directory.Build.props` (must stay in sync). Review M1 added CI/DevCli asserts that fail on drift.
-- kebab-path-names is **warning** only because the Blazor JS initializer cannot be kebab-renamed without changing `AssemblyName` and assembly-qualified type strings in E2E.
+- Copied Nuru/Ganda **promote** (download CI Packages-* artifact), not Amuru/Terminal/Mediator rebuild-on-release.
+- Release GitHub tags must be `v{Version}` (`TagAssertion` from TimeWarp.Nuru.DevCli). 11.x used unprefixed tags; recent betas already use `v`.
+- Docs GitHub Pages job **deferred**: old windows/docfx/SDK-8 job removed so it cannot keep running; no `dev docs` endpoint added.
+- Probe `workflow_dispatch` skips artifact upload (pipeline does not pack).
+- Did **not** cut a State NuGet / did not `dotnet nuget push`.
+- Duplicate `kanban/done/074-*` kitchen already absent on this branch (reopen hygiene).
+- Did not keep pack-after-verify-samples. Samples cannot restore until LocalNuGetFeed has the in-tree version, so pack moved **before** verify-samples. `dev build` still names `timewarp-state.slnx` as the project list, but restore/build uses a derived filter without samples (same reason old `scripts/build.cs` skipped samples).
+- Restored the **whole** local-tool manifest (`dotnet tool restore`), not a one-off `fixie.console` install. Matches old `scripts/build.cs`. Restore lives in `dev test` (workflow Test step) and in `scripts/test.cs` (first Fixie invoke). Not in `dev build`.
 
-### Test outcomes
+### Review disposition
 
-- `ganda repo audit`: exit 0 (24 passed / 2 warning fails / 1 skipped)
-- `dotnet run --file tools/dev-cli/dev.cs -- --help` and `./bin/dev --capabilities`: required commands present
-- `dotnet run --file scripts/{clean,build,test,package,run-test-app,e2e}.cs -- --help`: compile OK
-- `dotnet build source/timewarp-state/timewarp-state.csproj -c Release`: 0 warning / 0 error
+- **Outcome:** clean (0 open)
+- **Rounds:** 5 · **Effort:** 1 · **Roster:** general
+- **Final counts:** bug 0/0/0 open/fixed/wontfix · suggestion 0 open / 1 fixed (M1, rounds 1–2) / 0 wontfix · nit 0/0/0
+- Round 3 (thin-YAML remaining slice) raised no new issues. Round 4 (NU1102 follow-up: slnf omits samples; pack before verify-samples) raised no new issues. Round 5 (Fixie follow-up: `dotnet tool restore` before first `dotnet fixie` in `dev test` and `scripts/test.cs`) raised no new issues.
+- M1 still holds via DevCli `AssertVersionSsot` after YAML Version extract was removed.
+- Artifacts: `review/review-framework.md`, `review/round-5/general.md`, `review/round-5/merged.md`, `review/disposition.md` (rounds 1–4 frozen)
+
+### Validation run
+
+- `dotnet run --file tools/dev-cli/dev.cs -- --help` — lists workflow, e2e, pack
+- `workflow` / `e2e` / `pack --help` — OK
+- YAML rg: no `shell: pwsh` / `scripts/*.cs` / `packages.lock.json`
+- `ganda repo audit` — exit 0 (2 advisory warnings: kebab path Test.App.Client.lib.module.js + generated/, memsearch scaffold)
+- Empty-cache `dotnet restore timewarp-state.slnx` with empty `artifacts/packages` — NU1102 on samples (`TimeWarp.State >= 12.0.0-beta.3`; nuget.org nearest 12.0.0-beta.1; LocalNuGetFeed 0 versions)
+- `dev build` — 14 projects, samples omitted, 0 errors
+- `dev pack` — three expected nupkgs (snupkgs present but excluded from VerifyPackageSet)
+- Empty-cache `dotnet restore timewarp-state.slnx` **after pack** — exit 0 (samples restore from LocalNuGetFeed)
+- `dotnet build samples/00-state-action-handler/server/sample-00-server/sample-00-server.csproj -c Release` after pack — succeeded
+- Did **not** run full `dev workflow` (test + e2e) in this session; GitHub `ci` green is the next Actions run
+- Empty-cache `dotnet fixie --help` (fresh `NUGET_PACKAGES` + `DOTNET_CLI_HOME`) — `Run "dotnet tool restore" to make the "fixie" command available.`; exit 1 (run 33836414684 repro)
+- `dotnet tool restore` into those caches — `Tool 'fixie.console' (version '3.4.0') was restored.`; Restore was successful
+- Same-cache `dotnet fixie --help` — Fixie usage (not the restore error); `dotnet tool list --local` includes `fixie.console`
+- `dotnet run --file tools/dev-cli/dev.cs -- --help` — lists `test`
+- `dotnet fixie timewarp-state-analyzer-tests` — 10 passed
+- `ganda repo audit` — exit 0 (2 advisory warnings: kebab path Test.App.Client.lib.module.js + generated/, memsearch scaffold)
 
 ### How to validate
 
 **Smoke**
 
 ```bash
-cd /home/steve/worktrees/github.com/TimeWarpEngineering/timewarp-state/task-074-fix-ganda-repo-audit-failures-and-validate-clean-r
+# CI repro: fixie missing until local tools are restored
+EMPTY_PACKAGES=$(mktemp -d)
+EMPTY_CLI=$(mktemp -d)
+NUGET_PACKAGES="$EMPTY_PACKAGES" DOTNET_CLI_HOME="$EMPTY_CLI" dotnet fixie --help
+# expect: Run "dotnet tool restore" to make the "fixie" command available.
+#         exit 1
+
+NUGET_PACKAGES="$EMPTY_PACKAGES" DOTNET_CLI_HOME="$EMPTY_CLI" dotnet tool restore
+# expect: Tool 'fixie.console' (version '3.4.0') was restored.
+#         Restore was successful.
+
+NUGET_PACKAGES="$EMPTY_PACKAGES" DOTNET_CLI_HOME="$EMPTY_CLI" dotnet tool list --local
+# expect: fixie.console 3.4.0 / fixie
+
+# Analyzer suite that failed on run 33836414684
+dotnet fixie timewarp-state-analyzer-tests
+# expect: 10 passed
+
+# Restore is in the Test path (workflow Test step + direct runfile)
+rg -n 'tool", "restore"|tool restore' tools/dev-cli/endpoints/test-command.cs scripts/test.cs
+# expect: both files restore before the first Fixie invoke
+
+# Thin YAML unchanged
+rg -n "shell: pwsh|scripts/.*\\.cs|packages.lock.json" .github/workflows/workflow.yml
+# expect: no matches
+
 ganda repo audit
-echo "audit_exit=$?"
-./bin/dev --capabilities | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['description']); print(sorted(e['pattern'] for e in d['endpoints']))"
-dotnet run --file scripts/build.cs -- --help
-dotnet build source/timewarp-state/timewarp-state.csproj -c Release
+# expect: exit 0
 ```
 
 **Expect**
 
-- `ganda repo audit` exits **0**. Summary line: `Repository passes — 2 advisory (non-blocking) warning(s).` Error-severity failures: **none**.
-- Capabilities description is `Development CLI for timewarp-state`. Endpoints include `build`, `check-version`, `clean`, `self-install`, `test`, `verify-samples`, `workflow`.
-- `scripts/build.cs --help` prints Nuru 3 help (no CS0136 / CS8801 / missing `DotNet`).
-- Product pack build: `Build succeeded. 0 Warning(s) 0 Error(s)`. Package at `artifacts/packages/TimeWarp.State.12.0.0-beta.3.nupkg`.
-
-**Automated gate**
-
-```bash
-ganda repo audit; echo "expect: exit 0"
-test -x ./bin/dev && ./bin/dev --help
-```
-
-**Depends on:** `artifacts/packages/` must exist before restore (`nuget.config` lists it as a local source). `bin/dev` is gitignored; bootstrap with `dotnet run --file tools/dev-cli/dev.cs -- self-install` on a fresh clone.
-
-**Not in scope:** memsearch `.githooks` scaffold; renaming `Test.App.Client` assembly / JS initializer; converting GitHub Actions jobs from `scripts/*.cs` to `./bin/dev workflow`.
-
-**Version SSOT (review M1)**
-
-```bash
-python3 - <<'PY'
-from xml.etree import ElementTree as ET
-source = ET.parse("source/Directory.Build.props")
-repo = ET.parse("msbuild/repository.props")
-version = source.find(".//Version").text.strip()
-cpm = repo.find(".//TimeWarpStateVersion").text.strip()
-print(f"pack={version} cpm={cpm}")
-raise SystemExit(0 if version == cpm else 1)
-PY
-# expect: pack=12.0.0-beta.3 cpm=12.0.0-beta.3 and exit 0
-```
-
-### Review disposition
-
-- **Outcome:** clean
-- **Effort / roster:** 1, general only
-- **Rounds:** 2
-- **Final counts:** bug 0; suggestion 1 fixed (M1); nit 0; **open 0**; wontfix 0
-- **M1:** dual `TimeWarpStateVersion` vs source `<Version>` had no gate. Fixed with `AssertVersionSsot` in `tools/dev-cli/endpoints/workflow-command.cs` (PR + release) and matching pwsh asserts in `.github/workflows/workflow.yml` (ci job + release `extract_version`). Round 2 verified-fixed.
-- **Paths:**
-  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/review-framework.md`
-  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-1/general.md`
-  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-1/merged.md`
-  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-2/general.md`
-  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/round-2/merged.md`
-  - `kanban/to-do/074-fix-ganda-repo-audit-failures-and-validate-clean-run/review/disposition.md`
-
-### Audit output (2026-09-04)
-
-```text
-Passed: 24 | Failed: 2 | Skipped: 1
-kebab-path-names (Warning) — tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js
-memsearch-scaffold (Warning) — .memsearch.toml / .githooks missing
-Repository passes — 2 advisory (non-blocking) warning(s).
-```
-
-Full table:
-
-```text
-assembly-metadata PASS
-banned-api-analyzers PASS
-banned-symbols PASS
-bin-dev PASS
-cpm-consistency PASS
-dev-cli-capabilities PASS
-directory-packages-props PASS
-directory-structure PASS
-editorconfig PASS
-envrc PASS
-kebab-path-names FAIL (Warning)
-memsearch-memory-gitignore PASS
-memsearch-scaffold FAIL (Warning)
-msbuild-repository-props PASS
-nuget-package-icon PASS
-nuget-package-urls PASS
-nuru PASS
-region-annotations PASS
-repository-root-alignment PASS
-routine-journals-gitignore PASS
-runfile-executables PASS
-runfile-project-directives SKIP
-runfile-shebang PASS
-slnx PASS
-source-directory-build-props PASS
-vscode-window-icon PASS
-workflow-file PASS
-```
+- Empty-cache `dotnet fixie` fails with the restore message until `dotnet tool restore`
+- `dev test` and `scripts/test.cs` both run `dotnet tool restore` before `dotnet fixie`
+- Analyzer tests (`timewarp-state-analyzer-tests`) pass once fixie is restored
+- PR/merge pipeline order is assert-version-ssot → clean → build → test → e2e → pack → verify-samples
+- Thin YAML: no pwsh default, no `scripts/*.cs` steps, no lockfile cache; `tools/**` filtered; single pipeline step
+- `ganda repo audit` exits 0
+- GitHub `ci` on PR #581 is the next Actions run after this commit (run 33836414684 was NU1102 gone, fixie missing)

@@ -3,7 +3,9 @@
 #endregion
 #region Design
 // Builds each samples/**/*.csproj so the required verify-samples capability is
-// a real gate, not a stub.
+// a real gate, not a stub. Samples PackageReference TimeWarp.State / Plus from
+// LocalNuGetFeed; workflow runs pack before this command so that restore can
+// succeed (nuget.org does not have the in-tree version).
 #endregion
 
 namespace DevCli.Commands;
