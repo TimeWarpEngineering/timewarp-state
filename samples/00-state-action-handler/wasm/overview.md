@@ -22,7 +22,7 @@ This tutorial will walk you through the steps to create a Blazor WebAssembly app
 
 ### Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download).
+- [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ### Creating the Project
 
@@ -50,11 +50,14 @@ dotnet run
 
 ### Install TimeWarp.State Package
 
-Add the TimeWarp.State NuGet package:
+Add the TimeWarp.State and TimeWarp.Mediator.Generators NuGet packages:
 
 ```bash
 dotnet add package TimeWarp.State --prerelease
+dotnet add package TimeWarp.Mediator.Generators
 ```
+
+Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only).
 
 ### Configure Services
 
@@ -69,7 +72,17 @@ global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.State;
 ```
 
-Update Program.cs to add TimeWarp.State services:
+Add a `mediator-scope.cs` so the host joins the generated ClientPipeline:
+
+```csharp
+using TimeWarp.Mediator;
+using TimeWarp.State;
+
+[assembly: MediatorAssembly]
+[assembly: MediatorScope(typeof(ClientPipeline))]
+```
+
+Update Program.cs — call `AddGeneratedMediator<ClientPipeline>()` **before** `AddTimeWarpState()`:
 
 ```csharp
 // Program.cs
@@ -77,6 +90,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddGeneratedMediator<ClientPipeline>();
 builder.Services.AddTimeWarpState();
 
 await builder.Build().RunAsync();
@@ -152,7 +166,7 @@ partial class CounterState
             }
         }
         
-        public sealed class Handler : ActionHandler<Action>
+        public sealed class Handler : StateActionHandler<Action>
         {
             public Handler(IStore store) : base(store) { }
             

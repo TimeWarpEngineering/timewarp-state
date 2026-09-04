@@ -3,7 +3,7 @@ namespace TimeWarp.Features.Routing;
 /// <summary>
 /// Maintain the Route in TimeWarp.State
 /// </summary>
-public sealed partial class RouteState : State<RouteState>
+public sealed partial class RouteState : State<RouteState>, ICloneable
 {
   private readonly Stack<RouteInfo> RouteStack = new();
   public RouteState(ISender<ClientPipeline> sender) : base(sender) {}
@@ -23,6 +23,21 @@ public sealed partial class RouteState : State<RouteState>
   public override void Initialize()
   {
     RouteStack.Clear();
+  }
+
+  /// <summary>
+  /// Copy the route stack without AnyClone. Stack is mutated on navigation; AnyClone throws
+  /// CloneException (ILCacheKey / concurrent update) and crashes the Blazor circuit.
+  /// </summary>
+  public object Clone()
+  {
+    var clonedState = new RouteState(Sender);
+    foreach (RouteInfo routeInfo in RouteStack.Reverse())
+    {
+      clonedState.RouteStack.Push(routeInfo);
+    }
+
+    return clonedState;
   }
   
   internal void Initialize(Stack<RouteInfo> routeStack)

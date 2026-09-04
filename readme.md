@@ -10,7 +10,7 @@
 [![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Ftimewarp-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
-[![Dotnet](https://img.shields.io/badge/dotnet-8.0-blue)](https://dotnet.microsoft.com)
+[![Dotnet](https://img.shields.io/badge/dotnet-10.0-blue)](https://dotnet.microsoft.com)
 
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
@@ -23,6 +23,8 @@
 **TimeWarp.State** (previously known as Blazor-State) is a fully asynchronous state management library for Blazor applications, leveraging the res pipeline to implement the Flux pattern. It handles both Reducers and Effects consistently using async Handlers, simplifying the management of asynchronous operations throughout your app.
 
 By utilizing the TimeWarp.Mediator pipeline, TimeWarp.State enables a flexible, middleware-driven architecture for managing state, similar to the request-processing pipeline in ASP.NET. This approach allows developers to inject custom behaviors, such as logging, validation, and caching, directly into the state management flow.
+
+Hosts consume **TimeWarp.Mediator 14-beta** via generated `AddGeneratedMediator<ClientPipeline>()` / named pipelines — not MediatR and not reflection `AddMediator()`.
 
 In addition to the core library, we offer **[TimeWarp.State.Plus](/Source/TimeWarp.State.Plus)**, which extends the functionality with enhanced middleware, components, and tools to further streamline state management in complex Blazor applications.
 

@@ -35,7 +35,7 @@ public class CounterTests : PageTest
 
   private async Task TestRenderModeAndCountersAsync(string expectedCurrentMode)
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
     await ValidateCountersAsync("3");
     await Counter1ButtonLocator.ClickAsync();
     await ValidateCountersAsync("8");

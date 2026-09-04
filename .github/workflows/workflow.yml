@@ -89,11 +89,7 @@ jobs:
         run: dotnet run --file ./scripts/test.cs
         working-directory: ${{ github.workspace }}
 
-      # The Playwright suite fails 11 of 13 tests on origin/dev today (assigned render mode reports
-      # InteractiveServer where the tests expect InteractiveAuto; AnyClone throws on RouteState/RouteStack).
-      # Kanban 080-003 owns the E2E soak; until it lands, the step runs and reports but does not gate the job.
       - name: Run E2E tests
-        continue-on-error: true
         run: dotnet run --file ./scripts/e2e.cs
         working-directory: ${{ github.workspace }}
         env:

@@ -78,9 +78,9 @@ public class CacheableWeatherTests : PageTest
     // Validate render modes
     await PageUtilities.ValidateRenderModesAsync(this, Page, RenderModes.Wasm, ConfiguredRenderModes.InteractiveWebAssemblyRenderMode);
 
-    // Validate initial state of cache and weather forecasts
-    await Expect(CacheKeyLocator).ToBeHiddenAsync();
-    await Expect(TimeStampLocator).ToBeHiddenAsync();
+    // Cache-key and timestamp spans are always in the DOM; they are empty until the first fetch.
+    await Expect(CacheKeyLocator).ToHaveTextAsync(string.Empty);
+    await Expect(TimeStampLocator).ToHaveTextAsync(string.Empty);
     await Expect(WeatherTableLocator).ToBeHiddenAsync();
     await Expect(CacheDurationLocator).ToHaveTextAsync("00:00:10");
   }
@@ -119,6 +119,7 @@ public class CacheableWeatherTests : PageTest
     {
       Console.WriteLine("Previous timestamp is null, skipping comparison");
     }
+
     Console.WriteLine("Timestamp check completed");
 
     Console.WriteLine("ValidateWeatherForecastsAndCacheState completed");

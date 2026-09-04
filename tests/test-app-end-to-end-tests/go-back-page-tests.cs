@@ -51,7 +51,7 @@ public class GoBackTests : PageTest
     await Page.ClickAsync("a[href='/GoBackPage']");
     await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
 
     // Click the go back button and validate the route
     await GoBackButtonLocator.ClickAsync();

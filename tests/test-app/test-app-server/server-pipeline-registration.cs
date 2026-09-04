@@ -10,7 +10,8 @@
 // the unique Test.App.Server.Generated Sender/Publisher types instead; keep Generators so
 // those types and TWM004 still emit. Mirror AddGeneratedMediator_ServerPipeline.
 // Aliasing the client ProjectReference would disambiguate the extension but breaks Razor
-// @using Test.App.Client on the server host. Track the generator namespace gap for 080-003.
+// @using Test.App.Client on the server host. Mediator follow-up:
+// https://github.com/TimeWarpEngineering/timewarp-mediator/issues/63
 #endregion
 
 namespace Test.App.Server;

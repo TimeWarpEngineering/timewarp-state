@@ -38,7 +38,7 @@ public class EventStreamTests : PageTest
 
   private async Task ValidateEventStream(string expectedCurrentMode)
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
 
     string initialCounterStateCount = await CounterStateCountLocator.TextContentAsync() ?? throw new InvalidOperationException("Counter state count is null.");
     
