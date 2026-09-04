@@ -99,6 +99,7 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 - [x] Did not cut a State NuGet
 - [x] Results + How to validate updated for **this** remaining slice
 - [x] Implementation review round 4 disposition clean (same task id)
+- [x] Implementation review round 5 disposition clean (same task id) — Fixie restore before first `dotnet fixie`
 - [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after.
 - [x] Restore local tools (`fixie.console` in `.config/dotnet-tools.json`) before the first Fixie invoke — `dev test` and `scripts/test.cs` (`dotnet tool restore`). Old `scripts/build.cs` did this; YAML no longer calls it.
 - [ ] GitHub `ci` green — next Actions run after tool restore (run 33836414684 was fixie missing)
@@ -118,7 +119,7 @@ Template: `timewarp-ganda/source/timewarp-ganda/templates/dev-cli/`.
 
 Local vs CI: `bin/dev` is gitignored; CI uses `dotnet run --file tools/dev-cli/dev.cs -- workflow`.
 
-Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposition.md` (round 4 clean).
+Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposition.md` (round 5 clean).
 
 ## Session
 
@@ -132,6 +133,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 4 (NU1102 follow-up)
 - 2026-09-04: `/tw-merge` refused again — PR #581 `ci` red (run 33836414684). Analyzer tests: `dotnet tool restore` required for `fixie`.
 - Implementer: grok (2026-09-04) — restore local tools before first Fixie invoke (`dev test` + `scripts/test.cs`)
+- Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 5 (Fixie restore follow-up)
 
 ## Results
 
@@ -178,11 +180,11 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 ### Review disposition
 
 - **Outcome:** clean (0 open)
-- **Rounds:** 4 · **Effort:** 1 · **Roster:** general
+- **Rounds:** 5 · **Effort:** 1 · **Roster:** general
 - **Final counts:** bug 0/0/0 open/fixed/wontfix · suggestion 0 open / 1 fixed (M1, rounds 1–2) / 0 wontfix · nit 0/0/0
-- Round 3 (thin-YAML remaining slice) raised no new issues. Round 4 (NU1102 follow-up: slnf omits samples; pack before verify-samples) raised no new issues.
+- Round 3 (thin-YAML remaining slice) raised no new issues. Round 4 (NU1102 follow-up: slnf omits samples; pack before verify-samples) raised no new issues. Round 5 (Fixie follow-up: `dotnet tool restore` before first `dotnet fixie` in `dev test` and `scripts/test.cs`) raised no new issues.
 - M1 still holds via DevCli `AssertVersionSsot` after YAML Version extract was removed.
-- Artifacts: `review/review-framework.md`, `review/round-4/general.md`, `review/round-4/merged.md`, `review/disposition.md` (rounds 1–3 frozen)
+- Artifacts: `review/review-framework.md`, `review/round-5/general.md`, `review/round-5/merged.md`, `review/disposition.md` (rounds 1–4 frozen)
 
 ### Validation run
 

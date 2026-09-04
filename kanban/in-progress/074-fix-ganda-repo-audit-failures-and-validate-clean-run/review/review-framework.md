@@ -27,3 +27,7 @@ Reopened remaining slice (commits `66cf4770` + `ab315c91` vs `origin/master`): t
 ## Round 4
 
 NU1102 follow-up after round 3 (commits `6237d0b9` + `75f7f4de` vs round-3 HEAD `c17fc5d1`). GitHub `ci` failed: `dev build` of `timewarp-state.slnx` NU1102 on samples (`TimeWarp.State`/`Plus` at `TimeWarpStateVersion` not on nuget.org; LocalNuGetFeed empty until pack). Fix: `dev build` derives `artifacts/timewarp-state.build.slnf` omitting `samples/**`; workflow order is pack then verify-samples. Do not clobber rounds 1–3. Re-verify M1. Scan the NU1102 delta and surrounding restore/pack/sample call sites.
+
+## Round 5
+
+Fixie follow-up after round 4 (commits `f6f5a32a` + `52ba2de0` vs round-4 HEAD `79605cb9`). GitHub `ci` run 33836414684: NU1102 gone; Test failed at `==> Run analyzer tests` with `Run "dotnet tool restore" to make the "fixie" command available.` Old `scripts/build.cs` ran `dotnet tool restore`; YAML no longer calls it; `dev test` / `scripts/test.cs` invoked `dotnet fixie` without restore. Fix: `dev test` and `scripts/test.cs` run `dotnet tool restore` (whole `.config/dotnet-tools.json` manifest, including `fixie.console` 3.4.0) before the first Fixie invoke. Do not clobber rounds 1–4. Re-verify M1. Scan the Fixie-restore delta and surrounding Test/workflow/e2e call sites.
