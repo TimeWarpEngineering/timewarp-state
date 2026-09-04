@@ -11,7 +11,7 @@ internal partial class Store : IStore
   private readonly ConcurrentDictionary<string, IState> States;
   private readonly ConcurrentDictionary<string, IState> PreviousStates;
   private readonly ConcurrentDictionary<string, SemaphoreSlim> Semaphores;
-  private readonly IPublisher Publisher;
+  private readonly IPublisher<ClientPipeline> Publisher;
   private readonly TimeWarpStateOptions TimeWarpStateOptions;
 
   /// <summary>
@@ -26,7 +26,7 @@ internal partial class Store : IStore
     ILogger<Store> logger,
     IServiceProvider serviceProvider,
     TimeWarpStateOptions timeWarpStateOptions,
-    IPublisher publisher
+    IPublisher<ClientPipeline> publisher
   )
   {
     Logger = logger;
@@ -130,7 +130,7 @@ internal partial class Store : IStore
         state = (IState)ServiceProvider.GetRequiredService(stateType);
 
         // we need to set the sender if the default constructor was used
-        state.Sender = ServiceProvider.GetRequiredService<ISender>();
+        state.Sender = ServiceProvider.GetRequiredService<ISender<ClientPipeline>>();
 
         state.Initialize();
         if (!States.TryAdd(typeName, state))
@@ -140,7 +140,6 @@ internal partial class Store : IStore
 
         // Publish the state initialization notification asynchronously
         Task initializationTask = Publisher.Publish(new StateInitializedNotification(stateType))
-          .AsTask()
           .ContinueWith
           (
             t =>

@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,21 +8,34 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-var app = new NuruAppBuilder()
-    .AddDefaultRoute(async () => await RunE2eTests())
-    .AddAutoHelp()
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("")
+    .WithHandler(App.Run)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-async Task RunE2eTests()
+static class App
 {
+  // SUT log writers must outlive StartSut: the OutputDataReceived handlers keep writing until the SUT exits.
+  static StreamWriter? SutOutputWriter;
+  static StreamWriter? SutErrorWriter;
+
+  public static async Task Run()
+  {
     using var context = ScriptContext.FromRelativePath("..");
+
+    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
+    Directory.CreateDirectory("./artifacts/packages");
 
     // Configuration variables
     var sutProjectDir = "./tests/test-app/test-app-server";
     var outputPath = "./tests/test-app/output";
-    var useHttp = true;
+    // workflow.yml sets UseHttp; default to http when the variable is unset or unparseable.
+    bool useHttp = !bool.TryParse(Environment.GetEnvironmentVariable("UseHttp"), out bool parsedUseHttp) || parsedUseHttp;
     var protocol = useHttp ? "http" : "https";
     var sutUrl = $"{protocol}://localhost";
     var testProjectDir = "./tests/test-app-end-to-end-tests";
@@ -38,7 +52,14 @@ async Task RunE2eTests()
     await WriteStepFooter("Restore-Tools-And-Cleanup");
 
     await WriteStepHeader("Install-LinuxDevCerts");
-    await InstallLinuxDevCerts();
+    if (useHttp)
+    {
+        WriteLine("Skipping dev-certs trust: E2E runs over http (UseHttp=true).");
+    }
+    else
+    {
+        await InstallLinuxDevCerts();
+    }
     await WriteStepFooter("Install-LinuxDevCerts");
 
     await WriteStepHeader("Build-Analyzer");
@@ -69,11 +90,13 @@ async Task RunE2eTests()
     var sutProcess = await StartSut(runMode, outputPath, sutUrl, sutPort, useHttp);
     await WriteStepFooter("Start-Sut");
 
+    var runFailed = false;
     try
     {
         await WaitForSut($"{sutUrl}:{sutPort}", maxRetries, retryInterval);
 
         var testsFailed = await RunTests(testProjectDir, useHttp);
+        runFailed = testsFailed;
 
         if (runMode == "Auto")
         {
@@ -101,6 +124,7 @@ async Task RunE2eTests()
     }
     catch (Exception ex)
     {
+        runFailed = true;
         WriteLine($"An error occurred during test execution: {ex.Message}");
         if (runMode == "Auto")
         {
@@ -120,30 +144,47 @@ async Task RunE2eTests()
             WriteLine($"Please remember to stop the SUT process running in {runMode} mode.");
         }
     }
+
+    // A failed or aborted test run must fail the script; the Amuru line in use throws on a non-zero
+    // dotnet test exit, which previously landed in the catch above and left the exit code at 0.
+    if (runFailed)
+    {
+        WriteLine("E2E tests failed.");
+        Environment.Exit(1);
+    }
 }
 
-async Task WriteStepHeader(string stepName)
+  static async Task WriteStepHeader(string stepName)
 {
     WriteLine($"\n========== Starting: {stepName} ==========");
 }
 
-async Task WriteStepFooter(string stepName)
+  static async Task WriteStepFooter(string stepName)
 {
     WriteLine($"========== Completed: {stepName} ==========\n");
 }
 
-async Task EnsureBrowsersInstalled(string testProjectDir)
+  static async Task EnsureBrowsersInstalled(string testProjectDir)
 {
-    var playwrightPath = $"{testProjectDir}/bin/Debug/net9.0/playwright.ps1";
+    var playwrightPath = $"{testProjectDir}/bin/Debug/net10.0/playwright.ps1";
     if (File.Exists(playwrightPath))
     {
         WriteLine("Installing Playwright Chromium browser...");
-        var exitCode = await Shell.Builder("pwsh")
-            .WithArguments(playwrightPath, "install", "chromium", "--with-deps")
-            .RunAsync();
-        if (exitCode != 0)
+        // Best effort: --with-deps needs passwordless sudo (GitHub runners have it; a dev box may not) and this
+        // Amuru line throws on a non-zero exit. A cached browser still lets the tests run, so only warn here.
+        try
         {
-            WriteLine($"Warning: Playwright installation may have issues. Exit code: {exitCode}");
+            var exitCode = await Shell.Builder("pwsh")
+                .WithArguments(playwrightPath, "install", "chromium", "--with-deps")
+                .RunAsync();
+            if (exitCode != 0)
+            {
+                WriteLine($"Warning: Playwright installation may have issues. Exit code: {exitCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            WriteLine($"Warning: Playwright installation may have issues. {ex.Message.Split('\n')[0]}");
         }
     }
     else
@@ -152,7 +193,7 @@ async Task EnsureBrowsersInstalled(string testProjectDir)
     }
 }
 
-async Task RestoreToolsAndCleanup()
+  static async Task RestoreToolsAndCleanup()
 {
     // Restore .NET tools
     var exitCode = await DotNet.Tool().Restore().Build().RunAsync();
@@ -170,7 +211,7 @@ async Task RestoreToolsAndCleanup()
     }
 }
 
-async Task BuildAnalyzer(string analyzerProjectPath)
+  static async Task BuildAnalyzer(string analyzerProjectPath)
 {
     var exitCode = await DotNet.Build()
         .WithProject(analyzerProjectPath)
@@ -180,7 +221,7 @@ async Task BuildAnalyzer(string analyzerProjectPath)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
+  static async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
 {
     var exitCode = await DotNet.Build()
         .WithProject(sourceGeneratorProjectPath)
@@ -190,22 +231,20 @@ async Task BuildSourceGenerator(string sourceGeneratorProjectPath)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task UpdateClientAppSettings(bool useHttp)
+  static async Task UpdateClientAppSettings(bool useHttp)
 {
     var appSettingsPath = "./tests/test-app/test-app-client/wwwroot/appsettings.json";
     if (File.Exists(appSettingsPath))
     {
         var json = File.ReadAllText(appSettingsPath);
-        var appSettings = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(json);
-        // In a real implementation, you'd properly update the JSON
-        // For now, we'll use a simple string replacement
+        // Plain string replacement: reflection-based System.Text.Json is disabled for this runfile.
         var updatedJson = json.Replace("\"UseHttp\": false", "\"UseHttp\": true")
                              .Replace("\"UseHttp\": true", $"\"UseHttp\": {useHttp.ToString().ToLower()}");
         File.WriteAllText(appSettingsPath, updatedJson);
     }
 }
 
-async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
+  static async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
 {
     // Restore dependencies
     var exitCode = await DotNet.Restore()
@@ -233,7 +272,7 @@ async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task BuildTest(string testProjectDir)
+  static async Task BuildTest(string testProjectDir)
 {
     // Restore dependencies
     var exitCode = await DotNet.Restore()
@@ -251,7 +290,7 @@ async Task BuildTest(string testProjectDir)
     if (exitCode != 0) Environment.Exit(1);
 }
 
-async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath, string sutUrl, int sutPort, bool useHttp)
+  static async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath, string sutUrl, int sutPort, bool useHttp)
 {
     switch (mode)
     {
@@ -309,11 +348,12 @@ async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath,
 
                 if (process != null)
                 {
-                    // Redirect output to files
-                    using var outputWriter = new StreamWriter(outputLogPath);
-                    using var errorWriter = new StreamWriter(errorLogPath);
-                    process.OutputDataReceived += (sender, e) => { if (e.Data != null) outputWriter.WriteLine(e.Data); };
-                    process.ErrorDataReceived += (sender, e) => { if (e.Data != null) errorWriter.WriteLine(e.Data); };
+                    // Redirect output to files. The writers are disposed in KillSut, not here: disposing them on
+                    // return made the first SUT output line throw ObjectDisposedException on a thread-pool thread.
+                    SutOutputWriter = new StreamWriter(outputLogPath) { AutoFlush = true };
+                    SutErrorWriter = new StreamWriter(errorLogPath) { AutoFlush = true };
+                    process.OutputDataReceived += (sender, e) => { if (e.Data != null) { try { SutOutputWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
+                    process.ErrorDataReceived += (sender, e) => { if (e.Data != null) { try { SutErrorWriter?.WriteLine(e.Data); } catch (ObjectDisposedException) { } } };
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                 }
@@ -327,7 +367,7 @@ async Task<System.Diagnostics.Process?> StartSut(string mode, string outputPath,
     }
 }
 
-async Task WaitForSut(string url, int maxRetries, int retryInterval)
+  static async Task WaitForSut(string url, int maxRetries, int retryInterval)
 {
     using var client = new HttpClient();
     client.Timeout = TimeSpan.FromSeconds(5);
@@ -354,7 +394,7 @@ async Task WaitForSut(string url, int maxRetries, int retryInterval)
     throw new Exception("SUT did not become ready in time.");
 }
 
-async Task DisplaySutLogs(string outputLogPath, string errorLogPath)
+  static async Task DisplaySutLogs(string outputLogPath, string errorLogPath)
 {
     WriteLine("Displaying SUT logs:");
 
@@ -379,7 +419,7 @@ async Task DisplaySutLogs(string outputLogPath, string errorLogPath)
     }
 }
 
-async Task<bool> RunTests(string testProjectDir, bool useHttp)
+  static async Task<bool> RunTests(string testProjectDir, bool useHttp)
 {
     var settings = new[] { "chrome.runsettings" };
     var testsFailed = false;
@@ -399,48 +439,73 @@ async Task<bool> RunTests(string testProjectDir, bool useHttp)
 
         WriteLine($"Executing: dotnet {string.Join(" ", targetArguments)}");
 
-        var exitCode = await Shell.Builder("dotnet")
-            .WithArguments(targetArguments)
-            .WithWorkingDirectory(testProjectDir)
-            .RunAsync();
-
-        if (exitCode != 0)
+        try
         {
-            testsFailed = true;
-            break;
+            var exitCode = await Shell.Builder("dotnet")
+                .WithArguments(targetArguments)
+                .WithWorkingDirectory(testProjectDir)
+                .RunAsync();
+            if (exitCode != 0) testsFailed = true;
         }
+        catch (Exception ex)
+        {
+            // Non-zero dotnet test exit surfaces as an exception on this Amuru line.
+            WriteLine($"dotnet test failed: {ex.Message.Split('\n')[0]}");
+            testsFailed = true;
+        }
+
+        if (testsFailed) break;
     }
 
     return testsFailed;
 }
 
-async Task KillSut(System.Diagnostics.Process sutProcess)
+  static async Task KillSut(System.Diagnostics.Process sutProcess)
 {
     if (!sutProcess.HasExited)
     {
         sutProcess.Kill();
         WriteLine("SUT process terminated.");
     }
+
+    // Wait on both paths: the OutputDataReceived handlers may still be draining into the writers below.
+    sutProcess.WaitForExit();
+
+    SutOutputWriter?.Dispose();
+    SutErrorWriter?.Dispose();
+    SutOutputWriter = null;
+    SutErrorWriter = null;
 }
 
-async Task InstallLinuxDevCerts()
+  static async Task InstallLinuxDevCerts()
 {
     if (OperatingSystem.IsLinux())
     {
         WriteLine("Installing Linux development certificates...");
-        var exitCode = await DotNet.DevCerts().Https().WithClean().Build().RunAsync();
-        exitCode = await DotNet.DevCerts().Https().WithTrust().Build().RunAsync();
-        if (exitCode == 0)
+        // Best effort: a partially trusted cert must not fail the run.
+        // `dotnet dev-certs https --trust` exits 4 on Linux when OpenSSL trust needs SSL_CERT_DIR (GitHub runners),
+        // and this Amuru line throws on a non-zero exit instead of returning it.
+        try
         {
-            WriteLine("Linux development certificates installed successfully.");
+            await DotNet.DevCerts().Https().WithClean().Build().RunAsync();
+            var exitCode = await DotNet.DevCerts().Https().WithTrust().Build().RunAsync();
+            if (exitCode == 0)
+            {
+                WriteLine("Linux development certificates installed successfully.");
+            }
+            else
+            {
+                WriteLine($"Warning: dev-certs trust exited with {exitCode}; continuing (E2E runs over http).");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            WriteLine("Failed to install Linux development certificates.");
+            WriteLine($"Warning: dev-certs trust failed; continuing (E2E runs over http). {ex.Message.Split('\n')[0]}");
         }
     }
     else
     {
         WriteLine("Skipping Linux development certificate installation (not running on Linux).");
     }
+  }
 }

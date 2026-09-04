@@ -3,6 +3,7 @@ namespace TimeWarp.State;
 public abstract class State<TState> : IState<TState>, IDisposable
 where TState : State<TState>
 {
+  [IgnoreDataMember]
   private CancellationTokenSource CancellationTokenSource { get; } = new();
   protected CancellationToken CancellationToken => CancellationTokenSource.Token;
   protected bool IsDisposed;
@@ -12,7 +13,7 @@ where TState : State<TState>
   // JsonIgnore is used to prevent serialization of the property by both AnyClone and ReduxDevTools 
 
   [JsonIgnore]
-  public ISender Sender { get; set; } = null!;
+  public ISender<ClientPipeline> Sender { get; set; } = null!;
 
   #endregion
 
@@ -30,7 +31,7 @@ where TState : State<TState>
   /// DI Constructor
   /// </summary>
   /// <param name="sender"></param>
-  protected State(ISender sender)
+  protected State(ISender<ClientPipeline> sender)
   {
     Sender = sender;
   }

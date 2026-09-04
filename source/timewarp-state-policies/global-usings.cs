@@ -1,3 +1,4 @@
+global using TimeWarp.Mediator;
 global using Shouldly;
 global using Mono.Cecil;
 global using NetArchTest.Policies;

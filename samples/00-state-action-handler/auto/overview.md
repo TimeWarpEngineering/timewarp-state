@@ -24,7 +24,7 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download).
+- [.NET 10 SDK](https://dotnet.microsoft.com/download).
 
 ### Creating the Project
 
@@ -40,13 +40,16 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Install TimeWarp.State Package
 
-1. Add the TimeWarp.State NuGet package to the Client project:
+1. Add the TimeWarp.State and TimeWarp.Mediator.Generators packages to the Client project:
 
 ```bash
 dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.State
+dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.Mediator.Generators
 ```
 
-Note: The Server project doesn't need the package directly as it takes a dependency on the Client project.
+Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only).
+
+Note: The Server project doesn't need the packages directly as it takes a dependency on the Client project.
 
 2. Create GlobalUsings.cs files to centralize common using statements:
 
@@ -75,11 +78,22 @@ global using TimeWarp.State;
 
 Make TimeWarp.State functionality available from both Client and Server.
 
+Add a `mediator-scope.cs` (or equivalent) in the Client project so the host joins the generated ClientPipeline:
+
+```csharp
+using TimeWarp.Mediator;
+using TimeWarp.State;
+
+[assembly: MediatorAssembly]
+[assembly: MediatorScope(typeof(ClientPipeline))]
+```
+
 #### sample-00-auto-client Program.cs
 
 - Make `Program` Public
 - Create `ConfigureServices` method
 - Call `ConfigureServices` from `Main`
+- Call `AddGeneratedMediator<ClientPipeline>()` **before** `AddTimeWarpState()`
 
 ```csharp
 // sample-00-auto-client/Program.cs
@@ -96,6 +110,7 @@ public class Program
 
   public static void ConfigureServices(IServiceCollection serviceCollection)
   {
+    serviceCollection.AddGeneratedMediator<ClientPipeline>();
     serviceCollection.AddTimeWarpState();
   }
 }
@@ -253,7 +268,7 @@ Should expose the async `IncrementCount` method.
 In this file, the `Action` class should:
 
 * Be a nested class within `IncrementCount`, which in turn is a static class nested in `CounterState`.
-* Inherit from `IAction`.
+* Implement `TimeWarp.Mediator.IAction`.
 * Be part of the `sample_00_auto.Client.Features.Counter` namespace.
 * Contain the `Amount` property.
 
@@ -261,7 +276,7 @@ The `Handler` class should:
 
 * Be a nested class of the state it will mutate `CounterState`.
 * Be a nested class within `IncrementCount`.
-* Inherit from `TimeWarp.State.Handlers.ActionHandler`.
+* Inherit from `TimeWarp.State.StateActionHandler<TAction>` (not `TimeWarp.Mediator.ActionHandler<T>`, which collides when both namespaces are imported).
 * The generic parameter is the Request Type `Action`.
 * Override the `Handle` method to mutate state as desired:
 
@@ -282,7 +297,7 @@ partial class CounterState
       }
     }
     
-    public sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : StateActionHandler<Action>
     {
       public Handler(IStore store) : base(store) {}      
       

@@ -11,23 +11,23 @@ using static EventStreamState;
 public class EventStreamBehavior<TRequest, TResponse>
 (
   ILogger<EventStreamBehavior<TRequest, TResponse>> logger,
-  ISender Sender
+  ISender<ClientPipeline> Sender
 ) : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IAction
+  where TRequest : notnull, IAction
 {
   private readonly ILogger Logger = logger;
 
-  public async ValueTask<TResponse> Handle
+  public async Task<TResponse> Handle
   (
     TRequest request,
-    MessageHandlerDelegate<TRequest, TResponse> next,
+    RequestHandlerDelegate<TResponse> next,
     CancellationToken cancellationToken
   )
   {
     Logger.LogDebug("{classname}: Handle", GetType().FullName);
     ArgumentNullException.ThrowIfNull(next);
     await AddEventToStream(request, "Start");
-    TResponse response = await next(request, cancellationToken);
+    TResponse response = await next(cancellationToken);
     await AddEventToStream(request, "Completed");
     return response;
   }

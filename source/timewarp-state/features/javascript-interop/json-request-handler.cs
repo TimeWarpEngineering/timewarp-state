@@ -5,12 +5,12 @@ public class JsonRequestHandler
   private readonly JsonSerializerOptions JsonSerializerOptions;
   private readonly IJSRuntime JsRuntime;
   private readonly ILogger Logger;
-  private readonly ISender Sender;
+  private readonly ISender<ClientPipeline> Sender;
 
   public JsonRequestHandler
   (
     ILogger<JsonRequestHandler> logger,
-    ISender sender,
+    ISender<ClientPipeline> sender,
     IJSRuntime jsRuntime,
     TimeWarpStateOptions timeWarpStateOptions
   )
@@ -70,7 +70,7 @@ public class JsonRequestHandler
       instance = JsonSerializer.Deserialize(requestAsJson, requestType, JsonSerializerOptions) ?? throw new InvalidOperationException("Deserialization resulted in a null object.");
     }
     
-    Task<object?> result = Sender.Send(instance).AsTask();
+    Task<object?> result = Sender.Send(instance);
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
   }

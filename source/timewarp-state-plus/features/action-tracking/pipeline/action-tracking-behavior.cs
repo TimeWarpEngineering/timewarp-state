@@ -1,22 +1,27 @@
-﻿namespace TimeWarp.Features.ActionTracking;
+namespace TimeWarp.Features.ActionTracking;
 
 using static ActionTrackingState;
 
+/// <summary>
+/// Pipeline behavior that tracks <c>[TrackAction]</c> actions in <see cref="ActionTrackingState"/>.
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), order: ..., Scope = typeof(ClientPipeline))]</c>.
+/// Re-entrant sends (start/complete tracking) stay on the <see cref="ClientPipeline"/>.
+/// </summary>
 public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
-  where TAction : IAction
+  where TAction : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly ISender Sender;
-  public ActiveActionBehavior(ISender sender, ILogger<ActiveActionBehavior<TAction, TResponse>> logger)
+  private readonly ISender<ClientPipeline> Sender;
+  public ActiveActionBehavior(ISender<ClientPipeline> sender, ILogger<ActiveActionBehavior<TAction, TResponse>> logger)
   {
     Sender = sender;
     Logger = logger;
   }
 
-  public async ValueTask<TResponse> Handle
+  public async Task<TResponse> Handle
   (
     TAction action,
-    MessageHandlerDelegate<TAction, TResponse> nextHandler,
+    RequestHandlerDelegate<TResponse> next,
     CancellationToken cancellationToken
   )
   {
@@ -43,7 +48,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
       TResponse? response; 
       try
       {
-        response = await nextHandler(action, cancellationToken);
+        response = await next(cancellationToken);
       }
       finally // If an exception is thrown, we still want to complete the tracking
       {
@@ -66,7 +71,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     }
     else
     { 
-      TResponse response = await nextHandler(action, cancellationToken);
+      TResponse response = await next(cancellationToken);
       return response;
     }
   }

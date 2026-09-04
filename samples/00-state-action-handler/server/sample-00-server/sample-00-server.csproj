@@ -3,11 +3,12 @@
   <PropertyGroup>
     <AssemblyName>Sample00Server</AssemblyName>
     <RootNamespace>Sample00Server</RootNamespace>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="TimeWarp.State" />
-    <PackageReference Include="Mediator.SourceGenerator" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers" />
+    <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>

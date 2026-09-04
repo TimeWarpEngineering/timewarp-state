@@ -7,12 +7,12 @@ using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAt
 /// A Mediator request to (re)load a <c>[PersistentState]</c> state from its configured store.
 /// </summary>
 /// <remarks>
-/// This is hand-written (not source-generated) on purpose. Mediator (martinothamar) registers
-/// handlers at compile time via its own source generator, which only sees the original syntax
-/// trees — never the output of another generator. The previous design generated a per-state
-/// <c>LoadActionSet.Handler</c> in the persistence generator, so Mediator never saw or registered
-/// it and dispatching the load action threw <see cref="MissingMessageHandlerException"/> at runtime.
-/// A single hand-written request + handler lives in source, so Mediator's generator registers it.
+/// This is hand-written (not source-generated) on purpose. TimeWarp.Mediator links handlers at
+/// compile time via its own source generator, which only sees the original syntax trees — never
+/// the output of another generator. The previous design generated a per-state
+/// <c>LoadActionSet.Handler</c> in the persistence generator, so the mediator never saw or linked
+/// it and dispatching the load action threw <see cref="NoHandlerException"/> at runtime.
+/// A single hand-written request + handler lives in source, so the mediator generator links it.
 /// </remarks>
 public class LoadPersistentStateRequest : IRequest
 {
@@ -39,7 +39,7 @@ public class LoadPersistentStateRequestHandler : IRequestHandler<LoadPersistentS
     Logger = logger;
   }
 
-  public async ValueTask<Unit> Handle(LoadPersistentStateRequest request, CancellationToken cancellationToken)
+  public async Task Handle(LoadPersistentStateRequest request, CancellationToken cancellationToken)
   {
     Type stateType = request.StateType;
     PersistentStateAttribute? persistentStateAttribute = stateType.GetCustomAttribute<PersistentStateAttribute>();
@@ -47,7 +47,7 @@ public class LoadPersistentStateRequestHandler : IRequestHandler<LoadPersistentS
     if (persistentStateAttribute is null)
     {
       Logger.LogDebug("LoadPersistentStateRequest: {StateType} is not [PersistentState]; skipping load", stateType.Name);
-      return Unit.Value;
+      return;
     }
 
     object? loaded = await PersistenceService.LoadState(stateType, persistentStateAttribute.PersistentStateMethod);
@@ -60,7 +60,5 @@ public class LoadPersistentStateRequestHandler : IRequestHandler<LoadPersistentS
     {
       Logger.LogTrace("No persisted state found for {StateType}", stateType.Name);
     }
-
-    return Unit.Value;
   }
 }

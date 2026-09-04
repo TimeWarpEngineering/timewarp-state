@@ -287,3 +287,12 @@ dotnet_diagnostic.ca1308.severity = none
 dotnet_diagnostic.globalusingsanalyzer0001.filename = GlobalUsings.cs
 dotnet_diagnostic.globalusingsanalyzer0002.enabled = true
 dotnet_diagnostic.globalusingsanalyzer0003.severity = warning
+
+# ganda repo audit configuration
+[ganda.audit]
+# GitHub requires .github/PULL_REQUEST_TEMPLATE/ (exact basename) for PR templates.
+kebab-path-names.prune = PULL_REQUEST_TEMPLATE
+# Blazor JS initializer contract: wwwroot/{AssemblyName}.lib.module.js must match
+# Test.App.Client (test-app-client.csproj AssemblyName). Cannot kebab-rename without
+# breaking JS initializers and assembly-qualified type names in E2E.
+kebab-path-names.severity = warning

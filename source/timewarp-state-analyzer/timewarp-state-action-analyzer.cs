@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 {
   public const string NestActionInStateDiagnosticId = "TW0001";
-  public const string IActionDefinition = "TimeWarp.State.IAction";
+  public const string IActionDefinition = "TimeWarp.Mediator.IAction";
   public const string IStateDefinition = "TimeWarp.State.IState";
 
   private static readonly LocalizableString Title = "TimeWarp.State Action should be a nested type of its State";

@@ -1,4 +1,4 @@
-﻿namespace TimeWarp.Features.Persistence;
+namespace TimeWarp.Features.Persistence;
 
 public class PersistenceService : IPersistenceService
 {
@@ -6,10 +6,10 @@ public class PersistenceService : IPersistenceService
   private readonly ISessionStorageService SessionStorageService;
   private readonly ILocalStorageService LocalStorageService;
   private readonly ILogger<PersistenceService> Logger;
-  private readonly ISender Sender;
+  private readonly ISender<ClientPipeline> Sender;
   public PersistenceService
   (
-    ISender sender,
+    ISender<ClientPipeline> sender,
     ISessionStorageService sessionStorageService,
     ILocalStorageService localStorageService,
     ILogger<PersistenceService> logger

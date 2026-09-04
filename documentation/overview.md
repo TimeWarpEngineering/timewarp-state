@@ -37,27 +37,30 @@ or move the GetState functionality into your component
 
 ### Pipeline
 
-**TimeWarp.State** utilizes the TimeWarp.Mediator pipeline which allows for middleware integration
-by registering an interface with the dependency injection container [^4].
-TimeWarp.State provides the extension method [^5] , `AddTimeWarpState`, which registers behaviors on the pipeline.
+**TimeWarp.State** uses **TimeWarp.Mediator 14.0.0-beta.1** with compile-time generated registration and named pipelines — not MediatR, and not reflection-based `AddMediator()`.
 
-The interfaces available to extend the Pipeline are:
+Hosts reference `TimeWarp.Mediator.Generators` and call `AddGeneratedMediator<ClientPipeline>()` for the Blazor/WASM client store pipeline. Separate server API hosts that handle requests in their own compilation unit call `AddGeneratedMediator<ServerPipeline>()` and send with `ISender<ServerPipeline>`.
 
-* `IPipelineBehavior`
-* `IRequestPreProcessor`
-* `IRequestPostProcessor` 
-* `IStreamPipelineBehavior`
+Library membership is declared with assembly attributes:
 
-You can add functionality to the pipeline by implementing and registering one of these interfaces.
-See the [timewarp-architecture `EventStreamBehavior`](https://github.com/TimeWarpEngineering/timewarp-state/blob/9e316ecaa00f21383caf4d120ad95d968b3e9dd6/Tests/Test.App/Test.App.Client/Features/EventStream/Pipeline/EventStreamBehavior.cs) for an example.
+* `[assembly: MediatorAssembly]`
+* `[assembly: MediatorScope(typeof(ClientPipeline))]`
+* `[assembly: MediatorBehavior(...)]`
+
+Hosts add their own behaviors with `[assembly: MediatorBehavior(typeof(MyBehavior<,>), order: 500+, Scope = typeof(ClientPipeline))]`.
+
+`AddTimeWarpState` still configures options (Redux DevTools, assemblies) but does **not** register mediator pipeline behaviors.
+
+Extend the pipeline by implementing `IPipelineBehavior<TRequest, TResponse>` (TimeWarp.Mediator).
+See [`tests/test-app/test-app-client/features/event-stream/pipeline/event-stream-behavior.cs`](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/tests/test-app/test-app-client/features/event-stream/pipeline/event-stream-behavior.cs) for an example.
 
 ### Behaviors/Middleware
 
-TimeWarp.State ships with the following default middleware.
+TimeWarp.State ships with the following ClientPipeline middleware (declared via `[assembly: MediatorBehavior]` on the library).
 
-#### CloneStateBehavior
+#### StateTransactionBehavior
 
-To ensure your application is in a known good state the `CloneStateBehavior` creates a clone of the `State` prior to processing the `Action`.
+To ensure your application is in a known good state the `StateTransactionBehavior` creates a clone of the `State` prior to processing the `Action`.
 If any exception occurs during the processing of the `Action` the state is rolled back.
 
 #### RenderSubscriptionsPostProcessor
@@ -66,19 +69,19 @@ When a component accesses `State`, a subscription is added.
 The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components that return true for ShouldReRender.
 So you don't have to worry about where to call `StateHasChanged` and still have the ability to finely control re-rendering.
 
+#### ReduxDevToolsBehavior
+
+> [!NOTE]
+> Opt-in via `UseReduxDevTools`. Disabled by default. This should be disabled in production as it consumes significant resources.
+
+One of the nice features of redux is the developer tools [^6].
+This behavior implements the integration of these developer tools.
+
 ### JavaScript Interop
 
 TimeWarp.State also uses the same "Command Pattern" for JavaScript interoperability.
 The JavaScript creates a request and dispatches it to Blazor where it is added to the pipeline.
 Handlers on the Blazor side can callback to the JavaScript side if needed.
-
-#### ReduxDevToolsPostProcessor
-
-> [!NOTE]
-> Disabled by default.  This should be disabled in production as it consumes significant resources.
-
-One of the nice features of redux is the developer tools [^6].
-This processor implements the integration of these developer tools.
 
 [!include[Terminology](Partials/terminology.md)]
 
@@ -99,9 +102,5 @@ if the developer chose they could mark the Requests as such. For example **IActi
 [^2]: https://redux.js.org/
 
 [^3]: https://en.wikipedia.org/wiki/Command_pattern
-
-[^4]: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection
-
-[^5]: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 
 [^6]: https://github.com/reduxjs/redux-devtools

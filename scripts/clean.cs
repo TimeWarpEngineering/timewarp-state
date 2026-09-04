@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,15 +8,19 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-var app = new NuruAppBuilder()
-    .AddDefaultRoute(async () => await CleanSolution())
-    .AddAutoHelp()
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("")
+    .WithHandler(App.CleanSolution)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-async Task CleanSolution()
+static class App
 {
+  public static async Task CleanSolution()
+  {
     using var context = ScriptContext.FromRelativePath("..");
 
     WriteLine("Cleaning solution...");
@@ -24,7 +29,14 @@ async Task CleanSolution()
     await DotNet.Clean().RunAsync();
 
     // Clean NuGet cache
-    await DotNet.NuGet().Locals().Clear(NuGetCacheType.All).RunAsync();
+    if (Environment.GetEnvironmentVariable("CI") == "true")
+    {
+        WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
+    }
+    else
+    {
+        await DotNet.NuGet().Locals().Clear(NuGetCacheType.All).RunAsync();
+    }
 
     // Remove common build artifacts
     var directoriesToRemove = new[]
@@ -56,5 +68,10 @@ async Task CleanSolution()
         }
     }
 
+    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
+    // The guard protects later child `dotnet` invocations, not this runfile's own `#:package` restore.
+    Directory.CreateDirectory("./artifacts/packages");
+
     WriteLine("Solution cleaned successfully.");
+  }
 }

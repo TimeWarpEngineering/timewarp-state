@@ -10,15 +10,9 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
-        builder.Services.AddMediator
-        (
-          options =>
-          {
-            options.ServiceLifetime = ServiceLifetime.Scoped;
-            options.GenerateTypesAsInternal = true;
-            options.Assemblies = [typeof(Program), typeof(TimeWarp.State.AssemblyMarker)];
-          }
-        );
+        // AddGeneratedMediator<ClientPipeline>() is emitted by the TimeWarp.Mediator.Generators source
+        // generator into this host assembly, scoped to the client pipeline (see mediator-scope.cs).
+        builder.Services.AddGeneratedMediator<ClientPipeline>();
 
         builder.Services.AddTimeWarpState(); // Add this line
 

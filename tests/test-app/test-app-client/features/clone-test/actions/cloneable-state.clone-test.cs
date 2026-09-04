@@ -4,13 +4,13 @@ public partial class CloneableState
 {
   public static class CloneTestActionSet
   {
-    internal sealed class Action : IAction;
+    public sealed class Action : IAction;
     internal sealed class Handler : BaseActionHandler<Action>
     {
       public Handler(IStore store) : base(store) {}
       private CloneableState CloneableState => Store.GetState<CloneableState>();
-    
-      public override ValueTask<Unit> Handle
+
+      public override ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
@@ -20,7 +20,7 @@ public partial class CloneableState
         // It is not an example of any real-world usage.
         if ( CloneableState.Count != 42) throw new Exception("Count is not 42 it seems I have failed to clone the state");
         CloneableState.Count++;
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

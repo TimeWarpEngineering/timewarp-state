@@ -2,6 +2,7 @@ namespace Test.App.Server;
 
 using Components;
 using Contracts.Features.WeatherForecast;
+using Features.WeatherForecast;
 
 internal class Program
 {
@@ -15,6 +16,13 @@ internal class Program
         .AddInteractiveWebAssemblyComponents();
 
     Client.Program.ConfigureServices(builder.Services, builder.Configuration);
+
+    // Server-scoped pipeline: only handlers/behaviors marked ServerPipeline. The client store
+    // pipeline was already registered above by Client.Program.ConfigureServices as ISender<ClientPipeline>.
+    // Use AddServerPipelineMediator (not AddGeneratedMediator<ServerPipeline>) to avoid CS0121 with
+    // the client's identically named DI extension in Microsoft.Extensions.DependencyInjection.
+    builder.Services.AddServerPipelineMediator();
+
     builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
 
     WebApplication app = builder.Build();
@@ -44,29 +52,12 @@ internal class Program
         .AddInteractiveWebAssemblyRenderMode()
         .AddAdditionalAssemblies(typeof(Test.App.Client.AssemblyMarker).Assembly);
 
-    app.MapGet(GetWeatherForecasts.Query.RouteTemplate, () =>
-    {
-      Console.WriteLine("Weather API endpoint called at: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-
-      var startDate = DateOnly.FromDateTime(DateTime.Now);
-      string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
-      GetWeatherForecasts.WeatherForecastDto[] forecasts =
-        Enumerable.Range(1, 5)
-          .Select
-          (
-            index =>
-              new GetWeatherForecasts.WeatherForecastDto
-              (
-                startDate.AddDays(index),
-                summaries[Random.Shared.Next(summaries.Length)],
-                Random.Shared.Next(-20, 55)
-              )
-          ).ToArray();
-
-      Console.WriteLine($"Generated {forecasts.Length} weather forecasts");
-
-      return Results.Ok(forecasts);
-    });
+    app.MapGet
+    (
+      GetWeatherForecasts.Query.RouteTemplate,
+      async (ISender<ServerPipeline> sender, CancellationToken cancellationToken) =>
+        Results.Ok(await sender.Send(new GetWeatherForecastsRequest { Days = 5 }, cancellationToken))
+    );
 
     app.Run();
 

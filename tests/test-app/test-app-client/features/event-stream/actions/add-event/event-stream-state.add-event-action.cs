@@ -5,10 +5,10 @@ public partial class EventStreamState
   public static class AddEventActionSet
   {
 
-    internal sealed class Action : IAction
+    public sealed class Action : IAction
     {
       public string Message { get; }
-      public Action(string message) 
+      public Action(string message)
       {
         Message = message;
       }
@@ -20,14 +20,14 @@ public partial class EventStreamState
     ) : BaseActionHandler<Action>(store)
     {
 
-      public override ValueTask<Unit> Handle
+      public override ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         EventStreamState.EventList.Add(action.Message);
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

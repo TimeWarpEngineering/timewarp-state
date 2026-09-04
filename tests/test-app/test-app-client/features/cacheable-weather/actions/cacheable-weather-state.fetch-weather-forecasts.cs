@@ -6,8 +6,8 @@ public partial class CacheableWeatherState
 {
   public static class FetchWeatherForecastsActionSet
   {
-    internal sealed class Action : IAction;
-    
+    public sealed class Action : IAction;
+
     internal sealed class Handler : BaseActionHandler<Action>
     {
       private readonly HttpClient HttpClient;
@@ -20,14 +20,13 @@ public partial class CacheableWeatherState
         HttpClient = httpClient;
       }
 
-      public override async ValueTask<Unit> Handle
+      public override async ValueTask Handle
       (
         Action action,
         CancellationToken cancellationToken
       )
       {
         await CacheableWeatherState.HandleWithCaching(action, UpdateStateAsync, cancellationToken);
-        return Unit.Value;
       }
 
       private async Task UpdateStateAsync<TAction>(TAction action, CancellationToken cancellationToken)

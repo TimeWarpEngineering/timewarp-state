@@ -17,15 +17,15 @@ public partial class TimerState
       }
     }
 
-    public sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : StateActionHandler<Action>
     {
       private TimerState TimerState => Store.GetState<TimerState>();
       public Handler(IStore store) : base(store) {}
 
-      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         TimerState.Timers[action.TimerName] = (new Timer(action.TimerConfig.Duration), action.TimerConfig);
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

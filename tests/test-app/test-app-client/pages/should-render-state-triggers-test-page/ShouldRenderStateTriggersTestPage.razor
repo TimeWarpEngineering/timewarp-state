@@ -51,7 +51,7 @@
   }
   private void TriggerSubscriptionUpdate()
   {
-    Mediator.Send(new CounterState.IncrementCountActionSet.Action());
+    Sender.Send(new CounterState.IncrementCountActionSet.Action());
   }
 
   private void TriggerForceRender()

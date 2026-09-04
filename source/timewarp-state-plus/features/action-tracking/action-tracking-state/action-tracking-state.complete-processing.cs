@@ -13,7 +13,7 @@ public partial class ActionTrackingState
       }
     }
     
-    public sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : StateActionHandler<Action>
     {
       private readonly ILogger<Handler> Logger;
       public Handler(IStore store, ILogger<Handler> logger) : base(store)
@@ -22,10 +22,10 @@ public partial class ActionTrackingState
       }
       private ActionTrackingState ActionTrackingState => Store.GetState<ActionTrackingState>();
 
-      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         bool wasRemoved = ActionTrackingState.ActiveActionList.Remove(action.TheAction);
-        if (wasRemoved) return new ValueTask<Unit>(Unit.Value);
+        if (wasRemoved) return default;
 
         // I want to know if this ever happens
         Logger.LogDebug

@@ -1,0 +1,2 @@
+T:System.Console;Prefer injecting ITerminal. TimeWarp.Terminal.Terminal static class is available for migration.
+T:System.Diagnostics.ProcessStartInfo;Use TimeWarp.Amuru Shell.Builder instead. See the 'amuru' skill for usage patterns.

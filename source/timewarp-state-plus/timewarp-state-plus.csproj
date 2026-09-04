@@ -14,6 +14,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
     <PackageReference Include="Blazored.SessionStorage"/>
     <PackageReference Include="Blazored.LocalStorage"/>
+    <!-- Contracts flow transitively from TimeWarp.State; the analyzer package is build-only. -->
+    <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +33,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="$(RepositoryRoot)assets\logo.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>

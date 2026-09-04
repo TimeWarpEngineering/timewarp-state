@@ -51,7 +51,7 @@ Follow all steps in the Sample00 tutorial until you have a working counter appli
 
 ### 2. Add TimeWarp.State.Plus Package
 
-Add the TimeWarp.State.Plus NuGet package to your project:
+Add the TimeWarp.State.Plus NuGet package to your project (TimeWarp.Mediator.Generators with `PrivateAssets="all"` should already be present from Sample00):
 
 ```bash
 dotnet add package TimeWarp.State.Plus --prerelease
@@ -59,7 +59,19 @@ dotnet add package TimeWarp.State.Plus --prerelease
 
 ### 3. Configure Services
 
-Update your Program.cs to register both your application assembly and the TimeWarp.State.Plus assembly, and configure the ActiveActionBehavior:
+Declare ClientPipeline membership and weave `ActiveActionBehavior` at compile time (for example in `mediator-behaviors.cs`):
+
+```csharp
+using TimeWarp.Mediator;
+using TimeWarp.State;
+using TimeWarp.Features.ActionTracking;
+
+[assembly: MediatorAssembly]
+[assembly: MediatorScope(typeof(ClientPipeline))]
+[assembly: MediatorBehavior(typeof(ActiveActionBehavior<,>), order: 500, Scope = typeof(ClientPipeline))]
+```
+
+Update your Program.cs — call `AddGeneratedMediator<ClientPipeline>()` **before** `AddTimeWarpState()`, and register both your application assembly and the TimeWarp.State.Plus assembly:
 
 ```csharp
 namespace Sample02Wasm;
@@ -73,7 +85,9 @@ public class Program
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-        
+
+        builder.Services.AddGeneratedMediator<ClientPipeline>();
+
         builder.Services.AddTimeWarpState
         (
             options =>
@@ -85,9 +99,6 @@ public class Program
                 };
             }
         );
-
-        // Register the ActiveActionBehavior for action tracking
-        builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ActiveActionBehavior<,>));
 
         await builder.Build().RunAsync();
     }
@@ -119,7 +130,7 @@ partial class DemoState
         [TrackAction]
         public sealed class Action : IAction { }
         
-        public sealed class Handler : ActionHandler<Action>
+        public sealed class Handler : StateActionHandler<Action>
         {
             public Handler(IStore store) : base(store) { }
 
@@ -149,7 +160,7 @@ partial class DemoState
         [TrackAction]
         public sealed class Action : IAction { }
         
-        public sealed class Handler : ActionHandler<Action>
+        public sealed class Handler : StateActionHandler<Action>
         {
             public Handler(IStore store) : base(store) { }
 
@@ -272,8 +283,9 @@ Update the navigation menu in `Shared/NavMenu.razor` to include the Demo page:
 1. **Actions Not Being Tracked**
    - Verify the `[TrackAction]` attribute is applied
    - Ensure TimeWarp.State.Plus assembly is registered in Program.cs
-   - Check if the action inherits from IAction
-   - Verify ActiveActionBehavior is registered as a pipeline behavior
+   - Check if the action implements `IAction`
+   - Verify `ActiveActionBehavior` is declared with `[assembly: MediatorBehavior(..., Scope = typeof(ClientPipeline))]`
+   - Verify `AddGeneratedMediator<ClientPipeline>()` is called before `AddTimeWarpState()`
 
 2. **Actions Stuck in Tracking**
    - Ensure proper cancellation token handling

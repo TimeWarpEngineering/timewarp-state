@@ -6,7 +6,7 @@ using System.Timers;
 public sealed partial class TimerState : State<TimerState>, ICloneable
 {
   private readonly ILogger<TimerState> Logger;
-  private readonly IPublisher Publisher;
+  private readonly IPublisher<ClientPipeline> Publisher;
   private readonly MultiTimerOptions MultiTimerOptions;
   private Dictionary<string, (Timer Timer, TimerConfig TimerConfig)> Timers = new();
 
@@ -14,7 +14,7 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
   (
     IOptions<MultiTimerOptions> multiTimerOptionsAccessor,
     ILogger<TimerState> logger,
-    IPublisher publisher
+    IPublisher<ClientPipeline> publisher
   )
   {
     Logger = logger;

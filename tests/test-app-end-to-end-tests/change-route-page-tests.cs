@@ -35,7 +35,7 @@ public class ChangeRouteTests : PageTest
 
   private async Task ValidateChangeRoute(string expectedCurrentMode)
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
 
     // Click the change route button
     await ChangeRouteButtonLocator.ClickAsync();

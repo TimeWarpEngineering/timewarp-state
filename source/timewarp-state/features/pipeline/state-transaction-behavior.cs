@@ -16,24 +16,28 @@ namespace TimeWarp.Features.StateTransactions;
 /// <typeparam name="TRequest"></typeparam>
 /// <typeparam name="TResponse"></typeparam>
 public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : IAction
+  where TRequest : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly IPublisher Publisher;
+  private readonly IPublisher<ClientPipeline> Publisher;
   private readonly IStore Store;
+  private readonly bool Enabled;
 
   public StateTransactionBehavior
   (
     ILogger<StateTransactionBehavior<TRequest, TResponse>> logger,
     IStore store,
-    IPublisher publisher
+    IPublisher<ClientPipeline> publisher,
+    TimeWarpStateOptions timeWarpStateOptions
   )
   {
     Logger = logger;
     Store = store;
     Publisher = publisher;
+    // The behavior is woven at compile time; TimeWarpStateOptions.UseStateTransactionBehavior turns it off at runtime.
+    Enabled = timeWarpStateOptions.UseStateTransactionBehavior;
 
-    string className = typeof(ReduxDevToolsBehavior<,>).GetSimpleName();
+    string className = typeof(StateTransactionBehavior<,>).GetSimpleName();
 
     Logger.LogDebug
     (
@@ -45,13 +49,15 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     );
   }
 
-  public async ValueTask<TResponse> Handle
+  public async Task<TResponse> Handle
   (
     TRequest request,
-    MessageHandlerDelegate<TRequest, TResponse> next,
+    RequestHandlerDelegate<TResponse> next,
     CancellationToken cancellationToken
   )
   {
+    if (!Enabled) return await next(cancellationToken);
+
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
     var originalState = (IState)Store.GetState(enclosingStateType);
@@ -86,7 +92,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
     try
     {
-      TResponse response = await next(request, cancellationToken);
+      TResponse response = await next(cancellationToken);
       return response;
     }
     catch (Exception exception)

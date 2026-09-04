@@ -8,7 +8,7 @@ namespace Test.App.Client.Features.Base;
 internal abstract class BaseActionHandler<TAction>
 (
   IStore store
-) : ActionHandler<TAction>(store)
+) : StateActionHandler<TAction>(store)
   where TAction : IAction
 {
   protected ApplicationState ApplicationState => Store.GetState<ApplicationState>();

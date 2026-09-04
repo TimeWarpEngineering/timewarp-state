@@ -5,19 +5,23 @@
     <RootNamespace>Test.App.Server</RootNamespace>
     <PublishSingleFile>false</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
     <UseHttp Condition="'$(UseHttp)' == ''">false</UseHttp>
+    <!-- Distinct namespace for generated Mediator/Sender/Publisher types. DI extension methods
+         still land in Microsoft.Extensions.DependencyInjection (TimeWarp.Mediator 14.0.0-beta.1;
+         https://github.com/TimeWarpEngineering/timewarp-mediator/issues/63), so program.cs uses
+         AddServerPipelineMediator() to avoid CS0121 with Test.App.Client's AddGeneratedMediator. -->
+    <TimeWarpMediatorNamespace>Test.App.Server.Generated</TimeWarpMediatorNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\test-app-client\test-app-client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <!-- The server owns its own generated mediator for the ServerPipeline. -->
+    <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="Client.Integration.Tests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\" />
   </ItemGroup>
 </Project>

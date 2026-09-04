@@ -13,6 +13,7 @@ internal class EventIds
   public static readonly EventId PersistentStatePostProcessor_StartProcessing = new(1100, nameof(PersistentStatePostProcessor_StartProcessing));
   public static readonly EventId PersistentStatePostProcessor_SaveToSessionStorage = new(1101, nameof(PersistentStatePostProcessor_SaveToSessionStorage));
   public static readonly EventId PersistentStatePostProcessor_SaveToLocalStorage = new(1102, nameof(PersistentStatePostProcessor_SaveToLocalStorage));
+  public static readonly EventId PersistentStatePostProcessor_StorageNotRegistered = new(1103, nameof(PersistentStatePostProcessor_StorageNotRegistered));
   
   // Feature - StateInitializedNotificationHandler
   public static readonly EventId StateInitializedNotificationHandler_Handling = new(1200, nameof(StateInitializedNotificationHandler_Handling));

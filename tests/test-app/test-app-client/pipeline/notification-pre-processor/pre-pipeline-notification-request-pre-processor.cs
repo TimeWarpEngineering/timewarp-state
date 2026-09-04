@@ -1,21 +1,21 @@
 namespace Test.App.Client.Pipeline.NotificationPreProcessor;
 
-internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResponse> : MessagePreProcessor<TMessage, TResponse>
-  where TMessage : IAction
+internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResponse> : IPipelineBehavior<TMessage, TResponse>
+  where TMessage : notnull, IAction
 {
   private readonly ILogger Logger;
-  private readonly IPublisher Publisher;
+  private readonly IPublisher<ClientPipeline> Publisher;
   public PrePipelineNotificationRequestPreProcessor
   (
     ILogger<PrePipelineNotificationRequestPreProcessor<TMessage, TResponse>> logger,
-    IPublisher publisher
+    IPublisher<ClientPipeline> publisher
   )
   {
     Publisher = publisher;
     Logger = logger;
   }
 
-  protected override ValueTask Handle(TMessage message, CancellationToken cancellationToken)
+  public async Task<TResponse> Handle(TMessage message, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
   {
     var notification = new PrePipelineNotification
     {
@@ -23,6 +23,7 @@ internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResp
     };
 
     Logger.LogDebug(nameof(PrePipelineNotificationRequestPreProcessor<TMessage, TResponse>));
-    return Publisher.Publish(notification, cancellationToken);
+    await Publisher.Publish(notification, cancellationToken);
+    return await next(cancellationToken);
   }
 }

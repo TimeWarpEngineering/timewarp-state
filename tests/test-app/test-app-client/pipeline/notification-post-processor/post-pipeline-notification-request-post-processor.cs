@@ -3,15 +3,17 @@ namespace Test.App.Client.Pipeline.NotificationPostProcessor;
 internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>
 (
   ILogger<PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>> logger,
-  IPublisher Publisher
+  IPublisher<ClientPipeline> Publisher
 ) :
-  MessagePostProcessor<TRequest, TResponse>
-  where TRequest : IMessage
+  IPipelineBehavior<TRequest, TResponse>
+  where TRequest : notnull
 {
   private readonly ILogger Logger = logger;
 
-  protected override ValueTask Handle(TRequest request, TResponse response, CancellationToken cancellationToken)
+  public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
   {
+    TResponse response = await next(cancellationToken);
+
     var notification = new PostPipelineNotification
     {
       Request = request,
@@ -19,6 +21,7 @@ internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>
     };
 
     Logger.LogDebug(nameof(PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>));
-    return Publisher.Publish(notification, cancellationToken);
+    await Publisher.Publish(notification, cancellationToken);
+    return response;
   }
 }

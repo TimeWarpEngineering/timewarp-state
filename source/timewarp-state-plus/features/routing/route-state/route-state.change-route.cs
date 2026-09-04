@@ -13,7 +13,7 @@ public partial class RouteState
       public string NewRoute { get; }
     }
 
-    public sealed class Handler : ActionHandler<Action>
+    public sealed class Handler : StateActionHandler<Action>
     {
       private readonly ILogger Logger;
       private readonly NavigationManager NavigationManager;
@@ -28,7 +28,7 @@ public partial class RouteState
         Logger = logger;
       }
 
-      public override ValueTask<Unit> Handle(Action action, CancellationToken cancellationToken)
+      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         Logger.LogDebug("ChangeRouteAction.Handle NewRoute:{NewRoute}", action.NewRoute);
         string newAbsoluteUri = NavigationManager.ToAbsoluteUri(action.NewRoute).ToString();
@@ -38,7 +38,7 @@ public partial class RouteState
         {
           NavigationManager.NavigateTo(newAbsoluteUri);
         }
-        return new ValueTask<Unit>(Unit.Value);
+        return default;
       }
     }
   }

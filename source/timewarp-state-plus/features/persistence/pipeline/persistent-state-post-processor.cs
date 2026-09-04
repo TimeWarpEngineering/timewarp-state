@@ -5,19 +5,27 @@ using TimeWarp.State.Extensions;
 // which collides with TimeWarp's attribute under the global Components using.
 using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAttribute;
 
-public sealed class PersistentStatePostProcessor<TRequest, TResponse> : MessagePostProcessor<TRequest, TResponse>
-  where TRequest : IAction
+/// <summary>
+/// Pipeline behavior that saves a <c>[PersistentState]</c> state to its configured store after each of its actions.
+/// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor&lt;,&gt;), order: ..., Scope = typeof(ClientPipeline))]</c>
+/// and registers the Blazored storage services it uses. The behavior is woven at compile time for every
+/// host of that assembly (including test hosts), so the storage services are optional dependencies: when
+/// a <c>[PersistentState]</c> state is handled and its storage service is not registered, the save is
+/// skipped with a warning instead of failing the action.
+/// </summary>
+public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+  where TRequest : notnull, IAction
 {
   private readonly ILogger Logger;
   private readonly IStore Store;
-  private readonly ISessionStorageService SessionStorageService;
-  private readonly ILocalStorageService LocalSessionStorageService;
+  private readonly ISessionStorageService? SessionStorageService;
+  private readonly ILocalStorageService? LocalSessionStorageService;
   public PersistentStatePostProcessor
   (
     IStore store,
-    ISessionStorageService sessionStorageService,
-    ILocalStorageService localSessionStorageService,
-    ILogger<PersistentStatePostProcessor<TRequest, TResponse>> logger
+    ILogger<PersistentStatePostProcessor<TRequest, TResponse>> logger,
+    ISessionStorageService? sessionStorageService = null,
+    ILocalStorageService? localSessionStorageService = null
   )
   {
     Store = store;
@@ -26,15 +34,21 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : MessageP
     Logger = logger;
   }
 
-  protected override async ValueTask Handle(TRequest request, TResponse response, CancellationToken cancellationToken)
+  public async Task<TResponse> Handle
+  (
+    TRequest request,
+    RequestHandlerDelegate<TResponse> next,
+    CancellationToken cancellationToken
+  )
   {
+    TResponse response = await next(cancellationToken);
 
     Type currentType = typeof(TRequest).GetEnclosingStateType();
     
     PersistentStateAttribute? persistentStateAttribute =
       currentType.GetCustomAttribute<PersistentStateAttribute>();
       
-    if (persistentStateAttribute is null) return;
+    if (persistentStateAttribute is null) return response;
     
     Logger.LogTrace(EventIds.PersistentStatePostProcessor_StartProcessing, "Start Processing: {FullName}", typeof(TRequest).FullName);
 
@@ -46,23 +60,39 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : MessageP
         // TODO: 
         break;
       case PersistentStateMethod.SessionStorage:
-        Logger.LogTrace
-        (
-          EventIds.PersistentStatePostProcessor_SaveToSessionStorage
-          ,"Save {StateTypeName} to Session Storage with value {json}"
-          , currentType.Name
-          , JsonSerializer.Serialize(state)
-        );
+        if (SessionStorageService is null)
+        {
+          LogMissingStorage<ISessionStorageService>(currentType);
+          break;
+        }
+        if (Logger.IsEnabled(LogLevel.Trace))
+        {
+          Logger.LogTrace
+          (
+            EventIds.PersistentStatePostProcessor_SaveToSessionStorage
+            ,"Save {StateTypeName} to Session Storage with value {json}"
+            , currentType.Name
+            , JsonSerializer.Serialize(state)
+          );
+        }
         await SessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.LocalStorage:
-        Logger.LogTrace
-        (
-          EventIds.PersistentStatePostProcessor_SaveToLocalStorage
-          ,"Save {StateTypeName} to Local Storage with value {json}"
-          , currentType.Name
-          , JsonSerializer.Serialize(state)
-        );
+        if (LocalSessionStorageService is null)
+        {
+          LogMissingStorage<ILocalStorageService>(currentType);
+          break;
+        }
+        if (Logger.IsEnabled(LogLevel.Trace))
+        {
+          Logger.LogTrace
+          (
+            EventIds.PersistentStatePostProcessor_SaveToLocalStorage
+            ,"Save {StateTypeName} to Local Storage with value {json}"
+            , currentType.Name
+            , JsonSerializer.Serialize(state)
+          );
+        }
         await LocalSessionStorageService.SetItemAsync(currentType.Name, state, cancellationToken);
         break;
       case PersistentStateMethod.PreRender:
@@ -71,5 +101,16 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : MessageP
       default:
         throw new InvalidOperationException($"The {persistentStateAttribute.PersistentStateMethod} is not supported.");
     }
+
+    return response;
   }
+
+  private void LogMissingStorage<TService>(Type stateType) =>
+    Logger.LogWarning
+    (
+      EventIds.PersistentStatePostProcessor_StorageNotRegistered,
+      "{StateTypeName} is [PersistentState] but no {ServiceName} is registered; skipping persistence. Register it (e.g. AddBlazoredSessionStorage/AddBlazoredLocalStorage) in the host.",
+      stateType.Name,
+      typeof(TService).Name
+    );
 }

@@ -35,7 +35,7 @@ public class ResetStoreTests : PageTest
 
   private async Task ValidateResetStore(string expectedCurrentMode)
   {
-    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode, ConfiguredRenderModes.InteractiveAutoRenderMode);
+    await PageUtilities.ValidateRenderModesAsync(this, Page, expectedCurrentMode);
 
     // Click the reset store button
     await ResetStoreButtonLocator.ClickAsync();

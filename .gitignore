@@ -294,7 +294,6 @@ __pycache__/
 /BlazorDefault2018-05-02.Client/
 /BlazorDefault2018-05-02.Server/
 /BlazorDefault2018-05-02.Shared/
-/.vscode/
 /source/TimeWarpState.Js/dist/
 
 /test/BaseTemplateApp/
@@ -323,3 +322,11 @@ __pycache__/
 /.aider.tags.cache.v3/cache.db-wal
 /.aider.input.history
 .agent/workspace/
+
+# Routine journals beside kitchens (local; not product)
+*.journal.json
+
+# Memsearch memory auto-writes (plugin daily notes; local until promoted).
+# Deliberate promote of distilled memory: git add -f .memsearch/memory/<file>.md
+.memsearch/memory/
+.memsearch/.index.pid

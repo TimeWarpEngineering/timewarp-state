@@ -13,7 +13,7 @@ title: Badges
 [![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Ftimewarp-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
-[![Dotnet](https://img.shields.io/badge/dotnet-8.0-blue)](https://dotnet.microsoft.com)
+[![Dotnet](https://img.shields.io/badge/dotnet-10.0-blue)](https://dotnet.microsoft.com)
 
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
