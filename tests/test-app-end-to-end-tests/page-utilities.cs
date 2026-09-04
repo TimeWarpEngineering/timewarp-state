@@ -44,7 +44,19 @@ public static class PageUtilities
     throw new Exception("Blazor WASM resource was not downloaded within the expected time.");
   }
 
-  
+  public static async Task WaitForJavaScriptInteropReadyAsync(IPage page)
+  {
+    await page.WaitForFunctionAsync
+    (
+      """
+      () => window.TimeWarpState
+        && window.TimeWarpState.jsonRequestHandler
+        && typeof window.InteropTest === 'function'
+      """,
+      options: new PageWaitForFunctionOptions { Timeout = 10000 }
+    );
+  }
+
   public static Task ValidateRenderModesAsync(PlaywrightTest test, IPage page, string expectedCurrentMode)
   {
     return ValidateRenderModesAsync(test, page, expectedCurrentMode, ConfiguredRenderModes.ForCurrentRenderMode(expectedCurrentMode));
