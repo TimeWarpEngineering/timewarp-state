@@ -99,7 +99,7 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 - [x] Did not cut a State NuGet
 - [x] Results + How to validate updated for **this** remaining slice
 - [x] Implementation review round 3 disposition clean (same task id)
-- [ ] GitHub `ci` green — NU1102: samples restore `TimeWarp.State >= 12.0.0-beta.3` from nuget.org / LocalNuGetFeed before pack. nuget.org nearest is **12.0.0-beta.1**; feed is empty at `dev build`. Old `scripts/build.cs` did **not** include samples in the CI build. `dev workflow` must pack the local feed **before** sample restore/build (library build → pack → samples / verify-samples), or exclude samples from the first slnx restore.
+- [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after. GitHub `ci` green is the next run after this commit.
 
 ## Out of scope
 
@@ -126,6 +126,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Implementer: grok (2026-09-04) — thin YAML + dev workflow promote
 - Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 3
 - 2026-09-04: `/tw-merge` refused — PR #581 `ci` red (run 33834323550). `dev build` of `timewarp-state.slnx` NU1102 on samples (`TimeWarp.State`/`Plus` 12.0.0-beta.3 not on nuget.org; LocalNuGetFeed empty). Pack currently runs **after** build.
+- Implementer: grok (2026-09-04) — NU1102 remaining slice: omit samples from `dev build`; pack LocalNuGetFeed before verify-samples
 
 ## Results
 
@@ -134,9 +135,10 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Rewrote `.github/workflows/workflow.yml` as a single `ci` job thin trigger (bash, no pwsh): checkout `fetch-depth: 0`, `setup-dotnet` via `global.json`, break-glass confirm, OIDC nuget/login, probe echo, one `dotnet run --file tools/dev-cli/dev.cs -- workflow` step, upload `Packages-*` (skipped on release). Path filters include `tools/**` / `scripts/**` / `samples/**` / `msbuild/**` / `global.json`; dropped `Documentation/**`.
 - Added `dev e2e` (`tools/dev-cli/endpoints/e2e-command.cs`) wrapping `scripts/e2e.cs`; defaults `UseHttp=true`; sets `Environment.ExitCode` on child non-zero.
 - Added `dev pack` (`tools/dev-cli/endpoints/pack-command.cs`): clears `artifacts/packages`, packs derived IsPackable set, verifies with `CiRunPromotion.VerifyPackageSet`.
-- Rewrote `dev workflow`: PR/merge = assert-version-ssot → clean → build → test → e2e → verify-samples → pack; release = tag-gate → check-version → locate-run → download-artifact → verify → push (promote, no rebuild/pack). No attestation.
+- Rewrote `dev workflow`: PR/merge = assert-version-ssot → clean → build → test → e2e → pack → verify-samples; release = tag-gate → check-version → locate-run → download-artifact → verify → push (promote, no rebuild/pack). No attestation.
 - Explicit IsPackable: analyzer/generator `false`; Plus `true` (State/Policies already true). Packable set: TimeWarp.State, TimeWarp.State.Plus, TimeWarp.State.Policies.
 - Fixed leftover `scripts/package.cs`: output to `./artifacts/packages`, three packable projects only; removed `taskkill` / `NuGet locals clear all`.
+- **NU1102 remaining slice:** `dev build` writes `artifacts/timewarp-state.build.slnf` from `timewarp-state.slnx` omitting `samples/**` (14 source+test projects). Samples PackageReference `TimeWarp.State` / `Plus` at `TimeWarpStateVersion`; nuget.org nearest is 12.0.0-beta.1 and LocalNuGetFeed is empty until pack. Workflow packs, then `verify-samples` is the sample restore/build gate. Filter JSON is handwritten (PublishAot disables reflection `JsonSerializer`).
 
 ### Files changed
 
@@ -144,6 +146,8 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - `tools/dev-cli/endpoints/e2e-command.cs` (new)
 - `tools/dev-cli/endpoints/pack-command.cs` (new)
 - `tools/dev-cli/endpoints/workflow-command.cs`
+- `tools/dev-cli/endpoints/build-command.cs`
+- `tools/dev-cli/endpoints/verify-samples-command.cs`
 - `tools/dev-cli/global-usings.cs`
 - `tools/dev-cli/dev.cs` (Design region)
 - `source/timewarp-state-analyzer/timewarp-state-analyzer.csproj`
@@ -160,54 +164,62 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Probe `workflow_dispatch` skips artifact upload (pipeline does not pack).
 - Did **not** cut a State NuGet / did not `dotnet nuget push`.
 - Duplicate `kanban/done/074-*` kitchen already absent on this branch (reopen hygiene).
+- Did not keep pack-after-verify-samples. Samples cannot restore until LocalNuGetFeed has the in-tree version, so pack moved **before** verify-samples. `dev build` still names `timewarp-state.slnx` as the project list, but restore/build uses a derived filter without samples (same reason old `scripts/build.cs` skipped samples).
 
 ### Review disposition
 
 - **Outcome:** clean (0 open)
 - **Rounds:** 3 · **Effort:** 1 · **Roster:** general
 - **Final counts:** bug 0/0/0 open/fixed/wontfix · suggestion 0 open / 1 fixed (M1, rounds 1–2) / 0 wontfix · nit 0/0/0
-- Round 3 (this remaining slice) raised no new issues. M1 still holds via DevCli `AssertVersionSsot` after YAML Version extract was removed.
+- Round 3 (thin-YAML remaining slice) raised no new issues. M1 still holds via DevCli `AssertVersionSsot` after YAML Version extract was removed.
 - Artifacts: `review/review-framework.md`, `review/round-3/general.md`, `review/round-3/merged.md`, `review/disposition.md` (rounds 1–2 frozen)
+- This NU1102 follow-up is after round 3; host `review` node runs next if required.
 
 ### Validation run
 
 - `dotnet run --file tools/dev-cli/dev.cs -- --help` — lists workflow, e2e, pack
 - `workflow` / `e2e` / `pack --help` — OK
 - YAML rg: no `shell: pwsh` / `scripts/*.cs` / `packages.lock.json`
-- `ganda repo audit` — exit 0 (2 advisory warnings: kebab path Test.App.Client.lib.module.js, memsearch scaffold)
-- `dev build` then `dev pack` — produced the three expected nupkgs (snupkgs present but excluded from VerifyPackageSet)
-- Did **not** run full `dev workflow` e2e in this session
+- `ganda repo audit` — exit 0 (2 advisory warnings: kebab path Test.App.Client.lib.module.js + generated/, memsearch scaffold)
+- Empty-cache `dotnet restore timewarp-state.slnx` with empty `artifacts/packages` — NU1102 on samples (`TimeWarp.State >= 12.0.0-beta.3`; nuget.org nearest 12.0.0-beta.1; LocalNuGetFeed 0 versions)
+- `dev build` — 14 projects, samples omitted, 0 errors
+- `dev pack` — three expected nupkgs (snupkgs present but excluded from VerifyPackageSet)
+- Empty-cache `dotnet restore timewarp-state.slnx` **after pack** — exit 0 (samples restore from LocalNuGetFeed)
+- `dotnet build samples/00-state-action-handler/server/sample-00-server/sample-00-server.csproj -c Release` after pack — succeeded
+- Did **not** run full `dev workflow` (test + e2e) in this session; GitHub `ci` green is the next Actions run
 
 ### How to validate
 
 **Smoke**
 
 ```bash
-# help lists new endpoints
-dotnet run --file tools/dev-cli/dev.cs -- --help
-# expect: workflow, e2e, pack among routes; no crash
+# Full slnx restore still NU1102 when the local feed is empty (CI repro)
+rm -rf artifacts/packages && mkdir -p artifacts/packages
+NUGET_PACKAGES=/tmp/tw-state-empty-nuget dotnet restore timewarp-state.slnx --verbosity minimal
+# expect: NU1102 on samples/** (TimeWarp.State >= 12.0.0-beta.3; LocalNuGetFeed 0 versions)
+#         nuget.org nearest 12.0.0-beta.1; exit 1
 
-# YAML is thin
-rg -n "shell: pwsh|scripts/.*\\.cs|packages.lock.json" .github/workflows/workflow.yml
-# expect: no matches
-
-rg -n "tools/\\*\\*|dev.cs -- workflow" .github/workflows/workflow.yml
-# expect: tools/** in path filters; pipeline calls tools/dev-cli/dev.cs -- workflow
-
-# packable set
-dotnet msbuild source/timewarp-state-analyzer/timewarp-state-analyzer.csproj -nologo -getProperty:IsPackable
-dotnet msbuild source/timewarp-state-source-generator/timewarp-state-source-generator.csproj -nologo -getProperty:IsPackable
-dotnet msbuild source/timewarp-state-plus/timewarp-state-plus.csproj -nologo -getProperty:IsPackable
-# expect: analyzer/generator False; plus True
-
-# pack layout (after a Release pack)
-mkdir -p artifacts/packages
+# Pipeline build must not restore samples
 dotnet run --file tools/dev-cli/dev.cs -- build
+# expect: "Build filter: 14 project(s); samples omitted."
+#         "Build completed successfully!"; no NU1102
+
 dotnet run --file tools/dev-cli/dev.cs -- pack
 # expect: artifacts/packages/TimeWarp.State.12.0.0-beta.3.nupkg
 #         TimeWarp.State.Plus.12.0.0-beta.3.nupkg
 #         TimeWarp.State.Policies.12.0.0-beta.3.nupkg
 #         no analyzer/generator nupkgs
+
+# Samples restore from the packed feed
+NUGET_PACKAGES=/tmp/tw-state-empty-nuget dotnet restore timewarp-state.slnx --verbosity minimal
+# expect: exit 0; samples/** restored; no NU1102
+
+# Thin YAML unchanged
+rg -n "shell: pwsh|scripts/.*\\.cs|packages.lock.json" .github/workflows/workflow.yml
+# expect: no matches
+
+rg -n "pack → verify-samples|dev.cs -- workflow|tools/\\*\\*" .github/workflows/workflow.yml tools/dev-cli/endpoints/workflow-command.cs
+# expect: pack before verify-samples; pipeline calls tools/dev-cli/dev.cs -- workflow; tools/** in path filters
 
 ganda repo audit
 # expect: exit 0
@@ -215,9 +227,11 @@ ganda repo audit
 
 **Expect**
 
-- Help routes include `workflow`, `e2e`, `pack`
+- Empty-cache full slnx restore fails NU1102 until pack fills `artifacts/packages`
+- `dev build` restores/builds 14 source+test projects and omits `samples/`
+- `dev pack` emits exactly the three product nupkgs under `artifacts/packages` (sibling `.snupkg` files are not uploaded or promoted)
+- After pack, empty-cache slnx restore (including samples) exits 0
+- PR/merge pipeline order is assert-version-ssot → clean → build → test → e2e → pack → verify-samples
 - Thin YAML: no pwsh default, no `scripts/*.cs` steps, no lockfile cache; `tools/**` filtered; single pipeline step
-- IsPackable False/False/True for analyzer/generator/plus
-- Pack emits exactly the three product nupkgs under `artifacts/packages` (sibling `.snupkg` files are not uploaded or promoted)
 - `ganda repo audit` exits 0
 - A published GitHub Release tag must be `v12.0.0-beta.3` (not `12.0.0-beta.3`) to pass the release tag-gate

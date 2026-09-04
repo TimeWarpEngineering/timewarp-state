@@ -20,8 +20,9 @@
 #endregion
 #region Design
 // Thin Nuru wrapper. Shared endpoints (clean, self-install, check-version) come
-// from TimeWarp.Nuru.DevCli. Local endpoints: build, test, e2e, verify-samples,
-// pack, workflow (PR packs; release promotes CI artifacts). Product under source/.
+// from TimeWarp.Nuru.DevCli. Local endpoints: build (source+tests; samples omitted),
+// test, e2e, pack, verify-samples (after pack), workflow (PR packs then verifies
+// samples; release promotes CI artifacts). Product under source/.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()

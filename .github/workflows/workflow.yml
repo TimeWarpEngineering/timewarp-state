@@ -1,7 +1,8 @@
 name: CI/CD Pipeline
 
 # Thin trigger. Pipeline lives in C# (`dev workflow`).
-# PR/merge: assert-version-ssot → clean → build → test → e2e → verify-samples → pack.
+# PR/merge: assert-version-ssot → clean → build → test → e2e → pack → verify-samples.
+# Build omits samples; pack fills LocalNuGetFeed before sample restore.
 # Release: promote CI Packages-* artifact (no rebuild). Docs job deferred.
 on:
   pull_request:

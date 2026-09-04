@@ -1,14 +1,19 @@
 #region Purpose
-// Build the TimeWarp.State solution in Release
+// Build TimeWarp.State source and tests in Release
 #endregion
 #region Design
-// Names timewarp-state.slnx explicitly. Ensures artifacts/packages exists first
-// because nuget.config lists that folder as a local source (NU1301 when missing).
+// Derives a solution filter from timewarp-state.slnx that omits samples/.
+// Samples PackageReference TimeWarp.State / Plus at TimeWarpStateVersion from
+// nuget.org + LocalNuGetFeed; that version is not on nuget.org and the feed is
+// empty until pack, so a full slnx restore fails NU1102. Workflow packs, then
+// verify-samples restores the omitted projects. Filter JSON is written by hand
+// because PublishAot disables reflection JsonSerializer. artifacts/packages
+// must exist (nuget.config lists it; missing folder is NU1301).
 #endregion
 
 namespace DevCli.Commands;
 
-[NuruRoute("build", Description = "Build all projects in the repository")]
+[NuruRoute("build", Description = "Build source and test projects (samples restore after pack)")]
 internal sealed class BuildCommand : ICommand<Unit>
 {
   [Option("clean", "c", Description = "Clean before building")]
@@ -90,15 +95,83 @@ internal sealed class BuildCommand : ICommand<Unit>
     private async Task<bool> BuildAsync()
     {
       string solutionFile = Path.Combine(RepoRoot, "timewarp-state.slnx");
-      Terminal.WriteLine($"\nBuilding {solutionFile}...");
+      string? filterPath = TryWriteBuildFilter(solutionFile);
+      if (filterPath is null)
+      {
+        return false;
+      }
+
+      Terminal.WriteLine($"\nBuilding {filterPath} (samples omitted until pack)...");
       CommandResult command = DotNet.Build()
-        .WithProject(solutionFile)
+        .WithProject(filterPath)
         .WithConfiguration("Release")
         .WithNoValidation()
         .Build();
 
       return await ExecuteAsync(command, "Build failed!");
     }
+
+    private string? TryWriteBuildFilter(string solutionFile)
+    {
+      if (!File.Exists(solutionFile))
+      {
+        Terminal.WriteErrorLine($"Error: solution not found: {solutionFile}");
+        Environment.ExitCode = 1;
+        return null;
+      }
+
+      XDocument document = XDocument.Load(solutionFile);
+      List<string> projectPaths = [];
+      foreach (XElement projectElement in document.Descendants("Project"))
+      {
+        string? path = projectElement.Attribute("Path")?.Value;
+        if (string.IsNullOrWhiteSpace(path))
+        {
+          continue;
+        }
+
+        string normalized = path.Replace('\\', '/');
+        if (normalized.StartsWith("samples/", StringComparison.OrdinalIgnoreCase))
+        {
+          continue;
+        }
+
+        projectPaths.Add(path.Replace('/', '\\'));
+      }
+
+      projectPaths =
+      [
+        .. projectPaths
+          .Distinct(StringComparer.OrdinalIgnoreCase)
+          .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+      ];
+
+      if (projectPaths.Count == 0)
+      {
+        Terminal.WriteErrorLine("Error: no non-sample projects found in timewarp-state.slnx.");
+        Environment.ExitCode = 1;
+        return null;
+      }
+
+      Directory.CreateDirectory(Path.Combine(RepoRoot, "artifacts"));
+      string filterPath = Path.Combine(RepoRoot, "artifacts", "timewarp-state.build.slnf");
+      string projectsJson = string.Join(",\n      ", projectPaths.Select(QuoteJsonString));
+      string json =
+        "{\n" +
+        "  \"solution\": {\n" +
+        $"    \"path\": {QuoteJsonString(solutionFile)},\n" +
+        "    \"projects\": [\n" +
+        $"      {projectsJson}\n" +
+        "    ]\n" +
+        "  }\n" +
+        "}\n";
+      File.WriteAllText(filterPath, json);
+      Terminal.WriteLine($"Build filter: {projectPaths.Count} project(s); samples omitted.");
+      return filterPath;
+    }
+
+    private static string QuoteJsonString(string value) =>
+      $"\"{value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
 
     private async Task<bool> ExecuteAsync(CommandResult command, string failureMessage)
     {
