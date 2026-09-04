@@ -23,7 +23,7 @@ Parent: **080**. Prove the 14-beta path in test-app / integration / e2e as this 
 - [x] Docs
 - [x] 049–051 disposition
 - [x] Feedback list for mediator (if any)
-- [ ] CI `ci` on PR #578 green (E2E now gates; `TestJavaScriptInterop` failed)
+- [ ] CI `ci` on PR #578 green after JS-interop wait (local E2E 10/3; push then wait Actions)
 
 ## Out of scope
 
@@ -36,6 +36,7 @@ Parent: **080**. Prove the 14-beta path in test-app / integration / e2e as this 
 - 2026-09-04: implementer (Grok 4.6, ganda task work) soaked 14-beta in Fixie + Playwright, retargeted docs, archived 049–051, filed mediator issues 63–65. `ganda kanban move 080-003 in-progress` refused (080-002 not on origin-home); kitchen moved with `git mv` on the task branch.
 - 2026-09-04: review oracle (Grok 4.6, ganda task work) — effort 1 general, kitchen `review/`.
 - 2026-09-04: cockpit dispatch — `--into` merge of [PR #578](https://github.com/TimeWarpEngineering/timewarp-state/pull/578) refused: Actions `ci` red. E2E 9 passed / 1 failed / 3 skipped. Failure: `JavaScriptInteropPageTests.TestJavaScriptInterop` — `[data-qa='counter-state-count']` expected `10`, got `3`. SUT also logged `StateTransactionBehavior` clone errors on `CounterState` and HTTP 404 from `ThrowServerSideException`. Local soak had 10/3; CI is one click-path short. Stay on `feature/080-timewarp-mediator-14-beta`; do not retarget master. Fix, push, wait green, then `--into` merge.
+- 2026-09-04: implementer (Grok 4.6, ganda task work) — CI flake: native `onclick=InteropTest` raced `JsonRequestHandler.InitAsync`. Wait for `window.TimeWarpState.jsonRequestHandler` before click; await/poll in InteropTest; Init only on firstRender. `ganda kanban move 080-003 in-progress` still refused (080-002 not on origin-home); kitchen `git mv` done → in-progress. Local `UseHttp=true dotnet run --file ./scripts/e2e.cs`: 10 passed / 3 skipped / 0 failed. Clone/404 logs are the ThrowException test path, not a CounterState clone miss.
 
 ## Results
 
@@ -54,6 +55,12 @@ Fixie (same counts as 080-002):
 | `test-app-architecture-tests` | 7 passed, 1 skipped |
 
 Playwright (`UseHttp=true dotnet run --file ./scripts/e2e.cs`): **10 passed, 3 skipped, 0 failed**. CI `continue-on-error` on `Run E2E tests` is removed.
+
+PR #578 Actions run 33821417161 failed `TestJavaScriptInterop` (expected count `10`, got `3` on the Server pass). Run 33824235907 on the same product SHA passed — a race, not a missing 14-beta handler.
+
+- `TimeWarpJavaScriptInterop` sets `window.TimeWarpState.jsonRequestHandler` in `OnAfterRenderAsync`. The test waited only for render-mode text, then clicked native `onclick="window.InteropTest()"`. `DispatchRequest` throws if the handler is unset; the old InteropTest fire-and-forgot that promise, so count stayed at 3.
+- Fix: E2E `WaitForJavaScriptInteropReadyAsync` (TimeWarpState + jsonRequestHandler + `InteropTest`); InteropTest awaits/polls the handler and is registered on web/server/wasm start; `InitAsync` only on `firstRender`.
+- SUT `Error cloning State. Type:CounterState` + HTTP 404 is `ThrowServerSideExceptionActionSet` (the throw-exception page). `StateTransactionBehavior` logs that message for any handler exception. Not a CounterState AnyClone failure.
 
 Soak-blocking E2E work (pre-existing on origin/dev; not a 14-beta handler-registration miss):
 
@@ -119,7 +126,8 @@ rg -n 'continue-on-error' .github/workflows/workflow.yml
 **Expect**
 
 - `scripts/test.cs` exits 0: analyzer 10 passed; state 16/1 skip; plus 11/1 skip; integration 42/1 skip; architecture 7/1 skip; 0 failed.
-- `e2e.cs` prints `Passed!  - Failed: 0, Passed: 10, Skipped: 3, Total: 13` and exits 0. Skips are HasTitle, GetStartedLink, TestPersistence only.
+- `e2e.cs` prints `Passed!  - Failed: 0, Passed: 10, Skipped: 3, Total: 13` and exits 0. Skips are HasTitle, GetStartedLink, TestPersistence only. `TestJavaScriptInterop` reaches count `10` on both Server and Wasm (3 + 7).
+- PR #578 Actions `ci` is green on the JS-interop wait commit (E2E step not `continue-on-error`).
 - No `martinothamar` in product docs (`readme.md` / `claude.md` / `documentation/` / `source/` / `samples/`). `AddGeneratedMediator<ClientPipeline>` appears in overview/readme/sample 00 tutorials. PackageTags have `TimeWarp.Mediator` and not `MediatR`.
 - 049–051 exist only under `kanban/archived/`. Workflow has no `continue-on-error` on `Run E2E tests`.
 - Mediator issues 63, 64, 65 are open on TimeWarpEngineering/timewarp-mediator.
