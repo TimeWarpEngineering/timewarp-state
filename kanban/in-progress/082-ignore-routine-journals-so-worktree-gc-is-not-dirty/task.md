@@ -57,6 +57,8 @@ Then:
 - [x] Audit `routine-journals-gitignore` PASSes
 - [x] `git check-ignore -v` confirms ignore; porcelain does not list journals
 - [x] Do not implement on `master`
+- [x] Review round 1 (effort 1, general) — 0 findings
+- [x] Disposition `clean` recorded under `review/`
 
 ## Notes
 
@@ -65,6 +67,7 @@ Then:
 - Host hole (ganda kitchen, separate): unstage **any** `kanban/**/*.journal.json`
   on kitchen commits; consider a hook that runs `repo audit --fix`.
 - 262 out-of-scope (“do not sweep every org repo”) is why this kitchen exists.
+- Review artifacts: `review/review-framework.md`, `review/round-1/`, `review/disposition.md`
 
 ### How to validate
 
@@ -90,6 +93,7 @@ clean; host unstage-all (ganda).
   committed; 262 left consumer sweep out of scope
 - Pattern: `*.journal.json` (cockpit, 2026-09-03) — one glob, not six names
 - Implementer: grok `01a06c8e-8df9-7ea2-b268-1d098edc4c0d` (2026-09-04) claimed worktree `task-082-ignore-routine-journals-so-worktree-gc-is-not-dirt`
+- Review oracle: grok `01a06c91-25ca-7782-88af-c6e0eabad37d` (2026-09-04) — effort 1 general; disposition `clean`
 
 ## Results
 
@@ -163,3 +167,11 @@ ganda repo audit --fix --checks routine-journals-gitignore
 ```
 
 **Not in scope:** changing `WorktreeGcService` to treat untracked journals as clean; host unstage-all (ganda); committing journals; restoring `bin/dev`; memsearch scaffold.
+
+**Review**
+
+- Rounds: 1
+- Effort / roster: 1, `general` only
+- Counts (final): bug 0 / suggestion 0 / nit 0 — all `open` 0, `fixed` 0, `wontfix` 0
+- Disposition: **clean** (no issues raised; no fix loop)
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`
