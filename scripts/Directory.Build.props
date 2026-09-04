@@ -1,0 +1,12 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <!-- Runfiles are not packable product assemblies. RS0030 (banned Console /
+         ProcessStartInfo) is a product-source gate; these CLIs talk to stdout. -->
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);RS0030;CS1591</NoWarn>
+  </PropertyGroup>
+</Project>

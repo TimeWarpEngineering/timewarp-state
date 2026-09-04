@@ -1,0 +1,33 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <!-- Suppress warnings that don't apply to CLI tools -->
+    <NoWarn>$(NoWarn);CA1031;CA1303;CA1508;CA1515;CA1849;CA2007;CA2016;CA2000;CA1034;CA5399;IDE0065;IL2026;IL2104;IL3050;IL3053;RCS1046;CS1591</NoWarn>
+
+    <!-- AOT Support -->
+    <PublishAot>true</PublishAot>
+    <InvariantGlobalization>true</InvariantGlobalization>
+
+    <!-- Enable interceptors for TimeWarp.Nuru source generator -->
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="global-usings.cs" />
+    <Compile Include="endpoints/**/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TimeWarp.Nuru" />
+    <PackageReference Include="TimeWarp.Nuru.DevCli" />
+    <PackageReference Include="TimeWarp.Amuru" />
+    <PackageReference Include="TimeWarp.Amuru.Tools" />
+    <PackageReference Include="TimeWarp.Terminal" />
+  </ItemGroup>
+
+</Project>

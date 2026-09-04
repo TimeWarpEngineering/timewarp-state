@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,15 +8,19 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-var app = new NuruAppBuilder()
-    .AddDefaultRoute(async () => await CleanSolution())
-    .AddAutoHelp()
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("")
+    .WithHandler(App.CleanSolution)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-async Task CleanSolution()
+static class App
 {
+  public static async Task CleanSolution()
+  {
     using var context = ScriptContext.FromRelativePath("..");
 
     WriteLine("Cleaning solution...");
@@ -68,4 +73,5 @@ async Task CleanSolution()
     Directory.CreateDirectory("./artifacts/packages");
 
     WriteLine("Solution cleaned successfully.");
+  }
 }

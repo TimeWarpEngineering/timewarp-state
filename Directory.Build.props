@@ -1,17 +1,12 @@
 <Project>
 
-  <!-- Custom path definitions for repository structure -->
-  <PropertyGroup Label="Custom Repository Variables">
-    <TimeWarpStateVersion>12.0.0-beta.3</TimeWarpStateVersion>
-    <RepositoryName>timewarp-state</RepositoryName>
-    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
-    <SourceDirectory>$(RepositoryRoot)source/</SourceDirectory>
-    <TestsDirectory>$(RepositoryRoot)tests/</TestsDirectory>
-    <SamplesDirectory>$(RepositoryRoot)samples/</SamplesDirectory>
-    <ArtifactsDirectory>$(RepositoryRoot)artifacts/</ArtifactsDirectory>
-    <SolutionFile>$(RepositoryRoot)timewarp-state.slnx</SolutionFile>
-    <LocalNuGetFeed>$(ArtifactsDirectory)packages/</LocalNuGetFeed>
-    <LocalNuGetCache>$(RepositoryRoot)local-nuget-feed/</LocalNuGetCache>
+  <!-- Import repository path definitions -->
+  <Import Project="$(MSBuildThisFileDirectory)msbuild/repository.props" />
+
+  <!-- MSBuild and NuGet behavior configuration -->
+  <PropertyGroup Label="MSBuild/NuGet Configuration">
+    <PackageOutputPath>$(PackagesDirectory)</PackageOutputPath>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <!-- Default language and framework settings for all projects -->
@@ -21,6 +16,11 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <!-- C# interceptors for TimeWarp.Nuru source generators (runfiles + tools/dev-cli) -->
+  <PropertyGroup Label="Interceptors">
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);TimeWarp.Nuru.Generated</InterceptorsNamespaces>
   </PropertyGroup>
 
   <!-- Code quality, analyzers, and warning configuration -->
@@ -37,7 +37,13 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Banned API Symbols -->
+  <ItemGroup Label="Banned API Analyzers">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
   </ItemGroup>
 
   <!-- TimeWarp Build Tasks - Automatically injects git commit metadata into assemblies -->

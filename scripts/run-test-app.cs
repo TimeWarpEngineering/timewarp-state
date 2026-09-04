@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,15 +8,19 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-var app = new NuruAppBuilder()
-    .AddDefaultRoute(async () => await RunTestApp())
-    .AddAutoHelp()
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("")
+    .WithHandler(App.RunTestApp)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-static async Task RunTestApp()
+static class App
 {
+  public static async Task RunTestApp()
+  {
     using var context = ScriptContext.FromRelativePath("..");
 
     // Set environment variables like the original PowerShell script
@@ -43,4 +48,5 @@ static async Task RunTestApp()
     {
         Environment.Exit(1);
     }
+  }
 }

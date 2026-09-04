@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,15 +8,19 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-var app = new NuruAppBuilder()
-    .AddDefaultRoute(async () => await PackageNuGets())
-    .AddAutoHelp()
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("")
+    .WithHandler(App.PackageNuGets)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-async Task PackageNuGets()
+static class App
 {
+  public static async Task PackageNuGets()
+  {
     using var context = ScriptContext.FromRelativePath("..");
 
     // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
@@ -124,4 +129,5 @@ async Task PackageNuGets()
     }
 
     WriteLine("NuGet packaging completed successfully!");
+  }
 }

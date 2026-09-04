@@ -1,5 +1,6 @@
 #!/usr/bin/env -S dotnet --
 #:package TimeWarp.Amuru
+#:package TimeWarp.Amuru.Tools
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
@@ -7,125 +8,125 @@ using TimeWarp.Amuru;
 using TimeWarp.Nuru;
 using static System.Console;
 
-// Path constants - aligned with Directory.Build.props variables
-const string artifactsDirectory = "./artifacts";
-const string packagesDirectory = "./artifacts/packages";
-const string analyzersDirectory = "./artifacts/analyzers";
-
-NuruApp app = new NuruAppBuilder()
-    .AddRoute("build {configuration?|Build configuration (Debug/Release)}",
-        async (string? configuration) => await BuildProjects(configuration ?? "Release"))
-    .AddRoute("clean", async () => await CleanSolution())
-    .AddDefaultRoute(async () => await BuildProjects("Release"))  // Default when no args
-    .AddAutoHelp()  // Automatically generates help for all routes
-    .Build();
+NuruApp app = NuruApp.CreateBuilder()
+  .Map("build {config?|Build configuration (Debug/Release)}")
+    .WithHandler(App.Build)
+    .AsCommand()
+    .Done()
+  .Map("clean")
+    .WithHandler(App.CleanSolution)
+    .AsCommand()
+    .Done()
+  .Map("")
+    .WithHandler(App.BuildDefault)
+    .AsCommand()
+    .Done()
+  .Build();
 
 return await app.RunAsync(args);
 
-// Build implementation (packages are automatically created via GeneratePackageOnBuild)
-async Task BuildProjects(string configuration)
+static class App
 {
-  // Use ScriptContext to manage directory changes - automatically restores on dispose
-  using var context = ScriptContext.FromRelativePath("..");  // Go up one level from scripts/ to repo root
+  const string ArtifactsDirectory = "./artifacts";
+  const string PackagesDirectory = "./artifacts/packages";
 
-  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
-  // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
-  Directory.CreateDirectory(packagesDirectory);
+  public static Task BuildDefault() => BuildProjects("Release");
 
-  WriteLine($"Script location: {context.ScriptDirectory}");
-  WriteLine($"Working from: {Directory.GetCurrentDirectory()}");
-  WriteLine($"Configuration: {configuration}");
+  public static Task Build(string? config) => BuildProjects(config ?? "Release");
 
-  // List installed .NET SDKs
-  WriteLine("\nListing installed .NET SDKs:");
-  await DotNet.WithListSdks().RunAsync();
+  static async Task BuildProjects(string configuration)
+  {
+    using ScriptContext context = ScriptContext.FromRelativePath("..");
 
-  // Restore tools
-  WriteLine("\nRestoring dotnet tools...");
-  await DotNet.Tool().Restore().RunAsync();
+    Directory.CreateDirectory(PackagesDirectory);
 
-  // Projects to build in order
-  string[] projects =
-  [
+    WriteLine($"Script location: {context.ScriptDirectory}");
+    WriteLine($"Working from: {Directory.GetCurrentDirectory()}");
+    WriteLine($"Configuration: {configuration}");
+
+    WriteLine("\nListing installed .NET SDKs:");
+    await DotNet.WithListSdks().RunAsync();
+
+    WriteLine("\nRestoring dotnet tools...");
+    await DotNet.Tool().Restore().RunAsync();
+
+    string[] projects =
+    [
       "./source/timewarp-state/timewarp-state.csproj",
       "./source/timewarp-state-plus/timewarp-state-plus.csproj",
       "./source/timewarp-state-policies/timewarp-state-policies.csproj"
-  ];
+    ];
 
-  // Build each project
-  foreach (string? project in projects)
-  {
-    if (!File.Exists(project))
+    foreach (string project in projects)
     {
-      WriteLine($"⚠️ Project not found: {project}");
-      continue;
-    }
+      if (!File.Exists(project))
+      {
+        WriteLine($"⚠️ Project not found: {project}");
+        continue;
+      }
 
-    WriteLine($"\nBuilding {Path.GetFileNameWithoutExtension(project)}...");
+      WriteLine($"\nBuilding {Path.GetFileNameWithoutExtension(project)}...");
 
-    await DotNet.Build()
+      await DotNet.Build()
         .WithProject(project)
         .WithConfiguration(configuration)
         .WithVerbosity("minimal")
         .RunAsync();
 
-    WriteLine($"✅ Built {Path.GetFileNameWithoutExtension(project)}");
+      WriteLine($"✅ Built {Path.GetFileNameWithoutExtension(project)}");
+    }
+
+    WriteLine("\n✅ Build completed successfully!");
+    WriteLine($"Packages available in: {PackagesDirectory}");
   }
 
-  WriteLine("\n✅ Build completed successfully!");
-  WriteLine($"Packages available in: {packagesDirectory}");
-}
-
-// Clean implementation
-async Task CleanSolution()
-{
-  using var context = ScriptContext.FromRelativePath("..");
-
-  WriteLine("Cleaning solution...");
-
-  // Kill any running dotnet processes
-  try
+  public static async Task CleanSolution()
   {
-    await Shell.Builder("pkill")
+    using ScriptContext context = ScriptContext.FromRelativePath("..");
+
+    WriteLine("Cleaning solution...");
+
+    try
+    {
+      await Shell.Builder("pkill")
         .WithArguments("-f", "dotnet")
         .RunAsync();
-  }
-  catch { /* Ignore if pkill not found or no processes */ }
+    }
+    catch
+    {
+      // Ignore if pkill not found or no processes
+    }
 
-  // Clear NuGet caches (skipped under CI so the restored actions/cache is reused)
-  if (Environment.GetEnvironmentVariable("CI") == "true")
-  {
-    WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
-  }
-  else
-  {
-    WriteLine("Clearing NuGet caches...");
-    await DotNet.NuGet()
+    if (Environment.GetEnvironmentVariable("CI") == "true")
+    {
+      WriteLine("Skipping NuGet local cache clear under CI so the restored actions/cache is reused.");
+    }
+    else
+    {
+      WriteLine("Clearing NuGet caches...");
+      await DotNet.NuGet()
         .Locals()
         .Clear(NuGetCacheType.All)
         .RunAsync();
+    }
+
+    WriteLine("Cleaning solution...");
+    await DotNet.Clean().RunAsync();
+
+    if (Directory.Exists(ArtifactsDirectory))
+    {
+      WriteLine("Removing artifacts directory...");
+      Directory.Delete(ArtifactsDirectory, recursive: true);
+    }
+
+    Directory.CreateDirectory(PackagesDirectory);
+
+    if (Directory.Exists("./source/timewarp-state/wwwroot/js"))
+    {
+      WriteLine("Removing generated JS...");
+      Directory.Delete("./source/timewarp-state/wwwroot/js", recursive: true);
+    }
+
+    WriteLine("✅ Clean completed!");
   }
-
-  // Clean solution
-  WriteLine("Cleaning solution...");
-  await DotNet.Clean().RunAsync();
-
-  // Remove directories
-  if (Directory.Exists(artifactsDirectory))
-  {
-    WriteLine("Removing artifacts directory...");
-    Directory.Delete(artifactsDirectory, recursive: true);
-  }
-
-  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
-  // The guard protects later child `dotnet` invocations, not this runfile's own `#:package` restore.
-  Directory.CreateDirectory(packagesDirectory);
-
-  if (Directory.Exists("./source/timewarp-state/wwwroot/js"))
-  {
-    WriteLine("Removing generated JS...");
-    Directory.Delete("./source/timewarp-state/wwwroot/js", recursive: true);
-  }
-
-  WriteLine("✅ Clean completed!");
 }
