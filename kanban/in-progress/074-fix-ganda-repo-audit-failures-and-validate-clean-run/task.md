@@ -99,7 +99,8 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 - [x] Did not cut a State NuGet
 - [x] Results + How to validate updated for **this** remaining slice
 - [x] Implementation review round 4 disposition clean (same task id)
-- [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after. GitHub `ci` green is the next run after this commit.
+- [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after.
+- [ ] GitHub `ci` green — run 33836414684: NU1102 gone; **Test failed** at `==> Run analyzer tests`: `Run "dotnet tool restore" to make the "fixie" command available.` Old `scripts/build.cs` ran `dotnet tool restore`; `dev test` / `scripts/test.cs` call `dotnet fixie` without it. Restore local tools (`fixie.console` in `.config/dotnet-tools.json`) before the first Fixie invoke — in `dev test` and/or `dev workflow` before Test.
 
 ## Out of scope
 
@@ -128,6 +129,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - 2026-09-04: `/tw-merge` refused — PR #581 `ci` red (run 33834323550). `dev build` of `timewarp-state.slnx` NU1102 on samples (`TimeWarp.State`/`Plus` 12.0.0-beta.3 not on nuget.org; LocalNuGetFeed empty). Pack currently runs **after** build.
 - Implementer: grok (2026-09-04) — NU1102 remaining slice: omit samples from `dev build`; pack LocalNuGetFeed before verify-samples
 - Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 4 (NU1102 follow-up)
+- 2026-09-04: `/tw-merge` refused again — PR #581 `ci` red (run 33836414684). Analyzer tests: `dotnet tool restore` required for `fixie`.
 
 ## Results
 
