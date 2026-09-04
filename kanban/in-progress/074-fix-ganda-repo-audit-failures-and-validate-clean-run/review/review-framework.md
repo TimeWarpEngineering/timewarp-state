@@ -19,3 +19,7 @@
 ## Round 2
 
 Re-review after M1 fix: version SSOT assert in `tools/dev-cli/endpoints/workflow-command.cs` and `.github/workflows/workflow.yml` (ci job + release extract_version). Re-verify M1; scan the fix delta for new defects.
+
+## Round 3
+
+Reopened remaining slice (commits `66cf4770` + `ab315c91` vs `origin/master`): thin YAML trigger + `dev workflow` PR/merge (`e2e` + `pack`) and release promote (Nuru/Ganda, no rebuild). Do not clobber rounds 1–2. Re-verify M1 still holds in DevCli (YAML SSOT extract was removed with thin YAML). Scan the new delta for defects against the reopened brief.
