@@ -109,7 +109,25 @@ Target (copy Nuru/Ganda shape, keep State’s E2E):
 
 **Local vs CI:** `bin/dev` is gitignored; CI should `dotnet run --file tools/dev-cli/dev.cs -- workflow` (Nuru) so the runner does not need a preinstalled `./bin/dev`.
 
+**Copy target:** Nuru/Ganda for YAML + **promote** (no rebuild on release). Mediator **006-002** for a multi-package library with analyzers. Amuru/Terminal already have `tools/dev-cli` but **rebuild on release** and Amuru still reimplements DevCli — do not copy their release path.
+
+**Do not carry these script bugs into `dev`:**
+
+1. `scripts/e2e.cs` on **master** logs `testsFailed` and may not `Environment.Exit` (de-facto continue-on-error). 080-003 gated E2E in YAML; the process must still fail. Playwright helper path still mentions `net9.0` while TFM is `net10.0`.
+2. `scripts/package.cs` writes `./Nuget` / `./LocalNugetFeed`; YAML push glob is `./artifacts/packages/` — only works if `GeneratePackageOnBuild` side-effects. Align pack output with `IPackableProjectService` / `artifacts/packages`.
+3. `scripts/clean.cs` / `package.cs` wipe **all** NuGet locals; `build.cs` has a `pkill -f dotnet` clean route. Use DevCli `IRepoCleanService`.
+4. `scripts/build.cs` builds three product csprojs, not `timewarp-state.slnx` (analyzers/tests/samples missing).
+5. Analyzer/generator `IsPackable` must be explicit so `IPackableProjectService` does not pack the wrong set (release today only pushes State / Plus / Policies).
+6. NuGet cache step keys `**/packages.lock.json` — this repo has **no** lock files; drop it with the YAML collapse.
+
+**Version SSOT:** root `TimeWarpStateVersion` is `12.0.0-beta.3`. Shared `check-version` / `dev release` read `<Version>` in `source/Directory.Build.props`. Introduce `<Version>` equal to today’s pin; do **not** bump as a release in this task.
+
+**Docs job:** unique to State (DocFX + GitHub Pages). Keep as a thin second job calling `dev docs`, or defer fold-in. Do not leave SDK 8 / global `docfx`.
+
+**Greenfield files:** Ganda template `source/timewarp-ganda/templates/dev-cli/` (`dev.cs.txt`, `directory.build.props.template`, `build`/`test`/`verify-samples`/`workflow` endpoints). Shared `clean`/`self-install`/`check-version`/`release` come from `TimeWarp.Nuru.DevCli` content files. Pin Nuru + DevCli **3.0.0-beta.76** (or current), not 2.1.0-beta.8.
+
 ## Session
 
 - Created: 2026-06-12 (original audit 4/12/2)
 - 2026-09-04: cockpit grok — re-audited master (6/17/4); 074 still to-do; `workflow.yml` rename already done; remaining hole is YAML-orchestrated `scripts/*.cs` vs Nuru-style `dev workflow`. Folderized. Brief rewritten. No product yet.
+- 2026-09-04: appended CI comparison (Nuru/Ganda promote vs Amuru rebuild; e2e/pack/clean landmines; Mediator 006-002 analogue; Ganda `templates/dev-cli`).
