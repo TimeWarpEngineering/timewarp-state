@@ -2,8 +2,10 @@
 // Run the TimeWarp.State test suite
 #endregion
 #region Design
-// Delegates to scripts/test.cs so Fixie analyzer/state/plus/client/architecture
-// suites stay in one place. E2E stays on scripts/e2e.cs (needs a running SUT).
+// Restores local tools (fixie.console from .config/dotnet-tools.json) so
+// `dotnet fixie` is available on a clean CI checkout. Then delegates to
+// scripts/test.cs for analyzer/state/plus/client/architecture suites.
+// E2E stays on scripts/e2e.cs (needs a running SUT).
 #endregion
 
 namespace DevCli.Commands;
@@ -40,8 +42,23 @@ internal sealed class TestCommand : ICommand<Unit>
 
       Directory.CreateDirectory(Path.Combine(repoRoot, "artifacts", "packages"));
 
-      Terminal.WriteLine("Running test suite...");
+      Terminal.WriteLine("Restoring local tools (fixie.console)...");
       Terminal.WriteLine($"Working from: {repoRoot}");
+
+      int restoreExitCode = await Shell.Builder("dotnet")
+        .WithArguments("tool", "restore")
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+
+      if (restoreExitCode != 0)
+      {
+        Terminal.WriteErrorLine("dotnet tool restore failed!".Red());
+        Environment.ExitCode = restoreExitCode;
+        return Value;
+      }
+
+      Terminal.WriteLine("Running test suite...");
 
       int exitCode = await Shell.Builder("dotnet")
         .WithArguments("run", "--file", testRunner)

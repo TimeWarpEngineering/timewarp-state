@@ -100,7 +100,8 @@ Origin-home had **two** 074 kitchens (`to-do` rewrite + `done` first implement).
 - [x] Results + How to validate updated for **this** remaining slice
 - [x] Implementation review round 4 disposition clean (same task id)
 - [x] NU1102: `dev build` omits samples; workflow is library build → test → e2e → **pack** → **verify-samples**. Empty-cache slnx restore fails before pack and succeeds after.
-- [ ] GitHub `ci` green — run 33836414684: NU1102 gone; **Test failed** at `==> Run analyzer tests`: `Run "dotnet tool restore" to make the "fixie" command available.` Old `scripts/build.cs` ran `dotnet tool restore`; `dev test` / `scripts/test.cs` call `dotnet fixie` without it. Restore local tools (`fixie.console` in `.config/dotnet-tools.json`) before the first Fixie invoke — in `dev test` and/or `dev workflow` before Test.
+- [x] Restore local tools (`fixie.console` in `.config/dotnet-tools.json`) before the first Fixie invoke — `dev test` and `scripts/test.cs` (`dotnet tool restore`). Old `scripts/build.cs` did this; YAML no longer calls it.
+- [ ] GitHub `ci` green — next Actions run after tool restore (run 33836414684 was fixie missing)
 
 ## Out of scope
 
@@ -130,6 +131,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Implementer: grok (2026-09-04) — NU1102 remaining slice: omit samples from `dev build`; pack LocalNuGetFeed before verify-samples
 - Review oracle: grok (2026-09-04) — tw-implementation-review effort 1, round 4 (NU1102 follow-up)
 - 2026-09-04: `/tw-merge` refused again — PR #581 `ci` red (run 33836414684). Analyzer tests: `dotnet tool restore` required for `fixie`.
+- Implementer: grok (2026-09-04) — restore local tools before first Fixie invoke (`dev test` + `scripts/test.cs`)
 
 ## Results
 
@@ -142,6 +144,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Explicit IsPackable: analyzer/generator `false`; Plus `true` (State/Policies already true). Packable set: TimeWarp.State, TimeWarp.State.Plus, TimeWarp.State.Policies.
 - Fixed leftover `scripts/package.cs`: output to `./artifacts/packages`, three packable projects only; removed `taskkill` / `NuGet locals clear all`.
 - **NU1102 remaining slice:** `dev build` writes `artifacts/timewarp-state.build.slnf` from `timewarp-state.slnx` omitting `samples/**` (14 source+test projects). Samples PackageReference `TimeWarp.State` / `Plus` at `TimeWarpStateVersion`; nuget.org nearest is 12.0.0-beta.1 and LocalNuGetFeed is empty until pack. Workflow packs, then `verify-samples` is the sample restore/build gate. Filter JSON is handwritten (PublishAot disables reflection `JsonSerializer`).
+- **Fixie remaining slice:** `dev test` runs `dotnet tool restore` from repo root before wrapping `scripts/test.cs`. `scripts/test.cs` also restores before the first `dotnet fixie` so a direct runfile invoke works on a clean checkout. Manifest is `.config/dotnet-tools.json` (`fixie.console` 3.4.0). YAML does not call `scripts/build.cs`, which is where restore used to happen.
 
 ### Files changed
 
@@ -150,6 +153,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - `tools/dev-cli/endpoints/pack-command.cs` (new)
 - `tools/dev-cli/endpoints/workflow-command.cs`
 - `tools/dev-cli/endpoints/build-command.cs`
+- `tools/dev-cli/endpoints/test-command.cs`
 - `tools/dev-cli/endpoints/verify-samples-command.cs`
 - `tools/dev-cli/global-usings.cs`
 - `tools/dev-cli/dev.cs` (Design region)
@@ -157,6 +161,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - `source/timewarp-state-source-generator/timewarp-state-source-generator.csproj`
 - `source/timewarp-state-plus/timewarp-state-plus.csproj`
 - `scripts/package.cs`
+- `scripts/test.cs`
 - `kanban/in-progress/074-…/task.md`
 
 ### Key decisions
@@ -168,6 +173,7 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Did **not** cut a State NuGet / did not `dotnet nuget push`.
 - Duplicate `kanban/done/074-*` kitchen already absent on this branch (reopen hygiene).
 - Did not keep pack-after-verify-samples. Samples cannot restore until LocalNuGetFeed has the in-tree version, so pack moved **before** verify-samples. `dev build` still names `timewarp-state.slnx` as the project list, but restore/build uses a derived filter without samples (same reason old `scripts/build.cs` skipped samples).
+- Restored the **whole** local-tool manifest (`dotnet tool restore`), not a one-off `fixie.console` install. Matches old `scripts/build.cs`. Restore lives in `dev test` (workflow Test step) and in `scripts/test.cs` (first Fixie invoke). Not in `dev build`.
 
 ### Review disposition
 
@@ -190,39 +196,43 @@ Review kitchen: `review/review-framework.md`, `review/round-N/`, `review/disposi
 - Empty-cache `dotnet restore timewarp-state.slnx` **after pack** — exit 0 (samples restore from LocalNuGetFeed)
 - `dotnet build samples/00-state-action-handler/server/sample-00-server/sample-00-server.csproj -c Release` after pack — succeeded
 - Did **not** run full `dev workflow` (test + e2e) in this session; GitHub `ci` green is the next Actions run
+- Empty-cache `dotnet fixie --help` (fresh `NUGET_PACKAGES` + `DOTNET_CLI_HOME`) — `Run "dotnet tool restore" to make the "fixie" command available.`; exit 1 (run 33836414684 repro)
+- `dotnet tool restore` into those caches — `Tool 'fixie.console' (version '3.4.0') was restored.`; Restore was successful
+- Same-cache `dotnet fixie --help` — Fixie usage (not the restore error); `dotnet tool list --local` includes `fixie.console`
+- `dotnet run --file tools/dev-cli/dev.cs -- --help` — lists `test`
+- `dotnet fixie timewarp-state-analyzer-tests` — 10 passed
+- `ganda repo audit` — exit 0 (2 advisory warnings: kebab path Test.App.Client.lib.module.js + generated/, memsearch scaffold)
 
 ### How to validate
 
 **Smoke**
 
 ```bash
-# Full slnx restore still NU1102 when the local feed is empty (CI repro)
-rm -rf artifacts/packages && mkdir -p artifacts/packages
-NUGET_PACKAGES=/tmp/tw-state-empty-nuget dotnet restore timewarp-state.slnx --verbosity minimal
-# expect: NU1102 on samples/** (TimeWarp.State >= 12.0.0-beta.3; LocalNuGetFeed 0 versions)
-#         nuget.org nearest 12.0.0-beta.1; exit 1
+# CI repro: fixie missing until local tools are restored
+EMPTY_PACKAGES=$(mktemp -d)
+EMPTY_CLI=$(mktemp -d)
+NUGET_PACKAGES="$EMPTY_PACKAGES" DOTNET_CLI_HOME="$EMPTY_CLI" dotnet fixie --help
+# expect: Run "dotnet tool restore" to make the "fixie" command available.
+#         exit 1
 
-# Pipeline build must not restore samples
-dotnet run --file tools/dev-cli/dev.cs -- build
-# expect: "Build filter: 14 project(s); samples omitted."
-#         "Build completed successfully!"; no NU1102
+NUGET_PACKAGES="$EMPTY_PACKAGES" DOTNET_CLI_HOME="$EMPTY_CLI" dotnet tool restore
+# expect: Tool 'fixie.console' (version '3.4.0') was restored.
+#         Restore was successful.
 
-dotnet run --file tools/dev-cli/dev.cs -- pack
-# expect: artifacts/packages/TimeWarp.State.12.0.0-beta.3.nupkg
-#         TimeWarp.State.Plus.12.0.0-beta.3.nupkg
-#         TimeWarp.State.Policies.12.0.0-beta.3.nupkg
-#         no analyzer/generator nupkgs
+NUGET_PACKAGES="$EMPTY_PACKAGES" DOTNET_CLI_HOME="$EMPTY_CLI" dotnet tool list --local
+# expect: fixie.console 3.4.0 / fixie
 
-# Samples restore from the packed feed
-NUGET_PACKAGES=/tmp/tw-state-empty-nuget dotnet restore timewarp-state.slnx --verbosity minimal
-# expect: exit 0; samples/** restored; no NU1102
+# Analyzer suite that failed on run 33836414684
+dotnet fixie timewarp-state-analyzer-tests
+# expect: 10 passed
+
+# Restore is in the Test path (workflow Test step + direct runfile)
+rg -n 'tool", "restore"|tool restore' tools/dev-cli/endpoints/test-command.cs scripts/test.cs
+# expect: both files restore before the first Fixie invoke
 
 # Thin YAML unchanged
 rg -n "shell: pwsh|scripts/.*\\.cs|packages.lock.json" .github/workflows/workflow.yml
 # expect: no matches
-
-rg -n "pack → verify-samples|dev.cs -- workflow|tools/\\*\\*" .github/workflows/workflow.yml tools/dev-cli/endpoints/workflow-command.cs
-# expect: pack before verify-samples; pipeline calls tools/dev-cli/dev.cs -- workflow; tools/** in path filters
 
 ganda repo audit
 # expect: exit 0
@@ -230,11 +240,10 @@ ganda repo audit
 
 **Expect**
 
-- Empty-cache full slnx restore fails NU1102 until pack fills `artifacts/packages`
-- `dev build` restores/builds 14 source+test projects and omits `samples/`
-- `dev pack` emits exactly the three product nupkgs under `artifacts/packages` (sibling `.snupkg` files are not uploaded or promoted)
-- After pack, empty-cache slnx restore (including samples) exits 0
+- Empty-cache `dotnet fixie` fails with the restore message until `dotnet tool restore`
+- `dev test` and `scripts/test.cs` both run `dotnet tool restore` before `dotnet fixie`
+- Analyzer tests (`timewarp-state-analyzer-tests`) pass once fixie is restored
 - PR/merge pipeline order is assert-version-ssot → clean → build → test → e2e → pack → verify-samples
 - Thin YAML: no pwsh default, no `scripts/*.cs` steps, no lockfile cache; `tools/**` filtered; single pipeline step
 - `ganda repo audit` exits 0
-- A published GitHub Release tag must be `v12.0.0-beta.3` (not `12.0.0-beta.3`) to pass the release tag-gate
+- GitHub `ci` on PR #581 is the next Actions run after this commit (run 33836414684 was NU1102 gone, fixie missing)

@@ -27,6 +27,10 @@ static class App
   // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
   Directory.CreateDirectory("./artifacts/packages");
 
+  await RunStep("Restore local tools", () => Shell.Builder("dotnet")
+    .WithArguments("tool", "restore")
+    .RunAsync());
+
   await RunStep("Build analyzer tests", () => DotNet.Build()
     .WithProject("./tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj")
     .RunAsync());
