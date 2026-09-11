@@ -1,4 +1,6 @@
-# Task 037: Mediator Migration - Establish Test Baseline and Test Plan
+# Task 084: Mediator Migration - Establish Test Baseline and Test Plan
+
+**Renumbered 2026-09-05** from a colliding `037` (085). Keep **037** = factor out Blazor-specific code (live to-do).
 
 **STATUS: CANCELLED**
 

@@ -59,6 +59,7 @@
 
 ## Notes
 
+- 037 is this live to-do (created 2025-08-22). A cancelled “mediator migration test plan” kitchen reused 037; that file is archived **084** (cleanup **085**).
 - TimeWarp.State will contain: Store, State, Actions, Handlers, Pipeline behaviors (minus Redux DevTools), Core attributes
 - TimeWarp.State.Blazor will contain: All components, JS interop, Redux DevTools, Render subscriptions
 - TimeWarp.State.Plus has Blazor dependencies (routing components, Blazored storage) - consider if it should become TimeWarp.State.Blazor.Plus
