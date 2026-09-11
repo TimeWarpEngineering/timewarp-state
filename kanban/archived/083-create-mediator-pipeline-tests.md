@@ -1,4 +1,6 @@
-# Task 036: Create Mediator Pipeline Tests Before Migration
+# Task 083: Create Mediator Pipeline Tests Before Migration
+
+**Renumbered 2026-09-05** from a colliding `036` (085). Keep **036** = remove redundant render mode tracking.
 
 **STATUS: CANCELLED**
 
@@ -177,7 +179,7 @@ tests/timewarp-state-tests/
 
 ### Dependencies
 
-This task should be completed **BEFORE** Task 037 (Test Baseline) and definitely before any migration tasks (038+).
+This task should be completed **BEFORE** Task 084 (Test Baseline) and definitely before any migration tasks (038+).
 
 ## Implementation Notes
 

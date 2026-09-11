@@ -1,5 +1,7 @@
 # Remove Redundant Render Mode Tracking
 
+<!-- 036 is this task (2025-08-22). A later cancelled “pipeline tests” kitchen reused 036; that file is now archived 083 (085). -->
+
 ## Overview
 Now that .NET 9 has introduced `RendererInfo` with properties like `Name`, `IsInteractive`, and components have `AssignedRenderMode`, our custom render mode tracking implementation has become redundant. We should refactor to use the built-in .NET 9 features instead.
 
