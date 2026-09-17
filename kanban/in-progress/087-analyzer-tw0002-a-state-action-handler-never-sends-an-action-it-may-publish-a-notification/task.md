@@ -65,12 +65,14 @@ get it from the package instead of each app writing a scan test.
 - [x] README/docs + library overview rule
 - [x] `dev build` 0/0; analyzer tests green; `ganda repo audit` clean
 - [x] Results and How to validate (run the analyzer against timewarp-architecture master and list the hits)
+- [x] Implementation review disposition recorded under `review/`
 
 ## Session
 
 - Created: cockpit (2026-09-17)
 - Claude Code cockpit session: https://claude.ai/code/session_01KPZXyAmA6Vk99W1yUQUn1N
 - Implementer: Grok (2026-09-17)
+- Review oracle: Grok session `01a0afba-68c9-7c22-8688-aa83a82e7e39` (2026-09-17); general reviewer grok-4.5 `01a0afbf-ce2c-7301-81c3-3925b8bb7fc8`
 
 ## Notes
 
@@ -147,3 +149,10 @@ dotnet build source/timewarp-state-analyzer/timewarp-state-analyzer.csproj -c Re
 **Expect:** `DefaultApiHandler` and `FileResponseApiHandler` warn TW0002 on `AddProblemDetails`. Root architecture `.editorconfig` `TW0002 = none` hides both this rule and XmlDocsToMarkdown.
 
 **Not in scope:** converting architecture/COPIC `HandleError` → toast to a notification; retiring the 236 scan guard.
+
+### Review disposition
+
+- Body: tw-implementation-review, effort 1, roster `general` (grok-4.5 subagent, read-only); 1 round on commit `d0e8f692` vs `origin/master`.
+- Round 1: 0 bug, 0 suggestion, 0 nit. Merge pass confirmed symbol-based handler detection, Send-of-IAction plus `{MethodName}ActionSet` entries, Publish/own-state/generated-wrapper exclusions, `[AllowActionSend]` → TW0003, required test matrix, and documented TW0002 ID collision. Re-ran `dotnet fixie timewarp-state-analyzer-tests` — 19 passed.
+- Final: 0 open; 0 fixed; 0 wontfix.
+- **Disposition: clean** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-1/merged.md`).
