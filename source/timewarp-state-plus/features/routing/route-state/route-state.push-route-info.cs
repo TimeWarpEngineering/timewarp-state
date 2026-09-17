@@ -1,3 +1,15 @@
+#region Purpose
+// Record the current URI on RouteState, truncating back to it when that URI is already in the stack.
+#endregion
+
+#region Design
+// Same-URL-on-top updates the title in place (page re-render). An older matching URL pops everything
+// above it so sidebar revisits and browser Back shrink the breadcrumb instead of duplicating.
+// No stack-depth cap: truncate-on-revisit is the unbounded-duplicate fix; unique-URL growth is a real
+// trail (TwBreadcrumb.MaxLinks already limits display). Dropping oldest would hide Home. Revisit if
+// a consumer reports unique-URL blowup.
+#endregion
+
 namespace TimeWarp.Features.Routing;
 
 public partial class RouteState
@@ -27,21 +39,27 @@ public partial class RouteState
           string currentUri = NavigationManager.Uri;
 
           string title = await JsRuntime.InvokeAsync<string>("eval", cancellationToken, "document.title");
-          if (RouteState.RouteStack.TryPeek(out RouteInfo? routeInfo) && routeInfo.Url == currentUri)
-          {
-            // Update Title
-            RouteState.RouteStack.Pop();
-            var newRouteInfo = new RouteInfo(currentUri, title);
-            RouteState.RouteStack.Push(newRouteInfo);
-            return;
-          }
-
-          RouteState.RouteStack.Push(new RouteInfo(currentUri, title));
+          TruncateToOrPush(currentUri, title);
         }
         finally
         {
           semaphoreSlim.Release();
         }
+      }
+
+      private void TruncateToOrPush(string url, string title)
+      {
+        RouteInfo[] routes = RouteState.RouteStack.ToArray();
+        int matchIndex = Array.FindIndex(routes, routeInfo => routeInfo.Url == url);
+        if (matchIndex >= 0)
+        {
+          for (int i = 0; i <= matchIndex; i++)
+          {
+            RouteState.RouteStack.Pop();
+          }
+        }
+
+        RouteState.RouteStack.Push(new RouteInfo(url, title));
       }
     }
   }
