@@ -8,5 +8,7 @@ Rule ID | Category | Severity | Notes
 StateInheritanceTypeArgumentRule | Design | Error | StateInheritanceAnalyzer
 StateReadOnlyPublicPropertiesRule | Design | Error | StateReadOnlyPublicPropertiesAnalyzer
 StateSealedClassRule | Design | Warning | StateInheritanceAnalyzer
-TW0001 | TimeWarp.State | Error | TimeWarpStateActionAnalyzer
+TWS0001 | TimeWarp.State | Error | TimeWarpStateActionAnalyzer
+TWS0002 | Design | Warning | HandlerMustNotSendActionAnalyzer
+TWS0003 | Design | Info | HandlerMustNotSendActionAnalyzer
 TWS001 | Design | Error | StateImplementationAnalyzer

@@ -1,7 +1,7 @@
 // ReSharper disable InconsistentNaming
 namespace TimeWarpStateActionAnalyzer_;
 
-public class Should_Trigger_TW0001
+public class Should_Trigger_TWS0001
 {
   public static async Task Given_InvalidRecord()
   {
@@ -13,7 +13,7 @@ public class Should_Trigger_TW0001
       public record SampleInvalidRecordAction : IAction { }
       """;
 
-    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TW0001", DiagnosticSeverity.Error)
+    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS0001", DiagnosticSeverity.Error)
       .WithSpan(4, 15, 4, 40) // Assuming the error is at the record declaration
       .WithArguments("SampleInvalidRecordAction");
 
@@ -47,7 +47,7 @@ public class Should_Trigger_TW0001
       """;
 
     DiagnosticResult expectedDiagnostic =
-      new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(4, 14, 4, 38)
+      new DiagnosticResult("TWS0001", DiagnosticSeverity.Error).WithSpan(4, 14, 4, 38)
         .WithArguments("SampleInvalidClassAction");
 
     var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>
@@ -80,7 +80,7 @@ public class Should_Trigger_TW0001
       """;
 
     DiagnosticResult expectedDiagnostic =
-      new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(4, 15, 4, 40)
+      new DiagnosticResult("TWS0001", DiagnosticSeverity.Error).WithSpan(4, 15, 4, 40)
         .WithArguments("SampleInvalidStructAction");
 
     var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>
@@ -114,7 +114,7 @@ public class Should_Trigger_TW0001
       """;
 
     DiagnosticResult expectedDiagnostic =
-      new DiagnosticResult("TW0001", DiagnosticSeverity.Error).WithSpan(5, 14, 5, 48)
+      new DiagnosticResult("TWS0001", DiagnosticSeverity.Error).WithSpan(5, 14, 5, 48)
         .WithArguments("SampleInvalidDescendantClassAction");
 
     var analyzerTest = new CSharpAnalyzerTest<TimeWarpStateActionAnalyzer, FixieVerifier>

@@ -8,14 +8,14 @@ The analyzer ensures proper architectural boundaries by requiring that any class
 
 ## Rules
 
-### TW0001 - Action Nesting Rule
+### TWS0001 - Action Nesting Rule
 - **Severity**: Error
 - **Category**: TimeWarp.State
 - **Description**: Actions in TimeWarp.State must be defined as nested types within their corresponding State classes.
 
 ## Diagnostic Rules
 
-### TW0001: Action Must Be Nested in State
+### TWS0001: Action Must Be Nested in State
 - **Severity**: Error
 - **Title**: TimeWarp.State Action should be a nested type of its State
 - **Description**: TimeWarp.State Actions should be nested types of their corresponding States.
@@ -103,6 +103,8 @@ The analyzer includes comprehensive tests covering various scenarios:
 - Invalid descendant class actions
 
 See `TimeWarpStateActionAnalyser_Tests.cs` for specific test cases.
+
+Related: [TWS0002 / TWS0003](readme.md) (`HandlerMustNotSendActionAnalyzer`) — handlers must not send actions.
 
 ## Best Practices
 1. Always nest action types within their corresponding state

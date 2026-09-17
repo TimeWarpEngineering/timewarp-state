@@ -1,2 +1,4 @@
+- name: Analyzers
+  topicUid: TimeWarpState:Analyzers.md
 - name: Add Redux Dev Tools
   topicUid: TimeWarpState:AddReduxDevTools.md

@@ -3,8 +3,9 @@ namespace TimeWarp.State;
 public interface IState
 {
   /// <summary>
-  /// The store pipeline sender. States dispatch re-entrant actions through the same
-  /// <see cref="ClientPipeline"/> they were handled on.
+  /// The store pipeline sender. Components and pipeline behaviors dispatch actions through
+  /// the same <see cref="ClientPipeline"/> the store uses. Action handlers must not send
+  /// actions; they publish notifications instead (TWS0002).
   /// </summary>
   ISender<ClientPipeline> Sender { get; set; }
   Guid Guid { get; }

@@ -14,6 +14,10 @@ Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/timewarp-s
 
 ## The TimeWarp.State Architecture
 
+### State is a boundary
+
+A State is an isolated feature boundary. Its action handlers do their own work and, if something elsewhere must react, **publish a notification** that says what happened. A handler never sends an action — not on its own state, not on another state. Orchestration of multi-step flows lives outside the state: pages and components sequence actions; notification handlers react. Calling into another state from a handler breaks encapsulation. The analyzer enforces this as **TWS0002** (Warning by default; promote to Error with `dotnet_diagnostic.TWS0002.severity = error`). `[AllowActionSend("reason")]` is a temporary escape hatch and reports **TWS0003** (Info) so the exemption stays visible.
+
 ### Store 1..* State
 
 TimeWarp.State implements a single `Store` with a collection of `State`s.
