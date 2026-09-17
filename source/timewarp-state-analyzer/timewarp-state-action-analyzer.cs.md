@@ -104,6 +104,8 @@ The analyzer includes comprehensive tests covering various scenarios:
 
 See `TimeWarpStateActionAnalyser_Tests.cs` for specific test cases.
 
+Related: [TW0002 / TW0003](readme.md) (`HandlerMustNotSendActionAnalyzer`) — handlers must not send actions.
+
 ## Best Practices
 1. Always nest action types within their corresponding state
 2. Use appropriate type declarations (class/record/struct) based on your needs
