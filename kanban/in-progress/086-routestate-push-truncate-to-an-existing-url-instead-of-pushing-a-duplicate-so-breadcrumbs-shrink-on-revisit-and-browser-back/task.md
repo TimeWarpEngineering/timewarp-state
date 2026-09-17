@@ -43,15 +43,16 @@ Root cause (library, both apps affected):
 
 ## Checklist
 
-- [ ] Truncate-to-existing-URL on push + tests
-- [ ] `dev build` 0/0; library tests green; `ganda repo audit` clean
-- [ ] Results and How to validate (architecture: Home → Settings → Profile → Settings shows
+- [x] Truncate-to-existing-URL on push + tests
+- [x] `dev build` 0/0; library tests green; `ganda repo audit` clean
+- [x] Results and How to validate (architecture: Home → Settings → Profile → Settings shows
       "Home / Settings", not a four-deep trail)
 
 ## Session
 
 - Created: cockpit (2026-09-16); brief written 2026-09-17
 - Claude Code cockpit session: https://claude.ai/code/session_01KPZXyAmA6Vk99W1yUQUn1N
+- Implementer: Grok (2026-09-17) — truncate-on-push + plus tests
 
 ## Notes
 
@@ -60,11 +61,71 @@ Root cause (library, both apps affected):
   tests near the GoBack clamp tests (task 059).
 - Consumers: timewarp-architecture `web-spa/components/TimeWarpPage.razor`; COPIC
   `Web.Spa/Components/Pages/CopicPage/{CopicPage.razor,MainContentArea/BreadCrumbs.razor}`.
+- Stack-depth cap: **not added**. Truncate-on-revisit is the unbounded-duplicate fix.
+  Unique-URL growth is a real trail; `TwBreadcrumb.MaxLinks` already limits display.
+  Dropping oldest would hide Home. Revisit if a consumer reports unique-URL blowup.
 
 ## Results
 
-_Pending._
+`PushRouteInfoActionSet.Handler` now scans the whole `RouteStack` for the incoming
+`NavigationManager.Uri`. If that URL is already present (including on top), it pops
+everything above the match and replaces the match with an updated title. A new URL
+still pushes. `GoBackActionSet` and the task-059 clamp are unchanged.
+
+**Files**
+
+- `source/timewarp-state-plus/features/routing/route-state/route-state.push-route-info.cs`
+  — `TruncateToOrPush`; Purpose/Design regions record the no-cap decision
+- `tests/timewarp-state-plus-tests/features/routing/push-route-info-tests.cs`
+  — A→B→C→A ⇒ `[A]`; A→B→C→B ⇒ `[B, A]`; A twice ⇒ one entry, title updated;
+  new URLs still append
+
+**Decisions**
+
+- No stack-depth cap (see Notes).
+- Consumers (architecture, COPIC) need only a TimeWarp.State.Plus package bump
+  after this ships; no app-side code change.
+
+**Tests**
+
+- `dotnet fixie timewarp-state-plus-tests`: 15 passed, 1 skipped (includes the four
+  new PushRouteInfo cases and the GoBack clamp tests)
+- `dotnet run --file ./scripts/test.cs`: analyzer 10; state suite; plus 15/1;
+  client integration 42/1; architecture 7/1 — all green
+- `dotnet run --file ./tools/dev-cli/dev.cs -- build`: 0 errors (47 pre-existing
+  RS0030/NU1510 in test-app / e2e, none in Plus)
+- `ganda repo audit`: exit 0; 3 advisory warnings (generated kebab paths,
+  memsearch scaffold, vscode peacock) — not introduced here
 
 ### How to validate
 
-_Pending._
+**Automated**
+
+```bash
+dotnet tool restore
+dotnet fixie timewarp-state-plus-tests
+```
+
+**Expect:** `15 passed, 1 skipped`. The four `PushRouteInfo_.PushRouteInfo_Should.*`
+cases pass: revisit A after A/B/C leaves `[A]`; revisit B leaves `[B, A]` not
+`[B, C, B, A]`; pushing A twice keeps one entry with the new title.
+
+**Smoke (library)**
+
+```bash
+dotnet run --file ./scripts/test.cs
+```
+
+**Expect:** every suite step exits 0 (analyzer, state, plus, client integration,
+architecture).
+
+**Smoke (consumer, after TimeWarp.State.Plus package bump)**
+
+In timewarp-architecture: Home → Settings → Profile → Settings (sidebar or
+equivalent, not the crumb link).
+
+**Expect:** breadcrumb reads `Home / Settings`, not a four-deep trail such as
+`Home / Settings / Profile / Settings`. Browser Back to Profile then to Settings
+should shrink the same way. Crumb-link GoBack still works.
+
+**Not in scope:** bumping architecture or COPIC in this repo; stack-depth cap.
