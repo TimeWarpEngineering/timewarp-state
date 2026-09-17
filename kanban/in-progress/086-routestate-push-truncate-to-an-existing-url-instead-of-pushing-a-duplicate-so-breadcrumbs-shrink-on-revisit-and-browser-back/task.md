@@ -47,12 +47,14 @@ Root cause (library, both apps affected):
 - [x] `dev build` 0/0; library tests green; `ganda repo audit` clean
 - [x] Results and How to validate (architecture: Home → Settings → Profile → Settings shows
       "Home / Settings", not a four-deep trail)
+- [x] Implementation review disposition (same task id)
 
 ## Session
 
 - Created: cockpit (2026-09-16); brief written 2026-09-17
 - Claude Code cockpit session: https://claude.ai/code/session_01KPZXyAmA6Vk99W1yUQUn1N
 - Implementer: Grok (2026-09-17) — truncate-on-push + plus tests
+- Review oracle: Grok session `01a0afd6-7398-71a2-8caf-6468ddfde474` (2026-09-17) — effort 1, general only
 
 ## Notes
 
@@ -64,6 +66,7 @@ Root cause (library, both apps affected):
 - Stack-depth cap: **not added**. Truncate-on-revisit is the unbounded-duplicate fix.
   Unique-URL growth is a real trail; `TwBreadcrumb.MaxLinks` already limits display.
   Dropping oldest would hide Home. Revisit if a consumer reports unique-URL blowup.
+- Review kitchen: `review/review-framework.md`, `review/round-1/`, `review/disposition.md`.
 
 ## Results
 
@@ -129,3 +132,10 @@ equivalent, not the crumb link).
 should shrink the same way. Crumb-link GoBack still works.
 
 **Not in scope:** bumping architecture or COPIC in this repo; stack-depth cap.
+
+### Review disposition
+
+- Body: tw-implementation-review, effort 1, roster `general` (grok-4.5 subagent, read-only); 1 round on `9f47e471` + kitchen `b67696b7` vs `origin/master`.
+- Round 1: 0 bug, 0 suggestion, 0 nit. Merge pass confirmed `TruncateToOrPush` LIFO scan, required A/B/C truncate cases, same-URL title update, new-URL append, and unchanged GoBack task-059 clamp. `dotnet fixie timewarp-state-plus-tests`: 15 passed, 1 skipped.
+- Final: 0 open; 0 fixed; 0 wontfix.
+- **Disposition: clean** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-1/merged.md`).
