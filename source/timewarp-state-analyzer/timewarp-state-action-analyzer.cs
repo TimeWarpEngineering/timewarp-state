@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 {
-  public const string NestActionInStateDiagnosticId = "TW0001";
+  public const string NestActionInStateDiagnosticId = "TWS0001";
   public const string IActionDefinition = "TimeWarp.Mediator.IAction";
   public const string IStateDefinition = "TimeWarp.State.IState";
 

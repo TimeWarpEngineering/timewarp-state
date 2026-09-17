@@ -1,4 +1,4 @@
-# Analyzer TW0002: a state action handler never sends an action; it may publish a notification
+# Analyzer TWS0002: a state action handler never sends an action; it may publish a notification
 
 ## Description
 
@@ -23,7 +23,7 @@ get it from the package instead of each app writing a scan test.
 
 ## Requirements
 
-- New diagnostic **TW0002** `HandlerMustNotSendAction` (category Design; **Warning** by default
+- New diagnostic **TWS0002** `HandlerMustNotSendAction` (category Design; **Warning** by default
   in the first release, promotable to Error via `.editorconfig`; document the promotion).
   Message: "Action handler '{0}' sends action '{1}'. Handlers must not dispatch actions; publish
   a notification or sequence the action from the caller."
@@ -43,23 +43,23 @@ get it from the package instead of each app writing a scan test.
   calls (out of scope here).
 - Escape hatch: `[AllowActionSend("reason")]` on the handler type (or method), so consumers can
   grandfather the `HandleError → Toast` pattern while they convert it to a notification. Emit
-  an Info diagnostic TW0003 when the attribute is present so the debt stays visible.
-- Tests in `tests/timewarp-state-analyzer-tests` following the TW0001 pattern: same-state
+  an Info diagnostic TWS0003 when the attribute is present so the debt stays visible.
+- Tests in `tests/timewarp-state-analyzer-tests` following the TWS0001 pattern: same-state
   generated entry → warning; cross-state generated entry → warning; `Sender.Send(IBaseAction)`
-  → warning; `Publish(INotification)` → clean; own-state mutation → clean; attribute → TW0003
+  → warning; `Publish(INotification)` → clean; own-state mutation → clean; attribute → TWS0003
   only; partial-class split across files → warning.
 - Verify analyzer ordering with the source generator (generated entry methods must be visible to
   the analyzer); document any caveat.
-- Docs: analyzer README / `documentation` entry for TW0002 and TW0003, and a one-paragraph
+- Docs: analyzer README / `documentation` entry for TWS0002 and TWS0003, and a one-paragraph
   "State is a boundary" rule in the library overview: handlers do their own work, publish
   notifications, never send actions; orchestration is outside the state.
 - Follow-ups to file when this lands (not in this task): architecture — convert
   `DefaultApiHandler.HandleError → ToastNotificationState` to a notification and retire the 236
-  scan guard in favour of TW0002; COPIC — same conversion.
+  scan guard in favour of TWS0002; COPIC — same conversion.
 
 ## Checklist
 
-- [x] TW0002 analyzer (symbol-based) + TW0003 escape-hatch info diagnostic
+- [x] TWS0002 analyzer (symbol-based) + TWS0003 escape-hatch info diagnostic
 - [x] Tests per the matrix above
 - [x] Generator/analyzer ordering verified and documented
 - [x] README/docs + library overview rule
@@ -77,7 +77,7 @@ get it from the package instead of each app writing a scan test.
 ## Notes
 
 - Reference implementation: `source/timewarp-state-analyzer/timewarp-state-action-analyzer.cs`
-  (TW0001: syntax-triggered, semantic-verified; `tests/timewarp-state-analyzer-tests/`).
+  (TWS0001: syntax-triggered, semantic-verified; `tests/timewarp-state-analyzer-tests/`).
 - Policies package (`timewarp-state-policies`, NetArchTest) checks handler nesting/visibility
   only; not the right home for an invocation rule.
 - Library precedent: `IState.Sender` is documented for "re-entrant actions" but unused; the
@@ -87,7 +87,7 @@ get it from the package instead of each app writing a scan test.
 
 ## Results
 
-TW0002 (`HandlerMustNotSendAction`, Design, Warning) and TW0003 (`AllowActionSend` Info) land in `TimeWarp.State.Analyzer` and ship inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). `[AllowActionSend("reason")]` is a public attribute on the runtime package.
+TWS0002 (`HandlerMustNotSendAction`, Design, Warning) and TWS0003 (`AllowActionSend` Info) land in `TimeWarp.State.Analyzer` and ship inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). `[AllowActionSend("reason")]` is a public attribute on the runtime package.
 
 **Behavior**
 - A type is a handler if its base chain includes `StateActionHandler<>`, `TimeWarp.Mediator.ActionHandler<>`, or the legacy `TimeWarp.State.ActionHandler<>`, or it implements `IActionHandler<>`. App bases (`BaseHandler`, `DefaultApiHandler`) are included by symbol.
@@ -102,20 +102,22 @@ TW0002 (`HandlerMustNotSendAction`, Design, Warning) and TW0003 (`AllowActionSen
 - `source/timewarp-state-analyzer/readme.md`, `documentation/topics/analyzers.md`, `documentation/overview.md` (State is a boundary)
 - `source/timewarp-state/state/i-state.cs` — Sender XML no longer documents handler re-entry
 
-**Generator ordering:** Roslyn runs generators before analyzers. TW0002 uses `GeneratedCodeAnalysisFlags.None`, so `Sender.Send` inside a generated ActionSet wrapper is not flagged; user calls to those wrappers are. Covered by `Given_GeneratedEntry_InGeneratedFile`.
+**Generator ordering:** Roslyn runs generators before analyzers. TWS0002 uses `GeneratedCodeAnalysisFlags.None`, so `Sender.Send` inside a generated ActionSet wrapper is not flagged; user calls to those wrappers are. Covered by `Given_GeneratedEntry_InGeneratedFile`.
 
-**Tests:** `dotnet fixie timewarp-state-analyzer-tests` — 19 passed (matrix: same-state entry, cross-state entry, `Sender.Send(IBaseAction)`, `HandleError` on an app base, partial split, generated `.g.cs` visibility, `Publish` clean, own-state mutation clean, `[AllowActionSend]` → TW0003 only).
+**Tests:** `dotnet fixie timewarp-state-analyzer-tests` — 19 passed (matrix: same-state entry, cross-state entry, `Sender.Send(IBaseAction)`, `HandleError` on an app base, partial split, generated `.g.cs` visibility, `Publish` clean, own-state mutation clean, `[AllowActionSend]` → TWS0003 only).
 
 **Build / audit:** `./bin/dev build` — 0 errors. 47 pre-existing RS0030 `Console` banned-API warnings in test-app / e2e (unchanged by this work). `ganda repo audit` — 23 pass, 3 advisory (kebab generated paths, memsearch scaffold, vscode peacock).
 
-**Architecture master scan (web-spa):** architecture `.editorconfig` sets `dotnet_diagnostic.TW0002.severity = none` for TimeWarp.SourceGenerators `XmlDocsToMarkdownAnalyzer`. That ID collision also silences this rule. With TW0002 re-enabled on web-spa only, HandlerMustNotSendAction hits are:
+**Architecture master scan (web-spa):** architecture `.editorconfig` sets `dotnet_diagnostic.TW0002.severity = none` for TimeWarp.SourceGenerators `XmlDocsToMarkdownAnalyzer`. At the time of this scan, this rule also used the bare `TW0002` id (since renamed to `TWS0002` — see the rename note below), so that ID collision also silenced it. With the rule re-enabled on web-spa only, HandlerMustNotSendAction hits are:
 
 | File | Handler | Action |
 |------|---------|--------|
 | `features/base/default-api-handler.cs:39` | `DefaultApiHandler` | `AddProblemDetails` |
 | `features/base/file-response-api-handler.cs:35` | `FileResponseApiHandler` | `AddProblemDetails` |
 
-Those are the grandfathered `HandleError` → `ToastNotificationState.AddProblemDetails` dispatches. Follow-up (not this task): convert them to a notification, retire architecture 236's scan guard, and stop setting TW0002=none once XmlDocsToMarkdown uses a distinct id.
+Those are the grandfathered `HandleError` → `ToastNotificationState.AddProblemDetails` dispatches. Follow-up (not this task): convert them to a notification, retire architecture 236's scan guard. The `TWS0002` rename below already removes the id collision, so architecture's `dotnet_diagnostic.TW0002.severity = none` (for XmlDocsToMarkdown) no longer silences this rule.
+
+**Diagnostic ID rename (TWS prefix):** analyzer diagnostic IDs were renamed to the `TWS` prefix: `TW0001` → `TWS0001`, `TW0002` → `TWS0002`, `TW0003` → `TWS0003`. This stops colliding with TimeWarp.SourceGenerators, which owns `TW0001`–`TW0006` (its `TW0002` is the unrelated XML-docs-to-markdown rule; consumers like timewarp-architecture already set `dotnet_diagnostic.TW0002.severity = none` for it, which would otherwise silence this rule too). Mediator uses `TWM`, architecture analyzers use `TWA`; TimeWarp.State uses its own `TWS` prefix. Update `.editorconfig` severities accordingly.
 
 ### How to validate
 
@@ -125,7 +127,7 @@ Those are the grandfathered `HandleError` → `ToastNotificationState.AddProblem
 dotnet fixie timewarp-state-analyzer-tests
 ```
 
-**Expect:** 19 passed, including `HandlerMustNotSendActionAnalyzer_.Should_Trigger_TW0002` / `Should_Not_Trigger_TW0002` / `Should_Trigger_TW0003`.
+**Expect:** 19 passed, including `HandlerMustNotSendActionAnalyzer_.Should_Trigger_TWS0002` / `Should_Not_Trigger_TWS0002` / `Should_Trigger_TWS0003`.
 
 **Automated gate**
 
@@ -137,22 +139,22 @@ ganda repo audit
 
 **Expect:** build 0 errors; analyzer tests all passed; audit non-blocking advisories only.
 
-**Architecture hits (optional; needs a local TimeWarp.State analyzer DLL and TW0002 not set to none)**
+**Architecture hits (optional; needs a local TimeWarp.State analyzer DLL)**
 
 ```bash
 # from this worktree, after building the analyzer
 dotnet build source/timewarp-state-analyzer/timewarp-state-analyzer.csproj -c Release
 # inject analyzers/Release/netstandard2.0/timewarp-state-analyzer.dll into architecture web-spa
-# and set dotnet_diagnostic.TW0002.severity = warning for that project
+# and set dotnet_diagnostic.TWS0002.severity = warning for that project
 ```
 
-**Expect:** `DefaultApiHandler` and `FileResponseApiHandler` warn TW0002 on `AddProblemDetails`. Root architecture `.editorconfig` `TW0002 = none` hides both this rule and XmlDocsToMarkdown.
+**Expect:** `DefaultApiHandler` and `FileResponseApiHandler` warn TWS0002 on `AddProblemDetails`. Root architecture `.editorconfig` `TW0002 = none` (for XmlDocsToMarkdown) no longer affects this rule now that it is `TWS0002`.
 
 **Not in scope:** converting architecture/COPIC `HandleError` → toast to a notification; retiring the 236 scan guard.
 
 ### Review disposition
 
 - Body: tw-implementation-review, effort 1, roster `general` (grok-4.5 subagent, read-only); 1 round on commit `d0e8f692` vs `origin/master`.
-- Round 1: 0 bug, 0 suggestion, 0 nit. Merge pass confirmed symbol-based handler detection, Send-of-IAction plus `{MethodName}ActionSet` entries, Publish/own-state/generated-wrapper exclusions, `[AllowActionSend]` → TW0003, required test matrix, and documented TW0002 ID collision. Re-ran `dotnet fixie timewarp-state-analyzer-tests` — 19 passed.
+- Round 1: 0 bug, 0 suggestion, 0 nit. Merge pass confirmed symbol-based handler detection, Send-of-IAction plus `{MethodName}ActionSet` entries, Publish/own-state/generated-wrapper exclusions, `[AllowActionSend]` → TWS0003, required test matrix, and documented TWS0002 ID collision. Re-ran `dotnet fixie timewarp-state-analyzer-tests` — 19 passed.
 - Final: 0 open; 0 fixed; 0 wontfix.
 - **Disposition: clean** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-1/merged.md`).

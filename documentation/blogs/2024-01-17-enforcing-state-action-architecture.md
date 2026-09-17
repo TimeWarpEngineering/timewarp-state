@@ -13,7 +13,7 @@ Nesting Actions within their State classes provides several benefits:
 
 ## The Analyzer in Action
 
-The TimeWarp.State Analyzer enforces this pattern through the `TW0001` diagnostic rule. Here are some examples:
+The TimeWarp.State Analyzer enforces this pattern through the `TWS0001` diagnostic rule. Here are some examples:
 
 ### ✅ Valid Code
 
@@ -30,7 +30,7 @@ public class CounterState : IState
 ### ❌ Invalid Code
 
 ```csharp
-// Error TW0001: The Action 'IncrementAction' is not a nested type of its State
+// Error TWS0001: The Action 'IncrementAction' is not a nested type of its State
 public class IncrementAction : IAction { }
 ```
 

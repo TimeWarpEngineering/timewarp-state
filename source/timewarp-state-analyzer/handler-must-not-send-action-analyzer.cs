@@ -1,5 +1,5 @@
 #region Purpose
-// TW0002: state action handlers must not dispatch actions; TW0003 marks AllowActionSend exemptions.
+// TWS0002: state action handlers must not dispatch actions; TWS0003 marks AllowActionSend exemptions.
 #endregion
 
 #region Design
@@ -25,8 +25,8 @@ using Microsoft.CodeAnalysis.Operations;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class HandlerMustNotSendActionAnalyzer : DiagnosticAnalyzer
 {
-  public const string HandlerMustNotSendActionDiagnosticId = "TW0002";
-  public const string AllowActionSendDiagnosticId = "TW0003";
+  public const string HandlerMustNotSendActionDiagnosticId = "TWS0002";
+  public const string AllowActionSendDiagnosticId = "TWS0003";
 
   private const string Category = "Design";
 
@@ -53,7 +53,7 @@ public class HandlerMustNotSendActionAnalyzer : DiagnosticAnalyzer
   private static readonly LocalizableString SendMessageFormat =
     "Action handler '{0}' sends action '{1}'. Handlers must not dispatch actions; publish a notification or sequence the action from the caller.";
   private static readonly LocalizableString SendDescription =
-    "A State is an isolated feature boundary. Its action handlers do their own work and may publish a notification; they never send an action. Orchestration lives outside the state. Default severity is Warning; promote to Error with dotnet_diagnostic.TW0002.severity = error in .editorconfig.";
+    "A State is an isolated feature boundary. Its action handlers do their own work and may publish a notification; they never send an action. Orchestration lives outside the state. Default severity is Warning; promote to Error with dotnet_diagnostic.TWS0002.severity = error in .editorconfig.";
 
   private static readonly DiagnosticDescriptor SendRule =
     new
@@ -69,9 +69,9 @@ public class HandlerMustNotSendActionAnalyzer : DiagnosticAnalyzer
 
   private static readonly LocalizableString AllowTitle = "AllowActionSend exemption is present";
   private static readonly LocalizableString AllowMessageFormat =
-    "Action handler '{0}' is exempt from TW0002 ({1}). Convert the dispatch to a notification and remove AllowActionSend.";
+    "Action handler '{0}' is exempt from TWS0002 ({1}). Convert the dispatch to a notification and remove AllowActionSend.";
   private static readonly LocalizableString AllowDescription =
-    "AllowActionSend is a temporary escape hatch. TW0003 keeps the exemption visible as an info diagnostic until the handler publishes a notification instead of sending an action.";
+    "AllowActionSend is a temporary escape hatch. TWS0003 keeps the exemption visible as an info diagnostic until the handler publishes a notification instead of sending an action.";
 
   private static readonly DiagnosticDescriptor AllowRule =
     new

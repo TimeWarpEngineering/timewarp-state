@@ -3,7 +3,7 @@ namespace HandlerMustNotSendActionAnalyzer_;
 
 using TimeWarp.State.Analyzer.Tests;
 
-public class Should_Trigger_TW0002
+public class Should_Trigger_TWS0002
 {
   public static async Task Given_SameState_GeneratedEntry()
   {
@@ -261,7 +261,7 @@ public class Should_Trigger_TW0002
     analyzerTest.TestState.Sources.Add(StateSource);
     analyzerTest.TestState.Sources.Add(HandlerSource);
     analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TW0002", DiagnosticSeverity.Warning)
+      new DiagnosticResult("TWS0002", DiagnosticSeverity.Warning)
         .WithSpan("/0/Test1.cs", 13, 46, 13, 51)
         .WithArguments("Handler", "Fetch"));
 
@@ -322,7 +322,7 @@ public class Should_Trigger_TW0002
     analyzerTest.TestState.Sources.Add(UserSource);
     analyzerTest.TestState.Sources.Add(("CounterState.FetchActionSet_Method.g.cs", GeneratedSource));
     analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TW0002", DiagnosticSeverity.Warning)
+      new DiagnosticResult("TWS0002", DiagnosticSeverity.Warning)
         .WithSpan(20, 46, 20, 51)
         .WithArguments("Handler", "Fetch"));
 
@@ -344,7 +344,7 @@ public class Should_Trigger_TW0002
       AnalyzerTestFactory.Create<HandlerMustNotSendActionAnalyzer>(testCode);
 
     analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TW0002", DiagnosticSeverity.Warning)
+      new DiagnosticResult("TWS0002", DiagnosticSeverity.Warning)
         .WithSpan(startLine, startColumn, endLine, endColumn)
         .WithArguments(handlerName, actionName));
 
@@ -352,7 +352,7 @@ public class Should_Trigger_TW0002
   }
 }
 
-public class Should_Not_Trigger_TW0002
+public class Should_Not_Trigger_TWS0002
 {
   public static async Task Given_Publish_OfINotification()
   {
@@ -441,7 +441,7 @@ public class Should_Not_Trigger_TW0002
   }
 }
 
-public class Should_Trigger_TW0003
+public class Should_Trigger_TWS0003
 {
   public static async Task Given_AllowActionSend_OnHandlerType()
   {
@@ -493,7 +493,7 @@ public class Should_Trigger_TW0003
       AnalyzerTestFactory.Create<HandlerMustNotSendActionAnalyzer>(TestCode);
 
     analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TW0003", DiagnosticSeverity.Info)
+      new DiagnosticResult("TWS0003", DiagnosticSeverity.Info)
         .WithSpan(29, 6, 29, 54)
         .WithArguments("Handler", "grandfather HandleError toast"));
 
