@@ -51,6 +51,13 @@ public partial class Counter2State : State<Counter2State>
 ```
 
 ## Available Components
+- **TwBreadcrumb**
+  - **Key Feature**: RouteState history trail with back navigation.
+  - **Usage**: `<TwBreadcrumb MaxLinks="3" />`
+  - **Styling**: Isolated CSS (`tw-breadcrumb`). Hosts do not need Bootstrap.
+- **TwPageTitle**
+  - **Key Feature**: Records the page title onto `RouteState` for the breadcrumb trail.
+  - **Usage**: `<TwPageTitle>Home</TwPageTitle>`
 - **InputColor**
   - **Key Feature**: A color picker input component.
   - **Usage**: `<InputColor @bind-Value="Color" />`

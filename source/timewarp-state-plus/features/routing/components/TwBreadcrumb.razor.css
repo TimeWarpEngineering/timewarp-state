@@ -1,0 +1,43 @@
+/* Horizontal RouteState trail. Hosts do not need Bootstrap (or any other CSS framework).
+   Override --tw-breadcrumb-divider on a parent to change the separator. */
+
+.tw-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: inherit;
+  line-height: 1.5;
+}
+
+.tw-breadcrumb__item {
+  display: flex;
+  align-items: center;
+}
+
+.tw-breadcrumb__item + .tw-breadcrumb__item::before {
+  content: var(--tw-breadcrumb-divider, "/");
+  display: inline-block;
+  padding-inline: 0.5rem;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.tw-breadcrumb__item--current {
+  opacity: 0.75;
+}
+
+.tw-breadcrumb__ellipsis {
+  opacity: 0.55;
+}
+
+.tw-breadcrumb__item a {
+  text-decoration: none;
+}
+
+.tw-breadcrumb__item a:hover,
+.tw-breadcrumb__item a:focus-visible {
+  text-decoration: underline;
+}

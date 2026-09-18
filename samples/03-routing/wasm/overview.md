@@ -148,7 +148,9 @@ The `TwBreadcrumb` component from TimeWarp.State.Plus provides:
 - Automatic route history tracking
 - Configurable number of displayed links through `MaxLinks` parameter
 - Built-in back navigation support
-- Proper breadcrumb styling
+- Self-contained breadcrumb styling (isolated CSS)
+
+`TwBreadcrumb` does **not** require Bootstrap. It ships `TwBreadcrumb.razor.css` under `tw-breadcrumb` classes. The host must load `{ASSEMBLY}.styles.css` (this sample: `sample-03-wasm.styles.css`) so the Razor class library isolated-CSS bundle is imported. The sample `index.html` may still reference `bootstrap.min.css` for the starter chrome (sidebar, `btn-primary`); that file is not what styles the trail.
 
 ### 5. Update Page Titles
 
