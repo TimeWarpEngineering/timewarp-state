@@ -41,18 +41,23 @@ any host.
 - [x] Sample 03 still demonstrates the trail; crumbs do not require `bootstrap.min.css`
 - [x] Docs / sample 03 tutorial mention no Bootstrap requirement
 - [x] Verify: render Sample 03 without Bootstrap CSS on the crumb — trail still readable and GoBack works
+- [x] Implementation review (effort 1, general) under `review/`; disposition `clean`
 
 ## Session
 
 - Created: ganda session 303480 (2026-09-02)
 - Cockpit: grok `01a03d38-9611-7620-aae5-848e15dafa94` (timewarp-flow)
 - Implementer: grok `01a0b23f-46e3-7662-947a-5c365a4ab5c4` (2026-09-18)
+- Review oracle: grok `01a0b252-7c1c-72b0-b1b6-c87bf38de48b` (2026-09-18)
+- Reviewer (general, round 1): grok `01a0b255-cc87-7651-aea9-7d3f7373274f` (2026-09-18)
 
 ## Notes
 
 Architecture task **207** (timewarp-architecture) will put `TwBreadcrumb` + `TwPageTitle` in
 `TimeWarpPage`. That host has Fluent UI v5 and must not load Bootstrap. This task is the library
 fix so that consumption does not leak a Bootstrap CSS contract.
+
+Implementation review (effort 1, general): `review/` — round 1 found no issues; disposition `clean`.
 
 Related files:
 
@@ -157,3 +162,25 @@ dotnet fixie timewarp-state-plus-tests
 **Not in scope:** Fluent UI host wiring (architecture task 207). Version bump / NuGet cut. Sample 03
 still PackageReferences published `TimeWarp.State.Plus` until the next pack; run the library and
 nupkg checks above to prove this change, not `dotnet run` of the sample against nuget.org beta.4.
+
+### Review disposition
+
+**Outcome:** `clean` (0 open findings; no `wontfix`)
+**Effort:** 1 (general only)
+**Rounds:** 1
+**Roster:** general (`review/round-1/general.md`)
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 0 | 0 | 0 |
+| suggestion | 0 | 0 | 0 |
+| nit | 0 | 0 | 0 |
+
+Round 1 found no issues. No fix loop. No escalations.
+
+**Review paths**
+
+- `kanban/in-progress/081-twbreadcrumb-must-not-require-bootstrap-css/review/review-framework.md`
+- `kanban/in-progress/081-twbreadcrumb-must-not-require-bootstrap-css/review/round-1/general.md`
+- `kanban/in-progress/081-twbreadcrumb-must-not-require-bootstrap-css/review/round-1/merged.md`
+- `kanban/in-progress/081-twbreadcrumb-must-not-require-bootstrap-css/review/disposition.md`
