@@ -1,3 +1,15 @@
+@*
+  #region Purpose
+  RouteState history trail with back navigation. Readable without a host CSS framework.
+  #endregion
+
+  #region Design
+  Owns tw-breadcrumb classes and TwBreadcrumb.razor.css (Blazor CSS isolation). Does not use
+  Bootstrap's breadcrumb/breadcrumb-item/active/text-muted contract — Plus does not ship Bootstrap,
+  and Fluent UI hosts must not load it. aria-label="breadcrumb" and aria-current="page" stay for
+  accessibility. Isolated CSS is bundled into the host's {ASSEMBLY}.styles.css via the RCL scp bundle.
+  #endregion
+*@
 @namespace TimeWarp.Features.Routing
 @inherits TimeWarp.State.TimeWarpStateComponent
 
@@ -32,11 +44,11 @@
 }
 
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
+  <ol class="tw-breadcrumb">
     @if (ShowEllipsis)
     {
-      <li class="breadcrumb-item">
-        <span class="text-muted">...</span>
+      <li class="tw-breadcrumb__item">
+        <span class="tw-breadcrumb__ellipsis">...</span>
       </li>
     }
 
@@ -50,8 +62,11 @@
         // e.g., for 3 routes: newest is 2 steps back, middle is 1 step back, oldest is 0 steps back
         int goBackSteps = routesList.Count - i - 1;
         bool isLastItem = goBackSteps == 0;
+        string itemClass = isLastItem
+          ? "tw-breadcrumb__item tw-breadcrumb__item--current"
+          : "tw-breadcrumb__item";
 
-        <li class="breadcrumb-item @(isLastItem ? "active" : "")" aria-current="@(isLastItem ? "page" : null)">
+        <li class=@itemClass aria-current="@(isLastItem ? "page" : null)">
           @if (isLastItem)
           {
             @route.PageTitle
