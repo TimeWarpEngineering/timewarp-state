@@ -1,5 +1,3 @@
-using TimeWarp.Mediator;
-
 // Member of the TimeWarp.Mediator compile-time graph so the host's generator links the handlers in
 // this assembly (routing, timers, theme, action tracking, persistence). Every request and handler
 // here is a ClientPipeline member (the Blazor store pipeline, see TimeWarp.State.ClientPipeline).

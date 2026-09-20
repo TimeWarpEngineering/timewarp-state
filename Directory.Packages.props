@@ -39,6 +39,10 @@
     </PackageVersion>
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
+    <PackageVersion Include="GlobalUsingsAnalyzer" Version="1.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
 
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />

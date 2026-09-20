@@ -1,11 +1,6 @@
 // ReSharper disable UnusedType.Global
 namespace RouteState_;
 
-using FakeItEasy;
-using TimeWarp.Mediator;
-using TimeWarp.State;
-using TimeWarp.Features.Routing;
-
 public class Clone_Should
 {
   public Clone_Should()

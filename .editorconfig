@@ -284,9 +284,9 @@ dotnet_diagnostic.ca1308.severity = none
 
 # Global Usings Analyzer
 
-dotnet_diagnostic.globalusingsanalyzer0001.filename = GlobalUsings.cs
-dotnet_diagnostic.globalusingsanalyzer0002.enabled = true
-dotnet_diagnostic.globalusingsanalyzer0003.severity = warning
+dotnet_diagnostic.GlobalUsingsAnalyzer0001.filename = global-usings.cs
+dotnet_diagnostic.GlobalUsingsAnalyzer0002.enabled = true
+dotnet_diagnostic.GlobalUsingsAnalyzer0003.severity = warning
 
 # ganda repo audit configuration
 [ganda.audit]

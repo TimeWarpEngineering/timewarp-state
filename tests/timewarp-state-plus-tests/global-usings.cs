@@ -1,6 +1,11 @@
+global using FakeItEasy;
+global using Microsoft.AspNetCore.Components;
 global using Shouldly;
 global using NetArchTest.Policies;
 global using System.Reflection;
 global using TimeWarp.Fixie;
+global using TimeWarp.Features.Routing;
+global using TimeWarp.Mediator;
+global using TimeWarp.State;
 global using TimeWarp.State.Policies;
 global using TimeWarp.State.Policies.Extensions;

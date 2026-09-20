@@ -5,11 +5,8 @@
 // ReSharper disable UnusedType.Global
 namespace AddTimer_;
 
-using FakeItEasy;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using TimeWarp.Mediator;
-using TimeWarp.State;
 using TimeWarp.State.Plus.Features.Timers;
 
 public class AddTimer_Should

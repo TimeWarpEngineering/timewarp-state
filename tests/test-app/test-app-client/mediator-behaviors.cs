@@ -1,11 +1,3 @@
-using TimeWarp.Mediator;
-using TimeWarp.State;
-using TimeWarp.State.Plus;
-using TimeWarp.Features.ActionTracking;
-using Test.App.Client.Features.EventStream;
-using Test.App.Client.Pipeline.NotificationPreProcessor;
-using Test.App.Client.Pipeline.NotificationPostProcessor;
-
 // Every action/handler in this app is a ClientPipeline member; behaviors are woven only into
 // that pipeline.
 [assembly: MediatorScope(typeof(ClientPipeline))]
