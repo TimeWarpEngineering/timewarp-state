@@ -24,3 +24,14 @@ Extract Initialize's wiring into a shared private `CreateTimer(string timerName,
 - [ ] Use it in Initialize / AddTimer handler / UpdateTimer handler
 - [ ] Dispose the replaced timer in UpdateTimer (audit RemoveTimer/Dispose paths too)
 - [ ] Test: timer added via action publishes `TimerElapsedNotification` after its duration
+
+## Notes
+
+[PR #570](https://github.com/TimeWarpEngineering/timewarp-state/pull/570) (@nhwilly, closed 2026-09-20) is the same approach (`CreateAndStartTimer` from Initialize / Add / Update; Stop+Dispose on replace/remove). Do **not** merge that branch — it is pre-080 (`Task Handle`, old mediator types). Current handlers are `ValueTask` + `IPublisher<ClientPipeline>`. Re-implement on this worktree; credit the idea.
+
+`Initialize` currently wires Elapsed/AutoReset/Start inline. Add/Update still `new Timer(duration)` only.
+
+## Session
+
+- Created: code review 2026-06-11
+- 2026-09-20: cockpit closed #570 in favor of this id; dispatching implementer-grok
