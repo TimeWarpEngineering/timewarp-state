@@ -43,10 +43,14 @@ Copy: `timewarp-ganda/Directory.Build.props` (PackageReference) + `Directory.Pac
 
 Plus tests today only globalize Shouldly/Fixie/NetArchTest/Policies.
 
+Implementation review (effort 1, general): `review/` — round 1 found no issues; disposition `clean`.
+
 ## Session
 
 - Created: cockpit grok 2026-09-20 after 064 Plus tests showed repeated FakeItEasy/State/Mediator usings
 - Implementer: grok session 01a0bcda-d7e6-7b53-aba5-f4798f909d6c (2026-09-20)
+- Review oracle: grok session 01a0bce8-8b93-7f63-b02d-3b1639a9964b (2026-09-20)
+- Reviewer (general, round 1): grok-4.5 `01a0bcea-5053-7f43-a655-ffe5a0e7a243` (2026-09-20)
 
 ## Results
 
@@ -105,3 +109,25 @@ dotnet fixie timewarp-state-plus-tests
 Known-bad (optional, revert after): add `using TimeWarp.Mediator;` as the first line of `source/timewarp-state-plus/assembly-marker.cs` and `dotnet build source/timewarp-state-plus/timewarp-state-plus.csproj`. Expect `warning GlobalUsingsAnalyzer: Move using TimeWarp.Mediator to global-usings.cs`.
 
 **Not in scope:** Ganda `repo audit` check for this package; flipping `TreatWarningsAsErrors`.
+
+### Review disposition
+
+**Outcome:** `clean` (0 open findings; no `wontfix`)
+**Effort:** 1 (general only)
+**Rounds:** 1
+**Roster:** general (`review/round-1/general.md`)
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 0 | 0 | 0 |
+| suggestion | 0 | 0 | 0 |
+| nit | 0 | 0 | 0 |
+
+Round 1 found no issues. No fix loop. No escalations. Merge pass confirmed CPM 1.4.0 + Directory.Build.props `PrivateAssets=all`, kebab `global-usings.cs` under `[*.cs]`, Plus-test promotions with one-file usings kept, stripped compilation-unit usings covered by project globals, and scripts runfiles matching `tools/dev-cli`.
+
+**Review paths**
+
+- `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/review-framework.md`
+- `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/round-1/general.md`
+- `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/round-1/merged.md`
+- `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/disposition.md`
