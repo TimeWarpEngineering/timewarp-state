@@ -1,3 +1,14 @@
+#region Purpose
+// Owns named System.Timers.Timer instances and publishes TimerElapsedNotification when they fire.
+#endregion
+
+#region Design
+// CreateTimer is the only place that constructs a Timer: Elapsed, AutoReset=false, Start, then store.
+// Add/Update/Initialize all go through it so action-created timers publish the same way as option-seeded ones.
+// CreateTimer Stop+Disposes a same-name replacement; Remove and Dispose walk the same Stop+Dispose path.
+// Clone shares the Timers dictionary (transaction rollback must not duplicate running timers).
+#endregion
+
 namespace TimeWarp.State.Plus.Features.Timers;
 
 using Microsoft.Extensions.Options;
@@ -48,24 +59,44 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
 
   public override void Initialize()
   {
+    foreach ((_, (Timer timer, TimerConfig _)) in Timers)
+    {
+      StopAndDispose(timer);
+    }
     Timers.Clear();
     // Load from options
     foreach ((string timerName, TimerConfig timerConfig) in MultiTimerOptions.Timers)
     {
-      var timer = new Timer(timerConfig.Duration);
-      timer.Elapsed += (_, _) => OnTimerElapsed(timerName);
-      timer.AutoReset = false;
-      timer.Start();
-      Timers[timerName] = (timer, timerConfig);
-      Logger.LogDebug
-      (
-        EventIds.MultiTimerPostProcessor_TimerStarted,
-        message: "{TimerName} started with timeout of {TimeoutDuration} ms, ResetOnActivity: {ResetOnActivity}",
-        timerName,
-        timerConfig.Duration,
-        timerConfig.ResetOnActivity
-      );
+      CreateTimer(timerName, timerConfig);
     }
+  }
+
+  private void CreateTimer(string timerName, TimerConfig timerConfig)
+  {
+    if (Timers.TryGetValue(timerName, out (Timer Timer, TimerConfig TimerConfig) existing))
+    {
+      StopAndDispose(existing.Timer);
+    }
+
+    Timer timer = new(timerConfig.Duration);
+    timer.Elapsed += (_, _) => OnTimerElapsed(timerName);
+    timer.AutoReset = false;
+    timer.Start();
+    Timers[timerName] = (timer, timerConfig);
+    Logger.LogDebug
+    (
+      EventIds.MultiTimerPostProcessor_TimerStarted,
+      message: "{TimerName} started with timeout of {TimeoutDuration} ms, ResetOnActivity: {ResetOnActivity}",
+      timerName,
+      timerConfig.Duration,
+      timerConfig.ResetOnActivity
+    );
+  }
+
+  private static void StopAndDispose(Timer timer)
+  {
+    timer.Stop();
+    timer.Dispose();
   }
   
   private async void OnTimerElapsed(string timerName)
@@ -93,5 +124,20 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
         timerName
       );
     }
+  }
+
+  protected override void Dispose(bool disposing)
+  {
+    if (IsDisposed) return;
+    if (disposing)
+    {
+      foreach ((_, (Timer timer, TimerConfig _)) in Timers)
+      {
+        StopAndDispose(timer);
+      }
+      Timers.Clear();
+    }
+
+    base.Dispose(disposing);
   }
 }

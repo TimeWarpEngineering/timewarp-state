@@ -1,7 +1,5 @@
 namespace TimeWarp.State.Plus.Features.Timers;
 
-using System.Timers;
-
 public partial class TimerState
 {
   public static class AddTimerActionSet
@@ -24,7 +22,7 @@ public partial class TimerState
 
       public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        TimerState.Timers[action.TimerName] = (new Timer(action.TimerConfig.Duration), action.TimerConfig);
+        TimerState.CreateTimer(action.TimerName, action.TimerConfig);
         return default;
       }
     }
