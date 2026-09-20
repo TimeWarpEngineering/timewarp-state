@@ -1,7 +1,5 @@
 namespace TimeWarp.State.Plus.Features.Timers;
 
-using System.Timers;
-
 public partial class TimerState
 {
   public static class UpdateTimerActionSet
@@ -26,11 +24,9 @@ public partial class TimerState
 
       public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        if (TimerState.Timers.TryGetValue(action.TimerName, out (Timer Timer, TimerConfig TimerConfig) timerTuple))
+        if (TimerState.Timers.ContainsKey(action.TimerName))
         {
-          timerTuple.Timer.Dispose();
-          Timer newTimer = new(action.NewTimerConfig.Duration);
-          TimerState.Timers[action.TimerName] = (newTimer, action.NewTimerConfig);
+          TimerState.CreateTimer(action.TimerName, action.NewTimerConfig);
         }
         return default;
       }
