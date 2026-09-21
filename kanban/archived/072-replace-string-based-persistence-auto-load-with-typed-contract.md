@@ -1,5 +1,7 @@
 # Replace string-based persistence auto-load with typed contract
 
+**STATUS: SUPERSEDED** (2026-09-21) — string mangling removed by **075** / 080. Auto-load is `LoadPersistentStateRequest` + handler. Do not implement `IPersistentState` / `IStateLoader<TState>` as originally specified. Remaining persistence work: **065**, **071**. Dead `StateInitializedNotificationHandler_LoadActionSetNotFound` EventId can ride a later cleanup.
+
 ## Description
 
 Code review 2026-06-11, finding 28 (`code-review-2026-06-11.md`).
@@ -32,3 +34,12 @@ Either makes the compiler enforce the hookup and keeps the type statically reach
 - [ ] Implement discovery at registration; remove the string mangling
 - [ ] Loud failure (or analyzer diagnostic) when a `[PersistentState]` state has no load contract, replacing today's silent LogDebug
 - [ ] Test: auto-load fires for generator-emitted and hand-written load actions
+
+## Results
+
+Not implemented as specified. `StateInitializedNotificationHandler` now sends `LoadPersistentStateRequest(stateType)`; the generator emits `Load()` that sends the same request. No `LoadActionSet` string dispatch remains.
+
+## Session
+
+- Created: code review 2026-06-11 finding 28
+- 2026-09-21: cockpit archived as superseded by 075/`LoadPersistentStateRequest`
