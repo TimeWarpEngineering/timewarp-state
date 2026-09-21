@@ -94,12 +94,11 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   
   protected override bool ShouldRender()
   {
-    StackFrame? frame = new StackTrace().GetFrame(1);
-    MethodBase? method = frame?.GetMethod();
-    string className = method?.DeclaringType?.Name ?? "Unknown";
-    string methodName = method?.Name ?? "Unknown";
+    if (TimeWarpStateOptions is { CaptureRenderCaller: true })
+    {
+      ShouldRenderWasCalledBy = FormatRenderCaller(new StackTrace().GetFrame(1));
+    }
 
-    ShouldRenderWasCalledBy = $"{className}.{methodName}";
     // Determine render trigger:
     // 1. Event: If neither ShouldReRender, SetParametersAsync, nor ReRender (StateHasChanged) was called,
     //    it's likely an event-triggered render that directly called Blazor's StateHasChanged.

@@ -43,6 +43,7 @@ public class Program
               reduxDevToolsOptions.Trace = true;
             }
         );
+        options.CaptureRenderCaller = true;
         options.Assemblies =
           new[]
           {

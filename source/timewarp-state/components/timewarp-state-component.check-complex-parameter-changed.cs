@@ -32,7 +32,10 @@ public abstract partial class TimeWarpStateComponent
       return base.SetParametersAsync(parameters);
     }
     SetParametersAsyncWasCalled = true;
-    SetParametersAsyncWasCalledBy = new StackTrace().GetFrame(1)?.GetMethod()?.Name ?? "Unknown";
+    if (TimeWarpStateOptions is { CaptureRenderCaller: true })
+    {
+      SetParametersAsyncWasCalledBy = FormatRenderCaller(new StackTrace().GetFrame(1));
+    }
     foreach (ParameterValue parameter in parameters)
     {
       if (CheckParameterChanged(parameter))
