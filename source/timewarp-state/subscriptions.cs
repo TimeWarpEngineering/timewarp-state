@@ -1,16 +1,31 @@
+#region Purpose
+// Circuit-scoped registry of which components subscribe to which state types, used to re-render after actions.
+#endregion
+
+#region Design
+// Two indexes under one lock: state type → component id → Subscription, and component id → state types.
+// Add is TryAdd (O(1)); Remove walks only that component's types; ReRenderSubscribers snapshots one
+// state's values. lock covers mutations and the snapshot; ShouldReRender/ReRender run outside so a
+// renderer Dispose cannot deadlock a mediator thread. Dead WeakReferences are dropped after the
+// snapshot loop (same path as the old List.Remove). Plain lock, not ReaderWriterLockSlim — per-circuit
+// contention is low. Equals/GetHashCode stay reference-based on the indexes so they keep compiling.
+#endregion
+
 namespace TimeWarp.State;
 
 public class Subscriptions
 {
   private readonly ILogger Logger;
-
-  private readonly List<Subscription> TimeWarpStateComponentReferencesList;
+  private readonly object SyncRoot = new();
+  private readonly Dictionary<Type, Dictionary<string, Subscription>> SubscriptionsByStateType;
+  private readonly Dictionary<string, HashSet<Type>> StateTypesByComponentId;
 
   public Subscriptions(ILogger<Subscriptions> logger)
   {
     Logger = logger;
     Logger.LogDebug(EventIds.Subscriptions_Initializing, "constructing");
-    TimeWarpStateComponentReferencesList = new List<Subscription>();
+    SubscriptionsByStateType = new();
+    StateTypesByComponentId = new();
   }
 
   public Subscriptions Add<T>(ITimeWarpStateComponent timeWarpStateComponent) where T : IState
@@ -21,24 +36,27 @@ public class Subscriptions
 
   public Subscriptions Add(Type type, ITimeWarpStateComponent timeWarpStateComponent)
   {
+    string componentId = timeWarpStateComponent.Id;
+    Subscription subscription = new(
+      type,
+      componentId,
+      new WeakReference<ITimeWarpStateComponent>(timeWarpStateComponent));
 
-    // Add only once.
-    if (!TimeWarpStateComponentReferencesList.Any(subscription => subscription.StateType == type && subscription.ComponentId == timeWarpStateComponent.Id))
+    bool added;
+    lock (SyncRoot)
+    {
+      added = TryAddSubscription(type, componentId, subscription);
+    }
+
+    if (added)
     {
       Logger.LogDebug
       (
         EventIds.Subscriptions_Adding,
         "{id} Type.Name:{type_name} subscription added",
-        timeWarpStateComponent.Id,
+        componentId,
         type.Name
       );
-
-      var subscription = new Subscription(
-        type,
-        timeWarpStateComponent.Id,
-        new WeakReference<ITimeWarpStateComponent>(timeWarpStateComponent));
-
-      TimeWarpStateComponentReferencesList.Add(subscription);
     }
 
     return this;
@@ -47,20 +65,25 @@ public class Subscriptions
   public override bool Equals(object? aObject) =>
     aObject is Subscriptions subscriptions &&
     EqualityComparer<ILogger>.Default.Equals(Logger, subscriptions.Logger) &&
-    EqualityComparer<List<Subscription>>.Default.Equals(TimeWarpStateComponentReferencesList, subscriptions.TimeWarpStateComponentReferencesList);
+    EqualityComparer<Dictionary<Type, Dictionary<string, Subscription>>>.Default.Equals(SubscriptionsByStateType, subscriptions.SubscriptionsByStateType) &&
+    EqualityComparer<Dictionary<string, HashSet<Type>>>.Default.Equals(StateTypesByComponentId, subscriptions.StateTypesByComponentId);
 
-  public override int GetHashCode() => HashCode.Combine(Logger, TimeWarpStateComponentReferencesList);
+  public override int GetHashCode() => HashCode.Combine(Logger, SubscriptionsByStateType, StateTypesByComponentId);
 
   public Subscriptions Remove(ITimeWarpStateComponent timeWarpStateComponent)
   {
+    string componentId = timeWarpStateComponent.Id;
     Logger.LogDebug
     (
       EventIds.Subscriptions_RemovingComponentSubscriptions,
       "{ComponentId}: Removing Subscriptions",
-      timeWarpStateComponent.Id
+      componentId
     );
 
-    TimeWarpStateComponentReferencesList.RemoveAll(record => record.ComponentId == timeWarpStateComponent.Id);
+    lock (SyncRoot)
+    {
+      RemoveAllForComponent(componentId);
+    }
 
     return this;
   }
@@ -84,29 +107,140 @@ public class Subscriptions
   /// <param name="stateType"></param>
   public void ReRenderSubscribers(Type stateType)
   {
-    var subscriptions = TimeWarpStateComponentReferencesList
-      .Where(record => record.StateType == stateType)
-      .ToList();
-    
-    foreach (Subscription subscription in subscriptions)
+    Subscription[] snapshot = Snapshot(stateType);
+    List<Subscription>? deadSubscriptions = null;
+
+    try
     {
-      if (subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
+      foreach (Subscription subscription in snapshot)
       {
-        if (target.ShouldReRender(stateType))
+        if (subscription.TimeWarpStateComponentReference.TryGetTarget(out ITimeWarpStateComponent? target))
         {
-          LogReRender(subscription);
-          target.ReRender();
+          if (target.ShouldReRender(stateType))
+          {
+            LogReRender(subscription);
+            target.ReRender();
+          }
+        }
+        else
+        {
+          LogRemoveSubscription(subscription);
+          deadSubscriptions ??= [];
+          deadSubscriptions.Add(subscription);
         }
       }
-      else
+    }
+    finally
+    {
+      if (deadSubscriptions is { Count: > 0 })
       {
-        // If Dispose is called will I ever have items in this list that got Garbage collected?
-        // Maybe for those that don't inherit from our BaseComponent?
-        LogRemoveSubscription(subscription);
-        TimeWarpStateComponentReferencesList.Remove(subscription);
+        lock (SyncRoot)
+        {
+          foreach (Subscription deadSubscription in deadSubscriptions)
+          {
+            RemoveDeadSubscription(deadSubscription);
+          }
+        }
       }
     }
   }
+
+  private bool TryAddSubscription(Type type, string componentId, Subscription subscription)
+  {
+    if (!SubscriptionsByStateType.TryGetValue(type, out Dictionary<string, Subscription>? subscriptionsByComponentId))
+    {
+      subscriptionsByComponentId = new();
+      SubscriptionsByStateType[type] = subscriptionsByComponentId;
+    }
+
+    if (!subscriptionsByComponentId.TryAdd(componentId, subscription))
+    {
+      return false;
+    }
+
+    if (!StateTypesByComponentId.TryGetValue(componentId, out HashSet<Type>? stateTypes))
+    {
+      stateTypes = new();
+      StateTypesByComponentId[componentId] = stateTypes;
+    }
+
+    stateTypes.Add(type);
+    return true;
+  }
+
+  private void RemoveAllForComponent(string componentId)
+  {
+    if (!StateTypesByComponentId.Remove(componentId, out HashSet<Type>? stateTypes))
+    {
+      return;
+    }
+
+    foreach (Type stateType in stateTypes)
+    {
+      if (!SubscriptionsByStateType.TryGetValue(stateType, out Dictionary<string, Subscription>? subscriptionsByComponentId))
+      {
+        continue;
+      }
+
+      subscriptionsByComponentId.Remove(componentId);
+      if (subscriptionsByComponentId.Count == 0)
+      {
+        SubscriptionsByStateType.Remove(stateType);
+      }
+    }
+  }
+
+  private Subscription[] Snapshot(Type stateType)
+  {
+    lock (SyncRoot)
+    {
+      if (!SubscriptionsByStateType.TryGetValue(stateType, out Dictionary<string, Subscription>? subscriptionsByComponentId)
+          || subscriptionsByComponentId.Count == 0)
+      {
+        return [];
+      }
+
+      Subscription[] snapshot = new Subscription[subscriptionsByComponentId.Count];
+      subscriptionsByComponentId.Values.CopyTo(snapshot, 0);
+      return snapshot;
+    }
+  }
+
+  private void RemoveDeadSubscription(Subscription deadSubscription)
+  {
+    if (!SubscriptionsByStateType.TryGetValue(deadSubscription.StateType, out Dictionary<string, Subscription>? subscriptionsByComponentId))
+    {
+      return;
+    }
+
+    if (!subscriptionsByComponentId.TryGetValue(deadSubscription.ComponentId, out Subscription currentSubscription))
+    {
+      return;
+    }
+
+    if (currentSubscription.TimeWarpStateComponentReference.TryGetTarget(out _))
+    {
+      return;
+    }
+
+    subscriptionsByComponentId.Remove(deadSubscription.ComponentId);
+    if (subscriptionsByComponentId.Count == 0)
+    {
+      SubscriptionsByStateType.Remove(deadSubscription.StateType);
+    }
+
+    if (!StateTypesByComponentId.TryGetValue(deadSubscription.ComponentId, out HashSet<Type>? stateTypes))
+    {
+      return;
+    }
+
+    stateTypes.Remove(deadSubscription.StateType);
+    if (stateTypes.Count == 0)
+    {
+      StateTypesByComponentId.Remove(deadSubscription.ComponentId);
+    }
+  }
+
   private void LogRemoveSubscription(Subscription subscription) => Logger.LogDebug
   (
     EventIds.Subscriptions_RemoveSubscription,
@@ -114,7 +248,7 @@ public class Subscriptions
     subscription.ComponentId,
     subscription.StateType.Name
   );
-  
+
   private void LogReRender(Subscription subscription) => Logger.LogDebug
   (
     EventIds.Subscriptions_ReRenderingSubscribers,
