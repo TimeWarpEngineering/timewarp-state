@@ -7,6 +7,7 @@
 // TWSG001 + skip emit rather than a containing-type partial chain (not a product feature).
 // Hint names include containing types with CLR '+' so AddSource cannot collide if emit is added later.
 // Load() sends the shared LoadPersistentStateRequest; PersistentStateMethod is read at runtime.
+// ClassModel keeps equatable path+span for diagnostics, not Location (avoids pinning SyntaxTrees).
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -58,16 +59,16 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
     string className = classDeclaration.Identifier.Text;
     bool isNested = classDeclaration.Parent is TypeDeclarationSyntax;
     string hintName = BuildHintName(classDeclaration, namespaceName);
-    Location location = classDeclaration.Identifier.GetLocation();
+    EquatableDiagnosticLocation diagnosticLocation = EquatableDiagnosticLocation.From(classDeclaration.Identifier.GetLocation());
 
-    return new ClassModel(namespaceName, className, isNested, hintName, location);
+    return new ClassModel(namespaceName, className, isNested, hintName, diagnosticLocation);
   }
 
   private static void Execute(ClassModel model, SourceProductionContext context)
   {
     if (model.IsNested)
     {
-      context.ReportDiagnostic(Diagnostic.Create(NestedPersistentStateRule, model.Location, model.ClassName));
+      context.ReportDiagnostic(Diagnostic.Create(NestedPersistentStateRule, model.DiagnosticLocation.ToLocation(), model.ClassName));
       return;
     }
 
@@ -139,26 +140,37 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
     };
   }
 
-  private sealed class ClassModel
+  private readonly record struct EquatableDiagnosticLocation
+  (
+    string FilePath,
+    TextSpan TextSpan,
+    LinePositionSpan LineSpan
+  )
   {
-    public string NamespaceName { get; }
-    public string ClassName { get; }
-    public bool IsNested { get; }
-    public string HintName { get; }
-    public Location Location { get; }
-
-    public ClassModel(
-      string namespaceName,
-      string className,
-      bool isNested,
-      string hintName,
-      Location location)
+    public static EquatableDiagnosticLocation From(Location location)
     {
-      NamespaceName = namespaceName;
-      ClassName = className;
-      IsNested = isNested;
-      HintName = hintName;
-      Location = location;
+      FileLinePositionSpan fileLinePositionSpan = location.GetLineSpan();
+      return new
+      (
+        fileLinePositionSpan.Path,
+        location.SourceSpan,
+        fileLinePositionSpan.Span
+      );
+    }
+
+    public Location ToLocation()
+    {
+      // Empty path is valid for in-memory test trees; preserve the identifier span.
+      return Location.Create(FilePath ?? string.Empty, TextSpan, LineSpan);
     }
   }
+
+  private sealed record ClassModel
+  (
+    string NamespaceName,
+    string ClassName,
+    bool IsNested,
+    string HintName,
+    EquatableDiagnosticLocation DiagnosticLocation
+  );
 }
