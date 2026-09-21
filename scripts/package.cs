@@ -4,10 +4,6 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
-using TimeWarp.Amuru;
-using TimeWarp.Nuru;
-using static System.Console;
-
 NuruApp app = NuruApp.CreateBuilder()
   .Map("")
     .WithHandler(App.PackageNuGets)

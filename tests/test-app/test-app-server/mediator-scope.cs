@@ -8,7 +8,4 @@
 // individual server request/handler types where contracts DTOs cannot carry the attribute.
 #endregion
 
-using TimeWarp.Mediator;
-using TimeWarp.State;
-
 [assembly: MediatorScope(typeof(ServerPipeline))]

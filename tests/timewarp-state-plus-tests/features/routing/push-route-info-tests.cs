@@ -5,12 +5,7 @@
 // ReSharper disable UnusedType.Global
 namespace PushRouteInfo_;
 
-using FakeItEasy;
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using TimeWarp.Mediator;
-using TimeWarp.Features.Routing;
-using TimeWarp.State;
 
 public class PushRouteInfo_Should
 {

@@ -2,12 +2,6 @@
 // ReSharper disable UnusedType.Global
 namespace GoBackRepro_;
 
-using FakeItEasy;
-using Microsoft.AspNetCore.Components;
-using TimeWarp.Mediator;
-using TimeWarp.Features.Routing;
-using TimeWarp.State;
-
 public class GoBack_Should
 {
   private sealed class RecordingNavigationManager : NavigationManager

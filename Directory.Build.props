@@ -38,6 +38,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <!-- TW0007 file-level usings → kebab global-usings.cs -->
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
   </ItemGroup>
 

@@ -9,4 +9,8 @@
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);RS0030;CS1591</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="global-usings.cs" />
+  </ItemGroup>
 </Project>

@@ -7,7 +7,4 @@
 // legitimate client Sends are not TWM004. Empty sealed ClientPipeline is the scope marker.
 #endregion
 
-using TimeWarp.Mediator;
-using TimeWarp.State;
-
 [assembly: MediatorScope(typeof(ClientPipeline))]
