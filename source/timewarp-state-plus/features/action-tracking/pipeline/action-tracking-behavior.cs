@@ -10,6 +10,7 @@ using static ActionTrackingState;
 public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
   where TAction : notnull, IAction
 {
+  private static readonly bool IsTracked = typeof(TAction).IsDefined(typeof(TrackActionAttribute), false);
   private readonly ILogger Logger;
   private readonly ISender<ClientPipeline> Sender;
   public ActiveActionBehavior(ISender<ClientPipeline> sender, ILogger<ActiveActionBehavior<TAction, TResponse>> logger)
@@ -25,7 +26,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     CancellationToken cancellationToken
   )
   {
-    if (typeof(TAction).GetCustomAttributes(typeof(TrackActionAttribute), false).Length != 0)
+    if (IsTracked)
     {
       ArgumentValidation.EnsureNotType<TAction, StartProcessingActionSet.Action>(action, nameof(action));
       ArgumentValidation.EnsureNotType<TAction, CompleteProcessingActionSet.Action>(action, nameof(action));

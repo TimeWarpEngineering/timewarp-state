@@ -6,11 +6,11 @@ public partial class CounterState
   {
     var counterState = new CounterState
     {
-      Count = Convert.ToInt32(keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Count))].ToString()),
+      Count = Convert.ToInt32(keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Count))].ToString()),
       Guid =
         new Guid
         (
-          keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ??
+          keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid))].ToString() ??
           throw new InvalidOperationException()
         )
     };

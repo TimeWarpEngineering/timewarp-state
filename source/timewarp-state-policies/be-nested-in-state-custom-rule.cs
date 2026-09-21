@@ -4,16 +4,8 @@ public class BeNestedInStateCustomRule:ICustomRule
 {
   public bool MeetsRule(TypeDefinition typeDefinition)
   {
-    var type = typeDefinition.ToType();
-    
-    while (type.DeclaringType != null && !typeof(IState).IsAssignableFrom(type))
-    {
-      type = type.DeclaringType;
-    }
-
-    bool result = typeof(IState).IsAssignableFrom(type);
-
-    return result;
+    Type type = typeDefinition.ToType();
+    return type.TryGetEnclosingStateType(out _);
   }
 }
 

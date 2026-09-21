@@ -7,11 +7,11 @@ public partial class ApplicationState
     Guid =
       new Guid
       (
-        keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ??
+        keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid))].ToString() ??
         throw new InvalidOperationException("Guid is required.")
       ),
     Name =
-      keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Name))].ToString() ??
+      keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Name))].ToString() ??
       throw new InvalidOperationException("Name is required.")
   };
 

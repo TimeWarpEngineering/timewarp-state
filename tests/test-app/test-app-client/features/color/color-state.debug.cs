@@ -8,12 +8,12 @@ public partial class ColorState
   {
     var colorState = new ColorState
     {
-      FavoriteColor = (Color)keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(FavoriteColor))],
-      MyColorName = (string)keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(FavoriteColor))],
+      FavoriteColor = (Color)keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(FavoriteColor))],
+      MyColorName = (string)keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(FavoriteColor))],
       Guid = 
         new Guid
         (
-          keyValuePairs[CamelCase.MemberNameToCamelCase(nameof(Guid))].ToString() ?? 
+          keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid))].ToString() ?? 
             throw new InvalidOperationException()
         )
     };

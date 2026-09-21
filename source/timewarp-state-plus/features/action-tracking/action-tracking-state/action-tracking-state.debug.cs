@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public override ActionTrackingState Hydrate(IDictionary<string, object> keyValuePairs)
   {
-    string guidKey = CamelCase.MemberNameToCamelCase(nameof(Guid));
+    string guidKey = JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid));
     
     if (!keyValuePairs.TryGetValue(guidKey, out object? guidValue))
     {

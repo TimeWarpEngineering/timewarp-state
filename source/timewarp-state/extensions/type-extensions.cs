@@ -2,21 +2,33 @@
 
 public static class TypeExtensions
 {
+  public static bool TryGetEnclosingStateType(this Type type, out Type? enclosingStateType)
+  {
+    Type currentType = type;
+    while (currentType.DeclaringType != null && !typeof(IState).IsAssignableFrom(currentType))
+    {
+      currentType = currentType.DeclaringType;
+    }
+
+    if (!typeof(IState).IsAssignableFrom(currentType))
+    {
+      enclosingStateType = null;
+      return false;
+    }
+
+    enclosingStateType = currentType;
+    return true;
+  }
+
   public static Type GetEnclosingStateType(this Type type)
   {
-    string name = type.Name;
-    while (type.DeclaringType != null && !typeof(IState).IsAssignableFrom(type))
+    if (TryGetEnclosingStateType(type, out Type? enclosingStateType))
     {
-      type = type.DeclaringType;
+      return enclosingStateType!;
     }
 
-    if (!typeof(IState).IsAssignableFrom(type))
-    {
-      throw new NonNestedClassException
-        ($"{name} must be nested in a class that implements {nameof(IState)}");
-    }
-
-    return type;
+    throw new NonNestedClassException
+      ($"{type.Name} must be nested in a class that implements {nameof(IState)}");
   }
 
   public static string GetSimpleName(this Type type)

@@ -32,6 +32,7 @@ global using System.Net.Http;
 global using System.Net.Http.Json;
 global using System.Reflection;
 global using System.Runtime.Serialization;
+global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Threading;
 global using System.Threading.Tasks;
