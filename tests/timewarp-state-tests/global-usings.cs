@@ -10,4 +10,5 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.JSInterop;
 global using TimeWarp.Features.JavaScriptInterop;
+global using TimeWarp.Features.StateTransactions;
 global using System.Runtime.CompilerServices;
