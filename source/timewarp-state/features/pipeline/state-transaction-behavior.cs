@@ -1,3 +1,13 @@
+#region Purpose
+// Clone state before the handler runs; on failure, restore the original and optionally notify.
+#endregion
+
+#region Design
+// Clone is outside the try; the catch is a handler failure, not a clone failure.
+// ExceptionNotification is published with CancellationToken.None so a cancelled request token cannot skip reporting.
+// OperationCanceledException still rolls back; it is not published because cancellation is not a failure.
+#endregion
+
 namespace TimeWarp.Features.StateTransactions;
 
 /// <summary>
@@ -97,13 +107,18 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     }
     catch (Exception exception)
     {
-      Logger.LogWarning
-      (
-        EventIds.StateTransactionBehavior_Exception,
-        exception,
-        message: "Error cloning State. Type:{enclosingStateType}",
-        enclosingStateType
-      );
+      bool isCancellation = exception is OperationCanceledException;
+
+      if (!isCancellation)
+      {
+        Logger.LogWarning
+        (
+          EventIds.StateTransactionBehavior_Exception,
+          exception,
+          message: "Error handling action. Type:{enclosingStateType}",
+          enclosingStateType
+        );
+      }
 
       // If something fails we restore system to previous state.
       Logger.LogInformation
@@ -115,13 +130,16 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
       Store.SetState(originalState);
 
-      var exceptionNotification = new ExceptionNotification
-      (
-        requestName: nameof(StateTransactionBehavior<TRequest, TResponse>),
-        exception: exception
-      );
+      if (!isCancellation)
+      {
+        ExceptionNotification exceptionNotification = new
+        (
+          requestName: nameof(StateTransactionBehavior<TRequest, TResponse>),
+          exception: exception
+        );
 
-      await Publisher.Publish(exceptionNotification, cancellationToken);
+        await Publisher.Publish(exceptionNotification, CancellationToken.None);
+      }
 
       return default!;// It can be null, but we don't care since TimeWarp.Mediator handles null values gracefully.
     }
