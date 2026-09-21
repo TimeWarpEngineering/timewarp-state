@@ -1,1 +1,1 @@
-{"task":"060","holder":"cramer","session":"3904082","machine":"TWE-001","acquiredAt":"2026-09-21T16:13:54.3125534+00:00"}
+{"task":"060","holder":"cramer","session":"3904082","machine":"TWE-001","worktree":"/home/steve/worktrees/github.com/TimeWarpEngineering/timewarp-state/task-060-fix-store-getstate-and-getsemaphore-check-then-add","branch":"task/060-fix-store-getstate-and-getsemaphore-check-then-add","acquiredAt":"2026-09-21T16:13:54.3125534+00:00"}
