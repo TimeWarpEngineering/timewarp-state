@@ -25,6 +25,16 @@ public class TimeWarpStateOptions
   /// Use the FullName of the State in the ReduxDevTools
   /// </summary>
   public bool UseFullNameForStatesInDevTools { get; set; } = false;
+  /// <summary>
+  /// Capture <c>Class.Method</c> of the caller of <c>ShouldRender</c>, <c>SetParametersAsync</c>,
+  /// and <c>StateHasChanged</c> onto the public <c>*WasCalledBy</c> diagnostic properties.
+  /// </summary>
+  /// <remarks>
+  /// Default is <c>false</c> so production hot paths skip <see cref="StackTrace"/> allocation.
+  /// Diagnostic pages that render those properties set this to <c>true</c>.
+  /// Do not key this off log level; the strings are shown on screen, not only in logs.
+  /// </remarks>
+  public bool CaptureRenderCaller { get; set; } = false;
   public JsonSerializerOptions JsonSerializerOptions { get; }
   
   public readonly IServiceCollection ServiceCollection;

@@ -45,11 +45,10 @@ public partial class TimeWarpStateComponent
   /// </remarks>
   protected new void StateHasChanged()
   {
-    StackFrame? frame = new StackTrace().GetFrame(1);
-    MethodBase? method = frame?.GetMethod();
-    string className = method?.DeclaringType?.Name ?? "Unknown";
-    string methodName = method?.Name ?? "Unknown";
-    StateHasChangedWasCalledBy = $"{className}.{methodName}";
+    if (TimeWarpStateOptions is { CaptureRenderCaller: true })
+    {
+      StateHasChangedWasCalledBy = FormatRenderCaller(new StackTrace().GetFrame(1));
+    }
     StateHasChangedWasCalled = true;
     InvokeAsync(base.StateHasChanged);
   }

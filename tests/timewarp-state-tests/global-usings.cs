@@ -5,3 +5,7 @@ global using System.Linq.Expressions;
 global using System.Reflection;
 global using TimeWarp.Fixie;
 global using TimeWarp.State;
+global using Microsoft.AspNetCore.Components;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging.Abstractions;
+global using System.Runtime.CompilerServices;
