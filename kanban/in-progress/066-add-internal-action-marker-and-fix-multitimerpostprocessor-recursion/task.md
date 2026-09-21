@@ -20,6 +20,7 @@ The deeper issue (finding 29): pipeline infrastructure has no general way to exc
 - [x] Replace `EnsureNotType` throws in ActiveActionBehavior with the marker check
 - [x] Audit other open behaviors/processors for whether they should skip internal actions
 - [x] Update timers feature readme registration guidance
+- [x] Implementation review disposition (same task id)
 
 ## Notes
 
@@ -37,10 +38,11 @@ Coordinate the marker design with task 067 (render suppression), which wants a s
 
 - Created: code review 2026-06-11
 - Implementer: grok session 01a0c62a-2617-77b1-a2b1-28b14675f72d (2026-09-22)
+- Review oracle: grok session 01a0c63c-b90a-7d70-915c-609c54b6704f (2026-09-22) — tw-implementation-review effort 1, roster general (round 1 `01a0c63e`, M1 fix `01a0c64b`, round 2 `01a0c64e`); disposition clean
 
 ## Results
 
-`IInternalAction` lives in TimeWarp.State and extends `IAction`. `ResetTimersOnActivityActionSet.Action`, `StartProcessingActionSet.Action`, and `CompleteProcessingActionSet.Action` implement it. `MultiTimerPostProcessor` skips internal requests after `next()`, so a nested `ResetTimersOnActivity` send does not re-enter the reset. `ActiveActionBehavior` skips tracking for `IInternalAction` even when `[TrackAction]` is also present; `ArgumentValidation.EnsureNotType` is gone. Timers feature readme registers the post-processor with `[assembly: MediatorBehavior(..., order: 550, Scope = typeof(ClientPipeline))]`.
+`IInternalAction` lives in TimeWarp.State and extends `IAction`. `ResetTimersOnActivityActionSet.Action`, `StartProcessingActionSet.Action`, and `CompleteProcessingActionSet.Action` implement it. `MultiTimerPostProcessor` skips internal requests after `next()`, then sends `ResetTimersOnActivityActionSet.Action` on `ISender<ClientPipeline>` (does not inject `TimerState`; only `Store.GetState` assigns `Sender`). `ActiveActionBehavior` skips tracking for `IInternalAction` even when `[TrackAction]` is also present; `ArgumentValidation.EnsureNotType` is gone. Timers feature readme registers the post-processor with `[assembly: MediatorBehavior(..., order: 550, Scope = typeof(ClientPipeline))]`.
 
 **Files changed**
 
@@ -59,6 +61,15 @@ Coordinate the marker design with task 067 (render suppression), which wants a s
 - Marker is an interface, not an attribute: identity of pipeline-originated work. Task 067 owns `[SuppressRender]`.
 - Removing public `ArgumentValidation` is the replacement for the hard-coded throw list.
 - Recursion tests drive `MultiTimerPostProcessor` with a recording `ISender<ClientPipeline>` (including a nested re-entry of the reset closed generic) rather than weaving the behavior into test-app.
+- Review M1: send the reset action through `ISender<ClientPipeline>` instead of injecting transient `TimerState`.
+
+### Review disposition
+
+- Body: tw-implementation-review, effort 1, roster `general` (grok-4.6 subagent, read-only); 2 rounds on branch `task/066-add-internal-action-marker-and-fix-multitimerpostp` vs `origin/master`.
+- Round 1: 1 bug (M1 injected `TimerState` has no `Sender`), 0 suggestion, 0 nit. Fixed on this task id (no sibling apply-review task).
+- Round 2: re-verified M1; 0 new findings.
+- Final: 0 open; 1 bug fixed; 0 wontfix.
+- **Disposition: clean** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-2/merged.md`).
 
 **Tests**
 
@@ -72,8 +83,8 @@ Coordinate the marker design with task 067 (render suppression), which wants a s
 **Smoke**
 
 ```bash
-dotnet fixie timewarp-state-plus-tests --tests MultiTimerPostProcessor_
-dotnet fixie timewarp-state-plus-tests --tests ActiveActionBehavior_
+dotnet fixie timewarp-state-plus-tests --tests '*MultiTimerPostProcessor*'
+dotnet fixie timewarp-state-plus-tests --tests '*ActiveActionBehavior*'
 ```
 
 **Expect**
