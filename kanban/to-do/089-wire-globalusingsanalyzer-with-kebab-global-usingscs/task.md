@@ -1,6 +1,27 @@
-# Wire GlobalUsingsAnalyzer with kebab `global-usings.cs`
+# Opt in TW0007; drop BDSoftware; keep using-fold
 
 ## Description
+
+**Retarget.** First implement (PR **#593**) wired **GlobalUsingsAnalyzer 1.4.0**. We now ship **TW0007** in TimeWarp.SourceGenerators **1.0.0-beta.11** (namespace-first). Ganda `global-usings-analyzer` audits SourceGenerators + kebab `TW0007.filename`, not the NuGet analyzer.
+
+**Keep** the using-fold already on this branch (Plus tests `global-usings.cs`, `scripts/global-usings.cs`, stripped duplicates). **Do not** merge #593 until this retarget is committed on the same branch.
+
+## Remaining
+
+- CPM `TimeWarp.SourceGenerators` **1.0.0-beta.4 → 1.0.0-beta.11**
+- Remove `GlobalUsingsAnalyzer` from `Directory.Packages.props` and `Directory.Build.props`
+- `.editorconfig`: drop GlobalUsingsAnalyzer0001/0002/0003. Add `dotnet_diagnostic.TW0007.filename = global-usings.cs` under `[*.cs]` (copy Ganda). Enable TW0007 at **warning** so namespace-first file usings actually fire (`isEnabledByDefault: false` in the package)
+- Do **not** undo the using-fold
+- `dev build` / `dev test` green; `ganda repo audit` should not fail `global-usings-analyzer` (package pin + kebab filename)
+- Do not flip `TreatWarningsAsErrors`
+
+Same-task-through-fold-in. Same PR #593.
+
+---
+
+Original (superseded) brief:
+
+`.editorconfig` already has GlobalUsingsAnalyzer keys, but they do **not** run:
 
 `.editorconfig` already has GlobalUsingsAnalyzer keys, but they do **not** run:
 
@@ -26,8 +47,11 @@ Copy Ganda/Nuru: pin **1.4.0**, `PackageReference` with `PrivateAssets=all` on `
 
 ## Checklist
 
-- [x] Package referenced; editorconfig filename is kebab `global-usings.cs`
-- [x] Repeated test/source usings moved to project `global-usings.cs`
+- [x] Using-fold (Plus tests / scripts / samples / assembly-markers) — keep
+- [ ] SourceGenerators **1.0.0-beta.11**; **no** GlobalUsingsAnalyzer package
+- [ ] TW0007 filename kebab; TW0007 enabled at warning
+- [ ] `ganda repo audit` `global-usings-analyzer` PASS
+- [ ] Do not merge #593 until retarget is on the branch
 - [x] `dotnet run --file tools/dev-cli/dev.cs -- build` 0 errors
 - [x] Confirm analyzer loads (`/analyzer:.../GlobalUsingsAnalyzer.dll` in `csc` or a known-bad file-level using produces GlobalUsingsAnalyzer0003)
 
@@ -51,6 +75,7 @@ Implementation review (effort 1, general): `review/` — round 1 found no issues
 - Implementer: grok session 01a0bcda-d7e6-7b53-aba5-f4798f909d6c (2026-09-20)
 - Review oracle: grok session 01a0bce8-8b93-7f63-b02d-3b1639a9964b (2026-09-20)
 - Reviewer (general, round 1): grok-4.5 `01a0bcea-5053-7f43-a655-ffe5a0e7a243` (2026-09-20)
+- 2026-09-21: cockpit — retarget: keep using-fold; bump SourceGenerators 1.0.0-beta.11; drop BDSoftware; TW0007. Same PR #593.
 
 ## Results
 
