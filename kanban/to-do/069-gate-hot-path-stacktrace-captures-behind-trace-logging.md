@@ -1,27 +1,40 @@
-# Gate hot-path StackTrace captures behind trace logging
+# Gate hot-path StackTrace behind TimeWarpStateOptions
 
 ## Description
 
-Code review 2026-06-11, finding 17 (`code-review-2026-06-11.md`).
+Code review 2026-06-11, finding 17. Still true after 073.
 
-Three unconditional `new StackTrace()` captures (plus frame metadata resolution and string interpolation) sit on the hottest paths of every `TimeWarpStateComponent`:
+Three unconditional `new StackTrace()` captures on every `TimeWarpStateComponent`:
 
-- `ShouldRender` — `timewarp-state-component.cs:95`
-- `SetParametersAsync` — `check-complex-parameter-changed.cs:35`
-- `StateHasChanged` — `register-render-trigger.cs:49`
+- `ShouldRender` — `timewarp-state-component.cs` (~97)
+- `SetParametersAsync` — `check-complex-parameter-changed.cs` (~35) — method name **only**
+- `StateHasChanged` — `register-render-trigger.cs` (~48) — `Class.Method`
 
-Inside the library the resulting `...WasCalledBy` strings are consumed only by `LogTrace` in `OnAfterRender`. Stack capture costs microseconds-to-milliseconds per call and is especially costly on Blazor WASM. Note: the properties are public and rendered by test-app diagnostic pages (`tests/test-app/test-app-client/pages/should-render-test-page/*.razor`), so gate rather than delete.
+Consumed by test-app diagnostic pages (`should-render-test-page`, `should-render-state-triggers-test-page`). Gate, do not delete. The three snippets have drifted.
 
-The three copy-pasted capture snippets have also already drifted: two record `Class.Method`, one records only the method name.
+## Requirements
 
-## Fix
+- **`TimeWarpStateOptions` flag** (e.g. `CaptureRenderCaller`), default **false**. Do **not** use only `Logger.IsEnabled(LogLevel.Trace)` — diagnostic pages need the strings on screen.
+- Test-app / those pages **opt in** (set the flag true in host setup).
+- One shared helper for `Class.Method` (same format at all three sites). `[CallerMemberName]` cannot replace `GetFrame(1)` for “who called ShouldRender.”
+- When the flag is off: skip `StackTrace`; leave `*WasCalledBy` **null** (pages already render empty).
+- Keep the public properties.
+- Tests: flag off → no capture (or at least properties stay null); flag on → `Class.Method` at all three sites.
 
-- Guard each capture with `if (Logger.IsEnabled(LogLevel.Trace))` (or a `TimeWarpStateOptions` diagnostics flag, which would also keep the test-app diagnostic pages working by opting in).
-- Extract one shared private helper (e.g. `GetCallerName()` wrapping the frame walk) so the three sites can't drift.
-- Consider `[CallerMemberName]` plumbing where the caller is a known internal site — zero runtime cost and inlining-proof, unlike StackTrace in Release builds.
+## Out of scope
+
+- Redux DevTools `BuildStackTrace` (already gated)
+- Deleting diagnostic pages
+- Render-reason boolean flags (`ShouldRenderWasCalled` etc.)
 
 ## Checklist
 
-- [ ] Decide gating mechanism (log-level check vs options flag) — coordinate with test-app diagnostic pages
-- [ ] Apply to all three sites via one shared helper
-- [ ] Verify test-app should-render diagnostic pages still show data when the gate is enabled
+- [ ] Options flag default false; test-app opts in
+- [ ] Shared helper; three sites consistent
+- [ ] Diagnostic pages still show caller when opted in
+- [ ] `dev test` green
+
+## Session
+
+- Created: code review 2026-06-11
+- 2026-09-21: cockpit shrunk — options flag not Trace-only; dispatch implementer-grok
