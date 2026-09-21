@@ -282,11 +282,9 @@ dotnet_code_quality.null_check_validation_methods = NotNull
 # CA1308: Normalize strings to uppercase
 dotnet_diagnostic.ca1308.severity = none
 
-# Global Usings Analyzer
-
-dotnet_diagnostic.GlobalUsingsAnalyzer0001.filename = global-usings.cs
-dotnet_diagnostic.GlobalUsingsAnalyzer0002.enabled = true
-dotnet_diagnostic.GlobalUsingsAnalyzer0003.severity = warning
+# TW0007 file-level usings (TimeWarp.SourceGenerators)
+dotnet_diagnostic.TW0007.severity = warning
+dotnet_diagnostic.TW0007.filename = global-usings.cs
 
 # ganda repo audit configuration
 [ganda.audit]

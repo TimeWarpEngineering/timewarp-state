@@ -14,7 +14,7 @@
     <PackageVersion Include="TimeWarp.Mediator.Analyzers" Version="14.0.0-beta.1" />
     <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.76" />
     <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="3.0.0-beta.76" />
-    <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.4" />
+    <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.State.Plus" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.Terminal" Version="1.0.1" />
@@ -39,10 +39,6 @@
     </PackageVersion>
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
-    <PackageVersion Include="GlobalUsingsAnalyzer" Version="1.4.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageVersion>
 
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />

@@ -38,9 +38,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <!-- TW0007 file-level usings → kebab global-usings.cs -->
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
-    <!-- Prefer project global-usings.cs over file-level usings (editorconfig GlobalUsingsAnalyzer000*). -->
-    <PackageReference Include="GlobalUsingsAnalyzer" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Banned API Symbols -->
