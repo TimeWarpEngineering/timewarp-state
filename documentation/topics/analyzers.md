@@ -5,7 +5,7 @@ title: Analyzers
 
 # Analyzers
 
-TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package.
+TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class.
 
 > **Breaking change:** analyzer diagnostic IDs were renamed to the `TWS` prefix: `TW0001` → `TWS0001`, `TW0002` → `TWS0002`, `TW0003` → `TWS0003`. This stops colliding with TimeWarp.SourceGenerators, which owns the bare `TW0001`–`TW0006` range (its `TW0002` is the unrelated XML-docs-to-markdown rule). Update `.editorconfig` `dotnet_diagnostic.*.severity` entries to the new ids.
 
@@ -64,3 +64,11 @@ internal abstract class DefaultApiHandler<TAction, TRequest, TResponse> : ApiHan
 {
 }
 ```
+
+## TWSG001 — Nested PersistentState is not supported
+
+- **Severity:** Error
+- **Category:** Persistence
+- **Message:** [PersistentState] is not supported on nested class '{0}'. Move the state to a top-level type.
+
+Reported by `PersistenceStateSourceGenerator`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.

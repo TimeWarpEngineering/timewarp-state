@@ -1,11 +1,37 @@
+#region Purpose
+// Emits a Load() partial for top-level [PersistentState] types; rejects nested states.
+#endregion
+
+#region Design
+// Nested [PersistentState] is unsupported: policies nest actions in states, not states in types.
+// TWSG001 + skip emit rather than a containing-type partial chain (not a product feature).
+// Hint names include containing types with CLR '+' so AddSource cannot collide if emit is added later.
+// Load() sends the shared LoadPersistentStateRequest; PersistentStateMethod is read at runtime.
+// ClassModel keeps equatable path+span for diagnostics, not Location (avoids pinning SyntaxTrees).
+#endregion
+
 namespace TimeWarp.State.SourceGenerator;
 
 [Generator]
 public class PersistenceStateSourceGenerator : IIncrementalGenerator
 {
+  public const string NestedPersistentStateDiagnosticId = "TWSG001";
+
+  private static readonly DiagnosticDescriptor NestedPersistentStateRule =
+    new
+    (
+      NestedPersistentStateDiagnosticId,
+      title: "[PersistentState] is not supported on nested classes",
+      messageFormat: "[PersistentState] is not supported on nested class '{0}'. Move the state to a top-level type.",
+      category: "Persistence",
+      defaultSeverity: DiagnosticSeverity.Error,
+      isEnabledByDefault: true,
+      description: "Policies nest actions in states, not states in other types. Nested [PersistentState] would emit a top-level partial that does not merge with the nested type."
+    );
+
   public void Initialize(IncrementalGeneratorInitializationContext context)
   {
-    var classDeclarations = context.SyntaxProvider
+    IncrementalValuesProvider<ClassModel?> classDeclarations = context.SyntaxProvider
       .CreateSyntaxProvider(
         predicate: static (node, _) => IsCandidateClass(node),
         transform: static (ctx, _) => GetSemanticTarget(ctx))
@@ -17,9 +43,9 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
 
   private static bool IsCandidateClass(SyntaxNode node)
   {
-    if (node is not ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclaration) 
+    if (node is not ClassDeclarationSyntax { AttributeLists.Count: > 0 } classDeclaration)
       return false;
-    
+
     return classDeclaration.AttributeLists
       .SelectMany(attrList => attrList.Attributes)
       .Any(attr => attr.Name.ToString() == "PersistentState" || attr.Name.ToString().EndsWith(".PersistentState"));
@@ -27,45 +53,30 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
 
   private static ClassModel? GetSemanticTarget(GeneratorSyntaxContext context)
   {
-    var classDeclaration = (ClassDeclarationSyntax)context.Node;
-    
+    ClassDeclarationSyntax classDeclaration = (ClassDeclarationSyntax)context.Node;
+
     string namespaceName = GetNamespace(classDeclaration);
     string className = classDeclaration.Identifier.Text;
-    string persistentStateMethod = GetPersistentStateMethod(classDeclaration);
-    
-    return new ClassModel(namespaceName, className, persistentStateMethod);
+    bool isNested = classDeclaration.Parent is TypeDeclarationSyntax;
+    string hintName = BuildHintName(classDeclaration, namespaceName);
+    EquatableDiagnosticLocation diagnosticLocation = EquatableDiagnosticLocation.From(classDeclaration.Identifier.GetLocation());
+
+    return new ClassModel(namespaceName, className, isNested, hintName, diagnosticLocation);
   }
 
   private static void Execute(ClassModel model, SourceProductionContext context)
   {
-    string generatedCode = GenerateLoadClassCode(
-      model.NamespaceName,
-      model.ClassName,
-      model.PersistentStateMethod);
-    
-    string uniqueHintName = $"{model.NamespaceName}.{model.ClassName}_Persistence.g.cs";
-    
-    ReportUniqueHintNameDiagnostic(context, uniqueHintName);
-    context.AddSource(uniqueHintName, SourceText.From(generatedCode, Encoding.UTF8));
+    if (model.IsNested)
+    {
+      context.ReportDiagnostic(Diagnostic.Create(NestedPersistentStateRule, model.DiagnosticLocation.ToLocation(), model.ClassName));
+      return;
+    }
+
+    string generatedCode = GenerateLoadClassCode(model.NamespaceName, model.ClassName);
+    context.AddSource(model.HintName, SourceText.From(generatedCode, Encoding.UTF8));
   }
 
-  private static void ReportUniqueHintNameDiagnostic(SourceProductionContext context, string uniqueHintName)
-  {
-    var diagnostic = Diagnostic.Create(
-      new DiagnosticDescriptor(
-        id: "SG001",
-        title: "Unique Hint Name",
-        messageFormat: "Unique hint name for generated file: {0}",
-        category: "SourceGeneratorDebug",
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true),
-      location: Location.None,
-      uniqueHintName);
-
-    context.ReportDiagnostic(diagnostic);
-  }
-
-  private static string GenerateLoadClassCode(string namespaceName, string className, string persistentStateMethod)
+  private static string GenerateLoadClassCode(string namespaceName, string className)
   {
     return $$$"""
       #nullable enable
@@ -98,19 +109,24 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
       """;
   }
 
-  private static string ToCamelCase(string str)
+  private static string BuildHintName(ClassDeclarationSyntax classDeclaration, string namespaceName)
   {
-    if (!string.IsNullOrEmpty(str) && char.IsUpper(str[0]))
+    List<string> typeNames = [];
+    SyntaxNode? node = classDeclaration;
+    while (node is TypeDeclarationSyntax typeDeclaration)
     {
-      return char.ToLower(str[0]) + str.Substring(1);
+      typeNames.Insert(0, typeDeclaration.Identifier.Text);
+      node = node.Parent;
     }
-    return str;
+
+    string typePath = string.Join(separator: "+", typeNames);
+    return $"{namespaceName}.{typePath}_Persistence.g.cs";
   }
 
   private static string GetNamespace(SyntaxNode? node)
   {
-    while (node != null 
-           && node is not NamespaceDeclarationSyntax 
+    while (node != null
+           && node is not NamespaceDeclarationSyntax
            && node is not FileScopedNamespaceDeclarationSyntax)
     {
       node = node.Parent;
@@ -124,38 +140,37 @@ public class PersistenceStateSourceGenerator : IIncrementalGenerator
     };
   }
 
-  private static string GetPersistentStateMethod(MemberDeclarationSyntax classDeclaration)
+  private readonly record struct EquatableDiagnosticLocation
+  (
+    string FilePath,
+    TextSpan TextSpan,
+    LinePositionSpan LineSpan
+  )
   {
-    foreach (AttributeListSyntax attributeList in classDeclaration.AttributeLists)
+    public static EquatableDiagnosticLocation From(Location location)
     {
-      foreach (AttributeSyntax attribute in attributeList.Attributes)
-      {
-        if (!attribute.Name.ToString().EndsWith("PersistentState")) continue;
-        AttributeArgumentSyntax? argument = attribute.ArgumentList?.Arguments.FirstOrDefault();
-        if (argument?.Expression is not null)
-        {
-          string methodArgument = argument.Expression.ToString();
-          string? method = methodArgument.Split('.').LastOrDefault();
-          return method ?? "SessionStorage";
-        }
-        break;
-      }
+      FileLinePositionSpan fileLinePositionSpan = location.GetLineSpan();
+      return new
+      (
+        fileLinePositionSpan.Path,
+        location.SourceSpan,
+        fileLinePositionSpan.Span
+      );
     }
 
-    return "SessionStorage";
-  }
-
-  private sealed class ClassModel
-  {
-    public string NamespaceName { get; }
-    public string ClassName { get; }
-    public string PersistentStateMethod { get; }
-
-    public ClassModel(string namespaceName, string className, string persistentStateMethod)
+    public Location ToLocation()
     {
-      NamespaceName = namespaceName;
-      ClassName = className;
-      PersistentStateMethod = persistentStateMethod;
+      // Empty path is valid for in-memory test trees; preserve the identifier span.
+      return Location.Create(FilePath ?? string.Empty, TextSpan, LineSpan);
     }
   }
+
+  private sealed record ClassModel
+  (
+    string NamespaceName,
+    string ClassName,
+    bool IsNested,
+    string HintName,
+    EquatableDiagnosticLocation DiagnosticLocation
+  );
 }

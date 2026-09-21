@@ -12,6 +12,7 @@ Roslyn analyzers packed into `TimeWarp.State` at `analyzers/dotnet/cs`. Consumer
 | TWS0002 | Warning | Design | `HandlerMustNotSendActionAnalyzer` — a state action handler must not send an action |
 | TWS0003 | Info | Design | `HandlerMustNotSendActionAnalyzer` — `[AllowActionSend]` exemption is present |
 | TWS001 | Error | Design | `StateImplementationAnalyzer` |
+| TWSG001 | Error | Persistence | `PersistenceStateSourceGenerator` — `[PersistentState]` is not supported on nested classes |
 | StateInheritanceTypeArgumentRule | Error | Design | `StateInheritanceAnalyzer` |
 | StateSealedClassRule | Warning | Design | `StateInheritanceAnalyzer` |
 | StateReadOnlyPublicPropertiesRule | Error | Design | `StateReadOnlyPublicPropertiesAnalyzer` |
