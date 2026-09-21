@@ -1,3 +1,14 @@
+#region Purpose
+// Per-scope bag of IState instances, keyed by type name, with per-type SemaphoreSlim gates.
+#endregion
+
+#region Design
+// GetState/GetSemaphore use ConcurrentDictionary.GetOrAdd so concurrent first access does not throw.
+// Per-type locks serialize construction: Initialize and StateInitializedNotification run on the
+// canonical instance only, and the instance is inserted only after Initialize succeeds so a
+// TryGetValue hit is always initialized. RemoveState takes the same lock. Reset clears States.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>
@@ -11,6 +22,7 @@ internal partial class Store : IStore
   private readonly ConcurrentDictionary<string, IState> States;
   private readonly ConcurrentDictionary<string, IState> PreviousStates;
   private readonly ConcurrentDictionary<string, SemaphoreSlim> Semaphores;
+  private readonly ConcurrentDictionary<string, object> StateInitializationLocks;
   private readonly IPublisher<ClientPipeline> Publisher;
   private readonly TimeWarpStateOptions TimeWarpStateOptions;
 
@@ -39,6 +51,7 @@ internal partial class Store : IStore
     States = new ConcurrentDictionary<string, IState>();
     PreviousStates = new ConcurrentDictionary<string, IState>();
     Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
+    StateInitializationLocks = new ConcurrentDictionary<string, object>();
   }
 
   /// <summary>
@@ -61,25 +74,29 @@ internal partial class Store : IStore
   public void RemoveState<TState>() where TState : IState
   {
     string typeName = typeof(TState).FullName ?? throw new InvalidOperationException();
-    Logger.LogDebug
-    (
-      EventIds.Store_RemoveState,
-      "{Timestamp:O} Removing State: {TypeName}", 
-      DateTime.UtcNow, 
-      typeName
-    );
-    PreviousStates.Remove(typeName, out _);
-    States.Remove(typeName, out IState? state);
-    state?.CancelOperations();
-    
-    // Remove and dispose the associated Semaphore
-    if (Semaphores.TryRemove(typeName, out SemaphoreSlim? semaphore))
+    object initializationLock = StateInitializationLocks.GetOrAdd(typeName, static _ => new object());
+    lock (initializationLock)
     {
-      semaphore.Dispose();
-    }
+      Logger.LogDebug
+      (
+        EventIds.Store_RemoveState,
+        "{Timestamp:O} Removing State: {TypeName}",
+        DateTime.UtcNow,
+        typeName
+      );
+      PreviousStates.Remove(typeName, out _);
+      States.Remove(typeName, out IState? state);
+      state?.CancelOperations();
 
-    // Optionally, remove the initialization task
-    StateInitializationTasks.TryRemove(typeName, out _);
+      // Remove and dispose the associated Semaphore
+      if (Semaphores.TryRemove(typeName, out SemaphoreSlim? semaphore))
+      {
+        semaphore.Dispose();
+      }
+
+      // Optionally, remove the initialization task
+      StateInitializationTasks.TryRemove(typeName, out _);
+    }
   }
 
   /// <summary>
@@ -93,17 +110,24 @@ internal partial class Store : IStore
   public SemaphoreSlim? GetSemaphore(Type stateType)
   {
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
-    if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? semaphore)) return semaphore;
-    if (States.ContainsKey(typeName)) // if the State has been removed then no need for semaphore
+    if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? existing))
     {
-      semaphore = new SemaphoreSlim(1, 1);
-      if (!Semaphores.TryAdd(typeName, semaphore))
-      {
-        throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the Semaphores dictionary.");
-      }
-      return semaphore;
+      return existing;
     }
-    return null;
+
+    if (!States.ContainsKey(typeName))
+    {
+      return null;
+    }
+
+    SemaphoreSlim created = new(1, 1);
+    SemaphoreSlim semaphore = Semaphores.GetOrAdd(typeName, created);
+    if (!ReferenceEquals(semaphore, created))
+    {
+      created.Dispose();
+    }
+
+    return semaphore;
   }
 
   /// <summary>
@@ -122,23 +146,39 @@ internal partial class Store : IStore
     {
       string typeName = stateType.FullName ?? throw new InvalidOperationException();
 
-      if (!States.TryGetValue(typeName, out IState? state))
+      if (States.TryGetValue(typeName, out IState? existingState))
       {
-        Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
+        Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, existingState.Guid);
+        return existingState;
+      }
 
-        // will use default constructor if none exists
-        state = (IState)ServiceProvider.GetRequiredService(stateType);
-
-        // we need to set the sender if the default constructor was used
-        state.Sender = ServiceProvider.GetRequiredService<ISender<ClientPipeline>>();
-
-        state.Initialize();
-        if (!States.TryAdd(typeName, state))
+      object initializationLock = StateInitializationLocks.GetOrAdd(typeName, static _ => new object());
+      lock (initializationLock)
+      {
+        if (States.TryGetValue(typeName, out existingState))
         {
-          throw new InvalidOperationException($"An element with the key '{typeName}' already exists in the States dictionary.");
+          Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, existingState.Guid);
+          return existingState;
         }
 
-        // Publish the state initialization notification asynchronously
+        Logger.LogDebug(EventIds.Store_CreateState, "Creating State of type: {typeName}", typeName);
+
+        IState created = (IState)ServiceProvider.GetRequiredService(stateType);
+        created.Sender = ServiceProvider.GetRequiredService<ISender<ClientPipeline>>();
+        created.Initialize();
+
+        IState state = States.GetOrAdd(typeName, created);
+        if (!ReferenceEquals(state, created))
+        {
+          if (created is IDisposable disposable)
+          {
+            disposable.Dispose();
+          }
+
+          Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);
+          return state;
+        }
+
         Task initializationTask = Publisher.Publish(new StateInitializedNotification(stateType))
           .ContinueWith
           (
@@ -153,13 +193,8 @@ internal partial class Store : IStore
           );
 
         StateInitializationTasks[typeName] = initializationTask;
+        return state;
       }
-      else
-      {
-        Logger.LogDebug(EventIds.Store_GetState, "State of type ({typeName}) exists with Guid: {state_Guid}", typeName, state.Guid);
-      }
-
-      return state;
     }
   }
 
