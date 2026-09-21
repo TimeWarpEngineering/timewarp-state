@@ -330,3 +330,9 @@ __pycache__/
 # Deliberate promote of distilled memory: git add -f .memsearch/memory/<file>.md
 .memsearch/memory/
 .memsearch/.index.pid
+
+# Herdr pane-command oracle logs beside kitchens (local; not product)
+oracle-*.log
+
+# Task-work host progress lines beside kitchens (local; not product)
+task-work.progress.log
