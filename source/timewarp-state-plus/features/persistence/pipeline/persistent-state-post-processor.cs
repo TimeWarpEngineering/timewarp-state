@@ -4,6 +4,7 @@
 
 #region Design
 // Enclosing state type and [PersistentState] are cached per closed generic so the hot path does not reflect on every IAction.
+// Serialize only after Session/Local storage is present; Server/PreRender remain no-ops without serializing.
 // Serialize with TimeWarpStateOptions.JsonSerializerOptions and write the JSON string (SetItemAsStringAsync) under FullName.
 // Storage services stay optional: skip + warning when Blazored is not registered.
 #endregion
@@ -85,7 +86,6 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
 
     object state = Store.GetState(EnclosingStateType);
     string storageKey = PersistentStateStorageKey.ForWrite(EnclosingStateType);
-    string serializedState = SerializeState(state);
 
     switch (CachedPersistentStateAttribute.PersistentStateMethod)
     {
@@ -105,7 +105,7 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
           EventIds.PersistentStatePostProcessor_SaveToSessionStorage,
           "Session Storage",
           storageKey,
-          serializedState,
+          state,
           cancellationToken
         );
         break;
@@ -122,7 +122,7 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
           EventIds.PersistentStatePostProcessor_SaveToLocalStorage,
           "Local Storage",
           storageKey,
-          serializedState,
+          state,
           cancellationToken
         );
         break;
@@ -145,10 +145,11 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
     EventId eventId,
     string storageKind,
     string storageKey,
-    string serializedState,
+    object state,
     CancellationToken cancellationToken
   )
   {
+    string serializedState = SerializeState(state);
     if (Logger.IsEnabled(LogLevel.Trace))
     {
       Logger.LogTrace

@@ -3,7 +3,8 @@
 #endregion
 
 #region Design
-// Deserialize with TimeWarpStateOptions.JsonSerializerOptions so save (string write) and load share one contract.
+// Deserialize with a clone of TimeWarpStateOptions.JsonSerializerOptions (PropertyNameCaseInsensitive)
+// so leftover Blazored PascalCase payloads under the simple Name key still bind; do not mutate the shared Store options.
 // Key lookup is FullName then Name: new writes use FullName; leftover simple-name entries still load.
 #endregion
 
@@ -15,7 +16,8 @@ namespace TimeWarp.Features.Persistence;
 /// <remarks>
 /// New writes (see <c>PersistentStatePostProcessor</c>) store under the state's <c>FullName</c>.
 /// Load tries that key first, then the simple <c>Name</c> so existing session/local entries are not dropped.
-/// JSON uses <see cref="TimeWarpStateOptions.JsonSerializerOptions"/>.
+/// JSON uses a case-insensitive clone of <see cref="TimeWarpStateOptions.JsonSerializerOptions"/>
+/// so leftover Blazored PascalCase payloads under the simple Name key still bind.
 /// </remarks>
 public class PersistenceService : IPersistenceService
 {
@@ -39,7 +41,10 @@ public class PersistenceService : IPersistenceService
     SessionStorageService = sessionStorageService;
     LocalStorageService = localStorageService;
     Logger = logger;
-    JsonSerializerOptions = timeWarpStateOptions.JsonSerializerOptions;
+    JsonSerializerOptions = new JsonSerializerOptions(timeWarpStateOptions.JsonSerializerOptions)
+    {
+      PropertyNameCaseInsensitive = true
+    };
   }
 
   public async Task<object?> LoadState(Type stateType, PersistentStateMethod persistentStateMethod)

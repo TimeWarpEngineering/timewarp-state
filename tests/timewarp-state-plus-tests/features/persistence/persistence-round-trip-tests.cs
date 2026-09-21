@@ -50,6 +50,30 @@ public class PersistenceRoundTrip_Should
     loadedState.Guid.ShouldBe(SampleGuid);
   }
 
+  public async Task Load_Falls_Back_To_PascalCase_Name_Key()
+  {
+    StorageHarness storageHarness = new();
+    // Blazored 4.x default SetItemAsync shape: PascalCase property names under the simple Name key.
+    JsonSerializerOptions blazoredDefaultOptions = new()
+    {
+      Converters = { new JsonStringEnumConverter() }
+    };
+    string legacyJson = JsonSerializer.Serialize
+    (
+      new LocalWidgetState(SampleGuid, WidgetKind.Alpha),
+      typeof(LocalWidgetState),
+      blazoredDefaultOptions
+    );
+    storageHarness.Items[typeof(LocalWidgetState).Name] = legacyJson;
+
+    PersistenceService persistenceService = CreatePersistenceService(storageHarness);
+    object? loaded = await persistenceService.LoadState(typeof(LocalWidgetState), PersistentStateMethod.LocalStorage);
+
+    LocalWidgetState loadedState = loaded.ShouldBeOfType<LocalWidgetState>();
+    loadedState.Kind.ShouldBe(WidgetKind.Alpha);
+    loadedState.Guid.ShouldBe(SampleGuid);
+  }
+
   public async Task Load_Prefers_FullName_Over_Simple_Name()
   {
     StorageHarness storageHarness = new();
