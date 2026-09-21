@@ -30,16 +30,20 @@ Code review 2026-06-11, findings 5 and 18. Still true on master after 080 (only 
 - [x] Cache attribute/enclosing-type on the closed generic
 - [x] Round-trip test with custom JSON
 - [x] `dev test` / E2E persistence status recorded in Results
+- [x] Implementation review (effort 1, general) under `review/`; disposition `clean`
 
 ## Session
 
 - Created: code review 2026-06-11
 - 2026-09-21: cockpit shrunk brief; dispatch after 072 archived. Then smaller 071.
 - Implementer: grok session 01a0c305-d2f3-7953-ab87-d9233f168c52 (2026-09-21)
+- Review oracle: grok session 01a0c317-2fe7-7432-adb9-4b074dab04e5 (2026-09-21)
+- Reviewer (general, round 1): grok 01a0c318-e334-7872-9380-c6202878dc6f (2026-09-21)
+- Reviewer (general, round 2): grok 01a0c321-0c43-7d82-80f5-ac70f68de20e (2026-09-21)
 
 ## Results
 
-Save and load now share `TimeWarpStateOptions.JsonSerializerOptions`. The post-processor serializes to a JSON string and writes with `SetItemAsStringAsync` under `Type.FullName`. `PersistenceService` deserializes with the same options, trying FullName then the simple `Name` so leftover browser entries are not dropped. Enclosing state type and `[PersistentState]` are `static readonly` on each closed generic `PersistentStatePostProcessor<TRequest, TResponse>`. Blazored storage stays optional (skip + warning). `PersistentStateAttribute` vs ASP.NET remains aliased.
+Save and load now share `TimeWarpStateOptions.JsonSerializerOptions`. The post-processor serializes to a JSON string and writes with `SetItemAsStringAsync` under `Type.FullName`. `PersistenceService` deserializes with a case-insensitive clone of those options, trying FullName then the simple `Name` so leftover browser entries (including Blazored PascalCase payloads) are not dropped. Enclosing state type and `[PersistentState]` are `static readonly` on each closed generic `PersistentStatePostProcessor<TRequest, TResponse>`. Serialize runs only after Session/Local storage is present. Blazored storage stays optional (skip + warning). `PersistentStateAttribute` vs ASP.NET remains aliased.
 
 **Files**
 
@@ -53,13 +57,22 @@ Save and load now share `TimeWarpStateOptions.JsonSerializerOptions`. The post-p
 
 **Tests**
 
-- `dotnet run --file ./scripts/test.cs` — pass (plus-tests 24 passed / 1 skipped, including the five `PersistenceRoundTrip_Should` cases).
+- `dotnet run --file ./scripts/test.cs` — pass (implementer).
+- `dotnet fixie timewarp-state-plus-tests` — 25 passed / 1 skipped after review fixes (six `PersistenceRoundTrip_Should` cases, including PascalCase Name-key fallback).
 - E2E `TestPersistence` left ignored. `UseHttp=true dotnet run --file ./scripts/e2e.cs` could not launch Chromium: Playwright does not support chromium on ubuntu26.04-x64 (`chromium_headless_shell-1187` missing; `playwright.ps1 install chromium` refused). Per the brief, do not un-ignore unless the browser path is actually green.
 
 **Deviations**
 
 - Hot-path cache uses `TryGetEnclosingStateType` (skip non-nested `IAction`) instead of throwing `GetEnclosingStateType` during static init.
-- Name-key fallback is for the **storage key** only. New JSON is camelCase from TimeWarp options; leftover PascalCase Blazored payloads under `Name` may not bind unless the host sets `PropertyNameCaseInsensitive`.
+- Load uses a **clone** of TimeWarp JSON options with `PropertyNameCaseInsensitive = true` so leftover Blazored PascalCase payloads bind. Save still writes the shared CamelCase options (Store / JsonRequestHandler are not mutated).
+
+### Review disposition
+
+- Body: tw-implementation-review, effort 1, roster `general` (grok-4.5 subagent, read-only); 2 rounds on branch `task/065-fix-persistence-serializer-mismatch-and-key-collis` vs `origin/master`.
+- Round 1: 1 bug (M1 PascalCase Name-key leftovers bound as defaults), 1 suggestion (M2 serialize before optional-storage skip), 0 nit. Both fixed on this task id (no sibling apply-review task).
+- Round 2: re-verified M1/M2; 0 new findings.
+- Final: 0 open; 1 bug fixed; 1 suggestion fixed; 0 wontfix.
+- **Disposition: clean** (`review/disposition.md`; framework `review/review-framework.md`; last ledger `review/round-2/merged.md`).
 
 ### How to validate
 
@@ -71,9 +84,10 @@ dotnet fixie timewarp-state-plus-tests
 
 **Expect**
 
-- 24 passed, 1 skipped.
+- 25 passed, 1 skipped.
 - `PersistenceRoundTrip_Should.Round_Trip_Enum_As_String_Under_FullName_Key` writes `"kind":"Beta"` under `typeof(LocalWidgetState).FullName` and reloads `WidgetKind.Beta`.
 - `Load_Falls_Back_To_Simple_Name_Key` hydrates from the simple `Name` key when FullName is empty.
+- `Load_Falls_Back_To_PascalCase_Name_Key` hydrates leftover Blazored PascalCase JSON under `Name`.
 - `Skip_Save_When_Storage_Is_Not_Registered` returns without throwing.
 
 **Automated gate**
