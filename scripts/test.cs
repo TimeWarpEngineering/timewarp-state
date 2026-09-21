@@ -35,6 +35,14 @@ static class App
     .WithArguments("fixie", "timewarp-state-analyzer-tests")
     .RunAsync());
 
+  await RunStep("Build source generator tests", () => DotNet.Build()
+    .WithProject("./tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj")
+    .RunAsync());
+
+  await RunStep("Run source generator tests", () => Shell.Builder("dotnet")
+    .WithArguments("fixie", "timewarp-state-source-generator-tests")
+    .RunAsync());
+
   await RunStep("Build state tests", () => DotNet.Build()
     .WithProject("./tests/timewarp-state-tests/timewarp-state-tests.csproj")
     .RunAsync());

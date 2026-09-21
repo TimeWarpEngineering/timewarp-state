@@ -4,7 +4,7 @@
 #region Design
 // Restores local tools (fixie.console from .config/dotnet-tools.json) so
 // `dotnet fixie` is available on a clean CI checkout. Then delegates to
-// scripts/test.cs for analyzer/state/plus/client/architecture suites.
+// scripts/test.cs for analyzer/generator/state/plus/client/architecture suites.
 // E2E stays on scripts/e2e.cs (needs a running SUT).
 #endregion
 
