@@ -1,24 +1,39 @@
-# Fix source generator nested class and culture handling
+# Persistence generator: reject nested states; unique hint names; delete dead ToCamelCase
 
 ## Description
 
-Code review 2026-06-11, finding 15 (`code-review-2026-06-11.md`).
+Code review 2026-06-11, finding 15 — **shrunk**. 075/080 changed emit to `Load()` + `LoadPersistentStateRequest`; nesting and hint names are **unchanged**.
 
-`source/timewarp-state-source-generator/persistence-state-source-generator.cs` captures only namespace + class identifier (`GetSemanticTarget`), ignoring containing types:
+`GetSemanticTarget` still records only namespace + class identifier. Nested `[PersistentState]` still emits a **top-level** `partial class {ClassName}`. Two same-named nested types still collide on `{Namespace}.{ClassName}_Persistence.g.cs`. Policies require **actions** nested in states, not nested states — nested `[PersistentState]` is **unsupported**.
 
-- A **nested** `[PersistentState]` class emits a *top-level* `public partial class {ClassName}` under the namespace (line 81) that does not merge with the nested original — the generated `Load()` references `Sender`/`CancellationToken`/`Store` that don't exist there, breaking the build.
-- Two same-named nested classes in one namespace produce identical hint names (`$"{NamespaceName}.{ClassName}_Persistence.g.cs"`, line 46) → `AddSource` throws `ArgumentException`, failing the entire generator.
-- `ToCamelCase` (line 167) uses culture-sensitive `char.ToLower` for generated identifiers — on a tr-TR build machine an identifier starting with `I` camel-cases to a dotless-i, making generated output differ by machine locale.
+`ToCamelCase` (`char.ToLower`) is **dead** (nothing calls it). Do not “fix” it — **delete** it. `PersistentStateMethod` on `ClassModel` is unused in `GenerateLoadClassCode` (runtime reads the attribute); drop it if it stays unused.
 
-## Fix
+## Depends on
 
-- Either reject nested `[PersistentState]` classes with a clear diagnostic, or emit the full containing-type chain as nested partials. Check first whether `[PersistentState]` on nested classes is an intended scenario (the analyzers/policies *require actions* to be nested in states, but states themselves are normally top-level) — if unsupported, a diagnostic is the simpler correct answer.
-- Include containing types in the hint name either way.
-- `char.ToLowerInvariant` in `ToCamelCase`.
+065
+
+## Requirements
+
+- Diagnostic (not nested partials) when `[PersistentState]` is on a nested class; skip emit.
+- Hint name includes containing types (or skip emit after diagnostic) so `AddSource` cannot collide.
+- Delete unused `ToCamelCase`. Drop unused `ClassModel` fields if unused.
+- Generator tests: nested class diagnostic; two same simple names in one namespace do not crash the generator.
+- Optional: drop `SG001` “Unique Hint Name” Info spam if still present.
+
+## Out of scope
+
+- Emitting a full containing-type chain (not a product feature)
+- Persistence serializer/keys (065)
+- PreRender/Server methods
 
 ## Checklist
 
-- [ ] Decide: diagnostic vs containing-type-chain emission
-- [ ] Hint name includes containing types
-- [ ] ToLowerInvariant fix
-- [ ] Generator tests: nested class scenario, same-name-different-container scenario
+- [ ] Nested `[PersistentState]` → diagnostic, no bad partial
+- [ ] Hint names unique / no AddSource throw
+- [ ] `ToCamelCase` gone
+- [ ] Generator tests as above
+
+## Session
+
+- Created: code review 2026-06-11
+- 2026-09-21: cockpit shrunk; Depends on 065. Dispatch after 065 merges.
