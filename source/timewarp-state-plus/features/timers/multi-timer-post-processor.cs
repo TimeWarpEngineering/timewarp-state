@@ -5,9 +5,13 @@
 #region Design
 // IInternalAction (including ResetTimersOnActivityActionSet.Action) skips the reset so the nested
 // Sender.Send does not re-enter this behavior. Cached per closed generic.
+// Do not inject TimerState; only Store.GetState assigns Sender. Direct send matches
+// ActiveActionBehavior and forwards the request token.
 #endregion
 
 namespace TimeWarp.State.Plus.Features.Timers;
+
+using static TimerState;
 
 /// <summary>
 /// Pipeline behavior that resets the activity timers after every non-internal request.
@@ -19,16 +23,16 @@ public sealed class MultiTimerPostProcessor<TRequest, TResponse> : IPipelineBeha
 {
   private static readonly bool IsInternal = typeof(IInternalAction).IsAssignableFrom(typeof(TRequest));
   private readonly ILogger<MultiTimerPostProcessor<TRequest, TResponse>> Logger;
-  private readonly TimerState TimerState;
+  private readonly ISender<ClientPipeline> Sender;
 
   public MultiTimerPostProcessor
   (
     ILogger<MultiTimerPostProcessor<TRequest, TResponse>> logger,
-    TimerState timerState
+    ISender<ClientPipeline> sender
   )
   {
     Logger = logger;
-    TimerState = timerState;
+    Sender = sender;
   }
 
   public async Task<TResponse> Handle
@@ -45,7 +49,7 @@ public sealed class MultiTimerPostProcessor<TRequest, TResponse> : IPipelineBeha
     }
 
     Logger.LogDebug(EventIds.MultiTimerPostProcessor_ProcessingRequest, message: "Processing request and checking timers");
-    await TimerState.ResetTimersOnActivity();
+    await Sender.Send(new ResetTimersOnActivityActionSet.Action(), cancellationToken);
     return response;
   }
 }

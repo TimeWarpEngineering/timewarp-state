@@ -6,7 +6,6 @@
 namespace MultiTimerPostProcessor_;
 
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using TimeWarp.Features.ActionTracking;
 using TimeWarp.State.Plus.Features.Timers;
 
@@ -14,7 +13,7 @@ public class MultiTimerPostProcessor_Should
 {
   public async Task Dispatch_Reset_Once_For_User_Request_And_Skip_On_Internal()
   {
-    using ProcessorHarness processorHarness = new();
+    ProcessorHarness processorHarness = new();
 
     await processorHarness.UserProcessor.Handle
     (
@@ -38,7 +37,7 @@ public class MultiTimerPostProcessor_Should
 
   public async Task Skip_Reset_For_Start_And_Complete_Processing()
   {
-    using ProcessorHarness processorHarness = new();
+    ProcessorHarness processorHarness = new();
     UserRequest userRequest = new();
 
     await processorHarness.StartProcessor.Handle
@@ -60,7 +59,7 @@ public class MultiTimerPostProcessor_Should
 
   public async Task Terminate_When_Nested_Dispatch_Runs_The_Same_Processor()
   {
-    using ProcessorHarness processorHarness = new();
+    ProcessorHarness processorHarness = new();
     processorHarness.Sender.OnSend = async (request, cancellationToken) =>
     {
       if (request is TimerState.ResetTimersOnActivityActionSet.Action resetAction)
@@ -88,10 +87,9 @@ public class MultiTimerPostProcessor_Should
 
   private sealed class UserRequest : IAction;
 
-  private sealed class ProcessorHarness : IDisposable
+  private sealed class ProcessorHarness
   {
     public RecordingSender Sender { get; }
-    public TimerState TimerState { get; }
     public MultiTimerPostProcessor<UserRequest, object> UserProcessor { get; }
     public MultiTimerPostProcessor<TimerState.ResetTimersOnActivityActionSet.Action, object> ResetProcessor { get; }
     public MultiTimerPostProcessor<ActionTrackingState.StartProcessingActionSet.Action, object> StartProcessor { get; }
@@ -100,35 +98,23 @@ public class MultiTimerPostProcessor_Should
     public ProcessorHarness()
     {
       Sender = new();
-      TimerState = new
-      (
-        Options.Create(new MultiTimerOptions()),
-        NullLogger<TimerState>.Instance,
-        A.Fake<IPublisher<ClientPipeline>>()
-      )
-      {
-        Sender = Sender
-      };
-
-      UserProcessor = new(NullLogger<MultiTimerPostProcessor<UserRequest, object>>.Instance, TimerState);
+      UserProcessor = new(NullLogger<MultiTimerPostProcessor<UserRequest, object>>.Instance, Sender);
       ResetProcessor = new
       (
         NullLogger<MultiTimerPostProcessor<TimerState.ResetTimersOnActivityActionSet.Action, object>>.Instance,
-        TimerState
+        Sender
       );
       StartProcessor = new
       (
         NullLogger<MultiTimerPostProcessor<ActionTrackingState.StartProcessingActionSet.Action, object>>.Instance,
-        TimerState
+        Sender
       );
       CompleteProcessor = new
       (
         NullLogger<MultiTimerPostProcessor<ActionTrackingState.CompleteProcessingActionSet.Action, object>>.Instance,
-        TimerState
+        Sender
       );
     }
-
-    public void Dispose() => TimerState.Dispose();
   }
 
   private sealed class RecordingSender : ISender<ClientPipeline>
