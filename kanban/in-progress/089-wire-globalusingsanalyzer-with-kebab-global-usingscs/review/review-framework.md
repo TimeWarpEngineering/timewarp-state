@@ -37,3 +37,29 @@
 - Analyzer warnings driven to zero; `dev build` / `dev test` still green
 - Analyzer actually loads (package restore + diagnostic ID casing)
 - Runfiles (`scripts/*.cs`) compile without GlobalUsingsAnalyzer warnings
+
+## Round 2 (retarget) — 2026-09-21
+
+**Date:** 2026-09-21
+**Diff scope:** branch `task/089-wire-globalusingsanalyzer-with-kebab-global-usings` vs `origin/master` (retarget product commit `45686cd9`; kitchen `3d279364`). Round 1 remains frozen under `review/round-1/`.
+**Plan / brief:** Drop BDSoftware GlobalUsingsAnalyzer. Pin TimeWarp.SourceGenerators **1.0.0-beta.11**. Enable **TW0007** at warning with kebab `global-usings.cs`. Keep the using-fold from the first implement. Do not flip `TreatWarningsAsErrors`. Same task / same PR #593.
+**Effort:** 1 (general only)
+**Reviewer roster:** general
+**Session IDs:** grok review oracle (2026-09-21)
+
+### Product files in scope (round 2)
+
+- `Directory.Packages.props` — SourceGenerators **1.0.0-beta.11**; **no** `GlobalUsingsAnalyzer`
+- `Directory.Build.props` — SourceGenerators `PrivateAssets="all"`; **no** GlobalUsingsAnalyzer PackageReference; `TreatWarningsAsErrors` stays false
+- `.editorconfig` under `[*.cs]` — `dotnet_diagnostic.TW0007.filename = global-usings.cs`; `dotnet_diagnostic.TW0007.severity = warning`; no GlobalUsingsAnalyzer000* keys
+- Using-fold from first implement **must still be present** (Plus tests `global-usings.cs`, scripts `global-usings.cs` + Compile Include, stripped compilation-unit duplicates)
+
+### Requirements to check (round 2)
+
+- CPM: `TimeWarp.SourceGenerators` **1.0.0-beta.11**
+- No `GlobalUsingsAnalyzer` in CPM, `Directory.Build.props`, or `.editorconfig`
+- TW0007 filename kebab under `[*.cs]`; TW0007 enabled at warning (`isEnabledByDefault: false` in the package)
+- Using-fold not undone
+- `TreatWarningsAsErrors` stays false
+- Remaining `warning TW0007` for one-file usings is expected; do not require folding every hit
+- `ganda repo audit` check `global-usings-analyzer` PASS (whole-repo audit may still fail on pre-existing `bin-dev`)

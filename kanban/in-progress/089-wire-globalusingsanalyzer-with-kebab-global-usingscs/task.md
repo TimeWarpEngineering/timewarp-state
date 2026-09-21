@@ -67,7 +67,7 @@ Copy (retarget): Ganda `Directory.Packages.props` TimeWarp.SourceGenerators **1.
 
 Using-fold from the first implement is kept. Plus tests globalize FakeItEasy/State/Mediator/Routing/Components in addition to Shouldly/Fixie/NetArchTest/Policies.
 
-Implementation review (effort 1, general): `review/` — round 1 found no issues on the BDSoftware wire; disposition `clean`. Retarget review is the next host node.
+Implementation review (effort 1, general): `review/` — round 1 clean (BDSoftware wire); round 2 clean (TW0007 retarget). Disposition `clean`.
 
 ## Session
 
@@ -77,6 +77,8 @@ Implementation review (effort 1, general): `review/` — round 1 found no issues
 - Reviewer (general, round 1): grok-4.5 `01a0bcea-5053-7f43-a655-ffe5a0e7a243` (2026-09-20)
 - 2026-09-21: cockpit — retarget: keep using-fold; bump SourceGenerators 1.0.0-beta.11; drop BDSoftware; TW0007. Same PR #593.
 - Implementer (retarget): grok session 01a0c181-ee7d-7f51-9081-98ac30980f4a (2026-09-21)
+- Review oracle (retarget / round 2): grok session 01a0c188-e700-7a52-99f7-167823957d88 (2026-09-21)
+- Reviewer (general, round 2): grok-4.5 `01a0c18a-e2f3-71b2-b171-bdd8f4417fa6` (2026-09-21)
 
 ## Results
 
@@ -147,8 +149,8 @@ Known-good fire (no revert needed): `dotnet build tests/timewarp-state-plus-test
 
 **Outcome:** `clean` (0 open findings; no `wontfix`)
 **Effort:** 1 (general only)
-**Rounds:** 1
-**Roster:** general (`review/round-1/general.md`)
+**Rounds:** 2
+**Roster:** general (`review/round-1/general.md`, `review/round-2/general.md`)
 
 | Severity | open | fixed | wontfix |
 |----------|------|-------|---------|
@@ -156,11 +158,13 @@ Known-good fire (no revert needed): `dotnet build tests/timewarp-state-plus-test
 | suggestion | 0 | 0 | 0 |
 | nit | 0 | 0 | 0 |
 
-Round 1 found no issues on the **GlobalUsingsAnalyzer 1.4.0** wire. No fix loop. No escalations. That pass confirmed CPM 1.4.0 + Directory.Build.props `PrivateAssets=all`, kebab `global-usings.cs` under `[*.cs]`, Plus-test promotions with one-file usings kept, stripped compilation-unit usings covered by project globals, and scripts runfiles matching `tools/dev-cli`. **Retarget** (TW0007 / SourceGenerators 1.0.0-beta.11) is a later review node.
+Round 1 found no issues on the **GlobalUsingsAnalyzer 1.4.0** wire. Round 2 found no issues on the **TW0007 / SourceGenerators 1.0.0-beta.11** retarget: CPM pin, no BDSoftware package, kebab `TW0007.filename` under `[*.cs]`, severity warning, using-fold kept, `TreatWarningsAsErrors` still false, audit check `global-usings-analyzer` PASS. No fix loop. No escalations.
 
 **Review paths**
 
 - `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/review-framework.md`
 - `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/round-1/general.md`
 - `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/round-1/merged.md`
+- `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/round-2/general.md`
+- `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/round-2/merged.md`
 - `kanban/in-progress/089-wire-globalusingsanalyzer-with-kebab-global-usingscs/review/disposition.md`
