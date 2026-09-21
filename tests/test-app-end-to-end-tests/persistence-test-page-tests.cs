@@ -35,7 +35,7 @@ public class PersistenceTest : PageTest
   }
 
   [TestMethod]
-  [Ignore("PersistentState reload round-trip is task 065 (serializer/key), not the 14-beta sender soak. Counter/EventStream/ThrowException cover generated ClientPipeline in the browser.")]
+  [Ignore("065 serializer/key round-trip is covered by plus-tests PersistenceRoundTrip_Should. Browser path left ignored: Playwright chromium is not installable on this host (ubuntu26.04-x64), so TestPersistence was not proven green.")]
   public async Task TestPersistence()
   {
     // Validate Server Side
