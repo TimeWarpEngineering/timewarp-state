@@ -1,6 +1,7 @@
 global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
 global using TimeWarp.State;
+global using TimeWarp.State.Extensions;
 global using TimeWarp.Features.Persistence;
 global using JetBrains.Annotations;
 global using TimeWarp.Mediator;
