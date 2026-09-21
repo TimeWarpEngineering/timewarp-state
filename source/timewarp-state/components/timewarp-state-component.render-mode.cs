@@ -2,9 +2,7 @@ namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent
 {
-  public int RenderCount => RenderCounts.GetValueOrDefault(Id, 0);
-  
-  private static readonly ConcurrentDictionary<string, int> RenderCounts = new();
+  public int RenderCount { get; private set; }
 
   /// <summary>
   ///   Indicates if the component is being prerendered.
@@ -14,9 +12,8 @@ public partial class TimeWarpStateComponent
   protected override void OnAfterRender(bool firstRender)
   {
     base.OnAfterRender(firstRender);
-    IncrementRenderCount();
-    int renderCount = RenderCounts[Id];
-    
+    RenderCount++;
+
     Logger.LogTrace
     (
       EventIds.TimeWarpStateComponent_OnAfterRender, 
@@ -24,7 +21,7 @@ public partial class TimeWarpStateComponent
       Id,
       new
       {
-        RenderCount = renderCount,
+        RenderCount,
         RenderReason,
         RenderReasonDetail,
         ShouldRenderWasCalledBy,
@@ -33,6 +30,7 @@ public partial class TimeWarpStateComponent
     );
     ResetLifeCycleProperties();
   }
+
   private void ResetLifeCycleProperties()
   {
     ParameterTriggered = false;
@@ -46,10 +44,5 @@ public partial class TimeWarpStateComponent
     StateHasChangedWasCalled = false;
     StateHasChangedWasCalledBy = null;
     SubscriptionTriggered = false;
-  }
-
-  private void IncrementRenderCount()
-  {
-    RenderCounts.AddOrUpdate(Id, 1, (_, count) => count + 1);
   }
 }

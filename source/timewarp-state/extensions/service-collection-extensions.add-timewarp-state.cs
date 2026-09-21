@@ -19,9 +19,6 @@ public static partial class ServiceCollectionExtensions
     Action<TimeWarpStateOptions>? configureTimeWarpStateOptionsAction = null
   )
   {
-    // To avoid duplicate registrations we look to see if Subscriptions has already been registered.
-    if (serviceCollection.HasRegistrationFor(typeof(Subscriptions))) return serviceCollection;
-
     var timeWarpStateOptions = new TimeWarpStateOptions(serviceCollection);
     configureTimeWarpStateOptionsAction?.Invoke(timeWarpStateOptions);
 
@@ -34,11 +31,11 @@ public static partial class ServiceCollectionExtensions
     }
     TimeWarpStateOptionsValidator.Validate(timeWarpStateOptions);
 
-    serviceCollection.AddScoped<JsonRequestHandler>();
-    serviceCollection.AddScoped<Subscriptions>();
-    serviceCollection.AddScoped<RenderSubscriptionContext>();
-    serviceCollection.AddScoped<IStore, Store>();
-    serviceCollection.AddSingleton(timeWarpStateOptions);
+    serviceCollection.TryAddScoped<JsonRequestHandler>();
+    serviceCollection.TryAddScoped<Subscriptions>();
+    serviceCollection.TryAddScoped<RenderSubscriptionContext>();
+    serviceCollection.TryAddScoped<IStore, Store>();
+    serviceCollection.TryAddSingleton(timeWarpStateOptions);
 
     EnsureLogger(serviceCollection);
     EnsureHttpClient(serviceCollection);
@@ -62,11 +59,8 @@ public static partial class ServiceCollectionExtensions
     // If client side wasm, Blazor registers HttpClient by default.
     if (OperatingSystem.IsBrowser()) return;
 
-    // Double check that nothing is registered.
-    if (serviceCollection.HasRegistrationFor(typeof(HttpClient))) return;
-
     // Setup HttpClient for server side in a client side compatible fashion
-    serviceCollection.AddScoped
+    serviceCollection.TryAddScoped
     (
       serviceProvider =>
       {
@@ -87,10 +81,7 @@ public static partial class ServiceCollectionExtensions
   /// <param name="serviceCollection"></param>
   private static void EnsureLogger(IServiceCollection serviceCollection)
   {
-    if (!serviceCollection.HasRegistrationFor(typeof(ILogger<>)))
-    {
-      serviceCollection.AddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
-    }
+    serviceCollection.TryAddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
   }
 
   private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)

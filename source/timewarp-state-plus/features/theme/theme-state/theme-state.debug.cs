@@ -4,8 +4,8 @@ public partial class ThemeState
 {
   public override ThemeState Hydrate(IDictionary<string, object> keyValuePairs)
   {
-    string currentThemeKey = CamelCase.MemberNameToCamelCase(nameof(CurrentTheme));
-    string guidKey = CamelCase.MemberNameToCamelCase(nameof(Guid));
+    string currentThemeKey = JsonNamingPolicy.CamelCase.ConvertName(nameof(CurrentTheme));
+    string guidKey = JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid));
 
     if (!keyValuePairs.TryGetValue(currentThemeKey, out object? themeValue))
     {

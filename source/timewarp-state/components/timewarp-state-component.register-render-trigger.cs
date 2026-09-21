@@ -5,7 +5,6 @@ public partial class TimeWarpStateComponent
   private readonly ConcurrentDictionary<Type, Func<bool>> RenderTriggers = new();
 
   private TState? GetPreviousState<TState>() where TState:IState => Store.GetPreviousState<TState>();
-  private readonly ConcurrentDictionary<(Type StateType, string PropertyName), Func<object, object, bool>> CompiledPropertyComparisons = new();
 
   private bool ReRenderWasCalled;
   private bool SubscriptionTriggered;

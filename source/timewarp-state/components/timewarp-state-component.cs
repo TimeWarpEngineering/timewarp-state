@@ -57,7 +57,6 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
       }
     );
     Subscriptions.Remove(this);
-    RenderCounts.TryRemove(Id, out _);
 
     // Cancel and dispose the CancellationTokenSource
     if (!CancellationTokenSource.IsCancellationRequested)

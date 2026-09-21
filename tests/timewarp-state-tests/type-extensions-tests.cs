@@ -50,4 +50,34 @@ public class TypeExtensionsTests
     Should.Throw<NonNestedClassException>(() => nonNestedClassType.GetEnclosingStateType())
       .Message.ShouldBe("String must be nested in a class that implements IState");
   }
+
+  public void Should_TryGet_Enclosing_State_Type_For_Nested_Class()
+  {
+    Type nestedClassType = typeof(TestState.NestedClass);
+
+    bool found = nestedClassType.TryGetEnclosingStateType(out Type? enclosingStateType);
+
+    found.ShouldBeTrue();
+    enclosingStateType.ShouldBe(typeof(TestState));
+  }
+
+  public void Should_TryGet_Enclosing_State_Type_For_Deeply_Nested_Class()
+  {
+    Type deeplyNestedClassType = typeof(TestState.AnotherNestedClass);
+
+    bool found = deeplyNestedClassType.TryGetEnclosingStateType(out Type? enclosingStateType);
+
+    found.ShouldBeTrue();
+    enclosingStateType.ShouldBe(typeof(TestState));
+  }
+
+  public void Should_TryGet_Return_False_For_Non_Nested_Class()
+  {
+    Type nonNestedClassType = typeof(string);
+
+    bool found = nonNestedClassType.TryGetEnclosingStateType(out Type? enclosingStateType);
+
+    found.ShouldBeFalse();
+    enclosingStateType.ShouldBeNull();
+  }
 }
