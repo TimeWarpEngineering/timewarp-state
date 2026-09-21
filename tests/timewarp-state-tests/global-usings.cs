@@ -8,4 +8,6 @@ global using TimeWarp.State;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
+global using Microsoft.JSInterop;
+global using TimeWarp.Features.JavaScriptInterop;
 global using System.Runtime.CompilerServices;

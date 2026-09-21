@@ -1,11 +1,26 @@
+#region Purpose
+// Dispatches JSON requests from JavaScript into the client mediator pipeline.
+#endregion
+
+#region Design
+// InitAsync is idempotent so extra renders cannot leak JS interop roots.
+// One DotNetObjectReference is stored for the handler lifetime and disposed
+// with the scoped service. JSDisconnectedException is swallowed because
+// circuit teardown can dispose after the JS runtime is already gone.
+// TimeWarpJavaScriptInterop also gates on firstRender; both guards stay.
+#endregion
+
 namespace TimeWarp.Features.JavaScriptInterop;
 
-public class JsonRequestHandler
+public class JsonRequestHandler : IAsyncDisposable, IDisposable
 {
   private readonly JsonSerializerOptions JsonSerializerOptions;
   private readonly IJSRuntime JsRuntime;
   private readonly ILogger Logger;
   private readonly ISender<ClientPipeline> Sender;
+  private bool IsDisposed;
+  private bool IsInitialized;
+  private DotNetObjectReference<JsonRequestHandler>? JsonRequestHandlerReference;
 
   public JsonRequestHandler
   (
@@ -77,8 +92,46 @@ public class JsonRequestHandler
 
   public ValueTask<object> InitAsync()
   {
+    if (IsInitialized || IsDisposed)
+    {
+      return default;
+    }
+
     Logger.LogDebug(EventIds.JsonRequestHandler_Initializing, "Initializing");
+    JsonRequestHandlerReference = DotNetObjectReference.Create(this);
+    IsInitialized = true;
     const string initializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-    return JsRuntime.InvokeAsync<object>(initializeJavaScriptInteropName, DotNetObjectReference.Create(this));
+    return JsRuntime.InvokeAsync<object>(initializeJavaScriptInteropName, JsonRequestHandlerReference);
+  }
+
+  public void Dispose()
+  {
+    DisposeCore();
+    GC.SuppressFinalize(this);
+  }
+
+  public ValueTask DisposeAsync()
+  {
+    Dispose();
+    return ValueTask.CompletedTask;
+  }
+
+  private void DisposeCore()
+  {
+    if (IsDisposed)
+    {
+      return;
+    }
+
+    IsDisposed = true;
+    try
+    {
+      JsonRequestHandlerReference?.Dispose();
+    }
+    catch (JSDisconnectedException)
+    {
+    }
+
+    JsonRequestHandlerReference = null;
   }
 }
