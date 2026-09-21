@@ -139,9 +139,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
       RenderReason = RenderReasonCategory.StateHasChanged;
       shouldRender = true;
     }
-    
-    // TODO: Remove one line below
-    if (ParameterTriggered && RenderReasonDetail is null) throw new Exception("WTF");
+
     Logger.LogTrace
     (
       EventIds.TimeWarpStateComponent_ShouldRender,

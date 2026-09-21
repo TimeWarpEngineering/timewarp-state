@@ -1,3 +1,16 @@
+#region Purpose
+// Detects parameter changes before base.SetParametersAsync applies incoming values.
+#endregion
+
+#region Design
+// property.GetValue(this) is the current (old) value: this runs before
+// base.SetParametersAsync. parameter.Value is the incoming value from ParameterView.
+// Virtual comparators take (current, incoming) in that order so directional
+// overrides and trace logs match the documented contract.
+// HandleUnregisteredParameter returning true must set RenderReasonDetail here;
+// derived classes cannot, because the setter is private.
+#endregion
+
 namespace TimeWarp.State;
 
 public abstract partial class TimeWarpStateComponent
@@ -89,20 +102,26 @@ public abstract partial class TimeWarpStateComponent
         ,parameter.Name
       );
       
-      return HandleUnregisteredParameter(parameter);
+      bool unregisteredParameterChanged = HandleUnregisteredParameter(parameter);
+      if (unregisteredParameterChanged)
+      {
+        SetRenderReasonForParameterChange(parameter.Name, "Unregistered parameter");
+      }
+
+      return unregisteredParameterChanged;
     }
 
-    object? newValue = property.GetValue(this);
-    object? currentValue = parameter.Value;
+    object? currentValue = property.GetValue(this);
+    object? incomingValue = parameter.Value;
     
     // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-    if (currentValue == null && newValue == null)
+    if (currentValue == null && incomingValue == null)
     {
       return false; // No change if both are null
     }
 
     // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-    if (currentValue == null || newValue == null)
+    if (currentValue == null || incomingValue == null)
     {
       SetRenderReasonForParameterChange(parameter.Name, "Null value change");
       return true; // Consider it changed if one is null and the other isn't
@@ -112,15 +131,15 @@ public abstract partial class TimeWarpStateComponent
     
     if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string))
     {
-      changed = CheckPrimitiveParameterChanged(currentValue, newValue);
+      changed = CheckPrimitiveParameterChanged(currentValue, incomingValue);
     }
     else if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
     {
-      changed = CheckCollectionParameterChanged(currentValue as IEnumerable, newValue as IEnumerable);
+      changed = CheckCollectionParameterChanged(currentValue as IEnumerable, incomingValue as IEnumerable);
     }
     else
     {
-      changed = CheckComplexParameterChanged(parameter.Name, currentValue, newValue);
+      changed = CheckComplexParameterChanged(parameter.Name, currentValue, incomingValue);
     }
     
     if (changed)
