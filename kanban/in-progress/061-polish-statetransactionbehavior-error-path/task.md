@@ -31,12 +31,19 @@ Code review 2026-06-11, findings 2 (revised) and 27. Catch-rollback-notify stays
 - [x] OCE: rollback, skip notification
 - [x] Catch log text
 - [x] Unit test cancelled token / OCE vs other exceptions
+- [x] Implementation review (effort 1, general)
+- [x] Review disposition recorded (`clean`)
+
+## Notes
+
+- Implementation review kitchen: `review/` (effort 1, general). Round 1 merged empty; disposition `clean`.
 
 ## Session
 
 - Created: code review 2026-06-11
 - 2026-09-21: cockpit shrunk after 062 merge. Next after this: 060.
 - Implementer: grok session 01a0c483-ea23-7351-9635-c575984f9fd3 (2026-09-21)
+- Review: grok session 01a0c492-101a-7521-9705-9bdb3922c2f1 (2026-09-21); general reviewer 01a0c493-deaf-7233-8f3d-2d510dd8f043
 
 ## Results
 
@@ -60,6 +67,13 @@ Handler failures still roll back to the pre-action clone. `ExceptionNotification
 - Catch-rollback-notify stays. Clone strategy unchanged.
 - One `catch (Exception)` with an `is OperationCanceledException` branch: rollback for both; notify only for non-OCE.
 - `TaskCanceledException` is skipped as well (it is OCE).
+
+**Review**
+
+- Effort 1; roster: general; rounds: 1
+- Final counts: bug 0/0/0 open/fixed/wontfix; suggestion 0; nit 0
+- **Disposition: clean** (no issues raised; no fix loop)
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`
 
 **Tests**
 
