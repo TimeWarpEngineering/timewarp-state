@@ -39,18 +39,19 @@ Configure your timers in your `appsettings.json` file:
 
 ### Registering Services
 
-In your `Startup.cs` or wherever you configure your services:
+Configure timer options in DI, declare the post-processor on the client pipeline, and register notification handlers:
 
 ```csharp
-public void ConfigureServices(IServiceCollection services)
-{
-    services.Configure<MultiTimerOptions>(Configuration.GetSection(nameof(MultiTimerOptions)));
-    services.AddScoped(typeof(IRequestPostProcessor<,>), typeof(MultiTimerPostProcessor<,>));
-    
-    // Register your notification handlers
-    services.AddScoped<INotificationHandler<TimerElapsedNotification>, YourTimerElapsedHandler>();
-}
+services.Configure<MultiTimerOptions>(configuration.GetSection(nameof(MultiTimerOptions)));
+services.AddScoped<INotificationHandler<TimerElapsedNotification>, YourTimerElapsedHandler>();
 ```
+
+```csharp
+[assembly: MediatorScope(typeof(ClientPipeline))]
+[assembly: MediatorBehavior(typeof(MultiTimerPostProcessor<,>), order: 550, Scope = typeof(ClientPipeline))]
+```
+
+`ResetTimersOnActivityActionSet.Action` implements `IInternalAction`. The post-processor skips internal actions, so the nested reset send does not recurse.
 
 ### Implementing a Notification Handler
 
@@ -95,7 +96,7 @@ public class YourTimerElapsedHandler : INotificationHandler<TimerElapsedNotifica
 ## How It Works
 
 1. The `TimerState` initializes timers based on the configuration in `MultiTimerOptions`.
-2. The `MultiTimerPostProcessor` processes requests and triggers the `ResetTimersOnActivity` ActionSet.
+2. The `MultiTimerPostProcessor` processes non-internal requests and triggers the `ResetTimersOnActivity` ActionSet.
 3. The `ResetTimersOnActivityActionSet` resets timers configured to reset on activity.
 4. When a timer elapses, a `TimerElapsedNotification` is published.
 5. Your notification handler(s) respond to the elapsed timer, performing appropriate actions.

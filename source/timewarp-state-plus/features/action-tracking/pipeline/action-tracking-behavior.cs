@@ -1,3 +1,13 @@
+#region Purpose
+// Tracks [TrackAction] user actions in ActionTrackingState; skips IInternalAction bookkeeping sends.
+#endregion
+
+#region Design
+// IsInternal / IsTracked are cached per closed generic. IInternalAction replaces the former
+// EnsureNotType list for StartProcessing / CompleteProcessing so a forgotten exclusion skips
+// tracking instead of throwing. Re-entrant start/complete sends stay on ClientPipeline.
+#endregion
+
 namespace TimeWarp.Features.ActionTracking;
 
 using static ActionTrackingState;
@@ -6,10 +16,12 @@ using static ActionTrackingState;
 /// Pipeline behavior that tracks <c>[TrackAction]</c> actions in <see cref="ActionTrackingState"/>.
 /// Opt-in: the host declares <c>[assembly: MediatorBehavior(typeof(ActiveActionBehavior&lt;,&gt;), order: ..., Scope = typeof(ClientPipeline))]</c>.
 /// Re-entrant sends (start/complete tracking) stay on the <see cref="ClientPipeline"/>.
+/// <see cref="IInternalAction"/> requests skip tracking even when they also carry <c>[TrackAction]</c>.
 /// </summary>
 public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TAction, TResponse>
   where TAction : notnull, IAction
 {
+  private static readonly bool IsInternal = typeof(IInternalAction).IsAssignableFrom(typeof(TAction));
   private static readonly bool IsTracked = typeof(TAction).IsDefined(typeof(TrackActionAttribute), false);
   private readonly ILogger Logger;
   private readonly ISender<ClientPipeline> Sender;
@@ -26,11 +38,8 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
     CancellationToken cancellationToken
   )
   {
-    if (IsTracked)
+    if (IsTracked && !IsInternal)
     {
-      ArgumentValidation.EnsureNotType<TAction, StartProcessingActionSet.Action>(action, nameof(action));
-      ArgumentValidation.EnsureNotType<TAction, CompleteProcessingActionSet.Action>(action, nameof(action));
-
       Logger.LogDebug
       (
         State.Plus.EventIds.ActionTrackingBehavior_StartTracking,
@@ -68,24 +77,13 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
           action.GetType().FullName
         );
       }
+
       return response;
     }
     else
     { 
       TResponse response = await next(cancellationToken);
       return response;
-    }
-  }
-}
-
-public static class ArgumentValidation
-{
-  public static void EnsureNotType<TArgument, TInvalidType>(TArgument argument, string argumentName)
-    where TInvalidType : class
-  {
-    if (argument is TInvalidType)
-    {
-      throw new ArgumentException($"Argument {argumentName} must not be of type {typeof(TInvalidType).Name}.", argumentName);
     }
   }
 }
