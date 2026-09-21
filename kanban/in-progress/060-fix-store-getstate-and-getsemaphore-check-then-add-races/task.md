@@ -23,10 +23,17 @@ Use `ConcurrentDictionary.GetOrAdd` and tolerate the losing instance instead of 
 - [x] Rework `GetSemaphore` with `GetOrAdd`
 - [x] Rework `GetState` with `GetOrAdd`; ensure `Initialize()`/`StateInitializedNotification` run once per state
 - [x] Concurrency test: parallel first access to the same state type does not throw
+- [x] Implementation review (effort 1, general)
+- [x] Review disposition recorded (`clean`)
+
+## Notes
+
+- Implementation review kitchen: `review/` (effort 1, general). Round 1 merged empty; disposition `clean`.
 
 ## Session
 
 - Implementer: grok session 01a0c4bf-20db-7d91-917c-55e575001e52 (2026-09-21)
+- Review: grok session 01a0c4d4-9c79-7e91-9da4-4138747e5944 (2026-09-21); general reviewer 01a0c4d7-0751-70a2-be06-3a4dc9362609
 
 ## Results
 
@@ -50,6 +57,13 @@ Concurrent first `GetState`/`GetSemaphore` for a type no longer throws. The dict
 - Initialize under the per-type lock *before* `GetOrAdd`, so a dictionary hit is always initialized. A separate initialized-flag dictionary was rejected: `Reset`/`RemoveState` could clear the entry and leave the flag set, skipping `Initialize()` on the next instance.
 - Losing `GetState` DI instances are disposed when they implement `IDisposable`.
 - `IStore` signatures unchanged.
+
+**Review**
+
+- Effort 1; roster: general; rounds: 1
+- Final counts: bug 0/0/0 open/fixed/wontfix; suggestion 0; nit 0
+- **Disposition: clean** (no issues raised; no fix loop)
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`
 
 **Tests**
 
