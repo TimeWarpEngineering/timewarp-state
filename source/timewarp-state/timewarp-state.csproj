@@ -71,6 +71,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Test.App.Client.Integration.Tests"/>
     <InternalsVisibleTo Include="Client.Integration.Tests"/>
+    <InternalsVisibleTo Include="timewarp-state-tests"/>
   </ItemGroup>
 
   <ItemGroup>
