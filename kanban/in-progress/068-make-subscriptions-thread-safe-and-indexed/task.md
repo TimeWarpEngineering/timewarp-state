@@ -34,12 +34,14 @@ Code review 2026-06-11, findings 13 and 20. Still true after 080. **064** made t
 - [x] Concurrency test
 - [x] Dead-ref cleanup test
 - [x] `dev test` green
+- [x] Review round 1 (general, effort 1); disposition clean
 
 ## Session
 
 - Created: code review 2026-06-11
 - 2026-09-21: cockpit — still valid after 064 timers; dispatch implementer-grok
 - Implementer: grok session (2026-09-21)
+- Review: grok oracle `01a0c42d-ddd2-7c92-b95c-31b07c3e9152` (2026-09-21) — effort 1 general; round 1; disposition clean
 
 ## Results
 
@@ -62,6 +64,13 @@ Code review 2026-06-11, findings 13 and 20. Still true after 080. **064** made t
 - Plain `lock` on an `object` sync root, not `ReaderWriterLockSlim` and not a WASM-only unlock.
 - Dead-ref removal is skipped if the same component id was replaced by a live subscriber between snapshot and cleanup.
 - Duplicate `Add` for the same state type + component id is still a no-op (`TryAdd`).
+
+**Review**
+
+- Effort 1; roster: general; rounds: 1
+- Final counts: bug 0/0/0 open/fixed/wontfix; suggestion 0; nit 0
+- **Disposition: clean** (no issues raised; no fix loop)
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`
 
 **Tests**
 
