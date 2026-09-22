@@ -1,0 +1,128 @@
+.lede {
+  max-width: 68rem;
+  margin-bottom: 1.5rem;
+}
+
+.lede h1 {
+  margin: 0 0 0.4rem;
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.lede p {
+  margin: 0;
+  max-width: 46rem;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  max-width: 68rem;
+}
+
+.panel {
+  min-width: 0;
+  padding: 1.1rem 1.15rem 1rem;
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--accent);
+  border-radius: 0.4rem;
+  background: #fffdf8;
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.3rem;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+button {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.3rem;
+  background: var(--accent);
+  color: #fffdf8;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.ghost,
+button.selected {
+  background: transparent;
+  color: var(--accent);
+}
+
+button.selected {
+  font-weight: 650;
+}
+
+.key {
+  margin: 0.9rem 0 0;
+  font-size: 0.8rem;
+  color: #57534e;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.compact .panel {
+  padding: 0.7rem 0.8rem;
+}
+
+.compact .panel p {
+  margin: 0.35rem 0;
+}
+
+.accent-slate {
+  --accent: #1f3a5f;
+  --rule: #d6d3d1;
+}
+
+.accent-sea {
+  --accent: #0f6e6e;
+  --rule: #c9ddd9;
+}
+
+.accent-ember {
+  --accent: #9a3412;
+  --rule: #ead3c6;
+}

@@ -46,6 +46,11 @@
       <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
     </Project>
   </Folder>
+  <Folder Name="/Samples/05-Persistence/">
+    <Project Path="samples/05-persistence/wasm/sample-05-wasm/sample-05-wasm.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />

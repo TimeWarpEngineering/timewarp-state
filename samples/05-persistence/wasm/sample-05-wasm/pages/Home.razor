@@ -1,0 +1,123 @@
+@namespace Sample05Wasm.Pages
+@page "/"
+@inherits TimeWarp.State.TimeWarpStateComponent
+@inject IStore Store
+
+@code {
+  private DraftNoteState DraftNoteState => GetState<DraftNoteState>();
+  private DisplayPreferencesState DisplayPreferencesState => GetState<DisplayPreferencesState>();
+
+  private bool Ready { get; set; }
+
+  private string DraftKey => typeof(DraftNoteState).FullName ?? nameof(DraftNoteState);
+
+  private string PreferencesKey => typeof(DisplayPreferencesState).FullName ?? nameof(DisplayPreferencesState);
+
+  private string WorkspaceClass =>
+    $"workspace accent-{DisplayPreferencesState.Accent.ToString().ToLowerInvariant()}{(DisplayPreferencesState.Compact ? " compact" : "")}";
+
+  // First GetState publishes StateInitializedNotification, which sends LoadPersistentStateRequest.
+  // That load replaces the store entry and does not itself re-render. Waiting here means the
+  // first render reads the snapshot instead of only the Initialize() defaults.
+  protected override async Task OnInitializedAsync()
+  {
+    _ = DraftNoteState;
+    _ = DisplayPreferencesState;
+    await WhenInitialized(typeof(DraftNoteState));
+    await WhenInitialized(typeof(DisplayPreferencesState));
+    Ready = true;
+  }
+
+  private async Task WhenInitialized(Type stateType)
+  {
+    string? typeName = stateType.FullName;
+    if (typeName is not null && Store.StateInitializationTasks.TryGetValue(typeName, out Task? initializationTask))
+    {
+      await initializationTask;
+    }
+  }
+
+  private async Task CommitDraft(ChangeEventArgs changeEventArgs)
+  {
+    string text = changeEventArgs.Value as string ?? "";
+    await DraftNoteState.UpdateText(text);
+  }
+
+  private async Task ClearDraft() => await DraftNoteState.Clear();
+
+  private async Task ChooseAccent(DisplayPreferencesState.AccentKind accentKind) =>
+    await DisplayPreferencesState.SetAccent(accentKind);
+
+  private async Task ToggleCompact() => await DisplayPreferencesState.ToggleCompact();
+
+  // Load() is the generated partial. It sends LoadPersistentStateRequest again.
+  // It is not an action, so this event handler re-renders when the call returns.
+  private async Task ReloadDraft() => await DraftNoteState.Load();
+
+  private async Task ReloadPreferences() => await DisplayPreferencesState.Load();
+}
+
+<PageTitle>Persistence sample</PageTitle>
+
+<header class="lede">
+  <h1>Two stores, one pipeline</h1>
+  <p>
+    Each action on a <code>[PersistentState]</code> type writes that state after the handler.
+    Startup reads it back with <code>LoadPersistentStateRequest</code>.
+    Session storage keeps the draft in this tab. Local storage keeps the accent and density for this site.
+  </p>
+</header>
+
+@if (!Ready)
+{
+  <p role="status">Reading browser storage…</p>
+}
+else
+{
+  <div class="@WorkspaceClass">
+    <section class="panel" aria-labelledby="draft-heading">
+      <div class="panel-head">
+        <h2 id="draft-heading">Draft note</h2>
+        <span class="badge">Session storage</span>
+      </div>
+      <p>
+        Use this for an unsaved form. Refresh this tab and the text is still here.
+        Open a new tab and the draft is empty. Closing the tab drops it.
+      </p>
+      <label for="draft-text">Note</label>
+      <textarea id="draft-text" rows="6" value="@DraftNoteState.Text" @onchange="CommitDraft"></textarea>
+      <div class="row">
+        <button type="button" @onclick="ClearDraft">Clear</button>
+        <button type="button" class="ghost" @onclick="ReloadDraft">Reload from session storage</button>
+      </div>
+      <p class="key">Key <code>@DraftKey</code></p>
+    </section>
+
+    <section class="panel" aria-labelledby="prefs-heading">
+      <div class="panel-head">
+        <h2 id="prefs-heading">Display preferences</h2>
+        <span class="badge">Local storage</span>
+      </div>
+      <p>
+        Use this for settings that should outlive the tab. A new tab and a browser restart
+        still show the same accent. Do not store passwords or tokens here: any script on this
+        origin can read local storage.
+      </p>
+      <div class="row" role="group" aria-label="Accent">
+        <button type="button" class="@(DisplayPreferencesState.Accent == DisplayPreferencesState.AccentKind.Slate ? "selected" : "")" @onclick="() => ChooseAccent(DisplayPreferencesState.AccentKind.Slate)">Slate</button>
+        <button type="button" class="@(DisplayPreferencesState.Accent == DisplayPreferencesState.AccentKind.Sea ? "selected" : "")" @onclick="() => ChooseAccent(DisplayPreferencesState.AccentKind.Sea)">Sea</button>
+        <button type="button" class="@(DisplayPreferencesState.Accent == DisplayPreferencesState.AccentKind.Ember ? "selected" : "")" @onclick="() => ChooseAccent(DisplayPreferencesState.AccentKind.Ember)">Ember</button>
+      </div>
+      <div class="row">
+        <button type="button" @onclick="ToggleCompact">@(DisplayPreferencesState.Compact ? "Use comfortable density" : "Use compact density")</button>
+        <button type="button" class="ghost" @onclick="ReloadPreferences">Reload from local storage</button>
+      </div>
+      <p class="key">Key <code>@PreferencesKey</code></p>
+      <p class="key">
+        A stored payload that omits <code>compact</code> still loads, because that constructor parameter defaults to false.
+        Load also accepts a leftover entry stored under the simple type name. The next save writes the full name.
+        There is no migration framework.
+      </p>
+    </section>
+  </div>
+}

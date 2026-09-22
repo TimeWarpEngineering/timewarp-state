@@ -27,30 +27,14 @@ TimeWarp.State.Plus extends the core functionality with additional features:
 
 - **PersistentState**
   - **Key Feature**: Automates the persistence of state in browser storage.
-  - **Usage**: Annotate state classes with `[PersistentState]` to enable.
-  - **Storage Options**: Supports both `LocalStorage` and `SessionStorage`.
-  - **Storage keys**: New writes use the state's `FullName` so two types with the same simple name do not collide. Load tries `FullName` first, then the simple `Name`, so existing browser entries are not dropped.
+  - **Usage**: Annotate a top-level state with `[PersistentState(PersistentStateMethod.SessionStorage)]` or `LocalStorage`.
+  - **Host**: `AddBlazoredSessionStorage` / `AddBlazoredLocalStorage`, `AddScoped<IPersistenceService, PersistenceService>()`, and `[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]`. Auto-load sends `LoadPersistentStateRequest`.
+  - **Storage keys**: New writes use the state's `FullName` so two types with the same simple name do not collide. Load tries `FullName` first, then the simple `Name`, so existing browser entries are not dropped. There is no migration framework.
   - **JSON**: Save and load use `TimeWarpStateOptions.JsonSerializerOptions` (the same options as `Store` and `JsonRequestHandler`). Configure converters there so persisted state round-trips. Load is property-name case-insensitive so leftover PascalCase entries still hydrate.
-- 
-- **MultiTimer System**: A flexible framework for managing multiple timers in your application. 
-  - It supports configurable timers 
+  - **Sample**: [samples/05-persistence](../../samples/05-persistence/readme.md).
+- **MultiTimer System**: A flexible framework for managing multiple timers in your application.
+  - It supports configurable timers
   - Activity-based resets.
-
-Example:
-
-```csharp
-// Register the required services in Program.cs
-// serviceCollection.AddTransient(typeof(IRequestPostProcessor<,>), typeof(PersistentStatePostProcessor<,>));
-// serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
-
-
-[PersistentState(PersistentStateMethod.LocalStorage)]
-public partial class Counter2State : State<Counter2State>
-{
-// State implementation
-}
-
-```
 
 ## Available Components
 - **TwBreadcrumb**

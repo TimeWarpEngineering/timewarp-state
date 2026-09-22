@@ -41,6 +41,13 @@ Observes TimeWarp.State actions in the Aspire dashboard via OpenTelemetry:
 - OTLP export when the AppHost (or `OTEL_EXPORTER_OTLP_ENDPOINT`) is set
 - Snapshots remain opt-in and off in the sample
 
+### [05-Persistence](05-persistence/)
+Stores two states in the browser with `[PersistentState]`:
+- Session storage for a tab-scoped draft (`DraftNoteState`)
+- Local storage for accent and density (`DisplayPreferencesState`)
+- Startup load through `LoadPersistentStateRequest`
+- FullName write key, simple-name fallback on load (no migration framework)
+
 ## Getting Started
 
 Each sample project contains its own README with detailed information about:
