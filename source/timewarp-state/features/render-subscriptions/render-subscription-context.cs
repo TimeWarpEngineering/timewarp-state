@@ -1,58 +1,86 @@
+#region Purpose
+// Per-dispatch opt-out for subscriber re-render, keyed by the in-flight action instance.
+#endregion
+
+#region Design
+// Type FullName keys were sticky on a scoped service for the circuit/WASM lifetime.
+// Flags use reference equality on the action instance; CompleteDispatch removes them after
+// the post-processor runs so a flag cannot leak to a later dispatch of the same type.
+// [SuppressRender] is the supported type-level opt-out. Reset remains for tests that call
+// the obsolete surface without going through the pipeline.
+#endregion
+
 namespace TimeWarp.Features.RenderSubscriptions;
 
 /// <summary>
-/// Provides control over subscription re-rendering.
+/// Per-dispatch control over whether subscriptions re-render after an action is handled.
 /// </summary>
 /// <remarks>
-/// Handler developers should inject this context and use the EnsureAction method
-/// to prevent automatic re-rendering of subscriptions for specific actions.
-/// This allows for fine-grained control over the rendering process and can
-/// significantly improve application performance.
+/// Prefer <see cref="SuppressRenderAttribute"/> on the action type. Instance registration
+/// applies only to that action object and is cleared when the pipeline completes.
 /// </remarks>
 public class RenderSubscriptionContext
 {
-  private readonly ConcurrentDictionary<string, bool> ActionSubscriptionFlags = new();
+  private readonly ConcurrentDictionary<IAction, bool> ActionSubscriptionFlags = new(ActionReferenceComparer.Instance);
 
   /// <summary>
-  /// Registers the action with the context.
-  /// Ensures that subscriptions will not be fired for the specified action.
+  /// Registers the action instance so the post-processor can skip or allow re-render for this dispatch.
   /// </summary>
-  /// <param name="action"></param>
-  /// <param name="shouldFireSubscriptions"></param>
+  /// <param name="action">The in-flight action instance. A different instance of the same type is unaffected.</param>
+  /// <param name="shouldFireSubscriptions">False skips re-render for this instance; true allows it.</param>
+  [Obsolete("Apply [SuppressRender] to the action type. This registration is keyed by action instance and is cleared when the pipeline completes.")]
   public void EnsureAction(IAction action, bool shouldFireSubscriptions = false)
   {
     ArgumentNullException.ThrowIfNull(action);
-    string key = BuildKey(action);
-    ActionSubscriptionFlags[key] = shouldFireSubscriptions;
+    ActionSubscriptionFlags[action] = shouldFireSubscriptions;
   }
 
   /// <summary>
-  /// Returns true if the action should fire subscriptions.
-  /// If the action has not been registered with EnsureAction, then it will fire subscriptions by default.
+  /// Returns true if this action instance should fire subscriptions.
+  /// Unregistered instances fire by default.
   /// </summary>
-  /// <param name="action"></param>
-  /// <returns></returns>
+  /// <param name="action">The in-flight action instance.</param>
   public bool ShouldFireSubscriptionsForAction(IAction action)
   {
-    string key = BuildKey(action);
-    return !ActionSubscriptionFlags.TryGetValue(key, out bool shouldFire) || shouldFire;
+    ArgumentNullException.ThrowIfNull(action);
+    return !ActionSubscriptionFlags.TryGetValue(action, out bool shouldFire) || shouldFire;
   }
 
   /// <summary>
-  /// Resets the context.
+  /// Clears all instance registrations. Tests that call the obsolete surface without the pipeline use this.
   /// </summary>
+  [Obsolete("Test-only. [SuppressRender] does not require a reset.")]
   public void Reset() => ActionSubscriptionFlags.Clear();
-  
+
   /// <summary>
-  /// Removes the action from the context.
+  /// No longer removes by type name. Type-name keys leaked across dispatches.
   /// </summary>
-  /// <param name="actionName"></param>
+  /// <param name="actionName">Ignored.</param>
+  [Obsolete("Apply [SuppressRender] to the action type. Type-name keys are no longer used.")]
   public void RemoveAction(string actionName)
   {
-    ActionSubscriptionFlags.TryRemove(actionName, out _);
+    _ = actionName;
   }
-  
-  private static string BuildKey(IAction action) => 
-    action.GetType().FullName 
-    ?? throw new InvalidOperationException("Action type name is null");
+
+  /// <summary>
+  /// Drops the instance flag after the post-processor has consumed it.
+  /// </summary>
+  internal void CompleteDispatch(IAction action)
+  {
+    if (action is null)
+    {
+      return;
+    }
+
+    ActionSubscriptionFlags.TryRemove(action, out _);
+  }
+
+  private sealed class ActionReferenceComparer : IEqualityComparer<IAction>
+  {
+    public static readonly ActionReferenceComparer Instance = new();
+
+    public bool Equals(IAction? leftAction, IAction? rightAction) => ReferenceEquals(leftAction, rightAction);
+
+    public int GetHashCode(IAction action) => RuntimeHelpers.GetHashCode(action);
+  }
 }

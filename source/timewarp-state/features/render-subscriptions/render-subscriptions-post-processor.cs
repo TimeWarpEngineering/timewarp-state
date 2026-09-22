@@ -1,3 +1,14 @@
+#region Purpose
+// After an action is handled, re-render components subscribed to the enclosing state unless suppressed.
+#endregion
+
+#region Design
+// [SuppressRender] is cached per closed generic. Distinct from IInternalAction: Start/Complete
+// processing must still re-render ActionTracking UI.
+// RenderSubscriptionContext holds only the in-flight action instance (reference equality) and is
+// cleared in finally so a flag cannot leak to a later dispatch of the same type.
+#endregion
+
 namespace TimeWarp.Features.RenderSubscriptions;
 
 /// <summary>
@@ -10,6 +21,9 @@ namespace TimeWarp.Features.RenderSubscriptions;
 public sealed class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
   where TRequest : notnull, IAction
 {
+  private static readonly bool SuppressRender =
+    typeof(TRequest).IsDefined(typeof(SuppressRenderAttribute), inherit: true);
+
   private readonly ILogger Logger;
   private readonly Subscriptions Subscriptions;
   private readonly RenderSubscriptionContext RenderSubscriptionContext;
@@ -40,18 +54,18 @@ public sealed class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IPip
 
     try
     {
-      if (RenderSubscriptionContext.ShouldFireSubscriptionsForAction(request))
-      {
-        Subscriptions.ReRenderSubscribers(enclosingStateType);
-      }
-      else
+      if (SuppressRender || !RenderSubscriptionContext.ShouldFireSubscriptionsForAction(request))
       {
         Logger.LogDebug
         (
           EventIds.RenderSubscriptionsPostProcessor_SkippedReRender,
-          "Skipped re-rendering subscribers for action: {ActionType}", 
+          "Skipped re-rendering subscribers for action: {ActionType}",
           requestType.FullName
         );
+      }
+      else
+      {
+        Subscriptions.ReRenderSubscribers(enclosingStateType);
       }
     }
     catch (Exception exception)
@@ -63,6 +77,10 @@ public sealed class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IPip
         "Error re-rendering subscriptions"
       );
       throw;
+    }
+    finally
+    {
+      RenderSubscriptionContext.CompleteDispatch(request);
     }
 
     return response;

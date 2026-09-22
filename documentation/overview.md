@@ -73,6 +73,8 @@ When a component accesses `State`, a subscription is added.
 The `RenderSubscriptionsPostProcessor` will iterate over these subscriptions and re-render those components that return true for ShouldReRender.
 So you don't have to worry about where to call `StateHasChanged` and still have the ability to finely control re-rendering.
 
+Apply `[SuppressRender]` to an action type that must never re-render subscribers. The check is cached per closed generic. `IInternalAction` still re-renders (ActionTracking and timer UI). `RenderSubscriptionContext.EnsureAction` is obsolete: it keys by the in-flight instance and is cleared when the pipeline completes.
+
 #### ReduxDevToolsBehavior
 
 > [!NOTE]
