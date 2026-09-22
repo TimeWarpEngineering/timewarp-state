@@ -13,7 +13,7 @@ Time-travel / commit / import-export are not in this sample.
 ## What it shows
 
 - `AddTimeWarpStateTelemetry()` plus `tracing.AddSource(TimeWarpStateTelemetry.ActivitySourceName)`
-- Default metadata-only spans (`CounterState.Action`, duration, Ok/Error)
+- Default metadata-only spans (`CounterState.IncrementCountActionSet.Action`, duration, Ok/Error)
 - OTLP export when `OTEL_EXPORTER_OTLP_ENDPOINT` is set (Aspire AppHost sets this)
 
 Snapshots stay off. Enable them only with caller `JsonTypeInfo` — see the package README.
@@ -27,7 +27,7 @@ Pack the in-tree packages first so the sample can restore `TimeWarp.State.Teleme
 dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj
 ```
 
-Open the dashboard URL printed by the AppHost. Start the `sample-04-server` resource if it is not already running, open `/counter`, click **Click me**. In **Traces**, each click is a span named `CounterState.Action` on source `TimeWarp.State`.
+Open the dashboard URL printed by the AppHost. Start the `sample-04-server` resource if it is not already running, open `/counter`, click **Click me**. In **Traces**, each click is a span named `CounterState.IncrementCountActionSet.Action` on source `TimeWarp.State`.
 
 ## Run against a standalone dashboard
 

@@ -5,7 +5,7 @@
 #region Design
 // IncludeSnapshots defaults false so the hot path never serializes. JsonSerializerOptions is
 // caller-supplied (or TimeWarpStateOptions after 065); this type never constructs options.
-// MaxSnapshotChars caps span-event payload size when snapshots are enabled.
+// MaxSnapshotChars caps the exported span-event payload. Cache and compare use the full JSON.
 #endregion
 
 namespace TimeWarp.State.Telemetry;
@@ -31,7 +31,8 @@ public sealed class TimeWarpStateTelemetryOptions
   public JsonSerializerOptions? JsonSerializerOptions { get; set; }
 
   /// <summary>
-  /// Maximum characters written into a snapshot or diff span event. Longer JSON is truncated.
+  /// Maximum characters written into a snapshot or diff span event. Cache and compare use the
+  /// full JSON; only the event payload is truncated. Truncated events set <c>snapshot.truncated</c>.
   /// </summary>
   public int MaxSnapshotChars { get; set; } = 16_384;
 }

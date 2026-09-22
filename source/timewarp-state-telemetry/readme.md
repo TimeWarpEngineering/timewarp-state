@@ -10,7 +10,7 @@ Time-travel, commit, and import/export stay out of this package. Those need a de
 dotnet add package TimeWarp.State.Telemetry
 ```
 
-The package weaves `TelemetryBehavior<TAction, TResponse>` into `ClientPipeline` the same way `StateTransactionBehavior` is woven (generated mediator, closed types visible to the trimmer).
+The package weaves `TelemetryBehavior<TAction, TResponse>` into `ClientPipeline` the same way `StateTransactionBehavior` is woven (generated mediator, closed types visible to the trimmer). Order 350 sits inside `StateTransactionBehavior` (300) and outside `RenderSubscriptionsPostProcessor` (400): handler failures are recorded as `Error` before the transaction restores state and swallows the exception. Span duration is handler + render, not clone or Redux DevTools JS.
 
 ## Register
 
@@ -36,10 +36,10 @@ Default (no payload):
 
 | Item | Source |
 |------|--------|
-| Name | `{StateType}.{ActionType}` |
-| `timewarp.state.action` | Action type name |
+| Name | Nested declaring-type chain, e.g. `CounterState.IncrementCountActionSet.Action` |
+| `timewarp.state.action` | Nested name relative to the enclosing state, e.g. `IncrementCountActionSet.Action` |
 | `timewarp.state.state_type` | Enclosing state type name |
-| Duration | Activity start/stop |
+| Duration | Activity start/stop (handler + render) |
 | Status | `Ok` or `Error` (exception recorded) |
 
 An action that triggers HTTP is the parent of that HTTP span when the handler runs under `Activity.Current`.
@@ -67,8 +67,9 @@ Or set `TypeInfoResolver` on `TimeWarpStateOptions.JsonSerializerOptions` (the s
 Events (not span attributes):
 
 - First JSON for a state type in the scope: `state.snapshot` with tag `snapshot.json`
-- Later unequal JSON: `state.diff` with the new JSON (string compare, no reflection property walk)
+- Later unequal JSON: `state.diff` with the new JSON (string compare of the full JSON, no reflection property walk)
 - Equal JSON: no event
+- `MaxSnapshotChars` truncates only the event payload and sets boolean tag `snapshot.truncated`
 
 ## Performance
 

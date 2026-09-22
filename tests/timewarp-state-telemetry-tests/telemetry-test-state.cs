@@ -16,4 +16,9 @@ internal sealed class TelemetryTestState : IState
   public sealed class IncrementAction : IAction;
 
   public sealed class ThrowAction : IAction;
+
+  public static class IncrementCountActionSet
+  {
+    public sealed class Action : IAction;
+  }
 }

@@ -1,6 +1,6 @@
 #region Purpose
-// Proves TelemetryBehavior emits activities, sets error status, skips work with no listener,
-// and records opt-in snapshots only through caller JsonTypeInfo.
+// Proves TelemetryBehavior emits nested action names, Error inside a swallowing transaction,
+// weave order 350, and snapshots that compare full JSON then truncate the event payload.
 #endregion
 
 namespace TelemetryBehaviorTests;
@@ -50,6 +50,34 @@ public class Should_
     harness.Store.GetStateCallCount.ShouldBe(0);
   }
 
+  public async Task Emit_Nested_ActionSet_Display_Name()
+  {
+    Harness harness = CreateHarness();
+    using ActivityListenerHarness activityListenerHarness = new();
+
+    TelemetryBehavior<TelemetryTestState.IncrementCountActionSet.Action, Unit> telemetryBehavior = new
+    (
+      NullLogger<TelemetryBehavior<TelemetryTestState.IncrementCountActionSet.Action, Unit>>.Instance,
+      harness.Store,
+      timeWarpStateTelemetryOptions: null,
+      timeWarpStateOptions: null,
+      stateSnapshotCache: null
+    );
+
+    await telemetryBehavior.Handle
+    (
+      new TelemetryTestState.IncrementCountActionSet.Action(),
+      _ => Task.FromResult(Unit.Value),
+      CancellationToken.None
+    );
+
+    RecordedActivity recordedActivity = activityListenerHarness.Activities.ShouldHaveSingleItem();
+    recordedActivity.DisplayName.ShouldBe("TelemetryTestState.IncrementCountActionSet.Action");
+    recordedActivity.Status.ShouldBe(ActivityStatusCode.Ok);
+    TagValue(recordedActivity, "timewarp.state.action").ShouldBe("IncrementCountActionSet.Action");
+    TagValue(recordedActivity, "timewarp.state.state_type").ShouldBe("TelemetryTestState");
+  }
+
   public async Task Set_Error_Status_And_Rethrow_When_Handler_Throws()
   {
     Harness harness = CreateHarness();
@@ -74,6 +102,47 @@ public class Should_
     recordedActivity.StatusDescription.ShouldBe("handler failed");
     recordedActivity.HasExceptionEvent.ShouldBeTrue();
     harness.Store.GetStateCallCount.ShouldBe(0);
+  }
+
+  public async Task Record_Error_When_Transaction_Swallows_Handler_Exception()
+  {
+    Harness harness = CreateHarness();
+    using ActivityListenerHarness activityListenerHarness = new();
+    InvalidOperationException thrown = new("handler failed");
+
+    try
+    {
+      await harness.ThrowBehavior.Handle
+      (
+        new TelemetryTestState.ThrowAction(),
+        _ => Task.FromException<Unit>(thrown),
+        CancellationToken.None
+      );
+    }
+    catch (Exception)
+    {
+      // StateTransactionBehavior restores state and returns default without rethrow.
+    }
+
+    activityListenerHarness.Activities.Count.ShouldBe(1);
+    RecordedActivity recordedActivity = activityListenerHarness.Activities[0];
+    recordedActivity.Status.ShouldBe(ActivityStatusCode.Error);
+    recordedActivity.StatusDescription.ShouldBe("handler failed");
+    recordedActivity.HasExceptionEvent.ShouldBeTrue();
+  }
+
+  public void Weave_Telemetry_Inside_State_Transaction_At_Order_350()
+  {
+    CustomAttributeData mediatorBehaviorAttribute = typeof(TimeWarp.State.Telemetry.AssemblyMarker).Assembly.CustomAttributes.Single
+    (
+      customAttributeData =>
+        customAttributeData.AttributeType == typeof(MediatorBehaviorAttribute)
+        && customAttributeData.ConstructorArguments.Count >= 2
+        && customAttributeData.ConstructorArguments[0].Value is Type behaviorType
+        && behaviorType == typeof(TelemetryBehavior<,>)
+    );
+
+    mediatorBehaviorAttribute.ConstructorArguments[1].Value.ShouldBe(350);
   }
 
   public async Task Skip_GetState_When_Listener_Is_Attached_But_Span_Is_Not_Sampled()
@@ -126,12 +195,61 @@ public class Should_
     ActivityEvent snapshotEvent = activityListenerHarness.Activities[0].Events.ShouldHaveSingleItem();
     snapshotEvent.Name.ShouldBe("state.snapshot");
     EventJson(snapshotEvent).ShouldContain("\"count\":1");
+    EventTag(snapshotEvent, "snapshot.truncated").ShouldBe(false);
 
     ActivityEvent diffEvent = activityListenerHarness.Activities[1].Events.ShouldHaveSingleItem();
     diffEvent.Name.ShouldBe("state.diff");
     EventJson(diffEvent).ShouldContain("\"count\":2");
+    EventTag(diffEvent, "snapshot.truncated").ShouldBe(false);
 
     activityListenerHarness.Activities[2].Events.ShouldBeEmpty();
+  }
+
+  public async Task Truncate_Event_Payload_After_Cache_Compare()
+  {
+    TimeWarpStateTelemetryOptions timeWarpStateTelemetryOptions = new()
+    {
+      IncludeSnapshots = true,
+      MaxSnapshotChars = 40,
+      JsonSerializerOptions = new JsonSerializerOptions
+      {
+        TypeInfoResolver = TelemetryTestJsonContext.Default
+      }
+    };
+
+    Harness harness = CreateHarness(timeWarpStateTelemetryOptions);
+    harness.Store.CurrentState.ShouldBeOfType<TelemetryTestState>().Guid =
+      Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+
+    using ActivityListenerHarness activityListenerHarness = new();
+
+    await harness.IncrementBehavior.Handle
+    (
+      new TelemetryTestState.IncrementAction(),
+      _ => Task.FromResult(Unit.Value),
+      CancellationToken.None
+    );
+
+    harness.Store.CurrentState.ShouldBeOfType<TelemetryTestState>().Count = 2;
+
+    await harness.IncrementBehavior.Handle
+    (
+      new TelemetryTestState.IncrementAction(),
+      _ => Task.FromResult(Unit.Value),
+      CancellationToken.None
+    );
+
+    activityListenerHarness.Activities.Count.ShouldBe(2);
+
+    ActivityEvent snapshotEvent = activityListenerHarness.Activities[0].Events.ShouldHaveSingleItem();
+    snapshotEvent.Name.ShouldBe("state.snapshot");
+    EventJson(snapshotEvent).ShouldContain("…(truncated)");
+    EventTag(snapshotEvent, "snapshot.truncated").ShouldBe(true);
+
+    ActivityEvent diffEvent = activityListenerHarness.Activities[1].Events.ShouldHaveSingleItem();
+    diffEvent.Name.ShouldBe("state.diff");
+    EventJson(diffEvent).ShouldContain("…(truncated)");
+    EventTag(diffEvent, "snapshot.truncated").ShouldBe(true);
   }
 
   public async Task Skip_Snapshot_When_IncludeSnapshots_Is_False()
@@ -222,6 +340,9 @@ public class Should_
 
   private static string EventJson(ActivityEvent activityEvent) =>
     activityEvent.Tags.Single(tag => tag.Key == "snapshot.json").Value.ShouldBeOfType<string>();
+
+  private static object? EventTag(ActivityEvent activityEvent, string key) =>
+    activityEvent.Tags.Single(tag => tag.Key == key).Value;
 
   private sealed class Harness
   {

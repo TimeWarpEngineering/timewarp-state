@@ -5,13 +5,13 @@
 #region Design
 // Hot path: ActivitySource.HasListeners() then StartActivity. No GetState, no JSON, no snapshot
 // cache when there is no listener or the span is unsampled.
-// Default tags: action type name, state type name, success/failure. Duration is the Activity.
-// Snapshots only when IncludeSnapshots, IsAllDataRequested, and caller JsonTypeInfo exist.
-// Serialize through JsonTypeInfo from caller options — never new JsonSerializerOptions() and
-// never JsonSerializer.Serialize(object) on open TState. Diff is JSON string compare (no
-// GetProperties). Type names from typeof; no AssemblyQualifiedName or Type.GetType.
-// Per-closed-generic Type/Name are static readonly (finding 19). Snapshot failures never fail
-// the action.
+// Default tags: nested DeclaringType action name, state type name, success/failure. Duration is
+// the Activity. Snapshots only when IncludeSnapshots, IsAllDataRequested, and caller JsonTypeInfo
+// exist. Serialize through JsonTypeInfo from caller options — never new JsonSerializerOptions()
+// and never JsonSerializer.Serialize(object) on open TState. Diff is full-JSON string compare
+// (no GetProperties); MaxSnapshotChars truncates the event payload only. Type names from typeof
+// and DeclaringType; no AssemblyQualifiedName or Type.GetType. Per-closed-generic Type/Name are
+// static readonly (finding 19). Snapshot failures never fail the action.
 #endregion
 
 namespace TimeWarp.State.Telemetry;
@@ -21,8 +21,9 @@ namespace TimeWarp.State.Telemetry;
 /// </summary>
 /// <remarks>
 /// Woven at compile time by <c>[assembly: MediatorBehavior]</c> into <see cref="ClientPipeline"/>.
-/// Default spans carry type names, duration, and status only. State JSON is a span event, and only
-/// when the host opts in and supplies <see cref="JsonTypeInfo"/>.
+/// Order 350 sits inside <c>StateTransactionBehavior</c> so handler failures are <c>Error</c> before
+/// the transaction swallows them. Default spans carry nested type names, duration, and status only.
+/// State JSON is a span event, and only when the host opts in and supplies <see cref="JsonTypeInfo"/>.
 /// </remarks>
 /// <typeparam name="TRequest">The action type.</typeparam>
 /// <typeparam name="TResponse">The handler response type.</typeparam>
@@ -30,7 +31,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
   where TRequest : notnull, IAction
 {
   private static readonly Type ActionType = typeof(TRequest);
-  private static readonly string ActionTypeName = typeof(TRequest).Name;
+  private static readonly string ActionTypeName;
   private static readonly Type? EnclosingStateType;
   private static readonly string? EnclosingStateTypeName;
   private static readonly string ActivityName;
@@ -38,6 +39,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
   private const string ActionTagName = "timewarp.state.action";
   private const string StateTypeTagName = "timewarp.state.state_type";
   private const string SnapshotJsonTagName = "snapshot.json";
+  private const string SnapshotTruncatedTagName = "snapshot.truncated";
   private const string SnapshotEventName = "state.snapshot";
   private const string DiffEventName = "state.diff";
 
@@ -55,9 +57,8 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
       EnclosingStateTypeName = enclosingStateType.Name;
     }
 
-    ActivityName = EnclosingStateTypeName is null
-      ? ActionTypeName
-      : $"{EnclosingStateTypeName}.{ActionTypeName}";
+    ActivityName = NestedTypeName(ActionType, stopAtType: null);
+    ActionTypeName = NestedTypeName(ActionType, stopAtType: EnclosingStateType);
   }
 
   /// <summary>
@@ -83,7 +84,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
       EventIds.TelemetryBehavior_Constructing,
       "constructing {ClassName}<{RequestType},{ResponseType}>",
       nameof(TelemetryBehavior<TRequest, TResponse>),
-      ActionType.Name,
+      ActivityName,
       typeof(TResponse).Name
     );
   }
@@ -186,7 +187,6 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
     {
       object state = Store.GetState(EnclosingStateType);
       string json = JsonSerializer.Serialize(state, jsonTypeInfo);
-      json = Truncate(json, TimeWarpStateTelemetryOptions.MaxSnapshotChars);
 
       string cacheKey = EnclosingStateType.FullName ?? EnclosingStateType.Name;
       SnapshotChange snapshotChange = StateSnapshotCache.Record(cacheKey, json);
@@ -196,6 +196,8 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
       }
 
       string eventName = snapshotChange == SnapshotChange.Initial ? SnapshotEventName : DiffEventName;
+      int maxSnapshotChars = TimeWarpStateTelemetryOptions.MaxSnapshotChars;
+      bool snapshotTruncated = maxSnapshotChars > 0 && json.Length > maxSnapshotChars;
       activity.AddEvent
       (
         new ActivityEvent
@@ -203,7 +205,8 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
           eventName,
           tags: new ActivityTagsCollection
           {
-            { SnapshotJsonTagName, json }
+            { SnapshotJsonTagName, Truncate(json, maxSnapshotChars) },
+            { SnapshotTruncatedTagName, snapshotTruncated }
           }
         )
       );
@@ -228,5 +231,19 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
     }
 
     return string.Concat(json.AsSpan(0, maxSnapshotChars), "…(truncated)");
+  }
+
+  private static string NestedTypeName(Type type, Type? stopAtType)
+  {
+    List<string> names = [];
+    Type? currentType = type;
+    while (currentType is not null && currentType != stopAtType)
+    {
+      names.Add(currentType.Name);
+      currentType = currentType.DeclaringType;
+    }
+
+    names.Reverse();
+    return string.Join(".", names);
   }
 }
