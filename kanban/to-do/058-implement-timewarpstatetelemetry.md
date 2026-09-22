@@ -19,7 +19,20 @@ ReduxDevTools functionality splits into two halves that map to Aspire differentl
   - action type name, state type, duration, success/failure status
   - state snapshot/diff carried as span events or structured logs, NOT large span attributes (payload size; consider diff-only after an initial full snapshot)
   - all serialization guarded behind listener/level checks and sampling — do not repeat the eager-serialization mistake found in `persistent-state-post-processor.cs` (review finding 18)
-- Cache per-closed-generic reflection in `static readonly` fields (review finding 19).
+- Cache per-closed-generic reflection in `static readonly` fields (review finding 19). `typeof(TAction)` is fine. Do **not** cache `GetProperties()` and invoke later.
+
+### AOT / trimming (required)
+
+Observation-only telemetry must stay AOT-safe. Replacing Redux DevTools observation is a net win (no `Type.GetType`, no assembly-qualified rewrite, no custom JS bridge). The snapshot path is the hazard.
+
+- Default span: action type name, state type name, duration, success/failure. **No payload.**
+- Snapshots/diffs only when a listener is attached **and** the host opts in.
+- Serialize only through **caller-supplied** `JsonSerializerOptions` / `JsonTypeInfo` (same options as `TimeWarpStateOptions` after 065). Never `new JsonSerializerOptions()` and `JsonSerializer.Serialize(object)` on open `TState`.
+- Do not walk state properties with reflection to build a diff.
+- Do not use `AssemblyQualifiedName` or `Type.GetType`.
+- Register `TelemetryBehavior<TAction, TResponse>` the same way as `StateTransactionBehavior` (generated mediator) so closed types are visible to the trimmer.
+- New csproj: `IsAotCompatible=true`. Trim-warn the sample. WASM browser telemetry stays the JS OTel SDK (document CORS); that JS is not the C# trimmer’s problem.
+- Time-travel / `LoadStatesFromJson` stays out of scope (that is the AOT-hostile half).
 - `AddTimeWarpStateTelemetry()` service-collection extension; use `TryAdd*` (review finding 23).
 - Works on Blazor Server out of the box; document WASM via Aspire dashboard browser telemetry (OTLP/HTTP + CORS — auto-configured when the AppHost launches both app and dashboard; standalone dashboard needs `DASHBOARD__OTLP__CORS__ALLOWEDORIGINS`). WASM uses the JS OTel SDK, so it is not zero-JS, but it is standard maintained SDK code instead of the custom `redux-dev-tools.ts`/`timewarp-state.ts` layer.
 - Sample or test-app wiring demonstrating the action timeline in the Aspire dashboard.
@@ -35,6 +48,7 @@ ReduxDevTools functionality splits into two halves that map to Aspire differentl
 - [ ] Package README, WASM/browser-telemetry notes
 - [ ] Performance review (hot path: every action dispatch; must be near-zero cost with no listener)
 - [ ] Security review (state payloads in telemetry may contain user data — document redaction/sampling)
+- [ ] AOT: default span has no payload; opt-in snapshots use caller `JsonTypeInfo` / `TimeWarpStateOptions`; `IsAotCompatible=true`; no `Type.GetType` / reflection property walk
 
 ## Notes
 
@@ -47,6 +61,11 @@ References:
 
 Out of scope — follow-on tasks:
 
-- Time-travel "control" channel: dev-only SignalR hub / minimal API invoking `Store.LoadStatesFromJson`/`Hydrate`. Prerequisite: fix the FullName key bug in `store.redux-dev-tools.cs` (review finding 1).
+- Time-travel "control" channel: dev-only SignalR hub / minimal API invoking `Store.LoadStatesFromJson`/`Hydrate`. Prerequisite: fix the FullName key bug in `store.redux-dev-tools.cs` (review finding 1). That path is AOT-hostile; do not pull it into this package.
+
+## Session
+
+- Created: 2026-06 (code review)
+- 2026-09-22: cockpit — AOT constraints added (default span has no body; caller JsonTypeInfo; IsAotCompatible). Not dispatched.
 - Companion devtools Blazor app (dogfooding TimeWarp.State) registered as an Aspire resource via a hosting integration (`AddTimeWarpStateDevTools()`), linked from the dashboard; port into a dashboard page when Aspire's plugin model ships.
 - Deprecation path for the existing ReduxDevTools JS-interop feature.
