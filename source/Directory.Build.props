@@ -6,7 +6,7 @@
   <PropertyGroup Label="Package Metadata">
     <Authors>Steven T. Cramer</Authors>
     <Product>TimeWarp State</Product>
-    <Version>12.0.0-beta.4</Version>
+    <Version>12.0.0-beta.5</Version>
     <PackageProjectUrl>https://timewarpengineering.github.io/timewarp-state/</PackageProjectUrl>
     <PackageTags>TimeWarp.State; TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; Mediator; TimeWarp.Mediator; Pipeline; Redux; Flux</PackageTags>
     <PackageIcon>logo.png</PackageIcon>
