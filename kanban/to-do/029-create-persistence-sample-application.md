@@ -16,6 +16,19 @@
 - Include clear comments and documentation within the sample code.
 - Provide examples of when to use Session storage vs Local storage.
 
+## Current API (065 / 075 — do not invent another stack)
+
+- `[PersistentState]` on the state type. Auto-load is `LoadPersistentStateRequest` (not `LoadActionSet` string dispatch).
+- Save/load use `TimeWarpStateOptions.JsonSerializerOptions`. Keys are `Type.FullName` (load falls back to simple name).
+- Blazored session vs local is how the host registers storage. Show both.
+- There is **no** library migration framework. Do not build one. README may note the FullName/Name fallback only.
+- Mediator is generated `AddGeneratedMediator` / named pipelines (080), not reflection `AddMediator`.
+- Match existing sample layout under `samples/`. PackageReference the local version, not a made-up NuGet.
+
+## Session
+
+- 2026-09-22: cockpit — next after 058. Dispatch implementer-grok.
+
 ## Checklist
 
 ### Design
