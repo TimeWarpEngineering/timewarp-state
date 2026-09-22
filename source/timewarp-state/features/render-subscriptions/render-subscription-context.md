@@ -1,19 +1,25 @@
-# RenderSubscriptionContext
+# Render subscriptions
 
-The `RenderSubscriptionContext` class provides Handlers with control over when subscriptions should be re-rendered.
+Re-render after an action is a property of the action type or of the in-flight instance. It is not sticky per-scope state keyed by type name.
 
-## Purpose
+## Type-level opt-out
 
-This class offers a mechanism for Handlers to manage the automatic re-rendering of subscriptions for specific actions, allowing for fine-grained control over the rendering process.
+Apply `[SuppressRender]` to an action type that must never re-render subscribers:
 
-## Usage in Action Handlers
+```csharp
+public sealed class SilentState : State<SilentState>
+{
+  [SuppressRender]
+  public sealed class HeartbeatAction : IAction;
+}
+```
 
-To modify the default re-rendering behavior in your Handler, follow these steps:
+`RenderSubscriptionsPostProcessor` caches `typeof(TRequest).IsDefined(typeof(SuppressRenderAttribute), inherit: true)` on each closed generic.
 
-TODO: Insert real example code and maybe a link
+`IInternalAction` is not a render skip. Start/Complete processing still re-render ActionTracking UI. A user action that skips render implements `[SuppressRender]` and does not become internal (that would also skip tracking and timer reset).
 
-[Link to line 10](./path/to/file.cs:10)
+## Per-dispatch opt-out
 
-## Cross-Middleware Communication
+`RenderSubscriptionContext.EnsureAction` is obsolete. It keys by action **instance** (reference equality) and `CompleteDispatch` clears the flag when the pipeline completes. A later dispatch of the same type with a new instance re-renders unless that type has `[SuppressRender]`.
 
-It's important to note that any middleware or handler within the pipeline can inject the `RenderSubscriptionContext` and thereby affect the re-rendering process. This capability enables cross-middleware communication, allowing different parts of the application to influence when and how subscriptions are re-rendered.
+`Reset` is test-only. `RemoveAction(string)` is a no-op: type-name keys leaked across dispatches.
