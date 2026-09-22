@@ -52,3 +52,14 @@ Create comprehensive samples demonstrating the advanced rendering control featur
 - Reference existing samples for consistent structure
 - Follow TimeWarp.State coding conventions
 - Include comments explaining key concepts and decisions
+
+## Current API (do not invent)
+
+- Match `samples/05-persistence` layout: numbered folder, WASM host, generated `AddGeneratedMediator`, kebab files.
+- Features: `RenderMode`, `RenderReason` / `ShouldRender`, subscriptions, `HandleUnregisteredParameter` if useful. `CaptureRenderCaller` only if showing caller diagnostics (069, default off).
+- Test-app already has should-render pages — this is a **standalone sample**, not a copy of the whole test-app.
+- One sample is enough if it covers the modes clearly. Do not spawn a farm of apps.
+
+## Session
+
+- 2026-09-22: cockpit — after 029 merge. Dispatch implementer-grok.
