@@ -16,7 +16,16 @@ Make suppression a property of the dispatch, not shared mutable state:
 
 ## Checklist
 
-- [ ] Decide attribute vs marker interface (align with the internal-action marker in task 066)
+- [x] Marker: use **066** `IInternalAction` (on master). Do not invent a second marker. `[SuppressRender]` only if user-action types must opt out without implementing `IInternalAction`.
 - [ ] Implement check in RenderSubscriptionsPostProcessor with per-closed-generic caching
 - [ ] Migrate/obsolete the existing RenderSubscriptionContext API
 - [ ] Tests: suppressed action type skips re-render; no cross-dispatch leakage between action types or over time
+
+## Notes
+
+066 is merged. `IInternalAction` is the marker. Suppression must be **per dispatch** (or a static type check cached per closed generic). Do not leave sticky `FullName` keys that survive the outer action. `Reset` stays test-only.
+
+## Session
+
+- Created: code review 2026-06-11
+- 2026-09-22: cockpit — 066 on master; dispatch after 604 merge
