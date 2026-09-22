@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public static class CompleteProcessingActionSet
   {
-    public sealed class Action : IAction
+    public sealed class Action : IInternalAction
     {
       public IAction TheAction { get; }
       public Action(IAction theAction)

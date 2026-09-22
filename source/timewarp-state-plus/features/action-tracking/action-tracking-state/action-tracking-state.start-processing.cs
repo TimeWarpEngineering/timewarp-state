@@ -4,7 +4,7 @@ public partial class ActionTrackingState
 {
   public static class StartProcessingActionSet
   {
-    public sealed class Action : IAction
+    public sealed class Action : IInternalAction
     {
       public Action(IAction theAction) 
       {

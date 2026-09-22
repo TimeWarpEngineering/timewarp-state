@@ -5,7 +5,7 @@ public partial class TimerState
 {
   public static class ResetTimersOnActivityActionSet
   {
-    public sealed class Action : IAction;
+    public sealed class Action : IInternalAction;
 
     public sealed class Handler : StateActionHandler<Action>
     {
