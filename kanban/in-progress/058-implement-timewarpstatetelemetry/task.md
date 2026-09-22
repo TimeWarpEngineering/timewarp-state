@@ -39,16 +39,16 @@ Observation-only telemetry must stay AOT-safe. Replacing Redux DevTools observat
 
 ## Checklist
 
-- [ ] Decide snapshot/diff strategy (span events vs structured logs, sampling guard, diff-only after initial snapshot)
-- [ ] Create project + csproj, add to timewarp-state.slnx
-- [ ] ActivitySource + TelemetryBehavior implementation
-- [ ] AddTimeWarpStateTelemetry registration extension
-- [ ] Wire test-app or sample to Aspire dashboard and verify the action timeline
-- [ ] Tests (behavior emits activity, status set on handler exception, zero cost when no listener attached)
-- [ ] Package README, WASM/browser-telemetry notes
-- [ ] Performance review (hot path: every action dispatch; must be near-zero cost with no listener)
-- [ ] Security review (state payloads in telemetry may contain user data — document redaction/sampling)
-- [ ] AOT: default span has no payload; opt-in snapshots use caller `JsonTypeInfo` / `TimeWarpStateOptions`; `IsAotCompatible=true`; no `Type.GetType` / reflection property walk
+- [x] Decide snapshot/diff strategy (span events vs structured logs, sampling guard, diff-only after initial snapshot)
+- [x] Create project + csproj, add to timewarp-state.slnx
+- [x] ActivitySource + TelemetryBehavior implementation
+- [x] AddTimeWarpStateTelemetry registration extension
+- [x] Wire test-app or sample to Aspire dashboard and verify the action timeline
+- [x] Tests (behavior emits activity, status set on handler exception, zero cost when no listener attached)
+- [x] Package README, WASM/browser-telemetry notes
+- [x] Performance review (hot path: every action dispatch; must be near-zero cost with no listener)
+- [x] Security review (state payloads in telemetry may contain user data — document redaction/sampling)
+- [x] AOT: default span has no payload; opt-in snapshots use caller `JsonTypeInfo` / `TimeWarpStateOptions`; `IsAotCompatible=true`; no `Type.GetType` / reflection property walk
 
 ## Notes
 
@@ -69,3 +69,73 @@ Out of scope — follow-on tasks:
 - 2026-09-22: cockpit — AOT constraints added (default span has no body; caller JsonTypeInfo; IsAotCompatible). Not dispatched.
 - Companion devtools Blazor app (dogfooding TimeWarp.State) registered as an Aspire resource via a hosting integration (`AddTimeWarpStateDevTools()`), linked from the dashboard; port into a dashboard page when Aspire's plugin model ships.
 - Deprecation path for the existing ReduxDevTools JS-interop feature.
+- Implementer: grok (2026-09-22) — package, tests, Blazor Server + Aspire AppHost sample, docs.
+
+## Results
+
+New packable `TimeWarp.State.Telemetry` instruments `ClientPipeline` with one OpenTelemetry `Activity` per dispatched `IAction`. Default spans are metadata-only (action type name, state type name, duration, Ok/Error). Opt-in snapshots are span events (`state.snapshot` then `state.diff`), serialized only through caller `JsonTypeInfo`, and skipped unless a listener is attached, the span is sampled (`IsAllDataRequested`), and `IncludeSnapshots` is true.
+
+**Snapshot/diff strategy:** span events (not span attributes). First JSON for a state type in the scope is `state.snapshot`; later unequal JSON is `state.diff` (ordinal string compare, no `GetProperties` walk); equal JSON emits nothing. Guarded by `HasListeners` → `StartActivity` → `IsAllDataRequested`.
+
+**Registration:** `[assembly: MediatorBehavior(typeof(TelemetryBehavior<,>), order: 50, Scope = typeof(ClientPipeline))]` — outermost, same generated-mediator weave as `StateTransactionBehavior`. Confirmed in sample generator output: `TelemetryBehavior<CounterState.IncrementCountActionSet.Action, Unit>` is `b0`. `AddTimeWarpStateTelemetry()` `TryAdd`s options + scoped `StateSnapshotCache`.
+
+**Sample:** `samples/04-telemetry/` Blazor Server counter + Aspire AppHost (`sample-04-apphost`). OTLP exporter is added only when `OTEL_EXPORTER_OTLP_ENDPOINT` is set (AppHost injects it).
+
+**Not in this change:** time-travel / `LoadStatesFromJson`; `AddTimeWarpStateDevTools()` companion app; obsoleting `UseReduxDevTools` (docs point observation at telemetry).
+
+### Files changed
+
+- `source/timewarp-state-telemetry/` — package (`IsAotCompatible=true`)
+- `tests/timewarp-state-telemetry-tests/` — 9 Fixie tests
+- `samples/04-telemetry/` — server sample + AppHost
+- `Directory.Packages.props`, `timewarp-state.slnx`, `scripts/test.cs`
+- `documentation/topics/telemetry.md`, package/root READMEs, sample overview
+
+### Key decisions
+
+- ActivitySource name `TimeWarp.State` (no OpenTelemetry package dependency in the library; consumers `AddSource`)
+- Order 50 so duration covers the full State pipeline
+- Snapshots require `TypeInfoResolver.GetTypeInfo`; missing type info skips `GetState`
+- `MaxSnapshotChars` (16_384) truncates event payload; not a substitute for redaction
+
+### Test outcomes
+
+`dotnet fixie timewarp-state-telemetry-tests` — **9 passed** (emit activity, error status + rethrow, no `GetState` without listener or when unsampled, snapshot then diff via source-generated `JsonTypeInfo`, skip when `IncludeSnapshots` is false or resolver returns null, `TryAdd` keeps first options).
+
+Library build: 0 warnings. Sample Release build succeeds; trim warnings are Blazor Server framework (`AddRazorComponents` / `Router`), not this package. AppHost Release build: 0 warnings.
+
+### How to validate
+
+**Automated**
+
+```bash
+dotnet build tests/timewarp-state-telemetry-tests/timewarp-state-telemetry-tests.csproj -c Release
+dotnet fixie timewarp-state-telemetry-tests
+# expect: 9 passed
+```
+
+**Smoke**
+
+```bash
+./bin/dev pack
+# expect: artifacts/packages/TimeWarp.State.Telemetry.12.0.0-beta.4.nupkg exists
+
+dotnet build samples/04-telemetry/server/sample-04-server/sample-04-server.csproj -c Release
+dotnet build samples/04-telemetry/apphost/sample-04-apphost.csproj -c Release
+# expect: both succeed
+
+dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj
+# expect: Aspire dashboard URL printed; resource sample-04-server running
+# open /counter, click Click me; Traces show span CounterState.Action, source TimeWarp.State, status Ok
+```
+
+Standalone dashboard alternative: `aspire dashboard`, then `OTEL_EXPORTER_OTLP_ENDPOINT` + `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf` and `dotnet run --project samples/04-telemetry/server/sample-04-server/sample-04-server.csproj`.
+
+**Expect**
+
+- Default click: span name `CounterState.Action`, tags `timewarp.state.action=Action` and `timewarp.state.state_type=CounterState`, no `snapshot.json`
+- Failed handler: `ActivityStatusCode.Error` and exception event (covered by tests)
+- No listener: `GetState` is not called (covered by tests)
+
+**Not in scope:** live time-travel control channel; WASM JS OTel SDK wiring (documented only).
+

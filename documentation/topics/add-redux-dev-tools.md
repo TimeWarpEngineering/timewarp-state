@@ -3,6 +3,8 @@ uid: TimeWarpState:AddReduxDevTools.md
 title: Add Redux Dev Tools
 ---
 
+For the **observation** half (action log, timing, snapshots) without the browser extension, use [TimeWarp.State.Telemetry](xref:TimeWarpState:Telemetry.md) and the Aspire dashboard. Keep Redux Dev Tools when you still need time-travel / commit / import-export.
+
 ## Add Redux Dev Tools to your project
 
 [ReduxDevTools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) are a chrome extension that let you view the `Action`s and `State` before and after each `Action` is handled.

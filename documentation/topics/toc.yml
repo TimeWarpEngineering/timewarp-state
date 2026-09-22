@@ -2,5 +2,7 @@
   topicUid: TimeWarpState:Analyzers.md
 - name: Add Redux Dev Tools
   topicUid: TimeWarpState:AddReduxDevTools.md
+- name: Telemetry
+  topicUid: TimeWarpState:Telemetry.md
 - name: Routing
   topicUid: TimeWarp.State:Routing.md
