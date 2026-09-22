@@ -121,6 +121,53 @@ public class Should_
     harness.Component.ReRenderCount.ShouldBe(1);
   }
 
+  public async Task Clear_Instance_Flag_When_Next_Throws()
+  {
+    Harness harness = CreateHarness();
+    RenderTestState.UserAction action = new();
+#pragma warning disable CS0618
+    harness.RenderSubscriptionContext.EnsureAction(action, shouldFireSubscriptions: false);
+#pragma warning restore CS0618
+
+    InvalidOperationException? caught = null;
+    try
+    {
+      await harness.UserProcessor.Handle
+      (
+        action,
+        _ => throw new InvalidOperationException("handler failed"),
+        CancellationToken.None
+      );
+    }
+    catch (InvalidOperationException exception)
+    {
+      caught = exception;
+    }
+
+    caught.ShouldNotBeNull();
+    caught.Message.ShouldBe("handler failed");
+    harness.RenderSubscriptionContext.ShouldFireSubscriptionsForAction(action).ShouldBeTrue();
+  }
+
+  public async Task Clear_Instance_Flag_After_Successful_Handle()
+  {
+    Harness harness = CreateHarness();
+    RenderTestState.UserAction action = new();
+#pragma warning disable CS0618
+    harness.RenderSubscriptionContext.EnsureAction(action, shouldFireSubscriptions: false);
+#pragma warning restore CS0618
+
+    await harness.UserProcessor.Handle
+    (
+      action,
+      _ => Task.FromResult(new object()),
+      CancellationToken.None
+    );
+
+    harness.Component.ReRenderCount.ShouldBe(0);
+    harness.RenderSubscriptionContext.ShouldFireSubscriptionsForAction(action).ShouldBeTrue();
+  }
+
   private static Harness CreateHarness()
   {
     Subscriptions subscriptions = new(NullLogger<Subscriptions>.Instance);

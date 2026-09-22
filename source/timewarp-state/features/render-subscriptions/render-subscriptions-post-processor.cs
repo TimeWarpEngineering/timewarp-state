@@ -5,8 +5,9 @@
 #region Design
 // [SuppressRender] is cached per closed generic. Distinct from IInternalAction: Start/Complete
 // processing must still re-render ActionTracking UI.
-// RenderSubscriptionContext holds only the in-flight action instance (reference equality) and is
-// cleared in finally so a flag cannot leak to a later dispatch of the same type.
+// RenderSubscriptionContext holds only the in-flight action instance (reference equality).
+// CompleteDispatch runs in finally around the whole Handle, including when next() throws, so a
+// flag cannot leak to a later send of the same instance or pin it for the scoped lifetime.
 #endregion
 
 namespace TimeWarp.Features.RenderSubscriptions;
@@ -47,42 +48,45 @@ public sealed class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IPip
     CancellationToken cancellationToken
   )
   {
-    TResponse response = await next(cancellationToken);
-
-    Type requestType = typeof(TRequest);
-    Type enclosingStateType = requestType.GetEnclosingStateType();
-
     try
     {
-      if (SuppressRender || !RenderSubscriptionContext.ShouldFireSubscriptionsForAction(request))
+      TResponse response = await next(cancellationToken);
+
+      Type requestType = typeof(TRequest);
+      Type enclosingStateType = requestType.GetEnclosingStateType();
+
+      try
+      {
+        if (SuppressRender || !RenderSubscriptionContext.ShouldFireSubscriptionsForAction(request))
+        {
+          Logger.LogDebug
+          (
+            EventIds.RenderSubscriptionsPostProcessor_SkippedReRender,
+            "Skipped re-rendering subscribers for action: {ActionType}",
+            requestType.FullName
+          );
+        }
+        else
+        {
+          Subscriptions.ReRenderSubscribers(enclosingStateType);
+        }
+      }
+      catch (Exception exception)
       {
         Logger.LogDebug
         (
-          EventIds.RenderSubscriptionsPostProcessor_SkippedReRender,
-          "Skipped re-rendering subscribers for action: {ActionType}",
-          requestType.FullName
+          EventIds.RenderSubscriptionsPostProcessor_Exception,
+          exception,
+          "Error re-rendering subscriptions"
         );
+        throw;
       }
-      else
-      {
-        Subscriptions.ReRenderSubscribers(enclosingStateType);
-      }
-    }
-    catch (Exception exception)
-    {
-      Logger.LogDebug
-      (
-        EventIds.RenderSubscriptionsPostProcessor_Exception,
-        exception,
-        "Error re-rendering subscriptions"
-      );
-      throw;
+
+      return response;
     }
     finally
     {
       RenderSubscriptionContext.CompleteDispatch(request);
     }
-
-    return response;
   }
 }
