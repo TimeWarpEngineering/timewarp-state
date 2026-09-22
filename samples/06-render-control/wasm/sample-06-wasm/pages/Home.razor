@@ -1,0 +1,228 @@
+@namespace Sample06Wasm.Pages
+@page "/"
+@inherits TracingComponent
+
+@code {
+  private const int BurstLength = 25;
+
+  private int LocalTick { get; set; }
+
+  private string Label { get; set; } = "North";
+
+  private FilterModel Filter { get; set; } = new() { Text = "oak" };
+
+  private bool Busy { get; set; }
+
+  private string? ActionError { get; set; }
+
+  private void TickLocal()
+  {
+    LocalTick++;
+  }
+
+  private void SwapLabel()
+  {
+    Label = Label == "North" ? "South" : "North";
+  }
+
+  private void ReplaceFilterWrapper()
+  {
+    Filter = new() { Text = Filter.Text };
+  }
+
+  private void ChangeFilterText()
+  {
+    Filter = new() { Text = Filter.Text == "oak" ? "ash" : "oak" };
+  }
+
+  // The click itself is an Event pass. ReRender runs after that pass so the trace can keep a Forced line.
+  private async Task ScheduleForcedRender()
+  {
+    try
+    {
+      await Task.Delay(1, CancellationToken);
+      ReRender();
+    }
+    catch (OperationCanceledException)
+    {
+    }
+  }
+
+  private async Task TickOnce()
+  {
+    await SendAsync(activityState => activityState.Tick(CancellationToken));
+  }
+
+  private async Task TickBurst()
+  {
+    await SendAsync
+    (
+      async activityState =>
+      {
+        for (int index = 0; index < BurstLength; index++)
+        {
+          await activityState.Tick(CancellationToken);
+          // A synchronous burst can fold many StateHasChanged calls into one paint.
+          // The delay lets each subscription render finish so the counts stay one per action.
+          await Task.Delay(1, CancellationToken);
+        }
+      }
+    );
+  }
+
+  private async Task IncrementCount()
+  {
+    await SendAsync(activityState => activityState.IncrementCount(1, CancellationToken));
+  }
+
+  // placeSubscription: false keeps this page off the ActivityState subscriber list.
+  // The cards subscribe by reading GetState in their own markup.
+  private async Task SendAsync(Func<ActivityState, Task> send)
+  {
+    if (Busy)
+    {
+      return;
+    }
+
+    Busy = true;
+    ActionError = null;
+    try
+    {
+      ActivityState activityState = GetState<ActivityState>(placeSubscription: false);
+      await send(activityState);
+    }
+    catch (OperationCanceledException)
+    {
+    }
+    catch (Exception exception)
+    {
+      ActionError = exception.Message;
+    }
+    finally
+    {
+      Busy = false;
+    }
+  }
+}
+
+<PageTitle>Render control sample</PageTitle>
+
+<header class="lede">
+  <h1>Which pass paints</h1>
+  <p>
+    <code>TimeWarpStateComponent.ShouldRender</code> names the reason for a render.
+    Two skips are on this page: a new object whose text did not change, and a state field you did not register.
+  </p>
+</header>
+
+<section class="block" aria-labelledby="host-heading">
+  <h2 id="host-heading">Render mode</h2>
+  <p>
+    <code>RendererInfo</code> is the host mode. <code>IsPreRendering</code> is
+    <code>!RendererInfo.IsInteractive</code>. This host's assigned mode is
+    <code>InteractiveWebAssemblyRenderMode</code>.
+  </p>
+  <dl class="facts">
+    <div>
+      <dt>RendererInfo.Name</dt>
+      <dd data-qa="renderer-name">@RendererInfo.Name</dd>
+    </div>
+    <div>
+      <dt>RendererInfo.IsInteractive</dt>
+      <dd data-qa="renderer-interactive">@RendererInfo.IsInteractive</dd>
+    </div>
+    <div>
+      <dt>IsPreRendering</dt>
+      <dd data-qa="is-prerendering">@IsPreRendering</dd>
+    </div>
+    <div>
+      <dt>AssignedRenderMode</dt>
+      <dd data-qa="assigned-render-mode">@(AssignedRenderMode?.GetType().Name ?? "None")</dd>
+    </div>
+  </dl>
+  <RenderFacts
+    RenderCount="RenderCount"
+    Reason="RenderReason"
+    Detail="@RenderReasonDetail"
+    Caller="@RecordedCaller"
+    Trace="Trace"
+    QaPrefix="page" />
+</section>
+
+<section class="block" aria-labelledby="parameter-heading">
+  <h2 id="parameter-heading">Parameters</h2>
+  <p>
+    Tick local field changes a field on this page. The label children do not paint. The reference filter does,
+    because it has no complex check. The text filter does not.
+    Swap label paints both label children: <code>Event</code> on the open child, <code>ParameterChanged</code>
+    with the name <code>Label</code> on the guarded child.
+    New wrapper, same text paints the reference child and not the text child.
+    Change filter text paints both. The text child names <code>Filter</code>.
+    Schedule forced render calls <code>ReRender()</code> after the click yields. This page's trace keeps a
+    <code>Forced</code> line between <code>Event</code> lines. The caller column reads
+    <code>ComponentBase.StateHasChanged</code>.
+  </p>
+  <p>Local tick <strong data-qa="local-tick">@LocalTick</strong>. Filter <strong data-qa="filter-text">@Filter.Text</strong></p>
+  <div class="row">
+    <button type="button" @onclick="TickLocal">Tick local field</button>
+    <button type="button" @onclick="SwapLabel">Swap label</button>
+    <button type="button" @onclick="ReplaceFilterWrapper">New wrapper, same text</button>
+    <button type="button" @onclick="ChangeFilterText">Change filter text</button>
+    <button type="button" class="ghost" @onclick="ScheduleForcedRender">Schedule forced render</button>
+  </div>
+  <div class="grid">
+    <OpenChild Label="@Label" />
+    <GuardedChild Label="@Label" />
+    <ReferenceFilterChild Filter="Filter" />
+    <TextFilterChild Filter="Filter" />
+  </div>
+</section>
+
+<section class="block" aria-labelledby="subscription-heading">
+  <h2 id="subscription-heading">Subscriptions</h2>
+  <p>
+    Both cards read <code>ActivityState</code> and subscribe. This page sends with
+    <code>GetState&lt;ActivityState&gt;(placeSubscription: false)</code>, so it is not a subscriber.
+    Tick moves <strong>Beat</strong>. Increment moves <strong>Count</strong>.
+    Compare the render counts and the Beat figures. The store still clones
+    <code>ActivityState</code> on every action. The trigger skips the component render, not the clone.
+  </p>
+  <div class="row">
+    <button type="button" class="ghost" @onclick="TickOnce" disabled="@Busy">Tick once</button>
+    <button type="button" @onclick="TickBurst" disabled="@Busy">Tick @BurstLength times</button>
+    <button type="button" @onclick="IncrementCount" disabled="@Busy">Increment count</button>
+  </div>
+  @if (ActionError is not null)
+  {
+    <p role="alert" data-qa="action-error">@ActionError</p>
+  }
+  <div class="grid">
+    <EveryChangeCard />
+    <CountOnlyCard />
+  </div>
+</section>
+
+<section class="block" aria-labelledby="practice-heading">
+  <h2 id="practice-heading">Practices</h2>
+  <ul>
+    <li>Subscribe in the component that reads the state. <code>GetState</code> in that component is the subscription.</li>
+    <li>Register the property the markup depends on. A card that shows <strong>Count</strong> should not render for <strong>Beat</strong>.</li>
+    <li>Override <code>CheckComplexParameterChanged</code> when a new instance can carry the same values. Without it, the child records <code>Event</code> and does not name the parameter. Arguments are the current value, then the incoming value.</li>
+    <li>Call <code>ReRender()</code> for a pass that is not the event handler's own pass. The category is <code>Forced</code>.</li>
+    <li>
+      Leave <code>CaptureRenderCaller</code> false except on a diagnostic host. This page sets it so the caller column can show
+      <code>Class.Method</code>. The flag allocates a <code>StackTrace</code> on <code>ShouldRender</code>,
+      <code>SetParametersAsync</code>, and <code>StateHasChanged</code>.
+    </li>
+    <li>
+      <code>HandleUnregisteredParameter</code> is the hook for a <code>ParameterView</code> name that is not a
+      <code>[Parameter]</code> or <code>[CascadingParameter]</code>. Return true to count that name as a change.
+      The base class sets the detail. Blazor still assigns parameters afterward and throws if the name is not a property.
+      The guarded card catches that refusal.
+    </li>
+    <li>
+      The <code>StateHasChanged</code> category is on the enum. A direct call from an event handler is still
+      <code>Event</code> when the other flags are clear, because that check runs first. This page does not bind a button to that category.
+    </li>
+  </ul>
+</section>

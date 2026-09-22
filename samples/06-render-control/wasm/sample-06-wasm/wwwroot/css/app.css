@@ -1,0 +1,223 @@
+:root {
+  color: #1c1917;
+  background: #f3efe6;
+  font-family: "Segoe UI", Candara, sans-serif;
+  line-height: 1.45;
+  --accent: #1d4e89;
+  --rule: #ddd6c8;
+  --quiet: #57534e;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+h1, h2, h3 {
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1:focus {
+  outline: none;
+}
+
+h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.45rem;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+p {
+  margin: 0.45rem 0;
+}
+
+code {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.92em;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.loading {
+  padding: 2rem;
+}
+
+.lede,
+.block {
+  max-width: 68rem;
+}
+
+.lede {
+  margin-bottom: 1.5rem;
+}
+
+.lede h1 {
+  margin: 0 0 0.4rem;
+  font-size: 2.1rem;
+}
+
+.lede p,
+.block > p {
+  max-width: 46rem;
+}
+
+.block {
+  margin-top: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.card {
+  min-width: 0;
+  padding: 1.1rem 1.15rem 1rem;
+  border: 1px solid var(--rule);
+  border-top: 4px solid var(--accent);
+  border-radius: 0.4rem;
+  background: #fffdf8;
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.badge {
+  font-family: "Segoe UI", Candara, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0.8rem 0 0;
+}
+
+.facts div {
+  min-width: 0;
+}
+
+.facts dt {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--quiet);
+}
+
+.facts dd {
+  margin: 0.15rem 0 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.fact-note,
+.trace-empty {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--quiet);
+}
+
+.trace-wrap {
+  max-height: 9rem;
+  overflow: auto;
+}
+
+.trace {
+  margin: 0.4rem 0 0;
+  padding-left: 1.3rem;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.metrics {
+  font-variant-numeric: tabular-nums;
+}
+
+.metrics strong + strong,
+.metrics strong {
+  margin-right: 0.35rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+button {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.3rem;
+  background: var(--accent);
+  color: #fffdf8;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+ul {
+  max-width: 46rem;
+  padding-left: 1.2rem;
+}
+
+li + li {
+  margin-top: 0.35rem;
+}
+
+#blazor-error-ui {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.6rem 1.25rem;
+  background: #fef3c7;
+  color: #1c1917;
+  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+  cursor: pointer;
+  position: absolute;
+  right: 0.75rem;
+  top: 0.5rem;
+}
+
+@media (max-width: 40rem) {
+  .card-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,15 @@
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+::deep a {
+  color: #e7e5e4;
+  text-decoration: none;
+}
+
+::deep a.active {
+  color: #f4f0e6;
+  text-decoration: underline;
+  text-underline-offset: 0.25rem;
+}

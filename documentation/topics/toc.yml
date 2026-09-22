@@ -8,3 +8,5 @@
   topicUid: TimeWarp.State:Routing.md
 - name: Persistence
   topicUid: TimeWarpState:Persistence.md
+- name: Render control
+  topicUid: TimeWarpState:RenderControl.md

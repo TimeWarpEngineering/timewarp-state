@@ -1,0 +1,29 @@
+@namespace Sample06Wasm.Components
+@inherits GuardedComponent
+
+@code {
+  private ActivityState ActivityState => GetState<ActivityState>();
+}
+
+<article class="card" aria-labelledby="every-change-heading">
+  <header class="card-head">
+    <h3 id="every-change-heading">Every change</h3>
+    <span class="badge">Subscribe</span>
+  </header>
+  <p>
+    <code>GetState&lt;ActivityState&gt;()</code> subscribes. There is no render trigger, so
+    <strong>Count</strong> and <strong>Beat</strong> both paint this card. The category is
+    <code>Subscription</code>.
+  </p>
+  <p class="metrics">
+    Count <strong data-qa="every-change-count">@ActivityState.Count</strong>
+    Beat <strong data-qa="every-change-beat">@ActivityState.Beat</strong>
+  </p>
+  <RenderFacts
+    RenderCount="RenderCount"
+    Reason="RenderReason"
+    Detail="@RenderReasonDetail"
+    Caller="@RecordedCaller"
+    Trace="Trace"
+    QaPrefix="every-change" />
+</article>
