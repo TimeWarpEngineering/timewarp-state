@@ -26,7 +26,7 @@ By utilizing the TimeWarp.Mediator pipeline, TimeWarp.State enables a flexible, 
 
 Hosts consume **TimeWarp.Mediator 14-beta** via generated `AddGeneratedMediator<ClientPipeline>()` / named pipelines — not MediatR and not reflection `AddMediator()`.
 
-In addition to the core library, we offer **[TimeWarp.State.Plus](/source/timewarp-state-plus)** (routing, persistence, action tracking) and **[TimeWarp.State.Telemetry](/source/timewarp-state-telemetry)** (OpenTelemetry action spans for the Aspire dashboard or any OTel backend).
+In addition to the core library, we offer **[TimeWarp.State.Plus](/source/timewarp-state-plus)** (routing, persistence, action tracking) and **[TimeWarp.State.Telemetry](/source/timewarp-state-telemetry)** (OpenTelemetry action spans for the Aspire dashboard or any OTel backend). The [persistence sample](samples/05-persistence/readme.md) shows session storage and local storage with `[PersistentState]`.
 
 ## Give a Star! :star:
 

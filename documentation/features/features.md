@@ -12,6 +12,7 @@ title: Features
 * Async handling of actions
 * RouteState management 
 * BaseCacheableState to simplify client side cache with ability to NOT reRender if using cache.
+* `[PersistentState]` browser persistence (session or local storage). See [Persistence](xref:TimeWarpState:Persistence.md) and the [sample](../../samples/05-persistence/readme.md).
 * A Clean abstraction for Sending of Actions 
 * BaseComponent that provides handling of Blazors RenderModes.
 

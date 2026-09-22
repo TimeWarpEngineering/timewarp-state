@@ -1,0 +1,27 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  background: #1c1917;
+  color: #f4f0e6;
+}
+
+.mark {
+  color: inherit;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.stage {
+  flex: 1;
+  padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 3rem;
+}
