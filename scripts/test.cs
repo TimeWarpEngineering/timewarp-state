@@ -59,6 +59,14 @@ static class App
     .WithArguments("fixie", "timewarp-state-plus-tests")
     .RunAsync());
 
+  await RunStep("Build telemetry tests", () => DotNet.Build()
+    .WithProject("./tests/timewarp-state-telemetry-tests/timewarp-state-telemetry-tests.csproj")
+    .RunAsync());
+
+  await RunStep("Run telemetry tests", () => Shell.Builder("dotnet")
+    .WithArguments("fixie", "timewarp-state-telemetry-tests")
+    .RunAsync());
+
   await RunStep("Build client integration tests", () => DotNet.Build()
     .WithProject("./tests/client-integration-tests/client-integration-tests.csproj")
     .RunAsync());

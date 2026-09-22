@@ -26,7 +26,7 @@ By utilizing the TimeWarp.Mediator pipeline, TimeWarp.State enables a flexible, 
 
 Hosts consume **TimeWarp.Mediator 14-beta** via generated `AddGeneratedMediator<ClientPipeline>()` / named pipelines — not MediatR and not reflection `AddMediator()`.
 
-In addition to the core library, we offer **[TimeWarp.State.Plus](/Source/TimeWarp.State.Plus)**, which extends the functionality with enhanced middleware, components, and tools to further streamline state management in complex Blazor applications.
+In addition to the core library, we offer **[TimeWarp.State.Plus](/source/timewarp-state-plus)** (routing, persistence, action tracking) and **[TimeWarp.State.Telemetry](/source/timewarp-state-telemetry)** (OpenTelemetry action spans for the Aspire dashboard or any OTel backend).
 
 ## Give a Star! :star:
 
@@ -45,12 +45,14 @@ See full [documentation](https://timewarpengineering.github.io/timewarp-state/).
 ```console
 dotnet add package TimeWarp.State
 dotnet add package TimeWarp.State.Plus
+dotnet add package TimeWarp.State.Telemetry
 ```
 
 Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
 * [TimeWarp.State](https://www.nuget.org/packages/TimeWarp.State/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 * [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
+* [TimeWarp.State.Telemetry](https://www.nuget.org/packages/TimeWarp.State.Telemetry/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Telemetry?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Telemetry/)
 
 ## Releases
 

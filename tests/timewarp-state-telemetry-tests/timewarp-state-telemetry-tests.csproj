@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>TimeWarp.State.Telemetry.Tests</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fixie.TestAdapter" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="TimeWarp.Fixie" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\source\timewarp-state-telemetry\timewarp-state-telemetry.csproj" />
+  </ItemGroup>
+
+</Project>

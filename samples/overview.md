@@ -34,6 +34,13 @@ Demonstrates TimeWarp.State.Plus's comprehensive routing features:
 - Page title synchronization
 - WebAssembly implementation example
 
+### [04-Telemetry](04-telemetry/)
+Observes TimeWarp.State actions in the Aspire dashboard via OpenTelemetry:
+- One span per dispatched action (type names, duration, success/failure)
+- Blazor Server `ActivitySource` path
+- OTLP export when the AppHost (or `OTEL_EXPORTER_OTLP_ENDPOINT`) is set
+- Snapshots remain opt-in and off in the sample
+
 ## Getting Started
 
 Each sample project contains its own README with detailed information about:

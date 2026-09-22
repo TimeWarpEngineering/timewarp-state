@@ -1,0 +1,18 @@
+@namespace Sample04Server.Components.Pages
+@page "/"
+
+<PageTitle>Telemetry sample</PageTitle>
+
+<h1>TimeWarp.State.Telemetry</h1>
+
+<p>
+  Open <a href="counter">Counter</a> and click the button. Each click dispatches
+  <code>CounterState.IncrementCountActionSet.Action</code> and emits a span named
+  <code>CounterState.IncrementCountActionSet.Action</code> on ActivitySource <code>TimeWarp.State</code>.
+</p>
+
+<p>
+  In the Aspire dashboard, open <strong>Traces</strong> for resource
+  <code>sample-04-server</code>. You should see one span per click with duration
+  and <code>Ok</code> status. Default spans carry no state payload.
+</p>

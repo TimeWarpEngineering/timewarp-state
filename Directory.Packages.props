@@ -17,6 +17,7 @@
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.State.Plus" Version="$(TimeWarpStateVersion)" />
+    <PackageVersion Include="TimeWarp.State.Telemetry" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.Terminal" Version="1.0.1" />
     <PackageVersion Include="timewarp-heroicons" Version="2.0.19" />
 
@@ -63,6 +64,12 @@
     <!-- Blazor Storage -->
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
+
+    <!-- OpenTelemetry / Aspire (telemetry sample) -->
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.18.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.18.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.5.4" />
 
     <!-- System & Utilities -->
     <PackageVersion Include="AnyClone" Version="1.1.6" />
