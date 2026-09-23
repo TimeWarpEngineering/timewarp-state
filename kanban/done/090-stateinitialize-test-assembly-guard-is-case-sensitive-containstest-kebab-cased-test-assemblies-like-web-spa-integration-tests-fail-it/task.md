@@ -28,14 +28,16 @@ that override until this ships.
 
 ## Checklist
 
-- [ ] Guard case-insensitive, or replaced by explicit opt-in with name sniff as fallback
-- [ ] Tests for lowercase kebab, PascalCase, and non-test names
-- [ ] Design region updated
-- [ ] Release note line; version bump
+- [x] Guard case-insensitive, or replaced by explicit opt-in with name sniff as fallback
+- [x] Tests for lowercase kebab, PascalCase, and non-test names
+- [x] Design region updated
+- [x] Release note line; version bump
 
 ## Session
 
 - Created: 2026-09-22 (architecture cockpit, from 058-001 implementer finding)
+- Implemented: 2026-09-22 — `StateTestOptions.Enable()` opt-in; ordinal-ignore-case name sniff as beta.5 fallback; tests; release notes; version 12.0.0-beta.5
+- Reviewed: 2026-09-22 — effort 1 general; disposition clean (cursor review oracle, ganda task-work)
 
 ## Notes
 
@@ -43,3 +45,25 @@ Consumer evidence: timewarp-architecture `tests/container-apps/web/web-spa-integ
 line 18 `<AssemblyName>web-spa-integration-Tests</AssemblyName>` with the 058 comment; 058-001
 rescope (2026-09-22) says "if State still trips on the kebab name, file it on timewarp-state, do not
 keep the override".
+
+Review trail: `review/review-framework.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+## Results
+
+`ThrowIfNotTestAssembly` now honors `StateTestOptions.Enable()` first, then falls back to
+`Contains("test", StringComparison.OrdinalIgnoreCase)`. Design regions document that the sniff
+is removed after beta.5. Unit tests cover kebab lowercase, PascalCase `.Tests`, non-test rejection,
+and the explicit opt-in. Package version and release notes are at 12.0.0-beta.5; consumers can drop
+`AssemblyName` overrides that only capitalized `Test`.
+
+### Review disposition
+
+- **Outcome:** clean
+- **Rounds:** 1 · **Effort:** 1 · **Roster:** general
+- **Final counts:** bug/suggestion/nit all 0 open, 0 fixed, 0 wontfix
+- **Artifacts:** `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`
+
+### How to validate
+
+- Smoke: `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo --filter "FullyQualifiedName~ThrowIfNotTestAssembly"`
+- Expect: all matching tests pass (kebab / PascalCase / non-test / Enable cases); `msbuild/repository.props` and `source/Directory.Build.props` show `12.0.0-beta.5`.

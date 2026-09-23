@@ -14,6 +14,6 @@
     <LocalNuGetFeed>$(PackagesDirectory)</LocalNuGetFeed>
     <LocalNuGetCache>$(RepositoryRoot)local-nuget-feed/</LocalNuGetCache>
     <!-- Product package version SSOT. source/Directory.Build.props <Version> must match. -->
-    <TimeWarpStateVersion>12.0.0-beta.4</TimeWarpStateVersion>
+    <TimeWarpStateVersion>12.0.0-beta.5</TimeWarpStateVersion>
   </PropertyGroup>
 </Project>
