@@ -26,6 +26,7 @@ Open the PR; the cockpit cuts the release with `dev release` after merge.
 ## Session
 
 - Created: 2026-09-23 (cockpit dispatch)
+- Review: 2026-09-23, claude-sonnet-5, effort 1 (general reviewer), round 1, disposition clean
 
 ## Notes
 
@@ -138,3 +139,13 @@ dotnet run --file tools/dev-cli/dev.cs -- release --dry-run
 - Full `dotnet run --file tools/dev-cli/dev.cs -- workflow` ends with `Pipeline SUCCEEDED` and reports
   0 test failures (170 unit + 10 E2E passed, 4 + 3 skipped). E2E requires Playwright's Chromium browser
   installed locally first: `pwsh tests/test-app-end-to-end-tests/bin/Debug/net10.0/playwright.ps1 install chromium`.
+
+### Review
+
+Effort 1 (general reviewer, round 1). 0 findings raised — clean disposition. Reviewer
+hand-verified the recompiled `wwwroot/js` output from the TypeScript 7.0.1 bump (class-field
+emit shape changed but is behavior-preserving) and independently re-confirmed `dev check-version`
+(passes for all four packages at `12.0.0-beta.5`) and `dev build` (0 errors) as a spot-check
+against this task's recorded `dev workflow` totals. Artifacts:
+`review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`,
+`review/disposition.md`.
