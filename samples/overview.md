@@ -48,6 +48,14 @@ Stores two states in the browser with `[PersistentState]`:
 - Startup load through `LoadPersistentStateRequest`
 - FullName write key, simple-name fallback on load (no migration framework)
 
+### [06-Render control](06-render-control/)
+Shows when `TimeWarpStateComponent` paints:
+- `RendererInfo`, `IsPreRendering`, and `AssignedRenderMode` on a WebAssembly host
+- `RenderReason` for event, parameter, subscription, and `ReRender`
+- `CheckComplexParameterChanged` so a new object with the same text does not repaint
+- `RegisterRenderTrigger` so a noisy field does not repaint a card
+- `CaptureRenderCaller` on for the caller column, and off in production hosts
+
 ## Getting Started
 
 Each sample project contains its own README with detailed information about:

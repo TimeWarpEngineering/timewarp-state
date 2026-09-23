@@ -116,3 +116,7 @@ The `TimeWarpStateComponent` is a crucial base class in the TimeWarp.State libra
 - Utilize the `RenderCount` property in derived classes for custom rendering logic or performance tracking
 
 By leveraging `TimeWarpStateComponent`, developers can create highly optimized, state-aware Blazor components with minimal boilerplate code and built-in performance monitoring capabilities.
+
+## Sample
+
+[06-Render control](../../../samples/06-render-control/readme.md) is a WebAssembly page for `RendererInfo`, `ShouldRender` categories, parameter checks, `HandleUnregisteredParameter`, and `RegisterRenderTrigger`. The sample host sets `CaptureRenderCaller` so the caller column is visible. Leave that flag false on a production host.

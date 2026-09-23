@@ -1,0 +1,26 @@
+@namespace Sample06Wasm.Components
+@inherits TracingComponent
+
+@code {
+  [Parameter] public FilterModel? Filter { get; set; }
+}
+
+<article class="card" aria-labelledby="reference-filter-heading">
+  <header class="card-head">
+    <h3 id="reference-filter-heading">Reference filter</h3>
+    <span class="badge">No complex check</span>
+  </header>
+  <p>
+    No <code>CheckComplexParameterChanged</code> override. A render of the page paints this child:
+    a local tick, a new wrapper with the same text, or a new text. The category is <code>Event</code>.
+    The parameter is not named.
+  </p>
+  <p>Text <strong data-qa="reference-filter-text">@Filter?.Text</strong></p>
+  <RenderFacts
+    RenderCount="RenderCount"
+    Reason="RenderReason"
+    Detail="@RenderReasonDetail"
+    Caller="@RecordedCaller"
+    Trace="Trace"
+    QaPrefix="reference-filter" />
+</article>

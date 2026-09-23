@@ -1,0 +1,36 @@
+@namespace Sample06Wasm.Components
+@inherits TracingComponent
+
+@code {
+  [Parameter] public FilterModel? Filter { get; set; }
+
+  // Arguments are (current, incoming). Same text is not a change, even when the parent allocated a new model.
+  protected override bool CheckComplexParameterChanged(string parameterName, object currentValue, object incomingValue)
+  {
+    if (currentValue is FilterModel currentFilter && incomingValue is FilterModel incomingFilter)
+    {
+      return !string.Equals(currentFilter.Text, incomingFilter.Text, StringComparison.Ordinal);
+    }
+
+    return base.CheckComplexParameterChanged(parameterName, currentValue, incomingValue);
+  }
+}
+
+<article class="card" aria-labelledby="text-filter-heading">
+  <header class="card-head">
+    <h3 id="text-filter-heading">Text filter</h3>
+    <span class="badge">Complex check</span>
+  </header>
+  <p>
+    <code>CheckComplexParameterChanged</code> compares <code>FilterModel.Text</code>.
+    A new wrapper with the same text does not paint. A new text does, as <code>ParameterChanged</code>.
+  </p>
+  <p>Text <strong data-qa="text-filter-text">@Filter?.Text</strong></p>
+  <RenderFacts
+    RenderCount="RenderCount"
+    Reason="RenderReason"
+    Detail="@RenderReasonDetail"
+    Caller="@RecordedCaller"
+    Trace="Trace"
+    QaPrefix="text-filter" />
+</article>

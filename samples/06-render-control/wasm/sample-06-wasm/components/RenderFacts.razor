@@ -1,0 +1,55 @@
+@namespace Sample06Wasm.Components
+
+@code {
+  [Parameter, EditorRequired] public int RenderCount { get; set; }
+
+  [Parameter, EditorRequired] public TimeWarpStateComponent.RenderReasonCategory Reason { get; set; }
+
+  [Parameter] public string? Detail { get; set; }
+
+  [Parameter] public string? Caller { get; set; }
+
+  [Parameter, EditorRequired] public IReadOnlyList<string> Trace { get; set; } = [];
+
+  [Parameter, EditorRequired] public string QaPrefix { get; set; } = "";
+}
+
+<dl class="facts">
+  <div>
+    <dt>Renders</dt>
+    <dd data-qa="@($"{QaPrefix}-renders")">@(RenderCount + 1)</dd>
+  </div>
+  <div>
+    <dt>This pass</dt>
+    <dd data-qa="@($"{QaPrefix}-reason")">@Reason</dd>
+  </div>
+  <div>
+    <dt>Detail</dt>
+    <dd data-qa="@($"{QaPrefix}-detail")">@(string.IsNullOrEmpty(Detail) ? "—" : Detail)</dd>
+  </div>
+  <div>
+    <dt>Caller</dt>
+    <dd data-qa="@($"{QaPrefix}-caller")">@(Caller ?? "—")</dd>
+  </div>
+</dl>
+<p class="fact-note">
+  The render figure includes the pass on screen. <code>RenderCount</code> increments in
+  <code>OnAfterRender</code>, after this markup is produced. The first pass does not call
+  <code>ShouldRender</code>, so the trace starts empty. A detail on that first paint is the initial
+  parameter assignment.
+</p>
+<div class="trace-wrap" data-qa="@($"{QaPrefix}-trace")">
+  @if (Trace.Count == 0)
+  {
+    <p class="trace-empty">No later render yet.</p>
+  }
+  else
+  {
+    <ol class="trace">
+      @foreach (string line in Trace)
+      {
+        <li>@line</li>
+      }
+    </ol>
+  }
+</div>

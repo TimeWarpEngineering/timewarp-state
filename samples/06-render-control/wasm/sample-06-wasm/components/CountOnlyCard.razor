@@ -1,0 +1,36 @@
+@namespace Sample06Wasm.Components
+@inherits GuardedComponent
+
+@code {
+  private ActivityState ActivityState => GetState<ActivityState>();
+
+  protected override void OnInitialized()
+  {
+    base.OnInitialized();
+    // Beat is not part of the trigger. A tick still clones ActivityState; this card does not render.
+    RegisterRenderTrigger<ActivityState>(state => state.Count);
+  }
+}
+
+<article class="card" aria-labelledby="count-only-heading">
+  <header class="card-head">
+    <h3 id="count-only-heading">Count only</h3>
+    <span class="badge">Render trigger</span>
+  </header>
+  <p>
+    <code>RegisterRenderTrigger&lt;ActivityState&gt;(state =&gt; state.Count)</code>.
+    When <strong>Beat</strong> is the only change, <code>ShouldReRender</code> returns false and
+    <code>ReRender</code> is not called. The Beat figure stays at the last paint.
+  </p>
+  <p class="metrics">
+    Count <strong data-qa="count-only-count">@ActivityState.Count</strong>
+    Beat <strong data-qa="count-only-beat">@ActivityState.Beat</strong>
+  </p>
+  <RenderFacts
+    RenderCount="RenderCount"
+    Reason="RenderReason"
+    Detail="@RenderReasonDetail"
+    Caller="@RecordedCaller"
+    Trace="Trace"
+    QaPrefix="count-only" />
+</article>
