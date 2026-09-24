@@ -326,10 +326,10 @@ __pycache__/
 # Routine journals beside kitchens (local; not product)
 *.journal.json
 
-# Memsearch memory auto-writes (plugin daily notes; local until promoted).
+# Memsearch state (plugin index, daily notes; local until promoted).
 # Deliberate promote of distilled memory: git add -f .memsearch/memory/<file>.md
+.memsearch/
 .memsearch/memory/
-.memsearch/.index.pid
 
 # Herdr pane-command oracle logs beside kitchens (local; not product)
 oracle-*.log

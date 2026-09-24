@@ -2,14 +2,18 @@ import { timeWarpState } from './timewarp-state.js';
 import { ReduxExtensionName, DevToolsName, ReduxDevToolsName } from './constants.js';
 import { log } from './logger.js';
 export class ReduxDevTools {
-    IsEnabled;
-    DevTools;
-    Extension;
-    Config;
-    TimeWarpState;
-    StackTrace;
-    IsInitialized = false;
     constructor(reduxDevToolsOptions) {
+        this.IsInitialized = false;
+        this.MessageHandler = (message) => {
+            log("ReduxDevTools", "MessageHandler", "info");
+            log("ReduxDevTools", message.type, "info");
+            const requestType = this.MapRequestType(message);
+            if (requestType) {
+                this.TimeWarpState.DispatchRequest(requestType, message).then();
+            }
+            else
+                log("ReduxDevTools", `messages of type ${requestType} are currently not supported`, "warning");
+        };
         log("ReduxDevTools", JSON.stringify(reduxDevToolsOptions, null, 2), "info");
         this.TimeWarpState = timeWarpState;
         this.Config = reduxDevToolsOptions;
@@ -72,16 +76,6 @@ export class ReduxDevTools {
             log("ReduxDevTools", `type: ${message.type} maps to ${blazorRequestType}`, "info");
         return blazorRequestType;
     }
-    MessageHandler = (message) => {
-        log("ReduxDevTools", "MessageHandler", "info");
-        log("ReduxDevTools", message.type, "info");
-        const requestType = this.MapRequestType(message);
-        if (requestType) {
-            this.TimeWarpState.DispatchRequest(requestType, message).then();
-        }
-        else
-            log("ReduxDevTools", `messages of type ${requestType} are currently not supported`, "warning");
-    };
     ReduxDevToolsDispatch(action, state, stackTrace) {
         if (action.type === 'init') {
             if (!this.IsInitialized) {

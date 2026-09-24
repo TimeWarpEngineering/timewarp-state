@@ -1,8 +1,6 @@
 import { JsonRequestHandlerMethodName } from './constants.js';
 import { log } from './logger.js';
 export class TimeWarpState {
-    jsonRequestHandler;
-    reduxDevTools;
     async DispatchRequest(requestTypeFullName, request) {
         if (!this.jsonRequestHandler) {
             throw new Error('jsonRequestHandler is not initialized. Add ');
