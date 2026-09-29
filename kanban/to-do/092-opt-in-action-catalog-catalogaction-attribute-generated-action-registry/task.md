@@ -49,13 +49,13 @@ Consumers own ranking (deterministic C# shortlist; no LLM ranker) and permission
 
 ## Checklist
 
-- [ ] `CatalogActionAttribute` + `ActionCatalogEntry` + visibility enum (runtime package)
-- [ ] Generator: descriptors + per-assembly registry + typed execute, reusing the ActionSet ctor parse
-- [ ] Multi-assembly aggregation helper
-- [ ] Analyzer diagnostics (placement, description, duplicate name)
-- [ ] Generator, runtime, analyzer tests
-- [ ] Docs section
-- [ ] Released; consumer task notified (timewarp-architecture 239)
+- [x] `CatalogActionAttribute` + `ActionCatalogEntry` + visibility enum (runtime package)
+- [x] Generator: descriptors + per-assembly registry + typed execute, reusing the ActionSet ctor parse
+- [x] Multi-assembly aggregation helper
+- [x] Analyzer diagnostics (placement, description, duplicate name)
+- [x] Generator, runtime, analyzer tests
+- [x] Docs section
+- [ ] Released; consumer task notified (timewarp-architecture 239) — version bumped to 12.0.0-beta.6 in this PR; `dev release` + notifying 239 happen after merge
 
 ## Notes
 
@@ -70,6 +70,66 @@ Consumers own ranking (deterministic C# shortlist; no LLM ranker) and permission
 - Out of scope: ranking, LLM/Jev integration, WebMCP wiring, changing `[TrackAction]`.
 - Cockpit session: https://claude.ai/code/session_01QYpqCSgnvvLRpXrMKxu5ED
 
+## Results
+
+Implemented the opt-in action catalog in TimeWarp.State (version bumped to **12.0.0-beta.6**).
+
+- **Runtime** (`source/timewarp-state/features/action-catalog/`, namespace `TimeWarp.State`):
+  `CatalogActionAttribute` (`Description`, `Name`, `Permissions`, `Visibility`), `ActionVisibility`
+  (`Human`=1 default, `Agent`=2, `Both`=3, flags), `ActionCatalogEntry` (name, description,
+  permissions, visibility, state/action type, parameters, `InputSchema`, `Execute(IStore, object?[]?, ct)`),
+  `ActionCatalogParameter` (name, CLR type, required, default text, JSON schema), `ActionCatalogArguments`
+  (count/type checks used by generated code), `ActionCatalogProviderAttribute`, `IActionCatalog` /
+  `ActionCatalog` (aggregator; cross-assembly duplicate name → `InvalidOperationException`) and
+  `services.AddActionCatalog(params Assembly[])`.
+- **Generator** (`ActionCatalogSourceGenerator`): `ForAttributeWithMetadataName` on the attribute; emits one
+  internal `<AssemblyName>.GeneratedActionCatalog.All` (sorted by name) and an assembly-level
+  `GeneratedActionCatalogProviderAttribute` for aggregation. Executors call the generated
+  `store.GetState<TState>().Method(args…, externalCancellationToken: ct)` — no reflection; one call per legal
+  argument count so trailing optional args use the ctor defaults. The ctor parse was extracted into
+  `ActionSetConstructorParser`, now shared by `ActionSetMethodSourceGenerator` (behavior unchanged).
+  Input schema: primitives/string/char/Guid/date-time types/enums; complex types → `{"x-clr-type":"…"}` only (v1).
+  Nothing is emitted for assemblies without cataloged actions.
+- **Analyzer** (`CatalogActionAnalyzer`): TWS0004 placement (error), TWS0005 missing/empty Description (error),
+  TWS0006 duplicate Name per assembly (error, compilation end), TWS0007 Description not one plain sentence
+  (warning). Added to `AnalyzerReleases.Unshipped.md` and the analyzer readme.
+- **Test app**: `EventStream.AddEvent` cataloged; new `CounterState.AddToCountActionSet` (`amount`,
+  `multiplier = 1`, permissions `counter.write`, visibility `Both`); `AddActionCatalog` registered in the
+  client program and the integration-test host.
+- **Tests**: 12 generator tests (full snapshot for a single entry + compile check, multiple/opt-in, defaults /
+  enum / nullable / complex params, name override, permissions/visibility, none emitted), 8 analyzer tests,
+  8 client integration tests (enumerate registry, DI aggregation, execute end to end through the store,
+  optional args, arg count/type errors). Full `scripts/test.cs` green.
+- **Docs**: `documentation/topics/action-catalog.md` (+ toc), readme "Action catalog" section, release notes
+  `release12.0.0-beta.6.md`. States that permissions are consumer-enforced and `[TrackAction]` is unrelated.
+- **Audit**: `ganda repo audit --fix --checks bin-dev,required-gitignore-entries,vscode-window-icon` fixed the
+  pre-existing blocking failures (`.gitignore` gains `.local/`; `.vscode/settings.json` gains `peacock.color`;
+  `bin/dev` is a local ignored build). Remaining advisory warnings: `kebab-path-names` on
+  `Test.App.Client.lib.module.js` (deliberately **not** renamed — Blazor JS initializer name) and
+  `memsearch-scaffold` (would set `core.hooksPath`; left for the operator).
+- Not done here: the NuGet release itself and notifying timewarp-architecture 239 (post-merge).
+
+### How to validate
+
+**Smoke**
+
+```bash
+dotnet fixie timewarp-state-source-generator-tests --tests "ActionCatalogSourceGenerator_*"
+dotnet fixie timewarp-state-analyzer-tests --tests "CatalogActionAnalyzer_*"
+dotnet build tests/client-integration-tests && dotnet fixie client-integration-tests --tests "ActionCatalog_*"
+dotnet run --file ./scripts/test.cs
+ganda repo audit
+```
+
+**Expect**
+
+- Generator: `12 passed` (includes the persistence tests); analyzer: `8 passed`; client integration: `8 passed`.
+- `scripts/test.cs` completes with every suite passing (skips are pre-existing).
+- `tests/test-app/test-app-client/generated/timewarp-state-source-generator/**/TimeWarp.State.ActionCatalog.g.cs`
+  lists `Counter.AddToCount` and `EventStream.AddEvent` only.
+- `ganda repo audit` prints "Repository passes" (advisory warnings only).
+
 ## Session
 
 - Created: https://claude.ai/code/session_01QYpqCSgnvvLRpXrMKxu5ED (2026-09-30)
+- Implemented under ganda task work (implement oracle), 2026-09-30.

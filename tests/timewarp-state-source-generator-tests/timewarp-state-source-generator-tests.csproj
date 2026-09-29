@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" />
+    <!-- Action catalog tests compile generated output against the runtime types (CatalogActionAttribute, ActionCatalogEntry). -->
+    <ProjectReference Include="..\..\source\timewarp-state\timewarp-state.csproj" />
   </ItemGroup>
 
 </Project>

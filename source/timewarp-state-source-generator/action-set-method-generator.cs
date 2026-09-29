@@ -38,8 +38,8 @@ public class ActionSetMethodSourceGenerator : IIncrementalGenerator
 
     if (actionClass == null) return null;
 
-    List<(string Type, string Name, string? DefaultValue)> parameters = 
-      GetActionConstructorParameters(actionClass, context.SemanticModel);
+    List<ActionParameterModel> parameters =
+      ActionSetConstructorParser.GetParameters(actionClass, context.SemanticModel);
 
     return new ClassModel(
       namespaceName,
@@ -84,7 +84,7 @@ public class ActionSetMethodSourceGenerator : IIncrementalGenerator
     string namespaceName,
     string className,
     string methodName,
-    List<(string Type, string Name, string? DefaultValue)> parameters,
+    List<ActionParameterModel> parameters,
     string parentClassName)
   {
     string parameterList = string.Join(
@@ -144,43 +144,20 @@ public class ActionSetMethodSourceGenerator : IIncrementalGenerator
     return parentClass?.Identifier.Text ?? "UnknownParentClass";
   }
 
-  private static List<(string Type, string Name, string? DefaultValue)> GetActionConstructorParameters(
-    ClassDeclarationSyntax actionClass,
-    SemanticModel semanticModel)
-  {
-    ConstructorDeclarationSyntax? constructor = actionClass.DescendantNodes()
-      .OfType<ConstructorDeclarationSyntax>()
-      .FirstOrDefault();
-
-    if (constructor == null)
-      return new List<(string, string, string?)>();
-
-    return constructor.ParameterList.Parameters.Select(p =>
-    {
-      var parameterSymbol = semanticModel.GetDeclaredSymbol(p) as IParameterSymbol;
-
-      string fullTypeName = parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) 
-                            ?? "System.Object";
-
-      string? defaultValue = p.Default?.Value?.ToString();
-      return (fullTypeName, p.Identifier.Text, defaultValue);
-    }).ToList();
-  }
-
   private sealed class ClassModel
   {
     public string NamespaceName { get; }
     public string ClassName { get; }
     public string MethodName { get; }
     public string ParentClassName { get; }
-    public List<(string Type, string Name, string? DefaultValue)> Parameters { get; }
+    public List<ActionParameterModel> Parameters { get; }
 
     public ClassModel(
       string namespaceName,
       string className,
       string methodName,
       string parentClassName,
-      List<(string Type, string Name, string? DefaultValue)> parameters)
+      List<ActionParameterModel> parameters)
     {
       NamespaceName = namespaceName;
       ClassName = className;

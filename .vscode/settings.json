@@ -27,5 +27,6 @@
   },
   "peacock.remoteColor": "#7C3AED",
   "timewarp.blurImagePath": "assets/timewarp-state-avatar.svg",
-  "window.title": "timewarp-state · ${rootName}${separator}${activeEditorShort}"
+  "window.title": "timewarp-state · ${rootName}${separator}${activeEditorShort}",
+  "peacock.color": "#7C3AED"
 }

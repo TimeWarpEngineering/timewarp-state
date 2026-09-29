@@ -49,6 +49,12 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
         }
     );
 
+    serviceCollection.AddActionCatalog
+    (
+      typeof(Test.App.Client.Program).Assembly,
+      typeof(TimeWarp.State.Plus.AssemblyMarker).Assembly
+    );
+
     serviceCollection.AddSingleton
     (
       new JsonSerializerOptions

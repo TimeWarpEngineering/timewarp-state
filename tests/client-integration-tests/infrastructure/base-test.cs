@@ -22,7 +22,7 @@ public abstract class BaseTest
     RenderSubscriptionContext = ServiceProvider.GetService<RenderSubscriptionContext>()!;
   }
 
-  private IServiceProvider ServiceProvider { get; }
+  protected IServiceProvider ServiceProvider { get; }
 
   /// <summary>
   /// Send a request to the TimeWarp.Mediator pipeline

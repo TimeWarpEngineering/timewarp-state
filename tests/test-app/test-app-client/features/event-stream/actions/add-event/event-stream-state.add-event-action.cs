@@ -5,6 +5,7 @@ public partial class EventStreamState
   public static class AddEventActionSet
   {
 
+    [CatalogAction(Description = "Add a message to the event stream.")]
     public sealed class Action : IAction
     {
       public string Message { get; }

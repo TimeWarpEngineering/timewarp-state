@@ -336,3 +336,6 @@ oracle-*.log
 
 # Task-work host progress lines beside kitchens (local; not product)
 task-work.progress.log
+
+# Per-user tool state (XDG .local/, e.g. gh device-id; local; not product)
+.local/
