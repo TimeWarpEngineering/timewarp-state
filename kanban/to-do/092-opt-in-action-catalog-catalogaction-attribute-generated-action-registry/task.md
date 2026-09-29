@@ -59,6 +59,12 @@ Consumers own ranking (deterministic C# shortlist; no LLM ranker) and permission
 
 ## Notes
 
+- **Do not let `ganda repo audit --fix` rename `tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js`.**
+  Blazor loads JS initializers by exact assembly name (`<AssemblyName>.lib.module.js`); the kebab
+  audit currently lacks that exception and its auto-fix lowercases the file, which silently breaks
+  the test app. If the walk's audit step renames it, revert that rename in the same PR and note it
+  in Results (ganda needs an exception — tracked separately).
+
 - Consumer: timewarp-architecture task 239 (Ctrl-K command palette) — its command rows depend on
   this release; navigation rows do not.
 - Out of scope: ranking, LLM/Jev integration, WebMCP wiring, changing `[TrackAction]`.
