@@ -109,6 +109,22 @@ Implemented the opt-in action catalog in TimeWarp.State (version bumped to **12.
   `memsearch-scaffold` (would set `core.hooksPath`; left for the operator).
 - Not done here: the NuGet release itself and notifying timewarp-architecture 239 (post-merge).
 
+### Review disposition
+
+- **Effort / roster:** 1 — `general` (Sonnet sub-agent), orchestrated by the review oracle (Claude Opus 5.5).
+- **Rounds:** 2 (round 2 = re-verify of the fix delta; no new findings).
+- **Final counts:** bug 0; suggestion 2 fixed; nit 2 fixed, 2 wontfix; **0 open**.
+- **Disposition:** `accepted-exceptions`.
+  - Fixed: `ActionCatalogArguments.Get<T>` now converts schema-advertised values (enum names/integers,
+    Guid/date/time strings, IConvertible primitives) reflection-free; TWS0004 also flags generic and inaccessible
+    placements (mirrors the generator); catalog parameter names use `ValueText` (`@event` → `event`);
+    added tests (string/long argument conversion, cross-source duplicate-name throw, verbatim parameter name,
+    TWS0004 generic/private).
+  - Wontfix: M4 (TWS0007 abbreviation false positives — warning heuristic), M6 (CRLF→LF churn on three files).
+- **Validation:** `scripts/test.cs` green; `ganda repo audit` passes (advisory warnings only, as above).
+- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`,
+  `review/round-2/{general,merged}.md`, `review/disposition.md`.
+
 ### How to validate
 
 **Smoke**
@@ -133,3 +149,4 @@ ganda repo audit
 
 - Created: https://claude.ai/code/session_01QYpqCSgnvvLRpXrMKxu5ED (2026-09-30)
 - Implemented under ganda task work (implement oracle), 2026-09-30.
+- Reviewed under ganda task work (review oracle, effort 1, general reviewer), 2026-09-30.

@@ -4,7 +4,7 @@
 
 #region Design
 // Mirrors what ActionCatalogSourceGenerator accepts so a misplaced attribute is an error instead of a
-// silent omission: the target must be a class named Action nested in a *ActionSet nested in a type.
+// silent omission: the target must be a class named Action nested in a *ActionSet nested in a type, none of them generic, all at least internal.
 // Description is required (TWS0005) and should be one plain sentence (TWS0007: no line breaks, a single
 // sentence terminator at most at the end). Names default to <StateWithoutSuffix>.<ActionSetWithoutSuffix>,
 // the same rule the generator applies; duplicates in one compilation are reported at compilation end
@@ -130,7 +130,9 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
     INamedTypeSymbol? actionSet = type.ContainingType;
     INamedTypeSymbol? state = actionSet?.ContainingType;
     if (type.TypeKind != TypeKind.Class || type.Name != "Action" || actionSet is null || state is null
-        || !actionSet.Name.EndsWith("ActionSet", StringComparison.Ordinal) || actionSet.Name == "ActionSet")
+        || !actionSet.Name.EndsWith("ActionSet", StringComparison.Ordinal) || actionSet.Name == "ActionSet"
+        || state.IsGenericType || actionSet.IsGenericType || type.IsGenericType
+        || !IsVisibleInAssembly(type))
     {
       context.ReportDiagnostic(Diagnostic.Create(PlacementRule, location, type.ToDisplayString()));
       return;
@@ -148,6 +150,24 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
 
     string? name = GetNamedString(attribute, "Name");
     names.Add((string.IsNullOrWhiteSpace(name) ? GetDefaultName(state.Name, actionSet.Name) : name!, location));
+  }
+
+  private static bool IsVisibleInAssembly(INamedTypeSymbol symbol)
+  {
+    for (INamedTypeSymbol? current = symbol; current is not null; current = current.ContainingType)
+    {
+      switch (current.DeclaredAccessibility)
+      {
+        case Accessibility.Public:
+        case Accessibility.Internal:
+        case Accessibility.ProtectedOrInternal:
+          continue;
+        default:
+          return false;
+      }
+    }
+
+    return true;
   }
 
   private static string? GetNamedString(AttributeData attribute, string argumentName) =>

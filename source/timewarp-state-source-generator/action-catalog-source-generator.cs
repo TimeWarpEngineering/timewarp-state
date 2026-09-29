@@ -220,7 +220,7 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
     {
       builder.AppendLine
       (
-        $"            new global::TimeWarp.State.ActionCatalogParameter({Literal(parameter.Name)}, typeof({parameter.TypeOfName}), " +
+        $"            new global::TimeWarp.State.ActionCatalogParameter({Literal(parameter.CatalogName)}, typeof({parameter.TypeOfName}), " +
         $"{(parameter.DefaultValue is null ? "true" : "false")}, {NullableLiteral(parameter.DefaultValue)}, {NullableLiteral(parameter.JsonSchema)}),"
       );
     }
@@ -236,7 +236,7 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
       IEnumerable<string> arguments = entry.Parameters
         .Take(count)
         .Select((parameter, index) =>
-          $"global::TimeWarp.State.ActionCatalogArguments.Get<{parameter.Type}>({nameLiteral}, arguments, {index}, {Literal(parameter.Name)})")
+          $"global::TimeWarp.State.ActionCatalogArguments.Get<{parameter.Type}>({nameLiteral}, arguments, {index}, {Literal(parameter.CatalogName)})")
         .Concat(["externalCancellationToken: cancellationToken"]);
       string call = $"state.{entry.MethodName}({string.Join(", ", arguments)})";
 
@@ -255,10 +255,10 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
   private static string GetInputSchema(CatalogEntryModel entry)
   {
     IEnumerable<string> properties = entry.Parameters.Select(parameter =>
-      $"\"{parameter.Name}\":{parameter.JsonSchema ?? $"{{\"x-clr-type\":\"{parameter.TypeOfName.Replace("global::", "")}\"}}"}");
+      $"\"{parameter.CatalogName}\":{parameter.JsonSchema ?? $"{{\"x-clr-type\":\"{parameter.TypeOfName.Replace("global::", "")}\"}}"}");
     IEnumerable<string> required = entry.Parameters
       .Where(parameter => parameter.DefaultValue is null)
-      .Select(parameter => $"\"{parameter.Name}\"");
+      .Select(parameter => $"\"{parameter.CatalogName}\"");
 
     return $"{{\"type\":\"object\",\"properties\":{{{string.Join(",", properties)}}},\"required\":[{string.Join(",", required)}],\"additionalProperties\":false}}";
   }

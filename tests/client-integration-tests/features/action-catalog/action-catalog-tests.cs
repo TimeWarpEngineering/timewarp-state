@@ -43,6 +43,27 @@ public class Registry_Should : BaseTest
   }
 }
 
+public class Catalog_Should
+{
+  public void Throw_On_Duplicate_Names_Across_Sources()
+  {
+    ActionCatalogEntry first = Test.App.Client.GeneratedActionCatalog.All.Single(e => e.Name == "Counter.AddToCount");
+    ActionCatalogEntry second = Test.App.Client.GeneratedActionCatalog.All.Single(e => e.Name == "EventStream.AddEvent");
+    ActionCatalogEntry duplicate = new
+    (
+      first.Name, "dup", [], ActionVisibility.Both, second.StateType, second.ActionType, [], "{}",
+      static (_, _, _) => Task.CompletedTask
+    );
+
+    InvalidOperationException exception = Should.Throw<InvalidOperationException>
+    (
+      () => new ActionCatalog([new ActionCatalogSource([first]), new ActionCatalogSource([duplicate])])
+    );
+
+    exception.Message.ShouldContain("Counter.AddToCount");
+  }
+}
+
 public class Execute_Should : BaseTest
 {
   public Execute_Should(ClientHost clientHost) : base(clientHost) { }
@@ -55,6 +76,16 @@ public class Execute_Should : BaseTest
     counterState.Initialize(count: 10);
 
     await Catalog.Find("Counter.AddToCount")!.Execute(Store, [5]);
+
+    Store.GetState<Test.App.Client.Features.Counter.CounterState>().Count.ShouldBe(15);
+  }
+
+  public async Task Convert_String_And_Long_Arguments()
+  {
+    Test.App.Client.Features.Counter.CounterState counterState = Store.GetState<Test.App.Client.Features.Counter.CounterState>();
+    counterState.Initialize(count: 0);
+
+    await Catalog.Find("Counter.AddToCount")!.Execute(Store, ["5", 3L]);
 
     Store.GetState<Test.App.Client.Features.Counter.CounterState>().Count.ShouldBe(15);
   }

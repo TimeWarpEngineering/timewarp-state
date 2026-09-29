@@ -18,7 +18,8 @@ internal sealed record ActionParameterModel
   string Name,
   string? DefaultValue,
   string TypeOfName,
-  string? JsonSchema
+  string? JsonSchema,
+  string CatalogName
 );
 
 internal static class ActionSetConstructorParser
@@ -50,7 +51,7 @@ internal static class ActionSetConstructorParser
 
       string? defaultValue = p.Default?.Value?.ToString();
       string? jsonSchema = parameterSymbol is null ? null : GetJsonSchema(parameterSymbol.Type);
-      return new ActionParameterModel(fullTypeName, p.Identifier.Text, defaultValue, typeOfName, jsonSchema);
+      return new ActionParameterModel(fullTypeName, p.Identifier.Text, defaultValue, typeOfName, jsonSchema, p.Identifier.ValueText);
     }).ToList();
   }
 

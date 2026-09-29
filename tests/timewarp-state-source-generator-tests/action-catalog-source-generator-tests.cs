@@ -241,6 +241,43 @@ public class Should_Describe_Parameters
   }
 }
 
+public class Should_Use_Value_Text_For_Verbatim_Parameter_Names
+{
+  public static void Given_Keyword_Named_Parameter()
+  {
+    const string Source =
+      """
+      namespace App;
+
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class LogState : State<LogState>
+      {
+        public override void Initialize() { }
+
+        public static class RecordActionSet
+        {
+          [CatalogAction(Description = "Record an event.")]
+          public sealed class Action : IAction
+          {
+            public Action(string @event) { Event = @event; }
+            public string Event { get; }
+          }
+        }
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = ActionCatalogGeneratorTestDriver.Run(Source);
+    string generated = ActionCatalogGeneratorTestDriver.CatalogSource(runResult);
+
+    generated.ShouldContain("new global::TimeWarp.State.ActionCatalogParameter(\"event\", typeof(string), true, null,");
+    generated.ShouldContain("\\\"event\\\":{\\\"type\\\":\\\"string\\\"}");
+    generated.ShouldNotContain("@event\"");
+    ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
+  }
+}
+
 public class Should_Apply_Attribute_Options
 {
   public static void Given_Name_Override_Permissions_And_Visibility()

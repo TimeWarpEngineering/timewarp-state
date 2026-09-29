@@ -109,6 +109,62 @@ public class Should_Report_TWS0004
         .WithArguments("Outer.Commands.Action")
     );
   }
+
+  public static async Task Given_Generic_State()
+  {
+    const string TestCode =
+      """
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class CounterState<T> : State<CounterState<T>>
+      {
+        public override void Initialize() { }
+
+        public static class IncrementActionSet
+        {
+          [{|#0:CatalogAction(Description = "Increment the counter.")|}]
+          public sealed class Action : IAction { }
+        }
+      }
+      """;
+
+    await RunAsync
+    (
+      TestCode,
+      new DiagnosticResult(CatalogActionAnalyzer.PlacementDiagnosticId, DiagnosticSeverity.Error)
+        .WithLocation(0)
+        .WithArguments("CounterState<T>.IncrementActionSet.Action")
+    );
+  }
+
+  public static async Task Given_Private_ActionSet()
+  {
+    const string TestCode =
+      """
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class CounterState : State<CounterState>
+      {
+        public override void Initialize() { }
+
+        private static class IncrementActionSet
+        {
+          [{|#0:CatalogAction(Description = "Increment the counter.")|}]
+          public sealed class Action : IAction { }
+        }
+      }
+      """;
+
+    await RunAsync
+    (
+      TestCode,
+      new DiagnosticResult(CatalogActionAnalyzer.PlacementDiagnosticId, DiagnosticSeverity.Error)
+        .WithLocation(0)
+        .WithArguments("CounterState.IncrementActionSet.Action")
+    );
+  }
 }
 
 public class Should_Report_TWS0005
