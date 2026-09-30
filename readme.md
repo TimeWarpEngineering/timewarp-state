@@ -54,6 +54,31 @@ Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](htt
 * [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 * [TimeWarp.State.Telemetry](https://www.nuget.org/packages/TimeWarp.State.Telemetry/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Telemetry?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Telemetry/)
 
+## Action catalog
+
+Mark user-facing actions with `[CatalogAction]` to enumerate and execute them at runtime, for example from a Ctrl-K command palette or as agent tools:
+
+```csharp
+public static class AddPasskeyActionSet
+{
+  [CatalogAction(Description = "Add a passkey to the signed-in account.", Permissions = ["credentials.write"])]
+  public sealed class Action : IAction
+  {
+    public Action(string label) { Label = label; }
+    public string Label { get; }
+  }
+}
+```
+
+```csharp
+builder.Services.AddActionCatalog(typeof(AssemblyMarker).Assembly);
+
+ActionCatalogEntry entry = actionCatalog.Find("Credentials.AddPasskey")!;
+await entry.Execute(store, ["Laptop"]);
+```
+
+The source generator emits a per-assembly registry with name, description, permissions, visibility, parameters and input schema, plus a reflection-free `Execute`. It is opt-in: unmarked actions are never cataloged. Permissions are opaque ids that the consumer enforces; `[TrackAction]` (busy indicator) is unrelated. See [Action catalog](documentation/topics/action-catalog.md).
+
 ## Releases
 
 View the [Release Notes](https://timewarpengineering.github.io/timewarp-state/ReleaseNotes/Release11.0.0.html) for detailed information on each release.

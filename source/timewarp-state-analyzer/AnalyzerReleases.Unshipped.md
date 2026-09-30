@@ -11,4 +11,8 @@ StateSealedClassRule | Design | Warning | StateInheritanceAnalyzer
 TWS0001 | TimeWarp.State | Error | TimeWarpStateActionAnalyzer
 TWS0002 | Design | Warning | HandlerMustNotSendActionAnalyzer
 TWS0003 | Design | Info | HandlerMustNotSendActionAnalyzer
+TWS0004 | Design | Error | CatalogActionAnalyzer
+TWS0005 | Design | Error | CatalogActionAnalyzer
+TWS0006 | Design | Error | CatalogActionAnalyzer
+TWS0007 | Design | Warning | CatalogActionAnalyzer
 TWS001 | Design | Error | StateImplementationAnalyzer

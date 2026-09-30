@@ -52,6 +52,7 @@ public class Program
           };
       }
     );
+    serviceCollection.AddActionCatalog(typeof(Test.App.Client.AssemblyMarker).Assembly);
     serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
     serviceCollection.AddSingleton(serviceCollection);
     serviceCollection.AddTimeWarpStateRouting();

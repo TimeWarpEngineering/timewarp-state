@@ -1,0 +1,50 @@
+# MemSearch repo knowledge index — TimeWarp convention
+#
+# SPEC (proposed extension)
+# -------------------------
+# memsearch's stock CLI ignores [index]; this file is honored by:
+#   ganda memsearch index-repo
+#   ganda hooks install memsearch  (post-commit / post-merge runfiles)
+#
+# Purpose: index markdown knowledge in THIS repo only. One Milvus collection
+# per repo (auto-derived from repo path). Global DB file stays at
+# ~/.memsearch/milvus.db unless [milvus].uri is overridden below.
+#
+# [index].paths
+#   Directory roots (relative to repo root). memsearch indexes all .md files
+#   under each path recursively. Missing paths are skipped.
+#
+# [index].exclude_paths
+#   Directory paths removed from the resolved path list before indexing.
+#   Does not prune subdirectories when a parent path (e.g. "kanban/") is listed.
+#
+# [index].exclude_globs
+#   Reserved — file-level globs (e.g. "**/task-template.md"). Not implemented in v1.
+#
+# [index].enabled
+#   false disables hook indexing (conversation plugins still work).
+#
+# [milvus].collection
+#   Empty = auto-derive ms_<repo-basename>_<8char_sha256> from repo root.
+#
+# Search this repo only:
+#   memsearch search "query" -c <collection> --source-prefix "$(pwd)/kanban/"
+
+[index]
+enabled = true
+paths = [
+  "kanban",
+  "documentation",
+  "okf",
+  "adr",
+  ".memsearch/memory",
+]
+exclude_paths = []
+exclude_globs = [
+  "**/task-template.md",
+  "**/overview.md",
+]
+
+[milvus]
+# uri = ".memsearch/milvus.db"   # optional per-repo DB file
+collection = ""
