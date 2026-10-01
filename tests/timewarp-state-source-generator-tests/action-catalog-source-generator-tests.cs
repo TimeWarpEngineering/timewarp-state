@@ -70,7 +70,8 @@ public class Should_Emit_Single_Entry
                   global::TimeWarp.State.ActionCatalogArguments.EnsureCount("Credentials.AddPasskey", arguments, 1, 1);
                   global::App.CredentialsState state = store.GetState<global::App.CredentialsState>();
                   return state.AddPasskey(global::TimeWarp.State.ActionCatalogArguments.Get<string>("Credentials.AddPasskey", arguments, 0, "label"), externalCancellationToken: cancellationToken);
-                }
+                },
+                displayName: null
               ),
             };
         }
@@ -312,6 +313,66 @@ public class Should_Apply_Attribute_Options
     generated.ShouldContain("description: \"Reset the \\\"main\\\" counter.\",");
     generated.ShouldContain("permissions: new string[] { \"counter.write\", \"admin\" },");
     generated.ShouldContain("visibility: (global::TimeWarp.State.ActionVisibility)2,");
+    ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
+  }
+}
+
+public class Should_Emit_DisplayName
+{
+  public static void Given_DisplayName()
+  {
+    const string Source =
+      """
+      namespace App;
+
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class CredentialsState : State<CredentialsState>
+      {
+        public override void Initialize() { }
+
+        public static class LinkMicrosoft365ActionSet
+        {
+          [CatalogAction(Description = "Link a Microsoft 365 account.", DisplayName = "Link \"Microsoft 365\"")]
+          public sealed class Action : IAction { }
+        }
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = ActionCatalogGeneratorTestDriver.Run(Source);
+    string generated = ActionCatalogGeneratorTestDriver.CatalogSource(runResult);
+
+    generated.ShouldContain("name: \"Credentials.LinkMicrosoft365\",");
+    generated.ShouldContain("displayName: \"Link \\\"Microsoft 365\\\"\"");
+    ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
+  }
+
+  public static void Given_No_DisplayName_Emits_Null_Without_Fallback()
+  {
+    const string Source =
+      """
+      namespace App;
+
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class CredentialsState : State<CredentialsState>
+      {
+        public override void Initialize() { }
+
+        public static class LinkMicrosoft365ActionSet
+        {
+          [CatalogAction(Description = "Link a Microsoft 365 account.")]
+          public sealed class Action : IAction { }
+        }
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = ActionCatalogGeneratorTestDriver.Run(Source);
+    string generated = ActionCatalogGeneratorTestDriver.CatalogSource(runResult);
+
+    generated.ShouldContain("displayName: null");
     ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
   }
 }

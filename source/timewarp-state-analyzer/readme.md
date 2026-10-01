@@ -15,6 +15,7 @@ Roslyn analyzers packed into `TimeWarp.State` at `analyzers/dotnet/cs`. Consumer
 | TWS0005 | Error | Design | `CatalogActionAnalyzer` — `[CatalogAction]` requires a non-empty `Description` |
 | TWS0006 | Error | Design | `CatalogActionAnalyzer` — duplicate catalog `Name` in one assembly |
 | TWS0007 | Warning | Design | `CatalogActionAnalyzer` — `Description` should be one plain sentence |
+| TWS0008 | Error | Design | `CatalogActionAnalyzer` — `DisplayName`, when given, must not be empty or whitespace |
 | TWS001 | Error | Design | `StateImplementationAnalyzer` |
 | TWSG001 | Error | Persistence | `PersistenceStateSourceGenerator` — `[PersistentState]` is not supported on nested classes |
 | StateInheritanceTypeArgumentRule | Error | Design | `StateInheritanceAnalyzer` |

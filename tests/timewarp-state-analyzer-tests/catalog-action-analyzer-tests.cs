@@ -1,5 +1,6 @@
 #region Purpose
-// CatalogActionAnalyzer: TWS0004 placement, TWS0005 description, TWS0006 duplicate name, TWS0007 plain sentence.
+// CatalogActionAnalyzer: TWS0004 placement, TWS0005 description, TWS0006 duplicate name, TWS0007 plain sentence,
+// TWS0008 DisplayName.
 #endregion
 
 // ReSharper disable InconsistentNaming
@@ -28,12 +29,18 @@ public class Should_Not_Report
 
         public static class ResetActionSet
         {
-          [CatalogAction(Description = "Reset the counter", Name = "Counter.Clear", Visibility = ActionVisibility.Both, Permissions = new[] { "counter.write" })]
+          [CatalogAction(Description = "Reset the counter", Name = "Counter.Clear", DisplayName = "Clear Counter", Visibility = ActionVisibility.Both, Permissions = new[] { "counter.write" })]
           public sealed class Action : IAction { }
         }
 
         public static class FetchActionSet
         {
+          public sealed class Action : IAction { }
+        }
+
+        public static class LinkActionSet
+        {
+          [CatalogAction(Description = "Link an account.", DisplayName = null)]
           public sealed class Action : IAction { }
         }
       }
@@ -284,6 +291,61 @@ public class Should_Report_TWS0007
         .WithArguments("CounterState.IncrementActionSet.Action")
     );
   }
+}
+
+public class Should_Report_TWS0008
+{
+  public static async Task Given_Empty_DisplayName()
+  {
+    await RunAsync(Source("\"\""), DisplayName(0));
+  }
+
+  public static async Task Given_Whitespace_DisplayName()
+  {
+    await RunAsync(Source("\"  \""), DisplayName(0));
+  }
+
+  public static async Task Given_Constant_Field_DisplayName_Not_Reported()
+  {
+    await RunAsync(Source("Labels.Increment"));
+  }
+
+  public static async Task Given_Non_Constant_DisplayName_Compiler_Rejects_It()
+  {
+    await RunAsync
+    (
+      Source("{|#1:Labels.Dynamic|}"),
+      DiagnosticResult.CompilerError("CS0182").WithLocation(1)
+    );
+  }
+
+  private static string Source(string displayName) =>
+    $$"""
+    using TimeWarp.Mediator;
+    using TimeWarp.State;
+
+    public static class Labels
+    {
+      public const string Increment = "Increment";
+      public static string Dynamic => "Increment";
+    }
+
+    public sealed partial class CounterState : State<CounterState>
+    {
+      public override void Initialize() { }
+
+      public static class IncrementActionSet
+      {
+        [{|#0:CatalogAction(Description = "Increment the counter.", DisplayName = {{displayName}})|}]
+        public sealed class Action : IAction { }
+      }
+    }
+    """;
+
+  private static DiagnosticResult DisplayName(int location) =>
+    new DiagnosticResult(CatalogActionAnalyzer.DisplayNameDiagnosticId, DiagnosticSeverity.Error)
+      .WithLocation(location)
+      .WithArguments("CounterState.IncrementActionSet.Action");
 }
 
 internal static class CatalogActionAnalyzerRunner

@@ -7,7 +7,8 @@
 // analyzer resolve it by metadata name (TimeWarp.State.CatalogActionAttribute).
 // Only valid on the nested Action class of a *ActionSet (TWS0004). Description is required and is one
 // plain sentence (TWS0005). Name defaults to <StateWithoutSuffix>.<ActionSetWithoutSuffix> and must be
-// unique per assembly (TWS0006).
+// unique per assembly (TWS0006). DisplayName is optional authored UI copy; when given it must not be
+// empty or whitespace (TWS0008). It is never derived here: consumers choose their own fallback.
 // Permissions are opaque ids owned by the consumer; TimeWarp.State never enforces them.
 // Unrelated to [TrackAction], which only drives the busy indicator.
 #endregion
@@ -34,6 +35,16 @@ public sealed class CatalogActionAttribute : Attribute
   /// for example <c>Credentials.AddPasskey</c>.
   /// </summary>
   public string? Name { get; set; }
+
+  /// <summary>
+  /// Human-facing label for UIs such as command palettes and menus, for example <c>Link Microsoft 365</c>.
+  /// Optional; when set it must not be empty or whitespace.
+  /// </summary>
+  /// <remarks>
+  /// <see cref="Name"/> stays the stable identifier. TimeWarp.State does not derive a label when this is not set;
+  /// consumers decide how to fall back.
+  /// </remarks>
+  public string? DisplayName { get; set; }
 
   /// <summary>
   /// Consumer-defined permission or policy ids. Opaque to TimeWarp.State; the consumer enforces them.
