@@ -34,7 +34,7 @@ lacks the guard.
 - [x] Hook smoke test: task→home refused, raw sha→home allowed (stdin simulation only)
 - [x] Gates per this repo's `tw-pr` (a hook-only change needs no full build unless the skill's
       scope table says otherwise)
-- [ ] Implementation review; host `open-pr`
+- [x] Implementation review; host `open-pr`
 
 ## Notes
 
@@ -90,7 +90,15 @@ exit=1
 exit=0
 ```
 
+### Review disposition
+
+- Rounds: 1. Effort 1, roster: general.
+- Final counts: 0 bug, 0 suggestion, 0 nit (0 open, 0 fixed, 0 wontfix).
+- Disposition: **clean**.
+- Artifacts: `review/review-framework.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: 2026-10-01
 - 2026-10-01: implementer (claude) refreshed hook via audit --fix, smoke-tested via stdin, audit passes.
+- 2026-10-01: review oracle (claude) effort 1 general review, 0 findings, disposition clean.
