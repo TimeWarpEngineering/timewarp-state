@@ -8,6 +8,8 @@
 // Allow other dests (feature/*, etc.) so origin-home can publish a missing --into ref.
 // Allow refs/tags/* (release tags) and refs/ganda/* (claims CAS) when every dest is one of those.
 // Mixed tag + branch batches stay refused while HEAD is home.
+// Refuse pushing a local task/* branch to a home branch from any HEAD (a task worktree that
+// still tracks origin/<home>). Raw-sha sources (kanban publish merge commit) stay allowed.
 // Commits on master stay blocked by pre-commit. Escape hatch: git push --no-verify
 using TimeWarp.Amuru;
 
@@ -19,6 +21,7 @@ if (root is null)
 
 // stdin: <local ref> <local sha> <remote ref> <remote sha> (one line per dest)
 List<string> remoteRefs = [];
+List<string> taskToHome = [];
 string? line;
 while ((line = Console.In.ReadLine()) is not null)
 {
@@ -27,7 +30,23 @@ while ((line = Console.In.ReadLine()) is not null)
 
   string[] parts = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
   if (parts.Length >= 3)
+  {
     remoteRefs.Add(parts[2]);
+    if (parts[0].StartsWith("refs/heads/task/", StringComparison.Ordinal) && IsHomeBranchDest(parts[2]))
+      taskToHome.Add($"{parts[0]["refs/heads/".Length..]} -> {parts[2]["refs/heads/".Length..]}");
+  }
+}
+
+if (taskToHome.Count > 0)
+{
+#pragma warning disable RS0030, CA1849 // hook runfile: stderr to git, no ITerminal host
+  foreach (string push in taskToHome)
+    Console.Error.WriteLine($"Refusing push of task branch to home: {push}.");
+  Console.Error.WriteLine("Task branches publish to origin/<task branch> and land on home via PR.");
+  Console.Error.WriteLine("Fix tracking: ganda repo audit --fix --checks task-branch-upstream, then git push.");
+  Console.Error.WriteLine("Escape hatch (intentional only): git push --no-verify");
+#pragma warning restore RS0030, CA1849
+  return 1;
 }
 
 if (remoteRefs.Count > 0 && remoteRefs.All(IsExemptDest))

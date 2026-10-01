@@ -29,10 +29,10 @@ lacks the guard.
 
 ## Checklist
 
-- [ ] `.githooks/pre-push.cs` refreshed via `ganda repo audit --fix --checks memsearch-scaffold`
-- [ ] Audit clean (no `memsearch-scaffold` warning)
-- [ ] Hook smoke test: task→home refused, raw sha→home allowed (stdin simulation only)
-- [ ] Gates per this repo's `tw-pr` (a hook-only change needs no full build unless the skill's
+- [x] `.githooks/pre-push.cs` refreshed via `ganda repo audit --fix --checks memsearch-scaffold`
+- [x] Audit clean (no `memsearch-scaffold` warning)
+- [x] Hook smoke test: task→home refused, raw sha→home allowed (stdin simulation only)
+- [x] Gates per this repo's `tw-pr` (a hook-only change needs no full build unless the skill's
       scope table says otherwise)
 - [ ] Implementation review; host `open-pr`
 
@@ -45,15 +45,52 @@ lacks the guard.
 
 ## Results
 
-*(fill when done)*
+- `ganda repo audit --fix --checks memsearch-scaffold` refreshed `.githooks/pre-push.cs`
+  (+19 lines, insertions only: the task/* → home guard and its header comment). There were no
+  local customizations, so nothing was dropped. The `.githooks/pre-push` shim did not change.
+- `ganda repo audit` passes. The `memsearch-scaffold` warning is gone. Before the refresh, the
+  `bin-dev` and `dev-cli-capabilities` errors also appeared, because this fresh worktree had no
+  local `bin/dev`. That binary is gitignored, and I built it with
+  `dotnet run --file tools/dev-cli/dev.cs -- self-install`. No repo change was needed for it.
+- One non-blocking advisory warning remains: `kebab-path-names` flags
+  `tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js`. The name is required
+  by Blazor: a JS initializer must be named `{AssemblyName}.lib.module.js`, and the assembly is
+  `Test.App.Client`. I left it alone because renaming it would break the E2E test app.
+- Gates: the change only touches a hook runfile, so no solution build is needed. Running the hook
+  in the smoke test below compiles it.
 
 ### How to validate
 
-*(required before done)*
+Smoke:
 
-`ganda repo audit` shows no `memsearch-scaffold` warning, and the stdin smoke test output is
-recorded.
+```bash
+ganda repo audit
+S=$(git rev-parse HEAD); Z=0000000000000000000000000000000000000000
+echo "refs/heads/task/x $S refs/heads/master $Z" | .githooks/pre-push origin url; echo "exit=$?"
+echo "$S $S refs/heads/master $Z" | .githooks/pre-push origin url; echo "exit=$?"
+```
+
+Expect:
+
+- Audit: `Repository passes`, with no `memsearch-scaffold` entry (only the kebab advisory).
+- Task → home: `Refusing push of task branch to home: task/x -> master.` plus the
+  guidance lines, then `exit=1`.
+- Raw sha → home, run from a task branch HEAD: no output, `exit=0`.
+
+Recorded output (2026-10-01):
+
+```
+--- task->home
+Refusing push of task branch to home: task/x -> master.
+Task branches publish to origin/<task branch> and land on home via PR.
+Fix tracking: ganda repo audit --fix --checks task-branch-upstream, then git push.
+Escape hatch (intentional only): git push --no-verify
+exit=1
+--- rawsha->home
+exit=0
+```
 
 ## Session
 
 - Created: 2026-10-01
+- 2026-10-01: implementer (claude) refreshed hook via audit --fix, smoke-tested via stdin, audit passes.
