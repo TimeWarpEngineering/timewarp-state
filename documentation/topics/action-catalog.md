@@ -35,7 +35,8 @@ public partial class CredentialsState
 | Property | Required | Meaning |
 |----------|----------|---------|
 | `Description` | yes | One plain sentence shown to people and agents. |
-| `Name` | no | Defaults to `<StateWithoutSuffix>.<ActionSetWithoutSuffix>`, here `Credentials.AddPasskey`. Unique per assembly. |
+| `Name` | no | Defaults to `<StateWithoutSuffix>.<ActionSetWithoutSuffix>`, here `Credentials.AddPasskey`. Unique per assembly. The stable identifier. |
+| `DisplayName` | no | Human-facing label for command palettes and menus, for example `"Link Microsoft 365"`. Authored copy, never derived: `ActionCatalogEntry.DisplayName` is `null` when it is not set, and the consumer chooses the fallback (for example `entry.DisplayName ?? FormatLabel(entry.Name)`). |
 | `Permissions` | no | Consumer-defined permission or policy ids. Opaque to TimeWarp.State. |
 | `Visibility` | no | `Human` (default), `Agent`, or `Both`. |
 
@@ -43,7 +44,7 @@ public partial class CredentialsState
 
 The source generator emits one internal `GeneratedActionCatalog` per assembly, in a namespace equal to the assembly name. `GeneratedActionCatalog.All` is an `IReadOnlyList<ActionCatalogEntry>` ordered by name. Each entry carries:
 
-- `Name`, `Description`, `Permissions`, `Visibility`
+- `Name`, `DisplayName` (or `null`), `Description`, `Permissions`, `Visibility`
 - `StateType` and `ActionType`
 - `Parameters`: name, CLR type, required flag, default value text and a JSON schema fragment — taken from the action's first explicit constructor, the same parse that generates `State.AddPasskey(label, makeDefault, ct)`
 - `InputSchema`: a JSON schema object for the parameters
@@ -92,3 +93,4 @@ if (entry is not null && permissionService.IsAllowed(entry.Permissions))
 | TWS0005 | Error | `Description` is missing or empty. |
 | TWS0006 | Error | Two cataloged actions in one assembly share a `Name`. |
 | TWS0007 | Warning | `Description` is not one plain sentence (line break or more than one sentence). |
+| TWS0008 | Error | `DisplayName` is set but empty or whitespace. (Attribute arguments are always compile-time constants; the compiler reports CS0182 otherwise.) |

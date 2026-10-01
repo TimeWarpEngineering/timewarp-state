@@ -1,5 +1,5 @@
 #region Purpose
-// TWS0004-TWS0007: [CatalogAction] placement, Description, and per-assembly name uniqueness.
+// TWS0004-TWS0008: [CatalogAction] placement, Description, per-assembly name uniqueness, and DisplayName.
 #endregion
 
 #region Design
@@ -10,6 +10,9 @@
 // the same rule the generator applies; duplicates in one compilation are reported at compilation end
 // (TWS0006) on every declaration that shares the name. Cross-assembly duplicates are a runtime error in
 // ActionCatalog.
+// DisplayName is optional; when given it must not be empty or whitespace (TWS0008). An explicit null is the
+// same as not setting it. Compile-time constancy needs no rule here: C# only accepts constant attribute
+// arguments (CS0182), so a non-constant value never reaches the analyzer as a string.
 #endregion
 
 namespace TimeWarp.State.Analyzer;
@@ -22,6 +25,7 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
   public const string DescriptionDiagnosticId = "TWS0005";
   public const string DuplicateNameDiagnosticId = "TWS0006";
   public const string PlainSentenceDiagnosticId = "TWS0007";
+  public const string DisplayNameDiagnosticId = "TWS0008";
 
   private const string Category = "Design";
   private const string CatalogActionMetadataName = "TimeWarp.State.CatalogActionAttribute";
@@ -75,8 +79,20 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
       description: "Keep catalog descriptions to a single sentence so they fit a palette row and an agent tool description."
     );
 
+  private static readonly DiagnosticDescriptor DisplayNameRule =
+    new
+    (
+      DisplayNameDiagnosticId,
+      "CatalogAction DisplayName must not be empty",
+      "[CatalogAction] DisplayName on '{0}' must not be empty or whitespace. Omit it or set a label.",
+      Category,
+      DiagnosticSeverity.Error,
+      isEnabledByDefault: true,
+      description: "DisplayName is the human-facing label a command palette or menu shows; when given it must be non-empty authored copy."
+    );
+
   public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-    ImmutableArray.Create(PlacementRule, DescriptionRule, DuplicateNameRule, PlainSentenceRule);
+    ImmutableArray.Create(PlacementRule, DescriptionRule, DuplicateNameRule, PlainSentenceRule, DisplayNameRule);
 
   public override void Initialize(AnalysisContext context)
   {
@@ -146,6 +162,13 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
     else if (!IsPlainSentence(description!))
     {
       context.ReportDiagnostic(Diagnostic.Create(PlainSentenceRule, location, type.ToDisplayString()));
+    }
+
+    if (attribute.NamedArguments.Any(argument => argument.Key == "DisplayName" && argument.Value.Kind != TypedConstantKind.Error)
+        && GetNamedString(attribute, "DisplayName") is string displayName
+        && string.IsNullOrWhiteSpace(displayName))
+    {
+      context.ReportDiagnostic(Diagnostic.Create(DisplayNameRule, location, type.ToDisplayString()));
     }
 
     string? name = GetNamedString(attribute, "Name");

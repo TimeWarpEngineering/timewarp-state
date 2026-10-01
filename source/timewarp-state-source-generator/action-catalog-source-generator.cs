@@ -8,6 +8,7 @@
 // and each executor calls that generated State.Method(args, externalCancellationToken: ct) through
 // store.GetState<TState>() — no reflection, AOT/trim safe. Trailing optional parameters may be omitted:
 // one call per legal argument count so the generated method's own defaults apply.
+// DisplayName is copied verbatim from the attribute literal (null when absent); TWS0008 rejects blank values.
 // Misplaced attributes (not a nested *ActionSet.Action) are skipped here; TWS0004 reports them.
 // Output: one internal GeneratedActionCatalog (All) plus an internal assembly attribute deriving from
 // ActionCatalogProviderAttribute so AddActionCatalog(assembly) can aggregate without scanning.
@@ -61,6 +62,7 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
     AttributeData attribute = context.Attributes[0];
     string description = string.Empty;
     string? name = null;
+    string? displayName = null;
     List<string> permissions = [];
     int visibility = 1;
 
@@ -73,6 +75,9 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
           break;
         case "Name":
           name = argument.Value.Value as string;
+          break;
+        case "DisplayName":
+          displayName = argument.Value.Value as string;
           break;
         case "Permissions":
           if (!argument.Value.IsNull)
@@ -93,6 +98,7 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
     (
       Name: string.IsNullOrWhiteSpace(name) ? GetDefaultName(stateSymbol.Name, actionSetSymbol.Name) : name!,
       Description: description,
+      DisplayName: displayName,
       Permissions: new EquatableArray<string>(permissions),
       Visibility: visibility,
       StateType: stateSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
@@ -248,7 +254,8 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
       );
     }
 
-    builder.AppendLine("          }");
+    builder.AppendLine("          },");
+    builder.AppendLine($"          displayName: {NullableLiteral(entry.DisplayName)}");
     builder.AppendLine("        ),");
   }
 
@@ -271,6 +278,7 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
   (
     string Name,
     string Description,
+    string? DisplayName,
     EquatableArray<string> Permissions,
     int Visibility,
     string StateType,

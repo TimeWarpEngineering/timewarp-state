@@ -19,6 +19,7 @@ public class Registry_Should : BaseTest
   {
     ActionCatalogEntry entry = Test.App.Client.GeneratedActionCatalog.All.Single(e => e.Name == "Counter.AddToCount");
 
+    entry.DisplayName.ShouldBe("Add to Count");
     entry.Description.ShouldBe("Add an amount to the counter.");
     entry.Permissions.ShouldBe(["counter.write"]);
     entry.Visibility.ShouldBe(ActionVisibility.Both);
@@ -33,6 +34,11 @@ public class Registry_Should : BaseTest
     );
   }
 
+  public void Leave_DisplayName_Null_When_Not_Set()
+  {
+    Test.App.Client.GeneratedActionCatalog.All.Single(e => e.Name == "EventStream.AddEvent").DisplayName.ShouldBeNull();
+  }
+
   public void Resolve_Through_Di_Across_Assemblies()
   {
     IActionCatalog catalog = ServiceProvider.GetRequiredService<IActionCatalog>();
@@ -45,6 +51,25 @@ public class Registry_Should : BaseTest
 
 public class Catalog_Should
 {
+  public void Round_Trip_DisplayName_Through_Constructor()
+  {
+    ActionCatalogEntry withLabel = new
+    (
+      "Credentials.LinkMicrosoft365", "Link a Microsoft 365 account.", [], ActionVisibility.Human, typeof(object), typeof(object), [], "{}",
+      static (_, _, _) => Task.CompletedTask,
+      displayName: "Link Microsoft 365"
+    );
+    ActionCatalogEntry withoutLabel = new
+    (
+      "Credentials.LinkMicrosoft365", "Link a Microsoft 365 account.", [], ActionVisibility.Human, typeof(object), typeof(object), [], "{}",
+      static (_, _, _) => Task.CompletedTask
+    );
+
+    withLabel.DisplayName.ShouldBe("Link Microsoft 365");
+    withLabel.Name.ShouldBe("Credentials.LinkMicrosoft365");
+    withoutLabel.DisplayName.ShouldBeNull();
+  }
+
   public void Throw_On_Duplicate_Names_Across_Sources()
   {
     ActionCatalogEntry first = Test.App.Client.GeneratedActionCatalog.All.Single(e => e.Name == "Counter.AddToCount");

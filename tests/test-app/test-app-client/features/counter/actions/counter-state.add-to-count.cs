@@ -11,6 +11,7 @@ public partial class CounterState
     [CatalogAction
     (
       Description = "Add an amount to the counter.",
+      DisplayName = "Add to Count",
       Permissions = ["counter.write"],
       Visibility = ActionVisibility.Both
     )]

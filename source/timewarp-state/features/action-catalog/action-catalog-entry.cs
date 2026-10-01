@@ -6,6 +6,7 @@
 // Execute is a generated static lambda that resolves the state from the store and calls the same
 // generated State.Method(...) the ActionSet method generator emits: no reflection, AOT and trim safe.
 // Arguments are positional in constructor order; trailing optional arguments may be omitted.
+// DisplayName is copied from the attribute literal and stays null when not set; no fallback is synthesized.
 #endregion
 
 namespace TimeWarp.State;
@@ -30,7 +31,8 @@ public sealed class ActionCatalogEntry
     Type actionType,
     IReadOnlyList<ActionCatalogParameter> parameters,
     string inputSchema,
-    Func<IStore, object?[], CancellationToken, Task> executor
+    Func<IStore, object?[], CancellationToken, Task> executor,
+    string? displayName = null
   )
   {
     Name = name;
@@ -42,10 +44,17 @@ public sealed class ActionCatalogEntry
     Parameters = parameters;
     InputSchema = inputSchema;
     Executor = executor;
+    DisplayName = displayName;
   }
 
   /// <summary>Unique catalog name, for example <c>Credentials.AddPasskey</c>.</summary>
   public string Name { get; }
+
+  /// <summary>
+  /// Human-facing label for command palettes and menus, from <see cref="CatalogActionAttribute.DisplayName"/>.
+  /// Null when not set; <see cref="Name"/> stays the stable identifier and consumers choose the fallback.
+  /// </summary>
+  public string? DisplayName { get; }
 
   /// <summary>One plain sentence describing the action.</summary>
   public string Description { get; }

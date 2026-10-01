@@ -15,4 +15,5 @@ TWS0004 | Design | Error | CatalogActionAnalyzer
 TWS0005 | Design | Error | CatalogActionAnalyzer
 TWS0006 | Design | Error | CatalogActionAnalyzer
 TWS0007 | Design | Warning | CatalogActionAnalyzer
+TWS0008 | Design | Error | CatalogActionAnalyzer
 TWS001 | Design | Error | StateImplementationAnalyzer
