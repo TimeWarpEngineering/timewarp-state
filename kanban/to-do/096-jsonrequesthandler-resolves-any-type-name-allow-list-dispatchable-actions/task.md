@@ -125,4 +125,3 @@ Manual: run the test app, open `/JavaScriptInteropPage`, click the button → co
 - Created: 2026-10-05 (cockpit, from timewarp-architecture 275 research)
 - 2026-10-05 implement oracle: allow-list via AddJavaScriptDispatch, tests, docs, beta.8 bump
 - 2026-10-05 review oracle: effort 2 general review, 5 findings fixed, disposition clean
-- 2026-10-05 review oracle: effort 2 general review, 5 findings fixed, disposition clean
