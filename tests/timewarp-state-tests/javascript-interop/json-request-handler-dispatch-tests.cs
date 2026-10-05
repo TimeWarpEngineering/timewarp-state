@@ -88,6 +88,38 @@ public class Should_
     sender.Sent.ShouldBeEmpty();
   }
 
+  public static void Reject_An_Empty_Name()
+  {
+    RecordingSender sender = new();
+    JsonRequestHandler handler = CreateHandler(sender, services => services.AddJavaScriptDispatch(b => b.Allow<IncrementAction>()));
+
+    Should.Throw<InvalidRequestTypeException>(() => handler.Handle("  ", "{}"));
+    sender.Sent.ShouldBeEmpty();
+  }
+
+  public static void Reject_A_Payload_Whose_Setter_Throws()
+  {
+    RecordingSender sender = new();
+    JsonRequestHandler handler = CreateHandler(sender, services => services.AddJavaScriptDispatch(b => b.Allow<ThrowingSetterAction>()));
+
+    InvalidRequestTypeException exception =
+      Should.Throw<InvalidRequestTypeException>(() => handler.Handle(typeof(ThrowingSetterAction).FullName!, """{"amount":1}"""));
+    exception.InnerException.ShouldBeOfType<InvalidOperationException>();
+    sender.Sent.ShouldBeEmpty();
+  }
+
+  public static void Refuse_An_Alias_That_Collides_And_Leave_The_Registry_Unchanged()
+  {
+    ServiceCollection services = new();
+    services.AddJavaScriptDispatch(b => b.Allow<IncrementAction>());
+
+    Should.Throw<ArgumentException>(() => services.AddJavaScriptDispatch(b => b.Allow<OtherAction>(typeof(IncrementAction).FullName)));
+
+    JavaScriptDispatchRegistry registry = services.BuildServiceProvider().GetRequiredService<JavaScriptDispatchRegistry>();
+    registry.AllowedTypes.ShouldBe([typeof(IncrementAction)]);
+    registry.TryResolve(typeof(OtherAction).FullName!, out _).ShouldBeFalse();
+  }
+
   public static void Reject_Redux_DevTools_Requests_When_DevTools_Is_Disabled()
   {
     RecordingSender sender = new();
@@ -142,6 +174,11 @@ public class Should_
     }
 
     public int Amount { get; }
+  }
+
+  public sealed class ThrowingSetterAction : IAction
+  {
+    public int Amount { get => 0; set => throw new InvalidOperationException("setter rejects input"); }
   }
 
   public sealed class NotAnAction

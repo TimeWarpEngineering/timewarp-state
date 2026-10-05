@@ -5,7 +5,8 @@
 #region Design
 // Handle resolves names only against JavaScriptDispatchRegistry (never Type.GetType) and fails
 // closed: unknown names, non-action types and unconstructible payloads log a warning and throw
-// InvalidRequestTypeException. See javascript-dispatch-registry.cs for the opt-in rationale.
+// InvalidRequestTypeException. Warnings never log the caller-supplied JSON (Debug only) and cap
+// the caller-supplied name. See javascript-dispatch-registry.cs for the opt-in rationale.
 // InitAsync is idempotent so extra renders cannot leak JS interop roots.
 // One DotNetObjectReference is stored for the handler lifetime and disposed
 // with the scoped service. JSDisconnectedException is swallowed because
@@ -64,7 +65,10 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
   public Task Handle(string requestTypeAssemblyQualifiedName, string? requestAsJson = null)
   {
     if (string.IsNullOrWhiteSpace(requestTypeAssemblyQualifiedName))
-      throw new ArgumentException("was Null or empty", nameof(requestTypeAssemblyQualifiedName));
+    {
+      Logger.LogWarning(EventIds.JsonRequestOfInvalidType, "Rejected JavaScript dispatch: request type name was empty");
+      throw new InvalidRequestTypeException("Request type name is empty.", requestTypeAssemblyQualifiedName ?? string.Empty);
+    }
 
     Logger.LogDebug
     (
@@ -79,8 +83,8 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
       Logger.LogWarning
       (
         EventIds.JsonRequestOfInvalidType,
-        "Rejected JavaScript dispatch of {requestTypeAssemblyQualifiedName}: not allowed. Allow it with AddJavaScriptDispatch",
-        requestTypeAssemblyQualifiedName
+        "Rejected JavaScript dispatch of {requestTypeName}: not allowed. Allow it with AddJavaScriptDispatch",
+        Truncate(requestTypeAssemblyQualifiedName)
       );
       throw new InvalidRequestTypeException
       (
@@ -119,7 +123,7 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
 
       if (instance is not null) return instance;
     }
-    catch (Exception exception) when (exception is JsonException or NotSupportedException or TargetInvocationException or MissingMethodException)
+    catch (Exception exception) when (exception is not OutOfMemoryException)
     {
       innerException = exception;
     }
@@ -128,9 +132,8 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
     (
       EventIds.JsonRequestInvalidPayload,
       innerException,
-      "Rejected JavaScript dispatch of {requestTypeAssemblyQualifiedName}: could not create the request from {requestAsJson}",
-      requestTypeName,
-      requestAsJson
+      "Rejected JavaScript dispatch of {requestType}: could not create the request from its JSON payload",
+      requestType.FullName
     );
     throw new InvalidRequestTypeException
     (
@@ -141,6 +144,9 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
       innerException
     );
   }
+
+  // Page script controls the name; cap what reaches Warning-level logs.
+  private static string Truncate(string value) => value.Length <= 256 ? value : $"{value[..256]}…";
 
   public ValueTask<object> InitAsync()
   {

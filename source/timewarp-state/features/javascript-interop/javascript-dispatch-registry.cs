@@ -22,7 +22,8 @@
 // AllowReduxDevToolsRequests, so they are dispatchable only when DevTools is enabled.
 //
 // One instance per IServiceCollection: GetOrAdd finds the registered singleton instance so
-// AddJavaScriptDispatch, AddTimeWarpState and UseReduxDevTools can run in any order.
+// AddJavaScriptDispatch, AddTimeWarpState and UseReduxDevTools can run in any order. The registry
+// is written during service registration only and read-only afterwards (not thread-safe to mutate).
 #endregion
 
 namespace TimeWarp.Features.JavaScriptInterop;
@@ -46,18 +47,23 @@ public sealed class JavaScriptDispatchRegistry
       throw new ArgumentException($"'{requestType}' must be a concrete, closed type.", nameof(requestType));
     }
 
-    AddName(requestType.FullName, requestType);
-    AddName($"{requestType.FullName}, {requestType.Assembly.GetName().Name}", requestType);
-    if (requestType.AssemblyQualifiedName is not null)
-      AddName(requestType.AssemblyQualifiedName, requestType);
+    if (alias is not null && string.IsNullOrWhiteSpace(alias))
+      throw new ArgumentException("Alias must not be empty or whitespace.", nameof(alias));
 
-    if (alias is not null)
+    List<string> names = [requestType.FullName, $"{requestType.FullName}, {requestType.Assembly.GetName().Name}"];
+    if (requestType.AssemblyQualifiedName is not null) names.Add(requestType.AssemblyQualifiedName);
+    if (alias is not null) names.Add(alias);
+
+    // Validate every name before adding any, so a collision leaves the registry unchanged.
+    foreach (string name in names)
     {
-      if (string.IsNullOrWhiteSpace(alias))
-        throw new ArgumentException("Alias must not be empty or whitespace.", nameof(alias));
-
-      AddName(alias, requestType);
+      if (TypesByName.TryGetValue(name, out Type? existing) && existing != requestType)
+      {
+        throw new ArgumentException($"JavaScript dispatch name '{name}' is already allowed for '{existing.FullName}'.", nameof(alias));
+      }
     }
+
+    foreach (string name in names) TypesByName[name] = requestType;
   }
 
   internal void AllowReduxDevToolsRequests()
@@ -98,15 +104,5 @@ public sealed class JavaScriptDispatchRegistry
     registry = new JavaScriptDispatchRegistry();
     serviceCollection.AddSingleton(registry);
     return registry;
-  }
-
-  private void AddName(string name, Type requestType)
-  {
-    if (TypesByName.TryGetValue(name, out Type? existing) && existing != requestType)
-    {
-      throw new ArgumentException($"JavaScript dispatch name '{name}' is already allowed for '{existing.FullName}'.", nameof(name));
-    }
-
-    TypesByName[name] = requestType;
   }
 }

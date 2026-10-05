@@ -56,7 +56,8 @@ known consumer is that template's Counter JS-interop demo (`Spa.Counter.Dispatch
 - [x] Version bump + release notes (breaking: JS dispatch opt-in)
 - [x] Preserve the Blazor JS initializer filename `Test.App.Client.lib.module.js`. If
       `ganda repo audit --fix` lowercases it, revert that rename.
-- [ ] Implementation review; host `open-pr`
+- [x] Implementation review (clean, 2 rounds)
+- [ ] Host `open-pr`
 
 ## Notes
 
@@ -93,6 +94,12 @@ fills a singleton `JavaScriptDispatchRegistry`; `JsonRequestHandler.Handle` reso
   `release12.0.0-beta.8.md` with the breaking change. Version 12.0.0-beta.7 → 12.0.0-beta.8.
 - Follow-up after release (not filed yet, file when this ships): timewarp-architecture opts in
   `CounterState+IncrementCounterActionSet+Action` via `AddJavaScriptDispatch` and pins 12.0.0-beta.8.
+- **Implementation review (effort 2, roster: general):** 2 rounds, disposition **clean**. Final counts:
+  bug 0, suggestion 2 fixed, nit 3 fixed, 0 open, 0 wontfix. Fixes: an empty name now fails closed with a warning;
+  warnings no longer log caller JSON and cap the name at 256 chars; payload creation catches all non-fatal
+  exceptions; registry `Add` validates every name before mutating. Added 3 tests (65 passed).
+  Artifacts: `review/review-framework.md`, `review/round-2/merged.md` (ledger: `review/round-1/merged.md`),
+  `review/disposition.md`.
 - Not run: Playwright E2E (`JavaScriptInteropPage`); the E2E suite baseline already fails on origin/dev.
 
 ### How to validate
@@ -105,10 +112,10 @@ dotnet test tests/client-integration-tests
 ganda repo audit
 ```
 
-**Expect:** 10 `JsonRequestHandlerDispatchTests.Should_` cases pass (allowed dispatch by AQN, full name and
+**Expect:** 13 `JsonRequestHandlerDispatchTests.Should_` cases pass (allowed dispatch by AQN, full name and
 alias; rejects unknown name, empty allow-list, non-action type, `Allow(typeof(NonAction))`, bad JSON,
-empty JSON without parameterless ctor, DevTools request when DevTools is off; DevTools Start dispatches when
-`UseReduxDevTools()` is on). `timewarp-state-tests` 62 passed, client-integration 56 passed. Audit passes with
+empty JSON without parameterless ctor, empty name, throwing setter, colliding alias leaves registry unchanged, DevTools request when DevTools is off; DevTools Start dispatches when
+`UseReduxDevTools()` is on). `timewarp-state-tests` 65 passed, client-integration 56 passed. Audit passes with
 one advisory: `Test.App.Client.lib.module.js` kebab-path (intentionally preserved Blazor initializer name).
 Manual: run the test app, open `/JavaScriptInteropPage`, click the button → count +7; remove the
 `AddJavaScriptDispatch` line → click logs a "not allowed" warning and the count does not change.
@@ -117,3 +124,5 @@ Manual: run the test app, open `/JavaScriptInteropPage`, click the button → co
 
 - Created: 2026-10-05 (cockpit, from timewarp-architecture 275 research)
 - 2026-10-05 implement oracle: allow-list via AddJavaScriptDispatch, tests, docs, beta.8 bump
+- 2026-10-05 review oracle: effort 2 general review, 5 findings fixed, disposition clean
+- 2026-10-05 review oracle: effort 2 general review, 5 findings fixed, disposition clean
