@@ -54,6 +54,16 @@ Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](htt
 * [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 * [TimeWarp.State.Telemetry](https://www.nuget.org/packages/TimeWarp.State.Telemetry/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Telemetry?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Telemetry/)
 
+## JavaScript dispatch
+
+JavaScript can dispatch actions with `timeWarpState.DispatchRequest(name, request)`. It is opt-in: allow each action explicitly, everything else is rejected.
+
+```csharp
+builder.Services.AddJavaScriptDispatch(b => b.Allow<CounterState.IncrementCountActionSet.Action>());
+```
+
+See [Enable JavaScript interop](documentation/topics/enable-javascript-interop.md).
+
 ## Action catalog
 
 Mark user-facing actions with `[CatalogAction]` to enumerate and execute them at runtime, for example from a Ctrl-K command palette or as agent tools:

@@ -339,3 +339,7 @@ task-work.progress.log
 
 # Per-user tool state (XDG .local/, e.g. gh device-id; local; not product)
 .local/
+
+# Routine journals, mission briefs, and progress logs beside kitchens (local; not product)
+*.next.md
+*.progress.log

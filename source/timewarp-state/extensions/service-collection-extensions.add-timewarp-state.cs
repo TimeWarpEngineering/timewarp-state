@@ -32,6 +32,7 @@ public static partial class ServiceCollectionExtensions
     TimeWarpStateOptionsValidator.Validate(timeWarpStateOptions);
 
     serviceCollection.TryAddScoped<JsonRequestHandler>();
+    JavaScriptDispatchRegistry.GetOrAdd(serviceCollection);
     serviceCollection.TryAddScoped<Subscriptions>();
     serviceCollection.TryAddScoped<RenderSubscriptionContext>();
     serviceCollection.TryAddScoped<IStore, Store>();

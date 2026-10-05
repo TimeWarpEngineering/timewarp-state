@@ -11,6 +11,10 @@ public class InvalidRequestTypeException : Exception
   {
     RequestedTypeAssemblyQualifiedName = requestedTypeAssemblyQualifiedName;
   }
+  public InvalidRequestTypeException(string? message, string requestedTypeAssemblyQualifiedName, Exception? innerException) : base(message, innerException)
+  {
+    RequestedTypeAssemblyQualifiedName = requestedTypeAssemblyQualifiedName;
+  }
 
   public override string Message =>
     string.IsNullOrWhiteSpace(RequestedTypeAssemblyQualifiedName) ?

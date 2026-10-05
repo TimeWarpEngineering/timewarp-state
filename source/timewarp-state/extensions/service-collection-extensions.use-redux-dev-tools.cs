@@ -24,6 +24,10 @@ public static partial class ServiceCollectionExtensions
 
     serviceCollection.AddSingleton(reduxDevToolsOptions);
 
+    // DevTools messages (Start, Commit) reach .NET through JsonRequestHandler. They are not
+    // actions, so they are allow-listed here and only when DevTools is enabled.
+    JavaScriptDispatchRegistry.GetOrAdd(serviceCollection).AllowReduxDevToolsRequests();
+
     return timeWarpStateOptions;
   }
 }
