@@ -21,6 +21,7 @@ internal static class EventIds
   public static readonly EventId JsonRequestReceived = new(201, nameof(JsonRequestReceived));
   public static readonly EventId JsonRequestHandled = new(202, nameof(JsonRequestReceived));
   public static readonly EventId JsonRequestOfInvalidType = new(203, nameof(JsonRequestOfInvalidType));
+  public static readonly EventId JsonRequestInvalidPayload = new(204, nameof(JsonRequestInvalidPayload));
   
   // Subscriptions - TimeWarp State Specific
   public static readonly EventId Subscriptions_Initializing = new(300, nameof(Subscriptions_Initializing));

@@ -73,7 +73,8 @@ public class Should_
       NullLogger<JsonRequestHandler>.Instance,
       null!,
       jsRuntime,
-      new TimeWarpStateOptions(new ServiceCollection())
+      new TimeWarpStateOptions(new ServiceCollection()),
+      new JavaScriptDispatchRegistry()
     );
   }
 

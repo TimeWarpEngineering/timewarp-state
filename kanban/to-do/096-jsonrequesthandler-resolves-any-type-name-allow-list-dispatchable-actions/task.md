@@ -48,13 +48,13 @@ known consumer is that template's Counter JS-interop demo (`Spa.Counter.Dispatch
 
 ## Checklist
 
-- [ ] Allow-list mechanism chosen and recorded; arbitrary `Type.GetType` removed
-- [ ] Fail-closed rejections (unknown name, non-action, bad JSON) with warnings
-- [ ] Redux DevTools path preserved, gated
-- [ ] Analyzer (if cheap), docs updated
-- [ ] Tests for allowed and rejected cases
-- [ ] Version bump + release notes (breaking: JS dispatch opt-in)
-- [ ] Preserve the Blazor JS initializer filename `Test.App.Client.lib.module.js`. If
+- [x] Allow-list mechanism chosen and recorded; arbitrary `Type.GetType` removed
+- [x] Fail-closed rejections (unknown name, non-action, bad JSON) with warnings
+- [x] Redux DevTools path preserved, gated
+- [x] Analyzer (if cheap), docs updated — analyzer not needed (see Results)
+- [x] Tests for allowed and rejected cases
+- [x] Version bump + release notes (breaking: JS dispatch opt-in)
+- [x] Preserve the Blazor JS initializer filename `Test.App.Client.lib.module.js`. If
       `ganda repo audit --fix` lowercases it, revert that rename.
 - [ ] Implementation review; host `open-pr`
 
@@ -65,6 +65,55 @@ known consumer is that template's Counter JS-interop demo (`Spa.Counter.Dispatch
 - Consumer follow-up: timewarp-architecture opts in `CounterState+IncrementCounterActionSet+Action`
   after release.
 
+## Results
+
+**Mechanism: explicit registration.** `services.AddJavaScriptDispatch(b => b.Allow<TAction>(alias?))`
+fills a singleton `JavaScriptDispatchRegistry`; `JsonRequestHandler.Handle` resolves names only against it.
+`Type.GetType` is gone.
+
+- Why not an attribute (`[JsDispatchable]`): needs a second generated registry and an analyzer for
+  "attribute on a non-action"; the generic constraint `TAction : class, IAction` gives the same proof at
+  compile time for free. `Allow(Type)` checks `IAction` at startup and throws.
+- Why not `[CatalogAction]`: the catalog is a user-facing palette/agent surface. Reusing it would expose every
+  cataloged action to page script and force a `Description` on purely technical interop actions.
+- **Wire names:** full name, `"FullName, AssemblyName"`, assembly-qualified name (version/culture/token
+  ignored, so the existing `DispatchRequest("…+Action, Asm, Version=…", …)` call shape keeps working), or an
+  optional alias. Generic names match only exactly.
+- **Fail closed:** unknown/not-allowed name, non-action type, bad JSON / `null` JSON, and empty JSON for a type
+  without a public parameterless constructor each log a warning (EventIds 203/204) and throw
+  `InvalidRequestTypeException` (inner exception kept). Nothing is sent.
+- **Redux DevTools:** Start/Commit requests are not actions; `UseReduxDevTools()` allow-lists them through
+  internal `AllowReduxDevToolsRequests()`. Without DevTools enabled they are rejected. (Jump-to-state is not
+  implemented in the JS mapper today, so only Start/Commit exist to gate.)
+- **Analyzer: skipped.** "Attribute on a non-action" cannot happen (no attribute; generic constraint).
+  "Interop enabled but nothing allow-listed" is not decidable at compile time (enablement is a rendered
+  component plus runtime DI); the runtime warning on the first rejected name covers it. No TWS id used.
+- Test app opts in `CounterState.IncrementCountActionSet.Action` in `tests/test-app/test-app-client/program.cs`.
+- Docs: `documentation/topics/enable-javascript-interop.md` (was empty; now in topics toc), readme section,
+  `release12.0.0-beta.8.md` with the breaking change. Version 12.0.0-beta.7 → 12.0.0-beta.8.
+- Follow-up after release (not filed yet, file when this ships): timewarp-architecture opts in
+  `CounterState+IncrementCounterActionSet+Action` via `AddJavaScriptDispatch` and pins 12.0.0-beta.8.
+- Not run: Playwright E2E (`JavaScriptInteropPage`); the E2E suite baseline already fails on origin/dev.
+
+### How to validate
+
+**Smoke:**
+
+```bash
+dotnet test tests/timewarp-state-tests --logger "console;verbosity=normal" 2>&1 | grep JsonRequestHandlerDispatch
+dotnet test tests/client-integration-tests
+ganda repo audit
+```
+
+**Expect:** 10 `JsonRequestHandlerDispatchTests.Should_` cases pass (allowed dispatch by AQN, full name and
+alias; rejects unknown name, empty allow-list, non-action type, `Allow(typeof(NonAction))`, bad JSON,
+empty JSON without parameterless ctor, DevTools request when DevTools is off; DevTools Start dispatches when
+`UseReduxDevTools()` is on). `timewarp-state-tests` 62 passed, client-integration 56 passed. Audit passes with
+one advisory: `Test.App.Client.lib.module.js` kebab-path (intentionally preserved Blazor initializer name).
+Manual: run the test app, open `/JavaScriptInteropPage`, click the button → count +7; remove the
+`AddJavaScriptDispatch` line → click logs a "not allowed" warning and the count does not change.
+
 ## Session
 
 - Created: 2026-10-05 (cockpit, from timewarp-architecture 275 research)
+- 2026-10-05 implement oracle: allow-list via AddJavaScriptDispatch, tests, docs, beta.8 bump
