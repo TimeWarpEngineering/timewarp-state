@@ -162,7 +162,7 @@ static class App
 
   static async Task EnsureBrowsersInstalled(string testProjectDir)
 {
-    var playwrightPath = $"{testProjectDir}/bin/Debug/net10.0/playwright.ps1";
+    var playwrightPath = $"{testProjectDir}/bin/Debug/net11.0/playwright.ps1";
     if (File.Exists(playwrightPath))
     {
         WriteLine("Installing Playwright Chromium browser...");

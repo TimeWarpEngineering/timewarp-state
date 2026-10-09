@@ -32,10 +32,10 @@ references:
     resources:
       - Official Repository: https://github.com/TimeWarpEngineering/timewarp-mediator
         
-  - name: AnyClone NuGet Library
-    relationship: Used as the default cloning ability if ICloneable has not been implemented.
+  - name: TimeWarp.Features.Cloning (in TimeWarp.State)
+    relationship: Default state cloning when ICloneable is not implemented. Replaced AnyClone/TypeSupport in the .NET 11 upgrade (task 095) because TypeSupport used SemaphoreSlim.Wait, which throws on single-threaded browser WASM in .NET 11.
     resources:
-      - Official Repository: https://github.com/replaysMike/AnyClone
+      - Source: source/timewarp-state/features/cloning/deep-cloner.cs
 
   - name: YAML
     relationship: Used in .yaml and .yml files

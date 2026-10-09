@@ -25,7 +25,7 @@ builder.Services.AddScoped<IPersistenceService, PersistenceService>();
 [assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]
 ```
 
-`PersistentStatePostProcessor` is opt-in. Blazored is how the host selects session storage versus local storage. `PersistenceService` depends on both services. On .NET 10, alias `PersistentStateAttribute` to `TimeWarp.Features.Persistence.PersistentStateAttribute` so it does not collide with `Microsoft.AspNetCore.Components.PersistentStateAttribute`.
+`PersistentStatePostProcessor` is opt-in. Blazored is how the host selects session storage versus local storage. `PersistenceService` depends on both services. On .NET 10 and .NET 11, alias `PersistentStateAttribute` to `TimeWarp.Features.Persistence.PersistentStateAttribute` so it does not collide with `Microsoft.AspNetCore.Components.PersistentStateAttribute`.
 
 ```csharp
 [PersistentState(PersistentStateMethod.LocalStorage)]

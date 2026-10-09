@@ -14,7 +14,8 @@ namespace TimeWarp.Features.StateTransactions;
 ///   Represents a pipeline behavior in TimeWarp.State that clones the current state before processing a request.
 ///   This behavior ensures that the state can be reverted to its original form in case of an error during the request handling.
 ///   The cloning process is contingent upon the state implementing <see cref="ICloneable"/>, allowing for a deep copy.
-///   If the state does not implement <see cref="ICloneable"/>, it falls back to a custom clone method. This behavior is
+///   If the state does not implement <see cref="ICloneable"/>, it falls back to TimeWarp's non-blocking deep clone
+///   (<see cref="TimeWarp.Features.Cloning.CloneExtensions"/>), which is safe on single-threaded browser WebAssembly. This behavior is
 ///   critical for maintaining application consistency and enables undo functionality.
 /// </summary>
 /// <remarks>
@@ -75,7 +76,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
       (IState)cloneable.Clone() :
       originalState.Clone
       (
-        (ex, path, _, _) =>
+        (ex, path) =>
         {
           Logger.LogWarning(message: "Cloning error: {path} {Message}", path, ex.Message);
         }

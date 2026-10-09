@@ -15,7 +15,8 @@ global using System.Collections.Generic;
 global using System.Xml.Linq;
 
 global using TimeWarp.Nuru;
-global using static TimeWarp.Nuru.Unit;
+global using TimeWarp.Mediator;
+global using static TimeWarp.Mediator.Unit;
 global using TimeWarp.Amuru;
 global using TimeWarp.Terminal;
 global using DevCli;

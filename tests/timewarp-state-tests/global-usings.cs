@@ -13,3 +13,4 @@ global using TimeWarp.Features.JavaScriptInterop;
 global using TimeWarp.Features.StateTransactions;
 global using TimeWarp.Features.RenderSubscriptions;
 global using System.Runtime.CompilerServices;
+global using TimeWarp.Features.Cloning;

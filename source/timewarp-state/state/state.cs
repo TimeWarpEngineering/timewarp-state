@@ -24,7 +24,7 @@ where TState : State<TState>
 
   #region JsonIgnore
 
-  // JsonIgnore is used to prevent serialization of the property by both AnyClone and ReduxDevTools 
+  // JsonIgnore is used to prevent serialization of the property by both the state deep clone and ReduxDevTools
 
   [JsonIgnore]
   public ISender<ClientPipeline> Sender { get; set; } = null!;
@@ -33,7 +33,7 @@ where TState : State<TState>
 
   #region IgnoreDataMember
 
-  // IgnoreDataMember is used to prevent serialization of properties by AnyClone
+  // IgnoreDataMember keeps properties out of the state deep clone (TimeWarp.Features.Cloning)
   // They change on every instance creation and are not needed for cloning
 
   [IgnoreDataMember]

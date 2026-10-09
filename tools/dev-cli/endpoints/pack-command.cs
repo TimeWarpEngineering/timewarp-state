@@ -23,7 +23,7 @@ internal sealed class PackCommand : ICommand<Unit>
       PackableProjectService = packableProjectService;
     }
 
-    public async ValueTask<Unit> Handle(PackCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(PackCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)
@@ -71,7 +71,12 @@ internal sealed class PackCommand : ICommand<Unit>
             "pack",
             project.ProjectPath,
             "--configuration", "Release",
-            "--output", artifactsDir)
+            "--output", artifactsDir,
+            // source/Directory.Build.props sets GeneratePackageOnBuild=true. Under the .NET 11 SDK an
+            // explicit `dotnet pack` of such a project skips Build and silently omits the Razor class
+            // library's staticwebassets/ files (scoped CSS bundle, wwwroot JS) from the nupkg.
+            // Packing with GeneratePackageOnBuild=false makes Pack depend on Build so they are included.
+            "-p:GeneratePackageOnBuild=false")
           .WithWorkingDirectory(repoRoot)
           .WithNoValidation()
           .RunAsync(ct);

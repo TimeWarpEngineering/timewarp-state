@@ -8,7 +8,7 @@
   /// <summary>
   /// The title for the page.
   /// </summary>
-  public const string Title = "AnyClone Test Page";
+  public const string Title = "Deep Clone Test Page";
 
   /// <summary>
   /// The route for the page.
@@ -48,17 +48,17 @@
 @RenderModeDisplay
 <!-- Arrange -->
 <!-- Test description -->
-<p>Test ability of Any Cone to clone various Types.</p>
+<p>Test ability of TimeWarp.Features.Cloning to clone various Types (runs in Server and browser WebAssembly).</p>
 
 <!-- Values to validate -->
 <ul>
   <li>
-    <strong>TestResult:</strong>@TestResult
+    <strong>TestResult:</strong><span data-qa="clone-test-result">@TestResult</span>
   </li>
 </ul>
 
 <!-- Actions to take -->
-<button @onclick="TestClone">Run</button>
+<button data-qa="run-clone-test" @onclick="TestClone">Run</button>
 
 <hr/>
 <!-- ACT -->

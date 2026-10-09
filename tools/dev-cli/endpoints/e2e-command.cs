@@ -21,7 +21,7 @@ internal sealed class E2eCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async ValueTask<Unit> Handle(E2eCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(E2eCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)

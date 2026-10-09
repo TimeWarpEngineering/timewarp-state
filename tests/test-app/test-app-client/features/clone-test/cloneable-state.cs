@@ -12,7 +12,7 @@ public sealed partial class CloneableState : State<CloneableState>, ICloneable
   /// <summary>
   /// 
   /// </summary>
-  /// <remarks>We are trying to prove ICloneable is used when available instead of AnyClone.</remarks>
+  /// <remarks>We are trying to prove ICloneable is used when available instead of the reflection deep clone.</remarks>
   /// <returns>New CloneableState object where Count is always 42</returns>
   public object Clone() => new CloneableState { Count = 42 };
 }

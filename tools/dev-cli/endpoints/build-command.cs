@@ -34,7 +34,7 @@ internal sealed class BuildCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async ValueTask<Unit> Handle(BuildCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(BuildCommand command, CancellationToken ct)
     {
       Command = command;
       Ct = ct;

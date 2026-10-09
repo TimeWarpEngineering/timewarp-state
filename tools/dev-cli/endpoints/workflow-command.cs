@@ -49,7 +49,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       PackableProjectService = packableProjectService;
     }
 
-    public async ValueTask<Unit> Handle(WorkflowCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(WorkflowCommand command, CancellationToken ct)
     {
       Ct = ct;
       ApiKey = command.ApiKey;
@@ -358,7 +358,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       Terminal.WriteLine("===============================================================================");
     }
 
-    private async Task<bool> RunStepAsync(string stepName, ValueTask<Unit> step)
+    private async Task<bool> RunStepAsync(string stepName, Task<Unit> step)
     {
       await step;
 
