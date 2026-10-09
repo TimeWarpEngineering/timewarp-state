@@ -188,6 +188,23 @@ public class Should_Compile_Supported_Shape
         [GenerateClone] public class A_B : Common { }
       }
       """,
+    ["CloneableNonSealedBase"] =
+      """
+      using TimeWarp.State;
+      public class Cl : System.ICloneable { public int V { get; set; } public object Clone() => new Cl { V = V }; }
+      public class ClD : Cl { public int W { get; set; } }
+      [GenerateClone] public class CloneableHolder { public Cl? C { get; set; } }
+      """,
+    ["PrivateCloneableSubclass"] =
+      """
+      using TimeWarp.State;
+      public class Base { public int V { get; set; } }
+      [GenerateClone] public class Holder
+      {
+        public Base? B { get; set; }
+        private sealed class Hidden : Base, System.ICloneable { public object Clone() => new Hidden { V = V }; }
+      }
+      """,
     ["DependencyConstructorState"] =
       """
       using TimeWarp.State;
@@ -220,6 +237,8 @@ public class Should_Compile_Supported_Shape
   [Input("Records")]
   [Input("NameCollision")]
   [Input("DependencyConstructorState")]
+  [Input("CloneableNonSealedBase")]
+  [Input("PrivateCloneableSubclass")]
   public static void Given_Shape(string shape)
   {
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Shapes[shape]);
@@ -246,6 +265,17 @@ public class Should_Compile_Supported_Shape
     source.ShouldMatch(@"new\(default\((decimal|string)\)!?\)");
     source.ShouldContain("(int)(3)");
     source.ShouldContain("(string)(\"x\")");
+  }
+
+  // ICloneable.Clone() is the type's own dispatch: a subclass that inherits Clone() may get the base type back, so the
+  // result is cast to the declared type and no per-subclass cloner casts it to the subclass.
+  public static void Given_Cloneable_Non_Sealed_Base_Casts_To_Declared_Type()
+  {
+    (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Shapes["CloneableNonSealedBase"]);
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    source.ShouldContain("global::Cl clone = (global::Cl)cloned;");
+    source.ShouldNotContain("(global::ClD)");
+    source.ShouldNotContain("Clone_ClD");
   }
 
   public static void Given_Immutable_Rebuild_Does_Not_Need_Linq()
@@ -297,6 +327,55 @@ public class Should_Report_TWSG002_At_Source
       public class Shape { }
       public class Blob : Shape { public object Payload { get; set; } = new(); }
       [GenerateClone] public class Holder { public Shape? S { get; set; } }
+      """,
+    ["PrivateNestedSubclass"] =
+      """
+      using TimeWarp.State;
+      public class Base { public int V { get; set; } }
+      [GenerateClone] public class Holder
+      {
+        public Base? B { get; set; }
+        private sealed class PrivBase : Base { public int W { get; set; } }
+      }
+      """,
+    ["ProtectedNestedSubclass"] =
+      """
+      using TimeWarp.State;
+      public class Base { public int V { get; set; } }
+      public class Outer { protected class ProtBase : Base { } }
+      [GenerateClone] public class Holder { public Base? B { get; set; } }
+      """,
+    ["PrivateImplementationBesidePublicOne"] =
+      """
+      using TimeWarp.State;
+      public interface IItem { int V { get; } }
+      public sealed class PublicItem : IItem { public int V { get; set; } }
+      public class Outer { private sealed class PrivItem : IItem { public int V { get; set; } } }
+      [GenerateClone] public class Holder { public IItem? I { get; set; } }
+      """,
+    ["GenericSubclass"] =
+      """
+      using TimeWarp.State;
+      public class Base { public int V { get; set; } }
+      public class Gen<T> : Base { public T? Value { get; set; } }
+      [GenerateClone] public class Holder { public Base? B { get; set; } }
+      """,
+    ["FileLocalSubclass"] =
+      """
+      using TimeWarp.State;
+      public class Base { public int V { get; set; } }
+      file sealed class Local : Base { }
+      [GenerateClone] public class Holder { public Base? B { get; set; } }
+      """,
+    ["FileLocalGenerateClone"] =
+      """
+      using TimeWarp.State;
+      [GenerateClone] file class Holder { public int V { get; set; } }
+      """,
+    ["FileLocalState"] =
+      """
+      using TimeWarp.State;
+      file sealed class LocalState : State<LocalState> { public override void Initialize() { } }
       """
   };
 
@@ -307,12 +386,33 @@ public class Should_Report_TWSG002_At_Source
   [Input("BclClassWithPrivateState")]
   [Input("InterfaceWithoutImplementation")]
   [Input("UncloneableDerivedType")]
+  [Input("PrivateNestedSubclass")]
+  [Input("ProtectedNestedSubclass")]
+  [Input("PrivateImplementationBesidePublicOne")]
+  [Input("GenericSubclass")]
+  [Input("FileLocalSubclass")]
+  [Input("FileLocalGenerateClone")]
+  [Input("FileLocalState")]
   public static void Given_Shape(string shape)
   {
-    (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Shapes[shape], allowUnsafe: true);
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Shapes[shape], allowUnsafe: true);
     List<Diagnostic> errors = runResult.Diagnostics.Where(diagnostic => diagnostic.Id == StateCloneSourceGenerator.DiagnosticId).ToList();
     errors.ShouldNotBeEmpty();
     errors.ShouldAllBe(diagnostic => diagnostic.Location.IsInSource);
+    // The generated file must not add compiler errors (for example CS0400 for a file-local type) on top of TWSG002.
+    outputCompilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && diagnostic.Location.SourceTree?.FilePath.EndsWith(".g.cs", StringComparison.Ordinal) == true)
+      .Select(diagnostic => diagnostic.ToString())
+      .ShouldBeEmpty();
+  }
+
+  public static void Given_Hidden_Subtype_Names_It_At_The_Member()
+  {
+    (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Shapes["PrivateNestedSubclass"]);
+    Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
+    error.Id.ShouldBe(StateCloneSourceGenerator.DiagnosticId);
+    error.GetMessage().ShouldContain("member 'B'");
+    error.GetMessage().ShouldContain("subtype 'Holder.PrivBase'");
   }
 
   public static void Given_Nested_Failure_Reports_Once_At_Member_And_Names_Root()
@@ -440,5 +540,83 @@ public class Should_Check_Metadata_Types
     Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
     error.GetMessage().ShouldContain("reference assembly");
     error.GetMessage().ShouldContain("ProduceReferenceAssembly=false");
+  }
+
+  public static void Given_Framework_Reference_Assembly_Omits_ProduceReferenceAssembly_Hint()
+  {
+    const string BaseSource =
+      """
+      namespace Foreign;
+      public sealed class Dto
+      {
+        private readonly System.Collections.Generic.List<int> Items = new();
+        public int Count => Items.Count;
+      }
+      """;
+
+    const string DerivedSource =
+      """
+      using TimeWarp.State;
+      [GenerateClone] public class Holder { public Foreign.Dto? Dto { get; set; } }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation _) =
+      StateCloneGeneratorTestDriver.RunWithMetadataBase(BaseSource, DerivedSource, referenceAssembly: true, baseAssemblyName: "System.Foreign");
+    Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
+    error.GetMessage().ShouldContain("reference assembly 'System.Foreign'");
+    error.GetMessage().ShouldNotContain("ProduceReferenceAssembly");
+  }
+
+  private const string HierarchySource =
+    """
+    namespace Foreign;
+    public abstract class Shape { public string Name { get; set; } = ""; }
+    public class Circle : Shape { public double Radius { get; set; } }
+    public class Animal { public string Name { get; set; } = ""; }
+    public class Dog : Animal { public System.Collections.Generic.List<string> Tricks { get; set; } = new(); }
+    """;
+
+  private const string HierarchyHolder =
+    """
+    using TimeWarp.State;
+    [GenerateClone] public class Holder { public Foreign.Shape? S { get; set; } public Foreign.Animal? A { get; set; } }
+    """;
+
+  [Input(false)]
+  [Input(true)]
+  public static void Given_Metadata_Hierarchy_Dispatches_To_Its_Subtypes(bool referenceAssembly)
+  {
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) =
+      StateCloneGeneratorTestDriver.RunWithMetadataBase(HierarchySource, HierarchyHolder, referenceAssembly);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.ToString()).ShouldBeEmpty();
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    source.ShouldContain("case global::Foreign.Circle ");
+    source.ShouldContain("case global::Foreign.Dog ");
+    outputCompilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+      .Select(diagnostic => diagnostic.ToString())
+      .ShouldBeEmpty();
+  }
+
+  public static void Given_Metadata_Base_With_Internal_Subtype()
+  {
+    const string BaseSource =
+      """
+      namespace Foreign;
+      public class Animal { public string Name { get; set; } = ""; }
+      internal sealed class Cat : Animal { }
+      """;
+
+    const string DerivedSource =
+      """
+      using TimeWarp.State;
+      [GenerateClone] public class Holder { public Foreign.Animal? A { get; set; } }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation _) =
+      StateCloneGeneratorTestDriver.RunWithMetadataBase(BaseSource, DerivedSource);
+    Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
+    error.Location.IsInSource.ShouldBeTrue();
+    error.GetMessage().ShouldContain("subtype 'Foreign.Cat'");
   }
 }

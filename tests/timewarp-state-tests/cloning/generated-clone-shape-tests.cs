@@ -1,7 +1,8 @@
 #region Purpose
 // Runs the generated clone for member shapes the first generator round got wrong: generic declaring types, tuples,
 // KeyValuePair, Nullable structs, BCL values behind collection interfaces, polymorphic members, ImmutableStack order,
-// sorted and linked collections, StringBuilder, overloaded and dependency constructors, and required members.
+// sorted and linked collections, StringBuilder, overloaded and dependency constructors, required members, and
+// ICloneable members and subtypes.
 #endregion
 
 #region Design
@@ -114,6 +115,24 @@ public class Should_
     clone.All[0].ShouldBeOfType<Shape>();
     clone.All[1].ShouldBeOfType<Circle>().Radius.ShouldBe(3);
     clone.All[2].ShouldBeOfType<Ring>().Inner.ShouldBe(2);
+  }
+
+  public void Cast_Inherited_ICloneable_Result_To_The_Declared_Type()
+  {
+    var original = new CloneableHolder
+    {
+      Cloneable = new CloneableDerived { V = 1, W = 2 },
+      Base = new CloneableDerived { V = 3, W = 4 },
+      Hidden = CloneableHolder.MakeHidden(5)
+    };
+
+    CloneableHolder clone = original.Clone()!;
+
+    // CloneableBase.Clone() returns a CloneableBase even for the subclass; that is the user's Clone(), not a cast error.
+    clone.Cloneable.ShouldBeOfType<CloneableBase>().V.ShouldBe(101);
+    clone.Base.ShouldBeOfType<CloneableBase>().V.ShouldBe(103);
+    clone.Hidden.ShouldNotBeNull().V.ShouldBe(5);
+    clone.Hidden.ShouldNotBeSameAs(original.Hidden);
   }
 
   public void Keep_ImmutableStack_Order()
@@ -271,6 +290,41 @@ public class Should_
   {
     public Shape? Single { get; set; }
     public List<Shape> All { get; set; } = [];
+  }
+
+  [NotTest]
+  public class PlainBase
+  {
+    public int V { get; set; }
+  }
+
+  [NotTest]
+  public class CloneableBase : PlainBase, ICloneable
+  {
+    public object Clone() => new CloneableBase { V = V + 100 };
+  }
+
+  [NotTest]
+  public sealed class CloneableDerived : CloneableBase
+  {
+    public int W { get; set; }
+  }
+
+  // A private subtype is cloned through its ICloneable case; without ICloneable it would be TWSG002.
+  [GenerateClone]
+  [NotTest]
+  public sealed class CloneableHolder
+  {
+    public CloneableBase? Cloneable { get; set; }
+    public PlainBase? Base { get; set; }
+    public PlainBase? Hidden { get; set; }
+
+    public static PlainBase MakeHidden(int value) => new HiddenPlain { V = value };
+
+    private sealed class HiddenPlain : PlainBase, ICloneable
+    {
+      public object Clone() => new HiddenPlain { V = V };
+    }
   }
 
   [GenerateClone]

@@ -43,7 +43,13 @@ A member typed as a collection interface (`IEnumerable<T>`, `ICollection<T>`, `I
 
 ## Polymorphic members
 
-A member whose type is a non-sealed class, an abstract class, or an interface is cloned by its runtime type. The generated switch covers every concrete type in the compilation that derives from or implements the member type, deepest type first. A value whose exact type is the member type uses that type's own cloner. A runtime type the generator never saw throws `InvalidOperationException` unless it implements `ICloneable`. That only happens for a subclass declared in another assembly (or a generic subclass). A subclass of `List<T>` or another BCL collection from elsewhere is copied into the base collection type instead.
+A member whose type is a non-sealed class, an abstract class, or an interface is cloned by its runtime type. The generated switch covers every known concrete type that derives from or implements the member type, deepest type first. Known types are the types in the compilation and, when the member type is declared in a referenced (non-framework) assembly such as a contracts project, the types in that assembly and in the other referenced assemblies that reference it. Each of those passes the same checks as any type from another assembly (see below). A value whose exact type is the member type uses that type's own cloner.
+
+A known subtype that generated code cannot name is TWSG002 unless it implements `ICloneable`: a private or protected nested type, a `file` type, a type internal to another assembly, or a generic subclass. The generator cannot tell whether such a value ever reaches the member, so it fails the build rather than throw later.
+
+A type that implements `ICloneable` is cloned by its own `Clone()`, and the result is cast to the member's declared type. A subclass that inherits `Clone()` from its base therefore gets whatever the base returns.
+
+Known limitation: a runtime type declared in an assembly the project does not reference at build time (loaded dynamically, or from a project that references the contracts assembly but is not referenced here) throws `InvalidOperationException` when cloned, unless it implements `ICloneable`. The generator never saw it, so it cannot be a build error. The same applies to a subclass declared in a framework assembly (`System.*`, `Microsoft.*`), which the generator does not scan. A subclass of `List<T>` or another BCL collection that the generator does not know is copied into the base collection type instead.
 
 ## Types from other assemblies
 
@@ -59,9 +65,10 @@ Other types from other assemblies are TWSG002. Set `<ProduceReferenceAssembly>fa
 
 `TWSG002` (error) is reported once, at the source member that reaches something the generator cannot clone. The message names the type, the member, the reason, and the state it was reached from. Causes:
 
-- a member typed as `object`, or as an interface or abstract class with no implementation in the compilation
+- a member typed as `object`, or as an interface or abstract class with no implementation the generator can see
 - a pointer or a ref struct
-- an open generic state, or a state or member type that generated code cannot name (private, or internal to another assembly)
+- an open generic state, or a state or member type that generated code cannot name (private, protected, `file`, or internal to another assembly)
+- a known subtype of a polymorphic member that generated code cannot name, or a generic subclass (see above)
 - a type from another assembly whose fields cannot all be seen (see above)
 - a subclass of `ReadOnlyCollection<T>` or `ReadOnlyDictionary<TKey,TValue>`
 - a derived type in the compilation that cannot be cloned itself

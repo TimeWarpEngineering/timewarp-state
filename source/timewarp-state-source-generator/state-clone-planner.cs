@@ -8,11 +8,16 @@
 // whose type parameters mirror the definition (the .NET 9+ generic UnsafeAccessor rule), so fields typed T resolve.
 // Collections are rebuilt through their public API. Collection interfaces switch on the BCL and compilation types
 // assignable to them and otherwise materialize into List<T>, HashSet<T> or Dictionary<TKey,TValue>.
-// A non-sealed class dispatches on the runtime type: derived types in the compilation first, the exact cloner when
-// the runtime type matches, then ICloneable, else a throw (a subtype the generator never saw).
+// A non-sealed class dispatches on the runtime type: known derived types first, the exact cloner when the runtime
+// type matches, then ICloneable, else a throw. Known derived types come from this compilation and, for a base declared
+// in a non-framework referenced assembly, from that assembly and the referenced assemblies that reference it. A known
+// subtype generated code cannot name (private, protected, file-local, another assembly's internal, or a generic
+// definition) is TWSG002 unless it implements ICloneable, so the throw is left for subtypes the generator never saw.
+// An ICloneable type is cloned by its own Clone(), cast to the declared type, and is never wrapped in that dispatch.
 // Types from other assemblies are cloned only when their full field list is known: TimeWarp.State's own types, or an
 // implementation assembly inspected with MetadataImportOptions.All. Reference assemblies hide private fields, so
-// their non-collection classes and managed structs are TWSG002.
+// their types are accepted only when every instance property is an auto-property and every instance method is a
+// constructor, an accessor or compiler-generated (records); other classes and managed structs are TWSG002.
 // Cycles use a method name assigned before the body exists. Method names carry a stable hash so they never collide.
 // Diagnostics are reported once, at the source-located member that cannot be cloned, for types reachable from a root.
 #endregion
@@ -34,6 +39,7 @@ internal sealed class StateClonePlanner
   private readonly HashSet<string> UsedNames = new(StringComparer.Ordinal);
   private readonly HashSet<string> GenericCloneNames = new(StringComparer.Ordinal);
   private readonly List<INamedTypeSymbol> SourceTypes = [];
+  private readonly Dictionary<IAssemblySymbol, List<INamedTypeSymbol>> AssemblyTypes = new(SymbolEqualityComparer.Default);
   private readonly List<Slot> Roots = [];
   private readonly INamedTypeSymbol? StateType;
   private Compilation? FullCompilation;
@@ -51,7 +57,7 @@ internal sealed class StateClonePlanner
       return null;
     }
 
-    Walk(Compilation.Assembly.GlobalNamespace);
+    CollectTypes(Compilation.Assembly.GlobalNamespace, SourceTypes);
     foreach (INamedTypeSymbol type in SourceTypes)
     {
       Consider(type);
@@ -66,27 +72,27 @@ internal sealed class StateClonePlanner
 
   #region Roots
 
-  private void Walk(INamespaceSymbol namespaceSymbol)
+  private static void CollectTypes(INamespaceSymbol namespaceSymbol, List<INamedTypeSymbol> types)
   {
     foreach (INamespaceSymbol child in namespaceSymbol.GetNamespaceMembers())
     {
-      Walk(child);
+      CollectTypes(child, types);
     }
 
     foreach (INamedTypeSymbol type in namespaceSymbol.GetTypeMembers())
     {
-      WalkType(type);
+      CollectNestedTypes(type, types);
     }
   }
 
-  private void WalkType(INamedTypeSymbol type)
+  private static void CollectNestedTypes(INamedTypeSymbol type, List<INamedTypeSymbol> types)
   {
     foreach (INamedTypeSymbol nested in type.GetTypeMembers())
     {
-      WalkType(nested);
+      CollectNestedTypes(nested, types);
     }
 
-    SourceTypes.Add(type);
+    types.Add(type);
   }
 
   // Only generic definitions marked [GenerateClone] need closed constructions, so only their names are bound.
@@ -202,7 +208,7 @@ internal sealed class StateClonePlanner
 
     Slot slot = GetOrCreate(type);
     Classify(slot, type);
-    if (slot.Kind == SlotKind.Clone && !slot.IsDispatch && type is INamedTypeSymbol named)
+    if (slot.Kind == SlotKind.Clone && !slot.IsDispatch && !slot.IsCloneable && type is INamedTypeSymbol named)
     {
       WrapForRuntimeType(slot, named);
     }
@@ -344,8 +350,9 @@ internal sealed class StateClonePlanner
   }
 
   // A non-sealed class can hold a subtype at run time. The old reflection cloner cloned by runtime type, so the
-  // generated cloner dispatches: derived types in this compilation, then the exact cloner. A known BCL collection
-  // keeps materializing unknown subclasses into itself; any other unknown subtype throws.
+  // generated cloner dispatches: known derived types, then the exact cloner. A known BCL collection keeps
+  // materializing unknown subclasses into itself; any other known subtype the switch cannot name is TWSG002, and a
+  // subtype the generator never saw throws.
   private void WrapForRuntimeType(Slot slot, INamedTypeSymbol type)
   {
     if (type.TypeKind != TypeKind.Class || type.IsSealed || type.IsAbstract || type.IsStatic)
@@ -353,8 +360,14 @@ internal sealed class StateClonePlanner
       return;
     }
 
-    List<INamedTypeSymbol> derived = FindDerived(type);
     bool knownCollection = MatchConcrete(type) != CollectionKind.None;
+    if (!knownCollection && FindHiddenSubtype(type, implementations: false) is { } hidden)
+    {
+      Fail(slot, HiddenSubtypeDetail(hidden), LocationOf(hidden));
+      return;
+    }
+
+    List<INamedTypeSymbol> derived = FindDerived(type);
     if (knownCollection && derived.Count == 0)
     {
       return;
@@ -448,9 +461,12 @@ internal sealed class StateClonePlanner
     return $"new {element.ToDisplayString(Format)}[{lengths}]{suffix}";
   }
 
+  // ICloneable.Clone() is the type's own virtual dispatch, so the slot is never wrapped for the runtime type, and the
+  // result is cast to the declared type: Clone() may return the base type for a subclass that does not override it.
   private void ClassifyCloneable(Slot slot, INamedTypeSymbol type)
   {
     slot.Kind = SlotKind.Clone;
+    slot.IsCloneable = true;
     string name = type.ToDisplayString(Format);
     if (type.IsValueType)
     {
@@ -1052,10 +1068,16 @@ internal sealed class StateClonePlanner
 
   private void ClassifyInterface(Slot slot, INamedTypeSymbol type)
   {
+    if (FindHiddenSubtype(type, implementations: true) is { } hidden)
+    {
+      Fail(slot, HiddenSubtypeDetail(hidden), LocationOf(hidden));
+      return;
+    }
+
     List<INamedTypeSymbol> implementations = FindImplementations(type);
     if (implementations.Count == 0 && !AssignableTo(type, "System.ICloneable"))
     {
-      Fail(slot, $"interface or abstract type '{type.ToDisplayString()}' has no cloneable implementation in this compilation", LocationOf(type));
+      Fail(slot, $"interface or abstract type '{type.ToDisplayString()}' has no implementation the generator can see", LocationOf(type));
       return;
     }
 
@@ -1544,8 +1566,9 @@ internal sealed class StateClonePlanner
 
   // A type from another assembly is cloned field by field only when its full field list is known. TimeWarp.State's
   // own bases are trusted. An implementation assembly is re-imported with private members to check for hidden state.
-  // A reference assembly strips private class fields, and only keeps placeholders for struct fields, so its
-  // non-collection classes and managed structs cannot be cloned without silently dropping state.
+  // A reference assembly strips private class fields, and only keeps placeholders for struct fields, so its classes
+  // and managed structs are accepted only when nothing visible could hold hidden state (ReferenceAssemblyProblem:
+  // auto-properties, constructors, accessors and compiler-generated record members); the rest are TWSG002.
   private string? MetadataProblem(INamedTypeSymbol type)
   {
     INamedTypeSymbol definition = type.OriginalDefinition;
@@ -1657,8 +1680,11 @@ internal sealed class StateClonePlanner
       return null;
     }
 
-    return $"'{definition.ToDisplayString()}' comes from reference assembly '{assembly.Name}', which hides private fields, " +
-      $"and {offending} (build '{assembly.Name}' with ProduceReferenceAssembly=false so the generator can inspect its fields)";
+    string problem = $"'{definition.ToDisplayString()}' comes from reference assembly '{assembly.Name}', which hides private fields, " +
+      $"and {offending}";
+    return IsFrameworkAssembly(assembly)
+      ? problem
+      : problem + $" (build '{assembly.Name}' with ProduceReferenceAssembly=false so the generator can inspect its fields)";
   }
 
   private INamedTypeSymbol? FullView(INamedTypeSymbol definition)
@@ -1697,6 +1723,12 @@ internal sealed class StateClonePlanner
   {
     for (ISymbol? current = symbol; current is not null and not INamespaceSymbol; current = current.ContainingSymbol)
     {
+      // A file-local type is visible only in its own file, never in the generated one.
+      if (current is INamedTypeSymbol { IsFileLocal: true })
+      {
+        return false;
+      }
+
       if (current.DeclaredAccessibility is Accessibility.Private or Accessibility.Protected)
       {
         return false;
@@ -1804,27 +1836,94 @@ internal sealed class StateClonePlanner
     return false;
   }
 
-  // Concrete source types (classes and structs) that implement an interface or derive from an abstract class.
-  private List<INamedTypeSymbol> FindImplementations(INamedTypeSymbol target) =>
-    SourceTypes
-      .Where(type => type.TypeKind is TypeKind.Class or TypeKind.Struct
-        && !type.IsAbstract
-        && !(type.IsGenericType && type.IsDefinition)
-        && !SymbolEqualityComparer.Default.Equals(type, target)
-        && CanName(type)
-        && (type.AllInterfaces.Any(implemented => SymbolEqualityComparer.Default.Equals(implemented, target)) || Inherits(type, target)))
+  // Concrete known types (classes and structs) that implement an interface or derive from an abstract class.
+  private List<INamedTypeSymbol> FindImplementations(INamedTypeSymbol target) => FindSubtypes(target, implementations: true);
+
+  private List<INamedTypeSymbol> FindDerived(INamedTypeSymbol target) => FindSubtypes(target, implementations: false);
+
+  private List<INamedTypeSymbol> FindSubtypes(INamedTypeSymbol target, bool implementations) =>
+    CandidateTypes(target)
+      .Where(type => IsConcreteSubtype(type, target, implementations) && CanCase(type))
       .OrderByDescending(Depth)
       .ToList();
 
-  private List<INamedTypeSymbol> FindDerived(INamedTypeSymbol target) =>
-    SourceTypes
-      .Where(type => type.TypeKind == TypeKind.Class
-        && !type.IsAbstract
-        && !(type.IsGenericType && type.IsDefinition)
-        && CanName(type)
-        && Inherits(type, target))
-      .OrderByDescending(Depth)
-      .ToList();
+  // A known subtype the generated switch cannot name or close would reach the runtime throw, so it fails the build
+  // instead, unless it implements ICloneable (the dispatch's ICloneable case clones it).
+  private INamedTypeSymbol? FindHiddenSubtype(INamedTypeSymbol target, bool implementations) =>
+    CandidateTypes(target)
+      .FirstOrDefault(type => IsConcreteSubtype(type, target, implementations) && !CanCase(type) && !ImplementsICloneable(type));
+
+  private static string HiddenSubtypeDetail(INamedTypeSymbol hidden) =>
+    $"its subtype '{hidden.ToDisplayString()}' is private, protected, file-local, internal to another assembly or generic, " +
+    "so generated code cannot clone it; implement ICloneable on that subtype, or make it accessible and non-generic";
+
+  private bool CanCase(INamedTypeSymbol type) => CanName(type) && !(type.IsGenericType && type.IsDefinition);
+
+  private static bool IsConcreteSubtype(INamedTypeSymbol type, INamedTypeSymbol target, bool implementations)
+  {
+    if (type.IsAbstract || SymbolEqualityComparer.Default.Equals(type, target))
+    {
+      return false;
+    }
+
+    if (!implementations)
+    {
+      return type.TypeKind == TypeKind.Class && Inherits(type, target);
+    }
+
+    return type.TypeKind is TypeKind.Class or TypeKind.Struct
+      && (type.AllInterfaces.Any(implemented => SymbolEqualityComparer.Default.Equals(implemented, target)) || Inherits(type, target));
+  }
+
+  // Source types, plus, for a target declared in a non-framework referenced assembly, the types of that assembly and of
+  // the non-framework referenced assemblies that reference it (a contracts project and its siblings). A subtype in an
+  // assembly this compilation does not reference cannot be seen, and stays a runtime throw.
+  private IEnumerable<INamedTypeSymbol> CandidateTypes(INamedTypeSymbol target)
+  {
+    IAssemblySymbol? declaring = target.OriginalDefinition.ContainingAssembly;
+    if (declaring is null || SymbolEqualityComparer.Default.Equals(declaring, Compilation.Assembly) || IsFrameworkAssembly(declaring))
+    {
+      return SourceTypes;
+    }
+
+    IEnumerable<INamedTypeSymbol> candidates = SourceTypes.Concat(TypesOf(declaring));
+    foreach (IAssemblySymbol referenced in Compilation.SourceModule.ReferencedAssemblySymbols)
+    {
+      if (SymbolEqualityComparer.Default.Equals(referenced, declaring) || IsFrameworkAssembly(referenced))
+      {
+        continue;
+      }
+
+      if (referenced.Modules.Any(module => module.ReferencedAssemblySymbols.Contains(declaring, SymbolEqualityComparer.Default)))
+      {
+        candidates = candidates.Concat(TypesOf(referenced));
+      }
+    }
+
+    return candidates;
+  }
+
+  private List<INamedTypeSymbol> TypesOf(IAssemblySymbol assembly)
+  {
+    if (!AssemblyTypes.TryGetValue(assembly, out List<INamedTypeSymbol>? types))
+    {
+      types = [];
+      CollectTypes(assembly.GlobalNamespace, types);
+      AssemblyTypes.Add(assembly, types);
+    }
+
+    return types;
+  }
+
+  // Framework assemblies (the BCL and Microsoft.* packages): too large to scan for subtypes, and a ProduceReferenceAssembly
+  // hint is not actionable for them.
+  private static bool IsFrameworkAssembly(IAssemblySymbol assembly)
+  {
+    string name = assembly.Name;
+    return name is "mscorlib" or "netstandard" or "System" or "Microsoft"
+      || name.StartsWith("System.", StringComparison.Ordinal)
+      || name.StartsWith("Microsoft.", StringComparison.Ordinal);
+  }
 
   private static bool Inherits(INamedTypeSymbol type, ITypeSymbol target)
   {
@@ -2441,11 +2540,19 @@ internal sealed class StateClonePlanner
       HashSet<string> seen = new(StringComparer.Ordinal);
       List<CaseRequest> ordered = [];
       int typedIndex = 0;
+      bool cloneableCase = !slot.ExactIsFallback;
       foreach (CaseRequest caseRequest in slot.Cases)
       {
         ITypeSymbol type = Normalize(caseRequest.Type);
         if (!Slots.TryGetValue(type, out Slot? target) || target.Kind is not (SlotKind.Clone or SlotKind.Share))
         {
+          continue;
+        }
+
+        // An ICloneable subtype goes to the ICloneable case, which casts its Clone() result to this slot's type.
+        if (target.IsCloneable)
+        {
+          cloneableCase = true;
           continue;
         }
 
@@ -2472,6 +2579,21 @@ internal sealed class StateClonePlanner
           : $"    return {target.MethodName}({caseRequest.Variable}, map);");
       }
 
+      if (cloneableCase)
+      {
+        lines.Add("  case global::System.ICloneable cloneable:");
+        lines.Add("  {");
+        lines.Add("    object? cloned = cloneable.Clone();");
+        lines.Add("    if (cloned is null)");
+        lines.Add("    {");
+        lines.Add("      return null!;");
+        lines.Add("    }");
+        lines.Add($"    {name} typedClone = ({name})cloned;");
+        lines.Add("    map.Add(source, typedClone);");
+        lines.Add("    return typedClone;");
+        lines.Add("  }");
+      }
+
       if (slot.Exact is not null && slot.ExactIsFallback)
       {
         lines.Add("  default:");
@@ -2481,17 +2603,6 @@ internal sealed class StateClonePlanner
         continue;
       }
 
-      lines.Add("  case global::System.ICloneable cloneable:");
-      lines.Add("  {");
-      lines.Add("    object? cloned = cloneable.Clone();");
-      lines.Add("    if (cloned is null)");
-      lines.Add("    {");
-      lines.Add("      return null!;");
-      lines.Add("    }");
-      lines.Add($"    {name} typedClone = ({name})cloned;");
-      lines.Add("    map.Add(source, typedClone);");
-      lines.Add("    return typedClone;");
-      lines.Add("  }");
       lines.Add("  default:");
       if (slot.Fallback is not null)
       {
@@ -2500,7 +2611,8 @@ internal sealed class StateClonePlanner
       else
       {
         string message = $"Cannot clone \" + source.GetType().FullName + \" as {slot.Type.ToDisplayString().Replace("\"", "\\\"")}: " +
-          "the clone source generator did not see that type in this compilation. Implement ICloneable on it.";
+          "the clone source generator did not see that type at build time (it is declared in an assembly this project " +
+          "does not reference, or in a framework assembly). Implement ICloneable on it.";
         lines.Add($"    throw new global::System.InvalidOperationException(\"{message}\");");
       }
 
@@ -2776,6 +2888,7 @@ internal sealed class StateClonePlanner
     public bool IsRoot { get; set; }
     public bool RegisterState { get; set; }
     public bool IsDispatch { get; set; }
+    public bool IsCloneable { get; set; }
     public bool PrimaryFailure { get; set; }
     public bool MemberFailure { get; set; }
     public Slot? Cause { get; set; }

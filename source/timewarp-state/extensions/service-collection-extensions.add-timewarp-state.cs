@@ -72,10 +72,12 @@ public static partial class ServiceCollectionExtensions
   }
 
   // Known trim-unsafe assembly scan, kept until states are registered by generated code (follow-up in task 097 Results).
-  // Blazor and console hosts do not trim application assemblies by default (TrimMode=partial), so the scanned state
-  // types and their constructors survive; a host that trims its own assembly must root its states.
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "State discovery scans the configured application assemblies, which are not trimmed by default. Follow-up: generated state registration.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "State types come from the application assembly scan; their public constructors are kept because application assemblies are not trimmed by default. Follow-up: generated state registration.")]
+  // Trimming does not keep a type because GetTypes() could return it: console PublishTrimmed and PublishAot default to
+  // TrimMode=full, which trims the application assembly. Every concrete state is rooted instead by the generated
+  // StateCloneRegistry module initializer, which references the state type and the constructor its clone calls. A
+  // state whose DI constructor differs from that one may need to be rooted by the host under TrimMode=full.
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Every concrete state type is rooted by the generated StateCloneRegistry registration, so the scan finds it after trimming. Follow-up: generated state registration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "The generated StateCloneRegistry registration roots each state and the constructor its clone calls; a different DI constructor may need rooting under TrimMode=full. Follow-up: generated state registration.")]
   private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
   {
     foreach (Assembly assembly in timeWarpStateOptions.Assemblies)

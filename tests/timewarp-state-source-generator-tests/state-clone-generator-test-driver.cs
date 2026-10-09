@@ -48,7 +48,8 @@ internal static class StateCloneGeneratorTestDriver
   public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) RunWithMetadataBase(
     string baseSource,
     string derivedSource,
-    bool referenceAssembly = false)
+    bool referenceAssembly = false,
+    string baseAssemblyName = "CloneGeneratorBase")
   {
     CSharpParseOptions parseOptions = new(LanguageVersion.Latest);
     IEnumerable<MetadataReference> platform =
@@ -60,7 +61,7 @@ internal static class StateCloneGeneratorTestDriver
 
     CSharpCompilation baseCompilation = CSharpCompilation.Create
     (
-      assemblyName: "CloneGeneratorBase",
+      assemblyName: baseAssemblyName,
       syntaxTrees: [CSharpSyntaxTree.ParseText(baseSource, parseOptions)],
       references: platform,
       options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
