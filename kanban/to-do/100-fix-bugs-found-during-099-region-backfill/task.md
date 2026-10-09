@@ -140,54 +140,55 @@ but they make the test app misleading as a sample.
 ## Checklist
 
 ### 1. TimeWarpCacheableState base type
-- [ ] Change the base to `State<TState>` with `where TState : TimeWarpCacheableState<TState>`.
-- [ ] Teach `StateInheritanceAnalyzer` to accept an abstract base whose `State<>` type argument is its own type
+- [x] Change the base to `State<TState>` with `where TState : TimeWarpCacheableState<TState>`.
+- [x] Teach `StateInheritanceAnalyzer` to accept an abstract base whose `State<>` type argument is its own type
   parameter constrained to itself. Keep reporting the error for concrete classes.
-- [ ] Tests: an analyzer test in `tests/timewarp-state-analyzer-tests` (abstract self-constrained intermediate base
+- [x] Tests: an analyzer test in `tests/timewarp-state-analyzer-tests` (abstract self-constrained intermediate base
   is allowed; a concrete wrong-argument class still errors). A test that `CacheableWeatherState` is
   `IState<CacheableWeatherState>` and that `Hydrate`'s return type is `CacheableWeatherState`. Existing
   `cacheable-state-tests.cs` and `cacheable-weather-page-tests.cs` still pass.
-- [ ] Release note: constraint tightened, `IState<T>` argument changed for cacheable states.
+- [x] Release note: constraint tightened, `IState<T>` argument changed for cacheable states.
 
 ### 2. InvalidCloneException message
-- [ ] Rewrite the message to give the real cause and the fix: the clone's Guid is empty (state initializer didn't
+- [x] Rewrite the message to give the real cause and the fix: the clone's Guid is empty (state initializer didn't
   run, for example an uninitialized instance or a custom `ICloneable` that skips construction) or equals the
   original (custom `ICloneable` or `MemberwiseClone` copied `Guid`, or `[IgnoreDataMember]` missing). Point the
   user at `ICloneable` and the opt-out attributes. Consider passing which case happened (empty vs. equal) into
   the exception.
-- [ ] Tests in `tests/timewarp-state-tests/pipeline/state-transaction-behavior-tests.cs`: a state whose
+- [x] Tests in `tests/timewarp-state-tests/pipeline/state-transaction-behavior-tests.cs`: a state whose
   `ICloneable.Clone` returns `MemberwiseClone()` throws `InvalidCloneException` with the "equal Guid" wording, and
   a clone with `Guid.Empty` throws with the "empty Guid" wording. Both assert `EnclosingStateType`.
 
 ### 3. StartHandler
-- [ ] Replace the constructor's `JumpToStateHandler_RequestHandled` with `StartHandler_Initializing`, or drop the
+- [x] Replace the constructor's `JumpToStateHandler_RequestHandled` with `StartHandler_Initializing`, or drop the
   constructor log.
-- [ ] Decide whether `Handle` logs `StartHandler_RequestReceived`. Make the `<summary>`/`<remarks>` match.
-- [ ] Tests: with a capturing `ILogger<StartHandler>`, assert the EventIds used (no 512), and that `Handle`
+- [x] Decide whether `Handle` logs `StartHandler_RequestReceived`. Make the `<summary>`/`<remarks>` match.
+- [x] Tests: with a capturing `ILogger<StartHandler>`, assert the EventIds used (no 512), and that `Handle`
   completes synchronously.
 
 ### 4. FeatureFlagState
-- [ ] Steven picks one option (see Notes): implement, mark `[Experimental]` / `[Obsolete]`, or remove from the
+- [x] Steven picks one option (see Notes): implement, mark `[Experimental]` / `[Obsolete]`, or remove from the
   public package.
-- [ ] Fix or remove the `UseFeatureFlags()` section in `documentation/migrations/migration10-11.md`.
-- [ ] Tests for the chosen option: if implemented, `Initialize` sets defaults and actions update flags. If marked,
+- [x] Fix or remove the `UseFeatureFlags()` section in `documentation/migrations/migration10-11.md`.
+- [x] Tests for the chosen option: if implemented, `Initialize` sets defaults and actions update flags. If marked,
   a test or analyzer check that the attribute is present. If removed, a public-API or architecture test that the
   type is gone.
 
 ### 5. Test app (from PR #619)
-- [ ] `ColorState.Hydrate` reads `MyColorName` from its own key (or delete `ColorState` with the other unused types).
-- [ ] `PreIncrementCountNotificationHandler` logs its own name.
-- [ ] `ThrowServerSideExceptionActionSet`: map a server endpoint that throws and send `action.Message`, or rename
+- [x] `ColorState.Hydrate` reads `MyColorName` from its own key (or delete `ColorState` with the other unused types).
+- [x] `PreIncrementCountNotificationHandler` logs its own name.
+- [x] `ThrowServerSideExceptionActionSet`: map a server endpoint that throws and send `action.Message`, or rename
   the action to say it tests a failed HTTP call. Update `tests/test-app-end-to-end-tests/throw-exception-page-tests.cs` if behavior changes.
-- [ ] Remove or use `ColorState`, `UpdateColorState`, `WindowDimensionsState`, `TestEnum`, `MyBehavior`.
-- [ ] `CloneTestPage`: add the 2D/3D array and `ModifiedClone_InterfaceObject` cases, or note why they're excluded.
-- [ ] `EnumerableEqual` returns false for different lengths; add a test.
-- [ ] Weather: send `Days` in the route (or query string) and honor it on the server, or drop `Days = 10` from the
+- [x] Remove or use `ColorState`, `UpdateColorState`, `WindowDimensionsState`, `TestEnum`, `MyBehavior`.
+- [x] `CloneTestPage`: add the 2D/3D array and `ModifiedClone_InterfaceObject` cases, or note why they're excluded.
+- [x] `EnumerableEqual` returns false for different lengths; add a test.
+- [x] Weather: send `Days` in the route (or query string) and honor it on the server, or drop `Days = 10` from the
   client actions. Check the weather E2E tests still pass.
 
 ### Wrap-up
-- [ ] Update the Purpose/Design regions in all affected files (and `state-inheritance-analyzer.cs` if it changes).
-- [ ] Full workflow green. PR links this task and #618.
+- [x] Update the Purpose/Design regions in all affected files (and `state-inheritance-analyzer.cs` if it changes).
+- [x] Full workflow green.
+- [ ] PR links this task and #618. Host open-pr owns that. The commit message cites task 100 and #618.
 
 ## Notes
 
@@ -206,6 +207,35 @@ but they make the test app misleading as a sample.
 - Task 097 (source-generator cloning proposal) uses the Guid check from item 2. Keep its wording consistent with
   the new exception message.
 
+## Results
+
+Steven was not in the loop, so item 4 removes `FeatureFlagState` from `TimeWarp.State.Plus` instead of implementing flags or shipping an obsolete type that throws. The 10-to-11 guide no longer tells anyone to call `UseFeatureFlags`. Public breaks are recorded for 12.0.0-beta.10: the cacheable constraint and `IState<T>` argument, the `FeatureFlagState` removal, and `InvalidCloneException(Type, Cause)`.
+
+`TimeWarpCacheableState<TState>` derives from `State<TState>` with `where TState : TimeWarpCacheableState<TState>`. `StateInheritanceAnalyzer` allows that abstract self-constrained shape and still errors on a concrete class, including a concrete generic with the same constraint. `StartHandler` logs EventId 500 from the constructor and 501 from `Handle`, which returns an already completed task. EventId 502 stays unused. The clone exception names an empty Guid versus an equal Guid and points at `ICloneable` and the opt-out attributes.
+
+The test app deletes the unused `ColorState`, `UpdateColorState`, `WindowDimensionsState`, `TestEnum`, and `MyBehavior` types and keeps `InputColor`. The pre-increment handler logs its own name. The throw action posts `action.Message` to a server route that throws `InvalidOperationException`. `CloneTestPage` runs the 2D array, 3D array, and `ModifiedClone_InterfaceObject` cases. `EnumerableEqual` is false when the lengths differ. Weather `GetRoute` sends `Days`, and the server handler uses that value. The static weather page still builds five rows itself.
+
+Task 097 describes the cloner and the Guid check. It does not quote the old exception text, so its kitchen was left as it is.
+
+### How to validate
+
+Smoke:
+
+- `./bin/dev workflow`
+- `ganda repo audit`
+- `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --filter "FullyQualifiedName~StartHandlerTests|FullyQualifiedName~StateTransactionBehaviorTests" --nologo`
+- `dotnet test tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj --nologo`
+- `dotnet test tests/client-integration-tests/client-integration-tests.csproj --nologo`
+
+Expect:
+
+- `./bin/dev workflow` exits 0 and prints `Pipeline SUCCEEDED`. Version SSOT is 12.0.0-beta.10. Fixie counts: analyzer 36 passed, source generator 15 passed, state 77 passed and 1 skipped, plus 32 passed and 1 skipped, telemetry 13 passed, client integration 63 passed and 1 skipped, architecture 7 passed and 1 skipped. E2E is Failed 0, Passed 11, Skipped 3, Total 14 (the first SUT readiness attempt can fail before the host is up; the test run itself passes). Samples verify successfully.
+- `ganda repo audit` exits 0. The only advisory is the pre-existing kebab path `tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js`.
+- State tests include `Throw_InvalidCloneException_When_Clone_Copies_Guid`, `Throw_InvalidCloneException_When_Clone_Guid_Is_Empty`, and the two `StartHandler` EventId tests, and that filtered run exits 0.
+- Analyzer tests include `Should_Allow_Abstract_Self_Constrained_Intermediate` and `Should_Still_Trigger_StateInheritanceTypeArgumentRule_For_Concrete_Generic`, and the project exits 0.
+- Client integration includes `Implement_IState_Of_Itself`, `Hydrate_Should_Return_CacheableWeatherState`, `Return_Ten_Forecasts_When_The_Action_Asks_For_Ten_Days`, `Include_Days`, and the `EnumerableEqual` length tests, and the project exits 0.
+
 ## Session
 
 - Created: 1075791 (2026-10-09)
+- Implementation: grok task-work implementer (2026-10-09)

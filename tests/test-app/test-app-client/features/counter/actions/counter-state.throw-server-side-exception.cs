@@ -3,8 +3,9 @@
 #endregion
 
 #region Design
-// GETs ThrowServerSideExceptionRequest's route through the scoped HttpClient. The test server maps no endpoint for
-// that route, so the request itself fails; action.Message is not sent.
+// GETs ThrowServerSideExceptionRequest's route through the scoped HttpClient and sends action.Message as
+// SampleProperty. The test server maps that route and throws InvalidOperationException with the message, so the
+// HTTP call fails and StateTransactionBehavior rolls the counter state back.
 #endregion
 
 namespace Test.App.Client.Features.Counter;
@@ -44,7 +45,10 @@ public partial class CounterState
         CancellationToken cancellationToken
       )
       {
-        var throwServerSideExceptionRequest = new ThrowServerSideExceptionRequest();
+        ThrowServerSideExceptionRequest throwServerSideExceptionRequest = new()
+        {
+          SampleProperty = action.Message
+        };
 
         await HttpClient.GetFromJsonAsync<ThrowServerSideExceptionResponse>
         (

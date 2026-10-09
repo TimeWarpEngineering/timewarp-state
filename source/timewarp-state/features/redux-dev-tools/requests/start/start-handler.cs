@@ -3,7 +3,8 @@
 #endregion
 
 #region Design
-// Handle is currently a no-op; only the constructor logs (debug, reusing the JumpToStateHandler EventId).
+// The constructor logs EventIds.StartHandler_Initializing (500). Handle logs
+// EventIds.StartHandler_RequestReceived (501) and does no other work. StartHandler_RequestHandled (502) is unused.
 // Having a handler lets the Start request dispatch without error.
 #endregion
 
@@ -12,7 +13,10 @@ namespace TimeWarp.Features.ReduxDevTools;
 /// <summary>
 /// Redux Devtools will send the Request once on startup
 /// </summary>
-/// <remarks>currently we do nothing at start up other than log</remarks>
+/// <remarks>
+/// The constructor logs <see cref="EventIds.StartHandler_Initializing"/>.
+/// <see cref="Handle"/> logs <see cref="EventIds.StartHandler_RequestReceived"/> and performs no other work.
+/// </remarks>
 public class StartHandler : IRequestHandler<StartRequest>
 {
   private readonly ILogger Logger;
@@ -23,14 +27,18 @@ public class StartHandler : IRequestHandler<StartRequest>
   )
   {
     Logger = logger;
-    Logger.LogDebug(EventIds.JumpToStateHandler_RequestHandled, "constructing");
+    Logger.LogDebug(EventIds.StartHandler_Initializing, "constructing");
   }
 
   /// <summary>
-  /// Currently does nothing
+  /// Logs <see cref="EventIds.StartHandler_RequestReceived"/> and completes.
   /// </summary>
   /// <param name="request"></param>
   /// <param name="cancellationToken"></param>
-  /// <returns></returns>
-  public Task Handle(StartRequest request, CancellationToken cancellationToken) => Task.CompletedTask;
+  /// <returns>A completed task.</returns>
+  public Task Handle(StartRequest request, CancellationToken cancellationToken)
+  {
+    Logger.LogDebug(EventIds.StartHandler_RequestReceived, "received");
+    return Task.CompletedTask;
+  }
 }

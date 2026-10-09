@@ -1,9 +1,12 @@
 #region Purpose
-// Analyzer for State<T> subclasses: T must be the derived class itself (error), and non-abstract subclasses should
-// be sealed (warning).
+// Analyzer for State<T> subclasses: T must be the derived class itself (error), except an abstract class whose
+// type argument is its own self-constrained type parameter. Non-abstract subclasses should be sealed (warning).
 #endregion
 
 #region Design
+// An abstract intermediate such as TimeWarpCacheableState<TState> : State<TState> where TState :
+// TimeWarpCacheableState<TState> is allowed. A concrete class, including a concrete generic with the same shape,
+// still reports StateInheritanceTypeArgumentRule. The check looks at the type parameter's constraint types.
 // Resolves State<T> once per compilation and does nothing when it is absent. Only the first base type in each class
 // declaration is checked.
 #endregion
@@ -69,8 +72,11 @@ public class StateInheritanceAnalyzer : DiagnosticAnalyzer
 
     if (!SymbolEqualityComparer.Default.Equals(typeArg, derivedTypeSymbol))
     {
-      Diagnostic diagnostic = Diagnostic.Create(InheritanceRule, classDeclaration.Identifier.GetLocation());
-      context.ReportDiagnostic(diagnostic);
+      if (!IsAbstractSelfConstrainedIntermediate(derivedTypeSymbol, typeArg))
+      {
+        Diagnostic diagnostic = Diagnostic.Create(InheritanceRule, classDeclaration.Identifier.GetLocation());
+        context.ReportDiagnostic(diagnostic);
+      }
     }
 
     if (derivedTypeSymbol is { IsAbstract: false, IsSealed: false })
@@ -78,5 +84,42 @@ public class StateInheritanceAnalyzer : DiagnosticAnalyzer
       Diagnostic sealedDiagnostic = Diagnostic.Create(SealedRule, classDeclaration.Identifier.GetLocation(), derivedTypeSymbol.Name);
       context.ReportDiagnostic(sealedDiagnostic);
     }
+  }
+
+  // Abstract class C<T> : State<T> where T : C<T> (the type argument slot of the constraint is T).
+  private static bool IsAbstractSelfConstrainedIntermediate(INamedTypeSymbol derivedTypeSymbol, ITypeSymbol typeArg)
+  {
+    if (!derivedTypeSymbol.IsAbstract)
+      return false;
+
+    if (typeArg is not ITypeParameterSymbol typeParameter)
+      return false;
+
+    if (!SymbolEqualityComparer.Default.Equals(typeParameter.ContainingType, derivedTypeSymbol))
+      return false;
+
+    foreach (ITypeSymbol constraintType in typeParameter.ConstraintTypes)
+    {
+      if (constraintType is not INamedTypeSymbol constraintNamedType)
+        continue;
+
+      if (!SymbolEqualityComparer.Default.Equals(constraintNamedType.OriginalDefinition, derivedTypeSymbol))
+        continue;
+
+      if
+      (
+        typeParameter.Ordinal < constraintNamedType.TypeArguments.Length
+        && SymbolEqualityComparer.Default.Equals
+        (
+          constraintNamedType.TypeArguments[typeParameter.Ordinal],
+          typeParameter
+        )
+      )
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

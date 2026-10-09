@@ -5,7 +5,7 @@
 #region Design
 // They are plain static methods using Shouldly, not MSTest tests, so the page can call them in Server and browser WASM
 // and the E2E test can check the result. Each type has a clone-equals case and a mutated-clone-differs case. The page
-// does not call the 2D/3D array cases or ModifiedClone_InterfaceObject.
+// runs the 2D and 3D array cases and ModifiedClone_InterfaceObject with the rest.
 #endregion
 
 namespace AnyClone.Tests;
@@ -56,7 +56,6 @@ public static class CloneProviderTests
     cloned.ShouldBe(original);
   }
 
-  // ReSharper disable once UnusedMember.Global
   public static void Should_Clone_2dMultidimensionalArrayObject()
   {
     var original = new MultiDimensional2dArrayObject
@@ -73,7 +72,6 @@ public static class CloneProviderTests
     cloned.ShouldBe(original);
   }
 
-  // ReSharper disable once UnusedMember.Global
   public static void Should_Clone_3dMultidimensionalArrayObject()
   {
     var original = new MultiDimensional3dArrayObject
@@ -200,7 +198,6 @@ public static class CloneProviderTests
     cloned.ShouldBe(original);
   }
 
-  // ReSharper disable once UnusedMember.Global
   public static void ModifiedClone_InterfaceObject_ShouldNotBeEqual()
   {
     var original = new InterfaceObject

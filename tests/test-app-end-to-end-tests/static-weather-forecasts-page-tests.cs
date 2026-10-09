@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Static render mode only; 5 rows matches the server endpoint, which always asks for 5 days.
+// Static render mode only. The page builds five forecasts in OnInitializedAsync. The weather API takes Days separately.
 #endregion
 
 namespace StaticWeatherForecastsPageTests;

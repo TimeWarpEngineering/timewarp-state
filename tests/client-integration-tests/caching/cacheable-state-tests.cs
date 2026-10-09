@@ -9,8 +9,6 @@
 
 namespace CacheableStateTests;
 
-using Test.App.Client.Features.WeatherForecast;
-
 /// <summary>
 /// Integration tests for TimeWarpCacheableState caching behavior.
 /// Uses CacheableWeatherState from test-app.
@@ -85,5 +83,15 @@ public class CacheableState_Should : BaseTest
     // Assert - cache key and timestamp should remain the same (cache was used)
     CacheableWeatherState.CacheKey.ShouldBe(firstCacheKey);
     CacheableWeatherState.TimeStamp.ShouldBe(firstTimestamp);
+  }
+
+  public async Task Return_Ten_Forecasts_When_The_Action_Asks_For_Ten_Days()
+  {
+    Store.RemoveState<CacheableWeatherState>();
+
+    await Send(new CacheableWeatherState.FetchWeatherForecastsActionSet.Action());
+
+    CacheableWeatherState.WeatherForecasts.ShouldNotBeNull();
+    CacheableWeatherState.WeatherForecasts.Count.ShouldBe(10);
   }
 }

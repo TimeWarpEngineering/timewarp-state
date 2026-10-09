@@ -4,7 +4,8 @@
 
 #region Design
 // Reuses Client.Program.ConfigureServices so server-rendered pages get the same store, then adds the ServerPipeline
-// mediator through AddServerPipelineMediator to avoid CS0121. The weather endpoint always asks the handler for 5 days.
+// mediator through AddServerPipelineMediator to avoid CS0121. The weather endpoint passes the Days query value to
+// the handler. The throw-server-side-exception endpoint throws InvalidOperationException with the query message.
 #endregion
 
 namespace Test.App.Server;
@@ -64,8 +65,19 @@ internal class Program
     app.MapGet
     (
       GetWeatherForecasts.Query.RouteTemplate,
-      async (ISender<ServerPipeline> sender, CancellationToken cancellationToken) =>
-        Results.Ok(await sender.Send(new GetWeatherForecastsRequest { Days = 5 }, cancellationToken))
+      async (int days, ISender<ServerPipeline> sender, CancellationToken cancellationToken) =>
+        Results.Ok(await sender.Send(new GetWeatherForecastsRequest { Days = days }, cancellationToken))
+    );
+
+    app.MapGet
+    (
+      ThrowServerSideExceptionRequest.RouteTemplate,
+      (HttpContext httpContext) =>
+      {
+        string sampleProperty = httpContext.Request.Query[nameof(ThrowServerSideExceptionRequest.SampleProperty)].ToString();
+        string message = string.IsNullOrEmpty(sampleProperty) ? "Server-side exception" : sampleProperty;
+        throw new InvalidOperationException(message);
+      }
     );
 
     app.Run();

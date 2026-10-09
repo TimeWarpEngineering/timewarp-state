@@ -4,7 +4,8 @@
 
 #region Design
 // Ported with the AnyClone test suite, so it keeps the AnyClone.Tests.Extensions namespace. Flattens both sequences
-// into List<int> and compares them; any exception (for example a non-int element) is reported as not equal.
+// into List<int> and compares them. A length mismatch is not equal, including when the shared prefix matches. Any
+// exception (for example a non-int element, or an enumerator that cannot Reset) is reported as not equal.
 #endregion
 
 namespace AnyClone.Tests.Extensions;
@@ -26,8 +27,20 @@ public static class CollectionExtensions
     IEnumerator secondEnumerator = second.GetEnumerator();
     try
     {
-      while (enumerator.MoveNext() && secondEnumerator.MoveNext())
+      bool lengthsDiffer = false;
+      while (true)
       {
+        bool firstMoved = enumerator.MoveNext();
+        bool secondMoved = secondEnumerator.MoveNext();
+        if (firstMoved != secondMoved)
+        {
+          lengthsDiffer = true;
+          break;
+        }
+
+        if (!firstMoved)
+          break;
+
         linearList.Add((int)enumerator.Current);
         otherLinearList.Add((int)secondEnumerator.Current);
       }
@@ -35,7 +48,7 @@ public static class CollectionExtensions
       enumerator.Reset();
       secondEnumerator.Reset();
 
-      return linearList.SequenceEqual(otherLinearList);
+      return !lengthsDiffer && linearList.SequenceEqual(otherLinearList);
     }
     catch (Exception)
     {
