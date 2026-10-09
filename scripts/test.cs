@@ -4,6 +4,16 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
+#region Purpose
+// Runfile behind dev test: builds and runs each Fixie test project in turn.
+#endregion
+
+#region Design
+// Restores local tools, then for each suite (analyzer, source generator, state, plus, telemetry, client
+// integration, architecture) builds the project and runs dotnet fixie. RunStep names the failing suite and
+// exits 1, whether Amuru throws or returns a non-zero code.
+#endregion
+
 NuruApp app = NuruApp.CreateBuilder()
   .Map("")
     .WithHandler(App.RunTests)

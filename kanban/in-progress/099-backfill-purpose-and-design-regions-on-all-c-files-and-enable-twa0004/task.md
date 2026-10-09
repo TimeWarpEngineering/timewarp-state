@@ -2,12 +2,13 @@
 
 ## Description
 
-This task has two parts:
+This task backfills a `#region Purpose` block and a `#region Design` block at the top of every tracked `.cs`
+file that is missing them (Part 1).
 
-- **Part 1:** backfill a `#region Purpose` block and a `#region Design` block at the top of every tracked
-  `.cs` file that is missing them.
-- **Part 2:** once the backfill is done, turn on TWA0004 ("Source file lacks a #region Purpose block") by
-  referencing the TimeWarp.Architecture.Analyzers package, so Purpose regions can't drift again.
+Part 2, turning on TWA0004 ("Source file lacks a #region Purpose block") via TimeWarp.Architecture.Analyzers,
+was moved on 2026-10-09 to child task **099-001** ("Enable TWA0004 (Purpose region analyzer) via
+TimeWarp.Architecture.Analyzers"), because Steven set one kanban task per PR. The task title still says "and
+enable TWA0004" because the folder name carries it.
 
 The audit was run on 2026-10-09 against master after the 12.0.0-beta.9 merge (`29990f46`). It found 387
 `.cs` files:
@@ -48,22 +49,12 @@ order, is in [region-audit.md](region-audit.md), next to this task.
 
 ### Part 2: enable TWA0004
 
-- Add `<PackageVersion Include="TimeWarp.Architecture.Analyzers" Version="…" />` to
-  `Directory.Packages.props`. Use the latest available version: 2.0.0-beta.9 or newer is required, and
-  2.0.0-beta.19 is the latest on nuget.org as of 2026-10-09. Re-check when doing the work.
-- Reference it in the shared root `Directory.Build.props`, in the existing "Code Analyzers" ItemGroup, with
-  `PrivateAssets="all"` so it does not flow into the published packages.
-- Add TWA settings to `.editorconfig`:
-  - `dotnet_diagnostic.TWA0004.severity = warning`, or `error` once the backfill is complete.
-  - Set every other TWA rule to `none` unless it fits this library (see the rule review in Notes), so
-    enabling the package doesn't flood the build with unrelated diagnostics.
-- TWA0004 checks **only Purpose**. The Design region stays manual and is enforced by reviewers.
-- Build stays green, with no new warnings except intended TWA0004 hits, and none once Part 1 is complete.
+Moved to task 099-001, with its requirements, checklist and TWA rule review.
 
 ## Checklist
 
-Suggested PR split: one PR per area group. Use (1) library source, (2) tests, (3) samples, scripts,
-.githooks and tools, then (4) Part 2. Counts are files missing at least one region (see region-audit.md).
+PRs: library source (#618), test app (#619), other tests (#620), then samples, scripts, .githooks and
+tools (this task's final PR). Part 2 is task 099-001. Counts are files missing at least one region (see region-audit.md).
 
 ### Part 1: Purpose/Design backfill
 
@@ -90,20 +81,20 @@ Tests:
 
 Other:
 
-- [ ] `samples` (42)
-- [ ] `scripts` (7)
-- [ ] `.githooks` (5)
-- [ ] `tools` (1)
-- [ ] Re-run the audit: 0 files missing Purpose and 0 missing Design. Workflow green.
+- [x] `samples` (42)
+- [x] `scripts` (7)
+- [x] `.githooks` (5)
+- [x] `tools` (1)
+- [x] Re-run the audit: 0 files missing Purpose and 0 missing Design. Workflow green.
 
-### Part 2: enable TWA0004 (after Part 1)
+### Part 1 status
 
-- [ ] Add a `TimeWarp.Architecture.Analyzers` PackageVersion (latest, ≥ 2.0.0-beta.9) in `Directory.Packages.props`
-- [ ] Add the PackageReference (`PrivateAssets="all"`) in the root `Directory.Build.props` "Code Analyzers" ItemGroup
-- [ ] `.editorconfig`: `dotnet_diagnostic.TWA0004.severity = warning` (or `error`)
-- [ ] `.editorconfig`: set the TWA rules that don't fit to `none` (review list in Notes); record the decision for each rule
-- [ ] Check which projects actually get the analyzer (library, tests, samples with their own props, file-based scripts/.githooks/tools) and that it's PrivateAssets in every packed nupkg
-- [ ] Workflow green with no TWA warnings; packed nupkgs carry no dependency on TimeWarp.Architecture.Analyzers
+**Part 1 (the backfill) is complete.** The repo-wide header audit reads 0 of 387 tracked `.cs` files missing
+Purpose or Design.
+
+### Part 2: enable TWA0004
+
+Moved to task 099-001.
 
 ## Results
 
@@ -197,41 +188,57 @@ Other:
   4 of the skipped unit/integration tests.
 - `test-app-end-to-end-tests/sample-test.cs`: the ignored playwright.dev samples are 2 of the 3 skipped E2E tests.
 
+### PR 3: samples, scripts, .githooks and tools (final backfill PR)
+
+- Added the missing regions to the last 55 files: samples 42, scripts 7, .githooks 5, tools 1. 44 got both
+  Purpose and Design. 11 already had Purpose and got Design only, with their Purpose unchanged (10 under
+  samples/04-telemetry/apphost, 05-persistence and 06-render-control, plus tools/dev-cli/global-usings.cs).
+- Runfiles: the 5 hooks and 6 scripts start with a `#!` shebang and `#:package`/`#:property` lines. Those
+  lines stay first; the regions go after them and the blank line that follows. That matches
+  `tools/dev-cli/dev.cs`, the one runfile that already had regions (shebang first, regions further down).
+- The header audit now treats leading `#!` and `#:` lines as header, not code. Before, it stopped at the
+  shebang, so it counted dev.cs as missing even though dev.cs already has both regions. That is why the old
+  script read 56 missing, not the 55 in region-audit.md.
+- Repo-wide header audit of all 387 tracked `.cs` files, counting files missing Purpose or Design:
+  - Before: 55 (44 with neither, 11 with Purpose only)
+  - After: **0**. source 138/138, tests 171/171, samples 58/58, scripts 7/7, .githooks 5/5, tools 8/8.
+- Comments only. `git diff` shows 55 files changed, 442 insertions, 0 deletions (none of these files has a BOM).
+  The byte-level check (strip the shebang/directive header, remove the inserted region block, compare with
+  HEAD) found 0 mismatches over the 55 files, 11 of them with a header. Line endings are kept (29 CRLF, 26 LF).
+  No files outside samples/, scripts/, .githooks/ and tools/ changed, apart from this task.md.
+- `dotnet run --file tools/dev-cli/dev.cs -- workflow`: Pipeline SUCCEEDED (assert-version-ssot, clean, build,
+  test, e2e, pack, verify-samples). verify-samples ran 11 sample project builds, 0 errors.
+  - Unit and integration tests: 228 passed, 4 skipped, 0 failed (analyzer 33, source-generator 15, core 73+1,
+    plus 31+1, telemetry 13, client-integration 56+1, architecture 7+1).
+  - E2E (Playwright): 11 passed, 3 skipped, 0 failed.
+  - The workflow doesn't build every runfile, so each of the 12 was built with `dotnet build <file>`
+    (scripts 6, .githooks 5, tools/dev-cli/dev.cs): all exit 0, 0 warnings, 0 errors.
+- Things the region text describes as-is rather than fixes:
+- `scripts/build.cs` `clean` route: runs `pkill -f dotnet`, which kills every process whose command line contains
+  "dotnet" (other builds, IDE language servers), not just this repo's. `scripts/clean.cs` doesn't do this.
+- `scripts/build.cs`: ends with "Packages available in: ./artifacts/packages", but it only builds; nothing is
+  packed there.
+- `scripts/e2e.cs`: `runMode` is hard-coded to "Auto", so the Manual, Development and Release branches can't run.
+  If they could, the Development and Release branches `await` a `dotnet run` of the SUT, which blocks until the
+  server exits, so the tests would never start.
+- `scripts/e2e.cs` and `scripts/run-test-app.cs`: most `if (exitCode != 0) Environment.Exit(1)` checks can't
+  fire. The comments in these same files say this Amuru line throws on a non-zero exit instead of returning it.
+- `scripts/build.cs` `clean` and `scripts/clean.cs` are two different "clean" implementations: only build.cs
+  removes the generated JS, and only clean.cs removes bin/obj, LocalNugetFeed and tests/test-app/output.
+- `.githooks/*.cs` are ganda-managed hooks. `ganda repo audit` (memsearch-scaffold, an advisory warning) already
+  listed post-commit, post-merge and post-checkout as "outdated" on master. With the regions, pre-commit and
+  pre-push are listed too, because they no longer match ganda's template. The audit still passes. But
+  `ganda repo audit --fix` or `ganda hooks install attest` would likely rewrite the hooks and drop the regions,
+  and the region audit would then flag them again. Either ganda's hook template should carry the regions, or
+  the region audit should exempt `.githooks/`.
+
 ## Notes
 
-- **Enforcement today:** TWA0004 ships in the TimeWarp.Architecture.Analyzers package. timewarp-state does
-  not reference that package in any props or csproj, so nothing enforces the regions today. Part 2 fixes
-  this for Purpose only. TWA0004 does not check Design, so Design stays a manual, reviewer-enforced
-  convention. A Design check could be proposed upstream later.
 - **Trivial files:** generated or designer files and `global-usings.cs` may justify a one-line Purpose (and
   possibly no Design). Decide how to treat them before Part 1. TWA0004's own guidance is that "trivial files
   use a one-line Purpose rather than being exempt". It already skips `.g.cs`, `.generated.cs`,
   `.designer.cs` and Razor/cshtml generated files.
-- **Rule review for Part 2.** Rule ids and titles come from TimeWarp.Architecture.Analyzers 2.0.0-beta.19
-  (2026-10-09). Most rules target TimeWarp.Architecture apps (FluentValidation, FastEndpoints, Aspire,
-  slices, the dotnet-new template), not this library. Proposed default is `none`, except TWA0004:
-  - TWA0002 (nullable property has a presence validation rule) and TWA0003 (required property has a fabricated
-    empty default) are FluentValidation rules: none.
-  - TWA0004 (source file lacks a #region Purpose block): **warning/error**.
-  - TWA0005: id present in the package, but no title was found in this quick review. Check it when doing
-    the work; default none.
-  - TWA0006 (routed contract has no server endpoint), TWA0013 and TWA0014 (generated endpoint auth posture),
-    TWA0020 ([ApiEndpoint] with [ClientOnlyContract]) and TWA0024 ([EndpointAuthorize] policy not registered)
-    are FastEndpoints/contract rules: none.
-  - TWA0007 (Aspire resource name is not a ServiceNames constant): none. sample-04 uses Aspire but not
-    ServiceNames.
-  - TWA0008 and TWA0010 (dotnet-new template conditional tokens and flags) are template-repo only: none.
-  - TWA0009 (slice references another product slice): none. This library is not sliced.
-  - TWA0011 and TWA0012 (aggregate root Invariants validator) are domain-model rules: none.
-  - TWA0015 and TWA0016 (feature filename function/layer grammar): none. The library's feature files don't
-    follow `<name>[-<function>]-<layer>.cs`.
-  - TWA0021 (mock auth registration) is a SPA auth rule: none.
-  - TWA0022 (SPA client code must not call the mediator's Send directly): consider it for the samples and
-    test-app, since it pushes dispatch through TimeWarp.State's generated ActionSet methods. It would hit
-    the library's own internals, so it likely stays none (or is scoped to samples).
-  - TWA0023 (identifier does not use the type stem) is a naming style rule. Evaluate the hit count; likely none.
-- **File-based apps:** `scripts`, `.githooks` and `tools` `.cs` files are file-based apps. Confirm whether the
-  analyzer reaches them through Directory.Build.props. Their regions are backfilled in Part 1 either way.
+- The Part 2 notes (enforcement today, TWA rule review, file-based apps) moved to task 099-001.
 - Steven asked for this task to be created only at first. He approved starting it on 2026-10-09, beginning
   with a PR for the library source (`source/`).
 

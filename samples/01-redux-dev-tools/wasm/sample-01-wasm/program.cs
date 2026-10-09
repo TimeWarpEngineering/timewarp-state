@@ -1,3 +1,12 @@
+#region Purpose
+// Entry point for the Redux DevTools sample.
+#endregion
+
+#region Design
+// Same setup as the basic WebAssembly sample, plus options.UseReduxDevTools() in AddTimeWarpState so
+// actions and state show up in the browser Redux DevTools extension.
+#endregion
+
 namespace Sample01Wasm;
 
 public class Program

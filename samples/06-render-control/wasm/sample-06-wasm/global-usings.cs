@@ -2,6 +2,10 @@
 // Shared imports for the render-control sample host.
 #endregion
 
+#region Design
+// Global using directives only; no types.
+#endregion
+
 global using System.Diagnostics;
 global using System.Reflection;
 global using Microsoft.AspNetCore.Components;

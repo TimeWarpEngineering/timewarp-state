@@ -2,6 +2,10 @@
 // Advances Beat. A card that registers only Count does not render for this action.
 #endregion
 
+#region Design
+// Nested ActionSet with a parameterless Action. The handler increments ActivityState.Beat.
+#endregion
+
 namespace Sample06Wasm.Features.Activity;
 
 partial class ActivityState

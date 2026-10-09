@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the telemetry sample (ASP.NET Core, OpenTelemetry tracing, TimeWarp.State.Telemetry).
+#endregion
+
+#region Design
+// Global using directives only; no types.
+#endregion
+
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;

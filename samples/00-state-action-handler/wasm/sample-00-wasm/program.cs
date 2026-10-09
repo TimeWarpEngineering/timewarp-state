@@ -1,3 +1,12 @@
+#region Purpose
+// Entry point for the WebAssembly sample.
+#endregion
+
+#region Design
+// Adds the App and HeadOutlet root components, then AddGeneratedMediator<ClientPipeline>() and
+// AddTimeWarpState() with default options.
+#endregion
+
 namespace Sample00Wasm;
 
 public class Program

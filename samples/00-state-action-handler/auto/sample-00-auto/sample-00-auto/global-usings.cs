@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the Auto sample server host (ASP.NET Core, TimeWarp.State, and the client pages and server components).
+#endregion
+
+#region Design
+// Global using directives only; no types.
+#endregion
+
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;

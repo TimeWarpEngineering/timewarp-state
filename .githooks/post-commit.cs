@@ -4,6 +4,15 @@
 #:property NoWarn=CA2007
 #:property RunAnalyzers=false
 
+#region Purpose
+// Git post-commit hook: re-indexes memsearch and attests the new tree with ganda.
+#endregion
+
+#region Design
+// Runs ganda memsearch index-repo --background, then ganda repo attest unless GANDA_ATTEST_HOOK=0.
+// Both run with no validation, so failures are ignored and the hook always returns 0.
+#endregion
+
 // Unified dispatcher: memsearch (best-effort) + ganda repo attest.
 // Exit 0 always — commit already landed.
 using TimeWarp.Amuru;

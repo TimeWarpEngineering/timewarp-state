@@ -1,3 +1,12 @@
+#region Purpose
+// WebAssembly entry point for the Auto sample client, and the shared service registration the server host reuses.
+#endregion
+
+#region Design
+// ConfigureServices is public static so the server Program can call it and both render modes get the same
+// services: AddGeneratedMediator<ClientPipeline>() and AddTimeWarpState().
+#endregion
+
 namespace Sample00Auto.Client;
 
 public class Program

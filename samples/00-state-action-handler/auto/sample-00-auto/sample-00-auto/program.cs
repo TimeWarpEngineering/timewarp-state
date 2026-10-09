@@ -1,3 +1,13 @@
+#region Purpose
+// Server host for the Auto render mode sample (interactive Server and WebAssembly).
+#endregion
+
+#region Design
+// Registers Razor components with both interactive render modes and calls the client
+// Program.ConfigureServices so server-rendered components get the same TimeWarp.State services. Maps App
+// with the client assembly added so its pages are routable.
+#endregion
+
 namespace Sample00Auto;
 
 public class Program

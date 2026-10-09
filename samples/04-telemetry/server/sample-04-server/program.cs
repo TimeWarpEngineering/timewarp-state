@@ -1,3 +1,12 @@
+#region Purpose
+// Entry point for the telemetry sample: a Blazor Server app that emits TimeWarp.State action spans.
+#endregion
+
+#region Design
+// Adds AddTimeWarpStateTelemetry() and OpenTelemetry tracing for the TimeWarp.State ActivitySource and
+// ASP.NET Core. The OTLP exporter is added only when OTEL_EXPORTER_OTLP_ENDPOINT is set.
+#endregion
+
 namespace Sample04Server;
 
 public class Program

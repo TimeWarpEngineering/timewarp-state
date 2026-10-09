@@ -1,3 +1,13 @@
+#region Purpose
+// Entry point for the action-tracking sample.
+#endregion
+
+#region Design
+// Registers an HttpClient for the host base address and AddGeneratedMediator<ClientPipeline>(). The
+// ActiveActionBehavior comes from mediator-behaviors.cs. AddTimeWarpState scans this assembly and the
+// TimeWarp.State.Plus assembly.
+#endregion
+
 namespace Sample02Wasm;
 
 public class Program
