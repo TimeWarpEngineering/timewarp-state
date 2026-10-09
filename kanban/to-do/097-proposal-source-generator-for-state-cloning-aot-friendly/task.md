@@ -248,13 +248,22 @@ clone stays the only clone.
 - `TimeWarp.Features.Cloning.GeneratedCloneExtensions.Clone(this T?)` for each root, so existing
   `using TimeWarp.Features.Cloning` call sites keep compiling.
 - An internal cloner per reachable class, struct, array, and supported collection. Reference types take a
-  `CloneMap`. The cloner calls an accessible constructor (parameterless, otherwise the fewest-parameter
-  public or same-assembly internal constructor, with `default` arguments) so field initializers run.
-  `Guid` and `CancellationTokenSource` therefore stay fresh. There is no `GetUninitializedObject`.
+  `CloneMap`. The cloner calls a constructor so field initializers run: the parameterless one at any
+  accessibility (private/protected through `[UnsafeAccessor(UnsafeAccessorKind.Constructor)]`), else the
+  accessible one with the fewest parameters, else any constructor through `[UnsafeAccessor]`. Arguments are the
+  declared default or a typed `default(T)`, so same-arity overloads stay unambiguous. `required` members across
+  the hierarchy (properties and fields) get `default!` in an object initializer. `Guid` and
+  `CancellationTokenSource` therefore stay fresh. There is no `GetUninitializedObject`. A constructor that throws
+  on default arguments throws on every clone; such a state needs `ICloneable` (documented).
 - Instance fields, including auto-property backing fields, `init` / `readonly` / private fields, and fields
   declared on generic bases such as `State<TState>`, are read and written with
-  `[UnsafeAccessor(UnsafeAccessorKind.Field)]` (.NET 8+, Native AOT). Ignored fields are left at the
-  constructor values.
+  `[UnsafeAccessor(UnsafeAccessorKind.Field)]`. Accessors live in one `file static class` per declaring type
+  definition. A generic declaring type gets a generic holder whose type parameters (and constraints) mirror the
+  definition, and the field signature uses the definition's field type (`T`, `List<TState>`): the .NET 9+
+  generic UnsafeAccessor rule. All consumers target net11.0, so no net8 path is needed. `Nullable<T>`,
+  `KeyValuePair`, and `ValueTuple` are rebuilt through public members. Ignored fields are left at the
+  constructor values. Method and holder names end in an FNV-1a hash of the fully qualified name, so they never
+  collide.
 - A `[ModuleInitializer]` registers each state root with `StateCloneRegistry` (lock-free
   `ImmutableInterlocked` dictionary of `Type` → clone delegate). No assembly scan.
 
@@ -278,23 +287,33 @@ The new instance is inserted before members are copied. Acyclic elision is defer
 - `List<T>`, `Dictionary<TKey,TValue>` (comparer shared), `HashSet<T>` (comparer shared), `Stack<T>`,
   `Queue<T>`, `Collection<T>`, `ObservableCollection<T>`, and subclasses (subclass fields copied, then items
   added)
-- immutable and frozen collections are shared when their elements are shared; otherwise rebuilt
-- interface collections (`IList<T>`, `ICollection<T>`, `IEnumerable<T>`, `IDictionary<TKey,TValue>`, and the
-  read-only twins) switch on `List<T>`, arrays, `Dictionary<,>`, `HashSet<T>`, `ObservableCollection<T>`,
-  `Collection<T>`, concrete implementations in the compilation, then `ICloneable`, else throw
+- `SortedSet<T>`, `LinkedList<T>`, `SortedDictionary<,>`, `SortedList<,>`, `ConcurrentDictionary<,>`, and
+  `ReadOnlyCollection<T>` / `ReadOnlyDictionary<,>` (rebuilt around a new `List<T>` / `Dictionary<,>`);
+  `StringBuilder` is copied by its text
+- immutable and frozen collections (including sorted ones) are shared when their elements are shared;
+  otherwise rebuilt with builders or loops (no `System.Linq` in generated code), in order; `ImmutableStack`
+  keeps its top on top
+- interface collections (`IEnumerable<T>`, `ICollection<T>`, `IList<T>`, `IReadOnlyCollection<T>`,
+  `IReadOnlyList<T>`, `ISet<T>`, `IReadOnlySet<T>`, `IDictionary<,>`, `IReadOnlyDictionary<,>`) switch on
+  arrays and every BCL collection above that is assignable to the interface (non-sealed ones by exact runtime
+  type), then implementations in the compilation, then `ICloneable`, and otherwise materialize into `List<T>`,
+  `HashSet<T>` (set interfaces) or `Dictionary<,>`. A lazy iterator, a collection-expression type, or a
+  collection from another library therefore clones into one of those types instead of throwing.
 
 `ObservableCollection<T>` does not copy `CollectionChanged` subscribers. Hash collections are rebuilt, so
 keys that use reference identity still do not survive, same as the field-copy limitation for value equality.
-A field typed `IEnumerable<T>` that holds a lazy iterator is materialized.
 
-**Other member types.** Records are classes or structs (field copy, not `with`). Nested and foreign types
-are cloned when their fields are visible and a constructor is accessible to generated code; `[UnsafeAccessor]`
-writes private fields, including on generic bases. A non-collection interface or abstract type gets a switch
-over concrete implementations in the compilation plus `ICloneable`. No accessible constructor, a private or
-protected type, a pointer, an open generic, or an `object` field is **TWSG002** (error): the message names
-the type and member and tells the author to implement `ICloneable` or change the member. The build fails.
-Nothing falls back at runtime. A missing registry entry throws `InvalidOperationException` from
-`StateCloneRegistry.Clone`.
+**Other member types.** Records are classes or structs (field copy, not `with`). A struct with no reference
+fields (`IsUnmanagedType`) is copied by value. A member typed as a non-sealed class dispatches on the runtime
+type: derived types in the compilation (deepest first), the exact cloner when `GetType()` matches, then
+`ICloneable`, else `InvalidOperationException` (a subtype from another assembly the generator never saw; a
+subclass of a BCL collection falls back to the base collection). A non-collection interface or abstract type
+switches over implementations in the compilation plus `ICloneable`. A derived type or implementation in the
+compilation that cannot be cloned fails the build. A private or protected type, a pointer, an open generic, an
+`object` field, or an interface with no implementation is **TWSG002** (error). TWSG002 is reported once, at the
+source-located member that reaches the failure (or at a root state's declaration for a root-level failure),
+with the type's display name and the root state (`reached from 'X'`). Nothing falls back at runtime. A missing
+registry entry throws `InvalidOperationException` from `StateCloneRegistry.Clone`.
 
 **Dispatch.** `StateTransactionBehavior`: `ICloneable`, else `StateCloneRegistry.Clone`. `DeepCloner`,
 `CloneExtensions`, and `CloneErrorHandler` are deleted. Clone failures propagate; they are not logged and
@@ -311,8 +330,15 @@ A loaded extension assembly registers its own states; `StateTransactionBehavior`
 action nested in that state is dispatched. A separate store for a future inspector is unchanged and out of
 scope.
 
-**Tests.** Generator diagnostics for an unsupported member and for `ICloneable` skipping. Ported
-`deep-cloner-tests` cases execute the generated `Clone()` (`[GenerateClone]` fixtures). The test-app clone
+**Tests.** Generator diagnostics for an unsupported member and for `ICloneable` skipping, plus a table-driven
+shape suite (`state-clone-shape-tests.cs`): 17 supported shapes compile with no generator diagnostic and no
+compiler error (generic declaring types, nested generics, tuples, `KeyValuePair`, `Nullable` structs, every
+collection interface, immutable/frozen, sorted/linked/concurrent/read-only collections, `StringBuilder`,
+collection subclasses, polymorphism, same-arity overloads, private constructors, `required` across the
+hierarchy, records, colliding names, DI-constructor state), 7 unsupported shapes report TWSG002 at a source
+location, nested failures report once with the root named, and metadata types are checked for implementation
+and reference assemblies. Ported `deep-cloner-tests` cases and `generated-clone-shape-tests.cs` execute the
+generated `Clone()` (`[GenerateClone]` fixtures and registered states). The test-app clone
 suite keeps calling `Clone()` on `[GenerateClone]` objects. WASM E2E stays `CloneTestPageTests` and
 `CounterTests`. Trim check: `EnableTrimAnalyzer` / `IsAotCompatible` on `TimeWarp.State` must not report
 IL2xxx/IL3xxx from the clone path. Pre-existing Redux DevTools time-travel reflection
@@ -324,21 +350,45 @@ is unused reflection and is deleted.
 state): first clone 14457.4 µs, steady 4.730 µs per clone (473.0 ms total). A generated-path microbenchmark
 was not repeated after the reflection cloner was removed.
 
-**Metadata bases.** Roslyn does not return compiler-generated backing fields for types in referenced
-assemblies. Public and protected auto-properties on those bases are copied through `<Property>k__BackingField`.
-Private fields the symbol model does not expose stay at constructor values. `State<T>.CancellationTokenSource`
-is in that set, which matches its `[IgnoreDataMember]`.
+**Types from other assemblies (bases and members).** Roslyn does not return private fields of classes in
+referenced assemblies, so a field copy could silently drop state. A metadata type (a member type, or a base in
+a source type's hierarchy) is cloned field by field only when the generator proves it sees all state:
+TimeWarp.State's own assemblies (`State<T>`, `TimeWarpCacheableState<T>`; their private fields are ignored);
+an implementation assembly, re-imported with `MetadataImportOptions.All`, where every private field is the
+backing field of a visible auto-property, an event backing field, or ignored; or a reference assembly
+(`[ReferenceAssembly]`: a `ProjectReference` or a framework reference pack) whose type has only
+auto-properties and compiler-generated methods (records). Anything else is TWSG002, whose message suggests
+`ProduceReferenceAssembly=false` on the defining project. `test-app-contracts` sets that because its
+`WeatherForecastDto` has a computed `TemperatureF`. Public and protected auto-properties on accepted metadata
+types are copied through `<Property>k__BackingField`.
+
+**Remaining reflection in TimeWarp.State (trim/AOT).** `timewarp-state.csproj` now sets `IsAotCompatible=true`
+and lists the IL2xxx/IL3xxx ids in `WarningsAsErrors`, so a new trim/AOT warning fails the build. The remaining
+sites are suppressed in place with justifications:
+
+| Site | Reflection | Warnings |
+|------|------------|----------|
+| `service-collection-extensions.add-timewarp-state.cs` `EnsureStates` | `Assembly.GetTypes()`, `TryAddTransient(Type)` | IL2026, IL2072 (suppressed) |
+| `store.redux-dev-tools.cs` `LoadStatesFromJson` | `JsonSerializer.Deserialize<Dictionary<string, object>>` | IL2026, IL3050 (suppressed) |
+| `store.redux-dev-tools.cs` `LoadStateFromJson` | `GetAssemblies` / `GetTypes` / `GetMethod` / `Invoke` | IL2026, IL2070, IL2072, IL2075, IL3050 (suppressed) |
+| `service-collection-extensions.log-timewarp-state-middleware.cs` `GetComponentOrder` | `Type.GetInterfaces()` | none reported |
+
+Follow-up (not filed here: `ganda kanban create` claims and creates a worktree): "Remove remaining reflection
+from TimeWarp.State (EnsureStates, redux devtools, middleware logging)" — generated state registration,
+generated DevTools hydration, and a non-reflection pipeline listing.
 
 ### How to validate
 
 Smoke:
 
-- `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo` — 84 passed, 1 skipped (the Fixie skip sample). The ported deep-clone cases passed, including private fields, ignored members, nested collections, cycles, multi-dimensional arrays, structs, shared delegates, and null.
-- `dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo` — 19 passed, including TWSG002 on `object`, ICloneable skipped, registry registration, and a public auto-property on a base compiled in another assembly.
+- `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo` — 94 passed, 1 skipped (the Fixie skip sample). The ported deep-clone cases passed, including private fields, ignored members, nested collections, cycles, multi-dimensional arrays, structs, shared delegates, and null. Review round 1 added runtime cases for generic declaring types (including a generic state base through `StateCloneRegistry`), nested generics, tuples, `KeyValuePair`, `Nullable` structs, BCL values behind collection interfaces, polymorphic members, `ImmutableStack` order, sorted/linked/`StringBuilder` members, typed default constructor arguments, `required` members, and a DI-constructor state.
+- `dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo` — 51 passed, including the table-driven shape suite (supported shapes compile clean; unsupported shapes are TWSG002 at a source location; metadata implementation and reference assemblies).
 - `dotnet test tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj --nologo` — 38 passed (TWS001 accepts an accessible constructor and skips abstract states).
 - `dotnet test tests/client-integration-tests/client-integration-tests.csproj --nologo` — 65 passed, 1 skipped. `ReturnCachedData_WhenCacheValid` keeps `CacheKey` and `TimeStamp`.
 - `dotnet test tests/timewarp-state-plus-tests/timewarp-state-plus-tests.csproj --nologo` — 32 passed, 1 skipped.
-- `./bin/dev e2e` — 11 passed, 3 skipped, 0 failed. Playwright's browser install warned (`sudo` needs a terminal); Chromium was already present and the suite ran.
+- `./bin/dev e2e` — 11 passed, 3 skipped, 0 failed (re-run after review round 1: same result). Playwright's browser install warned (`sudo` needs a terminal); Chromium was already present and the suite ran.
+- Build: the build solution filter compiles with 0 errors; its 149 warnings are pre-existing (TW0007, RS0030, BL0010, NU1510, ...) and identical to the pre-fix build. `TimeWarp.State` builds with `IsAotCompatible=true` and no IL2xxx/IL3xxx warnings.
+- `ganda repo audit` — passes (one pre-existing advisory: non-kebab wwwroot module names).
 - Trim: `dotnet publish` of a console host referencing `TimeWarp.State` and `TimeWarp.State.Blazor`, `-p:PublishTrimmed=true -p:TrimmerSingleWarn=false`. The linker ran and reported no IL2xxx/IL3xxx. The published app printed `clone-ok` (count copied, Guid fresh and not equal). Native AOT of a host referencing `TimeWarp.State` only (`PublishAot=true`) also printed `clone-ok` with no IL warnings. Publishing the analyzer project itself with `PublishAot` fails NETSDK1207 because that project is `netstandard2.0`. `dotnet publish` of `test-app-client` did not link: the `wasm-tools` workload is not installed (`Publishing without optimizations`).
 
 Expect:
@@ -369,3 +419,4 @@ Expect:
 - Approved for implementation by Steven (2026-10-10, voice); task file updated from proposal to implementation
 - Design correction by Steven (2026-10-10, 2:08 AM): no reflection fallback; walk interrupted and re-run
 - Implementer: grok task-work (2026-10-10). Design written in Results before product edits.
+- Review round 1 (2026-10-10): M1–M14 fixed by the implementer (Claude); see `review/round-1/merged.md`.
