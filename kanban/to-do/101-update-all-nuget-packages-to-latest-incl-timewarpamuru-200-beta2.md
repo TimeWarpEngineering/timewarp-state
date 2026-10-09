@@ -16,3 +16,5 @@ Steven wants every repo on the newest packages, pre-releases included (latest, n
 ## Notes
 
 Filed 2026-10-09 at Steven's request (Amuru 2.0 sweep). If a package can't move (e.g. a dependency cycle), record why instead of forcing it.
+
+Update 2026-10-09: PR #622 (099-001, merged as 61205ccc) already updated Directory.Packages.props (added TimeWarp.Architecture.Analyzers 2.0.0-beta.19). Start from master after #622 and only take whatever is still outdated: re-run `ganda nuget outdated --dry-run` first.
