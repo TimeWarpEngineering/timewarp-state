@@ -1,3 +1,14 @@
+#region Purpose
+// TimeWarpStateComponent's subscription re-render logic: ReRender, the StateHasChanged override, ShouldReRender and
+// render-trigger registration.
+#endregion
+
+#region Design
+// Render triggers are per-state-type predicates kept in a ConcurrentDictionary and evaluated against the previous
+// state from the Store. A state with no registered trigger always re-renders. RegisterRenderTrigger compiles a
+// property selector and compares previous and current values with Equals.
+#endregion
+
 namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent

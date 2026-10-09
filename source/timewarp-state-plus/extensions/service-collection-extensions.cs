@@ -1,3 +1,12 @@
+#region Purpose
+// AddTimeWarpStateRouting: registers RouteState for TimeWarp.State.Plus routing.
+#endregion
+
+#region Design
+// Only RouteState is registered (TryAddScoped). The routing handlers are linked at compile time by the host's
+// generated mediator, so they need no registration.
+#endregion
+
 namespace TimeWarp.State.Plus.Extensions;
 
 using Microsoft.Extensions.DependencyInjection;

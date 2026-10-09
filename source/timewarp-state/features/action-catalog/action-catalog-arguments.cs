@@ -1,3 +1,13 @@
+#region Purpose
+// Argument count checks and typed argument conversion used by generated ActionCatalogEntry executors.
+#endregion
+
+#region Design
+// Converts without reflection and only for the value kinds the generated input schema advertises (enums, Guid,
+// date/time types, primitives, string), always with the invariant culture. Any failure becomes an ArgumentException
+// that names the action and parameter.
+#endregion
+
 using System.Globalization;
 
 namespace TimeWarp.State;

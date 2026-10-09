@@ -1,3 +1,12 @@
+#region Purpose
+// Shared helpers for the analyzers to find TimeWarp.State.State<T> and test whether a type is or inherits from it.
+#endregion
+
+#region Design
+// Compares symbols by OriginalDefinition and SymbolEqualityComparer instead of names, so look-alike types in other
+// namespaces do not match.
+#endregion
+
 namespace TimeWarp.State.Analyzer;
 
 internal static class StateSymbolHelpers

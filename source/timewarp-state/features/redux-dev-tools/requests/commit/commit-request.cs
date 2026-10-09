@@ -1,3 +1,12 @@
+#region Purpose
+// Request sent by Redux DevTools when the Commit button is pressed.
+#endregion
+
+#region Design
+// DispatchRequest subtype with a nested PayloadClass matching the extension's JSON. Marked IReduxRequest so DevTools
+// requests can be identified.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 public class CommitRequest : DispatchRequest<CommitRequest.PayloadClass>, IRequest, IReduxRequest

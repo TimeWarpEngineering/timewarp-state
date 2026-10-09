@@ -1,3 +1,12 @@
+#region Purpose
+// AddActionCatalog: registers IActionCatalog and adds the generated [CatalogAction] entries from named assemblies.
+#endregion
+
+#region Design
+// Reads each assembly's ActionCatalogProviderAttribute (emitted by the source generator) instead of scanning
+// types. Each source is a singleton and IActionCatalog is TryAdd'ed, so the method can be called repeatedly.
+#endregion
+
 namespace TimeWarp.State;
 
 public static partial class ServiceCollectionExtensions

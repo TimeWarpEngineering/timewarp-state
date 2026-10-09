@@ -1,3 +1,11 @@
+#region Purpose
+// Project-wide global usings for TimeWarp.State.
+#endregion
+
+#region Design
+// One list so individual files need no using directives; no other design decisions.
+#endregion
+
 global using TimeWarp.Features.Cloning;
 global using TimeWarp.State.Extensions;
 global using TimeWarp.State;

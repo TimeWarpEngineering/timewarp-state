@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.Features.ActionTracking;
+﻿#region Purpose
+// StartProcessing action set: adds an action to ActionTrackingState's active list.
+#endregion
+
+#region Design
+// An IInternalAction so tracking skips its own bookkeeping sends. Called by ActionTrackingBehavior around tracked
+// actions.
+#endregion
+
+namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState
 {

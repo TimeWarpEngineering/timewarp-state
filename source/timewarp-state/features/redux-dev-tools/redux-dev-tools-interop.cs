@@ -1,3 +1,12 @@
+#region Purpose
+// JS interop wrapper that initializes the Redux DevTools connection and dispatches actions and init state to it.
+#endregion
+
+#region Design
+// InitAsync runs once and asks the JavaScript ReduxDevToolsFactory whether the extension is enabled. Every dispatch
+// is a no-op when it is not, so callers never have to check.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 public class ReduxDevToolsInterop

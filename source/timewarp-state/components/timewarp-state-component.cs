@@ -1,3 +1,14 @@
+#region Purpose
+// Optional Blazor base component that injects the Store, Subscriptions and the ClientPipeline Sender, subscribes on
+// GetState and decides whether to render.
+#endregion
+
+#region Design
+// Partial class split by concern across timewarp-state-component.*.cs. Id is the type name plus a static per-name
+// instance count. ShouldRender classifies the render reason from flags set during the cycle, then resets them;
+// Dispose removes subscriptions and cancels the component's CancellationTokenSource.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

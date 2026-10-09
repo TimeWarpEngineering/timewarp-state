@@ -1,3 +1,12 @@
+#region Purpose
+// Handles the Redux DevTools Commit message by re-sending the current serializable state as the new init state.
+#endregion
+
+#region Design
+// A plain IRequestHandler (not an action) reached from JavaScript through JsonRequestHandler. That path is only
+// allow-listed when UseReduxDevTools is called.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 public class CommitHandler : IRequestHandler<CommitRequest>

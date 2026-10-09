@@ -1,3 +1,11 @@
+#region Purpose
+// Logging EventIds for TimeWarp.State.Telemetry.
+#endregion
+
+#region Design
+// Internal static class using the 2000+ range so ids do not collide with core (100-801) or Plus (1000+).
+#endregion
+
 namespace TimeWarp.State.Telemetry;
 
 internal static class EventIds

@@ -1,3 +1,13 @@
+#region Purpose
+// Reads an assembly's metadata (title, versions, company, commit hash, commit URL/date, repository URL) into an
+// AssemblyInfo object, for example for an about page.
+#endregion
+
+#region Design
+// Lazy properties over assembly attributes, so nothing is read until asked. The commit hash comes from the
+// InformationalVersion '+' suffix; CommitDate and RepositoryUrl come from AssemblyMetadata entries.
+#endregion
+
 namespace TimeWarp.State.Plus.Extensions;
 
 using System.Resources;

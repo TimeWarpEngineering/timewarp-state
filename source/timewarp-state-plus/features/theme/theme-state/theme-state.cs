@@ -1,3 +1,11 @@
+#region Purpose
+// State holding the app's current theme (Light, Dark or System).
+#endregion
+
+#region Design
+// Sealed partial state, split by action set. CurrentTheme has a private setter and Initialize defaults it to System.
+#endregion
+
 namespace TimeWarp.Features.Theme;
 
 public sealed partial class ThemeState : State<ThemeState>

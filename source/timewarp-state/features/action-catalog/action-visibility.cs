@@ -1,3 +1,11 @@
+#region Purpose
+// Says who a cataloged action is offered to: people, agents, or both.
+#endregion
+
+#region Design
+// [Flags] enum so Both is Human | Agent and callers can test either bit.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

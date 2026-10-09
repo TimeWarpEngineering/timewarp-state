@@ -1,3 +1,14 @@
+#region Purpose
+// AddTimeWarpState: registers the Store, Subscriptions, JSON request handling, options and every State<T> found in
+// the configured assemblies.
+#endregion
+
+#region Design
+// Defaults to the calling assembly when none are configured. Uses TryAdd so hosts can pre-register overrides, adds
+// a NullLogger and a server-side HttpClient fallback, and registers states as transient. Nothing mediator-related
+// is registered: behaviors are woven at compile time (see assembly-marker.cs).
+#endregion
+
 namespace TimeWarp.State;
 
 public static partial class ServiceCollectionExtensions

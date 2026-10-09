@@ -1,3 +1,11 @@
+#region Purpose
+// NetArchTest custom rule: the type has a public constructor DI can call (no primitive or string parameters).
+#endregion
+
+#region Design
+// Treats a parameterless constructor as injectable. Used by the state policy for [PersistentState] states.
+#endregion
+
 namespace TimeWarp.State.Policies;
 
 public class HaveInjectableConstructor : ICustomRule 

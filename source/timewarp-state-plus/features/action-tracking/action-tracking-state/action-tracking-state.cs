@@ -1,3 +1,12 @@
+#region Purpose
+// State listing the actions currently in progress, so UI can show busy indicators (IsActive, IsAnyActive).
+#endregion
+
+#region Design
+// Sealed partial state, split by action set. Implements ICloneable to copy the list while sharing the action
+// references (deliberately not a deep clone), and exposes the list read-only.
+#endregion
+
 namespace TimeWarp.Features.ActionTracking;
 
 public sealed partial class ActionTrackingState : State<ActionTrackingState>, ICloneable

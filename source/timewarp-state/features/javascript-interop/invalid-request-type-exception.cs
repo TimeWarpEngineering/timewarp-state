@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.Features.JavaScriptInterop;
+﻿#region Purpose
+// Thrown when a JavaScript dispatch names a request type that cannot be dispatched or deserialized.
+#endregion
+
+#region Design
+// Carries the requested type name and appends it to Message. Keeps the standard exception constructors, including
+// the legacy serialization constructor.
+#endregion
+
+namespace TimeWarp.Features.JavaScriptInterop;
 
 [Serializable]
 public class InvalidRequestTypeException : Exception

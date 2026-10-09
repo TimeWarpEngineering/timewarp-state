@@ -1,3 +1,13 @@
+#region Purpose
+// Optional base for Blazor input components (InputBase<TValue>) that subscribe to TimeWarp.State, plus the
+// InstanceCounter used to build their Ids.
+#endregion
+
+#region Design
+// Mirrors TimeWarpStateComponent's injection and GetState subscription, but derives from InputBase so form binding
+// and validation keep working. Ids come from a static counter keyed by TValue.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

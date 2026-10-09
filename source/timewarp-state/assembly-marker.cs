@@ -1,3 +1,14 @@
+#region Purpose
+// Declares this assembly's TimeWarp.Mediator membership and ClientPipeline behaviors, and provides AssemblyMarker,
+// a stable type for locating the assembly (assembly scanning).
+#endregion
+
+#region Design
+// Pipeline membership and behavior order (ReduxDevTools 100 -> StateInitialization 200 -> StateTransaction 300 ->
+// RenderSubscriptions 400) are fixed at compile time by assembly attributes, not DI registration. AssemblyMarker is a
+// sealed, empty marker with no other design decisions.
+#endregion
+
 // This assembly is a member of the TimeWarp.Mediator compile-time graph: the consuming host's
 // generator links the handlers below (ReduxDevTools Commit/Start) and weaves these behaviors.
 //

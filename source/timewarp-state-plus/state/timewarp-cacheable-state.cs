@@ -1,3 +1,12 @@
+#region Purpose
+// Base state that skips reloading data when the same request was handled within CacheDuration.
+#endregion
+
+#region Design
+// The cache key is the action's type FullName plus its JSON serialization. HandleWithCaching runs the update only
+// on a miss and records the key and a UTC timestamp. Derived states can update or invalidate the key.
+#endregion
+
 namespace TimeWarp.State.Plus.State;
 
 public abstract class TimeWarpCacheableState<TState> : State<TimeWarpCacheableState<TState>>, ITimeWarpCacheableState

@@ -1,3 +1,11 @@
+#region Purpose
+// Notification published when a named timer elapses.
+#endregion
+
+#region Design
+// Carries a RestartTimer callback so handlers can restart that timer without depending on TimerState.
+#endregion
+
 namespace TimeWarp.State.Plus.Features.Timers;
 
 public class TimerElapsedNotification : INotification

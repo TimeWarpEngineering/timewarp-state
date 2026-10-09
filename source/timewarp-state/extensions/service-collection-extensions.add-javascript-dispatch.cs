@@ -1,3 +1,12 @@
+#region Purpose
+// AddJavaScriptDispatch: allow-lists the actions JavaScript may dispatch through timeWarpState.DispatchRequest.
+#endregion
+
+#region Design
+// Opt-in: nothing is dispatchable until allowed. A builder writes into the shared JavaScriptDispatchRegistry
+// (GetOrAdd on the service collection), so call order relative to AddTimeWarpState does not matter.
+#endregion
+
 namespace TimeWarp.State;
 
 public static partial class ServiceCollectionExtensions

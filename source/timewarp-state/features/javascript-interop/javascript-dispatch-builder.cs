@@ -1,3 +1,12 @@
+#region Purpose
+// Fluent builder used by AddJavaScriptDispatch to allow actions for JavaScript dispatch.
+#endregion
+
+#region Design
+// Sealed with an internal constructor, so it is only created over the shared JavaScriptDispatchRegistry. The
+// non-generic Allow checks IAction at runtime; the generic one enforces it with a constraint.
+#endregion
+
 namespace TimeWarp.Features.JavaScriptInterop;
 
 /// <summary>

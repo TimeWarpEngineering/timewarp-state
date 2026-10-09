@@ -1,3 +1,12 @@
+#region Purpose
+// Request and handler that (re)load a [PersistentState] state from its configured storage and put it in the Store.
+#endregion
+
+#region Design
+// Hand-written rather than generated: the TimeWarp.Mediator generator cannot see other generators' output, so a
+// generated handler was never linked (NoHandlerException). States without [PersistentState] are skipped.
+#endregion
+
 namespace TimeWarp.State.Plus.PersistentState;
 
 // Disambiguate from Microsoft.AspNetCore.Components.PersistentStateAttribute (added in .NET 10).

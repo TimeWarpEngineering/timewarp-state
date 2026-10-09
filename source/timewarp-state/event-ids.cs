@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.State;
+﻿#region Purpose
+// Central list of logging EventIds used across TimeWarp.State.
+#endregion
+
+#region Design
+// One internal static class grouped by area (Store, JavaScript interop, Subscriptions, behaviors, component), with
+// numeric ranges per area so log filtering by EventId stays stable.
+#endregion
+
+namespace TimeWarp.State;
 
 internal static class EventIds
 {

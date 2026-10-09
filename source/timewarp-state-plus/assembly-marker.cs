@@ -1,3 +1,13 @@
+#region Purpose
+// Declares TimeWarp.State.Plus a TimeWarp.Mediator assembly scoped to ClientPipeline, and provides AssemblyMarker
+// for locating the assembly.
+#endregion
+
+#region Design
+// Only membership and scope are declared here. The Plus behaviors are opt-in, and the host declares each one it
+// wants with [assembly: MediatorBehavior]. AssemblyMarker is a sealed, empty marker.
+#endregion
+
 // Member of the TimeWarp.Mediator compile-time graph so the host's generator links the handlers in
 // this assembly (routing, timers, theme, action tracking, persistence). Every request and handler
 // here is a ClientPipeline member (the Blazor store pipeline, see TimeWarp.State.ClientPipeline).

@@ -1,3 +1,12 @@
+#region Purpose
+// Base class for ActionSet handlers that need the IStore.
+#endregion
+
+#region Design
+// Derives from TimeWarp.Mediator.ActionHandler<TAction> so the Mediator generator discovers it. It is named
+// StateActionHandler, not ActionHandler, to avoid a CS0104 ambiguity when both namespaces are imported.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

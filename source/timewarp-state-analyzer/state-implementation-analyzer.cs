@@ -1,3 +1,13 @@
+#region Purpose
+// TWS001 (error): a type deriving directly from State<T> must implement ICloneable or have a parameterless
+// constructor.
+#endregion
+
+#region Design
+// Resolves State<T> once per compilation and does nothing when it is absent. Checks named-type symbols, matching
+// ICloneable by interface name only.
+#endregion
+
 namespace TimeWarp.State.Analyzer;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]

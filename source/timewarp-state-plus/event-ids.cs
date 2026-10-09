@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.State.Plus;
+﻿#region Purpose
+// Logging EventIds for TimeWarp.State.Plus features.
+#endregion
+
+#region Design
+// One internal class grouped by feature, using the 1000+ range so the ids do not collide with core TimeWarp.State
+// (100-801).
+#endregion
+
+namespace TimeWarp.State.Plus;
 
 internal class EventIds
 {

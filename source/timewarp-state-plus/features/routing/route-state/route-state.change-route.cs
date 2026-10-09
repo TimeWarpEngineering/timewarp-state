@@ -1,3 +1,11 @@
+#region Purpose
+// ChangeRoute action set: navigates to a new route through NavigationManager.
+#endregion
+
+#region Design
+// Compares absolute URIs and only navigates when they differ, avoiding redundant navigation.
+#endregion
+
 namespace TimeWarp.Features.Routing;
 
 public partial class RouteState

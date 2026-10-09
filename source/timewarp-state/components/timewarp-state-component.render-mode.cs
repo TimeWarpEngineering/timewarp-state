@@ -1,3 +1,12 @@
+#region Purpose
+// TimeWarpStateComponent's render bookkeeping: RenderCount, IsPreRendering and the per-render reset of lifecycle flags.
+#endregion
+
+#region Design
+// OnAfterRender counts and trace-logs each render, then clears every tracking flag so the next cycle's render
+// reason starts clean. IsPreRendering is derived from RendererInfo.IsInteractive.
+#endregion
+
 namespace TimeWarp.State;
 
 public partial class TimeWarpStateComponent

@@ -2,6 +2,11 @@
 // Value-equality wrapper over ImmutableArray so incremental generator models cache correctly.
 #endregion
 
+#region Design
+// Readonly struct comparing by sequence with an order-sensitive hash; default and empty count as equal. Used by
+// the action catalog generator's records.
+#endregion
+
 namespace TimeWarp.State.SourceGenerator;
 
 internal readonly struct EquatableArray<T> : IEquatable<EquatableArray<T>>, IEnumerable<T>

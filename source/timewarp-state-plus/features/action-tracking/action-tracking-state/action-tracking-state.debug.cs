@@ -1,3 +1,12 @@
+#region Purpose
+// ActionTrackingState's Redux DevTools Hydrate and a test-only Initialize.
+#endregion
+
+#region Design
+// Hydrate restores only the Guid; the in-flight action list is not rehydrated. Initialize is guarded by
+// ThrowIfNotTestAssembly.
+#endregion
+
 namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState
