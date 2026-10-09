@@ -53,7 +53,7 @@ Library membership is declared with assembly attributes:
 
 Hosts add their own behaviors with `[assembly: MediatorBehavior(typeof(MyBehavior<,>), order: 500+, Scope = typeof(ClientPipeline))]`.
 
-`AddTimeWarpState` still configures options (Redux DevTools, assemblies) but does **not** register mediator pipeline behaviors.
+`AddTimeWarpState` still configures options (assemblies, and Redux DevTools when TimeWarp.State.Blazor is referenced) but does **not** register mediator pipeline behaviors. Blazor hosts also call `AddTimeWarpStateBlazor`.
 
 Extend the pipeline by implementing `IPipelineBehavior<TRequest, TResponse>` (TimeWarp.Mediator).
 See [`tests/test-app/test-app-client/features/event-stream/pipeline/event-stream-behavior.cs`](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/tests/test-app/test-app-client/features/event-stream/pipeline/event-stream-behavior.cs) for an example.

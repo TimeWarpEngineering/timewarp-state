@@ -13,6 +13,7 @@ rejected.
 
 ```csharp
 builder.Services.AddTimeWarpState();
+builder.Services.AddTimeWarpStateBlazor();
 builder.Services.AddJavaScriptDispatch
 (
   b => b
@@ -23,7 +24,7 @@ builder.Services.AddJavaScriptDispatch
 
 `Allow<TAction>()` requires `TAction : class, IAction`, so only actions can be allowed. `Allow(Type)` checks the
 same rule at startup and throws for non-action types. Call `AddJavaScriptDispatch` as often as you like and in
-any order relative to `AddTimeWarpState`.
+any order relative to `AddTimeWarpState` and `AddTimeWarpStateBlazor`. `AddJavaScriptDispatch` and `AddTimeWarpStateBlazor` are in the `TimeWarp.State.Blazor` package.
 
 Render `<TimeWarpJavaScriptInterop />` once (for example in your layout) to register the handler with JavaScript.
 

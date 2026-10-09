@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <Title>TimeWarp State Blazor</Title>
+    <Description>Blazor components, JavaScript interop, render subscriptions, and Redux DevTools for TimeWarp.State.</Description>
+    <PackageId>TimeWarp.State.Blazor</PackageId>
+    <AssemblyName>TimeWarp.State.Blazor</AssemblyName>
+    <RootNamespace>TimeWarp.State.Blazor</RootNamespace>
+    <PackageTags>TimeWarp.State; TimeWarp.State.Blazor; Blazor; State; Redux; Flux</PackageTags>
+    <IsPackable>true</IsPackable>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <StaticWebAssetBasePath>TimeWarp.State</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.TypeScript.MSBuild">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\timewarp-state\timewarp-state.csproj" />
+    <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="timewarp-state-tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".\readme.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <Target Name="RemoveTSConfigFileFromPackage" AfterTargets="CompileTypeScriptWithTSConfig">
+    <ItemGroup>
+      <Content Remove="**\tsconfig.json" />
+    </ItemGroup>
+  </Target>
+</Project>

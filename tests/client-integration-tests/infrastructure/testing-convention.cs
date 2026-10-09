@@ -5,7 +5,7 @@
 #region Design
 // Starts Test.App.Server with WebApplicationFactory and hands its HttpClient to the client services, so actions that
 // call the API hit a real server. Registers AddGeneratedMediator<ClientPipeline> (with the test app's compile-time
-// behaviors), AddTimeWarpState and AddActionCatalog for Test.App.Client and TimeWarp.State.Plus. Test.App.Server is
+// behaviors), AddTimeWarpState, AddTimeWarpStateBlazor and AddActionCatalog for Test.App.Client and TimeWarp.State.Plus. Test.App.Server is
 // referenced with the TestAppServer extern alias so its DI extension does not clash. No Blazored storage is
 // registered, so persistence is inert here.
 #endregion
@@ -60,6 +60,7 @@ public class TestingConvention() : TimeWarp.Fixie.TestingConvention(ConfigureAdd
           typeof(TimeWarp.State.Plus.AssemblyMarker).GetTypeInfo().Assembly
         }
     );
+    serviceCollection.AddTimeWarpStateBlazor();
 
     serviceCollection.AddActionCatalog
     (

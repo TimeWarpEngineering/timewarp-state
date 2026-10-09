@@ -16,7 +16,7 @@
 
 ![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
 
-TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.
+TimeWarp.State.Plus extends TimeWarp.State with routing, persistence, and action tracking for Blazor applications. It depends on TimeWarp.State.Blazor. The package id stays `TimeWarp.State.Plus`.
 
 ### TimeWarp.State.Plus
 

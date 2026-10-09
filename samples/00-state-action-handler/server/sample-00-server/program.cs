@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Registers interactive server components, AddGeneratedMediator<ClientPipeline>() and AddTimeWarpState(),
+// Registers interactive server components, AddGeneratedMediator<ClientPipeline>(), AddTimeWarpState() and AddTimeWarpStateBlazor(),
 // then maps App with the interactive server render mode.
 #endregion
 
@@ -23,7 +23,8 @@ public class Program
         // generator into this host assembly, scoped to the client pipeline (see mediator-scope.cs).
         builder.Services.AddGeneratedMediator<ClientPipeline>();
 
-        builder.Services.AddTimeWarpState(); // Add this line
+        builder.Services.AddTimeWarpState();
+        builder.Services.AddTimeWarpStateBlazor();
 
         var app = builder.Build();
 

@@ -14,7 +14,7 @@ namespace TimeWarp.Features.RenderSubscriptions;
 
 /// <summary>
 /// Pipeline behavior that re-renders the subscribers of the enclosing state after an action is handled.
-/// Woven by <c>[assembly: MediatorBehavior]</c> in assembly-marker.cs; closes only onto <see cref="IAction"/> requests.
+/// Woven by <c>[assembly: MediatorBehavior]</c> in the TimeWarp.State.Blazor assembly marker; closes only onto <see cref="IAction"/> requests.
 /// </summary>
 /// <remarks>
 /// Public (not internal): the consuming host's generated mediator resolves the closed behavior type by name.

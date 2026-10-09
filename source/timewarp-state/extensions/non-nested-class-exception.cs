@@ -4,7 +4,8 @@
 
 #region Design
 // Derives from ArgumentException because it reports an invalid type argument. Only the message constructors are
-// provided.
+// provided. The type stays in TimeWarp.State: TypeExtensions.GetEnclosingStateType throws it, and it has no
+// Blazor dependency. The namespace stays TimeWarp.Features.RenderSubscriptions.
 #endregion
 
 namespace TimeWarp.Features.RenderSubscriptions;

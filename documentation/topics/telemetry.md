@@ -14,6 +14,7 @@ This is the **observation** half of Redux DevTools (action log, timing, optional
 ```csharp
 builder.Services.AddGeneratedMediator<ClientPipeline>();
 builder.Services.AddTimeWarpState();
+builder.Services.AddTimeWarpStateBlazor();
 builder.Services.AddTimeWarpStateTelemetry();
 
 builder.Services.AddOpenTelemetry()

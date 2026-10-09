@@ -25,7 +25,7 @@ public static partial class ServiceCollectionExtensions
     reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
 
     // ReduxDevToolsBehavior is woven at compile time ([assembly: MediatorBehavior] in
-    // assembly-marker.cs) and CommitHandler/StartHandler are linked by the host's generator.
+    // TimeWarp.State.Blazor assembly-marker.cs) and CommitHandler/StartHandler are linked by the host's generator.
     // Registering ReduxDevToolsOptions here is what switches the behavior on: it resolves the
     // options as an optional dependency and is a pass-through when UseReduxDevTools was not called.
     serviceCollection.AddScoped<ReduxDevToolsInterop>();
@@ -39,4 +39,7 @@ public static partial class ServiceCollectionExtensions
 
     return timeWarpStateOptions;
   }
+
+  private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) =>
+    serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
 }

@@ -17,6 +17,7 @@ builder.Services.AddTimeWarpState(options =>
 {
   options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+builder.Services.AddTimeWarpStateBlazor();
 builder.Services.AddScoped<IPersistenceService, PersistenceService>();
 ```
 

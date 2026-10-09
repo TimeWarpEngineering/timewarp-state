@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="TimeWarp.State" />
+    <PackageReference Include="TimeWarp.State.Blazor" />
     <PackageReference Include="TimeWarp.State.Telemetry" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />

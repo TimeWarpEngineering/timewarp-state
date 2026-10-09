@@ -12,6 +12,7 @@
     <PackageReference Include="Blazored.LocalStorage" />
     <PackageReference Include="Blazored.SessionStorage" />
     <PackageReference Include="TimeWarp.State" />
+    <PackageReference Include="TimeWarp.State.Blazor" />
     <PackageReference Include="TimeWarp.State.Plus" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
   </ItemGroup>

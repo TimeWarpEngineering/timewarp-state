@@ -153,6 +153,7 @@ public class Should_
     ServiceCollection services = new();
     configure(services);
     services.AddTimeWarpState(options => options.Assemblies = [typeof(Should_).Assembly]);
+    services.AddTimeWarpStateBlazor();
     ServiceProvider serviceProvider = services.BuildServiceProvider();
 
     return new

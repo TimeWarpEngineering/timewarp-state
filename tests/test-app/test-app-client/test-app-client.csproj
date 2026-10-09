@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" />
     <!-- The consuming app owns the TimeWarp.Mediator source generator: it runs here and this app's
          AddGeneratedMediator<ClientPipeline>() call registers handlers from this app plus the
-         referenced TimeWarp.State / TimeWarp.State.Plus assemblies. -->
+         referenced TimeWarp.State, TimeWarp.State.Blazor and TimeWarp.State.Plus assemblies. -->
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
 <!--    <PackageReference Include="TimeWarp.State" />-->
 <!--    <PackageReference Include="TimeWarp.State.Plus" />-->
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\source\timewarp-state\timewarp-state.csproj" />
+    <ProjectReference Include="..\..\..\source\timewarp-state-blazor\timewarp-state-blazor.csproj" />
     <ProjectReference Include="..\..\..\source\timewarp-state-plus\timewarp-state-plus.csproj" />
     <ProjectReference Include="..\..\..\source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

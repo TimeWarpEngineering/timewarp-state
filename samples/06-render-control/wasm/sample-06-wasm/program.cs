@@ -5,7 +5,7 @@
 #region Design
 // CaptureRenderCaller is off by default so ShouldRender, SetParametersAsync, and StateHasChanged
 // skip StackTrace. This host turns it on because the page prints ShouldRenderWasCalledBy.
-// UseReduxDevTools satisfies CommitHandler, which the mediator links even when the sample
+// AddTimeWarpStateBlazor registers render subscriptions. UseReduxDevTools satisfies CommitHandler, which the mediator links even when the sample
 // does not show the extension. The component that would call InitAsync is absent.
 // AddGeneratedMediator is emitted into this assembly. There is no reflection AddMediator call.
 #endregion
@@ -37,6 +37,7 @@ public class Program
         options.UseReduxDevTools();
       }
     );
+    builder.Services.AddTimeWarpStateBlazor();
 
     await builder.Build().RunAsync();
   }
