@@ -40,6 +40,8 @@ internal partial class Store : IReduxDevToolsStore
   /// Needed for ReduxDevTools time travel
   /// </summary>
   /// <param name="jsonString"></param>
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Redux DevTools time travel only: deserializes untyped JSON into Dictionary<string, object>. Follow-up: replace with generated hydration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Redux DevTools time travel only: deserializes untyped JSON into Dictionary<string, object>. Follow-up: replace with generated hydration.")]
   public void LoadStatesFromJson(string jsonString)
   {
     if (string.IsNullOrWhiteSpace(jsonString))

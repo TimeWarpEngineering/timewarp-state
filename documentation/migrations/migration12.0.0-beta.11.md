@@ -13,16 +13,24 @@ title: Migrate to 12.0.0-beta.11
 
 ### Build errors (TWSG002)
 
-The generator fails the build when it cannot clone a reachable member. Typical causes:
+The generator fails the build when it cannot clone a reachable member. The error is reported at that member and names the state it was reached from. Typical causes:
 
-- a field typed as `object`
-- a type in another assembly whose shape is not an auto-property, a known collection, or `ICloneable`
-- no constructor the generated code can call (public, or internal in the same assembly). Protected constructors do not count
+- a field typed as `object`, or as an interface or abstract class with no implementation in the compilation
+- a type in another assembly whose fields the generator cannot all see. A `ProjectReference` compiles against a reference assembly, which hides private fields, so a DTO from a sibling project is accepted only when it has nothing but auto-properties. Add `<ProduceReferenceAssembly>false</ProduceReferenceAssembly>` to that project so the generator can inspect its fields, or implement `ICloneable`
+- a framework class with private state, for example `MemoryStream` (known collections and `StringBuilder` are supported)
 - an open generic, a pointer, or a ref struct
 
 Fix the member, or implement `ICloneable` on that type. `ICloneable.Clone` must return a new instance whose `Guid` is not empty and not equal to the source. Leave `Guid` to the constructor (mark it `[IgnoreDataMember]` if you copy fields yourself).
 
 Types that are not states, and that you clone with `.Clone()`, need `[GenerateClone]` from `TimeWarp.State`.
+
+### Constructors
+
+The clone creates each instance with a constructor: the parameterless one at any accessibility, otherwise the accessible one with the fewest parameters, otherwise any constructor through `[UnsafeAccessor]`. Arguments are the declared defaults or `default`. A state constructor that takes services must accept `null`, and a field that stores a service should be marked `[IgnoreDataMember]` or `[JsonIgnore]`. Otherwise implement `ICloneable`.
+
+### Runtime types
+
+A member typed as a non-sealed class, an abstract class, or an interface is cloned by its runtime type, using the types the generator saw in the compilation. A subclass declared in another assembly throws `InvalidOperationException` when cloned unless it implements `ICloneable`. A collection interface holding a value of an unknown type (a LINQ iterator, for example) is copied into a `List<T>`, `HashSet<T>`, or `Dictionary<TKey,TValue>`.
 
 ### TWS001
 

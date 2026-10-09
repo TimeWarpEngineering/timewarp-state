@@ -11,7 +11,7 @@ namespace TimeWarp.State.SourceGenerator.Tests;
 
 internal static class StateCloneGeneratorTestDriver
 {
-  public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) Run(string source)
+  public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) Run(string source, bool allowUnsafe = false)
   {
     SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
     IEnumerable<MetadataReference> references =
@@ -26,7 +26,12 @@ internal static class StateCloneGeneratorTestDriver
       assemblyName: "CloneGeneratorTests",
       syntaxTrees: [syntaxTree],
       references: references,
-      options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable)
+      options: new CSharpCompilationOptions
+      (
+        OutputKind.DynamicallyLinkedLibrary,
+        nullableContextOptions: NullableContextOptions.Enable,
+        allowUnsafe: allowUnsafe
+      )
     );
 
     GeneratorDriver driver = CSharpGeneratorDriver.Create(new StateCloneSourceGenerator().AsSourceGenerator());
@@ -42,7 +47,8 @@ internal static class StateCloneGeneratorTestDriver
 
   public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) RunWithMetadataBase(
     string baseSource,
-    string derivedSource)
+    string derivedSource,
+    bool referenceAssembly = false)
   {
     CSharpParseOptions parseOptions = new(LanguageVersion.Latest);
     IEnumerable<MetadataReference> platform =
@@ -61,7 +67,10 @@ internal static class StateCloneGeneratorTestDriver
     );
 
     using MemoryStream baseImage = new();
-    Microsoft.CodeAnalysis.Emit.EmitResult emit = baseCompilation.Emit(baseImage);
+    // A metadata-only image without private members is what a project reference compiles against
+    // (ProduceReferenceAssembly): it carries [ReferenceAssembly] and drops private class fields.
+    Microsoft.CodeAnalysis.Emit.EmitOptions emitOptions = new(metadataOnly: referenceAssembly, includePrivateMembers: !referenceAssembly);
+    Microsoft.CodeAnalysis.Emit.EmitResult emit = baseCompilation.Emit(baseImage, options: emitOptions);
     if (!emit.Success)
     {
       throw new InvalidOperationException(string.Join(Environment.NewLine, emit.Diagnostics));

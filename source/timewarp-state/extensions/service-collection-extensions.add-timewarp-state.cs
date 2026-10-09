@@ -71,6 +71,11 @@ public static partial class ServiceCollectionExtensions
     serviceCollection.TryAddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
   }
 
+  // Known trim-unsafe assembly scan, kept until states are registered by generated code (follow-up in task 097 Results).
+  // Blazor and console hosts do not trim application assemblies by default (TrimMode=partial), so the scanned state
+  // types and their constructors survive; a host that trims its own assembly must root its states.
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "State discovery scans the configured application assemblies, which are not trimmed by default. Follow-up: generated state registration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "State types come from the application assembly scan; their public constructors are kept because application assemblies are not trimmed by default. Follow-up: generated state registration.")]
   private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
   {
     foreach (Assembly assembly in timeWarpStateOptions.Assemblies)

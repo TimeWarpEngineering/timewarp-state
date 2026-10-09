@@ -4,8 +4,17 @@
 
 #region Design
 // Share immutable static types. Clone everything else with constructors plus UnsafeAccessor field writes.
-// Collections are rebuilt through their public API. Cycles use a method name assigned before the body exists.
-// Diagnostics are reported only for types reachable from a state or [GenerateClone] root.
+// Accessors live in one holder class per declaring type definition. A generic declaring type gets a generic holder
+// whose type parameters mirror the definition (the .NET 9+ generic UnsafeAccessor rule), so fields typed T resolve.
+// Collections are rebuilt through their public API. Collection interfaces switch on the BCL and compilation types
+// assignable to them and otherwise materialize into List<T>, HashSet<T> or Dictionary<TKey,TValue>.
+// A non-sealed class dispatches on the runtime type: derived types in the compilation first, the exact cloner when
+// the runtime type matches, then ICloneable, else a throw (a subtype the generator never saw).
+// Types from other assemblies are cloned only when their full field list is known: TimeWarp.State's own types, or an
+// implementation assembly inspected with MetadataImportOptions.All. Reference assemblies hide private fields, so
+// their non-collection classes and managed structs are TWSG002.
+// Cycles use a method name assigned before the body exists. Method names carry a stable hash so they never collide.
+// Diagnostics are reported once, at the source-located member that cannot be cloned, for types reachable from a root.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -13,11 +22,21 @@ namespace TimeWarp.State.SourceGenerator;
 internal sealed class StateClonePlanner
 {
   private static readonly SymbolDisplayFormat Format = SymbolDisplayFormat.FullyQualifiedFormat;
+  private const string UnsafeAccessor = "global::System.Runtime.CompilerServices.UnsafeAccessor";
+  private const string UnsafeAccessorKind = "global::System.Runtime.CompilerServices.UnsafeAccessorKind";
+  private const string GenericList = "global::System.Collections.Generic.List";
+  private const string GenericDictionary = "global::System.Collections.Generic.Dictionary";
 
   private readonly Compilation Compilation;
   private readonly Dictionary<ITypeSymbol, Slot> Slots = new(SymbolEqualityComparer.Default);
+  private readonly Dictionary<INamedTypeSymbol, Holder> Holders = new(SymbolEqualityComparer.Default);
+  private readonly Dictionary<INamedTypeSymbol, string?> MetadataProblems = new(SymbolEqualityComparer.Default);
+  private readonly HashSet<string> UsedNames = new(StringComparer.Ordinal);
+  private readonly HashSet<string> GenericCloneNames = new(StringComparer.Ordinal);
+  private readonly List<INamedTypeSymbol> SourceTypes = [];
   private readonly List<Slot> Roots = [];
   private readonly INamedTypeSymbol? StateType;
+  private Compilation? FullCompilation;
 
   public StateClonePlanner(Compilation compilation)
   {
@@ -33,12 +52,19 @@ internal sealed class StateClonePlanner
     }
 
     Walk(Compilation.Assembly.GlobalNamespace);
+    foreach (INamedTypeSymbol type in SourceTypes)
+    {
+      Consider(type);
+    }
+
     CollectClosedGenerateCloneTypes();
     PropagateErrors();
     Report(sourceContext);
     MaterializeDispatches();
     return Emit();
   }
+
+  #region Roots
 
   private void Walk(INamespaceSymbol namespaceSymbol)
   {
@@ -60,33 +86,54 @@ internal sealed class StateClonePlanner
       WalkType(nested);
     }
 
-    Consider(type);
+    SourceTypes.Add(type);
   }
 
+  // Only generic definitions marked [GenerateClone] need closed constructions, so only their names are bound.
   private void CollectClosedGenerateCloneTypes()
   {
+    if (GenericCloneNames.Count == 0)
+    {
+      return;
+    }
+
     foreach (SyntaxTree tree in Compilation.SyntaxTrees)
     {
-      SemanticModel model = Compilation.GetSemanticModel(tree);
+      SemanticModel? model = null;
       foreach (GenericNameSyntax genericName in tree.GetRoot().DescendantNodes().OfType<GenericNameSyntax>())
       {
+        if (!GenericCloneNames.Contains(genericName.Identifier.ValueText))
+        {
+          continue;
+        }
+
+        model ??= Compilation.GetSemanticModel(tree);
         if (model.GetSymbolInfo(genericName).Symbol is not INamedTypeSymbol symbol)
         {
           continue;
         }
 
-        if (symbol.IsUnboundGenericType || symbol.TypeArguments.Any(argument => argument.TypeKind == TypeKind.TypeParameter))
+        if (symbol.IsUnboundGenericType || symbol.TypeArguments.Any(ContainsTypeParameter))
         {
           continue;
         }
 
-        if (HasGenerateClone(symbol) || HasGenerateClone(symbol.OriginalDefinition))
+        if (HasGenerateClone(symbol.OriginalDefinition))
         {
           Consider(symbol);
         }
       }
     }
   }
+
+  private static bool ContainsTypeParameter(ITypeSymbol type) =>
+    type switch
+    {
+      ITypeParameterSymbol => true,
+      IArrayTypeSymbol array => ContainsTypeParameter(array.ElementType),
+      INamedTypeSymbol named => named.TypeArguments.Any(ContainsTypeParameter),
+      _ => false
+    };
 
   private void Consider(INamedTypeSymbol type)
   {
@@ -103,6 +150,11 @@ internal sealed class StateClonePlanner
     bool isState = IsState(type);
     if (type.IsGenericType && type.IsDefinition)
     {
+      if (HasGenerateClone(type))
+      {
+        GenericCloneNames.Add(type.Name);
+      }
+
       if (isState && !ImplementsICloneable(type))
       {
         Slot open = GetOrCreate(type);
@@ -136,6 +188,10 @@ internal sealed class StateClonePlanner
     Roots.Add(slot);
   }
 
+  #endregion
+
+  #region Slots
+
   private Slot Build(ITypeSymbol type)
   {
     type = Normalize(type);
@@ -145,17 +201,24 @@ internal sealed class StateClonePlanner
     }
 
     Slot slot = GetOrCreate(type);
-    if (slot.Kind != SlotKind.Pending)
+    Classify(slot, type);
+    if (slot.Kind == SlotKind.Clone && !slot.IsDispatch && type is INamedTypeSymbol named)
     {
-      return slot;
+      WrapForRuntimeType(slot, named);
     }
 
-    Classify(slot, type);
     return slot;
   }
 
-  private static ITypeSymbol Normalize(ITypeSymbol type) =>
-    type.WithNullableAnnotation(NullableAnnotation.None);
+  private static ITypeSymbol Normalize(ITypeSymbol type)
+  {
+    if (type is INamedTypeSymbol { IsTupleType: true, TupleUnderlyingType: { } underlying })
+    {
+      type = underlying;
+    }
+
+    return type.WithNullableAnnotation(NullableAnnotation.None);
+  }
 
   private Slot GetOrCreate(ITypeSymbol type)
   {
@@ -165,11 +228,12 @@ internal sealed class StateClonePlanner
       return existing;
     }
 
+    string fullyQualified = type.ToDisplayString(Format);
     Slot slot = new()
     {
       Type = type,
-      FullyQualified = type.ToDisplayString(Format),
-      MethodName = "Clone_" + Sanitize(type.ToDisplayString()),
+      FullyQualified = fullyQualified,
+      MethodName = UniqueName("Clone_" + Sanitize(type.ToDisplayString()), fullyQualified),
       IsValueType = type.IsValueType,
       Kind = SlotKind.Pending
     };
@@ -209,21 +273,45 @@ internal sealed class StateClonePlanner
       return;
     }
 
+    if (!CanName(named))
+    {
+      Fail(slot, $"'{named.ToDisplayString()}' is not accessible to generated code", LocationOf(named));
+      return;
+    }
+
     if (ImplementsICloneable(named))
     {
       ClassifyCloneable(slot, named);
       return;
     }
 
-    if (!CanName(named))
-    {
-      Fail(slot, "the type is not accessible to generated code", LocationOf(named));
-      return;
-    }
-
     if (named.SpecialType == SpecialType.System_Object)
     {
       Fail(slot, "System.Object can hold any runtime value", LocationOf(named));
+      return;
+    }
+
+    if (named.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T)
+    {
+      ClassifyNullable(slot, named);
+      return;
+    }
+
+    if (SymbolEquals(named.OriginalDefinition, "System.Collections.Generic.KeyValuePair`2"))
+    {
+      ClassifyKeyValuePair(slot, named);
+      return;
+    }
+
+    if (IsValueTuple(named))
+    {
+      ClassifyTuple(slot, named);
+      return;
+    }
+
+    if (SymbolEquals(named, "System.Text.StringBuilder"))
+    {
+      ClassifyStringBuilder(slot, named);
       return;
     }
 
@@ -234,13 +322,7 @@ internal sealed class StateClonePlanner
       return;
     }
 
-    if (named.TypeKind == TypeKind.Interface)
-    {
-      ClassifyInterface(slot, named);
-      return;
-    }
-
-    if (named.IsAbstract)
+    if (named.TypeKind == TypeKind.Interface || named.IsAbstract)
     {
       ClassifyInterface(slot, named);
       return;
@@ -252,8 +334,54 @@ internal sealed class StateClonePlanner
       return;
     }
 
+    if (named.IsValueType && named.IsUnmanagedType)
+    {
+      slot.Kind = SlotKind.Share;
+      return;
+    }
+
     ClassifyObject(slot, named);
   }
+
+  // A non-sealed class can hold a subtype at run time. The old reflection cloner cloned by runtime type, so the
+  // generated cloner dispatches: derived types in this compilation, then the exact cloner. A known BCL collection
+  // keeps materializing unknown subclasses into itself; any other unknown subtype throws.
+  private void WrapForRuntimeType(Slot slot, INamedTypeSymbol type)
+  {
+    if (type.TypeKind != TypeKind.Class || type.IsSealed || type.IsAbstract || type.IsStatic)
+    {
+      return;
+    }
+
+    List<INamedTypeSymbol> derived = FindDerived(type);
+    bool knownCollection = MatchConcrete(type) != CollectionKind.None;
+    if (knownCollection && derived.Count == 0)
+    {
+      return;
+    }
+
+    string exactName = slot.MethodName + "_Exact";
+    UsedNames.Add(exactName);
+    slot.Exact = new Slot
+    {
+      Type = type,
+      FullyQualified = slot.FullyQualified,
+      MethodName = exactName,
+      Kind = SlotKind.Clone,
+      Statements = slot.Statements
+    };
+    slot.ExactIsFallback = knownCollection;
+    slot.IsDispatch = true;
+    slot.Statements = null;
+    foreach (INamedTypeSymbol subtype in derived)
+    {
+      AddCase(slot, subtype, "typed", required: true, guard: false);
+    }
+  }
+
+  #endregion
+
+  #region Special shapes
 
   private void ClassifyArray(Slot slot, IArrayTypeSymbol array)
   {
@@ -261,12 +389,11 @@ internal sealed class StateClonePlanner
     slot.Dependencies.Add(element);
     if (element.Kind == SlotKind.Error)
     {
-      Fail(slot, $"array element '{array.ElementType.ToDisplayString()}' cannot be cloned", LocationOf(array));
+      Fail(slot, $"array element '{array.ElementType.ToDisplayString()}' cannot be cloned", LocationOf(array), element);
       return;
     }
 
     slot.Kind = SlotKind.Clone;
-    string elementName = array.ElementType.ToDisplayString(Format);
     string arrayName = array.ToDisplayString(Format);
     int rank = array.Rank;
     List<string> lines = [];
@@ -280,7 +407,7 @@ internal sealed class StateClonePlanner
     }
 
     string lengths = string.Join(", ", Enumerable.Range(0, rank).Select(dimension => $"length{dimension}"));
-    lines.Add($"{arrayName} clone = new {elementName}[{lengths}];");
+    lines.Add($"{arrayName} clone = {NewArrayExpression(array, lengths)};");
     lines.Add("map.Add(source, clone);");
     if (element.Kind == SlotKind.Share)
     {
@@ -305,6 +432,20 @@ internal sealed class StateClonePlanner
 
     lines.Add("return clone;");
     slot.Statements = lines;
+  }
+
+  // new T[n] for a jagged element type T = U[] must be written new U[n][], not new U[][n].
+  private static string NewArrayExpression(IArrayTypeSymbol array, string lengths)
+  {
+    ITypeSymbol element = array.ElementType;
+    StringBuilder suffix = new();
+    while (element is IArrayTypeSymbol inner)
+    {
+      suffix.Append('[').Append(new string(',', inner.Rank - 1)).Append(']');
+      element = inner.ElementType;
+    }
+
+    return $"new {element.ToDisplayString(Format)}[{lengths}]{suffix}";
   }
 
   private void ClassifyCloneable(Slot slot, INamedTypeSymbol type)
@@ -337,9 +478,117 @@ internal sealed class StateClonePlanner
     ];
   }
 
+  private void ClassifyNullable(Slot slot, INamedTypeSymbol type)
+  {
+    Slot inner = Build(type.TypeArguments[0]);
+    slot.Dependencies.Add(inner);
+    if (inner.Kind == SlotKind.Error)
+    {
+      Fail(slot, $"'{type.TypeArguments[0].ToDisplayString()}' cannot be cloned", LocationOf(type), inner);
+      return;
+    }
+
+    if (inner.Kind == SlotKind.Share)
+    {
+      slot.Kind = SlotKind.Share;
+      return;
+    }
+
+    slot.Kind = SlotKind.Clone;
+    slot.Statements =
+    [
+      "if (!source.HasValue)",
+      "{",
+      "  return null;",
+      "}",
+      $"return {CopyExpression(inner, "source.GetValueOrDefault()")};"
+    ];
+  }
+
+  private void ClassifyKeyValuePair(Slot slot, INamedTypeSymbol type)
+  {
+    Slot key = Build(type.TypeArguments[0]);
+    Slot value = Build(type.TypeArguments[1]);
+    slot.Dependencies.Add(key);
+    slot.Dependencies.Add(value);
+    if (key.Kind == SlotKind.Error || value.Kind == SlotKind.Error)
+    {
+      Fail(slot, "a key or value cannot be cloned", LocationOf(type), key.Kind == SlotKind.Error ? key : value);
+      return;
+    }
+
+    if (key.Kind == SlotKind.Share && value.Kind == SlotKind.Share)
+    {
+      slot.Kind = SlotKind.Share;
+      return;
+    }
+
+    slot.Kind = SlotKind.Clone;
+    slot.Statements =
+    [
+      $"return new {type.ToDisplayString(Format)}({CopyExpression(key, "source.Key")}, {CopyExpression(value, "source.Value")});"
+    ];
+  }
+
+  private bool IsValueTuple(INamedTypeSymbol type) =>
+    type.IsTupleType
+    || type.IsValueType && type.ContainingNamespace?.ToDisplayString() == "System" && type.Name == "ValueTuple" && type.Arity > 0;
+
+  // ValueTuple fields are public and mutable, so they are assigned directly; no accessor is needed.
+  private void ClassifyTuple(Slot slot, INamedTypeSymbol type)
+  {
+    List<string> lines = [$"{type.ToDisplayString(Format)} clone = source;"];
+    for (int index = 0; index < type.TypeArguments.Length; index++)
+    {
+      string field = index == 7 ? "Rest" : $"Item{index + 1}";
+      Slot item = Build(type.TypeArguments[index]);
+      slot.Dependencies.Add(item);
+      if (item.Kind == SlotKind.Error)
+      {
+        Fail(slot, $"tuple element {field} cannot be cloned", LocationOf(type), item);
+        return;
+      }
+
+      if (item.Kind != SlotKind.Share)
+      {
+        lines.Add($"clone.{field} = {CopyExpression(item, $"source.{field}")};");
+      }
+    }
+
+    if (lines.Count == 1)
+    {
+      slot.Kind = SlotKind.Share;
+      return;
+    }
+
+    lines.Add("return clone;");
+    slot.Kind = SlotKind.Clone;
+    slot.Statements = lines;
+  }
+
+  private static void ClassifyStringBuilder(Slot slot, INamedTypeSymbol type)
+  {
+    string name = type.ToDisplayString(Format);
+    slot.Kind = SlotKind.Clone;
+    slot.Statements =
+    [
+      $"if (map.TryGet(source, out {name}? existing))",
+      "{",
+      "  return existing;",
+      "}",
+      $"{name} clone = new(source.ToString(), source.Capacity);",
+      "map.Add(source, clone);",
+      "return clone;"
+    ];
+  }
+
+  #endregion
+
+  #region Collections
+
   private void ClassifyCollection(Slot slot, INamedTypeSymbol type, CollectionKind kind)
   {
-    if (kind is CollectionKind.Dictionary or CollectionKind.ImmutableDictionary or CollectionKind.FrozenDictionary)
+    if (IsDictionaryKind(kind))
     {
       if (!TryDictionaryArguments(type, out ITypeSymbol? key, out ITypeSymbol? value))
       {
@@ -353,25 +602,20 @@ internal sealed class StateClonePlanner
       slot.Dependencies.Add(valueSlot);
       if (keySlot.Kind == SlotKind.Error || valueSlot.Kind == SlotKind.Error)
       {
-        Fail(slot, "a dictionary key or value cannot be cloned", LocationOf(type));
+        Fail(slot, "a dictionary key or value cannot be cloned", LocationOf(type), keySlot.Kind == SlotKind.Error ? keySlot : valueSlot);
         return;
       }
 
-      if (kind == CollectionKind.FrozenDictionary)
-      {
-        if (keySlot.Kind == SlotKind.Share && valueSlot.Kind == SlotKind.Share)
-        {
-          slot.Kind = SlotKind.Share;
-          return;
-        }
-
-        Fail(slot, "FrozenDictionary of mutable elements is not supported", LocationOf(type));
-        return;
-      }
-
-      if (kind == CollectionKind.ImmutableDictionary && keySlot.Kind == SlotKind.Share && valueSlot.Kind == SlotKind.Share)
+      bool sharedElements = keySlot.Kind == SlotKind.Share && valueSlot.Kind == SlotKind.Share;
+      if (sharedElements && kind is CollectionKind.ImmutableDictionary or CollectionKind.ImmutableSortedDictionary or CollectionKind.FrozenDictionary)
       {
         slot.Kind = SlotKind.Share;
+        return;
+      }
+
+      if (kind == CollectionKind.DictionaryInterface)
+      {
+        ClassifyDictionaryInterface(slot, type, keySlot, valueSlot);
         return;
       }
 
@@ -389,99 +633,164 @@ internal sealed class StateClonePlanner
     slot.Dependencies.Add(element);
     if (element.Kind == SlotKind.Error)
     {
-      Fail(slot, $"element '{elementType!.ToDisplayString()}' cannot be cloned", LocationOf(type));
+      Fail(slot, $"element '{elementType!.ToDisplayString()}' cannot be cloned", LocationOf(type), element);
       return;
     }
 
-    if (kind is CollectionKind.ImmutableArray or CollectionKind.ImmutableList or CollectionKind.ImmutableHashSet
-        or CollectionKind.ImmutableQueue or CollectionKind.ImmutableStack or CollectionKind.FrozenSet)
+    if (element.Kind == SlotKind.Share && IsImmutableKind(kind))
     {
-      if (element.Kind == SlotKind.Share)
-      {
-        slot.Kind = SlotKind.Share;
-        return;
-      }
+      slot.Kind = SlotKind.Share;
+      return;
+    }
 
-      if (kind == CollectionKind.FrozenSet)
-      {
-        Fail(slot, "FrozenSet of mutable elements is not supported", LocationOf(type));
-        return;
-      }
+    if (kind == CollectionKind.EnumerableInterface)
+    {
+      ClassifyEnumerableInterface(slot, type, element);
+      return;
     }
 
     ClassifyEnumerableCollection(slot, type, kind, element);
   }
 
-  private void ClassifyDictionary(
-    Slot slot,
-    INamedTypeSymbol type,
-    CollectionKind kind,
-    Slot keySlot,
-    Slot valueSlot)
+  private static bool IsDictionaryKind(CollectionKind kind) =>
+    kind is CollectionKind.Dictionary
+      or CollectionKind.SortedDictionary
+      or CollectionKind.SortedList
+      or CollectionKind.ConcurrentDictionary
+      or CollectionKind.ReadOnlyDictionary
+      or CollectionKind.ImmutableDictionary
+      or CollectionKind.ImmutableSortedDictionary
+      or CollectionKind.FrozenDictionary
+      or CollectionKind.DictionaryInterface;
+
+  private static bool IsImmutableKind(CollectionKind kind) =>
+    kind is CollectionKind.ImmutableArray
+      or CollectionKind.ImmutableList
+      or CollectionKind.ImmutableHashSet
+      or CollectionKind.ImmutableSortedSet
+      or CollectionKind.ImmutableQueue
+      or CollectionKind.ImmutableStack
+      or CollectionKind.FrozenSet;
+
+  private void ClassifyDictionary(Slot slot, INamedTypeSymbol type, CollectionKind kind, Slot keySlot, Slot valueSlot)
   {
-    slot.Kind = SlotKind.Clone;
     string name = type.ToDisplayString(Format);
+    string keyName = keySlot.FullyQualified;
+    string valueName = valueSlot.FullyQualified;
     string keyCopy = CopyExpression(keySlot, "pair.Key");
     string valueCopy = CopyExpression(valueSlot, "pair.Value");
-    List<string> lines = [];
-    if (!type.IsValueType)
+    bool exact = SymbolEquals(type.OriginalDefinition, DefinitionName(kind));
+    List<string> lines =
+    [
+      $"if (map.TryGet(source, out {name}? existing))",
+      "{",
+      "  return existing;",
+      "}"
+    ];
+
+    switch (kind)
     {
-      lines.Add($"if (map.TryGet(source, out {name}? existing))");
-      lines.Add("{");
-      lines.Add("  return existing;");
-      lines.Add("}");
+      case CollectionKind.ImmutableDictionary:
+      case CollectionKind.ImmutableSortedDictionary:
+        string factory = kind == CollectionKind.ImmutableDictionary ? "ImmutableDictionary" : "ImmutableSortedDictionary";
+        lines.Add($"var builder = global::System.Collections.Immutable.{factory}.CreateBuilder<{keyName}, {valueName}>(source.KeyComparer, source.ValueComparer);");
+        AppendForEachPair(lines, $"builder.Add({keyCopy}, {valueCopy});");
+        lines.Add($"{name} clone = builder.ToImmutable();");
+        lines.Add("map.Add(source, clone);");
+        lines.Add("return clone;");
+        break;
+      case CollectionKind.FrozenDictionary:
+        lines.Add($"{GenericDictionary}<{keyName}, {valueName}> items = new(source.Count, source.Comparer);");
+        AppendForEachPair(lines, $"items.Add({keyCopy}, {valueCopy});");
+        lines.Add($"{name} clone = global::System.Collections.Frozen.FrozenDictionary.ToFrozenDictionary(items, source.Comparer);");
+        lines.Add("map.Add(source, clone);");
+        lines.Add("return clone;");
+        break;
+      case CollectionKind.ReadOnlyDictionary:
+        if (!exact)
+        {
+          Fail(slot, "a subclass of ReadOnlyDictionary cannot be rebuilt", LocationOf(type));
+          return;
+        }
+
+        lines.Add($"{GenericDictionary}<{keyName}, {valueName}> items = new(source.Count);");
+        lines.Add($"{name} clone = new(items);");
+        lines.Add("map.Add(source, clone);");
+        AppendForEachPair(lines, $"items.Add({keyCopy}, {valueCopy});");
+        lines.Add("return clone;");
+        break;
+      default:
+        if (exact)
+        {
+          lines.Add(kind switch
+          {
+            CollectionKind.SortedDictionary => $"{name} clone = new(source.Comparer);",
+            CollectionKind.ConcurrentDictionary => $"{name} clone = new(source.Comparer);",
+            _ => $"{name} clone = new(source.Count, source.Comparer);"
+          });
+        }
+        else if (!TryEmitConstruction(type, lines, out string? problem))
+        {
+          Fail(slot, problem!, LocationOf(type));
+          return;
+        }
+
+        lines.Add("map.Add(source, clone);");
+        if (!exact)
+        {
+          AppendExtraFields(slot, type, lines, CollectionDefinition(type));
+          if (slot.Kind == SlotKind.Error)
+          {
+            return;
+          }
+
+          lines.Add("clone.Clear();");
+        }
+
+        string add = kind == CollectionKind.ConcurrentDictionary ? "TryAdd" : "Add";
+        AppendForEachPair(lines, $"clone.{add}({keyCopy}, {valueCopy});");
+        lines.Add("return clone;");
+        break;
     }
 
-    if (kind == CollectionKind.ImmutableDictionary)
-    {
-      lines.Add("var builder = global::System.Collections.Immutable.ImmutableDictionary.CreateBuilder<" +
-                $"{keySlot.FullyQualified}, {valueSlot.FullyQualified}>(source.KeyComparer, source.ValueComparer);");
-      lines.Add("foreach (var pair in source)");
-      lines.Add("{");
-      lines.Add($"  builder.Add({keyCopy}, {valueCopy});");
-      lines.Add("}");
-      lines.Add("return builder.ToImmutable();");
-      slot.Statements = lines;
-      return;
-    }
+    slot.Kind = SlotKind.Clone;
+    slot.Statements = lines;
+  }
 
-    bool exact = SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.Dictionary`2");
-    if (exact)
-    {
-      lines.Add($"{name} clone = new(source.Count, source.Comparer);");
-    }
-    else if (!TryEmitConstruction(type, lines, out string? problem))
-    {
-      Fail(slot, problem!, LocationOf(type));
-      return;
-    }
-
-    lines.Add("map.Add(source, clone);");
-    AppendExtraFields(slot, type, lines, StopBeforeDictionary(type));
+  private static void AppendForEachPair(List<string> lines, string statement)
+  {
     lines.Add("foreach (var pair in source)");
     lines.Add("{");
-    lines.Add($"  clone.Add({keyCopy}, {valueCopy});");
+    lines.Add($"  {statement}");
     lines.Add("}");
-    lines.Add("return clone;");
-    slot.Statements = lines;
+  }
+
+  private static void AppendForEachItem(List<string> lines, string statement)
+  {
+    lines.Add("foreach (var item in source)");
+    lines.Add("{");
+    lines.Add($"  {statement}");
+    lines.Add("}");
   }
 
   private void ClassifyEnumerableCollection(Slot slot, INamedTypeSymbol type, CollectionKind kind, Slot element)
   {
-    if (type.TypeKind == TypeKind.Interface)
-    {
-      ClassifyCollectionInterface(slot, type, kind, element);
-      return;
-    }
-
-    slot.Kind = SlotKind.Clone;
     string name = type.ToDisplayString(Format);
+    string elementName = element.FullyQualified;
     string copy = CopyExpression(element, "item");
+    bool exact = SymbolEquals(type.OriginalDefinition, DefinitionName(kind));
     List<string> lines = [];
-    if (type.IsValueType)
+    slot.Kind = SlotKind.Clone;
+    slot.Statements = lines;
+    if (kind == CollectionKind.ImmutableArray)
     {
-      AppendImmutableStruct(kind, lines, element, copy);
-      slot.Statements = lines;
+      lines.Add("if (source.IsDefault)");
+      lines.Add("{");
+      lines.Add("  return default;");
+      lines.Add("}");
+      lines.Add($"var builder = global::System.Collections.Immutable.ImmutableArray.CreateBuilder<{elementName}>(source.Length);");
+      AppendForEachItem(lines, $"builder.Add({copy});");
+      lines.Add("return builder.MoveToImmutable();");
       return;
     }
 
@@ -489,35 +798,71 @@ internal sealed class StateClonePlanner
     lines.Add("{");
     lines.Add("  return existing;");
     lines.Add("}");
+    switch (kind)
+    {
+      case CollectionKind.ImmutableList:
+      case CollectionKind.ImmutableHashSet:
+      case CollectionKind.ImmutableSortedSet:
+        string factory = kind switch
+        {
+          CollectionKind.ImmutableHashSet => $"ImmutableHashSet.CreateBuilder<{elementName}>(source.KeyComparer)",
+          CollectionKind.ImmutableSortedSet => $"ImmutableSortedSet.CreateBuilder<{elementName}>(source.KeyComparer)",
+          _ => $"ImmutableList.CreateBuilder<{elementName}>()"
+        };
+        lines.Add($"var builder = global::System.Collections.Immutable.{factory};");
+        AppendForEachItem(lines, $"builder.Add({copy});");
+        lines.Add($"{name} clone = builder.ToImmutable();");
+        lines.Add("map.Add(source, clone);");
+        lines.Add("return clone;");
+        return;
+      case CollectionKind.ImmutableQueue:
+        lines.Add($"{name} clone = {name}.Empty;");
+        AppendForEachItem(lines, $"clone = clone.Enqueue({copy});");
+        lines.Add("map.Add(source, clone);");
+        lines.Add("return clone;");
+        return;
+      case CollectionKind.ImmutableStack:
+        // Enumeration runs top to bottom, so push the copies back in reverse to keep the top on top.
+        lines.Add($"{GenericList}<{elementName}> buffer = new();");
+        AppendForEachItem(lines, $"buffer.Add({copy});");
+        lines.Add($"{name} clone = {name}.Empty;");
+        lines.Add("for (int index = buffer.Count - 1; index >= 0; index--)");
+        lines.Add("{");
+        lines.Add("  clone = clone.Push(buffer[index]);");
+        lines.Add("}");
+        lines.Add("map.Add(source, clone);");
+        lines.Add("return clone;");
+        return;
+      case CollectionKind.FrozenSet:
+        lines.Add($"{GenericList}<{elementName}> items = new(source.Count);");
+        AppendForEachItem(lines, $"items.Add({copy});");
+        lines.Add($"{name} clone = global::System.Collections.Frozen.FrozenSet.ToFrozenSet(items, source.Comparer);");
+        lines.Add("map.Add(source, clone);");
+        lines.Add("return clone;");
+        return;
+      case CollectionKind.ReadOnlyCollection:
+        if (!exact)
+        {
+          Fail(slot, "a subclass of ReadOnlyCollection cannot be rebuilt", LocationOf(type));
+          return;
+        }
 
-    bool exactList = SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.List`1");
-    bool exactHash = SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.HashSet`1");
-    bool exactStack = SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.Stack`1");
-    bool exactQueue = SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.Queue`1");
-    bool exactObservable = SymbolEquals(type.OriginalDefinition, "System.Collections.ObjectModel.ObservableCollection`1");
-    bool exactCollection = SymbolEquals(type.OriginalDefinition, "System.Collections.ObjectModel.Collection`1");
+        lines.Add($"{GenericList}<{elementName}> items = new(source.Count);");
+        lines.Add($"{name} clone = new(items);");
+        lines.Add("map.Add(source, clone);");
+        AppendForEachItem(lines, $"items.Add({copy});");
+        lines.Add("return clone;");
+        return;
+    }
 
-    if (exactList)
+    if (exact)
     {
-      lines.Add($"{name} clone = new(source.Count);");
-    }
-    else if (exactHash)
-    {
-      lines.Add($"{name} clone = new(source.Comparer);");
-    }
-    else if (exactStack || exactQueue)
-    {
-      lines.Add($"{name} clone = new(source.Count);");
-    }
-    else if (exactObservable || exactCollection)
-    {
-      lines.Add($"{name} clone = new();");
-    }
-    else if (kind is CollectionKind.ImmutableList or CollectionKind.ImmutableHashSet or CollectionKind.ImmutableQueue or CollectionKind.ImmutableStack)
-    {
-      AppendImmutableClass(kind, lines, element, copy, name);
-      slot.Statements = lines;
-      return;
+      lines.Add(kind switch
+      {
+        CollectionKind.List or CollectionKind.Stack or CollectionKind.Queue => $"{name} clone = new(source.Count);",
+        CollectionKind.HashSet or CollectionKind.SortedSet => $"{name} clone = new(source.Comparer);",
+        _ => $"{name} clone = new();"
+      });
     }
     else if (!TryEmitConstruction(type, lines, out string? problem))
     {
@@ -526,154 +871,184 @@ internal sealed class StateClonePlanner
     }
 
     lines.Add("map.Add(source, clone);");
-    INamedTypeSymbol? stop = CollectionDefinition(type);
-    AppendExtraFields(slot, type, lines, stop);
+    if (!exact)
+    {
+      AppendExtraFields(slot, type, lines, CollectionDefinition(type));
+      if (slot.Kind == SlotKind.Error)
+      {
+        return;
+      }
 
-    if (exactStack || kind == CollectionKind.Stack)
-    {
-      lines.Add($"{element.FullyQualified}[] buffer = new {element.FullyQualified}[source.Count];");
-      lines.Add("source.CopyTo(buffer, 0);");
-      lines.Add("for (int index = buffer.Length - 1; index >= 0; index--)");
-      lines.Add("{");
-      lines.Add($"  clone.Push({CopyExpression(element, "buffer[index]")});");
-      lines.Add("}");
+      lines.Add("clone.Clear();");
     }
-    else if (exactQueue || kind == CollectionKind.Queue)
+
+    switch (kind)
     {
-      lines.Add("foreach (var item in source)");
-      lines.Add("{");
-      lines.Add($"  clone.Enqueue({copy});");
-      lines.Add("}");
-    }
-    else if (exactList && element.Kind == SlotKind.Share)
-    {
-      lines.Add("clone.AddRange(source);");
-    }
-    else if (exactHash || kind == CollectionKind.HashSet)
-    {
-      lines.Add("foreach (var item in source)");
-      lines.Add("{");
-      lines.Add($"  clone.Add({copy});");
-      lines.Add("}");
-    }
-    else
-    {
-      lines.Add("foreach (var item in source)");
-      lines.Add("{");
-      lines.Add($"  clone.Add({copy});");
-      lines.Add("}");
+      case CollectionKind.Stack:
+        lines.Add($"{elementName}[] buffer = source.ToArray();");
+        lines.Add("for (int index = buffer.Length - 1; index >= 0; index--)");
+        lines.Add("{");
+        lines.Add($"  clone.Push({CopyExpression(element, "buffer[index]")});");
+        lines.Add("}");
+        break;
+      case CollectionKind.Queue:
+        AppendForEachItem(lines, $"clone.Enqueue({copy});");
+        break;
+      case CollectionKind.LinkedList:
+        AppendForEachItem(lines, $"clone.AddLast({copy});");
+        break;
+      case CollectionKind.List when exact && element.Kind == SlotKind.Share:
+        lines.Add("clone.AddRange(source);");
+        break;
+      default:
+        AppendForEachItem(lines, $"clone.Add({copy});");
+        break;
     }
 
     lines.Add("return clone;");
-    slot.Statements = lines;
   }
 
-  private static void AppendImmutableStruct(CollectionKind kind, List<string> lines, Slot element, string copy)
-  {
-    if (kind != CollectionKind.ImmutableArray)
-    {
-      lines.Add($"return global::System.Collections.Immutable.ImmutableArray.CreateRange(source, item => {copy});");
-      return;
-    }
-
-    lines.Add("if (source.IsDefault)");
-    lines.Add("{");
-    lines.Add("  return default;");
-    lines.Add("}");
-    lines.Add($"return global::System.Collections.Immutable.ImmutableArray.CreateRange(source, item => {copy});");
-  }
-
-  private static void AppendImmutableClass(
-    CollectionKind kind,
-    List<string> lines,
-    Slot element,
-    string copy,
-    string name)
-  {
-    string create = kind switch
-    {
-      CollectionKind.ImmutableHashSet =>
-        $"global::System.Collections.Immutable.ImmutableHashSet.CreateRange(source.KeyComparer, source.Select(item => {copy}))",
-      CollectionKind.ImmutableQueue =>
-        $"global::System.Collections.Immutable.ImmutableQueue.CreateRange(source.Select(item => {copy}))",
-      CollectionKind.ImmutableStack =>
-        $"global::System.Collections.Immutable.ImmutableStack.CreateRange(source.Select(item => {copy}))",
-      _ =>
-        $"global::System.Collections.Immutable.ImmutableList.CreateRange(source.Select(item => {copy}))"
-    };
-    lines.Add($"{name} clone = {create};");
-    lines.Add("map.Add(source, clone);");
-    lines.Add("return clone;");
-  }
-
-  private void ClassifyCollectionInterface(Slot slot, INamedTypeSymbol type, CollectionKind kind, Slot element)
+  private void ClassifyEnumerableInterface(Slot slot, INamedTypeSymbol type, Slot element)
   {
     slot.Kind = SlotKind.Clone;
     slot.IsDispatch = true;
-    if (kind == CollectionKind.DictionaryInterface)
+    ITypeSymbol elementType = element.Type;
+    AddCase(slot, Compilation.CreateArrayTypeSymbol(elementType), "array", required: false, guard: false);
+    foreach (string metadataName in EnumerableCaseTypes)
     {
-      AppendDictionaryInterfaceCases(type, slot);
+      AddConstructedCase(slot, metadataName, [elementType]);
     }
-    else
-    {
-      AppendEnumerableInterfaceCases(element, slot);
-    }
-  }
 
-  private void AppendEnumerableInterfaceCases(Slot element, Slot parent)
-  {
-    AddCase(parent, CreateArray(element.Type), "array");
-    AddConstructedCase(parent, "System.Collections.Generic.List`1", [element.Type], "list");
-    AddConstructedCase(parent, "System.Collections.Generic.HashSet`1", [element.Type], "set");
-    AddConstructedCase(parent, "System.Collections.ObjectModel.ObservableCollection`1", [element.Type], "observable");
-    AddConstructedCase(parent, "System.Collections.ObjectModel.Collection`1", [element.Type], "collection");
-    foreach (INamedTypeSymbol implementation in FindImplementations(parent.Type))
+    foreach (INamedTypeSymbol implementation in FindImplementations(type))
     {
-      AddCase(parent, implementation, "typed");
+      AddCase(slot, implementation, "typed", required: true, guard: false);
     }
-  }
 
-  private void AppendDictionaryInterfaceCases(INamedTypeSymbol iface, Slot parent)
-  {
-    if (!TryDictionaryArguments(iface, out ITypeSymbol? key, out ITypeSymbol? value))
+    bool isSet = SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.ISet`1")
+      || SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.IReadOnlySet`1");
+    string definition = isSet ? "System.Collections.Generic.HashSet`1" : "System.Collections.Generic.List`1";
+    INamedTypeSymbol? fallback = Compilation.GetTypeByMetadataName(definition)?.Construct(elementType);
+    if (fallback is null || !Compilation.HasImplicitConversion(fallback, type))
     {
       return;
     }
 
-    AddConstructedCase(parent, "System.Collections.Generic.Dictionary`2", [key!, value!], "dictionary");
-    foreach (INamedTypeSymbol implementation in FindImplementations(iface))
-    {
-      AddCase(parent, implementation, "typed");
-    }
+    slot.Fallback =
+    [
+      "{",
+      $"  {fallback.ToDisplayString(Format)} materialized = new();",
+      "  map.Add(source, materialized);",
+      "  foreach (var item in source)",
+      "  {",
+      $"    materialized.Add({CopyExpression(element, "item")});",
+      "  }",
+      "  return materialized;",
+      "}"
+    ];
   }
 
-  private void AddConstructedCase(Slot parent, string metadataName, ITypeSymbol[] arguments, string variable)
+  private void ClassifyDictionaryInterface(Slot slot, INamedTypeSymbol type, Slot keySlot, Slot valueSlot)
+  {
+    slot.Kind = SlotKind.Clone;
+    slot.IsDispatch = true;
+    ITypeSymbol[] arguments = [keySlot.Type, valueSlot.Type];
+    foreach (string metadataName in DictionaryCaseTypes)
+    {
+      AddConstructedCase(slot, metadataName, arguments);
+    }
+
+    foreach (INamedTypeSymbol implementation in FindImplementations(type))
+    {
+      AddCase(slot, implementation, "typed", required: true, guard: false);
+    }
+
+    INamedTypeSymbol? fallback = Compilation.GetTypeByMetadataName("System.Collections.Generic.Dictionary`2")?.Construct(arguments);
+    if (fallback is null || !Compilation.HasImplicitConversion(fallback, type))
+    {
+      return;
+    }
+
+    slot.Fallback =
+    [
+      "{",
+      $"  {fallback.ToDisplayString(Format)} materialized = new();",
+      "  map.Add(source, materialized);",
+      "  foreach (var pair in source)",
+      "  {",
+      $"    materialized.Add({CopyExpression(keySlot, "pair.Key")}, {CopyExpression(valueSlot, "pair.Value")});",
+      "  }",
+      "  return materialized;",
+      "}"
+    ];
+  }
+
+  private static readonly string[] EnumerableCaseTypes =
+  [
+    "System.Collections.Generic.List`1",
+    "System.Collections.Generic.HashSet`1",
+    "System.Collections.Generic.SortedSet`1",
+    "System.Collections.Generic.LinkedList`1",
+    "System.Collections.Generic.Queue`1",
+    "System.Collections.Generic.Stack`1",
+    "System.Collections.ObjectModel.ObservableCollection`1",
+    "System.Collections.ObjectModel.Collection`1",
+    "System.Collections.ObjectModel.ReadOnlyCollection`1",
+    "System.Collections.Immutable.ImmutableArray`1",
+    "System.Collections.Immutable.ImmutableList`1",
+    "System.Collections.Immutable.ImmutableHashSet`1",
+    "System.Collections.Immutable.ImmutableSortedSet`1",
+    "System.Collections.Immutable.ImmutableQueue`1",
+    "System.Collections.Immutable.ImmutableStack`1",
+    "System.Collections.Frozen.FrozenSet`1"
+  ];
+
+  private static readonly string[] DictionaryCaseTypes =
+  [
+    "System.Collections.Generic.Dictionary`2",
+    "System.Collections.Generic.SortedDictionary`2",
+    "System.Collections.Generic.SortedList`2",
+    "System.Collections.Concurrent.ConcurrentDictionary`2",
+    "System.Collections.ObjectModel.ReadOnlyDictionary`2",
+    "System.Collections.Immutable.ImmutableDictionary`2",
+    "System.Collections.Immutable.ImmutableSortedDictionary`2",
+    "System.Collections.Frozen.FrozenDictionary`2"
+  ];
+
+  // BCL cases are optional: a type that cannot be cloned here falls through to the materializing fallback. A
+  // non-sealed BCL type is matched only by exact runtime type, so an unknown subclass also falls through.
+  private void AddConstructedCase(Slot parent, string metadataName, ITypeSymbol[] arguments)
   {
     INamedTypeSymbol? definition = Compilation.GetTypeByMetadataName(metadataName);
-    if (definition is null)
+    if (definition is null || definition.Arity != arguments.Length)
     {
       return;
     }
 
-    AddCase(parent, definition.Construct(arguments), variable);
+    INamedTypeSymbol constructed = definition.Construct(arguments);
+    bool guard = constructed.TypeKind == TypeKind.Class && !constructed.IsSealed && !constructed.IsAbstract;
+    AddCase(parent, constructed, "typed", required: false, guard);
   }
 
-  private void AddCase(Slot parent, ITypeSymbol type, string variable)
+  private void AddCase(Slot parent, ITypeSymbol type, string variable, bool required, bool guard)
   {
-    if (!CanName(type))
+    if (!CanName(type) || !Compilation.HasImplicitConversion(type, parent.Type))
     {
       return;
     }
 
     Slot slot = Build(type);
-    if (slot.Kind == SlotKind.Error)
+    if (slot.Kind == SlotKind.Error && !required)
     {
       return;
     }
 
     parent.Dependencies.Add(slot);
-    parent.Cases.Add(new CaseRequest(type, variable));
+    parent.Cases.Add(new CaseRequest(type, variable, 0, guard));
   }
+
+  #endregion
+
+  #region Interfaces and objects
 
   private void ClassifyInterface(Slot slot, INamedTypeSymbol type)
   {
@@ -688,91 +1063,7 @@ internal sealed class StateClonePlanner
     slot.IsDispatch = true;
     foreach (INamedTypeSymbol implementation in implementations)
     {
-      AddCase(slot, implementation, "typed");
-    }
-  }
-
-  private void MaterializeDispatches()
-  {
-    foreach (Slot slot in Slots.Values)
-    {
-      if (!slot.IsDispatch || slot.Kind != SlotKind.Clone)
-      {
-        continue;
-      }
-
-      string name = slot.FullyQualified;
-      List<string> lines =
-      [
-        $"if (map.TryGet(source, out {name}? existing))",
-        "{",
-        "  return existing;",
-        "}",
-        "switch (source)",
-        "{"
-      ];
-
-      HashSet<string> seen = [];
-      List<CaseRequest> ordered = [];
-      int typedIndex = 0;
-      foreach (CaseRequest caseRequest in slot.Cases)
-      {
-        ITypeSymbol type = Normalize(caseRequest.Type);
-        if (!Slots.TryGetValue(type, out Slot? target))
-        {
-          continue;
-        }
-
-        if (target.Kind is not (SlotKind.Clone or SlotKind.Share))
-        {
-          continue;
-        }
-
-        string display = type.ToDisplayString(Format);
-        if (!seen.Add(display))
-        {
-          continue;
-        }
-
-        string variable = caseRequest.Variable == "typed" ? $"typed{typedIndex++}" : caseRequest.Variable;
-        int depth = type is INamedTypeSymbol named ? Depth(named) : 1;
-        ordered.Add(new CaseRequest(type, variable, depth));
-      }
-
-      foreach (CaseRequest caseRequest in ordered
-        .OrderByDescending(item => item.Depth)
-        .ThenBy(item => item.Variable, StringComparer.Ordinal))
-      {
-        Slot target = Slots[Normalize(caseRequest.Type)];
-        string display = caseRequest.Type.ToDisplayString(Format);
-        lines.Add($"  case {display} {caseRequest.Variable}:");
-        if (target.Kind == SlotKind.Share)
-        {
-          lines.Add($"    {name} shared = {caseRequest.Variable};");
-          lines.Add("    map.Add(source, shared);");
-          lines.Add("    return shared;");
-        }
-        else
-        {
-          lines.Add($"    return {target.MethodName}({caseRequest.Variable}, map);");
-        }
-      }
-
-      lines.Add("  case global::System.ICloneable cloneable:");
-      lines.Add("  {");
-      lines.Add("    object? cloned = cloneable.Clone();");
-      lines.Add("    if (cloned is null)");
-      lines.Add("    {");
-      lines.Add("      return null!;");
-      lines.Add("    }");
-      lines.Add($"    {name} typedClone = ({name})cloned;");
-      lines.Add("    map.Add(source, typedClone);");
-      lines.Add("    return typedClone;");
-      lines.Add("  }");
-      lines.Add("  default:");
-      lines.Add("    throw new global::System.InvalidOperationException(\"Cannot clone \" + source.GetType().FullName + \". Implement ICloneable on that type.\");");
-      lines.Add("}");
-      slot.Statements = lines;
+      AddCase(slot, implementation, "typed", required: true, guard: false);
     }
   }
 
@@ -799,13 +1090,13 @@ internal sealed class StateClonePlanner
       lines.Add($"{name} clone = source;");
     }
 
-    bool deepField = AppendExtraFields(slot, type, lines, stopBefore: null);
+    bool copied = AppendExtraFields(slot, type, lines, stopBefore: null);
     if (slot.Kind == SlotKind.Error)
     {
       return;
     }
 
-    if (type.IsValueType && !deepField && slot.Accessors.Count == 0)
+    if (type.IsValueType && !copied)
     {
       slot.Kind = SlotKind.Share;
       slot.Statements = null;
@@ -819,8 +1110,22 @@ internal sealed class StateClonePlanner
 
   private bool AppendExtraFields(Slot slot, INamedTypeSymbol type, List<string> lines, INamedTypeSymbol? stopBefore)
   {
-    bool deep = false;
-    int index = slot.Accessors.Count;
+    foreach (INamedTypeSymbol current in EnumerateHierarchy(type, stopBefore))
+    {
+      if (IsFromSource(current))
+      {
+        continue;
+      }
+
+      string? problem = MetadataProblem(current);
+      if (problem is not null)
+      {
+        Fail(slot, problem, SourceLocation(type));
+        return false;
+      }
+    }
+
+    bool copied = false;
     HashSet<ISymbol> copiedMembers = new(SymbolEqualityComparer.Default);
     foreach (IFieldSymbol field in EnumerateFields(type, stopBefore))
     {
@@ -834,9 +1139,10 @@ internal sealed class StateClonePlanner
         continue;
       }
 
-      if (!TryAppendMember(slot, type, lines, field.Type, field.Name, field.ContainingType, FieldLocation(field), ref index, ref deep))
+      Member member = new(field.Type, field.OriginalDefinition.Type, field.Name, field.ContainingType, FieldLocation(field));
+      if (!TryAppendMember(slot, type, lines, member, ref copied))
       {
-        return deep;
+        return copied;
       }
     }
 
@@ -849,33 +1155,25 @@ internal sealed class StateClonePlanner
         continue;
       }
 
-      string fieldName = $"<{property.Name}>k__BackingField";
-      Location? location = property.Locations.FirstOrDefault(candidate => candidate.IsInSource) ?? LocationOf(declaringType);
-      if (!TryAppendMember(slot, type, lines, property.Type, fieldName, declaringType, location, ref index, ref deep))
+      Location? location = property.Locations.FirstOrDefault(candidate => candidate.IsInSource);
+      Member member = new(property.Type, property.OriginalDefinition.Type, $"<{property.Name}>k__BackingField", declaringType, location);
+      if (!TryAppendMember(slot, type, lines, member, ref copied))
       {
-        return deep;
+        return copied;
       }
     }
 
-    return deep;
+    return copied;
   }
 
-  private bool TryAppendMember(
-    Slot slot,
-    INamedTypeSymbol type,
-    List<string> lines,
-    ITypeSymbol memberType,
-    string fieldName,
-    INamedTypeSymbol declaringType,
-    Location? location,
-    ref int index,
-    ref bool deep)
+  private bool TryAppendMember(Slot slot, INamedTypeSymbol type, List<string> lines, Member member, ref bool copied)
   {
-    Slot fieldSlot = Build(memberType);
+    Location? location = member.Location is { IsInSource: true } ? member.Location : SourceLocation(type);
+    Slot fieldSlot = Build(member.Type);
     slot.Dependencies.Add(fieldSlot);
     if (fieldSlot.Kind == SlotKind.Error)
     {
-      Fail(slot, $"member '{fieldName}' of type '{memberType.ToDisplayString()}' cannot be cloned ({fieldSlot.Detail})", location);
+      Fail(slot, $"member '{DisplayMemberName(member.FieldName)}' of type '{member.Type.ToDisplayString()}' cannot be cloned ({fieldSlot.Detail})", location, fieldSlot, member: true);
       return false;
     }
 
@@ -884,57 +1182,112 @@ internal sealed class StateClonePlanner
       return true;
     }
 
-    if (fieldSlot.Kind != SlotKind.Share)
+    string? accessor = FieldAccessor(member.DeclaringType, member.FieldName, member.DefinitionType, out string? problem);
+    if (accessor is null)
     {
-      deep = true;
+      Fail(slot, $"member '{DisplayMemberName(member.FieldName)}' cannot be written ({problem})", location, member: true);
+      return false;
     }
 
-    string accessorName = $"{slot.MethodName}_F{index}";
-    string read = type.IsValueType ? $"{accessorName}(ref source)" : $"{accessorName}(source)";
-    string write = type.IsValueType ? $"{accessorName}(ref clone)" : $"{accessorName}(clone)";
+    string read = type.IsValueType ? $"{accessor}(ref source)" : $"{accessor}(source)";
+    string write = type.IsValueType ? $"{accessor}(ref clone)" : $"{accessor}(clone)";
     lines.Add($"{write} = {CopyExpression(fieldSlot, read)};");
-    slot.Accessors.Add(EmitAccessor(fieldName, memberType, declaringType, accessorName));
-    index++;
+    copied = true;
     return true;
   }
 
+  private static string DisplayMemberName(string fieldName)
+  {
+    int end = fieldName.IndexOf('>');
+    return fieldName.Length > 0 && fieldName[0] == '<' && end > 1 ? fieldName.Substring(1, end - 1) : fieldName;
+  }
+
+  #endregion
+
+  #region Construction
+
+  // Parameterless constructor first (any accessibility, as the reflection cloner did), else the accessible
+  // constructor with the fewest parameters, else any constructor through UnsafeAccessor. Arguments are typed
+  // defaults (or the declared default value) so overloads of the same arity stay unambiguous. A constructor that
+  // rejects default arguments throws at run time; implement ICloneable on that type.
   private bool TryEmitConstruction(INamedTypeSymbol type, List<string> lines, out string? problem)
   {
-    IMethodSymbol? constructor = PickConstructor(type);
-    if (constructor is null)
-    {
-      problem = "it has no constructor accessible to generated code";
-      return false;
-    }
-
-    string arguments = string.Join(", ", constructor.Parameters.Select(parameter => parameter.Type.IsReferenceType ? "default!" : "default"));
-    List<string>? required = RequiredInitializer(type, constructor);
-    if (required is null)
-    {
-      problem = "a required member cannot be set by the constructor or an object initializer";
-      return false;
-    }
-
     string name = type.ToDisplayString(Format);
-    if (required.Count == 0)
+    List<IMethodSymbol> candidates = type.InstanceConstructors
+      .Where(constructor => constructor.Parameters.All(parameter => parameter.RefKind == RefKind.None && CanNameDeep(parameter.Type)))
+      .ToList();
+    IMethodSymbol? parameterless = candidates.FirstOrDefault(constructor => constructor.Parameters.Length == 0);
+    IMethodSymbol? accessible = parameterless is not null && IsAccessible(parameterless)
+      ? parameterless
+      : parameterless is null
+        ? candidates.Where(IsAccessible).OrderBy(constructor => constructor.Parameters.Length).FirstOrDefault()
+        : null;
+
+    if (accessible is not null)
     {
-      lines.Add($"{name} clone = new({arguments});");
-    }
-    else
-    {
-      lines.Add($"{name} clone = new({arguments})");
-      lines.Add("{");
-      foreach (string member in required)
+      List<string>? required = RequiredInitializer(type, accessible);
+      if (required is not null)
       {
-        lines.Add($"  {member} = default!,");
-      }
+        string arguments = string.Join(", ", accessible.Parameters.Select(ArgumentFor));
+        if (required.Count == 0)
+        {
+          lines.Add($"{name} clone = new({arguments});");
+        }
+        else
+        {
+          lines.Add($"{name} clone = new({arguments})");
+          lines.Add("{");
+          foreach (string member in required)
+          {
+            lines.Add($"  {member} = default!,");
+          }
 
-      lines.Add("};");
+          lines.Add("};");
+        }
+
+        problem = null;
+        return true;
+      }
     }
 
-    problem = null;
+    IMethodSymbol? any = parameterless ?? accessible ?? candidates.OrderBy(constructor => constructor.Parameters.Length).FirstOrDefault();
+    if (any is null)
+    {
+      problem = "it has no constructor the generated clone can call";
+      return false;
+    }
+
+    string? call = ConstructorAccessor(type, any, out problem);
+    if (call is null)
+    {
+      return false;
+    }
+
+    lines.Add($"{name} clone = {call}({string.Join(", ", any.Parameters.Select(ArgumentFor))});");
     return true;
   }
+
+  private static string ArgumentFor(IParameterSymbol parameter)
+  {
+    string typeName = parameter.Type.ToDisplayString(Format);
+    if (parameter.HasExplicitDefaultValue
+        && parameter.ExplicitDefaultValue is { } value
+        && IsFinite(value)
+        && SymbolDisplay.FormatPrimitive(value, quoteStrings: true, useHexadecimalNumbers: false) is { Length: > 0 } literal)
+    {
+      return $"({typeName})({literal})";
+    }
+
+    return parameter.Type.IsValueType ? $"default({typeName})" : $"default({typeName})!";
+  }
+
+  private static bool IsFinite(object value) =>
+    value switch
+    {
+      double number => !double.IsNaN(number) && !double.IsInfinity(number),
+      float number => !float.IsNaN(number) && !float.IsInfinity(number),
+      _ => true
+    };
 
   private List<string>? RequiredInitializer(INamedTypeSymbol type, IMethodSymbol constructor)
   {
@@ -944,36 +1297,34 @@ internal sealed class StateClonePlanner
     }
 
     List<string> names = [];
-    foreach (IPropertySymbol property in type.GetMembers().OfType<IPropertySymbol>())
+    HashSet<string> seen = new(StringComparer.Ordinal);
+    foreach (INamedTypeSymbol current in EnumerateHierarchy(type, null))
     {
-      if (!property.IsRequired)
+      foreach (ISymbol member in current.GetMembers())
       {
-        continue;
-      }
+        switch (member)
+        {
+          case IPropertySymbol { IsRequired: true } property when seen.Add(property.Name):
+            if (property.SetMethod is null)
+            {
+              return null;
+            }
 
-      if (property.SetMethod is null)
-      {
-        return null;
-      }
+            names.Add(property.Name);
+            break;
+          case IFieldSymbol { IsRequired: true } field when seen.Add(field.Name):
+            if (field.IsReadOnly)
+            {
+              return null;
+            }
 
-      names.Add(property.Name);
+            names.Add(field.Name);
+            break;
+        }
+      }
     }
 
     return names;
-  }
-
-  private IMethodSymbol? PickConstructor(INamedTypeSymbol type)
-  {
-    List<IMethodSymbol> constructors = type.InstanceConstructors
-      .Where(constructor => constructor.Parameters.All(parameter => parameter.RefKind == RefKind.None) && IsAccessible(constructor))
-      .ToList();
-    IMethodSymbol? parameterless = constructors.FirstOrDefault(constructor => constructor.Parameters.Length == 0);
-    if (parameterless is not null)
-    {
-      return parameterless;
-    }
-
-    return constructors.OrderBy(constructor => constructor.Parameters.Length).FirstOrDefault();
   }
 
   private bool IsAccessible(ISymbol symbol)
@@ -986,6 +1337,361 @@ internal sealed class StateClonePlanner
       _ => false
     };
   }
+
+  #endregion
+
+  #region Accessors
+
+  private string? FieldAccessor(INamedTypeSymbol declaringType, string fieldName, ITypeSymbol definitionType, out string? problem)
+  {
+    Holder? holder = GetHolder(declaringType.OriginalDefinition, out problem);
+    if (holder is null)
+    {
+      return null;
+    }
+
+    if (!CanNameDeep(definitionType))
+    {
+      problem = $"its type '{definitionType.ToDisplayString()}' is not accessible to generated code";
+      return null;
+    }
+
+    if (!holder.Methods.TryGetValue("field:" + fieldName, out string? method))
+    {
+      method = $"F_{Sanitize(DisplayMemberName(fieldName))}_{StableHash(fieldName)}";
+      holder.Methods.Add("field:" + fieldName, method);
+      string literal = fieldName.Replace("\\", "\\\\").Replace("\"", "\\\"");
+      string reference = holder.Definition.IsReferenceType ? string.Empty : "ref ";
+      holder.Members.Add(
+        $"[{UnsafeAccessor}({UnsafeAccessorKind}.Field, Name = \"{literal}\")] " +
+        $"internal static extern ref {TypeText(definitionType, holder.Map)} {method}({reference}{holder.Self} target);");
+    }
+
+    return holder.Name + HolderArguments(declaringType) + "." + method;
+  }
+
+  private string? ConstructorAccessor(INamedTypeSymbol type, IMethodSymbol constructor, out string? problem)
+  {
+    Holder? holder = GetHolder(type.OriginalDefinition, out problem);
+    if (holder is null)
+    {
+      return null;
+    }
+
+    IMethodSymbol definition = constructor.OriginalDefinition;
+    string parameters = string.Join(", ", definition.Parameters.Select((parameter, index) => $"{TypeText(parameter.Type, holder.Map)} p{index}"));
+    string key = "ctor:" + parameters;
+    if (!holder.Methods.TryGetValue(key, out string? method))
+    {
+      method = $"New_{StableHash(key)}";
+      holder.Methods.Add(key, method);
+      holder.Members.Add(
+        $"[{UnsafeAccessor}({UnsafeAccessorKind}.Constructor)] internal static extern {holder.Self} {method}({parameters});");
+    }
+
+    return holder.Name + HolderArguments(type) + "." + method;
+  }
+
+  private Holder? GetHolder(INamedTypeSymbol definition, out string? problem)
+  {
+    if (Holders.TryGetValue(definition, out Holder? existing))
+    {
+      problem = existing.Problem;
+      return existing.Problem is null ? existing : null;
+    }
+
+    List<ITypeParameterSymbol> parameters = AllTypeParameters(definition);
+    Dictionary<ITypeParameterSymbol, string> map = new(SymbolEqualityComparer.Default);
+    for (int index = 0; index < parameters.Count; index++)
+    {
+      map[parameters[index]] = $"T{index}";
+    }
+
+    Holder holder = new()
+    {
+      Definition = definition,
+      Map = map,
+      Name = UniqueName("Access_" + Sanitize(definition.ToDisplayString()), "holder:" + definition.ToDisplayString(Format)),
+      TypeParameters = parameters.Count == 0 ? string.Empty : "<" + string.Join(", ", parameters.Select(parameter => map[parameter])) + ">",
+      Self = TypeText(definition, map)
+    };
+
+    if (!CanName(definition))
+    {
+      holder.Problem = $"'{definition.ToDisplayString()}' is not accessible to generated code";
+    }
+
+    foreach (ITypeParameterSymbol parameter in parameters)
+    {
+      if (parameter.ConstraintTypes.Any(constraint => !CanNameDeep(constraint)))
+      {
+        holder.Problem = $"a constraint on '{definition.ToDisplayString()}' is not accessible to generated code";
+      }
+
+      string? clause = ConstraintClause(parameter, map);
+      if (clause is not null)
+      {
+        holder.Constraints.Add(clause);
+      }
+    }
+
+    Holders.Add(definition, holder);
+    problem = holder.Problem;
+    return holder.Problem is null ? holder : null;
+  }
+
+  private static string? ConstraintClause(ITypeParameterSymbol parameter, Dictionary<ITypeParameterSymbol, string> map)
+  {
+    List<string> parts = [];
+    if (parameter.HasReferenceTypeConstraint)
+    {
+      parts.Add("class");
+    }
+    else if (parameter.HasUnmanagedTypeConstraint)
+    {
+      parts.Add("unmanaged");
+    }
+    else if (parameter.HasValueTypeConstraint)
+    {
+      parts.Add("struct");
+    }
+    else if (parameter.HasNotNullConstraint)
+    {
+      parts.Add("notnull");
+    }
+
+    parts.AddRange(parameter.ConstraintTypes.Select(constraint => TypeText(constraint, map)));
+    if (parameter.HasConstructorConstraint && !parameter.HasValueTypeConstraint)
+    {
+      parts.Add("new()");
+    }
+
+    if (parameter.AllowsRefLikeType)
+    {
+      parts.Add("allows ref struct");
+    }
+
+    return parts.Count == 0 ? null : $"where {map[parameter]} : {string.Join(", ", parts)}";
+  }
+
+  private static List<ITypeParameterSymbol> AllTypeParameters(INamedTypeSymbol definition)
+  {
+    List<ITypeParameterSymbol> parameters = definition.ContainingType is { } containing ? AllTypeParameters(containing) : [];
+    parameters.AddRange(definition.TypeParameters);
+    return parameters;
+  }
+
+  private static List<ITypeSymbol> AllTypeArguments(INamedTypeSymbol type)
+  {
+    List<ITypeSymbol> arguments = type.ContainingType is { } containing ? AllTypeArguments(containing) : [];
+    arguments.AddRange(type.TypeArguments);
+    return arguments;
+  }
+
+  private static string HolderArguments(INamedTypeSymbol type)
+  {
+    List<ITypeSymbol> arguments = AllTypeArguments(type);
+    return arguments.Count == 0 ? string.Empty : "<" + string.Join(", ", arguments.Select(argument => argument.ToDisplayString(Format))) + ">";
+  }
+
+  // Writes a type with the holder's type parameter names. Nullable reference annotations are dropped: the runtime
+  // matches the field signature, which has none.
+  private static string TypeText(ITypeSymbol type, Dictionary<ITypeParameterSymbol, string> map)
+  {
+    switch (type)
+    {
+      case ITypeParameterSymbol parameter:
+        return map.TryGetValue(parameter, out string? name) ? name : parameter.Name;
+      case IArrayTypeSymbol array:
+        StringBuilder suffix = new();
+        ITypeSymbol element = array;
+        while (element is IArrayTypeSymbol current)
+        {
+          suffix.Append('[').Append(new string(',', current.Rank - 1)).Append(']');
+          element = current.ElementType;
+        }
+
+        return TypeText(element, map) + suffix;
+      case IPointerTypeSymbol pointer:
+        return TypeText(pointer.PointedAtType, map) + "*";
+      case INamedTypeSymbol named:
+        if (named.IsTupleType && named.TupleUnderlyingType is { } underlying)
+        {
+          named = underlying;
+        }
+
+        string prefix = named.ContainingType is { } containingType
+          ? TypeText(containingType, map) + "."
+          : named.ContainingNamespace is null || named.ContainingNamespace.IsGlobalNamespace
+            ? "global::"
+            : "global::" + named.ContainingNamespace.ToDisplayString() + ".";
+        string identifier = SyntaxFacts.GetKeywordKind(named.Name) == SyntaxKind.None ? named.Name : "@" + named.Name;
+        string arguments = named.TypeArguments.Length == 0
+          ? string.Empty
+          : "<" + string.Join(", ", named.TypeArguments.Select(argument => TypeText(argument, map))) + ">";
+        return prefix + identifier + arguments;
+      default:
+        return type.ToDisplayString(Format);
+    }
+  }
+
+  #endregion
+
+  #region Metadata types
+
+  private bool IsFromSource(INamedTypeSymbol type) =>
+    SymbolEqualityComparer.Default.Equals(type.OriginalDefinition.ContainingAssembly, Compilation.Assembly);
+
+  // A type from another assembly is cloned field by field only when its full field list is known. TimeWarp.State's
+  // own bases are trusted. An implementation assembly is re-imported with private members to check for hidden state.
+  // A reference assembly strips private class fields, and only keeps placeholders for struct fields, so its
+  // non-collection classes and managed structs cannot be cloned without silently dropping state.
+  private string? MetadataProblem(INamedTypeSymbol type)
+  {
+    INamedTypeSymbol definition = type.OriginalDefinition;
+    if (MetadataProblems.TryGetValue(definition, out string? cached))
+    {
+      return cached;
+    }
+
+    string? problem = FindMetadataProblem(definition);
+    MetadataProblems.Add(definition, problem);
+    return problem;
+  }
+
+  private string? FindMetadataProblem(INamedTypeSymbol definition)
+  {
+    IAssemblySymbol assembly = definition.ContainingAssembly;
+    if (IsTimeWarpStateAssembly(assembly))
+    {
+      return null;
+    }
+
+    if (assembly.GetAttributes().Any(attribute =>
+          attribute.AttributeClass?.ToDisplayString() == "System.Runtime.CompilerServices.ReferenceAssemblyAttribute"))
+    {
+      return ReferenceAssemblyProblem(definition, assembly);
+    }
+
+    INamedTypeSymbol? full = FullView(definition);
+    if (full is null)
+    {
+      return $"the fields of '{definition.ToDisplayString()}' in '{assembly.Name}' could not be inspected";
+    }
+
+    HashSet<string> visibleFields = new(
+      definition.GetMembers().OfType<IFieldSymbol>().Select(field => field.Name),
+      StringComparer.Ordinal);
+    HashSet<string> events = new(full.GetMembers().OfType<IEventSymbol>().Select(item => item.Name), StringComparer.Ordinal);
+    foreach (IFieldSymbol field in full.GetMembers().OfType<IFieldSymbol>())
+    {
+      if (field.IsStatic || field.IsConst || visibleFields.Contains(field.Name) || HasIgnoreAttribute(field) || events.Contains(field.Name))
+      {
+        continue;
+      }
+
+      string propertyName = DisplayMemberName(field.Name);
+      if (propertyName != field.Name)
+      {
+        IPropertySymbol? property = definition.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
+        if (property is not null && IsAutoProperty(property))
+        {
+          continue;
+        }
+
+        IPropertySymbol? hidden = full.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
+        if (hidden is not null && HasIgnoreAttribute(hidden))
+        {
+          continue;
+        }
+      }
+
+      return $"'{definition.ToDisplayString()}' has private field '{field.Name}' that generated code cannot see";
+    }
+
+    return null;
+  }
+
+  // TimeWarp.State's own bases (State<T>, TimeWarpCacheableState<T>, ...) keep only ignored private state.
+  private static readonly HashSet<string> TimeWarpStateAssemblies = new(StringComparer.Ordinal)
+  {
+    "TimeWarp.State",
+    "TimeWarp.State.Blazor",
+    "TimeWarp.State.Plus",
+    "TimeWarp.State.Policies",
+    "TimeWarp.State.Telemetry",
+    "timewarp-state-plus"
+  };
+
+  private static bool IsTimeWarpStateAssembly(IAssemblySymbol assembly) => TimeWarpStateAssemblies.Contains(assembly.Name);
+
+  // A reference assembly (a project reference, or a framework reference pack) hides private class fields. A type is
+  // accepted only when nothing visible could hold or use hidden state: every instance property is an auto-property and
+  // every instance method is a constructor, an accessor, or compiler-generated (records).
+  private static string? ReferenceAssemblyProblem(INamedTypeSymbol definition, IAssemblySymbol assembly)
+  {
+    string? offending = null;
+    foreach (ISymbol member in definition.GetMembers())
+    {
+      if (member.IsStatic || member.IsImplicitlyDeclared)
+      {
+        continue;
+      }
+
+      if (member is IPropertySymbol property && !IsAutoProperty(property))
+      {
+        offending = $"property '{property.Name}' is not an auto-property";
+        break;
+      }
+
+      if (member is IMethodSymbol { MethodKind: MethodKind.Ordinary or MethodKind.ExplicitInterfaceImplementation or MethodKind.Destructor } method
+          && !HasCompilerGenerated(method))
+      {
+        offending = $"method '{method.Name}' may use them";
+        break;
+      }
+    }
+
+    if (offending is null)
+    {
+      return null;
+    }
+
+    return $"'{definition.ToDisplayString()}' comes from reference assembly '{assembly.Name}', which hides private fields, " +
+      $"and {offending} (build '{assembly.Name}' with ProduceReferenceAssembly=false so the generator can inspect its fields)";
+  }
+
+  private INamedTypeSymbol? FullView(INamedTypeSymbol definition)
+  {
+    if (Compilation.GetMetadataReference(definition.ContainingAssembly) is not { } reference)
+    {
+      return null;
+    }
+
+    FullCompilation ??= Compilation.WithOptions(Compilation.Options.WithMetadataImportOptions(MetadataImportOptions.All));
+    if (FullCompilation.GetAssemblyOrModuleSymbol(reference) is not IAssemblySymbol assembly)
+    {
+      return null;
+    }
+
+    return assembly.GetTypeByMetadataName(MetadataName(definition));
+  }
+
+  private static string MetadataName(INamedTypeSymbol type)
+  {
+    if (type.ContainingType is { } containing)
+    {
+      return MetadataName(containing) + "+" + type.MetadataName;
+    }
+
+    return type.ContainingNamespace is null || type.ContainingNamespace.IsGlobalNamespace
+      ? type.MetadataName
+      : type.ContainingNamespace.ToDisplayString() + "." + type.MetadataName;
+  }
+
+  #endregion
+
+  #region Symbol helpers
 
   private bool CanName(ISymbol symbol)
   {
@@ -1005,6 +1711,16 @@ internal sealed class StateClonePlanner
 
     return true;
   }
+
+  private bool CanNameDeep(ITypeSymbol type) =>
+    type switch
+    {
+      ITypeParameterSymbol => true,
+      IArrayTypeSymbol array => CanNameDeep(array.ElementType),
+      IPointerTypeSymbol pointer => CanNameDeep(pointer.PointedAtType),
+      INamedTypeSymbol named => CanName(named) && AllTypeArguments(named).All(CanNameDeep),
+      _ => CanName(type)
+    };
 
   private IEnumerable<(IPropertySymbol Property, INamedTypeSymbol DeclaringType)> EnumerateAutoProperties(
     INamedTypeSymbol type,
@@ -1037,7 +1753,7 @@ internal sealed class StateClonePlanner
 
   private static IEnumerable<INamedTypeSymbol> EnumerateHierarchy(INamedTypeSymbol type, INamedTypeSymbol? stopBefore)
   {
-    for (INamedTypeSymbol? current = type; current is not null && current.SpecialType != SpecialType.System_Object; current = current.BaseType)
+    for (INamedTypeSymbol? current = type; current is not null && current.SpecialType is not (SpecialType.System_Object or SpecialType.System_ValueType); current = current.BaseType)
     {
       if (stopBefore is not null && SymbolEqualityComparer.Default.Equals(current.OriginalDefinition, stopBefore))
       {
@@ -1088,57 +1804,27 @@ internal sealed class StateClonePlanner
     return false;
   }
 
-  private List<INamedTypeSymbol> FindImplementations(ITypeSymbol target)
-  {
-    List<INamedTypeSymbol> implementations = [];
-    FindImplementations(Compilation.Assembly.GlobalNamespace, target, implementations);
-    return implementations
+  // Concrete source types (classes and structs) that implement an interface or derive from an abstract class.
+  private List<INamedTypeSymbol> FindImplementations(INamedTypeSymbol target) =>
+    SourceTypes
+      .Where(type => type.TypeKind is TypeKind.Class or TypeKind.Struct
+        && !type.IsAbstract
+        && !(type.IsGenericType && type.IsDefinition)
+        && !SymbolEqualityComparer.Default.Equals(type, target)
+        && CanName(type)
+        && (type.AllInterfaces.Any(implemented => SymbolEqualityComparer.Default.Equals(implemented, target)) || Inherits(type, target)))
       .OrderByDescending(Depth)
       .ToList();
-  }
 
-  private void FindImplementations(INamespaceSymbol namespaceSymbol, ITypeSymbol target, List<INamedTypeSymbol> implementations)
-  {
-    foreach (INamespaceSymbol child in namespaceSymbol.GetNamespaceMembers())
-    {
-      FindImplementations(child, target, implementations);
-    }
-
-    foreach (INamedTypeSymbol type in namespaceSymbol.GetTypeMembers())
-    {
-      FindImplementations(type, target, implementations);
-    }
-  }
-
-  private void FindImplementations(INamedTypeSymbol type, ITypeSymbol target, List<INamedTypeSymbol> implementations)
-  {
-    foreach (INamedTypeSymbol nested in type.GetTypeMembers())
-    {
-      FindImplementations(nested, target, implementations);
-    }
-
-    if (type.IsAbstract || type.TypeKind != TypeKind.Class || type.IsGenericType && type.IsDefinition)
-    {
-      return;
-    }
-
-    if (SymbolEqualityComparer.Default.Equals(type, target))
-    {
-      return;
-    }
-
-    if (!CanName(type))
-    {
-      return;
-    }
-
-    bool implements = type.AllInterfaces.Any(implemented => SymbolEqualityComparer.Default.Equals(implemented, target))
-      || Inherits(type, target);
-    if (implements)
-    {
-      implementations.Add(type);
-    }
-  }
+  private List<INamedTypeSymbol> FindDerived(INamedTypeSymbol target) =>
+    SourceTypes
+      .Where(type => type.TypeKind == TypeKind.Class
+        && !type.IsAbstract
+        && !(type.IsGenericType && type.IsDefinition)
+        && CanName(type)
+        && Inherits(type, target))
+      .OrderByDescending(Depth)
+      .ToList();
 
   private static bool Inherits(INamedTypeSymbol type, ITypeSymbol target)
   {
@@ -1164,8 +1850,6 @@ internal sealed class StateClonePlanner
     return depth;
   }
 
-  private IArrayTypeSymbol CreateArray(ITypeSymbol element) => Compilation.CreateArrayTypeSymbol(element);
-
   private bool TryElementType(INamedTypeSymbol type, out ITypeSymbol? element)
   {
     foreach (string metadataName in new[]
@@ -1181,8 +1865,9 @@ internal sealed class StateClonePlanner
         continue;
       }
 
-      INamedTypeSymbol? implemented = type.AllInterfaces.FirstOrDefault(candidate =>
-        SymbolEqualityComparer.Default.Equals(candidate.OriginalDefinition, definition));
+      INamedTypeSymbol? implemented = SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, definition)
+        ? type
+        : type.AllInterfaces.FirstOrDefault(candidate => SymbolEqualityComparer.Default.Equals(candidate.OriginalDefinition, definition));
       if (implemented is not null)
       {
         element = implemented.TypeArguments[0];
@@ -1208,15 +1893,9 @@ internal sealed class StateClonePlanner
         continue;
       }
 
-      if (SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, definition))
-      {
-        key = type.TypeArguments[0];
-        value = type.TypeArguments[1];
-        return true;
-      }
-
-      INamedTypeSymbol? implemented = type.AllInterfaces.FirstOrDefault(candidate =>
-        SymbolEqualityComparer.Default.Equals(candidate.OriginalDefinition, definition));
+      INamedTypeSymbol? implemented = SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, definition)
+        ? type
+        : type.AllInterfaces.FirstOrDefault(candidate => SymbolEqualityComparer.Default.Equals(candidate.OriginalDefinition, definition));
       if (implemented is not null)
       {
         key = implemented.TypeArguments[0];
@@ -1242,8 +1921,6 @@ internal sealed class StateClonePlanner
 
     return null;
   }
-
-  private INamedTypeSymbol? StopBeforeDictionary(INamedTypeSymbol type) => CollectionDefinition(type);
 
   private CollectionKind CollectionKindOf(INamedTypeSymbol type)
   {
@@ -1280,34 +1957,63 @@ internal sealed class StateClonePlanner
         || SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.ISet`1")
         || SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.IReadOnlySet`1"))
     {
-      return CollectionKind.List;
+      return CollectionKind.EnumerableInterface;
     }
 
     return CollectionKind.None;
   }
 
+  private static readonly (string MetadataName, CollectionKind Kind)[] ConcreteCollections =
+  [
+    ("System.Collections.Generic.List`1", CollectionKind.List),
+    ("System.Collections.Generic.Dictionary`2", CollectionKind.Dictionary),
+    ("System.Collections.Generic.HashSet`1", CollectionKind.HashSet),
+    ("System.Collections.Generic.SortedSet`1", CollectionKind.SortedSet),
+    ("System.Collections.Generic.SortedDictionary`2", CollectionKind.SortedDictionary),
+    ("System.Collections.Generic.SortedList`2", CollectionKind.SortedList),
+    ("System.Collections.Generic.LinkedList`1", CollectionKind.LinkedList),
+    ("System.Collections.Generic.Stack`1", CollectionKind.Stack),
+    ("System.Collections.Generic.Queue`1", CollectionKind.Queue),
+    ("System.Collections.Concurrent.ConcurrentDictionary`2", CollectionKind.ConcurrentDictionary),
+    ("System.Collections.ObjectModel.ObservableCollection`1", CollectionKind.ObservableCollection),
+    ("System.Collections.ObjectModel.Collection`1", CollectionKind.Collection),
+    ("System.Collections.ObjectModel.ReadOnlyCollection`1", CollectionKind.ReadOnlyCollection),
+    ("System.Collections.ObjectModel.ReadOnlyDictionary`2", CollectionKind.ReadOnlyDictionary),
+    ("System.Collections.Immutable.ImmutableArray`1", CollectionKind.ImmutableArray),
+    ("System.Collections.Immutable.ImmutableList`1", CollectionKind.ImmutableList),
+    ("System.Collections.Immutable.ImmutableDictionary`2", CollectionKind.ImmutableDictionary),
+    ("System.Collections.Immutable.ImmutableSortedDictionary`2", CollectionKind.ImmutableSortedDictionary),
+    ("System.Collections.Immutable.ImmutableHashSet`1", CollectionKind.ImmutableHashSet),
+    ("System.Collections.Immutable.ImmutableSortedSet`1", CollectionKind.ImmutableSortedSet),
+    ("System.Collections.Immutable.ImmutableQueue`1", CollectionKind.ImmutableQueue),
+    ("System.Collections.Immutable.ImmutableStack`1", CollectionKind.ImmutableStack),
+    ("System.Collections.Frozen.FrozenDictionary`2", CollectionKind.FrozenDictionary),
+    ("System.Collections.Frozen.FrozenSet`1", CollectionKind.FrozenSet)
+  ];
+
   private CollectionKind MatchConcrete(INamedTypeSymbol type)
   {
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.List`1")) return CollectionKind.List;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.Dictionary`2")) return CollectionKind.Dictionary;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.HashSet`1")) return CollectionKind.HashSet;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.Stack`1")) return CollectionKind.Stack;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Generic.Queue`1")) return CollectionKind.Queue;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.ObjectModel.ObservableCollection`1")) return CollectionKind.ObservableCollection;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.ObjectModel.Collection`1")) return CollectionKind.Collection;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Immutable.ImmutableArray`1")) return CollectionKind.ImmutableArray;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Immutable.ImmutableList`1")) return CollectionKind.ImmutableList;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Immutable.ImmutableDictionary`2")) return CollectionKind.ImmutableDictionary;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Immutable.ImmutableHashSet`1")) return CollectionKind.ImmutableHashSet;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Immutable.ImmutableQueue`1")) return CollectionKind.ImmutableQueue;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Immutable.ImmutableStack`1")) return CollectionKind.ImmutableStack;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Frozen.FrozenDictionary`2")) return CollectionKind.FrozenDictionary;
-    if (SymbolEquals(type.OriginalDefinition, "System.Collections.Frozen.FrozenSet`1")) return CollectionKind.FrozenSet;
+    foreach ((string metadataName, CollectionKind kind) in ConcreteCollections)
+    {
+      if (SymbolEquals(type.OriginalDefinition, metadataName))
+      {
+        return kind;
+      }
+    }
+
     return CollectionKind.None;
   }
 
+  private static string DefinitionName(CollectionKind kind) =>
+    ConcreteCollections.FirstOrDefault(entry => entry.Kind == kind).MetadataName ?? string.Empty;
+
   private bool SymbolEquals(INamedTypeSymbol type, string metadataName)
   {
+    if (metadataName.Length == 0)
+    {
+      return false;
+    }
+
     INamedTypeSymbol? definition = Compilation.GetTypeByMetadataName(metadataName);
     return definition is not null && SymbolEqualityComparer.Default.Equals(type, definition);
   }
@@ -1355,7 +2061,9 @@ internal sealed class StateClonePlanner
         || Named(type, "System", "UInt128")
         || Named(type, "System", "Uri")
         || Named(type, "System", "Version")
-        || Named(type, "System", "DBNull"))
+        || Named(type, "System", "DBNull")
+        || Named(type, "System", "TimeZoneInfo")
+        || Named(type, "System.Numerics", "BigInteger"))
     {
       return true;
     }
@@ -1373,8 +2081,9 @@ internal sealed class StateClonePlanner
       return true;
     }
 
+    // Synchronization primitives, timers, tasks, cancellation tokens and sources are identity-bound.
     string? namespaceName = type.ContainingNamespace?.ToDisplayString();
-    if (!type.IsValueType && namespaceName is "System.Threading" or "System.Threading.Tasks")
+    if (namespaceName is "System.Threading" or "System.Threading.Tasks")
     {
       return true;
     }
@@ -1401,6 +2110,13 @@ internal sealed class StateClonePlanner
       {
         return true;
       }
+    }
+
+    if (type is INamedTypeSymbol { TypeKind: TypeKind.Interface } named
+        && (SymbolEquals(named.OriginalDefinition, "System.Collections.Generic.IEqualityComparer`1")
+            || SymbolEquals(named.OriginalDefinition, "System.Collections.Generic.IComparer`1")))
+    {
+      return true;
     }
 
     return false;
@@ -1479,34 +2195,34 @@ internal sealed class StateClonePlanner
     return $"{sourceExpression} is null ? null! : {slot.MethodName}({sourceExpression}, map)";
   }
 
-  private static string EmitAccessor(IFieldSymbol field, string accessorName) =>
-    EmitAccessor(field.Name, field.Type, field.ContainingType, accessorName);
+  #endregion
 
-  private static string EmitAccessor(string fieldName, ITypeSymbol fieldType, INamedTypeSymbol target, string accessorName)
-  {
-    string reference = target.IsReferenceType ? string.Empty : "ref ";
-    string fieldTypeName = fieldType.ToDisplayString(Format);
-    string targetName = target.ToDisplayString(Format);
-    string literal = fieldName.Replace("\\", "\\\\").Replace("\"", "\\\"");
-    return
-      $"[global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Field, Name = \"{literal}\")] private static extern ref {fieldTypeName} {accessorName}({reference}{targetName} target);";
-  }
+  #region Diagnostics
 
-  private static void Fail(Slot slot, string detail, Location? location)
+  private static void Fail(Slot slot, string detail, Location? location, Slot? cause = null, bool member = false)
   {
+    if (slot.PrimaryFailure)
+    {
+      return;
+    }
+
     slot.Kind = SlotKind.Error;
     slot.Detail ??= detail;
     slot.DiagnosticLocation ??= location ?? Location.None;
     slot.PrimaryFailure = true;
+    slot.Cause = cause;
+    slot.MemberFailure = member;
   }
 
   private static Location? LocationOf(ITypeSymbol type) =>
     type.Locations.FirstOrDefault(location => location.IsInSource) ?? type.Locations.FirstOrDefault();
 
+  private static Location? SourceLocation(ITypeSymbol type) =>
+    type.OriginalDefinition.Locations.FirstOrDefault(location => location.IsInSource);
+
   private static Location? FieldLocation(IFieldSymbol field) =>
     field.Locations.FirstOrDefault(location => location.IsInSource)
-    ?? field.AssociatedSymbol?.Locations.FirstOrDefault(location => location.IsInSource)
-    ?? LocationOf(field.ContainingType);
+    ?? field.AssociatedSymbol?.Locations.FirstOrDefault(location => location.IsInSource);
 
   private void PropagateErrors()
   {
@@ -1529,8 +2245,7 @@ internal sealed class StateClonePlanner
           }
 
           slot.Kind = SlotKind.Error;
-          slot.Detail ??= $"it depends on '{dependency.FullyQualified}', which cannot be cloned";
-          slot.DiagnosticLocation ??= dependency.DiagnosticLocation ?? Location.None;
+          slot.Detail ??= $"it depends on '{dependency.Type.ToDisplayString()}', which cannot be cloned";
           changed = true;
           break;
         }
@@ -1538,48 +2253,259 @@ internal sealed class StateClonePlanner
     }
   }
 
+  // One diagnostic per primary failure that has a source location: the member (or type) the author can change.
+  // Failures inside BCL or referenced types surface through the source member that reaches them. A failed root with
+  // no reported cause still gets one diagnostic at its declaration.
   private void Report(SourceProductionContext sourceContext)
   {
-    HashSet<Slot> reachable = [];
+    Dictionary<Slot, Slot> rootOf = [];
     foreach (Slot root in Roots)
     {
-      Mark(root, reachable);
+      Mark(root, root, rootOf);
     }
 
-    HashSet<string> reported = [];
-    foreach (Slot slot in reachable)
+    HashSet<string> reported = new(StringComparer.Ordinal);
+    HashSet<Slot> reportedRoots = [];
+    foreach (KeyValuePair<Slot, Slot> pair in rootOf)
     {
-      if (slot.Kind != SlotKind.Error || slot.Detail is null)
+      Slot slot = pair.Key;
+      if (slot.Kind != SlotKind.Error || !slot.PrimaryFailure || slot.DiagnosticLocation is not { IsInSource: true } location)
       {
         continue;
       }
 
-      string key = slot.FullyQualified + "|" + slot.Detail;
-      if (!reported.Add(key))
+      // A type-level failure (no implementation, no constructor, ...) is reported through the member that reaches
+      // it, unless the type is itself a root. A member failure caused by a deeper source member is left to that one.
+      if (!slot.MemberFailure && !slot.IsRoot || HasDeeperMemberFailure(slot))
       {
         continue;
       }
 
-      Location location = slot.DiagnosticLocation ?? Location.None;
-      sourceContext.ReportDiagnostic(
-        Diagnostic.Create(
+      if (!reported.Add(slot.FullyQualified + "|" + slot.Detail + "|" + location.GetLineSpan()))
+      {
+        continue;
+      }
+
+      reportedRoots.Add(pair.Value);
+      sourceContext.ReportDiagnostic(Diagnostic.Create(
+        StateCloneSourceGenerator.UnsupportedRule,
+        location,
+        slot.Type.ToDisplayString(),
+        slot.Detail,
+        RootSuffix(slot, pair.Value)));
+    }
+
+    foreach (Slot root in Roots)
+    {
+      if (root.Kind != SlotKind.Error || reportedRoots.Contains(root) || Roots.Any(other => other != root && reportedRoots.Contains(other) && Reaches(other, root)))
+      {
+        continue;
+      }
+
+      if (!AnyReportedBelow(root, rootOf, reportedRoots))
+      {
+        sourceContext.ReportDiagnostic(Diagnostic.Create(
           StateCloneSourceGenerator.UnsupportedRule,
-          location,
-          slot.Type.Name,
-          slot.Detail));
+          SourceLocation(root.Type) ?? Location.None,
+          root.Type.ToDisplayString(),
+          root.Detail ?? "a member cannot be cloned",
+          string.Empty));
+      }
     }
   }
 
-  private static void Mark(Slot slot, HashSet<Slot> reachable)
+  private static bool HasDeeperMemberFailure(Slot slot)
   {
-    if (!reachable.Add(slot))
+    HashSet<Slot> seen = [slot];
+    for (Slot? cause = slot.Cause; cause is not null && seen.Add(cause); cause = cause.Cause)
     {
-      return;
+      if (cause.PrimaryFailure && cause.MemberFailure && cause.DiagnosticLocation is { IsInSource: true })
+      {
+        return true;
+      }
     }
 
-    foreach (Slot dependency in slot.Dependencies)
+    return false;
+  }
+
+  private static bool AnyReportedBelow(Slot root, Dictionary<Slot, Slot> rootOf, HashSet<Slot> reportedRoots)
+  {
+    HashSet<Slot> seen = [];
+    Stack<Slot> pending = new();
+    pending.Push(root);
+    while (pending.Count > 0)
     {
-      Mark(dependency, reachable);
+      Slot current = pending.Pop();
+      if (!seen.Add(current))
+      {
+        continue;
+      }
+
+      if (current.Kind == SlotKind.Error && current.PrimaryFailure && current.DiagnosticLocation is { IsInSource: true }
+          && rootOf.TryGetValue(current, out Slot? owner) && reportedRoots.Contains(owner))
+      {
+        return true;
+      }
+
+      foreach (Slot dependency in current.Dependencies)
+      {
+        pending.Push(dependency);
+      }
+    }
+
+    return false;
+  }
+
+  private static bool Reaches(Slot from, Slot to)
+  {
+    HashSet<Slot> seen = [];
+    Stack<Slot> pending = new();
+    pending.Push(from);
+    while (pending.Count > 0)
+    {
+      Slot current = pending.Pop();
+      if (current == to)
+      {
+        return true;
+      }
+
+      if (!seen.Add(current))
+      {
+        continue;
+      }
+
+      foreach (Slot dependency in current.Dependencies)
+      {
+        pending.Push(dependency);
+      }
+    }
+
+    return false;
+  }
+
+  private static string RootSuffix(Slot slot, Slot root) =>
+    slot == root ? string.Empty : $" (reached from '{root.Type.ToDisplayString()}')";
+
+  private static void Mark(Slot slot, Slot root, Dictionary<Slot, Slot> rootOf)
+  {
+    Stack<Slot> pending = new();
+    pending.Push(slot);
+    while (pending.Count > 0)
+    {
+      Slot current = pending.Pop();
+      if (rootOf.ContainsKey(current))
+      {
+        continue;
+      }
+
+      rootOf.Add(current, root);
+      foreach (Slot dependency in current.Dependencies)
+      {
+        pending.Push(dependency);
+      }
+    }
+  }
+
+  #endregion
+
+  #region Emit
+
+  private void MaterializeDispatches()
+  {
+    foreach (Slot slot in Slots.Values)
+    {
+      if (!slot.IsDispatch || slot.Kind != SlotKind.Clone)
+      {
+        continue;
+      }
+
+      string name = slot.FullyQualified;
+      List<string> lines =
+      [
+        $"if (map.TryGet(source, out {name}? existing))",
+        "{",
+        "  return existing;",
+        "}"
+      ];
+
+      if (slot.Exact is not null && !slot.ExactIsFallback)
+      {
+        lines.Add($"if (source.GetType() == typeof({name}))");
+        lines.Add("{");
+        lines.Add($"  return {slot.Exact.MethodName}(source, map);");
+        lines.Add("}");
+      }
+
+      lines.Add("switch (source)");
+      lines.Add("{");
+      HashSet<string> seen = new(StringComparer.Ordinal);
+      List<CaseRequest> ordered = [];
+      int typedIndex = 0;
+      foreach (CaseRequest caseRequest in slot.Cases)
+      {
+        ITypeSymbol type = Normalize(caseRequest.Type);
+        if (!Slots.TryGetValue(type, out Slot? target) || target.Kind is not (SlotKind.Clone or SlotKind.Share))
+        {
+          continue;
+        }
+
+        if (!seen.Add(type.ToDisplayString(Format)))
+        {
+          continue;
+        }
+
+        string variable = caseRequest.Variable == "typed" ? $"typed{typedIndex++}" : caseRequest.Variable;
+        int depth = type is INamedTypeSymbol named ? Depth(named) : 1;
+        ordered.Add(new CaseRequest(type, variable, depth, caseRequest.Guard));
+      }
+
+      foreach (CaseRequest caseRequest in ordered
+        .OrderByDescending(item => item.Depth)
+        .ThenBy(item => item.Variable, StringComparer.Ordinal))
+      {
+        Slot target = Slots[Normalize(caseRequest.Type)];
+        string display = caseRequest.Type.ToDisplayString(Format);
+        string guard = caseRequest.Guard ? $" when {caseRequest.Variable}.GetType() == typeof({display})" : string.Empty;
+        lines.Add($"  case {display} {caseRequest.Variable}{guard}:");
+        lines.Add(target.Kind == SlotKind.Share
+          ? "    return source;"
+          : $"    return {target.MethodName}({caseRequest.Variable}, map);");
+      }
+
+      if (slot.Exact is not null && slot.ExactIsFallback)
+      {
+        lines.Add("  default:");
+        lines.Add($"    return {slot.Exact.MethodName}(source, map);");
+        lines.Add("}");
+        slot.Statements = lines;
+        continue;
+      }
+
+      lines.Add("  case global::System.ICloneable cloneable:");
+      lines.Add("  {");
+      lines.Add("    object? cloned = cloneable.Clone();");
+      lines.Add("    if (cloned is null)");
+      lines.Add("    {");
+      lines.Add("      return null!;");
+      lines.Add("    }");
+      lines.Add($"    {name} typedClone = ({name})cloned;");
+      lines.Add("    map.Add(source, typedClone);");
+      lines.Add("    return typedClone;");
+      lines.Add("  }");
+      lines.Add("  default:");
+      if (slot.Fallback is not null)
+      {
+        lines.AddRange(slot.Fallback.Select(line => "  " + line));
+      }
+      else
+      {
+        string message = $"Cannot clone \" + source.GetType().FullName + \" as {slot.Type.ToDisplayString().Replace("\"", "\\\"")}: " +
+          "the clone source generator did not see that type in this compilation. Implement ICloneable on it.";
+        lines.Add($"    throw new global::System.InvalidOperationException(\"{message}\");");
+      }
+
+      lines.Add("}");
+      slot.Statements = lines;
     }
   }
 
@@ -1587,6 +2513,7 @@ internal sealed class StateClonePlanner
   {
     List<Slot> methods = Slots.Values
       .Where(slot => slot.Kind == SlotKind.Clone && slot.Statements is not null)
+      .SelectMany(slot => slot.Exact is null ? [slot] : new[] { slot, slot.Exact })
       .OrderBy(slot => slot.MethodName, StringComparer.Ordinal)
       .ToList();
     List<Slot> roots = Roots.Where(slot => slot.Kind == SlotKind.Clone).Distinct().ToList();
@@ -1657,12 +2584,6 @@ internal sealed class StateClonePlanner
 
       builder.AppendLine("    }");
       builder.AppendLine();
-      foreach (string accessor in slot.Accessors)
-      {
-        builder.Append("    ");
-        builder.AppendLine(accessor);
-        builder.AppendLine();
-      }
     }
 
     List<Slot> registrations = roots.Where(slot => slot.RegisterState && !slot.IsValueType).ToList();
@@ -1680,6 +2601,26 @@ internal sealed class StateClonePlanner
     }
 
     builder.AppendLine("  }");
+    foreach (Holder holder in Holders.Values
+      .Where(holder => holder.Problem is null && holder.Members.Count > 0)
+      .OrderBy(holder => holder.Name, StringComparer.Ordinal))
+    {
+      builder.AppendLine();
+      builder.AppendLine($"  file static class {holder.Name}{holder.TypeParameters}");
+      foreach (string constraint in holder.Constraints)
+      {
+        builder.AppendLine($"    {constraint}");
+      }
+
+      builder.AppendLine("  {");
+      foreach (string member in holder.Members)
+      {
+        builder.AppendLine($"    {member}");
+      }
+
+      builder.AppendLine("  }");
+    }
+
     builder.AppendLine("}");
     return builder.ToString();
   }
@@ -1697,6 +2638,33 @@ internal sealed class StateClonePlanner
     return true;
   }
 
+  private string UniqueName(string prefix, string identity)
+  {
+    string trimmed = prefix.Length > 80 ? prefix.Substring(0, 80) : prefix;
+    string name = $"{trimmed}_{StableHash(identity)}";
+    string candidate = name;
+    int suffix = 1;
+    while (!UsedNames.Add(candidate))
+    {
+      candidate = $"{name}_{suffix++}";
+    }
+
+    return candidate;
+  }
+
+  // FNV-1a over the fully qualified name: stable across builds and machines, unlike string.GetHashCode.
+  private static string StableHash(string text)
+  {
+    uint hash = 2166136261;
+    foreach (char character in text)
+    {
+      hash ^= character;
+      hash *= 16777619;
+    }
+
+    return hash.ToString("x8");
+  }
+
   private static string Sanitize(string name)
   {
     StringBuilder builder = new(name.Length);
@@ -1707,6 +2675,10 @@ internal sealed class StateClonePlanner
 
     return builder.ToString();
   }
+
+  #endregion
+
+  #region Types
 
   private enum SlotKind
   {
@@ -1722,33 +2694,76 @@ internal sealed class StateClonePlanner
     List,
     Dictionary,
     HashSet,
+    SortedSet,
+    SortedDictionary,
+    SortedList,
+    LinkedList,
     Stack,
     Queue,
+    ConcurrentDictionary,
     Collection,
     ObservableCollection,
+    ReadOnlyCollection,
+    ReadOnlyDictionary,
     ImmutableArray,
     ImmutableList,
     ImmutableDictionary,
+    ImmutableSortedDictionary,
     ImmutableHashSet,
+    ImmutableSortedSet,
     ImmutableQueue,
     ImmutableStack,
     FrozenDictionary,
     FrozenSet,
+    EnumerableInterface,
     DictionaryInterface
+  }
+
+  private readonly struct Member
+  {
+    public Member(ITypeSymbol type, ITypeSymbol definitionType, string fieldName, INamedTypeSymbol declaringType, Location? location)
+    {
+      Type = type;
+      DefinitionType = definitionType;
+      FieldName = fieldName;
+      DeclaringType = declaringType;
+      Location = location;
+    }
+
+    public ITypeSymbol Type { get; }
+    public ITypeSymbol DefinitionType { get; }
+    public string FieldName { get; }
+    public INamedTypeSymbol DeclaringType { get; }
+    public Location? Location { get; }
   }
 
   private sealed class CaseRequest
   {
-    public CaseRequest(ITypeSymbol type, string variable, int depth = 0)
+    public CaseRequest(ITypeSymbol type, string variable, int depth, bool guard)
     {
       Type = type;
       Variable = variable;
       Depth = depth;
+      Guard = guard;
     }
 
     public ITypeSymbol Type { get; }
     public string Variable { get; }
     public int Depth { get; }
+    public bool Guard { get; }
+  }
+
+  private sealed class Holder
+  {
+    public INamedTypeSymbol Definition { get; init; } = null!;
+    public Dictionary<ITypeParameterSymbol, string> Map { get; init; } = null!;
+    public string Name { get; init; } = "";
+    public string TypeParameters { get; init; } = "";
+    public string Self { get; init; } = "";
+    public string? Problem { get; set; }
+    public List<string> Constraints { get; } = [];
+    public List<string> Members { get; } = [];
+    public Dictionary<string, string> Methods { get; } = new(StringComparer.Ordinal);
   }
 
   private sealed class Slot
@@ -1762,11 +2777,17 @@ internal sealed class StateClonePlanner
     public bool RegisterState { get; set; }
     public bool IsDispatch { get; set; }
     public bool PrimaryFailure { get; set; }
+    public bool MemberFailure { get; set; }
+    public Slot? Cause { get; set; }
     public string? Detail { get; set; }
     public Location? DiagnosticLocation { get; set; }
     public List<string>? Statements { get; set; }
-    public List<string> Accessors { get; } = [];
+    public List<string>? Fallback { get; set; }
+    public Slot? Exact { get; set; }
+    public bool ExactIsFallback { get; set; }
     public List<Slot> Dependencies { get; } = [];
     public List<CaseRequest> Cases { get; } = [];
   }
+
+  #endregion
 }

@@ -85,6 +85,6 @@ A concrete type that derives directly from `State<T>` must implement `ICloneable
 
 - **Severity:** Error
 - **Category:** Cloning
-- **Message:** Cannot generate a clone for '{0}' because {1}. Implement ICloneable on '{0}', or change the unsupported member.
+- **Message:** Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', or change the unsupported member.
 
-Reported by `StateCloneSourceGenerator` for a reachable member it cannot clone (`object`, an inaccessible type, a missing constructor, an open generic, a pointer, a ref struct). The build fails. There is no reflection fallback. Implement `ICloneable` on that type, or change the member. See [Cloning](xref:TimeWarpState:Cloning.md).
+Reported by `StateCloneSourceGenerator` once, at the source member that reaches something it cannot clone: `object`, an interface or abstract class with no implementation, an inaccessible type, an open generic, a pointer, a ref struct, or a type from another assembly whose fields it cannot all see. `{2}` names the state or `[GenerateClone]` root the member was reached from. The build fails. There is no reflection fallback. Implement `ICloneable` on that type, or change the member. See [Cloning](xref:TimeWarpState:Cloning.md).

@@ -5,7 +5,9 @@
 #region Design
 // External cloners, not partial members, so existing states stay non-partial. ICloneable is skipped and wins at
 // runtime. One compilation produces one source file. TWSG002 is an error: there is no reflection fallback.
-// The syntax provider only contributes equatable identity; planning runs against the compilation in Execute.
+// The plan needs the whole compilation (states, their member graphs, and the implementations a dispatch switches on),
+// so the only input is CompilationProvider. The generator reruns on every compilation change; the closed-generic
+// syntax scan is limited to the names of [GenerateClone] generic definitions.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -20,7 +22,7 @@ public sealed class StateCloneSourceGenerator : IIncrementalGenerator
     (
       DiagnosticId,
       title: "State clone cannot be generated",
-      messageFormat: "Cannot generate a clone for '{0}' because {1}. Implement ICloneable on '{0}', or change the unsupported member.",
+      messageFormat: "Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', or change the unsupported member.",
       category: "Cloning",
       defaultSeverity: DiagnosticSeverity.Error,
       isEnabledByDefault: true,
@@ -29,41 +31,14 @@ public sealed class StateCloneSourceGenerator : IIncrementalGenerator
 
   public void Initialize(IncrementalGeneratorInitializationContext context)
   {
-    IncrementalValuesProvider<string?> typeNames = context.SyntaxProvider
-      .CreateSyntaxProvider(
-        predicate: static (node, _) => node is TypeDeclarationSyntax,
-        transform: static (syntaxContext, _) => TypeIdentity(syntaxContext))
-      .Where(static name => name is not null);
-
-    IncrementalValueProvider<(Compilation Compilation, ImmutableArray<string?> Names)> input =
-      context.CompilationProvider.Combine(typeNames.Collect());
-
     context.RegisterSourceOutput(
-      input,
-      static (sourceContext, pair) => Execute(pair.Compilation, pair.Names, sourceContext));
+      context.CompilationProvider,
+      static (sourceContext, compilation) => Execute(compilation, sourceContext));
   }
 
-  private static string? TypeIdentity(GeneratorSyntaxContext syntaxContext)
+  private static void Execute(Compilation compilation, SourceProductionContext sourceContext)
   {
-    if (syntaxContext.Node is not TypeDeclarationSyntax typeDeclaration)
-    {
-      return null;
-    }
-
-    if (syntaxContext.SemanticModel.GetDeclaredSymbol(typeDeclaration) is not INamedTypeSymbol symbol)
-    {
-      return null;
-    }
-
-    return symbol.ToDisplayString();
-  }
-
-  private static void Execute(
-    Compilation compilation,
-    ImmutableArray<string?> typeNames,
-    SourceProductionContext sourceContext)
-  {
-    if (typeNames.IsDefault || compilation.GetTypeByMetadataName("TimeWarp.State.State`1") is null)
+    if (compilation.GetTypeByMetadataName("TimeWarp.State.State`1") is null)
     {
       return;
     }
