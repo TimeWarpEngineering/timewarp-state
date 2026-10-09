@@ -1,3 +1,12 @@
+#region Purpose
+// IncrementCount action for the Redux DevTools sample: adds Amount to Count.
+#endregion
+
+#region Design
+// Nested ActionSet (Action + Handler) inside the partial CounterState so the handler can set the private
+// Count. The handler is synchronous and returns a completed ValueTask.
+#endregion
+
 namespace Sample01Wasm.Features.Counter;
 
 partial class CounterState

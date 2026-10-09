@@ -1,3 +1,12 @@
+#region Purpose
+// A tracked action that takes 2 seconds, used to show ActiveActionBehavior and the active-action display.
+#endregion
+
+#region Design
+// The Action is marked [TrackAction]. The handler only awaits Task.Delay(2s) with the cancellation
+// token and changes no state.
+#endregion
+
 namespace Sample02Wasm.Features.Demo;
 
 partial class DemoState

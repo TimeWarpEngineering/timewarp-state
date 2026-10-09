@@ -4,6 +4,15 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
+#region Purpose
+// Runfile that builds and packs the NuGet packages into artifacts/packages.
+#endregion
+
+#region Design
+// A leftover helper; CI uses dev pack. Builds the analyzer, source generator and library projects in
+// Release, then packs timewarp-state, -plus and -policies and lists the .nupkg files.
+#endregion
+
 NuruApp app = NuruApp.CreateBuilder()
   .Map("")
     .WithHandler(App.PackageNuGets)

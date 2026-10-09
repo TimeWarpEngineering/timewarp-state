@@ -2,6 +2,11 @@
 // Shared imports for the persistence sample, including the .NET 10 PersistentState alias.
 #endregion
 
+#region Design
+// Global using directives only. The PersistentStateAttribute alias points [PersistentState] at
+// TimeWarp.Features.Persistence.
+#endregion
+
 global using System.Text.Json.Serialization;
 global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;

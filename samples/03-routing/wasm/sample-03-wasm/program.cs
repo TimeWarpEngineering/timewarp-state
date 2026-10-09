@@ -1,3 +1,12 @@
+#region Purpose
+// Entry point for the routing sample.
+#endregion
+
+#region Design
+// Registers an HttpClient, AddGeneratedMediator<ClientPipeline>(), AddTimeWarpState with Redux DevTools
+// enabled, and AddTimeWarpStateRouting().
+#endregion
+
 namespace Sample03Wasm;
 
 public class Program

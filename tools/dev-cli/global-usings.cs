@@ -2,6 +2,11 @@
 // Global usings for the TimeWarp.State dev CLI
 #endregion
 
+#region Design
+// Global using directives only: System namespaces, Nuru, Mediator, Amuru, Terminal, DevCli and
+// Microsoft.Extensions.DependencyInjection for dev.cs and the endpoint files.
+#endregion
+
 global using System;
 global using System.ComponentModel;
 global using System.Globalization;

@@ -4,6 +4,15 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
+#region Purpose
+// Runfile that cleans the repo: dotnet clean, NuGet caches, build output folders and every bin/obj.
+#endregion
+
+#region Design
+// Skips the NuGet cache clear under CI so the restored cache is reused. Recreates artifacts/packages at the
+// end because nuget.config lists it as a source.
+#endregion
+
 NuruApp app = NuruApp.CreateBuilder()
   .Map("")
     .WithHandler(App.CleanSolution)

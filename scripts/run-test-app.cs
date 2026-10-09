@@ -4,6 +4,15 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
+#region Purpose
+// Runfile that runs the test app server locally over http.
+#endregion
+
+#region Design
+// Sets ASPNETCORE_ENVIRONMENT=Development and UseHttp=true, builds the analyzer and source generator
+// first because the test app does not reference them directly, then dotnet run with the http launch profile.
+#endregion
+
 NuruApp app = NuruApp.CreateBuilder()
   .Map("")
     .WithHandler(App.RunTestApp)

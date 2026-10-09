@@ -2,6 +2,10 @@
 // Adds to Count. Cards that register Count render for this action.
 #endregion
 
+#region Design
+// Nested ActionSet. The handler adds action.Amount to ActivityState.Count.
+#endregion
+
 namespace Sample06Wasm.Features.Activity;
 
 partial class ActivityState

@@ -4,6 +4,16 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
+#region Purpose
+// Runfile that builds the library projects in Release, or cleans the solution.
+#endregion
+
+#region Design
+// Nuru routes: default and "build {config?}" build timewarp-state, -plus and -policies (Release unless a
+// configuration is given) after listing SDKs and restoring tools. "clean" kills dotnet processes, clears
+// NuGet caches (skipped under CI), runs dotnet clean and removes artifacts and generated JS.
+#endregion
+
 NuruApp app = NuruApp.CreateBuilder()
   .Map("build {config?|Build configuration (Debug/Release)}")
     .WithHandler(App.Build)

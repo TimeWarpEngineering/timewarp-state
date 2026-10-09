@@ -4,7 +4,7 @@
 #:property NoWarn=CA2007
 #:property RunAnalyzers=false
 
-// Unified dispatcher for branch checkouts only ($3 == 1).
+// Dispatcher for branch checkouts only ($3 == 1): ganda repo attest.
 // Exit 0 always.
 using TimeWarp.Amuru;
 
@@ -20,12 +20,6 @@ if (root is null)
 {
   return 0;
 }
-
-await Shell.Builder("ganda")
-  .WithArguments("memsearch", "index-repo", "--background")
-  .WithWorkingDirectory(root)
-  .WithNoValidation()
-  .RunAsync();
 
 if (!string.Equals(Environment.GetEnvironmentVariable("GANDA_ATTEST_HOOK"), "0", StringComparison.Ordinal))
 {

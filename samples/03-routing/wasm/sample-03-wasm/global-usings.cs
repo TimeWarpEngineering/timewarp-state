@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the routing sample, including TimeWarp.Features.Routing and TimeWarp.State.Plus.
+#endregion
+
+#region Design
+// Global using directives only; no types.
+#endregion
+
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

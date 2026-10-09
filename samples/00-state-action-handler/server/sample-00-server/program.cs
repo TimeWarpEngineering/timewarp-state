@@ -1,3 +1,12 @@
+#region Purpose
+// Entry point for the Blazor Server sample.
+#endregion
+
+#region Design
+// Registers interactive server components, AddGeneratedMediator<ClientPipeline>() and AddTimeWarpState(),
+// then maps App with the interactive server render mode.
+#endregion
+
 namespace Sample00Server;
 
 public class Program

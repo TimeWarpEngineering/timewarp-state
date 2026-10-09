@@ -4,6 +4,17 @@
 #:package TimeWarp.Nuru
 #:property EnablePreviewFeatures=true
 
+#region Purpose
+// Runfile behind dev e2e: publishes the test app, starts it, and runs the Playwright end-to-end tests.
+#endregion
+
+#region Design
+// Steps: restore tools and clean, optional dev-cert trust (skipped over http), build the analyzer and source
+// generator, set UseHttp in the client appsettings, publish the server to tests/test-app/output, build the
+// tests, install Chromium, start the SUT on port 7011, wait up to 30 tries, run dotnet test with
+// chrome.runsettings, then kill the SUT. runMode is fixed to Auto. Any test failure exits 1.
+#endregion
+
 NuruApp app = NuruApp.CreateBuilder()
   .Map("")
     .WithHandler(App.Run)

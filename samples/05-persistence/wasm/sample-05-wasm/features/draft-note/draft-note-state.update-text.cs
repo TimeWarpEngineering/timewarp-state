@@ -2,6 +2,10 @@
 // Replaces the draft text. The persistence behavior writes session storage after this action.
 #endregion
 
+#region Design
+// Nested ActionSet. The handler stores action.Text, falling back to an empty string when it is null.
+#endregion
+
 namespace Sample05Wasm.Features.DraftNote;
 
 partial class DraftNoteState

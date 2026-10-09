@@ -2,6 +2,10 @@
 // Flips compact density. The persistence behavior writes local storage after this action.
 #endregion
 
+#region Design
+// Nested ActionSet with a parameterless Action. The handler negates Compact and completes synchronously.
+#endregion
+
 namespace Sample05Wasm.Features.DisplayPreferences;
 
 partial class DisplayPreferencesState

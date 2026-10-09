@@ -2,6 +2,11 @@
 // Sets the accent. The persistence behavior writes local storage after this action.
 #endregion
 
+#region Design
+// Nested ActionSet. The handler assigns action.Accent to DisplayPreferencesState.Accent and completes
+// synchronously.
+#endregion
+
 namespace Sample05Wasm.Features.DisplayPreferences;
 
 partial class DisplayPreferencesState
