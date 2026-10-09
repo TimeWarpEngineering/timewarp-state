@@ -18,4 +18,4 @@ builder.Services.AddTimeWarpStateBlazor();
 
 Console hosts call `AddTimeWarpState` and do not reference `TimeWarp.State.Blazor`. See `samples/07-console`.
 
-Migration: `documentation/migrations/migration13.0.0-beta.1.md`.
+Migration: `documentation/migrations/migration12.0.0-beta.10.md`.

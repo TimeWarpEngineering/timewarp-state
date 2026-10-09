@@ -18,7 +18,7 @@ builder.Services.AddTimeWarpState();
 builder.Services.AddTimeWarpStateBlazor();
 ```
 
-Console hosts reference `TimeWarp.State` only and call `AddTimeWarpState`. See the [13.0.0-beta.1 migration](../migrations/migration13.0.0-beta.1.md).
+Console hosts reference `TimeWarp.State` only and call `AddTimeWarpState`. See the [12.0.0-beta.10 migration](../migrations/migration12.0.0-beta.10.md).
 
 Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 

@@ -11,6 +11,6 @@ builder.Services.AddTimeWarpStateBlazor();
 
 `TimeWarp.State.Plus` (routing, persistence, action tracking) depends on this package. The Plus package id is unchanged.
 
-Static web assets stay at `/_content/TimeWarp.State/`, including `js/timewarp-state.js`.
+Static web assets stay at `/_content/TimeWarp.State/`, including `js/timewarp-state.js`. Blazor loads the initializer `js/TimeWarp.State.Blazor.lib.module.js` from that same base path.
 
-See [Migrate to 13.0.0-beta.1](../../documentation/migrations/migration13.0.0-beta.1.md).
+See [Migrate to 12.0.0-beta.10](../../documentation/migrations/migration12.0.0-beta.10.md).

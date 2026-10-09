@@ -8,7 +8,8 @@
     <PackageTags>TimeWarp.State; TimeWarp.State.Blazor; Blazor; State; Redux; Flux</PackageTags>
     <IsPackable>true</IsPackable>
     <IncludeContentInPack>true</IncludeContentInPack>
-    <StaticWebAssetBasePath>TimeWarp.State</StaticWebAssetBasePath>
+    <!-- The SDK default is _content/$(PackageId). The override replaces that whole path, so the _content/ prefix stays in the value. -->
+    <StaticWebAssetBasePath>_content/TimeWarp.State</StaticWebAssetBasePath>
   </PropertyGroup>
 
   <ItemGroup>

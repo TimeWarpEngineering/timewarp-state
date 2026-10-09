@@ -49,7 +49,7 @@ dotnet add package TimeWarp.State.Plus
 dotnet add package TimeWarp.State.Telemetry
 ```
 
-Blazor hosts call `AddTimeWarpState` and `AddTimeWarpStateBlazor`. Console hosts call `AddTimeWarpState` only. See [Migrate to 13.0.0-beta.1](documentation/migrations/migration13.0.0-beta.1.md).
+Blazor hosts call `AddTimeWarpState` and `AddTimeWarpStateBlazor`. Console hosts call `AddTimeWarpState` only. See [Migrate to 12.0.0-beta.10](documentation/migrations/migration12.0.0-beta.10.md).
 
 Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 

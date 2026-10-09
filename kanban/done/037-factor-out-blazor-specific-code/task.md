@@ -73,13 +73,13 @@
 
 ## Results
 
-TimeWarp.State 13.0.0-beta.1 has no reference to Microsoft.AspNetCore.Components or Microsoft.JSInterop. Components, JavaScript interop, Redux DevTools, render subscriptions, and wwwroot live in TimeWarp.State.Blazor. Moved types keep their namespaces. Blazor hosts add a PackageReference to TimeWarp.State.Blazor and call `AddTimeWarpStateBlazor()` after `AddTimeWarpState()`. Console hosts call `AddTimeWarpState()` only. TimeWarp.State.Plus keeps its package id and references TimeWarp.State.Blazor. Static web assets stay under `_content/TimeWarp.State/`, including `/_content/TimeWarp.State/js/timewarp.state.lib.module.js`.
+TimeWarp.State 12.0.0-beta.10 has no reference to Microsoft.AspNetCore.Components or Microsoft.JSInterop. Components, JavaScript interop, Redux DevTools, render subscriptions, and wwwroot live in TimeWarp.State.Blazor. Moved types keep their namespaces. Blazor hosts add a PackageReference to TimeWarp.State.Blazor and call `AddTimeWarpStateBlazor()` after `AddTimeWarpState()`. Console hosts call `AddTimeWarpState()` only. TimeWarp.State.Plus keeps its package id and references TimeWarp.State.Blazor. Static web assets stay under `/_content/TimeWarp.State/`, including `/_content/TimeWarp.State/js/timewarp-state.js`. `StaticWebAssetBasePath` is `_content/TimeWarp.State` because the SDK uses that property as the whole path. Blazor loads the initializer `/_content/TimeWarp.State/js/TimeWarp.State.Blazor.lib.module.js` (`{PackageId}.lib.module.js`).
 
 With TimeWarp.State.Blazor referenced, pipeline order is ReduxDevTools 100, StateInitialization 200, StateTransaction 300, RenderSubscriptions 400. The split does not change those handlers.
 
-Nupkg size: TimeWarp.State 12.0.0-beta.10 was 130,688 bytes and depended on Microsoft.AspNetCore.Components.Web. TimeWarp.State 13.0.0-beta.1 is 84,873 bytes. Its dependencies are JetBrains.Annotations, Microsoft.CodeAnalysis.CSharp, and TimeWarp.Mediator.Contracts. The package contains no wwwroot. TimeWarp.State.Blazor 13.0.0-beta.1 is 61,760 bytes and carries Components.Web plus the static assets.
+Before the split, TimeWarp.State was 130,688 bytes and depended on Microsoft.AspNetCore.Components.Web. TimeWarp.State 12.0.0-beta.10 is 84,887 bytes. Its dependencies are JetBrains.Annotations 2026.2.0, Microsoft.CodeAnalysis.CSharp 4.14.0, and TimeWarp.Mediator.Contracts 14.0.0-beta.4. The package contains no wwwroot. TimeWarp.State.Blazor 12.0.0-beta.10 is 61,941 bytes and depends on TimeWarp.State, Microsoft.AspNetCore.Components.Web 11.0.0-rc.1.26425.128, and Microsoft.CodeAnalysis.CSharp. Release notes and the migration guide for this version also cover `TimeWarpCacheableState<TState>` deriving from `State<TState>`, `InvalidCloneException` taking a cause, removal of `FeatureFlagState` from TimeWarp.State.Plus, the NuGet pin updates (including TimeWarp.Amuru 2.0.0-beta.2), the Purpose/Design backfill, and TWA0004 via TimeWarp.Architecture.Analyzers.
 
-`dev build` exits 0. `dev test` exits 0: analyzer 36 passed, source generator 15 passed, state 80 passed and 1 skipped (includes `CoreAssembly_Should_.NotReferenceBlazorOrJavaScriptInterop` and `BlazorPackage_ReferencesComponents`), plus 32 passed and 1 skipped, telemetry 13 passed, client integration 65 passed and 1 skipped, test-app architecture 7 passed and 1 skipped. `dev pack` writes the five packable packages at 13.0.0-beta.1. `dev verify-samples` exits 0. The console sample prints `Count=5` and exits 0. `ganda repo audit` exits 0 with one pre-existing advisory (kebab path `tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js`). Pre-existing build warnings remain (TW0007, RS0030, BL0010, BL0016, NU1510, ASPDEPR011, IL2026, IL2111).
+`dev build` exits 0. `dev test` exits 0: analyzer 36 passed, source generator 15 passed, state 84 passed and 1 skipped (includes `CoreAssembly_Should_.NotReferenceBlazorOrJavaScriptInterop` and `BlazorPackage_ReferencesComponents`), plus 32 passed and 1 skipped, telemetry 13 passed, client integration 65 passed and 1 skipped, test-app architecture 7 passed and 1 skipped. `dev e2e` exits 0: Failed 0, Passed 11, Skipped 3, Total 14. `dev pack` writes the five packable packages at 12.0.0-beta.10. `dev verify-samples` exits 0 after the global NuGet cache copies of TimeWarp.State, TimeWarp.State.Plus, and TimeWarp.State.Telemetry 12.0.0-beta.10 were removed; NuGet does not replace a folder it already extracted for that version, and the cached TimeWarp.State still contained the Blazor types. The console sample prints `Count=5` and exits 0. `ganda repo audit` exits 0 with an advisory on two kebab paths: `tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js` and `source/timewarp-state-blazor/wwwroot/typescript/TimeWarp.State.Blazor.lib.module.ts` (Blazor's initializer filter is `{PackageId}.lib.module.js`). Pre-existing build warnings remain (TW0007, RS0030, BL0010, BL0016, NU1510, ASPDEPR011, IL2026, IL2111).
 
 ### Implementation review
 
@@ -98,6 +98,7 @@ Smoke:
 
 - `./bin/dev build`
 - `./bin/dev test`
+- `./bin/dev e2e`
 - `./bin/dev pack && ./bin/dev verify-samples`
 - `dotnet run --project samples/07-console/sample-07-console/sample-07-console.csproj -c Release`
 - `ganda repo audit`
@@ -106,7 +107,8 @@ Expect:
 
 - `dev build` exits 0.
 - `dev test` exits 0 with the counts in Results.
-- `dev verify-samples` exits 0, including `samples/07-console`.
+- `dev e2e` exits 0: Failed 0, Passed 11, Skipped 3, Total 14. ThrowExceptionPage reaches render mode `Server`.
+- `dev verify-samples` exits 0, including `samples/07-console`. If the machine already extracted TimeWarp.State 12.0.0-beta.10 into the global NuGet cache from before this split, delete that version folder first.
 - The console process prints `Count=5` and exits 0.
 - `ganda repo audit` exits 0.
 
@@ -115,6 +117,7 @@ Expect:
 - Implementation: grok task-work implementer (2026-10-10)
 - Review: claude-opus-5-5 review oracle (2026-10-10), general reviewer subagent a954005f421aa90d7
 - Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-09T17:33:00Z
+- Resume: grok task-work implementer (2026-10-10). Version is 12.0.0-beta.10. Static assets publish at `/_content/TimeWarp.State/` and the initializer is `TimeWarp.State.Blazor.lib.module.js`. `dev e2e` Passed 11, Skipped 3, Failed 0.
 ## Notes
 
 ### 2026-10-10 — Steven's decision and CI failure on PR #625 (resume the walk)
