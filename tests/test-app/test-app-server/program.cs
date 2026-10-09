@@ -5,7 +5,8 @@
 #region Design
 // Reuses Client.Program.ConfigureServices so server-rendered pages get the same store, then adds the ServerPipeline
 // mediator through AddServerPipelineMediator to avoid CS0121. The weather endpoint passes the Days query value to
-// the handler; Days defaults to 5 so a plain api/weather request still works. The throw-server-side-exception endpoint throws InvalidOperationException with the query message.
+// the handler; Days defaults to 5 so a plain api/weather request still works. The throw-server-side-exception
+// endpoint throws InvalidOperationException with the query message.
 #endregion
 
 namespace Test.App.Server;

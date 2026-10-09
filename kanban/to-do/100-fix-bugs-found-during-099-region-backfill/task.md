@@ -235,7 +235,18 @@ Expect:
 - Analyzer tests include `Should_Allow_Abstract_Self_Constrained_Intermediate` and `Should_Still_Trigger_StateInheritanceTypeArgumentRule_For_Concrete_Generic`, and the project exits 0.
 - Client integration includes `Implement_IState_Of_Itself`, `Hydrate_Should_Return_CacheableWeatherState`, `Return_Ten_Forecasts_When_The_Action_Asks_For_Ten_Days`, `Include_Days`, and the `EnumerableEqual` length tests, and the project exits 0.
 
+### Review disposition
+
+- Effort 3, roster: general. Two rounds.
+- Round 1 raised 4 findings. M1 (bug): the EmptyGuid message gave the wrong remedy for the default-cloner fallback. M2 (suggestion): the release note overclaimed what the cacheable constraint enforces. M3 (suggestion): the server throw endpoint had no test. M4 (nit): `days` was a required query parameter. All four were fixed in `fb84482e` with tests, including `Throw_InvalidCloneException_When_Default_Cloner_Constructor_Throws` and the client-integration tests for the throw endpoint and for plain `api/weather` (5 forecasts).
+- Round 2 re-checked the fix delta and found no new issues.
+- Final counts: bug 1 fixed, suggestion 2 fixed, nit 1 fixed, 0 open, 0 wontfix.
+- Disposition: **clean**.
+- Artifacts: `review/review-framework.md`, `review/round-2/merged.md` (last ledger), `review/disposition.md`.
+- After the fixes: state tests 78 passed, 1 skipped; client integration 65 passed, 1 skipped; `./bin/dev workflow` Pipeline SUCCEEDED (E2E 11 passed, 3 skipped); `ganda repo audit` exit 0.
+
 ## Session
 
 - Created: 1075791 (2026-10-09)
 - Implementation: grok task-work implementer (2026-10-09)
+- Review: claude opus 5.5 review oracle (2026-10-09); general reviewer agent aefe703e4239512ea; fix agent afd2f8fe67f5400fc
