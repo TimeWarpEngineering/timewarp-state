@@ -112,6 +112,7 @@ public class Program
   {
     serviceCollection.AddGeneratedMediator<ClientPipeline>();
     serviceCollection.AddTimeWarpState();
+    serviceCollection.AddTimeWarpStateBlazor();
   }
 }
 ```

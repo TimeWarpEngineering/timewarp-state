@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <Title>TimeWarp.State.Plus</Title>
-    <Description>TimeWarp.State.Plus extends TimeWarp.State with additional, features, middleware and components to simplify and enhance your Blazor applications.</Description>
+    <Description>TimeWarp.State.Plus extends TimeWarp.State and TimeWarp.State.Blazor with routing, persistence, and action tracking.</Description>
     <PackageId>TimeWarp.State.Plus</PackageId>
     <IsPackable>true</IsPackable>
     <PackageTags>TimeWarp-State; TimeWarpState; BlazorState; Blazor; State; Blazor-State; TimeWarp.Mediator; Mediator; Pipeline; Middleware; Redux; Flux; Features; Plus</PackageTags>
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\timewarp-state\timewarp-state.csproj"/>
+    <ProjectReference Include="..\timewarp-state-blazor\timewarp-state-blazor.csproj"/>
     <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
   </ItemGroup>

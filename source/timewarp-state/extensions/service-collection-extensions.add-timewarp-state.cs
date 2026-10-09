@@ -1,11 +1,11 @@
 #region Purpose
-// AddTimeWarpState: registers the Store, Subscriptions, JSON request handling, options and every State<T> found in
-// the configured assemblies.
+// AddTimeWarpState: registers the Store, Subscriptions, options and every State<T> found in the configured assemblies.
 #endregion
 
 #region Design
 // Defaults to the calling assembly when none are configured. Uses TryAdd so hosts can pre-register overrides, adds
-// a NullLogger and a server-side HttpClient fallback, and registers states as transient. Nothing mediator-related
+// a NullLogger, and registers states as transient. Blazor services (render subscriptions, JavaScript dispatch,
+// NavigationManager HttpClient) are AddTimeWarpStateBlazor in TimeWarp.State.Blazor. Nothing mediator-related
 // is registered: behaviors are woven at compile time (see assembly-marker.cs).
 #endregion
 
@@ -42,15 +42,11 @@ public static partial class ServiceCollectionExtensions
     }
     TimeWarpStateOptionsValidator.Validate(timeWarpStateOptions);
 
-    serviceCollection.TryAddScoped<JsonRequestHandler>();
-    JavaScriptDispatchRegistry.GetOrAdd(serviceCollection);
     serviceCollection.TryAddScoped<Subscriptions>();
-    serviceCollection.TryAddScoped<RenderSubscriptionContext>();
     serviceCollection.TryAddScoped<IStore, Store>();
     serviceCollection.TryAddSingleton(timeWarpStateOptions);
 
     EnsureLogger(serviceCollection);
-    EnsureHttpClient(serviceCollection);
     EnsureStates(serviceCollection, timeWarpStateOptions);
 
     // TimeWarp.Mediator links handlers and pipeline behaviors at compile time. The consuming
@@ -58,33 +54,12 @@ public static partial class ServiceCollectionExtensions
     // AddGeneratedMediator<ClientPipeline>(); this assembly joins that graph via
     // [assembly: MediatorAssembly], is scoped to the ClientPipeline via [assembly: MediatorScope] and
     // declares its behaviors with [assembly: MediatorBehavior(..., Scope = typeof(ClientPipeline))]
-    // (see assembly-marker.cs), in pipeline order:
-    // redux-dev-tools -> state-initialization -> state-transaction -> render-subscriptions.
-    // Nothing mediator-related is registered here. UseStateTransactionBehavior is honored at
-    // runtime by StateTransactionBehavior itself (it reads TimeWarpStateOptions).
+    // (see assembly-marker.cs): state-initialization -> state-transaction.
+    // Redux DevTools and render subscriptions are woven by TimeWarp.State.Blazor when that package
+    // is referenced. Nothing mediator-related is registered here. UseStateTransactionBehavior is
+    // honored at runtime by StateTransactionBehavior itself (it reads TimeWarpStateOptions).
 
     return serviceCollection;
-  }
-
-  private static void EnsureHttpClient(IServiceCollection serviceCollection)
-  {
-    // If client side wasm, Blazor registers HttpClient by default.
-    if (OperatingSystem.IsBrowser()) return;
-
-    // Setup HttpClient for server side in a client side compatible fashion
-    serviceCollection.TryAddScoped
-    (
-      serviceProvider =>
-      {
-        // Creating the NavigationManager needs to wait until the JS Runtime is initialized, so defer it.
-        NavigationManager navigationManager = serviceProvider.GetRequiredService<NavigationManager>();
-
-        return new HttpClient
-        {
-          BaseAddress = new Uri(navigationManager.BaseUri)
-        };
-      }
-    );
   }
 
   /// <summary>
@@ -130,7 +105,4 @@ public static partial class ServiceCollectionExtensions
       return false;
     }
   }
-
-  private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) =>
-    serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
 }

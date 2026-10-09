@@ -5,6 +5,7 @@
 #region Design
 // The behavior is always woven. Registering ReduxDevToolsOptions is what switches it on. The method is idempotent
 // (returns early if already registered) and allow-lists the DevTools Start/Commit requests only when enabled.
+// It also registers JsonRequestHandler (TryAdd) so DevTools messages reach .NET without AddTimeWarpStateBlazor.
 #endregion
 
 namespace TimeWarp.State;
@@ -25,7 +26,7 @@ public static partial class ServiceCollectionExtensions
     reduxDevToolsOptionsAction?.Invoke(reduxDevToolsOptions);
 
     // ReduxDevToolsBehavior is woven at compile time ([assembly: MediatorBehavior] in
-    // assembly-marker.cs) and CommitHandler/StartHandler are linked by the host's generator.
+    // TimeWarp.State.Blazor assembly-marker.cs) and CommitHandler/StartHandler are linked by the host's generator.
     // Registering ReduxDevToolsOptions here is what switches the behavior on: it resolves the
     // options as an optional dependency and is a pass-through when UseReduxDevTools was not called.
     serviceCollection.AddScoped<ReduxDevToolsInterop>();
@@ -36,7 +37,11 @@ public static partial class ServiceCollectionExtensions
     // DevTools messages (Start, Commit) reach .NET through JsonRequestHandler. They are not
     // actions, so they are allow-listed here and only when DevTools is enabled.
     JavaScriptDispatchRegistry.GetOrAdd(serviceCollection).AllowReduxDevToolsRequests();
+    serviceCollection.TryAddScoped<JsonRequestHandler>();
 
     return timeWarpStateOptions;
   }
+
+  private static bool HasRegistrationFor(this IServiceCollection serviceCollection, Type type) =>
+    serviceCollection.Any(serviceDescriptor => serviceDescriptor.ServiceType == type);
 }

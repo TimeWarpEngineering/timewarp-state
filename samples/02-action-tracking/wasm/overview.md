@@ -99,6 +99,7 @@ public class Program
                 };
             }
         );
+        builder.Services.AddTimeWarpStateBlazor();
 
         await builder.Build().RunAsync();
     }

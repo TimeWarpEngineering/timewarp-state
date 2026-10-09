@@ -10,7 +10,7 @@
 
 #region Design
 // A leftover helper; CI uses dev pack. Builds the analyzer, source generator and library projects in
-// Release, then packs timewarp-state, -plus and -policies and lists the .nupkg files.
+// Release, then packs timewarp-state, -blazor, -plus and -policies and lists the .nupkg files.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -37,9 +37,9 @@ static class App
 
     WriteLine("Starting NuGet packaging process...");
 
-    if (Directory.Exists("./source/timewarp-state/wwwroot/js"))
+    if (Directory.Exists("./source/timewarp-state-blazor/wwwroot/js"))
     {
-      Directory.Delete("./source/timewarp-state/wwwroot/js", true);
+      Directory.Delete("./source/timewarp-state-blazor/wwwroot/js", true);
     }
 
     string[] buildProjects =
@@ -47,6 +47,7 @@ static class App
       "./source/timewarp-state-analyzer/timewarp-state-analyzer.csproj",
       "./source/timewarp-state-source-generator/timewarp-state-source-generator.csproj",
       "./source/timewarp-state/timewarp-state.csproj",
+      "./source/timewarp-state-blazor/timewarp-state-blazor.csproj",
       "./source/timewarp-state-plus/timewarp-state-plus.csproj",
       "./source/timewarp-state-policies/timewarp-state-policies.csproj"
     ];
@@ -64,6 +65,7 @@ static class App
     string[] packableProjects =
     [
       "./source/timewarp-state/timewarp-state.csproj",
+      "./source/timewarp-state-blazor/timewarp-state-blazor.csproj",
       "./source/timewarp-state-plus/timewarp-state-plus.csproj",
       "./source/timewarp-state-policies/timewarp-state-policies.csproj"
     ];

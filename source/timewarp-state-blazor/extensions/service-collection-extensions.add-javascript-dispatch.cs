@@ -5,6 +5,7 @@
 #region Design
 // Opt-in: nothing is dispatchable until allowed. A builder writes into the shared JavaScriptDispatchRegistry
 // (GetOrAdd on the service collection), so call order relative to AddTimeWarpState does not matter.
+// JsonRequestHandler is also registered here so allowed actions have a handler without AddTimeWarpStateBlazor.
 #endregion
 
 namespace TimeWarp.State;
@@ -17,7 +18,7 @@ public static partial class ServiceCollectionExtensions
   /// </summary>
   /// <param name="serviceCollection">The service collection.</param>
   /// <param name="configure">Allows actions, for example <c>b => b.Allow&lt;CounterState.IncrementCountActionSet.Action&gt;()</c>.</param>
-  /// <remarks>Call again to allow more. Order relative to <see cref="AddTimeWarpState"/> does not matter.</remarks>
+  /// <remarks>Call again to allow more. Order relative to <c>AddTimeWarpState</c> does not matter.</remarks>
   public static IServiceCollection AddJavaScriptDispatch
   (
     this IServiceCollection serviceCollection,
@@ -28,6 +29,7 @@ public static partial class ServiceCollectionExtensions
     ArgumentNullException.ThrowIfNull(configure);
 
     configure(new JavaScriptDispatchBuilder(JavaScriptDispatchRegistry.GetOrAdd(serviceCollection)));
+    serviceCollection.TryAddScoped<JsonRequestHandler>();
     return serviceCollection;
   }
 }

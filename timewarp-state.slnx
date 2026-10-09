@@ -56,6 +56,11 @@
       <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
     </Project>
   </Folder>
+  <Folder Name="/Samples/07-Console/">
+    <Project Path="samples/07-console/sample-07-console/sample-07-console.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
@@ -64,6 +69,11 @@
     <File Path="Build\documentation.yml" />
     <File Path="global.json" />
     <File Path="nuget.config" />
+  </Folder>
+  <Folder Name="/source/">
+    <Project Path="source/timewarp-state-blazor/timewarp-state-blazor.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
   </Folder>
   <Folder Name="/Tests/">
     <Project Path="tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj">

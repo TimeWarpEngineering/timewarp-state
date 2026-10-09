@@ -4,7 +4,7 @@
 
 #region Design
 // Registers an HttpClient, AddGeneratedMediator<ClientPipeline>(), AddTimeWarpState with Redux DevTools
-// enabled, and AddTimeWarpStateRouting().
+// enabled, AddTimeWarpStateBlazor(), and AddTimeWarpStateRouting().
 #endregion
 
 namespace Sample03Wasm;
@@ -33,6 +33,7 @@ public class Program
         options.UseReduxDevTools();
       }
     );
+    builder.Services.AddTimeWarpStateBlazor();
     
     builder.Services.AddTimeWarpStateRouting();
 

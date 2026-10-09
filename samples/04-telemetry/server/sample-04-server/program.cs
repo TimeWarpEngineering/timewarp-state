@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Adds AddTimeWarpStateTelemetry() and OpenTelemetry tracing for the TimeWarp.State ActivitySource and
+// Adds AddTimeWarpStateBlazor(), AddTimeWarpStateTelemetry() and OpenTelemetry tracing for the TimeWarp.State ActivitySource and
 // ASP.NET Core. The OTLP exporter is added only when OTEL_EXPORTER_OTLP_ENDPOINT is set.
 #endregion
 
@@ -20,6 +20,7 @@ public class Program
 
     builder.Services.AddGeneratedMediator<ClientPipeline>();
     builder.Services.AddTimeWarpState();
+    builder.Services.AddTimeWarpStateBlazor();
     builder.Services.AddTimeWarpStateTelemetry();
 
     builder.Services.AddOpenTelemetry()

@@ -5,7 +5,7 @@
 #region Design
 // Registers an HttpClient for the host base address and AddGeneratedMediator<ClientPipeline>(). The
 // ActiveActionBehavior comes from mediator-behaviors.cs. AddTimeWarpState scans this assembly and the
-// TimeWarp.State.Plus assembly.
+// TimeWarp.State.Plus assembly. AddTimeWarpStateBlazor registers render subscriptions.
 #endregion
 
 namespace Sample02Wasm;
@@ -39,6 +39,7 @@ public class Program
         };
       }
     );
+    builder.Services.AddTimeWarpStateBlazor();
 
     await builder.Build().RunAsync();
   }

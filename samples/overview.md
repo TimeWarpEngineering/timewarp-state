@@ -1,6 +1,6 @@
 # TimeWarp.State Samples
 
-This directory contains sample projects that demonstrate various features and capabilities of TimeWarp.State. Each sample focuses on specific aspects of the library and includes examples in different Blazor render modes.
+This directory contains sample projects that demonstrate various features and capabilities of TimeWarp.State. Most samples are Blazor hosts. The console sample uses the core package only.
 
 ## Available Samples
 
@@ -55,6 +55,11 @@ Shows when `TimeWarpStateComponent` paints:
 - `CheckComplexParameterChanged` so a new object with the same text does not repaint
 - `RegisterRenderTrigger` so a noisy field does not repaint a card
 - `CaptureRenderCaller` on for the caller column, and off in production hosts
+
+### [07-Console](07-console/overview.md)
+Dispatches one action with `TimeWarp.State` and no Blazor package:
+- `AddGeneratedMediator<ClientPipeline>` and `AddTimeWarpState`
+- Prints `Count=5` and exits 0
 
 ## Getting Started
 

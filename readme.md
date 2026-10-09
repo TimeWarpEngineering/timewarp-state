@@ -20,13 +20,13 @@
 
 # TimeWarp.State
 
-**TimeWarp.State** (previously known as Blazor-State) is a fully asynchronous state management library for Blazor applications, leveraging the res pipeline to implement the Flux pattern. It handles both Reducers and Effects consistently using async Handlers, simplifying the management of asynchronous operations throughout your app.
+**TimeWarp.State** (previously known as Blazor-State) is a fully asynchronous state management library. The core package has no Blazor dependency, so console and other non-UI hosts can dispatch actions through the same store. Blazor components, JavaScript interop, render subscriptions, and Redux DevTools are in **TimeWarp.State.Blazor**. It handles both Reducers and Effects consistently using async Handlers.
 
 By utilizing the TimeWarp.Mediator pipeline, TimeWarp.State enables a flexible, middleware-driven architecture for managing state, similar to the request-processing pipeline in ASP.NET. This approach allows developers to inject custom behaviors, such as logging, validation, and caching, directly into the state management flow.
 
 Hosts consume **TimeWarp.Mediator 14-beta** via generated `AddGeneratedMediator<ClientPipeline>()` / named pipelines — not MediatR and not reflection `AddMediator()`.
 
-In addition to the core library, we offer **[TimeWarp.State.Plus](/source/timewarp-state-plus)** (routing, persistence, action tracking) and **[TimeWarp.State.Telemetry](/source/timewarp-state-telemetry)** (OpenTelemetry action spans for the Aspire dashboard or any OTel backend). The [persistence sample](samples/05-persistence/readme.md) shows session storage and local storage with `[PersistentState]`. The [render control sample](samples/06-render-control/readme.md) shows `ShouldRender`, parameter checks, and `RegisterRenderTrigger`.
+In addition to the core library, we offer **[TimeWarp.State.Blazor](/source/timewarp-state-blazor)** (components, JavaScript interop, render subscriptions, Redux DevTools), **[TimeWarp.State.Plus](/source/timewarp-state-plus)** (routing, persistence, action tracking; depends on TimeWarp.State.Blazor; package id unchanged), and **[TimeWarp.State.Telemetry](/source/timewarp-state-telemetry)** (OpenTelemetry action spans for the Aspire dashboard or any OTel backend). The [console sample](samples/07-console/overview.md) dispatches an action without Blazor. The [persistence sample](samples/05-persistence/readme.md) shows session storage and local storage with `[PersistentState]`. The [render control sample](samples/06-render-control/readme.md) shows `ShouldRender`, parameter checks, and `RegisterRenderTrigger`.
 
 ## Give a Star! :star:
 
@@ -44,13 +44,17 @@ See full [documentation](https://timewarpengineering.github.io/timewarp-state/).
 
 ```console
 dotnet add package TimeWarp.State
+dotnet add package TimeWarp.State.Blazor
 dotnet add package TimeWarp.State.Plus
 dotnet add package TimeWarp.State.Telemetry
 ```
 
+Blazor hosts call `AddTimeWarpState` and `AddTimeWarpStateBlazor`. Console hosts call `AddTimeWarpState` only. See [Migrate to 12.0.0-beta.10](documentation/migrations/migration12.0.0-beta.10.md).
+
 Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](https://www.nuget.org/profiles/TimeWarp.Enterprises).
 
 * [TimeWarp.State](https://www.nuget.org/packages/TimeWarp.State/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
+* [TimeWarp.State.Blazor](https://www.nuget.org/packages/TimeWarp.State.Blazor/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Blazor?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Blazor/)
 * [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 * [TimeWarp.State.Telemetry](https://www.nuget.org/packages/TimeWarp.State.Telemetry/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Telemetry?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Telemetry/)
 

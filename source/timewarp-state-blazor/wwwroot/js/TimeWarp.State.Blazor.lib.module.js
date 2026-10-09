@@ -43,4 +43,4 @@ export function beforeServerStart(_options, _extensions) {
 export function afterServerStarted(_blazor) {
     log("TimeWarp.State Server", "afterServerStarted", "info", LogAction.End);
 }
-//# sourceMappingURL=timewarp.state.lib.module.js.map
+//# sourceMappingURL=TimeWarp.State.Blazor.lib.module.js.map

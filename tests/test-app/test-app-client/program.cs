@@ -5,8 +5,9 @@
 #region Design
 // ConfigureServices is public so Test.App.Server can register the same client services for server rendering. It calls
 // AddGeneratedMediator<ClientPipeline>() only, so an unscoped ISender injection fails fast. It turns on Redux DevTools
-// and CaptureRenderCaller, the action catalog, JavaScript dispatch for IncrementCount, and a HttpClient for
-// localhost:7011. The culture is fixed to en-US with ISO date patterns so tests see stable formatting.
+// and CaptureRenderCaller, calls AddTimeWarpStateBlazor, registers the action catalog and JavaScript dispatch for
+// IncrementCount, and an HttpClient for localhost:7011. The culture is fixed to en-US with ISO date patterns so tests
+// see stable formatting.
 #endregion
 
 namespace Test.App.Client;
@@ -63,6 +64,7 @@ public class Program
           };
       }
     );
+    serviceCollection.AddTimeWarpStateBlazor();
     serviceCollection.AddActionCatalog(typeof(Test.App.Client.AssemblyMarker).Assembly);
     // JavaScriptInteropPage dispatches this action from Test.App.Client.lib.module.js.
     serviceCollection.AddJavaScriptDispatch(b => b.Allow<Test.App.Client.Features.Counter.CounterState.IncrementCountActionSet.Action>());

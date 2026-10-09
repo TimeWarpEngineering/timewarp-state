@@ -59,6 +59,7 @@ static class App
     string[] projects =
     [
       "./source/timewarp-state/timewarp-state.csproj",
+      "./source/timewarp-state-blazor/timewarp-state-blazor.csproj",
       "./source/timewarp-state-plus/timewarp-state-plus.csproj",
       "./source/timewarp-state-policies/timewarp-state-policies.csproj"
     ];
@@ -127,10 +128,10 @@ static class App
 
     Directory.CreateDirectory(PackagesDirectory);
 
-    if (Directory.Exists("./source/timewarp-state/wwwroot/js"))
+    if (Directory.Exists("./source/timewarp-state-blazor/wwwroot/js"))
     {
       WriteLine("Removing generated JS...");
-      Directory.Delete("./source/timewarp-state/wwwroot/js", recursive: true);
+      Directory.Delete("./source/timewarp-state-blazor/wwwroot/js", recursive: true);
     }
 
     WriteLine("✅ Clean completed!");

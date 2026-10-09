@@ -9,7 +9,7 @@
 // state uses only one.
 // Save and load share TimeWarpStateOptions.JsonSerializerOptions. The enum converter is added
 // there so accent values round-trip as names.
-// UseReduxDevTools satisfies CommitHandler, which the mediator links even when the sample
+// AddTimeWarpStateBlazor registers render subscriptions. UseReduxDevTools satisfies CommitHandler, which the mediator links even when the sample
 // does not show the extension. The component that would call InitAsync is absent.
 // AddGeneratedMediator is emitted into this assembly. There is no reflection AddMediator call.
 #endregion
@@ -44,6 +44,7 @@ public class Program
         options.UseReduxDevTools();
       }
     );
+    builder.Services.AddTimeWarpStateBlazor();
 
     builder.Services.AddScoped<IPersistenceService, PersistenceService>();
 

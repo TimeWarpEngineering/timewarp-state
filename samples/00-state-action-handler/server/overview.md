@@ -96,6 +96,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddGeneratedMediator<ClientPipeline>();
 builder.Services.AddTimeWarpState();
+builder.Services.AddTimeWarpStateBlazor();
 
 var app = builder.Build();
 

@@ -53,6 +53,7 @@ builder.Services.AddTimeWarpState
         options.UseReduxDevTools();
     }
 );
+builder.Services.AddTimeWarpStateBlazor();
 
 await builder.Build().RunAsync();
 ```

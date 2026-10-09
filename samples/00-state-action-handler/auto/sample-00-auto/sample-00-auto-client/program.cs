@@ -4,7 +4,7 @@
 
 #region Design
 // ConfigureServices is public static so the server Program can call it and both render modes get the same
-// services: AddGeneratedMediator<ClientPipeline>() and AddTimeWarpState().
+// services: AddGeneratedMediator<ClientPipeline>(), AddTimeWarpState() and AddTimeWarpStateBlazor().
 #endregion
 
 namespace Sample00Auto.Client;
@@ -25,5 +25,6 @@ public class Program
         serviceCollection.AddGeneratedMediator<ClientPipeline>();
 
         serviceCollection.AddTimeWarpState();
+        serviceCollection.AddTimeWarpStateBlazor();
     }
 }

@@ -4,7 +4,7 @@
 
 #region Design
 // Adds the App and HeadOutlet root components, then AddGeneratedMediator<ClientPipeline>() and
-// AddTimeWarpState() with default options.
+// AddTimeWarpState() with default options, then AddTimeWarpStateBlazor() for components and render subscriptions.
 #endregion
 
 namespace Sample00Wasm;
@@ -22,6 +22,7 @@ public class Program
     builder.Services.AddGeneratedMediator<ClientPipeline>();
 
     builder.Services.AddTimeWarpState();
+    builder.Services.AddTimeWarpStateBlazor();
 
     await builder.Build().RunAsync();
   }
