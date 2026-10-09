@@ -305,12 +305,16 @@ keys that use reference identity still do not survive, same as the field-copy li
 
 **Other member types.** Records are classes or structs (field copy, not `with`). A struct with no reference
 fields (`IsUnmanagedType`) is copied by value. A member typed as a non-sealed class dispatches on the runtime
-type: derived types in the compilation (deepest first), the exact cloner when `GetType()` matches, then
-`ICloneable`, else `InvalidOperationException` (a subtype from another assembly the generator never saw; a
-subclass of a BCL collection falls back to the base collection). A non-collection interface or abstract type
-switches over implementations in the compilation plus `ICloneable`. A derived type or implementation in the
-compilation that cannot be cloned fails the build. A private or protected type, a pointer, an open generic, an
-`object` field, or an interface with no implementation is **TWSG002** (error). TWSG002 is reported once, at the
+type: known derived types (deepest first), the exact cloner when `GetType()` matches, then `ICloneable`, else
+`InvalidOperationException` (documented limitation: a subtype from an assembly the project does not reference, which
+the generator never saw; a subclass of a BCL collection falls back to the base collection). Known types are the
+compilation's types plus, for a base declared in a non-framework referenced assembly, that assembly's types and those
+of referenced assemblies that reference it. A non-collection interface or abstract type switches over the same known
+implementations plus `ICloneable`. A known derived type or implementation that cannot be cloned fails the build, and
+so does one generated code cannot name (private, protected, `file`, another assembly's internal, or a generic
+subclass) unless it implements `ICloneable`. An `ICloneable` type is cloned by its own `Clone()`, cast to the
+declared type, and never wrapped in the runtime-type dispatch. A private, protected or `file` type, a pointer, an
+open generic, an `object` field, or an interface with no implementation is **TWSG002** (error). TWSG002 is reported once, at the
 source-located member that reaches the failure (or at a root state's declaration for a root-level failure),
 with the type's display name and the root state (`reached from 'X'`). Nothing falls back at runtime. A missing
 registry entry throws `InvalidOperationException` from `StateCloneRegistry.Clone`.
@@ -381,8 +385,8 @@ generated DevTools hydration, and a non-reflection pipeline listing.
 
 Smoke:
 
-- `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo` — 94 passed, 1 skipped (the Fixie skip sample). The ported deep-clone cases passed, including private fields, ignored members, nested collections, cycles, multi-dimensional arrays, structs, shared delegates, and null. Review round 1 added runtime cases for generic declaring types (including a generic state base through `StateCloneRegistry`), nested generics, tuples, `KeyValuePair`, `Nullable` structs, BCL values behind collection interfaces, polymorphic members, `ImmutableStack` order, sorted/linked/`StringBuilder` members, typed default constructor arguments, `required` members, and a DI-constructor state.
-- `dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo` — 51 passed, including the table-driven shape suite (supported shapes compile clean; unsupported shapes are TWSG002 at a source location; metadata implementation and reference assemblies).
+- `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo` — 95 passed, 1 skipped (the Fixie skip sample). The ported deep-clone cases passed, including private fields, ignored members, nested collections, cycles, multi-dimensional arrays, structs, shared delegates, and null. Review round 1 added runtime cases for generic declaring types (including a generic state base through `StateCloneRegistry`), nested generics, tuples, `KeyValuePair`, `Nullable` structs, BCL values behind collection interfaces, polymorphic members, `ImmutableStack` order, sorted/linked/`StringBuilder` members, typed default constructor arguments, `required` members, and a DI-constructor state. Round 2 added an `ICloneable` base whose `Clone()` returns the base type, reached through a subclass and through a non-cloneable base, plus a private `ICloneable` subtype.
+- `dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo` — 66 passed, including the table-driven shape suite (supported shapes compile clean; unsupported shapes are TWSG002 at a source location; metadata implementation and reference assemblies). Round 2 added hidden subtypes (private, protected, `file`, generic, another assembly's internal) as TWSG002 with no extra compiler errors, a metadata hierarchy (abstract and concrete bases, implementation and reference assembly) dispatching to its subtypes, `ICloneable` casts to the declared type, and no `ProduceReferenceAssembly` hint for framework assemblies.
 - `dotnet test tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj --nologo` — 38 passed (TWS001 accepts an accessible constructor and skips abstract states).
 - `dotnet test tests/client-integration-tests/client-integration-tests.csproj --nologo` — 65 passed, 1 skipped. `ReturnCachedData_WhenCacheValid` keeps `CacheKey` and `TimeStamp`.
 - `dotnet test tests/timewarp-state-plus-tests/timewarp-state-plus-tests.csproj --nologo` — 32 passed, 1 skipped.
@@ -420,3 +424,4 @@ Expect:
 - Design correction by Steven (2026-10-10, 2:08 AM): no reflection fallback; walk interrupted and re-run
 - Implementer: grok task-work (2026-10-10). Design written in Results before product edits.
 - Review round 1 (2026-10-10): M1–M14 fixed by the implementer (Claude); see `review/round-1/merged.md`.
+- Review round 2 (2026-10-10): M15–M20 fixed by the implementer (Claude); see `review/round-2/merged.md`.
