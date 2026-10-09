@@ -9,9 +9,11 @@ title: Release 12.0.0-beta.10
 
 - **`TimeWarpCacheableState<TState>` derives from `State<TState>`.** The constraint is
   `where TState : TimeWarpCacheableState<TState>`. A state declared as `class X : TimeWarpCacheableState<X>` is
-  `IState<X>`, and `Hydrate` returns `X`. A declaration that passed any other type no longer compiles. An override
-  of `Hydrate` whose return type was `TimeWarpCacheableState<X>` must return `X`. Declarations that already passed
-  the state itself need no source change.
+  `IState<X>`, and `Hydrate` returns `X`. A type argument that is not itself a `TimeWarpCacheableState` no longer
+  compiles; pass the derived state itself. The constraint does not reject passing a different cacheable state, and
+  `StateInheritanceAnalyzer` checks only classes that derive directly from `State<T>`, so that mistake is not caught
+  for you. An override of `Hydrate` whose return type was `TimeWarpCacheableState<X>` must return `X`. Declarations
+  that already passed the state itself need no source change.
 
 - **`FeatureFlagState` is removed from `TimeWarp.State.Plus`.** It was a public placeholder whose `Initialize`
   threw `NotImplementedException`, and it had no actions. `options.UseFeatureFlags()` was described in the 10-to-11

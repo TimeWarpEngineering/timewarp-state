@@ -7,7 +7,9 @@
 // Constructs StateTransactionBehavior directly over a RecordingStore and RecordingPublisher. TransactionTestState
 // implements ICloneable so the clone is predictable; next mutates the current state and then fails, so a rollback
 // shows up as the original instance with its original value. EqualGuidState.Clone is MemberwiseClone, so Guid is
-// copied. EmptyGuidState.Clone returns Guid.Empty.
+// copied. EmptyGuidState.Clone returns Guid.Empty. ThrowingConstructorState is not ICloneable, so it goes through the
+// default cloner; its only constructor throws on the default argument, so the cloner falls back to an
+// uninitialized instance whose [IgnoreDataMember] Guid stays empty.
 #endregion
 
 namespace StateTransactionBehaviorTests;
@@ -130,6 +132,31 @@ public class Should_
     exception.EnclosingStateType.ShouldBe(typeof(EmptyGuidState));
     exception.CloneCause.ShouldBe(InvalidCloneException.Cause.EmptyGuid);
     exception.Message.ShouldContain("empty Guid");
+    exception.Message.ShouldContain("construct the clone so the initializer runs");
+  }
+
+  public async Task Throw_InvalidCloneException_When_Default_Cloner_Constructor_Throws()
+  {
+    ThrowingConstructorState originalState = new(seed: 1);
+    originalState.Guid.ShouldNotBe(Guid.Empty);
+    StateTransactionBehavior<ThrowingConstructorState.ThrowAction, Unit> behavior =
+      CreateBehavior<ThrowingConstructorState.ThrowAction>(originalState);
+
+    InvalidCloneException exception = await Should.ThrowAsync<InvalidCloneException>
+    (
+      () => behavior.Handle
+      (
+        new ThrowingConstructorState.ThrowAction(),
+        _ => Task.FromResult(Unit.Value),
+        CancellationToken.None
+      )
+    );
+
+    exception.EnclosingStateType.ShouldBe(typeof(ThrowingConstructorState));
+    exception.CloneCause.ShouldBe(InvalidCloneException.Cause.EmptyGuid);
+    exception.Message.ShouldContain("empty Guid");
+    exception.Message.ShouldContain("default cloner");
+    exception.Message.ShouldContain("fell back to an uninitialized instance");
   }
 
   private static StateTransactionBehavior<TAction, Unit> CreateBehavior<TAction>(IState originalState)
@@ -231,6 +258,25 @@ public class Should_
     public void CancelOperations() { }
 
     public object Clone() => new EmptyGuidState(Guid.Empty);
+
+    public sealed class ThrowAction : IAction;
+  }
+
+  private sealed class ThrowingConstructorState : IState
+  {
+    public ISender<ClientPipeline> Sender { get; set; } = null!;
+
+    [System.Runtime.Serialization.IgnoreDataMember]
+    public Guid Guid { get; } = Guid.NewGuid();
+
+    public ThrowingConstructorState(int seed)
+    {
+      if (seed == 0) throw new ArgumentOutOfRangeException(nameof(seed), seed, "Seed must be non-zero.");
+    }
+
+    public void Initialize() { }
+
+    public void CancelOperations() { }
 
     public sealed class ThrowAction : IAction;
   }

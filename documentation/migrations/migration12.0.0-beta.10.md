@@ -13,7 +13,9 @@ title: Migrate to 12.0.0-beta.10
 A derived state written as `class X : TimeWarpCacheableState<X>` still compiles. It implements `IState<X>`, and
 `Hydrate` returns `X`.
 
-Change a declaration that passed a different type argument so the argument is the derived state itself. Change an
+A type argument that is not a `TimeWarpCacheableState` no longer compiles. Change it so the argument is the derived
+state itself. Passing a different cacheable state still compiles, and `StateInheritanceAnalyzer` checks only classes
+that derive directly from `State<T>`, so check those declarations by hand and pass the derived state itself. Change an
 override of `Hydrate` that returned `TimeWarpCacheableState<X>` so it returns `X`.
 
 ## FeatureFlagState

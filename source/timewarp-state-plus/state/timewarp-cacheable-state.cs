@@ -6,8 +6,10 @@
 // The cache key is the action's type FullName plus its JSON serialization. HandleWithCaching runs the update only
 // on a miss and records the key and a UTC timestamp. Derived states can update or invalidate the key.
 // The class is State<TState> with where TState : TimeWarpCacheableState<TState>, so a derived state is
-// IState of itself and Hydrate returns that state. StateInheritanceAnalyzer allows this abstract self-constrained
-// intermediate; a concrete class must still pass itself to State<T>.
+// IState of itself and Hydrate returns that state. The constraint rejects type arguments that are not cacheable
+// states; it does not stop A : TimeWarpCacheableState<B> where B is another cacheable state, so the argument should
+// be the derived state itself by convention. StateInheritanceAnalyzer checks only classes that derive directly from
+// State<T>, so it allows this abstract intermediate and does not check classes that derive from it.
 #endregion
 
 namespace TimeWarp.State.Plus.State;

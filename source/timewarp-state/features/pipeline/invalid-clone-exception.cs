@@ -4,8 +4,10 @@
 
 #region Design
 // The cause distinguishes an empty Guid (initializer did not run) from a Guid copied off the original.
-// The message names that cause and points at ICloneable plus the opt-out attributes the default cloner honors:
-// IgnoreDataMember, NonSerialized and JsonIgnore.
+// An empty Guid has two sources: a custom ICloneable that skips construction, or the default cloner falling back
+// to an uninitialized instance because the state's parameterless (or fewest-parameter) constructor threw on default
+// arguments or none could be called. The message names both and points at ICloneable plus the opt-out attributes
+// the default cloner honors: IgnoreDataMember, NonSerialized and JsonIgnore.
 #endregion
 
 namespace TimeWarp.Features.StateTransactions;
@@ -48,10 +50,12 @@ public class InvalidCloneException : Exception
     {
       Cause.EmptyGuid =>
         $"State of type {enclosingStateType} has an invalid clone: the clone has an empty Guid. " +
-        "The state initializer did not run, for example an uninitialized instance or a custom ICloneable " +
-        "that skips construction. Implement ICloneable.Clone so the clone is constructed, or use the default " +
-        "cloner, which leaves members marked [IgnoreDataMember], [NonSerialized], or [JsonIgnore] at their " +
-        "constructor values so Guid is regenerated.",
+        "The state initializer did not run. With a custom ICloneable, Clone skipped construction: construct the " +
+        "clone so the initializer runs. With the default cloner, the state's parameterless constructor (or, if " +
+        "there is none, the constructor with the fewest parameters, given default arguments) threw or could not " +
+        "be called, so the cloner fell back to an uninitialized instance: make sure that constructor runs without " +
+        "throwing on default arguments. The default cloner leaves members marked [IgnoreDataMember], " +
+        "[NonSerialized], or [JsonIgnore] at their constructor values so Guid is regenerated.",
       Cause.EqualGuid =>
         $"State of type {enclosingStateType} has an invalid clone: the clone has an equal Guid to the original. " +
         "A custom ICloneable.Clone, such as MemberwiseClone, copied Guid, or [IgnoreDataMember] is missing from " +
