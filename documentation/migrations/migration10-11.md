@@ -120,14 +120,6 @@ services.AddTimeWarpState(options =>
 );
 ```
 
-### 5. Feature Flags
-To use the new feature flag system:
-```csharp
-services.AddTimeWarpState(options => 
-    options.UseFeatureFlags()
-);
-```
-
 ## Architecture Enforcement
 
 Consider adding the TimeWarp.State.Policies package to enforce architectural rules:

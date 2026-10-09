@@ -5,7 +5,7 @@
 
 #region Design
 // Delegates to TimeWarpCacheableState.HandleWithCaching, which only invokes UpdateStateAsync when the action's cache
-// entry is missing or expired. The query asks for 10 days; the request goes through the scoped HttpClient.
+// entry is missing or expired. The query sets Days to 10 and GetRoute includes it. The request uses the scoped HttpClient.
 #endregion
 
 namespace Test.App.Client.Features.WeatherForecast;

@@ -3,20 +3,20 @@
 #endregion
 
 #region Design
-// GetRoute appends SampleProperty as a query string; the property is a placeholder (its docs still say TODO).
+// GetRoute appends SampleProperty, URL-encoded, as the exception message the server endpoint throws.
 #endregion
 
 namespace Test.App.Contracts.Features.ExceptionHandlings;
 
 public class ThrowServerSideExceptionRequest : IRequest<ThrowServerSideExceptionResponse>
 {
-  private const string RouteTemplate = "api/ExceptionHandlings/ThrowServerSideException";
+  public const string RouteTemplate = "api/ExceptionHandlings/ThrowServerSideException";
 
   /// <summary>
-  /// Set Properties and Update Docs
+  /// Message the server endpoint throws as <see cref="InvalidOperationException"/>.
   /// </summary>
-  /// <example>TODO</example>
   public string? SampleProperty { get; set; }
 
-  public string GetRoute() => $"{RouteTemplate}?{nameof(SampleProperty)}={SampleProperty}";
+  public string GetRoute() =>
+    $"{RouteTemplate}?{nameof(SampleProperty)}={Uri.EscapeDataString(SampleProperty ?? string.Empty)}";
 }

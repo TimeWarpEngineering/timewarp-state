@@ -3,8 +3,8 @@
 #endregion
 
 #region Design
-// Uses the scoped HttpClient and GetWeatherForecasts.Query's route and throws if the response is null. Compare
-// CacheableWeatherState's version, which caches the result.
+// Uses the scoped HttpClient and GetWeatherForecasts.Query. The query sets Days to 10 and GetRoute puts that value
+// on the URL. Throws if the response is null. Compare CacheableWeatherState's version, which caches the result.
 #endregion
 
 namespace Test.App.Client.Features.WeatherForecast;

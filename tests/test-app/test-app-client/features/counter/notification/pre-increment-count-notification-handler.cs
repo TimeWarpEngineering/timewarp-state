@@ -4,7 +4,7 @@
 
 #region Design
 // PrePipelineNotification is non-generic and published for every action, so the handler filters to
-// CounterState.IncrementCountActionSet.Action. Its last log line uses nameof(IncrementCountNotificationHandler).
+// CounterState.IncrementCountActionSet.Action. Its last log line names this handler.
 #endregion
 
 namespace Test.App.Client.Features.Counter;
@@ -27,7 +27,7 @@ internal class PreIncrementCountNotificationHandler
     if (prePipelineNotification.Request is not CounterState.IncrementCountActionSet.Action) return Task.CompletedTask;
 
     Logger.LogDebug("{prePipelineNotification_Request_Type_Name}", prePipelineNotification.Request.GetType().Name);
-    Logger.LogDebug("{methodName} handled", nameof(IncrementCountNotificationHandler));
+    Logger.LogDebug("{methodName} handled", nameof(PreIncrementCountNotificationHandler));
     return Task.CompletedTask;
   }
 }

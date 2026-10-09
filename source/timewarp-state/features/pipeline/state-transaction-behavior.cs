@@ -85,9 +85,14 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     // We don't clone the Sender, it is an injected service and not part of state.
     newState.Sender = originalState.Sender;
 
-    if (newState.Guid == Guid.Empty || originalState.Guid == newState.Guid)
+    if (newState.Guid == Guid.Empty)
     {
-      throw new InvalidCloneException(enclosingStateType);
+      throw new InvalidCloneException(enclosingStateType, InvalidCloneException.Cause.EmptyGuid);
+    }
+
+    if (originalState.Guid == newState.Guid)
+    {
+      throw new InvalidCloneException(enclosingStateType, InvalidCloneException.Cause.EqualGuid);
     }
 
     Logger.LogDebug

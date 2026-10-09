@@ -3,8 +3,8 @@
 #endregion
 
 #region Design
-// Query.GetRoute returns the fixed "api/weather" route; Days is not sent in the URL. Response is a List of
-// WeatherForecastDto, and TemperatureF is computed from TemperatureC.
+// Query.GetRoute appends Days as a query string on "api/weather". Response is a List of WeatherForecastDto, and
+// TemperatureF is computed from TemperatureC.
 #endregion
 
 namespace Test.App.Contracts.Features.WeatherForecast;
@@ -16,7 +16,7 @@ public static class GetWeatherForecasts
     public int Days { get; init; }
 
     public const string RouteTemplate = "api/weather";
-    public string GetRoute() => FormattableString.Invariant($"{RouteTemplate}");
+    public string GetRoute() => FormattableString.Invariant($"{RouteTemplate}?{nameof(Days)}={Days}");
   }
 
   public sealed class Response : List<WeatherForecastDto>;
