@@ -2,6 +2,12 @@
 // Persistence save/load share TimeWarpStateOptions JSON and FullName keys, with Name fallback on load.
 #endregion
 
+#region Design
+// No browser: a StorageHarness backs ILocalStorageService and ISessionStorageService with an in-memory dictionary, so
+// the test drives PersistentStatePostProcessor and PersistenceService directly and reads what was stored.
+// LocalWidgetState and SessionWidgetState carry an enum so string-enum JSON is checked.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace PersistenceRoundTrip_;
 

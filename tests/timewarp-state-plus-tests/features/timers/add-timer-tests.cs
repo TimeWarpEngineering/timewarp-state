@@ -2,6 +2,11 @@
 // Regression: AddTimer/UpdateTimer must wire Elapsed so TimerElapsedNotification is published.
 #endregion
 
+#region Design
+// A TimerHarness builds a real TimerState with a RecordingPublisher and calls the Add, Update and Remove handlers
+// directly. Timers are 50 ms and publication is awaited with a 2 second timeout, so the tests use real time.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace AddTimer_;
 

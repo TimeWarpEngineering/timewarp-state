@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the analyzer tests.
+#endregion
+
+#region Design
+// Trivial; no design decisions.
+#endregion
+
 global using TimeWarp.State.Analyzer;
 global using TimeWarp.State.Analyzer.Tests;
 global using Shouldly;

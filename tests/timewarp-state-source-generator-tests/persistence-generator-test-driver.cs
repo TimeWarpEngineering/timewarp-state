@@ -2,6 +2,11 @@
 // Runs PersistenceStateSourceGenerator against in-memory syntax for generator tests.
 #endregion
 
+#region Design
+// References only System.Private.CoreLib, so the generator runs on bare syntax with no TimeWarp.State reference; tests
+// assert on diagnostics and hint names rather than compiling the output.
+#endregion
+
 namespace TimeWarp.State.SourceGenerator.Tests;
 
 internal static class PersistenceGeneratorTestDriver

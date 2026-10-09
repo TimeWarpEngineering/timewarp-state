@@ -1,3 +1,12 @@
+#region Purpose
+// Integration tests for Subscriptions: add, de-duplicate, remove, ShouldReRender and per-state targeting.
+#endregion
+
+#region Design
+// Uses the scoped Subscriptions service with a TestableComponent double that counts ReRender calls; no Blazor renderer
+// is involved. Each test uses its own component ids.
+#endregion
+
 namespace SubscriptionsTests;
 
 using Test.App.Client.Features.Counter;

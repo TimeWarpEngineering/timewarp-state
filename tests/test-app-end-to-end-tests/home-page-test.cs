@@ -1,3 +1,11 @@
+#region Purpose
+// E2E smoke test: the home page renders statically with the expected title.
+#endregion
+
+#region Design
+// Asserts the Static render mode with no configured mode, and logs browser name, version and user agent.
+#endregion
+
 namespace HomePage_;
 
 [TestClass]

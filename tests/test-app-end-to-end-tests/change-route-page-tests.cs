@@ -1,3 +1,12 @@
+#region Purpose
+// E2E test: the Change Route page's button navigates to the home page.
+#endregion
+
+#region Design
+// MSTest + Playwright PageTest against the running test app (Configuration.GetSutBaseUrl). Each test checks Server
+// mode first, waits for the WASM bundle, reloads, and repeats in WebAssembly mode.
+#endregion
+
 namespace ChangeRoutePageTests;
 
 [TestClass]

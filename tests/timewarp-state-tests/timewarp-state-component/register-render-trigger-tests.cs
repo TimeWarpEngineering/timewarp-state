@@ -1,3 +1,13 @@
+#region Purpose
+// Tests for RegisterRenderTrigger: a component re-renders only when the selected state property changes.
+#endregion
+
+#region Design
+// TestStore holds the current and previous state and is put into the component by reflection. Each test sets three
+// states: the first re-renders (no previous state), a change to the selected property re-renders, a change to another
+// property does not.
+#endregion
+
 namespace RegisterRenderTrigger;
 
 public class Should_ 

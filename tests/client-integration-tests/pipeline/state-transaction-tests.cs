@@ -1,3 +1,14 @@
+#region Purpose
+// Integration tests for StateTransactionBehavior: clone before the handler, keep changes on success, roll back and
+// publish ExceptionNotification on failure.
+#endregion
+
+#region Design
+// Uses the test app's IncrementCount and ThrowException actions through the real pipeline. A rollback is detected by
+// the Guid staying the same; the notification is detected through ApplicationState.ExceptionMessage, which the test
+// app's handler sets.
+#endregion
+
 namespace StateTransactionTests;
 
 using Counter = Test.App.Client.Features.Counter;

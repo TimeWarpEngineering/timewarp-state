@@ -1,3 +1,12 @@
+#region Purpose
+// IStore double for telemetry tests that counts GetState calls.
+#endregion
+
+#region Design
+// Holds one current state and returns it for any type. GetStateCallCount lets tests prove TelemetryBehavior does not
+// read state when no listener or sampling is active.
+#endregion
+
 namespace TimeWarp.State.Telemetry.Tests;
 
 internal sealed class RecordingStore : IStore

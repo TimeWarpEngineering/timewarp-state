@@ -2,6 +2,12 @@
 // Proves JsonRequestHandler.Handle dispatches only allow-listed actions and fails closed otherwise.
 #endregion
 
+#region Design
+// Builds a JsonRequestHandler from a small ServiceCollection (AddTimeWarpState over this assembly) with a
+// RecordingSender and a no-op IJSRuntime; each test configures the allow-list with AddJavaScriptDispatch. Nested
+// action types cover missing constructors, throwing setters and non-actions.
+#endregion
+
 namespace JsonRequestHandlerDispatchTests;
 
 public class Should_

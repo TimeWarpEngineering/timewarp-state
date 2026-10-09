@@ -1,3 +1,11 @@
+#region Purpose
+// Checks RouteState's ICloneable.Clone: new instance and Guid, same Sender, same route URLs.
+#endregion
+
+#region Design
+// Constructs RouteState with a FakeItEasy ISender and seeds two routes through the test-only Initialize.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace RouteState_;
 

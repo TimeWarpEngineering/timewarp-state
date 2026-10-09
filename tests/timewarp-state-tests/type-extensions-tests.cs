@@ -1,3 +1,11 @@
+#region Purpose
+// Tests for GetEnclosingStateType and TryGetEnclosingStateType.
+#endregion
+
+#region Design
+// Uses a private TestState with nested classes. Non-nested types throw NonNestedClassException or return false.
+#endregion
+
 namespace GetEnclosingStateType_;
 
 using TimeWarp.Features.RenderSubscriptions;

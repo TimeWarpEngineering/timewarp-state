@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the TimeWarp.State.Plus tests.
+#endregion
+
+#region Design
+// PersistentStateAttribute is aliased to TimeWarp's attribute to avoid the ASP.NET Core attribute of the same name.
+#endregion
+
 global using Blazored.LocalStorage;
 global using Blazored.SessionStorage;
 global using FakeItEasy;

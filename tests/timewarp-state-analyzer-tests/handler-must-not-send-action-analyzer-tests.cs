@@ -1,3 +1,13 @@
+#region Purpose
+// Tests for HandlerMustNotSendActionAnalyzer: TWS0002 when a handler sends an action (directly or through a generated
+// state method), TWS0003 (info) when a handler opts out with [AllowActionSend], and the cases that must not report.
+#endregion
+
+#region Design
+// Inline source compiled with AnalyzerTestFactory. RunSendDiagnosticAsync builds the expected TWS0002 warning from
+// handler name, called member and span, so each case only states where the send is.
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace HandlerMustNotSendActionAnalyzer_;
 

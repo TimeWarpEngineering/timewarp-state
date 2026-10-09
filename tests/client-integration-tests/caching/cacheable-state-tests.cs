@@ -1,3 +1,12 @@
+#region Purpose
+// Integration tests for TimeWarpCacheableState, using the test app's CacheableWeatherState.
+#endregion
+
+#region Design
+// Each test calls Store.RemoveState first for a fresh state, then sends the real fetch action through the pipeline to
+// the in-process test server. A repeat fetch inside CacheDuration must keep the same CacheKey and TimeStamp.
+#endregion
+
 namespace CacheableStateTests;
 
 using Test.App.Client.Features.WeatherForecast;

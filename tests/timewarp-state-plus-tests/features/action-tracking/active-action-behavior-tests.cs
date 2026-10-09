@@ -2,6 +2,11 @@
 // ActiveActionBehavior skips IInternalAction instead of throwing on a hard-coded type list.
 #endregion
 
+#region Design
+// Constructs ActiveActionBehavior directly with a RecordingSender and NullLogger, and passes a next delegate that
+// counts calls; no DI or store. Private [TrackAction] actions cover user and internal cases.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace ActiveActionBehavior_;
 

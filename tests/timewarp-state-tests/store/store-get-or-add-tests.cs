@@ -3,6 +3,11 @@
 // initialize once, and re-initialize after Reset/RemoveState.
 #endregion
 
+#region Design
+// Uses a real Store with a counting TestState, a ThrowingSender and a RecordingPublisher. 32 tasks released together
+// by a Barrier force concurrent first access.
+#endregion
+
 namespace StoreGetOrAddTests;
 
 public class Should_

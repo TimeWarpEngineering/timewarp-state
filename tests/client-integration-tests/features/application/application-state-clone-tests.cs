@@ -1,3 +1,12 @@
+#region Purpose
+// Checks that cloning ApplicationState copies Name and ExceptionMessage and gives the clone a new Guid.
+#endregion
+
+#region Design
+// Seeds the state through its test-only Initialize(name, exceptionMessage), which ThrowIfNotTestAssembly allows from
+// this assembly, then calls the Clone() extension directly rather than going through an action.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace ApplicationState_;
 

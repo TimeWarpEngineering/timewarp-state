@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the telemetry tests.
+#endregion
+
+#region Design
+// Trivial; no design decisions.
+#endregion
+
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
 global using System.Reflection;

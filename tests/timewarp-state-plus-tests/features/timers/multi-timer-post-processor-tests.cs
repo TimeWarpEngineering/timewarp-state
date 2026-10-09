@@ -2,6 +2,11 @@
 // Recursion: MultiTimerPostProcessor skips IInternalAction so ResetTimersOnActivity is sent once.
 #endregion
 
+#region Design
+// Builds MultiTimerPostProcessor instances for a user action, the reset action, and the action tracking start/complete
+// actions with a RecordingSender. OnSend lets a test re-enter the processor to simulate nested dispatch.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace MultiTimerPostProcessor_;
 

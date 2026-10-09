@@ -1,3 +1,11 @@
+#region Purpose
+// Checks that cloning CounterState copies Count and gives the clone a new Guid.
+#endregion
+
+#region Design
+// Seeds Count with the test-only Initialize(count) and calls the Clone() extension directly.
+#endregion
+
 namespace CounterState;
 
 using Test.App.Client.Features.Counter;

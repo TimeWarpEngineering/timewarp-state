@@ -1,3 +1,13 @@
+#region Purpose
+// Integration tests for Store lifecycle: GetState, Reset, RemoveState and PreviousState.
+#endregion
+
+#region Design
+// Uses the test app's CounterState and BlueState in the scoped store from BaseTest. A new instance is detected by a
+// new Guid. ReturnNull_WhenStateNeverExisted uses EventStreamState because scopes and test order mean other states may
+// already have a PreviousState.
+#endregion
+
 namespace StoreLifecycle;
 
 using Test.App.Client.Features.Blue;

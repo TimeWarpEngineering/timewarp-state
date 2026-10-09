@@ -1,4 +1,12 @@
-﻿namespace CounterState;
+﻿#region Purpose
+// Checks that CounterState serializes and deserializes with System.Text.Json, including its Guid.
+#endregion
+
+#region Design
+// Uses default JsonSerializerOptions so the [JsonConstructor] (guid, count) is exercised; mirrors the BlueState tests.
+#endregion
+
+namespace CounterState;
 
 using Test.App.Client.Features.Counter;
 

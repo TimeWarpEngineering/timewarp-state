@@ -3,6 +3,11 @@
 // weave order 350, and snapshots that compare full JSON then truncate the event payload.
 #endregion
 
+#region Design
+// Constructs TelemetryBehavior directly with a RecordingStore and an ActivityListenerHarness; no host. Snapshot tests
+// use TelemetryTestJsonContext as the TypeInfoResolver, and an empty resolver covers the unsupported-state path.
+#endregion
+
 namespace TelemetryBehaviorTests;
 
 public class Should_

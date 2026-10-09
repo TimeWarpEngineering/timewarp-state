@@ -1,3 +1,12 @@
+#region Purpose
+// Tests for StateReadOnlyPublicPropertiesAnalyzer: public setters on TimeWarp.State states are an error.
+#endregion
+
+#region Design
+// A foreign State<T> with a public setter must not report. Uses the pinned Net110 references. An older, commented-out
+// version of these tests is in state-read-only-public-properties-analyzer-tests.cs.
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace StateReadOnlyPublicPropertiesAnalyzer_;
 

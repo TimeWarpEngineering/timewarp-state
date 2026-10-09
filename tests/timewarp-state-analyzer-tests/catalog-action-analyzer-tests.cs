@@ -3,6 +3,11 @@
 // TWS0008 DisplayName.
 #endregion
 
+#region Design
+// One class per diagnostic, each test compiling inline source through AnalyzerTestFactory; {|#n:...|} markup marks
+// expected locations. CatalogActionAnalyzerRunner at the bottom adds expected diagnostics and runs.
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace CatalogActionAnalyzer_;
 

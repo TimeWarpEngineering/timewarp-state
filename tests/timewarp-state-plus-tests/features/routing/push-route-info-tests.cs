@@ -2,6 +2,11 @@
 // Regression tests: PushRouteInfo truncates to an existing URL instead of pushing a duplicate.
 #endregion
 
+#region Design
+// Calls the PushRouteInfo handler directly with a fake store and semaphore, a NavigationManager whose Uri can be set,
+// and an IJSRuntime that answers only "eval" (for the page title).
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace PushRouteInfo_;
 

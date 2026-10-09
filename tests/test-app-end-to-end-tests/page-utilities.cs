@@ -1,3 +1,13 @@
+#region Purpose
+// Shared Playwright helpers for the E2E tests.
+#endregion
+
+#region Design
+// WaitTillBlazorWasmIsDownloadedAsync polls localStorage for a blazor-resource-hash key (10 tries, 1 s apart) so a
+// reload comes up in WebAssembly mode. ValidateRenderModesAsync reads the data-qa render-mode spans every test page
+// shows.
+#endregion
+
 namespace Test.App.EndToEnd.Tests;
 using Microsoft.Playwright;
 

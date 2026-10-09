@@ -1,3 +1,12 @@
+#region Purpose
+// Test ActivityListener that records every stopped TimeWarp.State activity.
+#endregion
+
+#region Design
+// Listens only to TimeWarpStateTelemetry.ActivitySourceName with a configurable sampling result, so tests can also
+// check the not-sampled path. Disposing it detaches the listener.
+#endregion
+
 namespace TimeWarp.State.Telemetry.Tests;
 
 internal sealed class ActivityListenerHarness : IDisposable

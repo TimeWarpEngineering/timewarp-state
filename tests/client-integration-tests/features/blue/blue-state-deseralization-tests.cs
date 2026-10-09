@@ -1,4 +1,13 @@
-﻿namespace BlueState_;
+﻿#region Purpose
+// Checks that BlueState serializes and deserializes with System.Text.Json, including its Guid.
+#endregion
+
+#region Design
+// Uses default JsonSerializerOptions (PascalCase) so the [JsonConstructor] (guid, count) is exercised; the round trip
+// test relies on Initialize setting Count to 2.
+#endregion
+
+namespace BlueState_;
 
 using Test.App.Client.Features.Blue;
 

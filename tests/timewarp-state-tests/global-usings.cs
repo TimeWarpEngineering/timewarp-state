@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the TimeWarp.State unit tests.
+#endregion
+
+#region Design
+// Trivial; no design decisions.
+#endregion
+
 global using Shouldly;
 global using TimeWarp.Mediator;
 global using System.Collections.Concurrent;

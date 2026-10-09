@@ -1,3 +1,13 @@
+#region Purpose
+// E2E test: the Go Back page's buttons navigate back one and two pages through RouteState history.
+#endregion
+
+#region Design
+// MSTest + Playwright PageTest against the running test app (Configuration.GetSutBaseUrl). Each test checks Server
+// mode first, waits for the WASM bundle, reloads, and repeats in WebAssembly mode. It builds the history by clicking
+// nav links (home, Change Route, Counter, JavaScript Interop, Go Back) and waits for network idle after each.
+#endregion
+
 namespace GoBackPageTests;
 
 [TestClass]
