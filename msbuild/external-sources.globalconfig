@@ -1,0 +1,10 @@
+# Global analyzer config for compiled sources that live outside this repository.
+#
+# Some packages inject source files into the compilation from the NuGet cache (Fixie adds
+# build/Fixie.Main.cs to every test project). The repo .editorconfig cannot reach those
+# paths, so without this file TWA0004 would fall back to its package default (warning) on
+# a file we cannot edit. Settings in .editorconfig take precedence over a global config,
+# so the repo's own .cs files still get TWA0004 = error from .editorconfig.
+is_global = true
+
+dotnet_diagnostic.TWA0004.severity = none

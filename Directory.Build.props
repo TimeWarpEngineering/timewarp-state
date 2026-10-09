@@ -40,6 +40,14 @@
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
     <!-- TW0007 file-level usings → kebab global-usings.cs -->
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
+    <!-- TWA0004 #region Purpose on every source file; other TWA rules are configured in .editorconfig -->
+    <PackageReference Include="TimeWarp.Architecture.Analyzers" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- TWA0004 default for sources outside the repo (package-injected files such as Fixie.Main.cs);
+       .editorconfig sets the real severity for the repo's own files and wins over this global config -->
+  <ItemGroup Label="Global Analyzer Config">
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)msbuild/external-sources.globalconfig" />
   </ItemGroup>
 
   <!-- Banned API Symbols -->

@@ -39,13 +39,13 @@ Start after 099's final backfill PR is merged, so the repo-wide region audit rea
 
 ## Checklist
 
-- [ ] Add a `TimeWarp.Architecture.Analyzers` PackageVersion (latest, ≥ 2.0.0-beta.9) in `Directory.Packages.props`
-- [ ] Add the PackageReference (`PrivateAssets="all"`) in the root `Directory.Build.props` "Code Analyzers" ItemGroup
-- [ ] `.editorconfig`: `dotnet_diagnostic.TWA0004.severity = warning` (or `error`)
-- [ ] `.editorconfig`: set the TWA rules that don't fit to `none` (review list in Notes); record the decision for each rule
-- [ ] `.editorconfig`: `[.githooks/**.cs]` section with `dotnet_diagnostic.TWA0004.severity = none` (ganda-owned hook templates)
-- [ ] Check which projects actually get the analyzer (library, tests, samples with their own props, file-based scripts/.githooks/tools) and that it's PrivateAssets in every packed nupkg
-- [ ] Workflow green with no TWA warnings; packed nupkgs carry no dependency on TimeWarp.Architecture.Analyzers
+- [x] Add a `TimeWarp.Architecture.Analyzers` PackageVersion (latest, ≥ 2.0.0-beta.9) in `Directory.Packages.props`
+- [x] Add the PackageReference (`PrivateAssets="all"`) in the root `Directory.Build.props` "Code Analyzers" ItemGroup
+- [x] `.editorconfig`: `dotnet_diagnostic.TWA0004.severity = warning` (or `error`)
+- [x] `.editorconfig`: set the TWA rules that don't fit to `none` (review list in Notes); record the decision for each rule
+- [x] `.editorconfig`: `[.githooks/**.cs]` section with `dotnet_diagnostic.TWA0004.severity = none` (ganda-owned hook templates)
+- [x] Check which projects actually get the analyzer (library, tests, samples with their own props, file-based scripts/.githooks/tools) and that it's PrivateAssets in every packed nupkg
+- [x] Workflow green with no TWA warnings; packed nupkgs carry no dependency on TimeWarp.Architecture.Analyzers
 
 ## Notes
 
@@ -81,6 +81,56 @@ Start after 099's final backfill PR is merged, so the repo-wide region audit rea
   analyzer reaches them through Directory.Build.props. 099 backfilled regions in `scripts` and `tools`.
   `.githooks` is out of scope: 099's region audit excludes it, and PR #621 synced the hooks to ganda's template
   with `ganda hooks install attest`.
+
+## Results
+
+Done on branch `task/099-001-enable-twa0004-purpose-region-analyzer-via-timewar` (2026-10-09).
+
+**Package.** `TimeWarp.Architecture.Analyzers` 2.0.0-beta.19 (latest on nuget.org flatcontainer, 2026-10-09) in
+`Directory.Packages.props`; referenced with `PrivateAssets="all"` in the root `Directory.Build.props` "Code Analyzers"
+ItemGroup. The package is also `developmentDependency=true`. None of the 4 packed nupkgs (State, Plus, Policies,
+Telemetry) lists it as a dependency. All 28 csproj (source, tests, test-app, samples) resolve it.
+
+**Rule decisions (`.editorconfig`, `[*.cs]`).**
+
+| Rule | Severity | Why |
+|---|---|---|
+| TWA0004 Source file lacks a #region Purpose block | **error** | 099 brought the repo to 0 missing; error keeps it there |
+| TWA0002/0003 FluentValidation nullability | none | no FluentValidation contracts here |
+| TWA0005 | (no entry) | retired upstream (MVC verb mismatch, task 131 F-002); id reserved, not in SupportedDiagnostics, never reported |
+| TWA0006/0013/0014/0020/0024 FastEndpoints contract and auth rules | none | no generated endpoints here |
+| TWA0007 Aspire ServiceNames | none | sample-04 does not use ServiceNames |
+| TWA0008/0010 dotnet-new template tokens/flags | none | not a template repo |
+| TWA0009 slice isolation | none | library is not sliced |
+| TWA0011/0012 aggregate Invariants | none | no domain aggregates |
+| TWA0015/0016 feature filename grammar | none | file names don't follow `<name>[-<function>]-<layer>.cs` |
+| TWA0021 mock auth registration | none | no SPA mock auth |
+| TWA0022 SPA client must not call mediator Send | none | evaluated at warning: 0 hits across the 8 Blazor WASM projects, even though test-app-client has deliberate direct `Sender.Send`/`Send` calls (should-render and persistence test pages), so the rule adds nothing here |
+| TWA0023 identifier must use the type stem | none | evaluated at warning: 835 unique sites; off by default upstream too |
+
+`[.githooks/**.cs]`: TWA0004 = none (ganda owns the hooks byte for byte; they also set `RunAnalyzers=false`).
+
+**External sources.** Fixie injects `build/Fixie.Main.cs` from the NuGet cache into all 7 Fixie test projects. The
+repo `.editorconfig` can't reach that path, so TWA0004 fell back to its package default and raised 7 new warnings.
+`msbuild/external-sources.globalconfig` (added via `GlobalAnalyzerConfigFiles` in the root props) sets TWA0004 = none
+globally; `.editorconfig` wins over a global config, so repo files still get error.
+
+**Runfiles.** File-based apps DO get the analyzer: `scripts/*.cs`, `tools/dev-cli/dev.cs` (and its endpoints) all
+import the root `Directory.Build.props` through their own folder props. All 6 scripts, dev.cs and
+`.githooks/pre-commit.cs` build with 0 TWA diagnostics. Probes (Purpose region removed temporarily, then restored):
+- `scripts/clean.cs(13,1): error TWA0004: File 'clean.cs' has no '#region Purpose' block; ...`
+- `tools/dev-cli/dev.cs(25,1): error TWA0004: File 'dev.cs' has no '#region Purpose' block; ...`
+TWA0004 accepts the shebang + `#:` directive layout (the region only has to exist somewhere in the file).
+
+**TWA0004 fires in the library.** Purpose region removed from `source/timewarp-state/assembly-marker.cs`:
+`source/timewarp-state/assembly-marker.cs(21,1): error TWA0004: File 'assembly-marker.cs' has no '#region Purpose' block; add one (a single // line suffices) stating what the file is for` → Build FAILED, 1 error. File restored.
+
+**Workflow** (`dotnet run --file tools/dev-cli/dev.cs -- workflow`): Pipeline SUCCEEDED. Unit/integration 228 passed,
+4 skipped; E2E 11 passed, 3 skipped. Warning-neutral: 257 build-summary warnings and the same 115 unique warning
+sites as the pre-change baseline run on this branch (diff of the two site lists is empty); 0 TWA diagnostics.
+
+**`ganda repo audit`:** passes with only the 2 pre-existing advisories (`.memsearch.toml` leftover,
+`Test.App.Client.lib.module.js` name).
 
 ## Session
 
