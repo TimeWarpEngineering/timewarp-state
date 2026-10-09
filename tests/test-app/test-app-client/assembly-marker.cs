@@ -1,3 +1,12 @@
+#region Purpose
+// Marker type for locating the Test.App.Client assembly.
+#endregion
+
+#region Design
+// Program passes its assembly to AddTimeWarpState and AddActionCatalog, and the server passes it to
+// AddAdditionalAssemblies so client pages are routable. Sealed and empty on purpose.
+#endregion
+
 namespace Test.App.Client;
 
 /// <summary>

@@ -1,3 +1,12 @@
+#region Purpose
+// CloneableState: a state that implements ICloneable, to prove ICloneable wins over the reflection deep clone.
+#endregion
+
+#region Design
+// Clone() deliberately returns a new instance with Count 42 regardless of the current value, so a test can tell which
+// clone path ran. Initialize sets Count to 3.
+#endregion
+
 namespace Test.App.Client.Features.CloneTest;
 
 public sealed partial class CloneableState : State<CloneableState>, ICloneable

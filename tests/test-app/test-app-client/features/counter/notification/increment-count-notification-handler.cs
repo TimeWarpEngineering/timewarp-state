@@ -1,3 +1,12 @@
+#region Purpose
+// Logs PostPipelineNotification for IncrementCount actions, to show post-pipeline notifications reach handlers.
+#endregion
+
+#region Design
+// PostPipelineNotification is non-generic and published for every action, so the handler filters to
+// CounterState.IncrementCountActionSet.Action and returns early for anything else.
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 internal class IncrementCountNotificationHandler

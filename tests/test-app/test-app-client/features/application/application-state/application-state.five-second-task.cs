@@ -1,3 +1,12 @@
+#region Purpose
+// Long-running tracked action (a 5 second delay) used to test action tracking and cancellation.
+#endregion
+
+#region Design
+// [TrackAction] puts it in ActionTrackingState while it runs. FiveSecondTask links an optional external token with the
+// state's CancellationToken so tests and ActiveActionsPage can cancel it either way.
+#endregion
+
 namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState

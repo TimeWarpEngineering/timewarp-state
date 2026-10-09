@@ -1,3 +1,11 @@
+#region Purpose
+// Clone test object: a Collection<T> subclass with extra properties and no parameterless constructor.
+#endregion
+
+#region Design
+// Tests that the cloner handles a collection type that must be created through a constructor with parameters.
+#endregion
+
 // ReSharper disable ConvertToPrimaryConstructor
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace AnyClone.Tests.TestObjects;

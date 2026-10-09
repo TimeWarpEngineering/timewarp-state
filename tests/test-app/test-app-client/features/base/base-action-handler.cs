@@ -1,3 +1,12 @@
+#region Purpose
+// Base handler for test-app actions with shortcut properties for the app's common states.
+#endregion
+
+#region Design
+// Derives from StateActionHandler<TAction> and only adds Store.GetState<T>() wrappers (Application, Counter,
+// EventStream, WeatherForecasts, CacheableWeather); it adds no behavior.
+#endregion
+
 // ReSharper disable UnusedMember.Global
 namespace Test.App.Client.Features.Base;
 

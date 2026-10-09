@@ -1,3 +1,11 @@
+#region Purpose
+// Clone test object whose StringValue is marked [IgnoreDataMember].
+#endregion
+
+#region Design
+// Equals leaves StringValue out of the comparison, matching the cloner rule that ignored members are not copied.
+#endregion
+
 // ReSharper disable BaseObjectGetHashCodeCallInGetHashCode
 // ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
 // ReSharper disable UnusedAutoPropertyAccessor.Global

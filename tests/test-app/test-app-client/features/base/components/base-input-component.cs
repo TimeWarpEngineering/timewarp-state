@@ -1,3 +1,12 @@
+#region Purpose
+// Base for test-app input components, exposing common states through GetState<T>.
+#endregion
+
+#region Design
+// Inherits TimeWarpStateInputComponent<T> so input components (CustomInput) get state access and subscriptions while
+// keeping InputBase<T> binding and validation.
+#endregion
+
 // ReSharper disable UnusedMember.Global
 namespace Test.App.Client.Features.Base.Components;
 

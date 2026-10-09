@@ -2,6 +2,11 @@
 // Cataloged counter action with an optional parameter; exercised by the action catalog integration tests.
 #endregion
 
+#region Design
+// The action has a required Amount and an optional Multiplier constructor parameter, so the action catalog has an
+// example with a defaulted parameter. The handler adds Amount * Multiplier.
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 public partial class CounterState

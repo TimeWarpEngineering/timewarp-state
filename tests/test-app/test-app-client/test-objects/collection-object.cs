@@ -1,3 +1,11 @@
+#region Purpose
+// Clone test object with ICollection<int> and ICollection<BasicObject> properties.
+#endregion
+
+#region Design
+// Equals uses SequenceEqual so element-level changes in a clone make it unequal.
+#endregion
+
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable BaseObjectGetHashCodeCallInGetHashCode
 // ReSharper disable ArrangeMethodOrOperatorBody

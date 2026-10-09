@@ -1,3 +1,11 @@
+#region Purpose
+// WindowDimensionsState: a window width and height, defaulting to 1920x1080.
+#endregion
+
+#region Design
+// Has a [JsonConstructor] like the other persisted states, but it has no actions and nothing references it at present.
+#endregion
+
 namespace Test.App.Client.Features.WindowDimensions;
 
 public sealed partial class WindowDimensionsState : State<WindowDimensionsState>

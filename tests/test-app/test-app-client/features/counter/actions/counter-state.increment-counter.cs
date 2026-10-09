@@ -1,3 +1,12 @@
+#region Purpose
+// Action that adds Amount to CounterState.Count; the app's main sample action.
+#endregion
+
+#region Design
+// Nested ActionSet inside CounterState. The Counter component, the pre/post pipeline notification handlers and the
+// JavaScript dispatch allow-list all key off this action type.
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 public partial class CounterState

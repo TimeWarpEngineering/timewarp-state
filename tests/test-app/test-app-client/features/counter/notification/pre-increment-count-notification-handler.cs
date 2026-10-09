@@ -1,3 +1,12 @@
+#region Purpose
+// Logs PrePipelineNotification for IncrementCount actions, to show pre-pipeline notifications reach handlers.
+#endregion
+
+#region Design
+// PrePipelineNotification is non-generic and published for every action, so the handler filters to
+// CounterState.IncrementCountActionSet.Action. Its last log line uses nameof(IncrementCountNotificationHandler).
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 internal class PreIncrementCountNotificationHandler

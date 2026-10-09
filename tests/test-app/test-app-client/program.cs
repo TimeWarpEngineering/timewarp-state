@@ -1,3 +1,14 @@
+#region Purpose
+// Test.App.Client entry point and the shared service setup also used by the server host.
+#endregion
+
+#region Design
+// ConfigureServices is public so Test.App.Server can register the same client services for server rendering. It calls
+// AddGeneratedMediator<ClientPipeline>() only, so an unscoped ISender injection fails fast. It turns on Redux DevTools
+// and CaptureRenderCaller, the action catalog, JavaScript dispatch for IncrementCount, and a HttpClient for
+// localhost:7011. The culture is fixed to en-US with ISO date patterns so tests see stable formatting.
+#endregion
+
 namespace Test.App.Client;
 
 public class Program

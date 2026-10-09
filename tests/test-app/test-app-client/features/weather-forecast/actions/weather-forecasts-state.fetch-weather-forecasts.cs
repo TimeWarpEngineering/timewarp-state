@@ -1,3 +1,12 @@
+#region Purpose
+// Fetches weather forecasts from the server API into WeatherForecastsState on every call (no caching).
+#endregion
+
+#region Design
+// Uses the scoped HttpClient and GetWeatherForecasts.Query's route and throws if the response is null. Compare
+// CacheableWeatherState's version, which caches the result.
+#endregion
+
 namespace Test.App.Client.Features.WeatherForecast;
 
 using static Contracts.Features.WeatherForecast.GetWeatherForecasts;

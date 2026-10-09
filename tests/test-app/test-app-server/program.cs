@@ -1,3 +1,12 @@
+#region Purpose
+// Test.App.Server entry point: hosts the test app in Server, WebAssembly and Auto render modes plus the weather API.
+#endregion
+
+#region Design
+// Reuses Client.Program.ConfigureServices so server-rendered pages get the same store, then adds the ServerPipeline
+// mediator through AddServerPipelineMediator to avoid CS0121. The weather endpoint always asks the handler for 5 days.
+#endregion
+
 namespace Test.App.Server;
 
 using Components;

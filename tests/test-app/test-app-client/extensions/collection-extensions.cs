@@ -1,3 +1,12 @@
+#region Purpose
+// EnumerableEqual helper the clone tests use to compare multi-dimensional int arrays.
+#endregion
+
+#region Design
+// Ported with the AnyClone test suite, so it keeps the AnyClone.Tests.Extensions namespace. Flattens both sequences
+// into List<int> and compares them; any exception (for example a non-int element) is reported as not equal.
+#endregion
+
 namespace AnyClone.Tests.Extensions;
 
 public static class CollectionExtensions

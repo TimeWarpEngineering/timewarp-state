@@ -1,3 +1,12 @@
+#region Purpose
+// Clone test object with byte, double and int arrays.
+#endregion
+
+#region Design
+// Equals compares the arrays element by element so a deep clone equals the original and a mutated clone does not;
+// GetHashCode is reference-based. Ported from the AnyClone tests.
+#endregion
+
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable ArrangeMethodOrOperatorBody
 // ReSharper disable BaseObjectGetHashCodeCallInGetHashCode

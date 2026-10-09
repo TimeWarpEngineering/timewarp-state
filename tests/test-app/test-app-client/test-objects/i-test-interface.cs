@@ -1,3 +1,11 @@
+#region Purpose
+// Interface used by the clone tests to check members typed as an interface.
+#endregion
+
+#region Design
+// Trivial test object.
+#endregion
+
 // ReSharper disable UnusedMemberInSuper.Global
 namespace AnyClone.Tests.TestObjects;
 

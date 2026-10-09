@@ -1,3 +1,12 @@
+#region Purpose
+// Sample pipeline behavior that logs each stage around next().
+#endregion
+
+#region Design
+// Shows where pre- and post-processing and a type-constrained step go. It is not registered in mediator-behaviors.cs,
+// so it does not run in the test app; documentation/overview.md refers to it.
+#endregion
+
 namespace Test.App.Client.Pipeline;
 
 /// <summary>

@@ -1,3 +1,13 @@
+#region Purpose
+// Fetches weather forecasts from the server API into CacheableWeatherState, skipping the call while the cache is
+// fresh.
+#endregion
+
+#region Design
+// Delegates to TimeWarpCacheableState.HandleWithCaching, which only invokes UpdateStateAsync when the action's cache
+// entry is missing or expired. The query asks for 10 days; the request goes through the scoped HttpClient.
+#endregion
+
 namespace Test.App.Client.Features.WeatherForecast;
 
 using static Contracts.Features.WeatherForecast.GetWeatherForecasts;

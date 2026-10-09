@@ -78,7 +78,7 @@ Library source (first):
 
 Tests:
 
-- [ ] `tests/test-app` (72)
+- [x] `tests/test-app` (72)
 - [ ] `tests/client-integration-tests` (19)
 - [ ] `tests/test-app-end-to-end-tests` (18)
 - [ ] `tests/timewarp-state-tests` (14)
@@ -132,6 +132,34 @@ Other:
   - `FeatureFlagState` is a placeholder whose Initialize throws NotImplementedException.
   - The `InvalidCloneException` message still points at a parameterless-constructor requirement, but it is
     thrown when the clone's Guid is empty or unchanged.
+
+### PR 2a (part 2a/n): test app (`tests/test-app/`)
+
+- Added the missing regions to all 72 files under `tests/test-app/` that lacked them (client 66, contracts 4,
+  server 2). 71 got both Purpose and Design. `counter-state.add-to-count.cs` already had Purpose and got Design
+  only, with its Purpose unchanged.
+- Header audit of tracked `tests/test-app/**/*.cs` (76 files), counting files missing Purpose or Design:
+  - Before: 72 (71 with neither, 1 with Purpose only)
+  - After: 0
+  - All of `tests/` (171 files) goes from 165 missing to 93; those 93 are PR 2b.
+- Comments only. `git diff` shows 626 insertions and 4 deletions. The 4 deletions are the 4 files with a UTF-8
+  BOM, where the BOM moves to the new `#region Purpose` line. The byte-level check (strip the BOM and the
+  inserted region blocks, compare with HEAD) found 0 mismatches over the 72 files. Line endings are kept (71 LF,
+  1 CRLF). No files outside `tests/test-app/` changed, apart from this task.md.
+- `dotnet run --file tools/dev-cli/dev.cs -- workflow`: Pipeline SUCCEEDED (assert-version-ssot, clean, build,
+  test, e2e, pack, verify-samples).
+  - Unit and integration tests: 228 passed, 4 skipped, 0 failed (analyzer 33, source-generator 15, core 73+1,
+    plus 31+1, telemetry 13, client-integration 56+1, architecture 7+1).
+  - E2E (Playwright): 11 passed, 3 skipped, 0 failed.
+- Things the region text describes as-is rather than fixes:
+  - `ColorState.Hydrate` reads `MyColorName` from the `FavoriteColor` key.
+  - `PreIncrementCountNotificationHandler` logs `nameof(IncrementCountNotificationHandler)`.
+  - `ThrowServerSideExceptionActionSet` calls a route the test server never maps, so the "server-side exception"
+    is the failed HTTP call, and `action.Message` is never sent.
+  - `ColorState`, `UpdateColorState` (empty), `WindowDimensionsState`, `TestEnum` and `MyBehavior` are not
+    used anywhere.
+  - `CloneTestPage` doesn't run the 2D/3D array cases or `ModifiedClone_InterfaceObject` from
+    `CloneProviderTests`.
 
 ## Notes
 
