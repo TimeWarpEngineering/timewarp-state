@@ -341,7 +341,10 @@ internal static class DeepCloner
 
   private static bool HasIgnoredAttribute(MemberInfo member)
   {
+    // [NonSerialized] is a pseudo-attribute stored as a field flag; honor it like the other ignore attributes.
+#pragma warning disable SYSLIB0050 // Formatter-based serialization is obsolete; the flag is only read here.
     if (member is FieldInfo { IsNotSerialized: true }) return true;
+#pragma warning restore SYSLIB0050
 
     foreach (CustomAttributeData attribute in member.GetCustomAttributesData())
     {
