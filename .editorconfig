@@ -286,6 +286,36 @@ dotnet_diagnostic.ca1308.severity = none
 dotnet_diagnostic.TW0007.severity = warning
 dotnet_diagnostic.TW0007.filename = global-usings.cs
 
+# TimeWarp.Architecture.Analyzers (TWA rules). Only TWA0004 applies to this library; the rest
+# target TimeWarp.Architecture apps (FluentValidation, FastEndpoints, Aspire ServiceNames,
+# slices, the dotnet-new template) and are off. Decisions are recorded in kanban task 099-001.
+# TWA0022 found no hits (the test app's direct Sender.Send calls are deliberate) and TWA0023
+# (type-stem naming, off upstream by default) found 835 sites, so both stay off.
+# TWA0005 is retired upstream (reserved id, never reported), so it has no entry.
+# Files outside the repo (Fixie.Main.cs from the NuGet cache) get TWA0004 = none from
+# msbuild/external-sources.globalconfig, since this file cannot reach them.
+# TWA0004: every source file carries a #region Purpose block (task 099 backfilled all of them).
+# Design regions are not analyzer-enforced; reviewers enforce them.
+dotnet_diagnostic.TWA0004.severity = error
+dotnet_diagnostic.TWA0002.severity = none
+dotnet_diagnostic.TWA0003.severity = none
+dotnet_diagnostic.TWA0006.severity = none
+dotnet_diagnostic.TWA0007.severity = none
+dotnet_diagnostic.TWA0008.severity = none
+dotnet_diagnostic.TWA0009.severity = none
+dotnet_diagnostic.TWA0010.severity = none
+dotnet_diagnostic.TWA0011.severity = none
+dotnet_diagnostic.TWA0012.severity = none
+dotnet_diagnostic.TWA0013.severity = none
+dotnet_diagnostic.TWA0014.severity = none
+dotnet_diagnostic.TWA0015.severity = none
+dotnet_diagnostic.TWA0016.severity = none
+dotnet_diagnostic.TWA0020.severity = none
+dotnet_diagnostic.TWA0021.severity = none
+dotnet_diagnostic.TWA0022.severity = none
+dotnet_diagnostic.TWA0023.severity = none
+dotnet_diagnostic.TWA0024.severity = none
+
 # ganda repo audit configuration
 [ganda.audit]
 # GitHub requires .github/PULL_REQUEST_TEMPLATE/ (exact basename) for PR templates.
@@ -294,3 +324,8 @@ kebab-path-names.prune = PULL_REQUEST_TEMPLATE
 # Test.App.Client (test-app-client.csproj AssemblyName). Cannot kebab-rename without
 # breaking JS initializers and assembly-qualified type names in E2E.
 kebab-path-names.severity = warning
+
+# .githooks/*.cs are owned byte for byte by ganda's repo-baseline template (no #region blocks;
+# `ganda hooks install attest` overwrites any edit), so they can never carry a Purpose region.
+[.githooks/**.cs]
+dotnet_diagnostic.TWA0004.severity = none
