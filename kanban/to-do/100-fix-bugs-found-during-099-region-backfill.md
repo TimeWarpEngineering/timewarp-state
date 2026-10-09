@@ -98,6 +98,34 @@ references it. `documentation/migrations/migration10-11.md:122-129` advertises `
 such method exists anywhere in the repo, so the docs are wrong too. Any consumer whose store reaches this state's
 `Initialize` (for example `Store.GetState<FeatureFlagState>()` or a reset) gets `NotImplementedException`.
 
+### 5. Test app defects found in PR #619 (099 part 2a)
+
+PR #619 added regions to `tests/test-app/` and documented these as they are. None are in shipped library code,
+but they make the test app misleading as a sample.
+
+- **`ColorState.Hydrate` reads the wrong key.** `tests/test-app/test-app-client/features/color/color-state.cs`: `MyColorName` is read from
+  the `FavoriteColor` key.
+- **Wrong handler name in a log.** `tests/test-app/test-app-client/features/counter/notification/pre-increment-count-notification-handler.cs`:
+  `PreIncrementCountNotificationHandler` logs `nameof(IncrementCountNotificationHandler)`.
+- **The "server-side exception" action never reaches a server handler.**
+  `tests/test-app/test-app-client/features/counter/actions/counter-state.throw-server-side-exception.cs`: `ThrowServerSideExceptionActionSet`
+  calls a route the test server never maps, so the exception is just the failed HTTP call, and `action.Message`
+  is never sent (contract: `tests/test-app/test-app-contracts/features/exception-handling/throw-server-side-exception/throw-server-side-exception-request.cs`).
+- **Unused types.** `ColorState` (`tests/test-app/test-app-client/features/color/`), `UpdateColorState` (empty,
+  `tests/test-app/test-app-client/features/color/actions/color-state.update.cs`), `WindowDimensionsState`
+  (`tests/test-app/test-app-client/features/window-dimensions/window-dimensions-state.cs`), `TestEnum` (`tests/test-app/test-app-client/test-objects/test-enum.cs`) and
+  `MyBehavior` (`tests/test-app/test-app-client/pipeline/my-behavior.cs`) are not used anywhere.
+- **`CloneTestPage` skips cases.** It doesn't run the 2D/3D array cases
+  (`tests/test-app/test-app-client/test-objects/multi-dimensional2d-array-object.cs`, `multi-dimensional3d-array-object.cs`) or
+  `ModifiedClone_InterfaceObject` from `CloneProviderTests`.
+- **`CollectionExtensions.EnumerableEqual` ignores length.** `tests/test-app/test-app-client/extensions/collection-extensions.cs`: two
+  sequences of different length can compare equal.
+- **Weather `Days` is ignored.** The client actions (`tests/test-app/test-app-client/features/weather-forecast/actions/weather-forecasts-state.fetch-weather-forecasts.cs:37`,
+  `tests/test-app/test-app-client/features/cacheable-weather/actions/cacheable-weather-state.fetch-weather-forecasts.cs:46`) ask for
+  `Days = 10`, but `Query.GetRoute` (`tests/test-app/test-app-contracts/features/weather-forecast/queries/get-weather-forecasts.cs`)
+  returns the fixed `api/weather` route without `Days`, and `tests/test-app/test-app-server/program.cs:68` always
+  sends `Days = 5`.
+
 ## Requirements
 
 - Fix all four items, or for item 4 apply the option Steven picks. Each fix gets tests that fail before and pass
@@ -146,12 +174,24 @@ such method exists anywhere in the repo, so the docs are wrong too. Any consumer
   a test or analyzer check that the attribute is present. If removed, a public-API or architecture test that the
   type is gone.
 
+### 5. Test app (from PR #619)
+- [ ] `ColorState.Hydrate` reads `MyColorName` from its own key (or delete `ColorState` with the other unused types).
+- [ ] `PreIncrementCountNotificationHandler` logs its own name.
+- [ ] `ThrowServerSideExceptionActionSet`: map a server endpoint that throws and send `action.Message`, or rename
+  the action to say it tests a failed HTTP call. Update `tests/test-app-end-to-end-tests/throw-exception-page-tests.cs` if behavior changes.
+- [ ] Remove or use `ColorState`, `UpdateColorState`, `WindowDimensionsState`, `TestEnum`, `MyBehavior`.
+- [ ] `CloneTestPage`: add the 2D/3D array and `ModifiedClone_InterfaceObject` cases, or note why they're excluded.
+- [ ] `EnumerableEqual` returns false for different lengths; add a test.
+- [ ] Weather: send `Days` in the route (or query string) and honor it on the server, or drop `Days = 10` from the
+  client actions. Check the weather E2E tests still pass.
+
 ### Wrap-up
-- [ ] Update the Purpose/Design regions in all four files (and `state-inheritance-analyzer.cs` if it changes).
+- [ ] Update the Purpose/Design regions in all affected files (and `state-inheritance-analyzer.cs` if it changes).
 - [ ] Full workflow green. PR links this task and #618.
 
 ## Notes
 
+- Item 5 source: findings from PR #619 (099 part 2a, merged as `3ef65163`), added 2026-10-09.
 - Source: findings from PR #618 (099 part 1), reported to Steven on 2026-10-09.
 - Options for item 4:
   - **Implement it.** Needs a design (flag source, actions, `UseFeatureFlags` registration). Biggest scope; could
