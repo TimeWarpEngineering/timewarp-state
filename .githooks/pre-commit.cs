@@ -4,15 +4,6 @@
 #:property NoWarn=CA2007;CA1849;RS0030
 #:property RunAnalyzers=false
 
-#region Purpose
-// Git pre-commit hook: refuses commits while HEAD is master or main.
-#endregion
-
-#region Design
-// Reads the branch with git rev-parse --abbrev-ref HEAD, writes the refusal to stderr and returns 1 on
-// master/main. Outside a git repo it returns 0.
-#endregion
-
 // Refuse commits while HEAD is master or main.
 // Escape hatch: git commit --no-verify
 using TimeWarp.Amuru;

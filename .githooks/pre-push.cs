@@ -4,16 +4,6 @@
 #:property NoWarn=CA2007;CA1849;RS0030
 #:property RunAnalyzers=false
 
-#region Purpose
-// Git pre-push hook: refuses pushes that would update master/main from the wrong place.
-#endregion
-
-#region Design
-// Reads the ref lines git sends on stdin. Refuses any local task/* branch pushed to a home branch. Allows
-// batches that only touch tags or refs/ganda/*. While HEAD is master/main, refuses pushes to a home branch,
-// empty batches, and batches that mix tags and branches.
-#endregion
-
 // Refuse pushes that update home branches (master/main) while HEAD is master or main.
 // Allow other dests (feature/*, etc.) so origin-home can publish a missing --into ref.
 // Allow refs/tags/* (release tags) and refs/ganda/* (claims CAS) when every dest is one of those.

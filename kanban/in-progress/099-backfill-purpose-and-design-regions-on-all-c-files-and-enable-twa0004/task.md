@@ -53,7 +53,7 @@ Moved to task 099-001, with its requirements, checklist and TWA rule review.
 
 ## Checklist
 
-PRs: library source (#618), test app (#619), other tests (#620), then samples, scripts, .githooks and
+PRs: library source (#618), test app (#619), other tests (#620), then samples, scripts and
 tools (this task's final PR). Part 2 is task 099-001. Counts are files missing at least one region (see region-audit.md).
 
 ### Part 1: Purpose/Design backfill
@@ -83,14 +83,14 @@ Other:
 
 - [x] `samples` (42)
 - [x] `scripts` (7)
-- [x] `.githooks` (5)
+- [x] `.githooks` (5): **out of scope**, ganda-owned hook templates; excluded from the audit (see Notes)
 - [x] `tools` (1)
 - [x] Re-run the audit: 0 files missing Purpose and 0 missing Design. Workflow green.
 
 ### Part 1 status
 
-**Part 1 (the backfill) is complete.** The repo-wide header audit reads 0 of 387 tracked `.cs` files missing
-Purpose or Design.
+**Part 1 (the backfill) is complete.** There are 387 tracked `.cs` files. 382 are in scope (all except the 5
+ganda-owned `.githooks/*.cs`), and all 382 have both Purpose and Design.
 
 ### Part 2: enable TWA0004
 
@@ -188,31 +188,36 @@ Moved to task 099-001.
   4 of the skipped unit/integration tests.
 - `test-app-end-to-end-tests/sample-test.cs`: the ignored playwright.dev samples are 2 of the 3 skipped E2E tests.
 
-### PR 3: samples, scripts, .githooks and tools (final backfill PR)
+### PR 3: samples, scripts and tools (final backfill PR, #621)
 
-- Added the missing regions to the last 55 files: samples 42, scripts 7, .githooks 5, tools 1. 44 got both
-  Purpose and Design. 11 already had Purpose and got Design only, with their Purpose unchanged (10 under
+- Added the missing regions to the last 50 in-scope files: samples 42, scripts 7, tools 1. 39 got both Purpose
+  and Design. 11 already had Purpose and got Design only, with their Purpose unchanged (10 under
   samples/04-telemetry/apphost, 05-persistence and 06-render-control, plus tools/dev-cli/global-usings.cs).
-- Runfiles: the 5 hooks and 6 scripts start with a `#!` shebang and `#:package`/`#:property` lines. Those
-  lines stay first; the regions go after them and the blank line that follows. That matches
-  `tools/dev-cli/dev.cs`, the one runfile that already had regions (shebang first, regions further down).
-- The header audit now treats leading `#!` and `#:` lines as header, not code. Before, it stopped at the
-  shebang, so it counted dev.cs as missing even though dev.cs already has both regions. That is why the old
-  script read 56 missing, not the 55 in region-audit.md.
-- Repo-wide header audit of all 387 tracked `.cs` files, counting files missing Purpose or Design:
-  - Before: 55 (44 with neither, 11 with Purpose only)
-  - After: **0**. source 138/138, tests 171/171, samples 58/58, scripts 7/7, .githooks 5/5, tools 8/8.
-- Comments only. `git diff` shows 55 files changed, 442 insertions, 0 deletions (none of these files has a BOM).
-  The byte-level check (strip the shebang/directive header, remove the inserted region block, compare with
-  HEAD) found 0 mismatches over the 55 files, 11 of them with a header. Line endings are kept (29 CRLF, 26 LF).
-  No files outside samples/, scripts/, .githooks/ and tools/ changed, apart from this task.md.
+- Runfiles: 6 scripts start with a `#!` shebang and `#:package`/`#:property` lines. Those lines stay first; the
+  regions go after them and the blank line that follows. That matches `tools/dev-cli/dev.cs`, the one runfile
+  that already had regions (shebang first, regions further down).
+- The header audit treats leading `#!` and `#:` lines as header, not code. The old script stopped at the
+  shebang, so it counted dev.cs as missing even though dev.cs already has both regions (56 instead of 55).
+- `.githooks/` is out of scope (see Notes). The first push of #621 added regions to the 5 hooks; a follow-up
+  commit ran `ganda hooks install attest`, which rewrote all 5 to match ganda's template byte for byte. That
+  removed those regions and also the stale `ganda memsearch index-repo` call from post-checkout, post-commit and
+  post-merge (this ganda has no memsearch command; it printed "Unknown command" on every commit).
+- Header audit of tracked `.cs` files with `.githooks/` excluded (382 of 387), counting files missing Purpose or
+  Design:
+  - Before: 50 (39 with neither, 11 with Purpose only)
+  - After: **0**. source 138/138, tests 171/171, samples 58/58, scripts 7/7, tools 8/8.
+- Comments only for the 50 region files: 50 files changed, 395 insertions(+), 0 deletions, no BOMs. The byte-level check (keep the
+  shebang/directive header, remove the inserted region block, compare with the base) found 0 mismatches.
+  Line endings are kept (29 CRLF, 21 LF). The only other changes are the 5 hooks synced to ganda's template
+  (3 files changed, 3 insertions(+), 21 deletions(-) against master; pre-commit and pre-push end up identical to master) and this task.md.
 - `dotnet run --file tools/dev-cli/dev.cs -- workflow`: Pipeline SUCCEEDED (assert-version-ssot, clean, build,
   test, e2e, pack, verify-samples). verify-samples ran 11 sample project builds, 0 errors.
   - Unit and integration tests: 228 passed, 4 skipped, 0 failed (analyzer 33, source-generator 15, core 73+1,
     plus 31+1, telemetry 13, client-integration 56+1, architecture 7+1).
   - E2E (Playwright): 11 passed, 3 skipped, 0 failed.
-  - The workflow doesn't build every runfile, so each of the 12 was built with `dotnet build <file>`
-    (scripts 6, .githooks 5, tools/dev-cli/dev.cs): all exit 0, 0 warnings, 0 errors.
+  - Every runfile was built with `dotnet build <file>` (6 scripts plus dev.cs, and the 5 synced hooks): all exit
+    0 with 0 errors.
+  - `ganda repo audit` passes with no outdated-hook warnings.
 - Things the region text describes as-is rather than fixes:
 - `scripts/build.cs` `clean` route: runs `pkill -f dotnet`, which kills every process whose command line contains
   "dotnet" (other builds, IDE language servers), not just this repo's. `scripts/clean.cs` doesn't do this.
@@ -225,12 +230,6 @@ Moved to task 099-001.
   fire. The comments in these same files say this Amuru line throws on a non-zero exit instead of returning it.
 - `scripts/build.cs` `clean` and `scripts/clean.cs` are two different "clean" implementations: only build.cs
   removes the generated JS, and only clean.cs removes bin/obj, LocalNugetFeed and tests/test-app/output.
-- `.githooks/*.cs` are ganda-managed hooks. `ganda repo audit` (memsearch-scaffold, an advisory warning) already
-  listed post-commit, post-merge and post-checkout as "outdated" on master. With the regions, pre-commit and
-  pre-push are listed too, because they no longer match ganda's template. The audit still passes. But
-  `ganda repo audit --fix` or `ganda hooks install attest` would likely rewrite the hooks and drop the regions,
-  and the region audit would then flag them again. Either ganda's hook template should carry the regions, or
-  the region audit should exempt `.githooks/`.
 
 ## Notes
 
@@ -238,6 +237,11 @@ Moved to task 099-001.
   possibly no Design). Decide how to treat them before Part 1. TWA0004's own guidance is that "trivial files
   use a one-line Purpose rather than being exempt". It already skips `.g.cs`, `.generated.cs`,
   `.designer.cs` and Razor/cshtml generated files.
+- **`.githooks/` is out of scope for the backfill.** ganda owns `.githooks/*.cs` byte for byte from its
+  repo-baseline template, which has no `#region` blocks and sets `#:property RunAnalyzers=false`.
+  `ganda hooks install attest` overwrites any hook file that differs, and `ganda repo audit` flags one that
+  drifts as outdated. Regions are governed by the region audit and `.editorconfig`, not by hooks, so the region
+  audit excludes `.githooks/` (git pathspec `':(exclude).githooks'`). Task 099-001 excludes them from TWA0004 too.
 - The Part 2 notes (enforcement today, TWA rule review, file-based apps) moved to task 099-001.
 - Steven asked for this task to be created only at first. He approved starting it on 2026-10-09, beginning
   with a PR for the library source (`source/`).
