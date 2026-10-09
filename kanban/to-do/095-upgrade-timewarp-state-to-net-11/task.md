@@ -37,6 +37,7 @@ published; note which channel was used in Results.
 - [ ] 8. Test SDK stack: `Microsoft.NET.Test.Sdk`, Playwright, Fixie adapters. Keep MSTest on 3.x until Playwright binds MSTest 4 (existing hold-back in props comments).
 - [ ] 9. Aspire / OpenTelemetry sample stack: `Aspire.Hosting.AppHost` (`13.5.4`) and OTel packages — bump to versions that support `net11.0` for sample-04.
 - [ ] 10. TimeWarp ecosystem packages (external gates): confirm `TimeWarp.Mediator*`, `TimeWarp.Nuru*`, `TimeWarp.Amuru*`, `TimeWarp.SourceGenerators`, `TimeWarp.Build.Tasks`, `TimeWarp.Fixie` publish builds compatible with net11 / SDK 11 before bumping; coordinate sibling upgrades if they block restore.
+- [ ] 10a. Eliminate the blocking clone path: remove TimeWarp.State's dependency on AnyClone (1.1.6) / TypeSupport (1.2.0) or otherwise make StateTransactionBehavior's clone non-blocking on browser WASM; add `<ItemGroup><SupportedPlatform Include="browser" /></ItemGroup>` to the OS-neutral library projects so CA1416 flags any other blocking calls; add a real-browser (WASM) test proving an action through StateTransactionBehavior succeeds on net11. Must be done before the TFM bump (item 5) is considered done.
 - [ ] 11. Regenerate any `packages.lock.json` / restore; fix TypeScript/MSBuild if `Microsoft.TypeScript.MSBuild` needs a companion `tsconfig` change.
 - [ ] 12. Docs & conventions: update `.ai/05-dotnet-conventions.md` (stale net8.0), persistence `PersistentStateAttribute` collision guidance for .NET 11, and any other pins. Library migration doc `documentation/migrations/migration10-11.md` is package 10→11 history (not TFM) — do not confuse with this TFM upgrade; add a short .NET 10→11 note elsewhere if needed.
 
@@ -80,6 +81,14 @@ published; note which channel was used in Results.
 - **External TimeWarp packages**: restore may fail if Mediator/Nuru/Amuru/SourceGenerators lack net11-capable assets — those are ordered prerequisites (checklist item 10), not silent pin-backs.
 - **Stale AI conventions**: `.ai/05-dotnet-conventions.md` still says target net8.0 — documentation debt, not a build gate, but must be fixed in this upgrade.
 - **Prior art**: done task `030-update-to-dotnet-9` is the playbook shape; `035-migrate-powershell-scripts-to-dotnet10` already moved CI to C# `dev workflow` (no PowerShell workflow scripts to migrate for this bump).
+
+#### **Blocking waits throw on single-threaded browser WASM (.NET 11) — found 2026-10-09**
+
+- .NET 11 throws `PlatformNotSupportedException` on any potentially blocking `SemaphoreSlim.Wait()` on single-threaded browser WASM, even `Wait(0)` on an available semaphore. Introduced by dotnet/runtime PR #123329 (https://github.com/dotnet/runtime/pull/123329); issue #131859 (https://github.com/dotnet/runtime/issues/131859) was closed as by design (Pavel Savara; Jan Kotas preferred the simple rule over softening). .NET 10 WASM returned normally.
+- Impact on TimeWarp.State 12.0.0-beta.8: `StateTransactionBehavior` -> AnyClone 1.1.6 -> TypeSupport 1.2.0 `ExtendedTypeCache.GetOrCreate` -> `SemaphoreSlim.Wait`, so every action through `StateTransactionBehavior` fails in the browser on net11 (seen in timewarp-architecture after its .NET 11 RC1 upgrade, e.g. Ctrl-K `ApplicationState.SetActiveModal`; confirmed with a Playwright test in real WASM mode). Server-side tests pass because servers are multi-threaded, so browser tests are required.
+- Recommended fix per the runtime team: fix the library so it does not block on browser (async `WaitAsync` or no lock on single-threaded browser); precedent grpc-dotnet PR #2756 (https://github.com/grpc/grpc-dotnet/pull/2756). For OS-neutral libraries add `<SupportedPlatform Include="browser" />` to get CA1416 warnings such as `SemaphoreSlim.Wait(int) is unsupported on: browser`.
+- Disabling `UseStateTransactionBehavior` is NOT an acceptable fix (hides the bug); the root-cause fix belongs in TimeWarp.State.
+- Downstream: timewarp-architecture is already on net11 and TimeWarp.State 12.0.0-beta.8; its kanban task 289 is blocked on this fix.
 
 ### Out of scope for implementation on this publish
 
