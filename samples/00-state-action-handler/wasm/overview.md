@@ -54,6 +54,7 @@ Add the TimeWarp.State and TimeWarp.Mediator.Generators NuGet packages:
 
 ```bash
 dotnet add package TimeWarp.State --prerelease
+dotnet add package TimeWarp.State.Blazor --prerelease
 dotnet add package TimeWarp.Mediator.Generators
 ```
 
@@ -92,6 +93,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddGeneratedMediator<ClientPipeline>();
 builder.Services.AddTimeWarpState();
+builder.Services.AddTimeWarpStateBlazor();
 
 await builder.Build().RunAsync();
 ```

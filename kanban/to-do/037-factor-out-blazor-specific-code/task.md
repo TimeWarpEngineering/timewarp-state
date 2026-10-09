@@ -81,6 +81,17 @@ Nupkg size: TimeWarp.State 12.0.0-beta.10 was 130,688 bytes and depended on Micr
 
 `dev build` exits 0. `dev test` exits 0: analyzer 36 passed, source generator 15 passed, state 80 passed and 1 skipped (includes `CoreAssembly_Should_.NotReferenceBlazorOrJavaScriptInterop` and `BlazorPackage_ReferencesComponents`), plus 32 passed and 1 skipped, telemetry 13 passed, client integration 65 passed and 1 skipped, test-app architecture 7 passed and 1 skipped. `dev pack` writes the five packable packages at 13.0.0-beta.1. `dev verify-samples` exits 0. The console sample prints `Count=5` and exits 0. `ganda repo audit` exits 0 with one pre-existing advisory (kebab path `tests/test-app/test-app-client/wwwroot/Test.App.Client.lib.module.js`). Pre-existing build warnings remain (TW0007, RS0030, BL0010, BL0016, NU1510, ASPDEPR011, IL2026, IL2111).
 
+### Implementation review
+
+Review effort was 3 with a general reviewer, over 2 rounds. Final counts: bugs 0. Suggestions: 1 fixed, 1 wontfix. Nits: 2 fixed. Open: 0. Disposition: **accepted-exceptions**.
+
+- Fixed:
+  - M1: `UseReduxDevTools` and `AddJavaScriptDispatch` now register `JsonRequestHandler` themselves.
+  - M3: the sample overviews now show `AddTimeWarpStateBlazor()`.
+  - M4: `tests/timewarp-state-tests/architecture/add-timewarp-state-blazor-tests.cs` covers registration, idempotency and call order. state tests: 84 passed, 1 skipped.
+- Wontfix: M2. There is no custom fail-fast when a Blazor host omits `AddTimeWarpStateBlazor()`. DI's error names `RenderSubscriptionContext`, and the call is documented.
+- Artifacts: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
 ### How to validate
 
 Smoke:
@@ -102,3 +113,4 @@ Expect:
 ## Session
 
 - Implementation: grok task-work implementer (2026-10-10)
+- Review: claude-opus-5-5 review oracle (2026-10-10), general reviewer subagent a954005f421aa90d7
