@@ -417,6 +417,25 @@ Expect:
 | Testing | Generated path only. See Tests. |
 | Inspector recursion | Deferred. Not part of this generator. |
 
+### Review disposition
+
+- Body: `tw-implementation-review`, effort 3 (budget by diff: 3280 lines), roster: general. Reviewers worked read-only and verified with throwaway probe projects under `/tmp/rv097*`.
+- Rounds: 4. Rounds 1–3 were done by the general reviewer; round 4 was an orchestrator check of the last fix.
+- Final counts:
+
+  | Severity | open | fixed | wontfix |
+  |----------|------|-------|---------|
+  | bug | 0 | 15 | 0 |
+  | suggestion | 0 | 2 | 0 |
+  | nit | 0 | 4 | 0 |
+
+- Disposition: **clean**. All 21 findings (M1–M21) are fixed on this task in commits ab291e16, 858de934 and 36208023. There are no wontfix items and no escalations.
+- Artifacts:
+  - `review/review-framework.md`
+  - `review/round-1..3/general.md` and `merged.md`
+  - `review/round-4/merged.md`
+  - `review/disposition.md`
+
 ## Session
 
 - Created: 956920 (2026-10-09)
@@ -426,3 +445,4 @@ Expect:
 - Review round 1 (2026-10-10): M1–M14 fixed by the implementer (Claude); see `review/round-1/merged.md`.
 - Review round 2 (2026-10-10): M15–M20 fixed by the implementer (Claude); see `review/round-2/merged.md`.
 - Review round 3 (2026-10-10): M21 fixed by the implementer (Claude): generic subtypes of generic members are closed over the member's type arguments; see `review/round-3/merged.md`.
+- Review oracle (Claude Opus 5.5, 2026-10-10): disposition clean after 4 rounds; see `review/disposition.md`.
