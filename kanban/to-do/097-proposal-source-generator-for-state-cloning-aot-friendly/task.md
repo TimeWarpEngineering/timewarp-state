@@ -140,6 +140,21 @@ Proposed future implementation steps. **Proposal, not approved.** Do not start t
 - **Testing:** parity tests (generated vs `DeepCloner`), the existing WASM E2E clone suite, and a trim/AOT
   smoke test. Also decide whether the generated path is on by default or behind an option during preview.
 
+### Design considerations / open questions
+
+- **Recursion risk (dev-tools/inspector extension).** A proposed dev-tools or inspector extension might use
+  TimeWarp.State to manage its own UI state. If it does, the extension's own actions could be captured into the
+  same action log it displays. Each displayed update would then produce a new captured action, which is an
+  infinite loop. This is a design constraint to solve before building such an extension. Options include
+  filtering the extension's own actions out of capture, or using a separate store inside the extension that
+  is not part of the app's pipeline.
+- **Separate store for the extension.** Give the extension its own entirely separate store, decoupled from
+  the app's state, so its UI state never enters the logged stream or the app's transaction/clone pipeline.
+- **Relation to this cloning proposal.** The extension's state must not be cloned or logged by the app's
+  `StateTransactionBehavior`. Neither the generated clone path nor the `DeepCloner` fallback should ever
+  run for extension state, and any generator opt-in rule, such as "every `IState`", must not pull extension
+  states into the app's clone registry.
+
 ## Session
 
 - Created: 956920 (2026-10-09)
