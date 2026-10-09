@@ -1,1 +1,1 @@
-{"task":"037","holder":"cramer","session":"2121819","machine":"TWE-001","acquiredAt":"2026-10-09T17:03:55.7491745+00:00"}
+{"task":"037","holder":"cramer","session":"2121819","machine":"TWE-001","worktree":"/home/steve/worktrees/github.com/TimeWarpEngineering/timewarp-state/task-037-factor-out-blazor-specific-code","branch":"task/037-factor-out-blazor-specific-code","acquiredAt":"2026-10-09T17:03:55.7491745+00:00"}
