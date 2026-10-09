@@ -51,9 +51,17 @@ Expect:
 - E2E exits 0 with Failed 0, Passed 11, Skipped 3, Total 14. `--list-tests` lists the PageTest methods (including TestCounterComponents and TestChangeRoute), not "No test is available".
 - `ganda repo audit` exits 0.
 
+### Review
+
+- Rounds: 1. Effort 1, roster `general`.
+- Final counts: 0 bug, 0 suggestion, 0 nit. Nothing open, fixed, or wontfix.
+- Disposition: **clean**. Every runfile under `.githooks/`, `scripts/`, and `tools/dev-cli/dev.cs` compiles against Amuru 2.0. The packages left at their current versions have recorded reasons.
+- Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`
+
 ## Session
 
 - Implementation: grok task-work implementer (2026-10-09)
+- Review: claude review oracle, effort 1 general (2026-10-09)
 
 ## Notes
 
