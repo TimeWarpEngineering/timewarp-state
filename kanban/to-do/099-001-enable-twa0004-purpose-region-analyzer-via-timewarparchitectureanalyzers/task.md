@@ -22,9 +22,20 @@ Start after 099's final backfill PR is merged, so the repo-wide region audit rea
     enabling the package doesn't flood the build with unrelated diagnostics.
 - TWA0004 checks **only Purpose**. The Design region stays manual and is enforced by reviewers.
 - Build stays green, with no new warnings except intended TWA0004 hits, and none once 099's backfill is merged.
-- Runfiles (`.githooks/*.cs`, `scripts/*.cs`, `tools/dev-cli/dev.cs`) start with a `#!` shebang and `#:`
-  directives, and their regions come right after those lines. Check that TWA0004 accepts that layout, or
-  scope the analyzer away from runfiles.
+- Runfiles (`scripts/*.cs`, `tools/dev-cli/dev.cs`) start with a `#!` shebang and `#:` directives, and their
+  regions come right after those lines. Check that TWA0004 accepts that layout, or scope the analyzer away
+  from runfiles.
+- Exclude `.githooks/` from TWA0004. ganda owns `.githooks/*.cs` byte for byte from its repo-baseline
+  template, which has no `#region` blocks, and `ganda hooks install attest` overwrites any hook that differs,
+  so these files can never carry a Purpose region. Add an `.editorconfig` section:
+
+  ```ini
+  [.githooks/**.cs]
+  dotnet_diagnostic.TWA0004.severity = none
+  ```
+
+  The hooks already set `#:property RunAnalyzers=false`, so no analyzer runs when git runs them. The
+  `.editorconfig` section covers IDEs and any other build that loads the analyzer for those files.
 
 ## Checklist
 
@@ -32,6 +43,7 @@ Start after 099's final backfill PR is merged, so the repo-wide region audit rea
 - [ ] Add the PackageReference (`PrivateAssets="all"`) in the root `Directory.Build.props` "Code Analyzers" ItemGroup
 - [ ] `.editorconfig`: `dotnet_diagnostic.TWA0004.severity = warning` (or `error`)
 - [ ] `.editorconfig`: set the TWA rules that don't fit to `none` (review list in Notes); record the decision for each rule
+- [ ] `.editorconfig`: `[.githooks/**.cs]` section with `dotnet_diagnostic.TWA0004.severity = none` (ganda-owned hook templates)
 - [ ] Check which projects actually get the analyzer (library, tests, samples with their own props, file-based scripts/.githooks/tools) and that it's PrivateAssets in every packed nupkg
 - [ ] Workflow green with no TWA warnings; packed nupkgs carry no dependency on TimeWarp.Architecture.Analyzers
 
@@ -66,7 +78,9 @@ Start after 099's final backfill PR is merged, so the repo-wide region audit rea
     the library's own internals, so it likely stays none (or is scoped to samples).
   - TWA0023 (identifier does not use the type stem) is a naming style rule. Evaluate the hit count; likely none.
 - **File-based apps:** `scripts`, `.githooks` and `tools` `.cs` files are file-based apps. Confirm whether the
-  analyzer reaches them through Directory.Build.props. Their regions were backfilled in 099 either way.
+  analyzer reaches them through Directory.Build.props. 099 backfilled regions in `scripts` and `tools`.
+  `.githooks` is out of scope: 099's region audit excludes it, and PR #621 synced the hooks to ganda's template
+  with `ganda hooks install attest`.
 
 ## Session
 
