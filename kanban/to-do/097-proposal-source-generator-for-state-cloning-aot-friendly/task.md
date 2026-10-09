@@ -1,9 +1,23 @@
-# Proposal: source generator for state cloning (AOT-friendly)
+# Source generator for state cloning (AOT-friendly)
 
 ## Description
 
-**Proposal only. Not approved for implementation.** This task is for analysis and a design proposal. It
-makes no product code changes. Steven decides whether, and how, to implement it.
+**Decision (Steven, 2026-10-10, by voice): pursue this. Approved for implementation.** The goal is to get rid of
+reflection in state cloning wherever possible. The AnyClone problem is already gone (replaced by the in-house
+`DeepCloner`, and `RouteState` implements `ICloneable`), so this task is about AOT/trim safety, first-use cost
+and throughput, not correctness of a third-party cloner.
+
+Deliverable: a Roslyn **incremental** source generator that emits compile-time clone code for `State<T>` types
+and replaces the reflection `DeepCloner` (`source/timewarp-state/features/cloning/deep-cloner.cs`,
+`clone-extensions.cs`) on the `StateTransactionBehavior` hot path. `DeepCloner` stays only as the fallback for
+types the generator cannot see or handle.
+
+Work order: **design first, then implement.** Write the design in `## Results` (answering or explicitly
+deferring each open question in Notes) before changing product code, then implement against it.
+
+The original proposal analysis is kept below for context.
+
+### Background (from the proposal)
 
 As of 12.0.0-beta.9 (PR #617, task 095), `StateTransactionBehavior` snapshots state before every action using
 the reflection-based `TimeWarp.Features.Cloning` deep cloner:
@@ -41,8 +55,17 @@ trimming, and faster, while keeping today's semantics.
 
 ## Requirements
 
-- Proposal deliverable only: a design write-up in Results, with the open questions answered or explicitly
-  deferred. Do not change product code under this task.
+- Deliverable: a Roslyn incremental source generator (`IIncrementalGenerator`) that emits compile-time clone
+  code for `State<T>` types and is used by `StateTransactionBehavior` instead of the reflection `DeepCloner` on
+  the hot path.
+- **Placement (Steven, 2026-10-10): build it into TimeWarp.State.** Use the existing
+  `source/timewarp-state-source-generator` / analyzer projects, or a new generator project that ships inside the
+  TimeWarp.State package (`analyzers/dotnet/cs`). Do **not** extract a separate generic cloning library or
+  package.
+- Design first: write the design in `## Results` before changing product code. It must cover generator
+  placement, the emitted code shape, registration/dispatch in `StateTransactionBehavior`, handling of nested,
+  collection and foreign (other-assembly) types, and the test plan (including parity tests old vs generated;
+  benchmarks optional). Answer each open question in Notes or explicitly defer it. Then implement.
 - The design must keep current clone semantics so existing states behave the same:
   - Members marked IgnoreDataMember, NonSerialized or JsonIgnore (matched by name, any namespace, including
     backing fields) are not copied, and keep their constructor values. Each `State` clone therefore keeps a
@@ -57,14 +80,21 @@ trimming, and faster, while keeping today's semantics.
 - Graceful fallback: any type the generator cannot see or handle (defined in another assembly, open generic,
   inaccessible, unsupported shape) must fall back to `DeepCloner`. It must not fail the build or change
   runtime behavior.
+- Goal: the generated path is AOT/trim friendly (no IL2xxx/IL3xxx warnings from generated code). Annotate the
+  remaining reflection fallback (`DeepCloner`) with the appropriate `[RequiresUnreferencedCode]` /
+  `[DynamicallyAccessedMembers]` attributes where practical, without forcing those warnings onto consumers whose
+  states are fully generated.
 
 ## Checklist
 
-Proposed future implementation steps. **Proposal, not approved.** Do not start these until Steven approves.
+Approved for implementation (Steven, 2026-10-10). Design first, then implement.
 
-- [ ] Decide the open questions in Notes and record the decisions in Results
-- [ ] Decide where the generator lives: the existing `source/timewarp-state-source-generator` project (ships
-      in the TimeWarp.State package as `analyzers/dotnet/cs`), or a separate analyzer package
+- [ ] Write the design in Results: generator placement, emitted shape, registration/dispatch in
+      `StateTransactionBehavior`, nested/collection/foreign types, tests (parity old vs generated), benchmarks
+      optional; answer or explicitly defer each open question in Notes
+- [x] Where the generator lives: inside TimeWarp.State (existing `source/timewarp-state-source-generator` /
+      analyzer projects, or a new generator project shipped in the TimeWarp.State package). No separate
+      generic cloning library (Steven, 2026-10-10)
 - [ ] Generator: for each opted-in state type, emit a clone method (for example a `partial` member or a
       generated `IStateCloner<TState>` registered in a static lookup) plus helpers for the reachable member
       types it can see
@@ -120,9 +150,9 @@ Proposed future implementation steps. **Proposal, not approved.** Do not start t
 - **Cycles and shared references:** generated code needs a reference map like `CloneContext.Visited`. Should
   it be a pooled `Dictionary<object, object>(ReferenceEqualityComparer)`, or skipped for types proven acyclic
   at compile time (for example records of primitives) as a fast path?
-- **Where the generator lives:** the existing `timewarp-state-source-generator` project (already
-  `netstandard2.0`, with the Roslyn 4.14.0 floor), or a separate analyzer package so non-state users can
-  clone too?
+- **Where the generator lives:** *Decided (Steven, 2026-10-10):* inside TimeWarp.State, in the existing
+  `timewarp-state-source-generator` project (already `netstandard2.0`, with the Roslyn 4.14.0 floor) or a new
+  generator project shipped in the TimeWarp.State package. Not a separate generic cloning library.
 - **Collections and dictionaries:** generate element-wise copies for `List<T>`, `T[]`, multi-dimensional
   arrays, `Dictionary<TKey,TValue>`, `HashSet<T>`, immutable collections (which can be shared by reference),
   and `ObservableCollection<T>`? Preserve comparers (DeepCloner shares comparers by reference)? Note the
@@ -158,3 +188,4 @@ Proposed future implementation steps. **Proposal, not approved.** Do not start t
 ## Session
 
 - Created: 956920 (2026-10-09)
+- Approved for implementation by Steven (2026-10-10, voice); task file updated from proposal to implementation
