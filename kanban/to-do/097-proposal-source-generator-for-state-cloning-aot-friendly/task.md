@@ -446,3 +446,4 @@ Expect:
 - Review round 2 (2026-10-10): M15–M20 fixed by the implementer (Claude); see `review/round-2/merged.md`.
 - Review round 3 (2026-10-10): M21 fixed by the implementer (Claude): generic subtypes of generic members are closed over the member's type arguments; see `review/round-3/merged.md`.
 - Review oracle (Claude Opus 5.5, 2026-10-10): disposition clean after 4 rounds; see `review/disposition.md`.
+- Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-09T21:17:16Z
