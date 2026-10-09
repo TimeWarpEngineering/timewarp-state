@@ -1,8 +1,8 @@
 #region Purpose
 // Runs the generated clone for member shapes the first generator round got wrong: generic declaring types, tuples,
 // KeyValuePair, Nullable structs, BCL values behind collection interfaces, polymorphic members, ImmutableStack order,
-// sorted and linked collections, StringBuilder, overloaded and dependency constructors, required members, and
-// ICloneable members and subtypes.
+// sorted and linked collections, StringBuilder, overloaded and dependency constructors, required members, ICloneable
+// members and subtypes, and generic subtypes of generic members.
 #endregion
 
 #region Design
@@ -115,6 +115,34 @@ public class Should_
     clone.All[0].ShouldBeOfType<Shape>();
     clone.All[1].ShouldBeOfType<Circle>().Radius.ShouldBe(3);
     clone.All[2].ShouldBeOfType<Ring>().Inner.ShouldBe(2);
+  }
+
+  public void Keep_Runtime_Type_Of_Generic_Subtypes_Of_Generic_Members()
+  {
+    var list = new List<Item> { new() { V = 1 } };
+    var original = new GenericHierarchies
+    {
+      Class = new GenericDerived<int> { V = 1, W = 2 },
+      Abstract = new AbstractDerived<int> { V = 3 },
+      Result = new Ok<List<Item>>(list),
+      Failure = new Err<int>("bad"),
+      Interface = new GenericResult<int> { V = 5 }
+    };
+
+    GenericHierarchies clone = original.Clone()!;
+
+    GenericDerived<int> derived = clone.Class.ShouldBeOfType<GenericDerived<int>>();
+    derived.V.ShouldBe(1);
+    derived.W.ShouldBe(2);
+    derived.ShouldNotBeSameAs(original.Class);
+    clone.Abstract.ShouldBeOfType<AbstractDerived<int>>().V.ShouldBe(3);
+    Ok<List<Item>> ok = clone.Result.ShouldBeOfType<Ok<List<Item>>>();
+    ok.Value.ShouldNotBeSameAs(list);
+    ok.Value[0].V.ShouldBe(1);
+    ok.Value[0].ShouldNotBeSameAs(list[0]);
+    clone.Failure.ShouldBeOfType<Err<int>>().Message.ShouldBe("bad");
+    clone.Interface.ShouldBeOfType<GenericResult<int>>().V.ShouldBe(5);
+    clone.Interface.ShouldNotBeSameAs(original.Interface);
   }
 
   public void Cast_Inherited_ICloneable_Result_To_The_Declared_Type()
@@ -290,6 +318,59 @@ public class Should_
   {
     public Shape? Single { get; set; }
     public List<Shape> All { get; set; } = [];
+  }
+
+  [NotTest]
+  public class GenericBase<T>
+  {
+    public T? V { get; set; }
+  }
+
+  [NotTest]
+  public class GenericDerived<T> : GenericBase<T>
+  {
+    public int W { get; set; }
+  }
+
+  [NotTest]
+  public abstract class AbstractBase<T>
+  {
+    public T? V { get; set; }
+  }
+
+  [NotTest]
+  public class AbstractDerived<T> : AbstractBase<T>;
+
+  [NotTest]
+  public abstract record Result<T>;
+
+  [NotTest]
+  public sealed record Ok<T>(T Value) : Result<T>;
+
+  [NotTest]
+  public sealed record Err<T>(string Message) : Result<T>;
+
+  public interface IResult<T>
+  {
+    T V { get; }
+  }
+
+  [NotTest]
+  public class GenericResult<T> : IResult<T>
+  {
+    public T V { get; set; } = default!;
+  }
+
+  // Generic subtypes of generic members: the generator closes each subtype over the member's type arguments.
+  [GenerateClone]
+  [NotTest]
+  public sealed class GenericHierarchies
+  {
+    public GenericBase<int>? Class { get; set; }
+    public AbstractBase<int>? Abstract { get; set; }
+    public Result<List<Item>>? Result { get; set; }
+    public Result<int>? Failure { get; set; }
+    public IResult<int>? Interface { get; set; }
   }
 
   [NotTest]

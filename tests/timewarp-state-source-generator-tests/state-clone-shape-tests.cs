@@ -205,6 +205,41 @@ public class Should_Compile_Supported_Shape
         private sealed class Hidden : Base, System.ICloneable { public object Clone() => new Hidden { V = V }; }
       }
       """,
+    ["GenericSubclassOfGenericClass"] =
+      """
+      using TimeWarp.State;
+      public class GB<T> { public T? V { get; set; } }
+      public class GD<T> : GB<T> { public int W { get; set; } }
+      public class GDD<T> : GD<T> { }
+      [GenerateClone] public class GenericClassHolder { public GB<int>? G { get; set; } }
+      """,
+    ["GenericSubclassOfAbstractGenericClass"] =
+      """
+      using System.Collections.Generic;
+      using TimeWarp.State;
+      public abstract class AB<T> { public T? V { get; set; } }
+      public class AD<T> : AB<T> { }
+      public class AInt : AB<int> { }
+      public class AList<T> : AB<List<T>> { }
+      public abstract record Result<T>;
+      public sealed record Ok<T>(T Value) : Result<T>;
+      public sealed record Err<T>(string Message) : Result<T>;
+      [GenerateClone] public class AbstractGenericHolder
+      {
+        public AB<int>? A { get; set; }
+        public AB<List<string>>? L { get; set; }
+        public Result<List<string>>? R { get; set; }
+      }
+      """,
+    ["GenericImplementationOfGenericInterface"] =
+      """
+      using TimeWarp.State;
+      public interface IR<T> { T V { get; } }
+      public class IntR : IR<int> { public int V { get; set; } }
+      public class GR<T> : IR<T> { public T V { get; set; } = default!; }
+      public struct SR<T> : IR<T> { public T V { get; set; } }
+      [GenerateClone] public class GenericInterfaceHolder { public IR<int>? R { get; set; } }
+      """,
     ["DependencyConstructorState"] =
       """
       using TimeWarp.State;
@@ -239,6 +274,9 @@ public class Should_Compile_Supported_Shape
   [Input("DependencyConstructorState")]
   [Input("CloneableNonSealedBase")]
   [Input("PrivateCloneableSubclass")]
+  [Input("GenericSubclassOfGenericClass")]
+  [Input("GenericSubclassOfAbstractGenericClass")]
+  [Input("GenericImplementationOfGenericInterface")]
   public static void Given_Shape(string shape)
   {
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Shapes[shape]);
@@ -256,6 +294,20 @@ public class Should_Compile_Supported_Shape
     string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
     source.ShouldContain("internal static extern ref T0 ");
     source.ShouldContain("<global::Item>.F_Value_");
+  }
+
+  // A generic subtype of a generic member type is closed over the member's type arguments and gets its own case.
+  [Input("GenericSubclassOfGenericClass", "global::GD<int>,global::GDD<int>")]
+  [Input("GenericSubclassOfAbstractGenericClass", "global::AD<int>,global::AInt,global::AList<string>,global::Ok<global::System.Collections.Generic.List<string>>,global::Err<global::System.Collections.Generic.List<string>>")]
+  [Input("GenericImplementationOfGenericInterface", "global::GR<int>,global::SR<int>,global::IntR")]
+  public static void Given_Generic_Subtype_Of_Generic_Member_Dispatches_To_Closed_Type(string shape, string closedTypes)
+  {
+    (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Shapes[shape]);
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    foreach (string closedType in closedTypes.Split(','))
+    {
+      source.ShouldContain($"case {closedType} ");
+    }
   }
 
   public static void Given_Ambiguous_Overloads_Uses_Typed_Defaults()
@@ -360,6 +412,29 @@ public class Should_Report_TWSG002_At_Source
       public class Gen<T> : Base { public T? Value { get; set; } }
       [GenerateClone] public class Holder { public Base? B { get; set; } }
       """,
+    ["GenericSubclassWithUndeterminedParameter"] =
+      """
+      using TimeWarp.State;
+      public class GB<T> { public T? V { get; set; } }
+      public class GX<T, U> : GB<T> { public U? W { get; set; } }
+      [GenerateClone] public class Holder { public GB<int>? G { get; set; } }
+      """,
+    ["GenericSubclassWithFailingConstraint"] =
+      """
+      using TimeWarp.State;
+      public abstract class AB<T> { public T? V { get; set; } }
+      public class AInt : AB<int> { }
+      public class ARef<T> : AB<T> where T : class { }
+      [GenerateClone] public class Holder { public AB<int>? A { get; set; } }
+      """,
+    ["GenericImplementationWithUndeterminedParameter"] =
+      """
+      using TimeWarp.State;
+      public interface IR<T> { T V { get; } }
+      public class IntR : IR<int> { public int V { get; set; } }
+      public class GR<T, U> : IR<T> { public T V { get; set; } = default!; public U? W { get; set; } }
+      [GenerateClone] public class Holder { public IR<int>? R { get; set; } }
+      """,
     ["FileLocalSubclass"] =
       """
       using TimeWarp.State;
@@ -390,6 +465,9 @@ public class Should_Report_TWSG002_At_Source
   [Input("ProtectedNestedSubclass")]
   [Input("PrivateImplementationBesidePublicOne")]
   [Input("GenericSubclass")]
+  [Input("GenericSubclassWithUndeterminedParameter")]
+  [Input("GenericSubclassWithFailingConstraint")]
+  [Input("GenericImplementationWithUndeterminedParameter")]
   [Input("FileLocalSubclass")]
   [Input("FileLocalGenerateClone")]
   [Input("FileLocalState")]

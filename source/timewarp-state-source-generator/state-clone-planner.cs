@@ -11,8 +11,10 @@
 // A non-sealed class dispatches on the runtime type: known derived types first, the exact cloner when the runtime
 // type matches, then ICloneable, else a throw. Known derived types come from this compilation and, for a base declared
 // in a non-framework referenced assembly, from that assembly and the referenced assemblies that reference it. A known
-// subtype generated code cannot name (private, protected, file-local, another assembly's internal, or a generic
-// definition) is TWSG002 unless it implements ICloneable, so the throw is left for subtypes the generator never saw.
+// subtype generated code cannot name (private, protected, file-local, another assembly's internal) is TWSG002 unless it
+// implements ICloneable, so the throw is left for subtypes the generator never saw. A generic subtype is closed over the
+// member type's arguments by unifying its base chain and interfaces with the member type (GD<T> : GB<T> for GB<int>
+// dispatches to GD<int>); one whose type parameters are not determined, or whose constraints fail, is TWSG002 too.
 // An ICloneable type is cloned by its own Clone(), cast to the declared type, and is never wrapped in that dispatch.
 // Types from other assemblies are cloned only when their full field list is known: TimeWarp.State's own types, or an
 // implementation assembly inspected with MetadataImportOptions.All. Reference assemblies hide private fields, so
@@ -1842,20 +1844,256 @@ internal sealed class StateClonePlanner
   private List<INamedTypeSymbol> FindDerived(INamedTypeSymbol target) => FindSubtypes(target, implementations: false);
 
   private List<INamedTypeSymbol> FindSubtypes(INamedTypeSymbol target, bool implementations) =>
-    CandidateTypes(target)
-      .Where(type => IsConcreteSubtype(type, target, implementations) && CanCase(type))
+    Subtypes(target, implementations)
+      .Where(CanCase)
       .OrderByDescending(Depth)
       .ToList();
 
   // A known subtype the generated switch cannot name or close would reach the runtime throw, so it fails the build
   // instead, unless it implements ICloneable (the dispatch's ICloneable case clones it).
   private INamedTypeSymbol? FindHiddenSubtype(INamedTypeSymbol target, bool implementations) =>
-    CandidateTypes(target)
-      .FirstOrDefault(type => IsConcreteSubtype(type, target, implementations) && !CanCase(type) && !ImplementsICloneable(type));
+    Subtypes(target, implementations)
+      .FirstOrDefault(type => !CanCase(type) && !ImplementsICloneable(type));
+
+  // Concrete subtypes of target among the candidate types. A generic definition whose base chain or interfaces reach
+  // target's definition (GD<T> : GB<T> for GB<int>) is closed over target's type arguments (GD<int>) when they
+  // determine every type parameter and satisfy the constraints; otherwise the definition itself is returned, which
+  // CanCase rejects, so it is TWSG002.
+  private IEnumerable<INamedTypeSymbol> Subtypes(INamedTypeSymbol target, bool implementations)
+  {
+    foreach (INamedTypeSymbol type in CandidateTypes(target))
+    {
+      if (IsConcreteSubtype(type, target, implementations))
+      {
+        yield return type;
+        continue;
+      }
+
+      if (CloseOver(type, target, implementations) is { } closed)
+      {
+        yield return closed;
+      }
+    }
+  }
+
+  // For a generic definition that can reach target, the construction that is a target subtype, or the definition
+  // itself when its type parameters are not determined by target or its constraints do not hold. Null when no
+  // construction of type can be a target.
+  private INamedTypeSymbol? CloseOver(INamedTypeSymbol type, INamedTypeSymbol target, bool implementations)
+  {
+    if (!type.IsGenericType || !type.IsDefinition || !target.IsGenericType || type.IsAbstract
+        || SymbolEqualityComparer.Default.Equals(type, target.OriginalDefinition)
+        || (implementations ? type.TypeKind is not (TypeKind.Class or TypeKind.Struct) : type.TypeKind != TypeKind.Class))
+    {
+      return null;
+    }
+
+    INamedTypeSymbol? result = null;
+    foreach (INamedTypeSymbol view in SupertypeViews(type, target.OriginalDefinition, implementations))
+    {
+      Dictionary<ITypeParameterSymbol, ITypeSymbol> map = new(SymbolEqualityComparer.Default);
+      if (!Unify(view, target, type, map))
+      {
+        continue;
+      }
+
+      if (TryConstruct(type, map) is { } closed && IsConcreteSubtype(closed, target, implementations))
+      {
+        return closed;
+      }
+
+      result = type;
+    }
+
+    return result;
+  }
+
+  // The supertypes of a generic definition (base chain, plus interfaces for an interface target) that share target's
+  // definition, still written in the definition's own type parameters (GB<T> for GD<T> : GB<T>).
+  private static IEnumerable<INamedTypeSymbol> SupertypeViews(INamedTypeSymbol type, INamedTypeSymbol targetDefinition, bool implementations)
+  {
+    for (INamedTypeSymbol? current = type.BaseType; current is not null; current = current.BaseType)
+    {
+      if (SymbolEqualityComparer.Default.Equals(current.OriginalDefinition, targetDefinition))
+      {
+        yield return current;
+      }
+    }
+
+    if (!implementations || targetDefinition.TypeKind != TypeKind.Interface)
+    {
+      yield break;
+    }
+
+    foreach (INamedTypeSymbol implemented in type.AllInterfaces)
+    {
+      if (SymbolEqualityComparer.Default.Equals(implemented.OriginalDefinition, targetDefinition))
+      {
+        yield return implemented;
+      }
+    }
+  }
+
+  // Binds owner's type parameters so that pattern equals actual. False when the shapes cannot match, which means no
+  // construction of owner is ever a target (X<T> : GB<List<T>> for GB<int>).
+  private static bool Unify(ITypeSymbol pattern, ITypeSymbol actual, INamedTypeSymbol owner, Dictionary<ITypeParameterSymbol, ITypeSymbol> map)
+  {
+    if (pattern is ITypeParameterSymbol parameter && SymbolEqualityComparer.Default.Equals(parameter.ContainingSymbol, owner))
+    {
+      if (map.TryGetValue(parameter, out ITypeSymbol? bound))
+      {
+        return SymbolEqualityComparer.Default.Equals(bound, actual);
+      }
+
+      map.Add(parameter, actual);
+      return true;
+    }
+
+    switch (pattern)
+    {
+      case IArrayTypeSymbol patternArray when actual is IArrayTypeSymbol actualArray:
+        return patternArray.Rank == actualArray.Rank && Unify(patternArray.ElementType, actualArray.ElementType, owner, map);
+      case INamedTypeSymbol patternNamed when patternNamed.IsGenericType && actual is INamedTypeSymbol actualNamed:
+        if (!SymbolEqualityComparer.Default.Equals(patternNamed.OriginalDefinition, actualNamed.OriginalDefinition))
+        {
+          return false;
+        }
+
+        List<ITypeSymbol> patternArguments = AllTypeArguments(patternNamed);
+        List<ITypeSymbol> actualArguments = AllTypeArguments(actualNamed);
+        if (patternArguments.Count != actualArguments.Count)
+        {
+          return false;
+        }
+
+        for (int index = 0; index < patternArguments.Count; index++)
+        {
+          if (!Unify(patternArguments[index], actualArguments[index], owner, map))
+          {
+            return false;
+          }
+        }
+
+        return true;
+      default:
+        return SymbolEqualityComparer.Default.Equals(pattern, actual);
+    }
+  }
+
+  // Constructs a top-level generic definition when every type parameter is bound to a closed type that meets its
+  // constraints; null otherwise.
+  private INamedTypeSymbol? TryConstruct(INamedTypeSymbol definition, Dictionary<ITypeParameterSymbol, ITypeSymbol> map)
+  {
+    if (definition.ContainingType is { IsGenericType: true })
+    {
+      return null;
+    }
+
+    ITypeSymbol[] arguments = new ITypeSymbol[definition.TypeParameters.Length];
+    for (int index = 0; index < arguments.Length; index++)
+    {
+      if (!map.TryGetValue(definition.TypeParameters[index], out ITypeSymbol? argument) || ContainsTypeParameter(argument))
+      {
+        return null;
+      }
+
+      arguments[index] = argument;
+    }
+
+    INamedTypeSymbol constructed = definition.Construct(arguments);
+    for (int index = 0; index < arguments.Length; index++)
+    {
+      if (!SatisfiesConstraints(definition.TypeParameters[index], arguments[index], constructed))
+      {
+        return null;
+      }
+    }
+
+    return constructed;
+  }
+
+  private bool SatisfiesConstraints(ITypeParameterSymbol parameter, ITypeSymbol argument, INamedTypeSymbol constructed)
+  {
+    bool nullableValue = argument.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
+    if (parameter.HasReferenceTypeConstraint && !argument.IsReferenceType)
+    {
+      return false;
+    }
+
+    if (parameter.HasValueTypeConstraint && (!argument.IsValueType || nullableValue))
+    {
+      return false;
+    }
+
+    if (parameter.HasUnmanagedTypeConstraint && (!argument.IsUnmanagedType || nullableValue))
+    {
+      return false;
+    }
+
+    if (parameter.HasConstructorConstraint && !HasPublicParameterlessConstructor(argument))
+    {
+      return false;
+    }
+
+    if (argument.IsRefLikeType)
+    {
+      return false;
+    }
+
+    foreach (ITypeSymbol constraint in SubstitutedConstraints(parameter, constructed))
+    {
+      Conversion conversion = Compilation.ClassifyConversion(argument, constraint);
+      if (!conversion.Exists || !(conversion.IsIdentity || conversion.IsReference || conversion.IsBoxing))
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // The constraint types of parameter with the constructed type's arguments substituted for the definition's type
+  // parameters (IComparable<T> becomes IComparable<int>). A shape Substitute does not rewrite keeps its type parameters,
+  // so the conversion check fails and the subtype stays TWSG002.
+  private static IEnumerable<ITypeSymbol> SubstitutedConstraints(ITypeParameterSymbol parameter, INamedTypeSymbol constructed)
+  {
+    Dictionary<ITypeParameterSymbol, ITypeSymbol> map = new(SymbolEqualityComparer.Default);
+    INamedTypeSymbol definition = constructed.OriginalDefinition;
+    for (int index = 0; index < definition.TypeParameters.Length; index++)
+    {
+      map[definition.TypeParameters[index]] = constructed.TypeArguments[index];
+    }
+
+    foreach (ITypeSymbol constraint in parameter.ConstraintTypes)
+    {
+      yield return Substitute(constraint, map);
+    }
+  }
+
+  private static ITypeSymbol Substitute(ITypeSymbol type, Dictionary<ITypeParameterSymbol, ITypeSymbol> map) =>
+    type switch
+    {
+      ITypeParameterSymbol parameter when map.TryGetValue(parameter, out ITypeSymbol? bound) => bound,
+      INamedTypeSymbol { IsGenericType: true, ContainingType: null or { IsGenericType: false } } named =>
+        named.OriginalDefinition.Construct(named.TypeArguments.Select(argument => Substitute(argument, map)).ToArray()),
+      _ => type
+    };
+
+  private static bool HasPublicParameterlessConstructor(ITypeSymbol type)
+  {
+    if (type.IsValueType)
+    {
+      return true;
+    }
+
+    return type is INamedTypeSymbol { IsAbstract: false } named
+      && named.InstanceConstructors.Any(constructor => constructor.Parameters.Length == 0 && constructor.DeclaredAccessibility == Accessibility.Public);
+  }
 
   private static string HiddenSubtypeDetail(INamedTypeSymbol hidden) =>
-    $"its subtype '{hidden.ToDisplayString()}' is private, protected, file-local, internal to another assembly or generic, " +
-    "so generated code cannot clone it; implement ICloneable on that subtype, or make it accessible and non-generic";
+    $"its subtype '{hidden.ToDisplayString()}' is private, protected, file-local, internal to another assembly, or generic " +
+    "with type parameters the member type does not determine, so generated code cannot clone it; implement ICloneable " +
+    "on that subtype, or make it accessible and closable from the member type";
 
   private bool CanCase(INamedTypeSymbol type) => CanName(type) && !(type.IsGenericType && type.IsDefinition);
 

@@ -45,7 +45,9 @@ A member typed as a collection interface (`IEnumerable<T>`, `ICollection<T>`, `I
 
 A member whose type is a non-sealed class, an abstract class, or an interface is cloned by its runtime type. The generated switch covers every known concrete type that derives from or implements the member type, deepest type first. Known types are the types in the compilation and, when the member type is declared in a referenced (non-framework) assembly such as a contracts project, the types in that assembly and in the other referenced assemblies that reference it. Each of those passes the same checks as any type from another assembly (see below). A value whose exact type is the member type uses that type's own cloner.
 
-A known subtype that generated code cannot name is TWSG002 unless it implements `ICloneable`: a private or protected nested type, a `file` type, a type internal to another assembly, or a generic subclass. The generator cannot tell whether such a value ever reaches the member, so it fails the build rather than throw later.
+A generic subtype is closed over the member type's type arguments. The generator matches the subtype's base classes and interfaces against the member type and reads each type parameter from the matching argument. For a `Result<string>` member, `record Ok<T>(T Value) : Result<T>` becomes a case for `Ok<string>`; for an `IRepository<Order>` member, `class Repository<T> : IRepository<T>` becomes `Repository<Order>`. Nested arguments work too (`class Many<T> : Base<List<T>>` for `Base<List<int>>` is `Many<int>`). A generic subtype that can never be the member type, such as `Many<T>` for a `Base<int>` member, is ignored.
+
+A known subtype that generated code cannot name is TWSG002 unless it implements `ICloneable`. That covers a private or protected nested type, a `file` type, and a type internal to another assembly. It also covers a generic subtype the member type cannot close: a type parameter the member type does not determine (`class Pair<T, U> : Base<T>` for `Base<int>`, or `class Gen<T> : Base` for a non-generic `Base`), or a type argument that breaks a constraint (`class RefOnly<T> : Base<T> where T : class` for `Base<int>`). The generator cannot tell whether such a value ever reaches the member, so it fails the build rather than throw later.
 
 A type that implements `ICloneable` is cloned by its own `Clone()`, and the result is cast to the member's declared type. A subclass that inherits `Clone()` from its base therefore gets whatever the base returns.
 
@@ -68,7 +70,7 @@ Other types from other assemblies are TWSG002. Set `<ProduceReferenceAssembly>fa
 - a member typed as `object`, or as an interface or abstract class with no implementation the generator can see
 - a pointer or a ref struct
 - an open generic state, or a state or member type that generated code cannot name (private, protected, `file`, or internal to another assembly)
-- a known subtype of a polymorphic member that generated code cannot name, or a generic subclass (see above)
+- a known subtype of a polymorphic member that generated code cannot name, or a generic subtype the member type cannot close (see above)
 - a type from another assembly whose fields cannot all be seen (see above)
 - a subclass of `ReadOnlyCollection<T>` or `ReadOnlyDictionary<TKey,TValue>`
 - a derived type in the compilation that cannot be cloned itself
