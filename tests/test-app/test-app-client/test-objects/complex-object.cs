@@ -1,3 +1,12 @@
+#region Purpose
+// Clone test object with a delegate, an event, a get-only property, a private field and IDisposable; also ATestClass.
+#endregion
+
+#region Design
+// The constructor builds the nested ATestClass instances, so a clone must copy get-only and private members. Equals
+// compares the fields, the list and the nested objects, not the delegate or event.
+#endregion
+
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable FieldCanBeMadeReadOnly.Global

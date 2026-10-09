@@ -1,3 +1,13 @@
+#region Purpose
+// Deep-clone test cases (ported from AnyClone) run inside the app by CloneTestPage.
+#endregion
+
+#region Design
+// They are plain static methods using Shouldly, not MSTest tests, so the page can call them in Server and browser WASM
+// and the E2E test can check the result. Each type has a clone-equals case and a mutated-clone-differs case. The page
+// does not call the 2D/3D array cases or ModifiedClone_InterfaceObject.
+#endregion
+
 namespace AnyClone.Tests;
 
 public static class CloneProviderTests

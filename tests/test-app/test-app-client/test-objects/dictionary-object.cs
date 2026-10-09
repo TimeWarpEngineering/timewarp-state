@@ -1,3 +1,11 @@
+#region Purpose
+// Clone test object holding an IDictionary<int, BasicObject>.
+#endregion
+
+#region Design
+// Equals uses DictionaryComparer to compare keys and values, so changing a value in the clone makes it unequal.
+#endregion
+
 // ReSharper disable BaseObjectGetHashCodeCallInGetHashCode
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 #pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).

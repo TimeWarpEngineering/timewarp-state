@@ -1,3 +1,12 @@
+#region Purpose
+// Action that proves StateTransactionBehavior used CloneableState's ICloneable.Clone.
+#endregion
+
+#region Design
+// Clone() always returns Count 42, so the handler throws unless it sees 42 and then increments to 43; the IClonable
+// test page checks for 43. This is a test, not a usage example.
+#endregion
+
 namespace Test.App.Client.Features.CloneTest;
 
 public partial class CloneableState

@@ -1,3 +1,11 @@
+#region Purpose
+// DictionaryComparer: compares two dictionaries by keys and values for the clone tests.
+#endregion
+
+#region Design
+// Uses the default value comparer unless one is passed. GetHashCode returns 0 because it is only used for Equals.
+#endregion
+
 // ReSharper disable ConvertToPrimaryConstructor
 // ReSharper disable NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.

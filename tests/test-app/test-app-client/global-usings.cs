@@ -1,3 +1,12 @@
+#region Purpose
+// Global usings for Test.App.Client.
+#endregion
+
+#region Design
+// PersistentStateAttribute is aliased to TimeWarp's attribute because .NET 10 added a same-named ASP.NET Core
+// attribute that collides under the Components using.
+#endregion
+
 global using TimeWarp.Features.Cloning;
 global using AnyClone.Tests.Extensions;
 global using AnyClone.Tests.TestObjects;

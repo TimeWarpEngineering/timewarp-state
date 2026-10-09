@@ -1,3 +1,12 @@
+#region Purpose
+// Action that resets the whole Store and routes back to "/", used by the Reset Store page and its E2E test.
+#endregion
+
+#region Design
+// The handler is a plain IRequestHandler rather than StateActionHandler because it acts on the IStore itself, not on
+// one state. It calls Store.Reset() and then RouteState.ChangeRoute("/").
+#endregion
+
 namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState

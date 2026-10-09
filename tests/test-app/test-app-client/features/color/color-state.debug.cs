@@ -1,3 +1,12 @@
+#region Purpose
+// ColorState's Redux DevTools Hydrate and a test-only Initialize.
+#endregion
+
+#region Design
+// Hydrate casts the stored values directly (Color and string) and reads Guid as camelCase. Note that MyColorName is
+// read from the FavoriteColor key. Initialize(color, myColorName) is guarded by ThrowIfNotTestAssembly.
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 using System.Drawing;

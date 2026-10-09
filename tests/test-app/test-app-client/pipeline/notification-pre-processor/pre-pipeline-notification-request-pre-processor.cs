@@ -1,3 +1,12 @@
+#region Purpose
+// Pipeline behavior that publishes a PrePipelineNotification before each action runs.
+#endregion
+
+#region Design
+// Registered at order 500 and constrained to IAction. Publishes through IPublisher<ClientPipeline> before calling
+// next().
+#endregion
+
 namespace Test.App.Client.Pipeline.NotificationPreProcessor;
 
 internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResponse> : IPipelineBehavior<TMessage, TResponse>

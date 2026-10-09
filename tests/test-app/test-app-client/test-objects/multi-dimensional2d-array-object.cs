@@ -1,3 +1,11 @@
+#region Purpose
+// Clone test object with an int[,] array.
+#endregion
+
+#region Design
+// Equals flattens both arrays with EnumerableEqual.
+#endregion
+
 // ReSharper disable BaseObjectGetHashCodeCallInGetHashCode
 // ReSharper disable PropertyCanBeMadeInitOnly.Global
 // ReSharper disable MemberCanBePrivate.Global

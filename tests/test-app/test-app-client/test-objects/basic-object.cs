@@ -1,3 +1,11 @@
+#region Purpose
+// Clone test object with primitive properties and a private int field.
+#endregion
+
+#region Design
+// Equals includes the private field so the tests prove private state is copied. Ported from the AnyClone tests.
+#endregion
+
 // ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
 // ReSharper disable PropertyCanBeMadeInitOnly.Global

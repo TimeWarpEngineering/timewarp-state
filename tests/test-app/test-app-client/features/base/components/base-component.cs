@@ -1,3 +1,13 @@
+#region Purpose
+// Base component for test-app pages, exposing each test state through GetState<T>.
+#endregion
+
+#region Design
+// Inherits TimeWarpStateDevComponent so pages can show the @RenderModeDisplay fragment the E2E tests read. Every
+// property subscribes the component to that state's changes, except NoSubRouteState, which uses placeSubscription:
+// false.
+#endregion
+
 namespace Test.App.Client.Features.Base.Components;
 
 using CloneTest;

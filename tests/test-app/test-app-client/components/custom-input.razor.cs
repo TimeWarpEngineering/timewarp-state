@@ -1,3 +1,12 @@
+#region Purpose
+// Generic labeled input used by CustomInputExamplePage to exercise TimeWarpStateInputComponent<T> with validation.
+#endregion
+
+#region Design
+// Overrides TryParseValueFromString for string, int, Guid and enums only (invariant culture for int) and throws
+// InvalidOperationException for any other T, so an unsupported binding fails loudly instead of silently.
+#endregion
+
 namespace Test.App.Client.Components;
 
 public partial class CustomInput<T> : BaseInputComponent<T>

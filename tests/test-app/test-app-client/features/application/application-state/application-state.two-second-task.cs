@@ -1,3 +1,12 @@
+#region Purpose
+// Short tracked action (a 2 second delay) used alongside the five second task in action tracking tests.
+#endregion
+
+#region Design
+// [TrackAction] makes it visible in ActionTrackingState while it runs. Callers send the action directly; the
+// convenience TwoSecondTask method is left commented out.
+#endregion
+
 namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState

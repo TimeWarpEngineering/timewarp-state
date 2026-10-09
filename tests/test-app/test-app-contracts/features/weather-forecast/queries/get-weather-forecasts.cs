@@ -1,3 +1,12 @@
+#region Purpose
+// Weather forecast query, response and DTO shared by the client and the server API.
+#endregion
+
+#region Design
+// Query.GetRoute returns the fixed "api/weather" route; Days is not sent in the URL. Response is a List of
+// WeatherForecastDto, and TemperatureF is computed from TemperatureC.
+#endregion
+
 namespace Test.App.Contracts.Features.WeatherForecast;
 
 public static class GetWeatherForecasts

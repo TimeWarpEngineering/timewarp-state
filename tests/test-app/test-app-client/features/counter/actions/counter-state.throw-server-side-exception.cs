@@ -1,3 +1,12 @@
+#region Purpose
+// Action that makes a failing server call, to test rollback when the exception comes from an HTTP request.
+#endregion
+
+#region Design
+// GETs ThrowServerSideExceptionRequest's route through the scoped HttpClient. The test server maps no endpoint for
+// that route, so the request itself fails; action.Message is not sent.
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 public partial class CounterState

@@ -1,3 +1,11 @@
+#region Purpose
+// CounterState's Redux DevTools Hydrate and a test-only Initialize.
+#endregion
+
+#region Design
+// Hydrate reads camelCase Count and Guid keys. Initialize(count) is test-only, guarded by ThrowIfNotTestAssembly.
+#endregion
+
 namespace Test.App.Client.Features.Counter;
 
 public partial class CounterState

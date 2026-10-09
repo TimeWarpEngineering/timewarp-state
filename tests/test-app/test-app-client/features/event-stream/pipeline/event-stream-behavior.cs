@@ -1,3 +1,12 @@
+#region Purpose
+// Pipeline behavior that records "Start" and "Completed" events for every action in EventStreamState.
+#endregion
+
+#region Design
+// Registered in mediator-behaviors.cs at order 540 on ClientPipeline. It sends AddEvent through
+// ISender<ClientPipeline> before and after next(), and skips AddEvent itself so it does not recurse.
+#endregion
+
 namespace Test.App.Client.Features.EventStream;
 
 using static EventStreamState;

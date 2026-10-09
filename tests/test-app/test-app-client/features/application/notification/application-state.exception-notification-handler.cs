@@ -1,3 +1,12 @@
+#region Purpose
+// Records the message of each ExceptionNotification in ApplicationState.ExceptionMessage.
+#endregion
+
+#region Design
+// Nested in ApplicationState so it can set the private setter. It writes the state directly, not through an action,
+// and logs a warning; the state transaction tests read ExceptionMessage to confirm a failed action was published.
+#endregion
+
 namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState

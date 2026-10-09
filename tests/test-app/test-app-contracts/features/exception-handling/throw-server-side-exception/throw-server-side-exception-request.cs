@@ -1,3 +1,11 @@
+#region Purpose
+// Request contract and route for the throw-server-side-exception test.
+#endregion
+
+#region Design
+// GetRoute appends SampleProperty as a query string; the property is a placeholder (its docs still say TODO).
+#endregion
+
 namespace Test.App.Contracts.Features.ExceptionHandlings;
 
 public class ThrowServerSideExceptionRequest : IRequest<ThrowServerSideExceptionResponse>

@@ -1,4 +1,13 @@
-﻿namespace Test.App.Client.Features.Blue;
+﻿#region Purpose
+// Action that adds Amount to BlueState.Count.
+#endregion
+
+#region Design
+// Nested ActionSet (Action plus Handler) inside the state, the convention the TimeWarp.State analyzers enforce, so the
+// handler can set the private setter. Used by the persistence and subscription tests.
+#endregion
+
+namespace Test.App.Client.Features.Blue;
 
 public partial class BlueState
 {

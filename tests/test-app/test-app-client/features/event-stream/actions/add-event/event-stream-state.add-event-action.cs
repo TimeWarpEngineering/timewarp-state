@@ -1,3 +1,12 @@
+#region Purpose
+// Cataloged action that appends a message to EventStreamState.
+#endregion
+
+#region Design
+// [CatalogAction] makes it discoverable through the action catalog. EventStreamBehavior sends this action for every
+// other action, and skips it for this one to avoid infinite recursion.
+#endregion
+
 namespace Test.App.Client.Features.EventStream;
 
 public partial class EventStreamState

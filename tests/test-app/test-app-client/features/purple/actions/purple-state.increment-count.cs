@@ -1,4 +1,12 @@
-﻿namespace Test.App.Client.Features.Purple;
+﻿#region Purpose
+// Action that adds Amount to PurpleState.Count.
+#endregion
+
+#region Design
+// Nested ActionSet inside PurpleState so the handler can set the private setter; used by the persistence test pages.
+#endregion
+
+namespace Test.App.Client.Features.Purple;
 
 public partial class PurpleState
 {
