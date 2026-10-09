@@ -1,3 +1,13 @@
+#region Purpose
+// E2E test: two Counter components share CounterState and both update when either button is clicked.
+#endregion
+
+#region Design
+// MSTest + Playwright PageTest against the running test app (Configuration.GetSutBaseUrl). Each test checks Server
+// mode first, waits for the WASM bundle, reloads, and repeats in WebAssembly mode. Counts start at 3 and go up by 5
+// per click.
+#endregion
+
 namespace CounterPageTests;
 
 [TestClass]

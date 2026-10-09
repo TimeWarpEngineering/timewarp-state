@@ -1,3 +1,14 @@
+#region Purpose
+// E2E test for the Cacheable Weather page: a second fetch inside CacheDuration is served from cache, a later one is
+// not.
+#endregion
+
+#region Design
+// Reads cache-key, cache-duration and timestamp from data-qa spans and waits 11 seconds, past the 10 second
+// CacheDuration, before the third fetch. It logs each step and dumps the page HTML on failure to make CI failures
+// diagnosable.
+#endregion
+
 namespace CacheableWeatherPageTests;
 
 [TestClass]

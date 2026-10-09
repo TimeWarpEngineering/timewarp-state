@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the test app architecture tests.
+#endregion
+
+#region Design
+// Trivial; no design decisions.
+#endregion
+
 global using Shouldly;
 global using NetArchTest.Policies;
 global using System.Reflection;

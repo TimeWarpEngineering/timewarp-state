@@ -1,3 +1,12 @@
+#region Purpose
+// IVerifier implementation so Roslyn analyzer tests can run under Fixie.
+#endregion
+
+#region Design
+// Fixie has no verifier package like xUnit or NUnit, so each assertion throws a plain Exception with the expected and
+// actual values. PushContext ignores context.
+#endregion
+
 namespace TimeWarp.State.Analyzer.Tests;
 
 // FixieVerifier is a basic implementation since Fixie doesn't have a verifier like xUnit or NUnit.

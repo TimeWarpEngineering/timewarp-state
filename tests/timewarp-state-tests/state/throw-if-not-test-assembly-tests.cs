@@ -3,6 +3,11 @@
 // rejects a non-test name, and honors StateTestOptions.Enable().
 #endregion
 
+#region Design
+// Uses dynamic assemblies with chosen names, and a lock because StateTestOptions is static and is reset around each
+// test.
+#endregion
+
 namespace ThrowIfNotTestAssemblyTests;
 
 public class Should_

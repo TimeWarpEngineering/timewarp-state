@@ -1,3 +1,13 @@
+#region Purpose
+// E2E test: incrementing the counter adds Start and Completed entries to the event stream.
+#endregion
+
+#region Design
+// MSTest + Playwright PageTest against the running test app (Configuration.GetSutBaseUrl). Each test checks Server
+// mode first, waits for the WASM bundle, reloads, and repeats in WebAssembly mode. The expected entries come from the
+// test app's EventStreamBehavior.
+#endregion
+
 namespace EventStreamPageTests;
 
 [TestClass]

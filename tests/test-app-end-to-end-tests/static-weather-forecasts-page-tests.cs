@@ -1,3 +1,11 @@
+#region Purpose
+// E2E test: the statically rendered weather page shows a header row plus 5 forecasts.
+#endregion
+
+#region Design
+// Static render mode only; 5 rows matches the server endpoint, which always asks for 5 days.
+#endregion
+
 namespace StaticWeatherForecastsPageTests;
 
 [TestClass]

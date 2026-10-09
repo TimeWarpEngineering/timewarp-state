@@ -1,3 +1,11 @@
+#region Purpose
+// Playwright template sample tests against playwright.dev.
+#endregion
+
+#region Design
+// [Ignore]d at class level because they don't test the TimeWarp.State app; they account for 2 of the E2E skips.
+#endregion
+
 namespace Test.App.EndToEnd.Tests;
 
 [TestClass]

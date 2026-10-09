@@ -1,3 +1,14 @@
+#region Purpose
+// Tests for CaptureRenderCaller: off by default, and when on, ShouldRender, StateHasChanged and SetParametersAsync
+// record the calling class and method.
+#endregion
+
+#region Design
+// TestRenderCallerComponent sets the private injected options and logger by reflection, and its trigger methods are
+// NoInlining so the captured caller is stable. There is no renderer, so the InvalidOperationException thrown after
+// capture is ignored.
+#endregion
+
 namespace CaptureRenderCaller;
 
 public class Should_

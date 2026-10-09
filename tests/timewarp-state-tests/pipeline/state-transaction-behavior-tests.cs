@@ -3,6 +3,12 @@
 // CancellationToken.None for non-cancellation errors, and skips notification for OperationCanceledException.
 #endregion
 
+#region Design
+// Constructs StateTransactionBehavior directly over a RecordingStore and RecordingPublisher. TransactionTestState
+// implements ICloneable so the clone is predictable; next mutates the current state and then fails, so a rollback
+// shows up as the original instance with its original value.
+#endregion
+
 namespace StateTransactionBehaviorTests;
 
 public class Should_

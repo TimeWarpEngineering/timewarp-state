@@ -1,3 +1,13 @@
+#region Purpose
+// Checks that RenderSubscriptionContext suppression is per action instance and does not leak to later dispatches.
+#endregion
+
+#region Design
+// Calls the obsolete EnsureAction/Reset directly (CS0618 suppressed) and finishes with a real Send to prove a
+// suppressed dummy instance does not stop the next BlueState action from re-rendering a subscriber. TestableComponent
+// counts ReRender calls.
+#endregion
+
 namespace RenderSubscriptionContextTests;
 
 /// <summary>

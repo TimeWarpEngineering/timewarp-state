@@ -1,3 +1,12 @@
+#region Purpose
+// Tests for StateInheritanceAnalyzer: State<T>'s type argument must be the declaring class.
+#endregion
+
+#region Design
+// A foreign State<T> with a wrong type argument must not report; TimeWarp.State's must. Uses the pinned Net110
+// references.
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace StateInheritanceAnalyzer_;
 

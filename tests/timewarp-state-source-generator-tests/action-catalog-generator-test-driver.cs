@@ -3,6 +3,11 @@
 // references TimeWarp.State, so tests can assert both the emitted text and that it compiles.
 #endregion
 
+#region Design
+// References every trusted platform assembly plus TimeWarp.State and TimeWarp.Mediator.Contracts so generated code can
+// be compiled. The assembly name Catalog.Tests is fixed so expected output can name the generated namespace.
+#endregion
+
 namespace TimeWarp.State.SourceGenerator.Tests;
 
 internal static class ActionCatalogGeneratorTestDriver

@@ -2,6 +2,11 @@
 // Proves AddTimeWarpStateTelemetry uses TryAdd so a second call does not replace registrations.
 #endregion
 
+#region Design
+// Calls AddTimeWarpStateTelemetry twice with different options and checks the descriptor counts and the resolved
+// IncludeSnapshots value; the first registration must win.
+#endregion
+
 namespace ServiceCollectionExtensionsTests;
 
 public class Should_

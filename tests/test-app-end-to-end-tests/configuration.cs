@@ -1,3 +1,12 @@
+#region Purpose
+// Builds the base URL of the system under test for the E2E tests.
+#endregion
+
+#region Design
+// Port comes from SutPort (default 7011) and the scheme from UseHttp ("true" means http), so CI and local runs can
+// point at different hosts. Logs the values it used.
+#endregion
+
 namespace Test.App.EndToEnd.Tests;
 
 public static class Configuration

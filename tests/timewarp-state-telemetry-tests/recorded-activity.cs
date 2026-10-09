@@ -1,3 +1,12 @@
+#region Purpose
+// Snapshot of a stopped Activity for assertions.
+#endregion
+
+#region Design
+// Copies the fields tests check (name, status, tags, events, exception flag) when the activity stops, so assertions
+// read plain values.
+#endregion
+
 namespace TimeWarp.State.Telemetry.Tests;
 
 internal sealed class RecordedActivity

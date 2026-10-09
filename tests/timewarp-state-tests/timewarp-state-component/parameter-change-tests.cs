@@ -2,6 +2,11 @@
 // Proves CheckComplexParameterChanged argument order and HandleUnregisteredParameter re-render.
 #endregion
 
+#region Design
+// Test components set the private injected options and logger by reflection and are driven through SetParametersAsync
+// with no renderer; the InvalidOperationException thrown after the parameter checks is ignored.
+#endregion
+
 namespace ParameterChangeTests;
 
 public class Should_

@@ -2,6 +2,12 @@
 // Enumerates the generated Test.App.Client action catalog and executes entries end to end through the store.
 #endregion
 
+#region Design
+// Registry_Should and Execute_Should derive from BaseTest, so they use the real DI container and store built by the
+// TestingConvention; Catalog_Should builds ActionCatalogEntry values directly. The expected catalog is the two
+// [CatalogAction] actions in Test.App.Client (Counter.AddToCount, EventStream.AddEvent).
+#endregion
+
 namespace ActionCatalog_;
 
 public class Registry_Should : BaseTest

@@ -1,3 +1,13 @@
+#region Purpose
+// E2E test: client- and server-side exceptions in actions don't change CounterState.Guid or crash the UI.
+#endregion
+
+#region Design
+// MSTest + Playwright PageTest against the running test app (Configuration.GetSutBaseUrl). Each test checks Server
+// mode first, waits for the WASM bundle, reloads, and repeats in WebAssembly mode. An unchanged Guid shows
+// StateTransactionBehavior restored the pre-action clone.
+#endregion
+
 namespace ThrowExceptionPageTests;
 
 [TestClass]

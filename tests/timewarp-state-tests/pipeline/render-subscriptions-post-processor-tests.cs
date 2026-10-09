@@ -2,6 +2,12 @@
 // [SuppressRender] skips re-render; IInternalAction still re-renders; instance flags do not leak.
 #endregion
 
+#region Design
+// A Harness builds one RenderSubscriptionsPostProcessor per action kind over real Subscriptions and
+// RenderSubscriptionContext, with a TestableComponent that counts re-renders. RenderTestState's nested actions cover
+// user, [SuppressRender], internal and unrelated cases.
+#endregion
+
 namespace RenderSubscriptionsPostProcessorTests;
 
 public class Should_

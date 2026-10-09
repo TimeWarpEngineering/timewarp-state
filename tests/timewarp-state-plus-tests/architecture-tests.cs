@@ -1,3 +1,12 @@
+#region Purpose
+// Checks that TimeWarp.State.Plus follows the TimeWarp.State action, handler and state policies.
+#endregion
+
+#region Design
+// Uses TimeWarp.State.Policies (NetArchTest) with the default handler policy, unlike the test app's architecture
+// tests, which pass requirePublicHandlers: false.
+#endregion
+
 namespace Architecture_;
 
 public class Should_

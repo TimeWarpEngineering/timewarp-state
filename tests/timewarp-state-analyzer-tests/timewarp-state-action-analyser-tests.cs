@@ -1,3 +1,12 @@
+#region Purpose
+// Tests for TimeWarpStateActionAnalyzer (TWS0001): actions must be nested in an ActionSet; records, classes, structs
+// and subclasses at top level all report.
+#endregion
+
+#region Design
+// Each test compiles inline source with the pinned Net110 references (the inline comments still say net10).
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace TimeWarpStateActionAnalyzer_;
 

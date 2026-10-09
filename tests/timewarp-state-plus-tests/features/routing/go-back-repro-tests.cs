@@ -1,3 +1,13 @@
+#region Purpose
+// Regression tests for RouteState.GoBack's off-by-one: going back the full stack depth must not throw.
+#endregion
+
+#region Design
+// Seeds RouteState through Initialize and calls the GoBack handler directly with a fake store and a recording
+// NavigationManager. The file header calls it a temporary repro; its comments admit seed order is uncertain, so only
+// counts and whether navigation happened are asserted.
+#endregion
+
 // Temporary repro test for code-review finding 3 (GoBack off-by-one).
 // ReSharper disable UnusedType.Global
 namespace GoBackRepro_;

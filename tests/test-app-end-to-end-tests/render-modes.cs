@@ -1,3 +1,11 @@
+#region Purpose
+// Render-mode names the test pages display (RendererInfo.Name).
+#endregion
+
+#region Design
+// WebAssembly is the .NET 9+ name for interactive WASM.
+#endregion
+
 namespace Test.App.EndToEnd.Tests;
 
 public static class RenderModes

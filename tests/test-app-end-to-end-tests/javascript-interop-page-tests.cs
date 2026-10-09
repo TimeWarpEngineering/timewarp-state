@@ -1,3 +1,13 @@
+#region Purpose
+// E2E test: dispatching IncrementCount from JavaScript updates CounterState on the page.
+#endregion
+
+#region Design
+// MSTest + Playwright PageTest against the running test app (Configuration.GetSutBaseUrl). Each test checks Server
+// mode first, waits for the WASM bundle, reloads, and repeats in WebAssembly mode. It waits for
+// window.TimeWarpState.jsonRequestHandler before clicking; the count goes from 3 to 10.
+#endregion
+
 namespace JavaScriptInteropPageTests;
 
 [TestClass]

@@ -3,6 +3,11 @@
 // permissions/visibility, complex parameter types, and compile check of the generated output.
 #endregion
 
+#region Design
+// Snapshot style: each test compiles inline source through ActionCatalogGeneratorTestDriver and compares the generated
+// catalog text exactly (line endings normalized), then checks the output compiles.
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace ActionCatalogSourceGenerator_;
 

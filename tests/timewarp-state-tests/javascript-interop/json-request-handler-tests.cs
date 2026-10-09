@@ -2,6 +2,11 @@
 // Proves JsonRequestHandler.InitAsync creates one DotNetObjectReference across N calls and disposes it.
 #endregion
 
+#region Design
+// Constructs JsonRequestHandler directly with a RecordingJsRuntime that counts InvokeAsync calls and keeps the last
+// arguments; the sender is null because no request is dispatched.
+#endregion
+
 namespace JsonRequestHandlerTests;
 
 public class Should_

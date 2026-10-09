@@ -1,4 +1,13 @@
-﻿namespace ConventionTest_;
+﻿#region Purpose
+// Sample tests that exercise the TimeWarp.Fixie convention itself (pass, skip, tag, parameterized input).
+#endregion
+
+#region Design
+// Copied from the TimeWarp.Fixie template: [Skip] shows up as one skipped test per run, [TestTag(Fast)] and [Input]
+// show tagging and parameterization. They do not test TimeWarp.State.
+#endregion
+
+namespace ConventionTest_;
 
 [TestTag(TestTags.Fast)]
 public class SimpleNoApplicationTest_Should_

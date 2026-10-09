@@ -1,3 +1,11 @@
+#region Purpose
+// Plain object for the clone test: a fruit array plus a computed, sorted IOrderedEnumerable view.
+#endregion
+
+#region Design
+// [NotTest] keeps Fixie from treating it as a test class; it is not a TimeWarp.State state.
+#endregion
+
 namespace TestApp.Client.Integration.Tests.Clone;
 
 

@@ -1,3 +1,12 @@
+#region Purpose
+// Unit tests for Subscriptions: re-render racing removal doesn't throw, and dead weak references are dropped.
+#endregion
+
+#region Design
+// The race uses a Barrier to start 1000 re-renders and 200 removals together. The weak-reference test creates the
+// subscriber in a NoInlining method and forces GC until it is collected.
+#endregion
+
 namespace SubscriptionsTests;
 
 public class Should_

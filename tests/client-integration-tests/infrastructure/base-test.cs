@@ -1,3 +1,13 @@
+#region Purpose
+// Base class for client integration tests: resolves the store, sender, subscriptions and render context.
+#endregion
+
+#region Design
+// Each BaseTest instance creates its own DI scope from the shared ClientHost, so scoped services (IStore,
+// Subscriptions) are not shared between instances but the host is. Send goes through ISender<ClientPipeline>, the real
+// pipeline with all behaviors.
+#endregion
+
 namespace TestApp.Client.Integration.Tests.Infrastructure;
 
 /// <summary>

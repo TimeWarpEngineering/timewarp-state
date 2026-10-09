@@ -2,6 +2,11 @@
 // Guard: TwBreadcrumb owns its CSS and must not copy Bootstrap's breadcrumb class contract.
 #endregion
 
+#region Design
+// Reads TwBreadcrumb.razor and .razor.css from the source tree (walking up from the test output folder) and checks the
+// text, with Razor comments stripped, instead of rendering the component.
+#endregion
+
 // ReSharper disable UnusedType.Global
 namespace TwBreadcrumbStyle_;
 

@@ -1,3 +1,12 @@
+#region Purpose
+// Tests for StateImplementationAnalyzer (TWS001): a TimeWarp.State state needs Clone or a parameterless constructor.
+#endregion
+
+#region Design
+// Includes a foreign State<T> from another namespace to prove the rule only applies to TimeWarp.State. Each test
+// builds its own CSharpAnalyzerTest with the pinned Net110 references.
+#endregion
+
 // ReSharper disable InconsistentNaming
 namespace StateImplementationAnalyzer_;
 

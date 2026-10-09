@@ -1,3 +1,11 @@
+#region Purpose
+// Global usings for the client integration tests.
+#endregion
+
+#region Design
+// Trivial; no design decisions.
+#endregion
+
 global using TimeWarp.Features.Cloning;
 global using TimeWarp.State;
 global using Shouldly;

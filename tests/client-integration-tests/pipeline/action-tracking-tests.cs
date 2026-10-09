@@ -1,3 +1,12 @@
+#region Purpose
+// Integration tests for ActionTrackingState and ActiveActionBehavior through the real pipeline.
+#endregion
+
+#region Design
+// Starts the test app's [TrackAction] two- and five-second tasks without awaiting, waits 100 ms, and asserts they are
+// tracked while running and cleared once they finish. These tests take real time (up to 5 seconds).
+#endregion
+
 namespace ActionTrackingTests;
 
 /// <summary>

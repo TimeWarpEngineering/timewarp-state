@@ -79,14 +79,14 @@ Library source (first):
 Tests:
 
 - [x] `tests/test-app` (72)
-- [ ] `tests/client-integration-tests` (19)
-- [ ] `tests/test-app-end-to-end-tests` (18)
-- [ ] `tests/timewarp-state-tests` (14)
-- [ ] `tests/timewarp-state-plus-tests` (12)
-- [ ] `tests/timewarp-state-analyzer-tests` (11)
-- [ ] `tests/timewarp-state-telemetry-tests` (9)
-- [ ] `tests/timewarp-state-source-generator-tests` (6)
-- [ ] `tests/test-app-architecture-tests` (4)
+- [x] `tests/client-integration-tests` (19)
+- [x] `tests/test-app-end-to-end-tests` (18)
+- [x] `tests/timewarp-state-tests` (14)
+- [x] `tests/timewarp-state-plus-tests` (12)
+- [x] `tests/timewarp-state-analyzer-tests` (11)
+- [x] `tests/timewarp-state-telemetry-tests` (9)
+- [x] `tests/timewarp-state-source-generator-tests` (6)
+- [x] `tests/test-app-architecture-tests` (4)
 
 Other:
 
@@ -160,6 +160,42 @@ Other:
     used anywhere.
   - `CloneTestPage` doesn't run the 2D/3D array cases or `ModifiedClone_InterfaceObject` from
     `CloneProviderTests`.
+
+### PR 2b (part 2b/n): test projects (`tests/` outside `tests/test-app/`)
+
+- Added the missing regions to the remaining 93 files under `tests/`: client-integration 19, end-to-end 18, core
+  14, plus 12, analyzer 11, telemetry 9, source-generator 6, architecture 4. 71 got both Purpose and Design. 22
+  already had Purpose and got Design only, with their Purpose unchanged.
+- Header audit of tracked `tests/**/*.cs` (171 files), counting files missing Purpose or Design:
+  - Before: 93 (71 with neither, 22 with Purpose only)
+  - After: 0. `tests/` is done.
+- Comments only. `git diff` shows 762 insertions and 10 deletions. The 10 deletions are the 10 files with a UTF-8
+  BOM, where the BOM moves to the new `#region Purpose` line. The byte-level check (strip the BOM and the
+  inserted region blocks, compare with HEAD) found 0 mismatches over the 93 files. Line endings are kept (88 LF,
+  5 CRLF). No files outside these 8 projects changed, apart from this task.md.
+- `dotnet run --file tools/dev-cli/dev.cs -- workflow`: Pipeline SUCCEEDED (assert-version-ssot, clean, build,
+  test, e2e, pack, verify-samples).
+  - Unit and integration tests: 228 passed, 4 skipped, 0 failed (analyzer 33, source-generator 15, core 73+1,
+    plus 31+1, telemetry 13, client-integration 56+1, architecture 7+1). Same as PR 2a.
+  - E2E (Playwright): 11 passed, 3 skipped, 0 failed.
+- Things the region text describes as-is rather than fixes:
+- `test-app-end-to-end-tests/persistence-test-page-tests.cs`: the `[Ignore]` reason says Playwright chromium
+  can't be installed, but the other E2E tests run in chromium now (11 pass), so the reason looks stale. This is
+  the third skipped E2E test.
+- `timewarp-state-analyzer-tests/state-read-only-public-properties-analyzer-tests.cs`: the whole file is
+  commented out. Its tests expected a Warning, and the rule is now an Error.
+- `timewarp-state-analyzer-tests/timewarp-state-action-analyser-tests.cs`: comments say net10 but the tests use
+  the Net110 references. The file name also spells "analyser".
+- `timewarp-state-plus-tests/testing-convention.cs`: uses namespace `TimeWarp.State.Tests`, the same as the core
+  test project.
+- `timewarp-state-plus-tests/features/routing/go-back-repro-tests.cs`: marked "Temporary repro", and its comments say the seed
+  order is uncertain.
+- `client-integration-tests/pipeline/state-transaction-tests.cs` `RollbackState_OnException`: `initialGuid` is assigned but never used.
+- `timewarp-state-tests/type-extensions-tests.cs`: the "Deeply_Nested" cases use a derived class at the same
+  nesting level, not a more deeply nested type.
+- `convention-tests.cs` (the Fixie convention samples) is copied into 4 projects; its `[Skip]` `SkipExample` is all
+  4 of the skipped unit/integration tests.
+- `test-app-end-to-end-tests/sample-test.cs`: the ignored playwright.dev samples are 2 of the 3 skipped E2E tests.
 
 ## Notes
 

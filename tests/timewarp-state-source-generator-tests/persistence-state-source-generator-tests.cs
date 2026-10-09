@@ -2,6 +2,11 @@
 // PersistenceStateSourceGenerator: nested TWSG001, unique hint names, top-level Load() emit.
 #endregion
 
+#region Design
+// Inline source is run through PersistenceGeneratorTestDriver. Tests check generator diagnostics (TWSG001, and no
+// SG001 crash) and generated hint names and text.
+#endregion
+
 namespace PersistenceStateSourceGenerator_;
 
 public class Should_Report_TWSG001_For_Nested_PersistentState

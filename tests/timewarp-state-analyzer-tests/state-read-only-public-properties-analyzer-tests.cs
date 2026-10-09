@@ -1,3 +1,12 @@
+#region Purpose
+// Older StateReadOnlyPublicPropertiesAnalyzer tests, kept fully commented out.
+#endregion
+
+#region Design
+// Nothing here compiles. The live tests are in state-read-only-public-properties-analyzer-tests-new.cs; these expected
+// a Warning, while the rule now reports an Error.
+#endregion
+
 // // ReSharper disable InconsistentNaming
 // namespace StateReadOnlyPublicPropertiesAnalyzer_;
 //

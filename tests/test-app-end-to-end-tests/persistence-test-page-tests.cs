@@ -1,3 +1,13 @@
+#region Purpose
+// E2E test: PurpleState (local storage) and BlueState (session storage) survive a reload, and only PurpleState carries
+// over to a new tab.
+#endregion
+
+#region Design
+// Currently [Ignore]d: the serializer and key round trip is covered by plus-tests PersistenceRoundTrip_Should. The
+// ignore reason still says Playwright chromium cannot be installed on this host.
+#endregion
+
 namespace PersistenceTestPageTests;
 
 [TestClass]
