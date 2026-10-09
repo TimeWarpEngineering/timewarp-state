@@ -115,3 +115,32 @@ Expect:
 - Implementation: grok task-work implementer (2026-10-10)
 - Review: claude-opus-5-5 review oracle (2026-10-10), general reviewer subagent a954005f421aa90d7
 - Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-09T17:33:00Z
+## Notes
+
+### 2026-10-10 — Steven's decision and CI failure on PR #625 (resume the walk)
+
+- **Version:** Steven accepts breaking changes in the 12.0 betas. This split ships in **12.0.0-beta.10**, not
+  13.0.0-beta.1. Set `<Version>` in `source/Directory.Build.props` and `TimeWarpStateVersion` in
+  `msbuild/repository.props` back to `12.0.0-beta.10`, and replace every 13.0.0-beta.1 reference (docs, release
+  notes, migration guide, PR text, package size notes).
+- **CI failure (must be fixed, all e2e must pass):** run
+  https://github.com/TimeWarpEngineering/timewarp-state/actions/runs/37967174955 —
+  `test-app-end-to-end-tests` failed 9 of 14 (2 passed, 3 skipped). Example:
+  `ThrowExceptionPageTests.ThrowExceptionTests.TestThrowException`: Playwright locator
+  `[data-qa='current-render-mode']` expected `Server` but was `Static`. The test app no longer starts interactive
+  server rendering after the Blazor split. Likely causes: the test app (server and/or client) is missing the
+  `TimeWarp.State.Blazor` reference, the `AddTimeWarpStateBlazor()` call, or a render-mode / static web asset
+  registration (e.g. `_content/TimeWarp.State.Blazor/...` scripts, `MapStaticAssets`, `AddInteractiveServerComponents`
+  / `AddInteractiveServerRenderMode`). Reproduce locally with the e2e suite (`dev e2e` or the CI pipeline command)
+  and fix until the full end-to-end run passes.
+- **Release notes and migration guide for 12.0.0-beta.10** (`documentation/release-notes/release12.0.0-beta.10.md`,
+  `documentation/migrations/migration12.0.0-beta.10.md`) must cover, together:
+  - 037: the new `TimeWarp.State.Blazor` package, what moved into it (components, JS interop, Redux DevTools,
+    render subscriptions, wwwroot; namespaces unchanged), and that Blazor hosts must reference it and call
+    `AddTimeWarpStateBlazor()` after `AddTimeWarpState()`; console hosts use TimeWarp.State alone.
+  - 100's breaking changes (already in the notes): `TimeWarpCacheableState<TState>` now derives from
+    `State<TState>`, `InvalidCloneException` takes a cause, and the **removal of the `FeatureFlagState` placeholder
+    from TimeWarp.State.Plus**.
+  - 101: NuGet package pins moved to current latest, including **TimeWarp.Amuru 2.0.0-beta.2**.
+  - 099: Purpose/Design region backfill across all C# files.
+  - 622 (task 099-001): TWA0004 Purpose-region analyzer enabled via TimeWarp.Architecture.Analyzers.
