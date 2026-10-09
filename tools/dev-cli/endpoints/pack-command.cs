@@ -23,7 +23,7 @@ internal sealed class PackCommand : ICommand<Unit>
       PackableProjectService = packableProjectService;
     }
 
-    public async ValueTask<Unit> Handle(PackCommand command, CancellationToken ct)
+    public async Task<Unit> Handle(PackCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)

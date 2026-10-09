@@ -29,4 +29,9 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+  <!-- OS-neutral library: surface CA1416 for APIs unsupported on browser WASM (e.g. blocking waits on .NET 11). -->
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
 </Project>

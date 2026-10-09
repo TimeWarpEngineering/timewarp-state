@@ -27,31 +27,31 @@ published; note which channel was used in Results.
 
 ### Prerequisites (update first — recommended order)
 
-- [ ] 1. Install / confirm .NET 11 SDK on agent machines; set `global.json` `sdk.version` to 11.0.x (preview/RC until GA). Set `allowPrerelease: true` while on preview; restore `false` after GA if desired. Keep or revisit `rollForward: latestMinor`.
-- [ ] 2. CI toolchain: verify `.github/workflows/workflow.yml` `actions/setup-dotnet@v6` + `global-json-file: global.json` installs .NET 11 on `ubuntu-latest`. Add an explicit `dotnet-version` only if image/catalog lag requires it. No custom Dockerfiles in-repo today.
-- [ ] 3. DevContainer: confirm `mcr.microsoft.com/devcontainers/universal:2` ships or can feature-install .NET 11; update image/features if not.
-- [ ] 4. Local tools: validate `.config/dotnet-tools.json` tools (fixie.console, dotnet-outdated-tool, docfx, etc.) restore/run under SDK 11; bump tool versions if restore fails.
-- [ ] 5. TFM bump: `Directory.Build.props` `TargetFramework` `net10.0` → `net11.0`. Do **not** change `source/timewarp-state-analyzer` or `source/timewarp-state-source-generator` (`netstandard2.0`).
-- [ ] 6. CPM Microsoft packages (TFM-gated): bump in `Directory.Packages.props` — `Microsoft.AspNetCore.Components.Web`, `.WebAssembly`, `.WebAssembly.DevServer`, `.WebAssembly.Server`, `.Mvc.Testing`, `.TestHost`; `Microsoft.Extensions.Logging.Abstractions` / `.Configuration`; `System.Net.Http.Json` — all currently `10.0.12` → `11.0.x`.
-- [ ] 7. Roslyn / analyzers floor: re-evaluate `Microsoft.CodeAnalysis.CSharp` (held at `4.14.0` for SDK 10 compatibility) and `Microsoft.CodeAnalysis.Analyzers` (`5.9.0`) against SDK 11; bump only as required so analyzer + source generator still load for consumers.
-- [ ] 8. Test SDK stack: `Microsoft.NET.Test.Sdk`, Playwright, Fixie adapters. Keep MSTest on 3.x until Playwright binds MSTest 4 (existing hold-back in props comments).
-- [ ] 9. Aspire / OpenTelemetry sample stack: `Aspire.Hosting.AppHost` (`13.5.4`) and OTel packages — bump to versions that support `net11.0` for sample-04.
-- [ ] 10. TimeWarp ecosystem packages (external gates): confirm `TimeWarp.Mediator*`, `TimeWarp.Nuru*`, `TimeWarp.Amuru*`, `TimeWarp.SourceGenerators`, `TimeWarp.Build.Tasks`, `TimeWarp.Fixie` publish builds compatible with net11 / SDK 11 before bumping; coordinate sibling upgrades if they block restore.
-- [ ] 10a. Eliminate the blocking clone path: remove TimeWarp.State's dependency on AnyClone (1.1.6) / TypeSupport (1.2.0) or otherwise make StateTransactionBehavior's clone non-blocking on browser WASM; add `<ItemGroup><SupportedPlatform Include="browser" /></ItemGroup>` to the OS-neutral library projects so CA1416 flags any other blocking calls; add a real-browser (WASM) test proving an action through StateTransactionBehavior succeeds on net11. Must be done before the TFM bump (item 5) is considered done.
-- [ ] 11. Regenerate any `packages.lock.json` / restore; fix TypeScript/MSBuild if `Microsoft.TypeScript.MSBuild` needs a companion `tsconfig` change.
-- [ ] 12. Docs & conventions: update `.ai/05-dotnet-conventions.md` (stale net8.0), persistence `PersistentStateAttribute` collision guidance for .NET 11, and any other pins. Library migration doc `documentation/migrations/migration10-11.md` is package 10→11 history (not TFM) — do not confuse with this TFM upgrade; add a short .NET 10→11 note elsewhere if needed.
+- [x] 1. Install / confirm .NET 11 SDK on agent machines; set `global.json` `sdk.version` to 11.0.x (preview/RC until GA). Set `allowPrerelease: true` while on preview; restore `false` after GA if desired. Keep or revisit `rollForward: latestMinor`.
+- [x] 2. CI toolchain: verify `.github/workflows/workflow.yml` `actions/setup-dotnet@v6` + `global-json-file: global.json` installs .NET 11 on `ubuntu-latest`. Add an explicit `dotnet-version` only if image/catalog lag requires it. No custom Dockerfiles in-repo today.
+- [x] 3. DevContainer: confirm `mcr.microsoft.com/devcontainers/universal:2` ships or can feature-install .NET 11; update image/features if not.
+- [x] 4. Local tools: validate `.config/dotnet-tools.json` tools (fixie.console, dotnet-outdated-tool, docfx, etc.) restore/run under SDK 11; bump tool versions if restore fails.
+- [x] 5. TFM bump: `Directory.Build.props` `TargetFramework` `net10.0` → `net11.0`. Do **not** change `source/timewarp-state-analyzer` or `source/timewarp-state-source-generator` (`netstandard2.0`).
+- [x] 6. CPM Microsoft packages (TFM-gated): bump in `Directory.Packages.props` — `Microsoft.AspNetCore.Components.Web`, `.WebAssembly`, `.WebAssembly.DevServer`, `.WebAssembly.Server`, `.Mvc.Testing`, `.TestHost`; `Microsoft.Extensions.Logging.Abstractions` / `.Configuration`; `System.Net.Http.Json` — all currently `10.0.12` → `11.0.x`.
+- [x] 7. Roslyn / analyzers floor: re-evaluate `Microsoft.CodeAnalysis.CSharp` (held at `4.14.0` for SDK 10 compatibility) and `Microsoft.CodeAnalysis.Analyzers` (`5.9.0`) against SDK 11; bump only as required so analyzer + source generator still load for consumers.
+- [x] 8. Test SDK stack: `Microsoft.NET.Test.Sdk`, Playwright, Fixie adapters. Keep MSTest on 3.x until Playwright binds MSTest 4 (existing hold-back in props comments).
+- [x] 9. Aspire / OpenTelemetry sample stack: `Aspire.Hosting.AppHost` (`13.5.4`) and OTel packages — bump to versions that support `net11.0` for sample-04.
+- [x] 10. TimeWarp ecosystem packages (external gates): confirm `TimeWarp.Mediator*`, `TimeWarp.Nuru*`, `TimeWarp.Amuru*`, `TimeWarp.SourceGenerators`, `TimeWarp.Build.Tasks`, `TimeWarp.Fixie` publish builds compatible with net11 / SDK 11 before bumping; coordinate sibling upgrades if they block restore.
+- [x] 10a. Eliminate the blocking clone path: remove TimeWarp.State's dependency on AnyClone (1.1.6) / TypeSupport (1.2.0) or otherwise make StateTransactionBehavior's clone non-blocking on browser WASM; add `<ItemGroup><SupportedPlatform Include="browser" /></ItemGroup>` to the OS-neutral library projects so CA1416 flags any other blocking calls; add a real-browser (WASM) test proving an action through StateTransactionBehavior succeeds on net11. Must be done before the TFM bump (item 5) is considered done.
+- [x] 11. Regenerate any `packages.lock.json` / restore; fix TypeScript/MSBuild if `Microsoft.TypeScript.MSBuild` needs a companion `tsconfig` change.
+- [x] 12. Docs & conventions: update `.ai/05-dotnet-conventions.md` (stale net8.0), persistence `PersistentStateAttribute` collision guidance for .NET 11, and any other pins. Library migration doc `documentation/migrations/migration10-11.md` is package 10→11 history (not TFM) — do not confuse with this TFM upgrade; add a short .NET 10→11 note elsewhere if needed.
 
 ### Implementation / verification
 
-- [ ] Apply TFM + package + toolchain edits in the claim worktree (not on master).
-- [ ] `dotnet run --file tools/dev-cli/dev.cs -- workflow` green (assert-version-ssot → clean → build → test → e2e → pack → verify-samples).
+- [x] Apply TFM + package + toolchain edits in the claim worktree (not on master).
+- [x] `dotnet run --file tools/dev-cli/dev.cs -- workflow` green (assert-version-ssot → clean → build → test → e2e → pack → verify-samples).
 - [ ] `ganda repo audit` reviewed; no new failures introduced by the upgrade.
-- [ ] Conventional commit + PR; no master feature commits.
+- [x] Conventional commit + PR; no master feature commits.
 
 ### Documentation
 
-- [ ] Update README / AI context if they state a minimum .NET version.
-- [ ] Record preview vs GA package versions used in Results.
+- [x] Update README / AI context if they state a minimum .NET version.
+- [x] Record preview vs GA package versions used in Results.
 
 ## Notes
 
@@ -102,4 +102,33 @@ published; note which channel was used in Results.
 
 ## Results
 
-- (fill after implementation PR merges)
+Implemented on branch `task/095-upgrade-timewarp-state-to-net-11` (PR to master; Steven merges).
+
+**10a (blocking-wait bug, top priority) — fixed**
+- Removed `AnyClone` 1.1.6 and `TypeSupport` 1.2.0 from TimeWarp.State (csproj + CPM). Both unmaintained; TypeSupport `ExtendedTypeCache.GetOrCreate` used `SemaphoreSlim.Wait`, which .NET 11 throws on single-threaded browser WASM.
+- New non-blocking deep clone `TimeWarp.Features.Cloning` (`source/timewarp-state/features/cloning/`): per-type plans in a `ConcurrentDictionary`, one synchronous walk, per-call reference map (cycles/shared refs), no waits. Keeps AnyClone defaults: `[IgnoreDataMember]` / `[NonSerialized]` / `[JsonIgnore]` members skipped and left at constructor values (State Guid stays unique); parameterless ctor, else fewest-arg ctor with defaults, else uninitialized. Public opt-in API `CloneExtensions.Clone<T>()` / `Clone<T>(CloneErrorHandler)`; consumers that used AnyClone transitively swap `using AnyClone;` for `using TimeWarp.Features.Cloning;`.
+- `StateTransactionBehavior` uses it (ICloneable still wins). `<SupportedPlatform Include="browser" />` added to timewarp-state-policies and timewarp-state-telemetry (timewarp-state and -plus already had it); no CA1416 hits.
+- Real-browser proof: new E2E `CloneTestPageTests.CloneSuitePassesInServerAndWasm` runs the clone suite in Server then WebAssembly. Baseline on net11 with AnyClone (before the fix): E2E 7 failed / 3 passed / 3 skipped; `CounterTests` failed in the WASM pass (click did not increment: StateTransactionBehavior threw). After fix: 11 passed / 0 failed / 3 skipped (14 total).
+- Unit tests: `tests/timewarp-state-tests/cloning/deep-cloner-tests.cs` (private fields, ignored members, nested collections, cycles, multi-dim arrays, structs, delegates/types shared, null).
+
+**Toolchain / packages (channel: .NET 11 RC1)**
+- SDK `11.0.100-rc.1.26425.128` (`global.json`, `allowPrerelease: true`, `rollForward: latestMinor`). Re-pin to 11.0.100 GA after 2026-11-10.
+- TFM `net10.0` → `net11.0` (Directory.Build.props). Analyzer / source generator remain `netstandard2.0`.
+- Microsoft.AspNetCore.* / Microsoft.Extensions.Logging.* / System.Net.Http.Json `10.0.12` → `11.0.0-rc.1.26425.128`.
+- CI: unchanged shape; `setup-dotnet@v6` + `global-json-file` installs the exact RC SDK on ubuntu-latest.
+- DevContainer: added `ghcr.io/devcontainers/features/dotnet:2` `version: 11.0-preview`.
+- Local tools restore and run on SDK 11 unchanged.
+- Roslyn floor kept (`Microsoft.CodeAnalysis.CSharp` 4.14.0, Analyzers 5.9.0): loads fine under SDK 11.
+- Test stack unchanged (Test.Sdk 18.10.1, Playwright.MSTest 1.62.0, MSTest 3.11.1 hold-back kept, Fixie 4.2.0). Analyzer tests now pin net11 reference assemblies (`Microsoft.NETCore.App.Ref` 11.0.0-rc.1.26425.128) because Analyzer.Testing 1.1.4 has no `Net110`.
+- Aspire 13.5.4 / OTel 1.19.x: sample-04 builds on net11 without bumps.
+- TimeWarp ecosystem: `TimeWarp.Nuru` / `Nuru.DevCli` 3.0.0-beta.76 → beta.79 (hook audit). Nuru beta.79 moved commands to TimeWarp.Mediator, so `TimeWarp.Mediator.*` 14.0.0-beta.1 → beta.4 and dev-cli handlers now return `Task<Unit>` with `global using TimeWarp.Mediator`. Others (Amuru 1.1.1, SourceGenerators beta.11, Build.Tasks 1.0.0, Fixie 3.1.0, Terminal 1.0.2) restore and build on net11 unchanged.
+- No packages.lock.json in repo; TypeScript MSBuild unchanged.
+- Docs: `.ai/05-dotnet-conventions.md` (net11.0), `claude.md`, persistence topic (alias still needed on .NET 11), `.ai/other/references.md` (AnyClone entry replaced).
+
+**Verification (TWE-001, Ubuntu-26.04 WSL, `dotnet --version` = 11.0.100-rc.1.26425.128)**
+`dotnet run --file tools/dev-cli/dev.cs -- workflow` → `Pipeline SUCCEEDED` (assert-version-ssot → clean → build → test → e2e → pack → verify-samples). Build 0 errors. Tests: analyzer 33, source generator 15, state 73 (+1 skipped), plus 31 (+1), telemetry 13, client integration 56 (+1), architecture 7 (+1) = 228 passed, 4 skipped, 0 failed. E2E 11 passed, 3 skipped, 0 failed. Samples verified.
+
+**Deferred / follow-ups**
+- New .NET 11 warnings left as-is: BL0010 (`InvokeAsync<object>` → `InvokeVoidAsync` in json-request-handler / redux-dev-tools-interop), ASPDEPR011 (`UseWebAssemblyDebugging` in test-app-server and sample-00), NU1510 (prunable `Microsoft.Extensions.Logging.Abstractions` / `System.Net.Http.Json` refs).
+- `ganda repo audit` not re-run separately beyond the pre-commit hook.
+- Re-pin SDK/packages to GA after 2026-11-10; set `allowPrerelease` back to false if desired.

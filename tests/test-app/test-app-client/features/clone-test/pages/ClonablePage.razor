@@ -13,8 +13,8 @@
   This test is to verify that the IClonable interface is working as expected.<br>
   The clone method intentionally creates a new instance where the count is always 42.<br>
   And the Increment method increments the count by 1.<br>
-  If AnyClone was being used it would properly clone the state and the count would keep increasing by 1.<br>
-  Thus this proves we are using ICloneable and not AnyClone.
+  If the reflection deep clone was being used it would properly clone the state and the count would keep increasing by 1.<br>
+  Thus this proves we are using ICloneable and not the reflection deep clone.
 </p>
 
 <!-- Values to validate -->

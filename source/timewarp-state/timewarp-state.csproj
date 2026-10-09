@@ -31,7 +31,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnyClone"/>
     <PackageReference Include="JetBrains.Annotations"/>
     <!--
       The library references ONLY TimeWarp.Mediator.Contracts (the interfaces and membership
@@ -47,7 +46,6 @@
     <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all"/>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
-    <PackageReference Include="TypeSupport"/>
     <PackageReference Include="Microsoft.TypeScript.MSBuild">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

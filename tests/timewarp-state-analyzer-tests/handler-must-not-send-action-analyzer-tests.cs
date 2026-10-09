@@ -255,7 +255,7 @@ public class Should_Trigger_TWS0002
 
     CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest = new()
     {
-      ReferenceAssemblies = ReferenceAssemblies.Net.Net100
+      ReferenceAssemblies = AnalyzerTestFactory.Net110
     };
     AnalyzerTestFactory.AddLibraryReferences(analyzerTest);
     analyzerTest.TestState.Sources.Add(StateSource);
@@ -316,7 +316,7 @@ public class Should_Trigger_TWS0002
 
     CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest = new()
     {
-      ReferenceAssemblies = ReferenceAssemblies.Net.Net100
+      ReferenceAssemblies = AnalyzerTestFactory.Net110
     };
     AnalyzerTestFactory.AddLibraryReferences(analyzerTest);
     analyzerTest.TestState.Sources.Add(UserSource);

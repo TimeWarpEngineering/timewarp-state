@@ -21,7 +21,7 @@ public class Should_Not_Trigger_StateReadOnlyPublicPropertiesRule
     CSharpAnalyzerTest<StateReadOnlyPublicPropertiesAnalyzer, FixieVerifier> analyzerTest = new()
     {
       TestCode = TestCode,
-      ReferenceAssemblies = ReferenceAssemblies.Net.Net100
+      ReferenceAssemblies = AnalyzerTestFactory.Net110
     };
 
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
@@ -57,7 +57,7 @@ public class Should_Trigger_StateReadOnlyPublicPropertiesRule
     CSharpAnalyzerTest<StateReadOnlyPublicPropertiesAnalyzer, FixieVerifier> analyzerTest = new()
     {
       TestCode = TestCode,
-      ReferenceAssemblies = ReferenceAssemblies.Net.Net100
+      ReferenceAssemblies = AnalyzerTestFactory.Net110
     };
 
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);

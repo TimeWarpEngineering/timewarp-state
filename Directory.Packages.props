@@ -9,11 +9,11 @@
     <PackageVersion Include="TimeWarp.Amuru.Tools" Version="1.1.1" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
-    <PackageVersion Include="TimeWarp.Mediator.Contracts" Version="14.0.0-beta.1" />
-    <PackageVersion Include="TimeWarp.Mediator.Generators" Version="14.0.0-beta.1" />
-    <PackageVersion Include="TimeWarp.Mediator.Analyzers" Version="14.0.0-beta.1" />
-    <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.76" />
-    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="3.0.0-beta.76" />
+    <PackageVersion Include="TimeWarp.Mediator.Contracts" Version="14.0.0-beta.4" />
+    <PackageVersion Include="TimeWarp.Mediator.Generators" Version="14.0.0-beta.4" />
+    <PackageVersion Include="TimeWarp.Mediator.Analyzers" Version="14.0.0-beta.4" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.79" />
+    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="3.0.0-beta.79" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.State.Plus" Version="$(TimeWarpStateVersion)" />
@@ -22,12 +22,12 @@
     <PackageVersion Include="timewarp-heroicons" Version="2.2.0" />
 
     <!-- Microsoft ASP.NET Core -->
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="11.0.0-rc.1.26425.128" />
 
     <!-- Microsoft Code Analysis -->
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0">
@@ -44,8 +44,8 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 
     <!-- Microsoft Extensions -->
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="11.0.0-rc.1.26425.128" />
 
     <!-- Microsoft Testing & Build Tools -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
@@ -74,9 +74,7 @@
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.5.4" />
 
     <!-- System & Utilities -->
-    <PackageVersion Include="AnyClone" Version="1.1.6" />
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="10.0.12" />
-    <PackageVersion Include="TypeSupport" Version="1.2.0" />
+    <PackageVersion Include="System.Net.Http.Json" Version="11.0.0-rc.1.26425.128" />
   </ItemGroup>
 </Project>

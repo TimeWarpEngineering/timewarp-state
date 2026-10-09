@@ -25,7 +25,7 @@ public class Should_Trigger_TWS0001
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
     // net10 TimeWarp.State (and TimeWarp.Mediator) assemblies referenced below (otherwise CS1705).
-    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
+    analyzerTest.ReferenceAssemblies = AnalyzerTestFactory.Net110;
 
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
@@ -58,7 +58,7 @@ public class Should_Trigger_TWS0001
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
     // net10 TimeWarp.State (and TimeWarp.Mediator) assemblies referenced below (otherwise CS1705).
-    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
+    analyzerTest.ReferenceAssemblies = AnalyzerTestFactory.Net110;
 
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
@@ -91,7 +91,7 @@ public class Should_Trigger_TWS0001
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
     // net10 TimeWarp.State (and TimeWarp.Mediator) assemblies referenced below (otherwise CS1705).
-    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
+    analyzerTest.ReferenceAssemblies = AnalyzerTestFactory.Net110;
 
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
@@ -125,7 +125,7 @@ public class Should_Trigger_TWS0001
     analyzerTest.ExpectedDiagnostics.Add(expectedDiagnostic);
     // Use net10 reference assemblies so the in-memory compilation's System.Runtime matches the
     // net10 TimeWarp.State (and TimeWarp.Mediator) assemblies referenced below (otherwise CS1705).
-    analyzerTest.ReferenceAssemblies = ReferenceAssemblies.Net.Net100;
+    analyzerTest.ReferenceAssemblies = AnalyzerTestFactory.Net110;
 
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));

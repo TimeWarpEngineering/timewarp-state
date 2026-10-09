@@ -26,8 +26,8 @@ public sealed partial class RouteState : State<RouteState>, ICloneable
   }
 
   /// <summary>
-  /// Copy the route stack without AnyClone. Stack is mutated on navigation; AnyClone throws
-  /// CloneException (ILCacheKey / concurrent update) and crashes the Blazor circuit.
+  /// Copy the route stack directly instead of the reflection deep clone. The stack is mutated on navigation;
+  /// the former AnyClone path threw CloneException (ILCacheKey / concurrent update) and crashed the Blazor circuit.
   /// </summary>
   public object Clone()
   {

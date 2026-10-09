@@ -1,4 +1,4 @@
-global using AnyClone;
+global using TimeWarp.Features.Cloning;
 global using TimeWarp.State.Extensions;
 global using TimeWarp.State;
 global using JetBrains.Annotations;

@@ -1,7 +1,7 @@
 .NET CONVENTIONS:
 
 FRAMEWORK:
-- Target net8.0
+- Target net11.0 (TFM set once in root Directory.Build.props; analyzer and source generator stay netstandard2.0)
 
 PROJECT CONFIGURATION:
 - Use Directory.Build.props for shared project properties
