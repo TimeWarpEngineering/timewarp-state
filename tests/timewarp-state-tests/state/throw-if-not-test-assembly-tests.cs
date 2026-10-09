@@ -84,7 +84,7 @@ public class Should_
     return assembly;
   }
 
-  private sealed class ProbeState : State<ProbeState>
+  internal sealed class ProbeState : State<ProbeState>
   {
     public override void Initialize() { }
 

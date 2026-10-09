@@ -71,16 +71,18 @@ public class Should_
 
   public void Copy_Multi_Dimensional_Arrays()
   {
-    int[,] original = { { 1, 2 }, { 3, 4 } };
-    Child[,] children = { { new Child { Value = 1 } }, { new Child { Value = 2 } } };
+    ArrayHolder original = new()
+    {
+      Numbers = new[,] { { 1, 2 }, { 3, 4 } },
+      Children = new[,] { { new Child { Value = 1 } }, { new Child { Value = 2 } } }
+    };
 
-    int[,] clone = original.Clone<int[,]>();
-    Child[,] childClone = children.Clone<Child[,]>();
+    ArrayHolder clone = original.Clone();
 
-    clone.ShouldNotBeSameAs(original);
-    clone[1, 1].ShouldBe(4);
-    childClone[1, 0].ShouldNotBeSameAs(children[1, 0]);
-    childClone[1, 0].Value.ShouldBe(2);
+    clone.Numbers.ShouldNotBeSameAs(original.Numbers);
+    clone.Numbers[1, 1].ShouldBe(4);
+    clone.Children[1, 0].ShouldNotBeSameAs(original.Children[1, 0]);
+    clone.Children[1, 0].Value.ShouldBe(2);
   }
 
   public void Deep_Copy_Reference_Fields_Inside_Structs()
@@ -111,6 +113,7 @@ public class Should_
     original.Clone().ShouldBeNull();
   }
 
+  [GenerateClone]
   [NotTest]
   public sealed class Sample
   {
@@ -142,21 +145,32 @@ public class Should_
     public string JsonIgnored { get; set; } = "default";
   }
 
+  [GenerateClone]
   [NotTest]
   public sealed class Child
   {
     public int Value { get; set; }
   }
 
+  [GenerateClone]
   public struct Pair
   {
     public Child Child;
     public int Count;
   }
 
+  [GenerateClone]
   [NotTest]
   public sealed class Holder
   {
     public Pair Pair;
+  }
+
+  [GenerateClone]
+  [NotTest]
+  public sealed class ArrayHolder
+  {
+    public int[,] Numbers { get; set; } = new int[0, 0];
+    public Child[,] Children { get; set; } = new Child[0, 0];
   }
 }

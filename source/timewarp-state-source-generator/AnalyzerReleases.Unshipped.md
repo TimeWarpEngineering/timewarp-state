@@ -6,3 +6,4 @@
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 TWSG001 | Persistence | Error | PersistenceStateSourceGenerator
+TWSG002 | Cloning | Error | StateCloneSourceGenerator

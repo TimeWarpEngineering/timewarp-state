@@ -16,6 +16,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Microsoft.Extensions.Logging;
 global using System.Collections.Concurrent;
+global using System.Collections.Immutable;
 global using System.Collections.Generic;
 global using System.Diagnostics;
 global using System.Linq;

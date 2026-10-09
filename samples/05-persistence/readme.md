@@ -53,7 +53,7 @@ There is no migration framework in TimeWarp.State. Do not add one beside this sa
 ## Host checklist
 
 - `[PersistentState(PersistentStateMethod.SessionStorage | LocalStorage)]` on a **top-level** state. Nested states are TWSG001.
-- `[JsonConstructor]` plus a parameterless constructor (dependency injection and TWS001).
+- `[JsonConstructor]` plus a parameterless constructor so JSON can construct the state. TWS001 accepts any accessible constructor, or `ICloneable`; it no longer requires a parameterless constructor.
 - `[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]`.
 - `AddGeneratedMediator<ClientPipeline>()`.
 - `AddScoped<IPersistenceService, PersistenceService>()`.

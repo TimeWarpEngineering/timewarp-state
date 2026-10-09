@@ -5,7 +5,7 @@ title: Analyzers
 
 # Analyzers
 
-TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class.
+TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class. The clone source generator reports **TWSG002** when it cannot emit a clone for a reachable member.
 
 > **Breaking change:** analyzer diagnostic IDs were renamed to the `TWS` prefix: `TW0001` → `TWS0001`, `TW0002` → `TWS0002`, `TW0003` → `TWS0003`. This stops colliding with TimeWarp.SourceGenerators, which owns the bare `TW0001`–`TW0006` range (its `TW0002` is the unrelated XML-docs-to-markdown rule). Update `.editorconfig` `dotnet_diagnostic.*.severity` entries to the new ids.
 
@@ -72,3 +72,19 @@ internal abstract class DefaultApiHandler<TAction, TRequest, TResponse> : ApiHan
 - **Message:** [PersistentState] is not supported on nested class '{0}'. Move the state to a top-level type.
 
 Reported by `PersistenceStateSourceGenerator`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.
+
+## TWS001 — State needs ICloneable or an accessible constructor
+
+- **Severity:** Error
+- **Category:** Design
+- **Message:** The state implementation '{0}' must implement ICloneable or have a constructor the clone source generator can call
+
+A concrete type that derives directly from `State<T>` must implement `ICloneable` or declare a constructor the generator can call. Public constructors count. Internal constructors count in the same assembly. Protected constructors do not. A parameterless constructor is not required. Abstract states, including `TimeWarpCacheableState<TState>`, are exempt.
+
+## TWSG002 — State clone cannot be generated
+
+- **Severity:** Error
+- **Category:** Cloning
+- **Message:** Cannot generate a clone for '{0}' because {1}. Implement ICloneable on '{0}', or change the unsupported member.
+
+Reported by `StateCloneSourceGenerator` for a reachable member it cannot clone (`object`, an inaccessible type, a missing constructor, an open generic, a pointer, a ref struct). The build fails. There is no reflection fallback. Implement `ICloneable` on that type, or change the member. See [Cloning](xref:TimeWarpState:Cloning.md).

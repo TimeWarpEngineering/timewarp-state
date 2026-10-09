@@ -4,10 +4,9 @@
 
 #region Design
 // The cause distinguishes an empty Guid (initializer did not run) from a Guid copied off the original.
-// An empty Guid has two sources: a custom ICloneable that skips construction, or the default cloner falling back
-// to an uninitialized instance because the state's parameterless (or fewest-parameter) constructor threw on default
-// arguments or none could be called. The message names both and points at ICloneable plus the opt-out attributes
-// the default cloner honors: IgnoreDataMember, NonSerialized and JsonIgnore.
+// An empty Guid means the clone was not constructed, so the Guid initializer did not run. An equal Guid means the
+// clone copied the original. Both messages point at ICloneable and the opt-out attributes the generated cloner
+// honors: IgnoreDataMember, NonSerialized and JsonIgnore.
 #endregion
 
 namespace TimeWarp.Features.StateTransactions;
@@ -51,16 +50,13 @@ public class InvalidCloneException : Exception
       Cause.EmptyGuid =>
         $"State of type {enclosingStateType} has an invalid clone: the clone has an empty Guid. " +
         "The state initializer did not run. With a custom ICloneable, Clone skipped construction: construct the " +
-        "clone so the initializer runs. With the default cloner, the state's parameterless constructor (or, if " +
-        "there is none, the constructor with the fewest parameters, given default arguments) threw or could not " +
-        "be called, so the cloner fell back to an uninitialized instance: make sure that constructor runs without " +
-        "throwing on default arguments. The default cloner leaves members marked [IgnoreDataMember], " +
+        "clone so the initializer runs. The generated cloner leaves members marked [IgnoreDataMember], " +
         "[NonSerialized], or [JsonIgnore] at their constructor values so Guid is regenerated.",
       Cause.EqualGuid =>
         $"State of type {enclosingStateType} has an invalid clone: the clone has an equal Guid to the original. " +
         "A custom ICloneable.Clone, such as MemberwiseClone, copied Guid, or [IgnoreDataMember] is missing from " +
         "Guid. Implement ICloneable.Clone so the clone gets a new Guid, or mark Guid with [IgnoreDataMember]. " +
-        "The default cloner also skips [NonSerialized] and [JsonIgnore].",
+        "The generated cloner also skips [NonSerialized] and [JsonIgnore].",
       _ => throw new ArgumentOutOfRangeException(nameof(cause), cause, null)
     };
 }

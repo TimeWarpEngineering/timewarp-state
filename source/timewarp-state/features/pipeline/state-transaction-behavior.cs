@@ -13,9 +13,9 @@ namespace TimeWarp.Features.StateTransactions;
 /// <summary>
 ///   Represents a pipeline behavior in TimeWarp.State that clones the current state before processing a request.
 ///   This behavior ensures that the state can be reverted to its original form in case of an error during the request handling.
-///   The cloning process is contingent upon the state implementing <see cref="ICloneable"/>, allowing for a deep copy.
-///   If the state does not implement <see cref="ICloneable"/>, it falls back to TimeWarp's non-blocking deep clone
-///   (<see cref="TimeWarp.Features.Cloning.CloneExtensions"/>), which is safe on single-threaded browser WebAssembly. This behavior is
+///   A state that implements <see cref="ICloneable"/> is cloned with that method. Every other state is cloned with the
+///   delegate the clone source generator registered in <see cref="TimeWarp.Features.Cloning.StateCloneRegistry"/>.
+///   The clone does not block, so it stays safe on single-threaded browser WebAssembly. This behavior is
 ///   critical for maintaining application consistency and enables undo functionality.
 /// </summary>
 /// <remarks>
@@ -71,16 +71,10 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
-    var originalState = (IState)Store.GetState(enclosingStateType);
-    IState newState = (originalState is ICloneable cloneable) ?
-      (IState)cloneable.Clone() :
-      originalState.Clone
-      (
-        (ex, path) =>
-        {
-          Logger.LogWarning(message: "Cloning error: {path} {Message}", path, ex.Message);
-        }
-      );
+    IState originalState = (IState)Store.GetState(enclosingStateType);
+    IState newState = originalState is ICloneable cloneable
+      ? (IState)cloneable.Clone()
+      : StateCloneRegistry.Clone(originalState);
 
     // We don't clone the Sender, it is an injected service and not part of state.
     newState.Sender = originalState.Sender;

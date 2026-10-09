@@ -12,6 +12,7 @@ namespace AnyClone.Tests.TestObjects;
 
 using System.Collections.ObjectModel;
 
+[GenerateClone]
 public class CustomCollectionObject<T> : Collection<T>
 {
   public int CustomId { get; set; }

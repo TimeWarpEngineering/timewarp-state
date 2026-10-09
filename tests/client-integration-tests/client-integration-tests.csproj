@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\test-app\test-app-client\test-app-client.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <!-- Alias keeps Test.App.Server's GeneratedMediatorServiceCollectionExtensions out of the
          global Microsoft.Extensions.DependencyInjection namespace so AddGeneratedMediator&lt;ClientPipeline&gt;()
          binds to Test.App.Client (avoids CS0121). -->

@@ -114,36 +114,36 @@ trimming, and faster, while keeping today's semantics.
 
 Approved for implementation (Steven, 2026-10-10). Design first, then implement.
 
-- [ ] Write the design in Results: generator placement, emitted shape, registration/dispatch in
+- [x] Write the design in Results: generator placement, emitted shape, registration/dispatch in
       `StateTransactionBehavior`, nested/collection/foreign types, tests (parity old vs generated), benchmarks
       optional; answer or explicitly defer each open question in Notes
 - [x] Where the generator lives: inside TimeWarp.State (existing `source/timewarp-state-source-generator` /
       analyzer projects, or a new generator project shipped in the TimeWarp.State package). No separate
       generic cloning library (Steven, 2026-10-10)
-- [ ] Generator: for each opted-in state type, emit a clone method (for example a `partial` member or a
+- [x] Generator: for each opted-in state type, emit a clone method (for example a `partial` member or a
       generated `IStateCloner<TState>` registered in a static lookup) plus helpers for the reachable member
       types it can see
-- [ ] Generated code honors IgnoreDataMember / NonSerialized / JsonIgnore exactly as `DeepCloner.IsIgnored`
+- [x] Generated code honors IgnoreDataMember / NonSerialized / JsonIgnore exactly as `DeepCloner.IsIgnored`
       does, including attributes on properties that apply to their backing fields
-- [ ] Generated code uses a reference map equivalent to `CloneContext.Visited` for cycles and shared references
-- [ ] Error diagnostic (new TW id, documented in AnalyzerReleases.Unshipped.md and the readme) for any state
+- [x] Generated code uses a reference map equivalent to `CloneContext.Visited` for cycles and shared references
+- [x] Error diagnostic (new TW id, documented in AnalyzerReleases.Unshipped.md and the readme) for any state
       type the generator can't clone and that has no `ICloneable`, naming the type and member and telling the
       author to implement `ICloneable`
-- [ ] Reconcile TWS001 with the new diagnostic; update its tests and docs
-- [ ] `StateTransactionBehavior` dispatch: `ICloneable`, else generated clone; nothing else
-- [ ] Delete `DeepCloner` (`deep-cloner.cs`) and the reflection path in `clone-extensions.cs`; no reflection
+- [x] Reconcile TWS001 with the new diagnostic; update its tests and docs
+- [x] `StateTransactionBehavior` dispatch: `ICloneable`, else generated clone; nothing else
+- [x] Delete `DeepCloner` (`deep-cloner.cs`) and the reflection path in `clone-extensions.cs`; no reflection
       left in TimeWarp.State
-- [ ] Port the `deep-cloner-tests.cs` cases (private fields, ignored members, nested collections, cycles,
+- [x] Port the `deep-cloner-tests.cs` cases (private fields, ignored members, nested collections, cycles,
       multi-dimensional arrays, structs, shared delegates and types, null) to the generated clone, plus every
       test-app state; add generator/diagnostic tests for unsupported shapes
-- [ ] Keep the WASM E2E clone suite green (`CloneTestPageTests.CloneSuitePassesInServerAndWasm`,
+- [x] Keep the WASM E2E clone suite green (`CloneTestPageTests.CloneSuitePassesInServerAndWasm`,
       `CounterTests`)
-- [ ] Trim/AOT smoke test: publish a sample WASM app with trimming (and Native AOT for a console host if
+- [x] Trim/AOT smoke test: publish a sample WASM app with trimming (and Native AOT for a console host if
       practical) and `TrimmerSingleWarn=false`; there must be zero IL2xxx/IL3xxx warnings from TimeWarp.State,
       and clones must be correct at runtime. Wire it in as a check if practical
-- [ ] Optional: benchmark first clone and steady-state clone (generated vs the old reflection cloner, measured
+- [x] Optional: benchmark first clone and steady-state clone (generated vs the old reflection cloner, measured
       before it is deleted) and record the numbers
-- [ ] Docs: update the cloning topic and claude.md; release notes with the breaking change and migration steps
+- [x] Docs: update the cloning topic and claude.md; release notes with the breaking change and migration steps
 
 ## Notes
 
@@ -226,8 +226,146 @@ Approved for implementation (Steven, 2026-10-10). Design first, then implement.
   `StateTransactionBehavior`. The generated clone path should never run for extension state, and any generator opt-in rule, such as "every `IState`", must not pull extension
   states into the app's clone registry.
 
+## Results
+
+Design recorded before product changes. Implementation follows this section.
+
+### Design
+
+**Placement.** The generator is `StateCloneSourceGenerator` (`IIncrementalGenerator`) in the existing
+`source/timewarp-state-source-generator` project (`netstandard2.0`, Roslyn 4.14). It ships inside
+`TimeWarp.State` at `analyzers/dotnet/cs`. No separate cloning package.
+
+**Opt-in.** Implicit for every concrete, closed, accessible `State<TState>` in the compilation that does not
+implement `ICloneable`. States do not need to be `partial`: the generator emits an external cloner, not a
+partial member. `[GenerateClone]` (`TimeWarp.State.GenerateCloneAttribute`) is the explicit opt-in for a
+non-state class or struct that still needs a `Clone()` extension (the test-app clone suite and the ported
+deep-clone fixtures). Open generic states are a build error. `ICloneable` types are skipped: the hand-written
+clone stays the only clone.
+
+**Emitted shape.** One `TimeWarpStateClones.g.cs` per compilation:
+
+- `TimeWarp.Features.Cloning.GeneratedCloneExtensions.Clone(this T?)` for each root, so existing
+  `using TimeWarp.Features.Cloning` call sites keep compiling.
+- An internal cloner per reachable class, struct, array, and supported collection. Reference types take a
+  `CloneMap`. The cloner calls an accessible constructor (parameterless, otherwise the fewest-parameter
+  public or same-assembly internal constructor, with `default` arguments) so field initializers run.
+  `Guid` and `CancellationTokenSource` therefore stay fresh. There is no `GetUninitializedObject`.
+- Instance fields, including auto-property backing fields, `init` / `readonly` / private fields, and fields
+  declared on generic bases such as `State<TState>`, are read and written with
+  `[UnsafeAccessor(UnsafeAccessorKind.Field)]` (.NET 8+, Native AOT). Ignored fields are left at the
+  constructor values.
+- A `[ModuleInitializer]` registers each state root with `StateCloneRegistry` (lock-free
+  `ImmutableInterlocked` dictionary of `Type` → clone delegate). No assembly scan.
+
+**Ignore rules.** A field is skipped when it, or its associated property or event, carries an attribute whose
+type name is `IgnoreDataMemberAttribute`, `NonSerializedAttribute`, or `JsonIgnoreAttribute` (any namespace).
+That matches `DeepCloner.IsIgnored`, including `[IgnoreDataMember]` / `[JsonIgnore]` on `State<T>` `Guid`,
+`Sender`, and `CancellationTokenSource`.
+
+**Shared values.** Decided from the static type, matching `DeepCloner.IsShared`: primitives, enums, string,
+decimal, dates, `Guid`, `Uri`, `Version`, delegates, `MemberInfo` / `Type` / `Assembly`, `CultureInfo`,
+`Regex`, `Encoding`, `IServiceProvider`, comparers, and reference types in `System.Threading` or
+`System.Threading.Tasks`. A struct whose fields are all shared is assigned by value. `object` is not shared:
+a field of type `object` is unsupported.
+
+**Cycles.** Every clone allocates a `CloneMap` (`Dictionary<object, object>` with `ReferenceEqualityComparer`).
+The new instance is inserted before members are copied. Acyclic elision is deferred: the map is always used.
+
+**Collections.** Element-wise public construction, not BCL private-field copies:
+
+- arrays of any rank (zero lower bound via `new T[...]`; non-zero lower bounds are not preserved)
+- `List<T>`, `Dictionary<TKey,TValue>` (comparer shared), `HashSet<T>` (comparer shared), `Stack<T>`,
+  `Queue<T>`, `Collection<T>`, `ObservableCollection<T>`, and subclasses (subclass fields copied, then items
+  added)
+- immutable and frozen collections are shared when their elements are shared; otherwise rebuilt
+- interface collections (`IList<T>`, `ICollection<T>`, `IEnumerable<T>`, `IDictionary<TKey,TValue>`, and the
+  read-only twins) switch on `List<T>`, arrays, `Dictionary<,>`, `HashSet<T>`, `ObservableCollection<T>`,
+  `Collection<T>`, concrete implementations in the compilation, then `ICloneable`, else throw
+
+`ObservableCollection<T>` does not copy `CollectionChanged` subscribers. Hash collections are rebuilt, so
+keys that use reference identity still do not survive, same as the field-copy limitation for value equality.
+A field typed `IEnumerable<T>` that holds a lazy iterator is materialized.
+
+**Other member types.** Records are classes or structs (field copy, not `with`). Nested and foreign types
+are cloned when their fields are visible and a constructor is accessible to generated code; `[UnsafeAccessor]`
+writes private fields, including on generic bases. A non-collection interface or abstract type gets a switch
+over concrete implementations in the compilation plus `ICloneable`. No accessible constructor, a private or
+protected type, a pointer, an open generic, or an `object` field is **TWSG002** (error): the message names
+the type and member and tells the author to implement `ICloneable` or change the member. The build fails.
+Nothing falls back at runtime. A missing registry entry throws `InvalidOperationException` from
+`StateCloneRegistry.Clone`.
+
+**Dispatch.** `StateTransactionBehavior`: `ICloneable`, else `StateCloneRegistry.Clone`. `DeepCloner`,
+`CloneExtensions`, and `CloneErrorHandler` are deleted. Clone failures propagate; they are not logged and
+swallowed.
+
+**TWS001.** Redefined so it does not contradict the generator. Concrete (non-abstract) types that derive
+directly from `State<T>` must implement `ICloneable` or have an accessible constructor (public, or internal
+in the same assembly). A parameterless constructor is no longer required. Abstract intermediates such as
+`TimeWarpCacheableState<TState>` are exempt. Unsupported members stay **TWSG002** only.
+
+**Inspector / extension store.** Deferred. The generator registers only states declared in that compilation.
+It does not reflect over other assemblies, so an extension is not pulled in by an "every `IState`" scan.
+A loaded extension assembly registers its own states; `StateTransactionBehavior` clones a state only when an
+action nested in that state is dispatched. A separate store for a future inspector is unchanged and out of
+scope.
+
+**Tests.** Generator diagnostics for an unsupported member and for `ICloneable` skipping. Ported
+`deep-cloner-tests` cases execute the generated `Clone()` (`[GenerateClone]` fixtures). The test-app clone
+suite keeps calling `Clone()` on `[GenerateClone]` objects. WASM E2E stays `CloneTestPageTests` and
+`CounterTests`. Trim check: `EnableTrimAnalyzer` / `IsAotCompatible` on `TimeWarp.State` must not report
+IL2xxx/IL3xxx from the clone path. Pre-existing Redux DevTools time-travel reflection
+(`Store.LoadStatesFromJson`: `GetAssemblies` / `GetTypes` / `GetMethod` / `Invoke`) is not removed here;
+it is annotated, suppressed at that method, and listed as a follow-up. `MethodInfoExtensions.InvokeAsync`
+is unused reflection and is deleted.
+
+**Benchmarks.** Reflection cloner, measured before deletion (100000 steady iterations, one graph of nested
+state): first clone 14457.4 µs, steady 4.730 µs per clone (473.0 ms total). A generated-path microbenchmark
+was not repeated after the reflection cloner was removed.
+
+**Metadata bases.** Roslyn does not return compiler-generated backing fields for types in referenced
+assemblies. Public and protected auto-properties on those bases are copied through `<Property>k__BackingField`.
+Private fields the symbol model does not expose stay at constructor values. `State<T>.CancellationTokenSource`
+is in that set, which matches its `[IgnoreDataMember]`.
+
+### How to validate
+
+Smoke:
+
+- `dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo` — 84 passed, 1 skipped (the Fixie skip sample). The ported deep-clone cases passed, including private fields, ignored members, nested collections, cycles, multi-dimensional arrays, structs, shared delegates, and null.
+- `dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo` — 19 passed, including TWSG002 on `object`, ICloneable skipped, registry registration, and a public auto-property on a base compiled in another assembly.
+- `dotnet test tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj --nologo` — 38 passed (TWS001 accepts an accessible constructor and skips abstract states).
+- `dotnet test tests/client-integration-tests/client-integration-tests.csproj --nologo` — 65 passed, 1 skipped. `ReturnCachedData_WhenCacheValid` keeps `CacheKey` and `TimeStamp`.
+- `dotnet test tests/timewarp-state-plus-tests/timewarp-state-plus-tests.csproj --nologo` — 32 passed, 1 skipped.
+- `./bin/dev e2e` — 11 passed, 3 skipped, 0 failed. Playwright's browser install warned (`sudo` needs a terminal); Chromium was already present and the suite ran.
+- Trim: `dotnet publish` of a console host referencing `TimeWarp.State` and `TimeWarp.State.Blazor`, `-p:PublishTrimmed=true -p:TrimmerSingleWarn=false`. The linker ran and reported no IL2xxx/IL3xxx. The published app printed `clone-ok` (count copied, Guid fresh and not equal). Native AOT of a host referencing `TimeWarp.State` only (`PublishAot=true`) also printed `clone-ok` with no IL warnings. Publishing the analyzer project itself with `PublishAot` fails NETSDK1207 because that project is `netstandard2.0`. `dotnet publish` of `test-app-client` did not link: the `wasm-tools` workload is not installed (`Publishing without optimizations`).
+
+Expect:
+
+- A concrete `State<T>` clones without reflection. `ICloneable` still wins. Unsupported members fail the build as TWSG002.
+- Ignored members keep constructor values, so `Guid` is unique and `Sender` / `CancellationTokenSource` are not shared.
+- Cacheable weather keeps its timestamp across a second fetch while the cache is fresh, in integration tests and in the browser suite.
+
+### Open questions — answers
+
+| Question | Answer |
+|----------|--------|
+| Opt-in | Implicit for concrete `State<T>`; external cloner, no `partial`. `[GenerateClone]` for non-states. |
+| Constructors | Accessible parameterless, else fewest-parameter accessible ctor with defaults. No uninitialized objects. No ctor → TWSG002 / TWS001. |
+| Cycles | Always a per-call `CloneMap`. Acyclic fast path deferred. |
+| Where it lives | Decided earlier: `timewarp-state-source-generator`. |
+| Collections | Element-wise, comparers shared. See Design. |
+| `init` / `readonly` | `[UnsafeAccessor]` field writes. |
+| Private and base fields | `[UnsafeAccessor]`, including `State<TState>`. Inaccessible types → TWSG002. |
+| Records | Field copy, same as classes or structs. |
+| Structs | Value copy, then deep-copy reference fields. |
+| Testing | Generated path only. See Tests. |
+| Inspector recursion | Deferred. Not part of this generator. |
+
 ## Session
 
 - Created: 956920 (2026-10-09)
 - Approved for implementation by Steven (2026-10-10, voice); task file updated from proposal to implementation
 - Design correction by Steven (2026-10-10, 2:08 AM): no reflection fallback; walk interrupted and re-run
+- Implementer: grok task-work (2026-10-10). Design written in Results before product edits.
