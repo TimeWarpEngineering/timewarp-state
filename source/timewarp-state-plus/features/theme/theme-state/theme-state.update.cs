@@ -1,3 +1,11 @@
+#region Purpose
+// Update action set: sets ThemeState.CurrentTheme.
+#endregion
+
+#region Design
+// Standard nested Action/Handler pair; no design decisions beyond that.
+#endregion
+
 namespace TimeWarp.Features.Theme;
 
 public partial class ThemeState

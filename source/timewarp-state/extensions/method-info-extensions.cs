@@ -1,4 +1,13 @@
-﻿namespace System.Reflection;
+﻿#region Purpose
+// Invokes an async method through reflection and returns its awaited result.
+#endregion
+
+#region Design
+// Uses dynamic to await whatever awaitable MethodInfo.Invoke returns. It lives in System.Reflection so it is
+// available wherever MethodInfo is.
+#endregion
+
+namespace System.Reflection;
 
 /// <summary>
 /// Use reflection to invoke an Async method.

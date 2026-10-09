@@ -1,3 +1,12 @@
+#region Purpose
+// Configuration options for TimeWarp.State, their validator, and the configuration exception thrown on invalid options.
+#endregion
+
+#region Design
+// Options carry the IServiceCollection so extension methods such as UseReduxDevTools can register services.
+// CaptureRenderCaller defaults to false so production render paths skip StackTrace allocation.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

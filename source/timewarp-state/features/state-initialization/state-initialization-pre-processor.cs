@@ -1,3 +1,13 @@
+#region Purpose
+// ClientPipeline behavior that waits for the enclosing state's initialization task, such as a persistence load,
+// before the action is handled.
+#endregion
+
+#region Design
+// Looks up Store.StateInitializationTasks by the enclosing state's FullName. With no task registered it passes
+// straight through. Sealed, closes only onto IAction requests, and logs then rethrows initialization failures.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

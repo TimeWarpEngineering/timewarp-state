@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.State.Extensions;
+﻿#region Purpose
+// Type helpers: find the IState type an action is nested in, and get a type's name without the generic arity suffix.
+#endregion
+
+#region Design
+// Actions are nested inside their state, so the enclosing state is found by walking DeclaringType. GetEnclosingStateType
+// throws NonNestedClassException when the type is not nested in an IState.
+#endregion
+
+namespace TimeWarp.State.Extensions;
 
 public static class TypeExtensions
 {

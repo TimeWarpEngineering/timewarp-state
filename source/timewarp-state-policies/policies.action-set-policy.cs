@@ -1,3 +1,11 @@
+#region Purpose
+// Architecture policy for ActionSets: internal and static.
+#endregion
+
+#region Design
+// ActionSets are only containers for an Action and its Handler; callers use the generated method on the state.
+#endregion
+
 namespace TimeWarp.State.Policies;
 
 public static partial class Policies

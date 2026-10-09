@@ -1,3 +1,11 @@
+#region Purpose
+// Project-wide global usings for TimeWarp.State.Telemetry.
+#endregion
+
+#region Design
+// One list so individual files need no using directives; no other design decisions.
+#endregion
+
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
 global using System.Text.Json;

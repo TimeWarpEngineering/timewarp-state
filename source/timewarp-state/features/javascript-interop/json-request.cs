@@ -1,3 +1,12 @@
+#region Purpose
+// Template request types (BaseJsonRequest, JsonRequest<TPayload>) showing consumers how to shape JSON requests sent to
+// JavaScript.
+#endregion
+
+#region Design
+// Not used by the library itself. Every request carries a RequestType string so JavaScript can tell requests apart.
+#endregion
+
 namespace TimeWarp.Features.JavaScriptInterop;
 
 /// <summary>

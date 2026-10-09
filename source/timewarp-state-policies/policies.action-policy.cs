@@ -1,3 +1,12 @@
+#region Purpose
+// Architecture policy for actions: named Action, nested in an ActionSet inside their state, and public sealed.
+#endregion
+
+#region Design
+// public sealed because the Mediator source generator registers actions across assemblies. Partial Policies class,
+// one file per policy.
+#endregion
+
 namespace TimeWarp.State.Policies;
 
 public static partial class Policies

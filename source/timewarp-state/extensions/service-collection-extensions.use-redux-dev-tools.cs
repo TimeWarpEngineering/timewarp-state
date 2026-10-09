@@ -1,3 +1,12 @@
+#region Purpose
+// UseReduxDevTools: turns on the Redux DevTools integration for TimeWarp.State.
+#endregion
+
+#region Design
+// The behavior is always woven. Registering ReduxDevToolsOptions is what switches it on. The method is idempotent
+// (returns early if already registered) and allow-lists the DevTools Start/Commit requests only when enabled.
+#endregion
+
 namespace TimeWarp.State;
 
 public static partial class ServiceCollectionExtensions

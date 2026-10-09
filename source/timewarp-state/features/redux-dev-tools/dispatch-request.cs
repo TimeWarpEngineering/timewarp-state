@@ -1,3 +1,12 @@
+#region Purpose
+// Shape of a message dispatched from the Redux DevTools extension (id, payload, source, state, type).
+#endregion
+
+#region Design
+// Generic over the payload and constructed only by derived request types (protected constructor). Settable
+// properties so it binds from JSON.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 public class DispatchRequest<TPayload>

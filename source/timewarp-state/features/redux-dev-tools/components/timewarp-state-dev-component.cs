@@ -1,3 +1,13 @@
+#region Purpose
+// Development base component that adds a RenderModeDisplay fragment, plus a render-mode summary string, to
+// TimeWarpStateComponent.
+#endregion
+
+#region Design
+// The fragment is built in the constructor with RenderTreeBuilder so derived components can drop @RenderModeDisplay
+// into their markup.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>

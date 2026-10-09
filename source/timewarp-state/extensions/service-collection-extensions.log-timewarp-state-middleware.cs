@@ -1,3 +1,12 @@
+#region Purpose
+// Logs the TimeWarp.Mediator pipeline behaviors registered in the service collection, in pipeline order.
+#endregion
+
+#region Design
+// Only closed constructed behavior registrations are listed, because those are what the generated mediator
+// registers and runs. Open-generic registrations are inert and would misreport the pipeline.
+#endregion
+
 namespace TimeWarp.State;
 
 public static partial class ServiceCollectionExtensions

@@ -1,3 +1,12 @@
+#region Purpose
+// Shouldly assertions for NetArchTest results (ShouldBeSuccessful on TestResult and PolicyResults).
+#endregion
+
+#region Design
+// Failure messages list the policy, rule and failing type names, so a test failure says exactly which convention
+// was broken.
+#endregion
+
 namespace TimeWarp.State.Policies.Extensions;
 
 public static class NetArchExtensions

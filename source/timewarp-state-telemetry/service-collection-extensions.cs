@@ -2,6 +2,11 @@
 // Registers telemetry options and the per-scope snapshot cache with TryAdd.
 #endregion
 
+#region Design
+// Options are built eagerly from the configure callback and registered as a singleton; StateSnapshotCache is
+// scoped (one per Blazor circuit or WASM app). Both use TryAdd so a host can replace them.
+#endregion
+
 namespace TimeWarp.State.Telemetry;
 
 /// <summary>

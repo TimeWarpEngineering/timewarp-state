@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.State.Analyzer;
+﻿#region Purpose
+// TWS0001 (error): a non-abstract IAction class, record or struct must be nested inside a type that implements
+// IState.
+#endregion
+
+#region Design
+// Checks IAction through the base-type chain and IState on any enclosing type, comparing by display-name strings.
+#endregion
+
+namespace TimeWarp.State.Analyzer;
 
 using Microsoft.CodeAnalysis.CSharp;
 

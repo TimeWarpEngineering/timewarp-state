@@ -69,12 +69,12 @@ Suggested PR split: one PR per area group. Use (1) library source, (2) tests, (3
 
 Library source (first):
 
-- [ ] `source/timewarp-state` (48)
-- [ ] `source/timewarp-state-plus` (29)
-- [ ] `source/timewarp-state-policies` (9)
-- [ ] `source/timewarp-state-analyzer` (6)
-- [ ] `source/timewarp-state-source-generator` (4)
-- [ ] `source/timewarp-state-telemetry` (4)
+- [x] `source/timewarp-state` (48)
+- [x] `source/timewarp-state-plus` (29)
+- [x] `source/timewarp-state-policies` (9)
+- [x] `source/timewarp-state-analyzer` (6)
+- [x] `source/timewarp-state-source-generator` (4)
+- [x] `source/timewarp-state-telemetry` (4)
 
 Tests:
 
@@ -104,6 +104,34 @@ Other:
 - [ ] `.editorconfig`: set the TWA rules that don't fit to `none` (review list in Notes); record the decision for each rule
 - [ ] Check which projects actually get the analyzer (library, tests, samples with their own props, file-based scripts/.githooks/tools) and that it's PrivateAssets in every packed nupkg
 - [ ] Workflow green with no TWA warnings; packed nupkgs carry no dependency on TimeWarp.Architecture.Analyzers
+
+## Results
+
+### PR 1: library source (`source/`)
+
+- Added the missing regions to 100 files under `source/`, 6 projects (48 + 29 + 9 + 6 + 4 + 4). 96 files got both
+  Purpose and Design. 4 files already had Purpose and got Design only, with the existing Purpose unchanged:
+  `equatable-array.cs`, `is-external-init.cs`, telemetry `service-collection-extensions.cs` and
+  `timewarp-state-telemetry.cs`.
+- Audit of the tracked `source/**/*.cs` files (138): 100 were missing at least one region before, and 0 are
+  missing either region after.
+- Comments only. `git diff` shows 893 insertions and 13 deletions. The 13 deletions are files with a UTF-8 BOM,
+  where the BOM moves from the old first line to the new `#region Purpose` line. A byte-level check compared
+  each file against HEAD with the BOM and the inserted region blocks stripped. It found 0 mismatches over the
+  100 files. Every added line is `#region Purpose`, `#region Design`, `#endregion`, a `// ` comment or blank.
+- `dotnet run --file tools/dev-cli/dev.cs -- workflow` passed: Pipeline SUCCEEDED (build, test, e2e, pack,
+  verify-samples).
+  - Unit and integration tests: 228 passed, 4 skipped, 0 failed (analyzer 33, source-generator 15, core 73 + 1
+    skipped, Plus 31 + 1 skipped, Telemetry 13, client integration 56 + 1 skipped, architecture 7 + 1 skipped).
+  - E2E: 11 passed, 3 skipped, 0 failed.
+  - The first local run failed only in E2E. The Playwright chromium-headless-shell v1234 browser was missing,
+    and `--with-deps` needed sudo. Installing the browser into the WSL user cache fixed it, with no code change.
+- Open items flagged while describing the code (described as-is, not changed):
+  - `TimeWarpCacheableState<TState>` derives from `State<TimeWarpCacheableState<TState>>`, not from
+    `State<TState>`.
+  - `FeatureFlagState` is a placeholder whose Initialize throws NotImplementedException.
+  - The `InvalidCloneException` message still points at a parameterless-constructor requirement, but it is
+    thrown when the clone's Guid is empty or unchanged.
 
 ## Notes
 
@@ -140,7 +168,8 @@ Other:
   - TWA0023 (identifier does not use the type stem) is a naming style rule. Evaluate the hit count; likely none.
 - **File-based apps:** `scripts`, `.githooks` and `tools` `.cs` files are file-based apps. Confirm whether the
   analyzer reaches them through Directory.Build.props. Their regions are backfilled in Part 1 either way.
-- Steven asked for this task to be created only. Work has not started.
+- Steven asked for this task to be created only at first. He approved starting it on 2026-10-09, beginning
+  with a PR for the library source (`source/`).
 
 ## Session
 

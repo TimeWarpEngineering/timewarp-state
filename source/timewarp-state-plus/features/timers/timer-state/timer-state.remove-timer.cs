@@ -1,3 +1,11 @@
+#region Purpose
+// RemoveTimer action set: stops, disposes and removes a named timer.
+#endregion
+
+#region Design
+// Unknown timer names are ignored rather than treated as errors.
+#endregion
+
 namespace TimeWarp.State.Plus.Features.Timers;
 
 using System.Timers;

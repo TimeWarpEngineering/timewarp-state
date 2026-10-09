@@ -1,3 +1,14 @@
+#region Purpose
+// Incremental generator that adds a method to each state for every nested *ActionSet, for example
+// CounterState.IncrementCount(amount), which builds the Action and sends it.
+#endregion
+
+#region Design
+// Parameters mirror the Action's constructor, including defaults, via ActionSetConstructorParser. The generated
+// method takes an optional CancellationToken that is linked with the state's own token. It reports an SG002 info
+// diagnostic with each hint name for debugging.
+#endregion
+
 namespace TimeWarp.State.SourceGenerator;
 
 [Generator]

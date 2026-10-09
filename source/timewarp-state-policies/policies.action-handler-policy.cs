@@ -1,3 +1,13 @@
+#region Purpose
+// Architecture policy for action handlers: nested in their state, and sealed (or public sealed).
+#endregion
+
+#region Design
+// requirePublicHandlers picks public sealed for libraries such as Plus, because the host's generated mediator code
+// references them by concrete type. App handlers only need sealed and may stay internal. Partial Policies class,
+// one file per policy.
+#endregion
+
 namespace TimeWarp.State.Policies;
 
 public static partial class Policies

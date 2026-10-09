@@ -1,3 +1,13 @@
+#region Purpose
+// Architecture policy for states: named *State, public and sealed, and [PersistentState] states have both a
+// [JsonConstructor] and a DI-injectable constructor.
+#endregion
+
+#region Design
+// public so states can ship in separate assemblies; sealed so extension goes through abstract bases. The
+// constructor rules keep persistence deserialization and DI construction working.
+#endregion
+
 namespace TimeWarp.State.Policies;
 
 using Features.Persistence;

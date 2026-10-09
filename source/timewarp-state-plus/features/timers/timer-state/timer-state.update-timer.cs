@@ -1,3 +1,11 @@
+#region Purpose
+// UpdateTimer action set: replaces an existing timer's configuration.
+#endregion
+
+#region Design
+// Recreates the timer through CreateTimer. Unknown timer names are ignored.
+#endregion
+
 namespace TimeWarp.State.Plus.Features.Timers;
 
 public partial class TimerState

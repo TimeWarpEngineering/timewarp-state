@@ -1,3 +1,12 @@
+#region Purpose
+// Component that sends RouteState.PushRouteInfo after every render so the route stack and page title stay current.
+#endregion
+
+#region Design
+// A convenience alternative to sending PushRouteInfo from each page's OnAfterRenderAsync, which is recommended
+// because it fires less often. The required Nonce parameter forces a re-render on every page render.
+#endregion
+
 namespace TimeWarp.Features.Routing;
 
 /// <summary>

@@ -1,3 +1,13 @@
+#region Purpose
+// Error when a public property on a State<T>-derived class has a public setter, to keep state immutable outside
+// its handlers.
+#endregion
+
+#region Design
+// Allows private setters, plus protected setters on abstract states so derived states can set them. Resolves
+// State<T> once per compilation and walks the full base-type chain.
+#endregion
+
 namespace TimeWarp.State.Analyzer;
 
 using Microsoft.CodeAnalysis.CSharp;

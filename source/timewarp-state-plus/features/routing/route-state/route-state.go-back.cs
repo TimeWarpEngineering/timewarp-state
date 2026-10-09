@@ -1,4 +1,12 @@
-﻿namespace TimeWarp.Features.Routing;
+﻿#region Purpose
+// GoBack action set: pops routes off the stack and navigates to the remaining top entry.
+#endregion
+
+#region Design
+// Clamps the amount to Count - 1 so the destination page always stays on the stack (matches CanGoBack).
+#endregion
+
+namespace TimeWarp.Features.Routing;
 
 public partial class RouteState
 {

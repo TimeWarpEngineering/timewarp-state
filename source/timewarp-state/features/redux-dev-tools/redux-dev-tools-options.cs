@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.Features.ReduxDevTools;
+﻿#region Purpose
+// Options passed to the Redux DevTools extension (name, latency, max age, tracing, feature toggles).
+#endregion
+
+#region Design
+// Mirrors the extension's documented Arguments so it serializes straight to JavaScript. All Features default to off.
+// TraceFilterExpression is a fixed regex that drops System, Microsoft, TimeWarp.Mediator and ReduxDevTools frames.
+#endregion
+
+namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
 /// Redux Dev Tools Options (see docs)

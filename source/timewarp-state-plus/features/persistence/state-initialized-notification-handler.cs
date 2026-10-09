@@ -1,3 +1,12 @@
+#region Purpose
+// When a state finishes initializing, triggers loading it from storage if it is marked [PersistentState].
+#endregion
+
+#region Design
+// Returns early for non-persistent states (the common case). Otherwise it sends LoadPersistentStateRequest on the
+// ClientPipeline, whose handler is linked.
+#endregion
+
 namespace TimeWarp.State.Plus.PersistentState;
 
 // Disambiguate from Microsoft.AspNetCore.Components.PersistentStateAttribute (added in .NET 10).

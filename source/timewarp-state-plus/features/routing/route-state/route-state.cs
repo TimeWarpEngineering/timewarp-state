@@ -1,3 +1,12 @@
+#region Purpose
+// State holding the stack of visited routes (URL and page title) for back navigation and breadcrumbs.
+#endregion
+
+#region Design
+// Sealed partial, split by action set. Implements ICloneable to copy the stack directly, because the former AnyClone
+// path threw on the mutating stack. Routes is public so it serializes for DevTools; Initialize(Stack) is test-only.
+#endregion
+
 namespace TimeWarp.Features.Routing;
 
 /// <summary>

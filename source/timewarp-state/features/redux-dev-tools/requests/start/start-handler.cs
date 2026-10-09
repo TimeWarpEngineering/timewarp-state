@@ -1,3 +1,12 @@
+#region Purpose
+// Handles the Start message Redux DevTools sends once on startup.
+#endregion
+
+#region Design
+// Handle is currently a no-op; only the constructor logs (debug, reusing the JumpToStateHandler EventId).
+// Having a handler lets the Start request dispatch without error.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>

@@ -1,4 +1,13 @@
-﻿namespace TimeWarp.Features.ActionTracking;
+﻿#region Purpose
+// CompleteProcessing action set: removes a finished action from ActionTrackingState's active list.
+#endregion
+
+#region Design
+// An IInternalAction, so action tracking does not track its own bookkeeping. A missing action is logged with the
+// current active list and then throws, to surface start/complete mismatches.
+#endregion
+
+namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState
 {

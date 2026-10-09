@@ -2,6 +2,11 @@
 // Public ActivitySource consumers register with OpenTelemetry AddSource.
 #endregion
 
+#region Design
+// A single static ActivitySource with a const name, so TelemetryBehavior and the host's AddSource call always agree
+// on the source name.
+#endregion
+
 namespace TimeWarp.State.Telemetry;
 
 /// <summary>

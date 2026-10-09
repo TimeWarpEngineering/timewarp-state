@@ -1,3 +1,11 @@
+#region Purpose
+// AddTimer action set: creates a named timer in TimerState.
+#endregion
+
+#region Design
+// The handler delegates to TimerState.CreateTimer so timer lifecycle logic stays in the state.
+#endregion
+
 namespace TimeWarp.State.Plus.Features.Timers;
 
 public partial class TimerState

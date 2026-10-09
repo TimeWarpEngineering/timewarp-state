@@ -1,3 +1,13 @@
+#region Purpose
+// The part of Store that supports Redux DevTools: a serializable snapshot of all states and loading states from
+// JSON for time travel.
+#endregion
+
+#region Design
+// Partial Store implementing IReduxDevToolsStore so DevTools code stays out of the core store. Loading finds the
+// state type by FullName across loaded assemblies and calls its Hydrate method through reflection.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

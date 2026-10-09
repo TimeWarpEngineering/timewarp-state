@@ -1,3 +1,12 @@
+#region Purpose
+// Store contracts: IStore (get, set, remove and reset states, previous states, initialization tasks) and
+// IReduxDevToolsStore (serializable snapshot and JSON load).
+#endregion
+
+#region Design
+// The Redux DevTools surface is a separate interface so it is only registered and used when DevTools is enabled.
+#endregion
+
 namespace TimeWarp.State;
 
 public interface IReduxDevToolsStore

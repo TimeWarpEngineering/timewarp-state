@@ -1,3 +1,12 @@
+#region Purpose
+// The minimum contract a component needs for TimeWarp.State subscriptions to re-render it (Id, ReRender, ShouldReRender).
+#endregion
+
+#region Design
+// An interface so any Blazor component can participate without inheriting TimeWarpStateComponent. ShouldReRender
+// defaults to true through a default interface method.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

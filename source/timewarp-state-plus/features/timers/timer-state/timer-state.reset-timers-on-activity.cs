@@ -1,3 +1,11 @@
+#region Purpose
+// ResetTimersOnActivity action set: restarts every timer configured with ResetOnActivity.
+#endregion
+
+#region Design
+// An IInternalAction, so MultiTimerPostProcessor does not react to its own nested send and recurse.
+#endregion
+
 namespace TimeWarp.State.Plus.Features.Timers;
 
 using System.Timers;

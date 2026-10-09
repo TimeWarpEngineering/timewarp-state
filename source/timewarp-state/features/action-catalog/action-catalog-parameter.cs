@@ -1,3 +1,12 @@
+#region Purpose
+// Describes one parameter of a cataloged action (name, CLR type, required/default, JSON schema).
+#endregion
+
+#region Design
+// Immutable sealed record filled by the generator from the action's first explicit constructor. JsonSchema is null
+// for complex types, which are recorded only by ClrType.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

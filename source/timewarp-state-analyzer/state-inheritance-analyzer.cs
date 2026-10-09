@@ -1,3 +1,13 @@
+#region Purpose
+// Analyzer for State<T> subclasses: T must be the derived class itself (error), and non-abstract subclasses should
+// be sealed (warning).
+#endregion
+
+#region Design
+// Resolves State<T> once per compilation and does nothing when it is absent. Only the first base type in each class
+// declaration is checked.
+#endregion
+
 namespace TimeWarp.State.Analyzer;
 
 using Microsoft.CodeAnalysis.CSharp;

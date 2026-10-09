@@ -1,3 +1,12 @@
+#region Purpose
+// Read-only access to every cataloged action from the assemblies registered with AddActionCatalog.
+#endregion
+
+#region Design
+// Small interface (Entries in registration order, Find by ordinal name) so consumers and tests depend on the
+// abstraction, not the ActionCatalog implementation.
+#endregion
+
 namespace TimeWarp.State;
 
 /// <summary>

@@ -1,3 +1,11 @@
+#region Purpose
+// NetArchTest custom rule: the type has a public constructor marked [JsonConstructor].
+#endregion
+
+#region Design
+// Used by the state policy so [PersistentState] states can be deserialized when loaded from storage.
+#endregion
+
 namespace TimeWarp.State.Policies;
 
 public class HaveJsonConstructor : ICustomRule 

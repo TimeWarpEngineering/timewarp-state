@@ -1,3 +1,12 @@
+#region Purpose
+// ThemeState's Redux DevTools Hydrate and a test-only Initialize.
+#endregion
+
+#region Design
+// Hydrate reads camelCase keys (CurrentTheme, Guid) and throws if either is missing. Initialize is guarded by
+// ThrowIfNotTestAssembly.
+#endregion
+
 namespace TimeWarp.Features.Theme;
 
 public partial class ThemeState

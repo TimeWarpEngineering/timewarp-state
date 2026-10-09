@@ -1,3 +1,14 @@
+#region Purpose
+// ClientPipeline behavior that sends each handled action, the resulting serializable state and an optional filtered
+// stack trace to the Redux DevTools browser extension.
+#endregion
+
+#region Design
+// Always woven, but its dependencies are optional: without UseReduxDevTools they resolve to null and it passes
+// through. It dispatches after the handler runs, filters the trace with TraceFilterExpression, and rethrows
+// dispatch failures.
+#endregion
+
 namespace TimeWarp.Features.ReduxDevTools;
 
 /// <summary>
