@@ -9,8 +9,15 @@ and throughput, not correctness of a third-party cloner.
 
 Deliverable: a Roslyn **incremental** source generator that emits compile-time clone code for `State<T>` types
 and replaces the reflection `DeepCloner` (`source/timewarp-state/features/cloning/deep-cloner.cs`,
-`clone-extensions.cs`) on the `StateTransactionBehavior` hot path. `DeepCloner` stays only as the fallback for
-types the generator cannot see or handle.
+`clone-extensions.cs`) entirely.
+
+**Design correction (Steven, 2026-10-10, 2:08 AM): no reflection fallback.** No reflection code may ship in
+TimeWarp.State at all; even unused reflection breaks AOT trimming. `DeepCloner` (`deep-cloner.cs`) and the
+reflection path in `clone-extensions.cs` are **deleted**, not kept as a fallback. Clone order is: hand-written
+`ICloneable` first, else the generated clone. A state type the generator cannot handle is a **build-time error**
+telling the consumer to implement `ICloneable` on that type (or fix the unsupported member), so nothing fails at
+runtime. This is a breaking change, acceptable in the 12.0 beta; it goes in the release notes with migration
+guidance.
 
 Work order: **design first, then implement.** Write the design in `## Results` (answering or explicitly
 deferring each open question in Notes) before changing product code, then implement against it.
@@ -56,34 +63,52 @@ trimming, and faster, while keeping today's semantics.
 ## Requirements
 
 - Deliverable: a Roslyn incremental source generator (`IIncrementalGenerator`) that emits compile-time clone
-  code for `State<T>` types and is used by `StateTransactionBehavior` instead of the reflection `DeepCloner` on
-  the hot path.
+  code for `State<T>` types. `StateTransactionBehavior` uses it in place of the reflection `DeepCloner`, which is
+  deleted along with the reflection path in `clone-extensions.cs`.
+- **No reflection in TimeWarp.State (Steven, 2026-10-10).** No reflection code may ship in TimeWarp.State at
+  all, used or unused: no `System.Reflection` member access, `Activator.CreateInstance`,
+  `GetUninitializedObject`, `MemberwiseClone` via reflection or similar. There is no runtime fallback. This task
+  removes the cloning reflection; any other reflection found elsewhere in TimeWarp.State is listed in Results with
+  its trim/AOT warnings (and fixed here if small, otherwise filed as a follow-up task).
+- Clone order in `StateTransactionBehavior`: hand-written `ICloneable` first, else the generated clone. Nothing
+  else.
 - **Placement (Steven, 2026-10-10): build it into TimeWarp.State.** Use the existing
   `source/timewarp-state-source-generator` / analyzer projects, or a new generator project that ships inside the
   TimeWarp.State package (`analyzers/dotnet/cs`). Do **not** extract a separate generic cloning library or
   package.
 - Design first: write the design in `## Results` before changing product code. It must cover generator
   placement, the emitted code shape, registration/dispatch in `StateTransactionBehavior`, handling of nested,
-  collection and foreign (other-assembly) types, and the test plan (including parity tests old vs generated;
-  benchmarks optional). Answer each open question in Notes or explicitly defer it. Then implement.
+  collection and foreign (other-assembly) types (which are either cloned by generated code, shared as
+  immutable, or produce the build error below), and the test plan (port the `deep-cloner-tests.cs` cases to the
+  generated clone; benchmarks optional). Answer each open question in Notes or explicitly defer it. Then implement.
 - The design must keep current clone semantics so existing states behave the same:
   - Members marked IgnoreDataMember, NonSerialized or JsonIgnore (matched by name, any namespace, including
     backing fields) are not copied, and keep their constructor values. Each `State` clone therefore keeps a
     fresh `Guid`, and `Sender` / `CancellationTokenSource` are not shared.
-  - `ICloneable` remains the escape hatch for hand-tuned clones and wins over everything else.
+  - `ICloneable` wins over everything else and is the supported path for any state type the generator can't
+    handle.
   - Shared/immutable types (string, primitives, dates, Guid, Uri, Version, delegates, `MemberInfo`, `Type`,
-    comparers, `IServiceProvider`, threading types, …) stay copied by reference, matching
-    `DeepCloner.IsShared`.
+    comparers, `IServiceProvider`, threading types, …) stay copied by reference, matching today's
+    `DeepCloner.IsShared` list (decided at compile time now).
   - Cycles and shared references inside one clone are preserved.
   - Cloning never blocks (no `SemaphoreSlim.Wait`, locks or other waits), so it stays safe on single-threaded
     browser WASM.
-- Graceful fallback: any type the generator cannot see or handle (defined in another assembly, open generic,
-  inaccessible, unsupported shape) must fall back to `DeepCloner`. It must not fail the build or change
-  runtime behavior.
-- Goal: the generated path is AOT/trim friendly (no IL2xxx/IL3xxx warnings from generated code). Annotate the
-  remaining reflection fallback (`DeepCloner`) with the appropriate `[RequiresUnreferencedCode]` /
-  `[DynamicallyAccessedMembers]` attributes where practical, without forcing those warnings onto consumers whose
-  states are fully generated.
+- Unsupported types are a build error, not a runtime fallback: a state type (or a member type reachable from
+  it) that the generator cannot clone, and that has no hand-written `ICloneable`, produces an **error**
+  diagnostic that names the state type and the offending member, and tells the author to implement
+  `ICloneable` on the state (or fix the unsupported member). New TW id, documented in
+  `AnalyzerReleases.Unshipped.md` and the analyzer readme.
+- Reconcile the existing **TWS001** rule (`StateImplementationAnalyzer`: a `State<T>` must implement
+  `ICloneable` or have a parameterless ctor) with the new rule. Either fold it into the new diagnostic or
+  redefine it so the two never contradict each other (for example, the ctor requirement only applies where the
+  generated clone needs it). Update its tests (`state-implementation-analyzer-tests.cs`), readme and release
+  tracking.
+- Goal: **zero IL2xxx/IL3xxx trim/AOT warnings from TimeWarp.State.** Add a check for that if practical, for
+  example an AOT/trim-analysis build (`IsAotCompatible` / `EnableTrimAnalyzer`, or a trimmed publish of a sample
+  with `TrimmerSingleWarn=false`) that fails on any such warning from TimeWarp.State.
+- Breaking change (12.0 beta): `DeepCloner` and the reflection `CloneExtensions.Clone<T>()` path are removed,
+  and unsupported states now fail the build. Record it in the release notes with migration steps
+  (implement `ICloneable`, or fix the unsupported member).
 
 ## Checklist
 
@@ -101,39 +126,55 @@ Approved for implementation (Steven, 2026-10-10). Design first, then implement.
 - [ ] Generated code honors IgnoreDataMember / NonSerialized / JsonIgnore exactly as `DeepCloner.IsIgnored`
       does, including attributes on properties that apply to their backing fields
 - [ ] Generated code uses a reference map equivalent to `CloneContext.Visited` for cycles and shared references
-- [ ] Fallback to `DeepCloner` for unsupported members or types, and an analyzer diagnostic (new TW id,
-      Info/Warning, documented in AnalyzerReleases.Unshipped.md) naming each member or type that falls back
-- [ ] `StateTransactionBehavior` dispatch order: `ICloneable`, then generated clone, then `DeepCloner`
-- [ ] Parity tests: generated clone vs `DeepCloner` on the existing `deep-cloner-tests.cs` cases (private
-      fields, ignored members, nested collections, cycles, multi-dimensional arrays, structs, shared
-      delegates and types, null) plus every test-app state
+- [ ] Error diagnostic (new TW id, documented in AnalyzerReleases.Unshipped.md and the readme) for any state
+      type the generator can't clone and that has no `ICloneable`, naming the type and member and telling the
+      author to implement `ICloneable`
+- [ ] Reconcile TWS001 with the new diagnostic; update its tests and docs
+- [ ] `StateTransactionBehavior` dispatch: `ICloneable`, else generated clone; nothing else
+- [ ] Delete `DeepCloner` (`deep-cloner.cs`) and the reflection path in `clone-extensions.cs`; no reflection
+      left in TimeWarp.State
+- [ ] Port the `deep-cloner-tests.cs` cases (private fields, ignored members, nested collections, cycles,
+      multi-dimensional arrays, structs, shared delegates and types, null) to the generated clone, plus every
+      test-app state; add generator/diagnostic tests for unsupported shapes
 - [ ] Keep the WASM E2E clone suite green (`CloneTestPageTests.CloneSuitePassesInServerAndWasm`,
       `CounterTests`)
 - [ ] Trim/AOT smoke test: publish a sample WASM app with trimming (and Native AOT for a console host if
-      practical) and `TrimmerSingleWarn=false`; there should be no IL2xxx/IL3xxx warnings from the generated
-      path, and clones should be correct at runtime
-- [ ] Benchmark first clone and steady-state clone (generated vs reflection) and record the numbers
-- [ ] Docs: update the cloning topic, claude.md, and the release notes
+      practical) and `TrimmerSingleWarn=false`; there must be zero IL2xxx/IL3xxx warnings from TimeWarp.State,
+      and clones must be correct at runtime. Wire it in as a check if practical
+- [ ] Optional: benchmark first clone and steady-state clone (generated vs the old reflection cloner, measured
+      before it is deleted) and record the numbers
+- [ ] Docs: update the cloning topic and claude.md; release notes with the breaking change and migration steps
 
 ## Notes
 
-### Proposed design
+### 2026-10-10: walk interrupted for a design correction
+
+- The first `ganda task work 097 --yes` run (PID 2503312) was stopped at about 2:08 AM (UTC+7) during the
+  `implement` step (implementer-grok had just started; claim and folderize had completed). No product code had
+  been changed, so nothing was discarded.
+- Reason: Steven's design correction. Remove the reflection fallback entirely (delete `DeepCloner`); unsupported
+  state types become a build-time error telling the author to implement `ICloneable`; reconcile TWS001; zero
+  IL2xxx/IL3xxx warnings from TimeWarp.State. Requirements and Checklist above are updated.
+- Old log: `/home/steve/logs/task-work-state-097-20261010-020553.log`. The walk was re-run with
+  `ganda task work 097 --yes`.
+
+### Proposed design (original proposal; superseded where it mentions a DeepCloner fallback)
 
 1. **Emission.** For each state type (and each reachable member type the generator can fully see in the
    current compilation), emit a strongly typed clone, `TState CloneGenerated(TState source, CloneMap map)`.
    It allocates the target and assigns each copied member directly. Reference-type members recurse into
-   their generated clone, or into `DeepCloner` when none exists.
+   their generated clone (or hand-written `ICloneable`); a member type with neither is a build error.
 2. **Opt-out attributes.** Use the same name-based IgnoreDataMember / NonSerialized / JsonIgnore checks. The
    generator resolves them from symbols (`IFieldSymbol` / `IPropertySymbol` and the property's backing field).
    Ignored members are left as the constructor set them, so `State.Guid` stays unique and `Sender` is not
    shared.
 3. **ICloneable escape hatch** stays first. A type that implements `ICloneable` gets no generated clone, or
    the generated one is bypassed.
-4. **Fallback.** Types that are external (metadata only), open generic, inaccessible from generated code, or
-   unsupported shapes route to `DeepCloner.Clone`. An optional analyzer diagnostic lists each fallback so
-   authors can fix them (make the type partial or accessible, or add ICloneable).
-5. **Dispatch** in `StateTransactionBehavior`: `ICloneable`, then generated clone (looked up through a
-   generated registry or a static abstract / partial member on the state), then reflection `DeepCloner`.
+4. **No fallback (corrected 2026-10-10).** Types that are external (metadata only) and not known-immutable,
+   open generic, inaccessible from generated code, or unsupported shapes produce a build error naming the
+   state and member, telling the author to implement `ICloneable` (or make the type partial/accessible).
+5. **Dispatch** in `StateTransactionBehavior`: `ICloneable`, else generated clone (looked up through a
+   generated registry or a static abstract / partial member on the state). No reflection path.
 
 ### Open questions
 
@@ -160,15 +201,16 @@ Approved for implementation (Steven, 2026-10-10). Design first, then implement.
   identity don't survive.
 - **Init-only and readonly members:** direct assignment of `init` / `readonly` fields is illegal outside
   ctors. Options are `UnsafeAccessor` (.NET 8+, AOT-friendly) for private/readonly/init fields, a generated
-  copy ctor in a partial type, or fallback.
+  copy ctor in a partial type, or the build error (implement `ICloneable`).
 - **Private fields of non-partial types and base classes:** `[UnsafeAccessor]` works for these without
   reflection. Confirm it covers generic base types such as `State<TState>`.
 - **Records:** use the compiler's `<Clone>$` / `with` (shallow) plus a deep copy of reference members, or
   treat records like classes?
 - **Structs:** copy by value plus deep copy of reference fields (DeepCloner uses `MemberwiseClone`, then fixes
   up the fields).
-- **Testing:** parity tests (generated vs `DeepCloner`), the existing WASM E2E clone suite, and a trim/AOT
-  smoke test. Also decide whether the generated path is on by default or behind an option during preview.
+- **Testing:** the ported `deep-cloner-tests.cs` cases against the generated clone, the existing WASM E2E clone
+  suite, and a trim/AOT warning check. The generated path is the only path (no option to switch back to
+  reflection).
 
 ### Design considerations / open questions
 
@@ -181,11 +223,11 @@ Approved for implementation (Steven, 2026-10-10). Design first, then implement.
 - **Separate store for the extension.** Give the extension its own entirely separate store, decoupled from
   the app's state, so its UI state never enters the logged stream or the app's transaction/clone pipeline.
 - **Relation to this cloning proposal.** The extension's state must not be cloned or logged by the app's
-  `StateTransactionBehavior`. Neither the generated clone path nor the `DeepCloner` fallback should ever
-  run for extension state, and any generator opt-in rule, such as "every `IState`", must not pull extension
+  `StateTransactionBehavior`. The generated clone path should never run for extension state, and any generator opt-in rule, such as "every `IState`", must not pull extension
   states into the app's clone registry.
 
 ## Session
 
 - Created: 956920 (2026-10-09)
 - Approved for implementation by Steven (2026-10-10, voice); task file updated from proposal to implementation
+- Design correction by Steven (2026-10-10, 2:08 AM): no reflection fallback; walk interrupted and re-run
