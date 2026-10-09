@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-10
 **Host task:** kanban/to-do/037-factor-out-blazor-specific-code/
-**Diff scope:** branch task/037-factor-out-blazor-specific-code vs master (`git diff master...HEAD -M`, commit f27db723)
+**Diff scope:** branch task/037-factor-out-blazor-specific-code vs master (`git diff master...HEAD -M`; rounds 1–2 at f27db723/8dde1c87, round 3 delta d0af155c..2a0725cf)
 **Plan / brief:** split Blazor features (components, JS interop, Redux DevTools, render subscriptions, wwwroot) out of TimeWarp.State into TimeWarp.State.Blazor; add AddTimeWarpStateBlazor; console sample; migration guide
 **Effort:** 3 (roster axes: general)
 **Reviewer roster:** general
@@ -10,7 +10,7 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 840
+- Lines changed: 1138
 - Effort: 3
 - TCB hits: none
 - Roster axes: general

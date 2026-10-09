@@ -83,14 +83,14 @@ Before the split, TimeWarp.State was 130,688 bytes and depended on Microsoft.Asp
 
 ### Implementation review
 
-Review effort was 3 with a general reviewer, over 2 rounds. Final counts: bugs 0. Suggestions: 1 fixed, 1 wontfix. Nits: 2 fixed. Open: 0. Disposition: **accepted-exceptions**.
+Review effort was 3 with a general reviewer, over 3 rounds. Round 3 reviewed the PR #625 e2e fix (2a0725cf) and raised no findings. Final counts: bugs 0. Suggestions: 1 fixed, 1 wontfix. Nits: 2 fixed. Open: 0. Disposition: **accepted-exceptions**.
 
 - Fixed:
   - M1: `UseReduxDevTools` and `AddJavaScriptDispatch` now register `JsonRequestHandler` themselves.
   - M3: the sample overviews now show `AddTimeWarpStateBlazor()`.
   - M4: `tests/timewarp-state-tests/architecture/add-timewarp-state-blazor-tests.cs` covers registration, idempotency and call order. state tests: 84 passed, 1 skipped.
 - Wontfix: M2. There is no custom fail-fast when a Blazor host omits `AddTimeWarpStateBlazor()`. DI's error names `RenderSubscriptionContext`, and the call is documented.
-- Artifacts: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
+- Artifacts: `review/review-framework.md`, `review/round-3/merged.md`, `review/disposition.md`.
 
 ### How to validate
 
@@ -117,6 +117,7 @@ Expect:
 - Implementation: grok task-work implementer (2026-10-10)
 - Review: claude-opus-5-5 review oracle (2026-10-10), general reviewer subagent a954005f421aa90d7
 - Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-09T17:33:00Z
+- Review round 3: claude-opus-5-5 review oracle (2026-10-10), delta d0af155c..2a0725cf
 - Resume: grok task-work implementer (2026-10-10). Version is 12.0.0-beta.10. Static assets publish at `/_content/TimeWarp.State/` and the initializer is `TimeWarp.State.Blazor.lib.module.js`. `dev e2e` Passed 11, Skipped 3, Failed 0.
 ## Notes
 
