@@ -15,3 +15,11 @@
 - Do not invent issues to fill space; zero issues is a valid outcome
 - Address the diff and surrounding call sites; re-verify falsifiable claims against the repo
 - Prior rounds are immutable; new work goes in `round-(N+1)/`
+
+## Budget (by-diff)
+
+- Lines changed: 2130
+- Effort: 3
+- TCB hits: none
+- Roster axes: general
+- Turn cap: 200 (--max-turns; cursor uncapped)
