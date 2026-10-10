@@ -38,12 +38,16 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 ## Checklist
 
-- [ ] Decide minimal guard vs per-state serialization (record here)
-- [ ] Implement in `source/timewarp-state/features/pipeline/state-transaction-behavior.cs` (`:101`, `:131`)
-- [ ] Log when a concurrent action advanced the state
-- [ ] Interleaved-actions tests: A fails after B commits; B fails while A in flight
-- [ ] Docs (transaction semantics)
+- [x] Decide minimal guard vs per-state serialization (record here)
+- [x] Implement in `source/timewarp-state/features/pipeline/state-transaction-behavior.cs` (`:101`, `:131`)
+- [x] Log when a concurrent action advanced the state
+- [x] Interleaved-actions tests: A fails after B commits; B fails while A in flight
+- [x] Docs (transaction semantics)
 - [ ] Code review
+
+Decision: minimal `ReferenceEquals` guard, not per-state serialization. Fable's order is one reference check. A per-state `SemaphoreSlim` can deadlock when a handler waits on work that re-enters the same state; `WaitAsync` does not remove that deadlock. `IStore.GetSemaphore` stays for task 109 M5.
+
+Rollback restores the snapshot only when the store holds this action's clone. A different instance is a later action's committed clone: the behavior leaves it in place and logs warning `StateTransactionBehavior_ConcurrentAdvance` (event id 405): "Skipping rollback because a concurrent action advanced the state." In-place writes on the live clone are not a separate commit; the action that installed that clone still rolls them back.
 
 ## Acceptance criteria
 
@@ -54,6 +58,64 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implementation: Grok session 01a126c3-5c43-7a40-854c-f8cfd7fa93d0 (2026-10-11)
+
+## Results
+
+`StateTransactionBehavior` rolls back on failure only when the store holds the clone that action installed. A newer clone from an overlapping action stays in the store, and the skip is logged. Single-action rollback is unchanged. Actions are not serialized, and the behavior does not take a blocking wait.
+
+### Files
+
+- `source/timewarp-state/features/pipeline/state-transaction-behavior.cs`
+- `source/timewarp-state/event-ids.cs` (event id 405 `StateTransactionBehavior_ConcurrentAdvance`)
+- `tests/timewarp-state-tests/pipeline/state-transaction-behavior-tests.cs`
+- `documentation/overview.md`
+- `documentation/topics/cloning.md` (Transaction rollback)
+
+### Decisions
+
+Minimal `ReferenceEquals` guard. Per-state serialization is deferred because a lock around `Handle` deadlocks a re-entrant wait on the same state. `GetSemaphore` is unchanged (109 M5).
+
+The guard treats "advanced" as a different state instance. An in-flight handler that only mutates the live clone does not count as a commit. `Restore_Earlier_Clone_When_Overlapping_Action_Fails_While_Earlier_Action_Is_In_Flight` pins that case: the overlapping failure restores the earlier clone, and the earlier action's later re-read write sticks.
+
+Code review is the host review node. This implement pass did not run it.
+
+### Test outcomes
+
+`./bin/dev test` exited 0 (2026-10-11):
+
+| Suite | Result |
+| --- | --- |
+| analyzer | 38 passed |
+| source generator | 75 passed |
+| state | 104 passed, 1 skipped |
+| plus | 32 passed, 1 skipped |
+| telemetry | 13 passed |
+| client integration | 65 passed, 1 skipped |
+| architecture | 7 passed, 1 skipped |
+
+`StateTransactionBehaviorTests.Should_` is 9 passed, including the three overlap tests. `ganda repo audit` exited 0: 29 passed, 1 non-blocking advisory (`kebab-path-names` on existing Blazor `lib.module` paths).
+
+### How to validate
+
+**Smoke**
+
+```bash
+dotnet fixie timewarp-state-tests --tests '*StateTransactionBehavior*'
+```
+
+**Expect**
+
+9 passed. `Keep_Later_Commit_When_Earlier_Action_Fails_After_Later_Action_Commits` leaves value 42 on the later action's clone. `Keep_Successor_Commit_When_Overlapping_Action_Fails_While_Earlier_Action_Is_In_Flight` leaves value 77 on the successor clone and records one `StateTransactionBehavior_ConcurrentAdvance` warning. `Restore_Earlier_Clone_When_Overlapping_Action_Fails_While_Earlier_Action_Is_In_Flight` restores the earlier clone (value 3, not the overlapping write 9); after that action resumes, the same instance is 11.
+
+**Automated gate**
+
+```bash
+./bin/dev test
+ganda repo audit
+```
+
+**Not in scope:** deleting `IStore.GetSemaphore`, per-state serialization, and the host review node.
 
 ## Notes
 
