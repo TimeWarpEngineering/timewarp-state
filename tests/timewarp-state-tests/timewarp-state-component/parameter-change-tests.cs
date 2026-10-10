@@ -84,6 +84,19 @@ public class Should_
     numbers.RenderReasonDetail.ShouldBe("Parameter 'Numbers' changed");
   }
 
+  public static void DifferentCount_Rerenders()
+  {
+    CheckedParameterComponent numbers = ApplyReplacement
+    (
+      nameof(CheckedParameterComponent.Numbers),
+      new List<int> { 1, 2 },
+      new List<int> { 1, 2, 3 }
+    );
+
+    numbers.TriggerShouldRender().ShouldBeTrue();
+    numbers.RenderReasonDetail.ShouldBe("Parameter 'Numbers' changed");
+  }
+
   public static void SameItems_DoNotReportAChange()
   {
     SampleModel firstItem = new() { Version = 1 };

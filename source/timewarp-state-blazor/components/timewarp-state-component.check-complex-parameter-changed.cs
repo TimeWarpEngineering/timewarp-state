@@ -216,6 +216,13 @@ public abstract partial class TimeWarpStateComponent
       return true;
     }
 
+    // Different counts are a change without copying either collection.
+    if (currentValue is ICollection currentCollection && newValue is ICollection newCollection
+      && currentCollection.Count != newCollection.Count)
+    {
+      return true;
+    }
+
     object?[] currentItems = Snapshot(currentValue);
     object?[] incomingItems = Snapshot(newValue);
     return !currentItems.SequenceEqual(incomingItems);
