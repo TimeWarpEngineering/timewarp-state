@@ -16,6 +16,9 @@
 // member type's arguments by unifying its base chain and interfaces with the member type (GD<T> : GB<T> for GB<int>
 // dispatches to GD<int>); one whose type parameters are not determined, or whose constraints fail, is TWSG002 too.
 // An ICloneable type is cloned by its own Clone(), cast to the declared type, and is never wrapped in that dispatch.
+// The generator does not emit a field clone for that type. It does emit a module initializer that names the type
+// with DynamicallyAccessedMembers for public constructors and public methods, so a trimmed host can still
+// activate the state (EnsureStates uses ActivatorUtilities) and call ICloneable.Clone.
 // Types from other assemblies are cloned only when their full field list is known: TimeWarp.State's own types, or an
 // implementation assembly inspected with MetadataImportOptions.All. Reference assemblies hide private fields, so
 // their types are accepted only when every instance property is an auto-property and every instance method is a
@@ -46,6 +49,7 @@ internal sealed class StateClonePlanner
   private readonly List<INamedTypeSymbol> SourceTypes = [];
   private readonly Dictionary<IAssemblySymbol, List<INamedTypeSymbol>> AssemblyTypes = new(SymbolEqualityComparer.Default);
   private readonly List<Slot> Roots = [];
+  private readonly List<INamedTypeSymbol> ICloneableStates = [];
   private readonly INamedTypeSymbol? StateType;
   private Compilation? FullCompilation;
 
@@ -179,6 +183,7 @@ internal sealed class StateClonePlanner
 
     if (isState && ImplementsICloneable(type))
     {
+      RememberICloneableState(type);
       return;
     }
 
@@ -2954,7 +2959,8 @@ internal sealed class StateClonePlanner
       .OrderBy(slot => slot.MethodName, StringComparer.Ordinal)
       .ToList();
     List<Slot> roots = Roots.Where(slot => slot.Kind == SlotKind.Clone).Distinct().ToList();
-    if (methods.Count == 0 && roots.Count == 0)
+    List<INamedTypeSymbol> iCloneableStates = NamedICloneableStates();
+    if (methods.Count == 0 && roots.Count == 0 && iCloneableStates.Count == 0)
     {
       return null;
     }
@@ -3037,6 +3043,31 @@ internal sealed class StateClonePlanner
       builder.AppendLine("    }");
     }
 
+    if (iCloneableStates.Count > 0)
+    {
+      builder.AppendLine();
+      // ICloneable states keep their own Clone(). EnsureStates still constructs them by reflection,
+      // and the transaction behavior calls Clone(). Neither is a static newobj, so the trimmer drops
+      // the DI constructor and stubs Clone() unless this root names them.
+      builder.AppendLine("    [global::System.Runtime.CompilerServices.ModuleInitializer]");
+      builder.AppendLine("    internal static void RootICloneableStates()");
+      builder.AppendLine("    {");
+      foreach (INamedTypeSymbol type in iCloneableStates)
+      {
+        builder.AppendLine($"      RootStateForTrim<{type.ToDisplayString(Format)}>();");
+      }
+
+      builder.AppendLine("    }");
+      builder.AppendLine();
+      builder.AppendLine("    private static void RootStateForTrim<");
+      builder.AppendLine("      [global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMembers(");
+      builder.AppendLine("        global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicConstructors");
+      builder.AppendLine("        | global::System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.PublicMethods)] T>()");
+      builder.AppendLine("      where T : class");
+      builder.AppendLine("    {");
+      builder.AppendLine("    }");
+    }
+
     builder.AppendLine("  }");
     foreach (Holder holder in Holders.Values
       .Where(holder => holder.Problem is null && holder.Members.Count > 0)
@@ -3067,6 +3098,45 @@ internal sealed class StateClonePlanner
     for (ISymbol? symbol = type; symbol is not null and not INamespaceSymbol; symbol = symbol.ContainingSymbol)
     {
       if (symbol.DeclaredAccessibility != Accessibility.Public)
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  private void RememberICloneableState(INamedTypeSymbol type)
+  {
+    if (type.IsGenericType && type.IsDefinition)
+    {
+      return;
+    }
+
+    if (!CanNameFromGeneratedCode(type))
+    {
+      return;
+    }
+
+    if (ICloneableStates.Contains(type, SymbolEqualityComparer.Default))
+    {
+      return;
+    }
+
+    ICloneableStates.Add(type);
+  }
+
+  private List<INamedTypeSymbol> NamedICloneableStates() =>
+    ICloneableStates
+      .OrderBy(type => type.ToDisplayString(Format), StringComparer.Ordinal)
+      .ToList();
+
+  // A file-local class in this assembly can name public and internal types. It cannot name private or protected ones.
+  private static bool CanNameFromGeneratedCode(ITypeSymbol type)
+  {
+    for (ISymbol? symbol = type; symbol is not null and not INamespaceSymbol; symbol = symbol.ContainingSymbol)
+    {
+      if (symbol.DeclaredAccessibility is Accessibility.Private or Accessibility.Protected or Accessibility.ProtectedAndInternal)
       {
         return false;
       }

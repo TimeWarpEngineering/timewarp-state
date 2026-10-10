@@ -73,11 +73,11 @@ public static partial class ServiceCollectionExtensions
 
   // Known trim-unsafe assembly scan, kept until states are registered by generated code (follow-up in task 097 Results).
   // Trimming does not keep a type because GetTypes() could return it: console PublishTrimmed and PublishAot default to
-  // TrimMode=full, which trims the application assembly. Every concrete state is rooted instead by the generated
-  // StateCloneRegistry module initializer, which references the state type and the constructor its clone calls. A
-  // state whose DI constructor differs from that one may need to be rooted by the host under TrimMode=full.
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Every concrete state type is rooted by the generated StateCloneRegistry registration, so the scan finds it after trimming. Follow-up: generated state registration.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "The generated StateCloneRegistry registration roots each state and the constructor its clone calls; a different DI constructor may need rooting under TrimMode=full. Follow-up: generated state registration.")]
+  // TrimMode=full, which trims the application assembly. Generated clones root the constructor they call.
+  // ICloneable states are not field-cloned; their assembly's module initializer roots public constructors and
+  // public methods so ActivatorUtilities and ICloneable.Clone survive trimming.
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Concrete states are rooted by the generated StateCloneRegistry, or by RootICloneableStates for ICloneable states, so the scan finds them after trimming. Follow-up: generated state registration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Generated clone code or RootICloneableStates keeps the constructor ActivatorUtilities calls. Follow-up: generated state registration.")]
   private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
   {
     foreach (Assembly assembly in timeWarpStateOptions.Assemblies)

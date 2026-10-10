@@ -4,7 +4,9 @@
 
 #region Design
 // External cloners, not partial members, so existing states stay non-partial. ICloneable is skipped and wins at
-// runtime. One compilation produces one source file. TWSG002 is an error: there is no reflection fallback.
+// runtime. The same compilation still emits a module initializer that roots those states' public constructors and
+// public methods, because EnsureStates and ICloneable.Clone are not static calls the trimmer can see.
+// One compilation produces one source file. TWSG002 is an error: there is no reflection fallback.
 // The plan needs the whole compilation (states, their member graphs, and the implementations a dispatch switches on),
 // so the only input is CompilationProvider. The generator reruns on every compilation change; the closed-generic
 // syntax scan is limited to the names of [GenerateClone] generic definitions.
