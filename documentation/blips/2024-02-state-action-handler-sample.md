@@ -14,6 +14,6 @@ Each sample demonstrates:
 - Clean separation of concerns
 - Best practices for state handling
 
-Explore the samples: https://github.com/TimeWarpEngineering/timewarp-state/tree/main/Samples/00-StateActionHandler
+Explore the samples: https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/00-state-action-handler
 
 #blazor #dotnet #statemanagement #webdev #opensource

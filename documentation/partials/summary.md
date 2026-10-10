@@ -17,6 +17,6 @@ similar to the request-processing pipeline in ASP.NET.
 This approach allows developers to inject custom behaviors, such as logging,
 validation, and caching, directly into the state management flow.
 
-In addition to the core library, we offer **[TimeWarp.State.Plus](/Source/TimeWarp.State.Plus)**, 
+In addition to the core library, we offer **[TimeWarp.State.Plus](../../source/timewarp-state-plus/readme.md)**, 
 which extends the functionality with enhanced middleware, components, 
 and tools to further streamline state management in complex Blazor applications.

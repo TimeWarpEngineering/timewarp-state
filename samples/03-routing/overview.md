@@ -27,7 +27,7 @@ This sample demonstrates TimeWarp.State.Plus's comprehensive routing feature tha
 
 This directory contains examples of the routing feature implemented in different Blazor render modes:
 
-- [Wasm](Wasm/): Implementation using Blazor's Interactive WebAssembly render mode
+- [Wasm](wasm/overview.md): Implementation using Blazor's Interactive WebAssembly render mode
 
 ## Key Benefits
 

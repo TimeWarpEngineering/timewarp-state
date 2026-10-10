@@ -1,20 +1,4 @@
 {
-  "metadata": [
-    {
-      "src": [
-        {
-          "files": [
-            "Source/TimeWarp.State/TimeWarp.State.csproj",
-            "Source/TimeWarp.State.Plus/TimeWarp.State.Plus.csproj"
-          ],
-          "src": "../"
-        }
-      ],
-      "dest": "TimeWarp.State/api",
-      "disableGitFeatures": false,
-      "disableDefaultFilter": false
-    }
-  ],
   "build": {
     "content": [
       {
@@ -22,23 +6,33 @@
           "**/**.md",
           "**/**.yml"
         ],
-        "exclude": [ "Images/**", "**/Model**", "_site/**" ]
+        "exclude": [ "images/**", "**/model/**", "_site/**", "api/**" ]
       },
       {
-        "src":"../"
+        "src": "../",
+        "files": [
+          "samples/**/*.md",
+          "source/timewarp-state-telemetry/readme.md",
+          "source/timewarp-state-plus/readme.md"
+        ],
+        "exclude": [
+          "**/bin/**",
+          "**/obj/**",
+          "samples/**/ai.prompt.md"
+        ]
       }
     ],
     "resource": [
       {
         "files": [
-          "Images/**"
+          "images/**"
         ]
       },
       {
         "src": "../",
         "files": [
-          "Assets/**",
-          "Samples/**/Images/**"
+          "assets/**",
+          "samples/**/images/**"
         ]
       }
 

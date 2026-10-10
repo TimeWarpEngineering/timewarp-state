@@ -9,6 +9,6 @@ Manage complex navigation flows with stack-based routing:
 ⬅️ Support multi-step back navigation
 📝 Automatic page title synchronization
 
-Explore the implementation: https://github.com/TimeWarpEngineering/timewarp-state/tree/main/Samples/03-Routing
+Explore the implementation: https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/03-routing
 
 #blazor #dotnet #webdev #opensource

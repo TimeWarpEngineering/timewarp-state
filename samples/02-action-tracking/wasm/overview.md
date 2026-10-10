@@ -1,3 +1,4 @@
+---
 uid: TimeWarp.State:02-ActionTracking.md
 title: TimeWarp.State Action Tracking Tutorial
 description: Learn how to implement Action Tracking in TimeWarp.State applications
@@ -7,10 +8,10 @@ description: Learn how to implement Action Tracking in TimeWarp.State applicatio
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [sample-02-wasm Project](./sample-02-wasm/)
-> - [Demo State and Actions](./sample-02-wasm/features/demo/)
-> - [Demo Page Component](./sample-02-wasm/pages/demo.razor)
-> - [Program.cs with Action Tracking Configuration](./sample-02-wasm/program.cs)
+> - [sample-02-wasm Project](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/02-action-tracking/wasm/sample-02-wasm)
+> - [Demo State and Actions](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/02-action-tracking/wasm/sample-02-wasm/features/demo)
+> - [Demo Page Component](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/02-action-tracking/wasm/sample-02-wasm/pages/Demo.razor)
+> - [Program.cs with Action Tracking Configuration](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/02-action-tracking/wasm/sample-02-wasm/program.cs)
 
 ## What is Action Tracking?
 

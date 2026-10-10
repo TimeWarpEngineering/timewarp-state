@@ -4,28 +4,28 @@ This directory contains sample projects that demonstrate various features and ca
 
 ## Available Samples
 
-### [00-StateActionHandler](00-StateActionHandler/)
+### [00-StateActionHandler](00-state-action-handler/overview.md)
 Demonstrates the fundamental StateActionHandler pattern, which implements unidirectional data flow in TimeWarp.State. This sample showcases:
 - State management through immutable states
 - Action-based state modifications
 - Handler implementation for processing actions
 - Examples in multiple Blazor render modes (Auto, Server, WebAssembly)
 
-### [01-ReduxDevTools](01-ReduxDevTools/)
+### [01-ReduxDevTools](01-redux-dev-tools/wasm/overview.md)
 Shows integration with Redux DevTools for enhanced debugging capabilities:
 - Real-time state monitoring
 - Action tracking and time-travel debugging
 - State inspection and modification
 - WebAssembly implementation example
 
-### [02-ActionTracking](02-ActionTracking/)
+### [02-ActionTracking](02-action-tracking/wasm/overview.md)
 Illustrates action tracking functionality:
 - Monitoring action execution
 - Performance tracking
 - Action state management
 - WebAssembly implementation example
 
-### [03-Routing](03-Routing/)
+### [03-Routing](03-routing/overview.md)
 Demonstrates TimeWarp.State.Plus's comprehensive routing features:
 - Stack-based navigation management
 - Breadcrumb navigation support
@@ -34,21 +34,21 @@ Demonstrates TimeWarp.State.Plus's comprehensive routing features:
 - Page title synchronization
 - WebAssembly implementation example
 
-### [04-Telemetry](04-telemetry/)
+### [04-Telemetry](04-telemetry/overview.md)
 Observes TimeWarp.State actions in the Aspire dashboard via OpenTelemetry:
 - One span per dispatched action (type names, duration, success/failure)
 - Blazor Server `ActivitySource` path
 - OTLP export when the AppHost (or `OTEL_EXPORTER_OTLP_ENDPOINT`) is set
 - Snapshots remain opt-in and off in the sample
 
-### [05-Persistence](05-persistence/)
+### [05-Persistence](05-persistence/overview.md)
 Stores two states in the browser with `[PersistentState]`:
 - Session storage for a tab-scoped draft (`DraftNoteState`)
 - Local storage for accent and density (`DisplayPreferencesState`)
 - Startup load through `LoadPersistentStateRequest`
 - FullName write key, simple-name fallback on load (no migration framework)
 
-### [06-Render control](06-render-control/)
+### [06-Render control](06-render-control/overview.md)
 Shows when `TimeWarpStateComponent` paints:
 - `RendererInfo`, `IsPreRendering`, and `AssignedRenderMode` on a WebAssembly host
 - `RenderReason` for event, parameter, subscription, and `ReRender`

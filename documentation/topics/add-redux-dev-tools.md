@@ -17,13 +17,13 @@ This is quite handy for debugging.
 
 Redux Dev Tools are disabled by default.  Update the options passed to the `AddTimeWarpState` extension method to set `UseReduxDevToolsBehavior` to true, as show here in the sample application:
 
-[!code-csharp[Startup](../../Samples/01-ReduxDevTools/Wasm/Sample01Wasm/Program.cs?highlight=15 "Code Link")]
+[!code-csharp[Startup](../../samples/01-redux-dev-tools/wasm/sample-01-wasm/program.cs?highlight=28 "Code Link")]
 
 ### Add ReduxDevTools Component
 
 Add the ReduxDevTools Component to your App.Razor
 
 See example from the sample app below:
-[!code-csharp[Startup](../../Samples/01-ReduxDevTools/Wasm/Sample01Wasm/App.razor?highlight=15,19 "Code Link")]
+[!code-cshtml[App](../../samples/01-redux-dev-tools/wasm/sample-01-wasm/App.razor?highlight=15-16 "Code Link")]
 
 Now run your app and Open the Redux Dev Tools and you should see Actions as they are executed.

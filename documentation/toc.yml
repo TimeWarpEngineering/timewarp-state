@@ -1,9 +1,9 @@
-﻿# auto-generated
+# auto-generated
 - name: Overview
   topicUid: TimeWarpState:Overview.md
 - name: Topics
-  href: Topics/
+  href: topics/
 - name: Release Notes
-  href: ReleaseNotes/
+  href: release-notes/
 - name: Migrations
-  href: Migrations/
+  href: migrations/

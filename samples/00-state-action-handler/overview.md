@@ -33,9 +33,9 @@ The StateActionHandler pattern is a fundamental concept in TimeWarp.State that i
 
 This directory contains examples of the StateActionHandler pattern implemented in different Blazor render modes:
 
-- [Auto](Auto/): Implementation using Blazor's Interactive Auto render mode
-- [Server](Server/): Implementation using Blazor's Interactive Server render mode
-- [Wasm](Wasm/): Implementation using Blazor's Interactive WebAssembly render mode
+- [Auto](auto/overview.md): Implementation using Blazor's Interactive Auto render mode
+- [Server](server/overview.md): Implementation using Blazor's Interactive Server render mode
+- [Wasm](wasm/overview.md): Implementation using Blazor's Interactive WebAssembly render mode
 
 Each example demonstrates the same core concepts but highlights considerations specific to that render mode.
 
