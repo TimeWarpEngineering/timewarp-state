@@ -9,6 +9,9 @@
 // overrides and trace logs match the documented contract.
 // HandleUnregisteredParameter returning true must set RenderReasonDetail here;
 // derived classes cannot, because the setter is private.
+// Value types and string compare with Equals. Other non-collection reference types compare by reference.
+// Collections compare with SequenceEqual on a materialized snapshot, so order is significant.
+// IQueryable is never enumerated; a different instance counts as changed.
 #endregion
 
 namespace TimeWarp.State;
@@ -129,7 +132,7 @@ public abstract partial class TimeWarpStateComponent
     
     bool changed;
     
-    if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string))
+    if (ComparesByValue(property.PropertyType))
     {
       changed = CheckPrimitiveParameterChanged(currentValue, incomingValue);
     }
@@ -182,11 +185,47 @@ public abstract partial class TimeWarpStateComponent
     return !Equals(currentValue, newValue);
   }
 
+  /// <summary>
+  /// Reports whether a collection parameter changed.
+  /// </summary>
+  /// <param name="currentValue">The collection on the component before this parameter set.</param>
+  /// <param name="newValue">The collection supplied by the parent.</param>
+  /// <returns>
+  /// True when the element snapshots differ, or when either value is an <see cref="IQueryable"/>
+  /// that is not the same instance.
+  /// </returns>
+  /// <remarks>
+  /// Elements are copied before they are compared, so a live collection cannot change mid-comparison.
+  /// An <see cref="IQueryable"/> is not enumerated.
+  /// </remarks>
   protected virtual bool CheckCollectionParameterChanged(IEnumerable? currentValue, IEnumerable? newValue)
   {
-    // Implement collection comparison logic
-    // This is a simplistic check, you might want to implement a more thorough comparison
-    return currentValue?.Cast<object>().Count() != newValue?.Cast<object>().Count();
+    if (ReferenceEquals(currentValue, newValue))
+    {
+      return false;
+    }
+
+    if (currentValue is null || newValue is null)
+    {
+      return true;
+    }
+
+    // Enumerating a query executes it. A different instance is a change.
+    if (currentValue is IQueryable || newValue is IQueryable)
+    {
+      return true;
+    }
+
+    // Different counts are a change without copying either collection.
+    if (currentValue is ICollection currentCollection && newValue is ICollection newCollection
+      && currentCollection.Count != newCollection.Count)
+    {
+      return true;
+    }
+
+    object?[] currentItems = Snapshot(currentValue);
+    object?[] incomingItems = Snapshot(newValue);
+    return !currentItems.SequenceEqual(incomingItems);
   }
 
   /// <summary>
@@ -200,6 +239,8 @@ public abstract partial class TimeWarpStateComponent
   /// </returns>
   /// <remarks>
   /// This method performs a basic reference comparison by default.
+  /// Value types, enums, and string are compared with Equals and do not reach this method.
+  /// Collections are compared element-wise and do not reach this method.
   /// Override this method in derived classes to implement custom comparison logic for complex types.
   /// Note: When overriding, be mindful of the performance implications of your custom comparison logic,
   /// especially for large or deeply nested objects.
@@ -243,5 +284,16 @@ public abstract partial class TimeWarpStateComponent
   {
     // Default implementation for unregistered parameters
     return false;
+  }
+
+  private static bool ComparesByValue(Type type)
+  {
+    Type comparedType = Nullable.GetUnderlyingType(type) ?? type;
+    return comparedType.IsValueType || comparedType == typeof(string);
+  }
+
+  private static object?[] Snapshot(IEnumerable values)
+  {
+    return values.Cast<object?>().ToArray();
   }
 }

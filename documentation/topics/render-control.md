@@ -38,6 +38,8 @@ Parameter comparison runs when a derived type overrides `CheckPrimitiveParameter
 
 Override the primitive check and call the base method when the category should be `ParameterChanged` and the detail should name the parameter. Override `CheckComplexParameterChanged` when a new instance can carry the same values. The arguments are the current value, then the incoming value. Return false to skip the render.
 
+`decimal`, `DateTime`, `Guid`, enums, and other value types use `Equals`, the same comparison as primitives. A collection uses `SequenceEqual` on a snapshot of its elements, so a new list of the same length with different items is a change and a new list of the same items is not. An `IQueryable` is not enumerated; a different instance counts as changed.
+
 `HandleUnregisteredParameter` is the hook for a `ParameterView` entry that is not a `[Parameter]` or `[CascadingParameter]`. Return true to count that name as a change. The base class sets `RenderReasonDetail`. Blazor still assigns the view and throws if the name is not a property. The base hook returns false.
 
 ## Render mode
