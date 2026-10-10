@@ -72,6 +72,7 @@ Fix 36 documentation warnings found during production release preparation. These
 ## Session
 
 - Implementer: grok session 01a123c8-fe9f-7f12-8bff-da6ecee02c68 (2026-10-10)
+- Review oracle: claude-opus-5-5 (2026-10-10), general reviewer subagent a9d878d886d845b42
 
 ## Results
 
@@ -112,3 +113,11 @@ Build succeeded.
 Open `documentation/_site/topics/routing.html` and confirm the Routing Tutorial link targets the Sample 03 article. Open `documentation/_site/migrations/toc.html` and confirm the migration entries are listed. Open `documentation/_site/samples/overview.html` and confirm samples 00–03 link to `00-state-action-handler`, `01-redux-dev-tools`, `02-action-tracking`, and `03-routing`.
 
 **Not in scope:** .NET API reference pages. `docfx.json` does not run metadata, because that recompile reports existing `NU1510` and `CS7035` build warnings.
+
+### Review
+
+- Rounds: 1 · effort 2 · roster: general (Claude Opus 5.5 review oracle + general subagent)
+- Final counts: bug 0, suggestion 0, nit 1 (wontfix) · 0 open
+- Disposition: **accepted-exceptions** — M1 nit (PascalCase link text in `samples/overview.md`) kept as display titles
+- Orchestrator re-ran DocFX: 0 warnings, 0 errors
+- Artifacts: `review/review-framework.md`, `review/round-1/merged.md`, `review/disposition.md`
