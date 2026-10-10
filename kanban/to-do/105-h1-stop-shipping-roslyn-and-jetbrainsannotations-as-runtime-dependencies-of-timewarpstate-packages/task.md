@@ -43,7 +43,7 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 - [x] `JetBrains.Annotations` private (`source/timewarp-state/timewarp-state.csproj:39`)
 - [x] Nuspec dependency allow-list check (test or `dev pack` step) for all packed packages
 - [x] Verify analyzer/generator still load in consumers and the 4.14.0 Roslyn floor (task 101) still holds
-- [ ] Code review
+- [x] Code review
 
 ## Acceptance criteria
 
@@ -92,12 +92,20 @@ Expect:
 - `ganda repo audit` exits 0.
 - The valid state builds. The private-constructor state fails with `TWS001`. The consumer assets file does not list `Microsoft.CodeAnalysis.CSharp` or `JetBrains.Annotations`.
 
-Run pack through `dotnet run --file tools/dev-cli/dev.cs -- pack`. The checked-in `./bin/dev` binary is built separately and can lag the allow-list check in source.
+Run pack through `dotnet run --file tools/dev-cli/dev.cs -- pack`. The locally built `./bin/dev` binary (not tracked by git) is built separately and can lag the allow-list check in source.
+
+### Review disposition
+
+- Rounds: 1. Effort 2, roster: general (claude review oracle).
+- Final counts: bug 0, suggestion 0, nit 2 fixed (M1: XML-based Roslyn guard in `PinRoslynAtTheConsumerCompilerFloor`; M2: `bin/dev` wording). Open: 0, wontfix: 0.
+- Disposition: **clean**.
+- Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: grok task-work implementer (2026-10-10)
+- Review: claude review oracle, ganda task work (2026-10-10)
 
 ## Notes
 

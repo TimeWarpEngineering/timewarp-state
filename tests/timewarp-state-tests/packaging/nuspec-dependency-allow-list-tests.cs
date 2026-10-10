@@ -72,8 +72,11 @@ public class NuspecDependencyAllowList_Should_
     props.ShouldContain("""<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />""");
 
     string buildProps = ReadRepoFile("Directory.Build.props");
-    buildProps.ShouldNotContain("""<PackageReference Include="Microsoft.CodeAnalysis.CSharp" />""");
-    buildProps.ShouldNotContain("""<PackageReference Include="Microsoft.CodeAnalysis.CSharp"/>""");
+    System.Xml.Linq.XDocument.Parse(buildProps)
+      .Descendants()
+      .Where(element => element.Name.LocalName == "PackageReference")
+      .Select(element => (string?)element.Attribute("Include"))
+      .ShouldNotContain("Microsoft.CodeAnalysis.CSharp");
   }
 
   private static string ReadRepoFile(string relativePath)
