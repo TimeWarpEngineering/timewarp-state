@@ -26,7 +26,7 @@ Open `http://localhost:5295`.
 
 1. Type a note and leave the field (the change event dispatches `UpdateText`). In the browser's Application tab, session storage has a key equal to `DraftNoteState`'s full name.
 2. Pick an accent and toggle density. Local storage has a key equal to `DisplayPreferencesState`'s full name. The JSON uses camelCase property names and the accent enum as a string, because save and load share `TimeWarpStateOptions.JsonSerializerOptions`.
-3. Reload the tab. Both values come back. The page awaits `IStore.StateInitializationTasks` so the first render is the loaded snapshot. That task is `StateInitializedNotification`, and the handler sends `LoadPersistentStateRequest` (not a generated per-state load action).
+3. Reload the tab. Both values come back. The page awaits `WaitForInitializationAsync` so the first render is the loaded snapshot. That task is `StateInitializedNotification`, and the handler sends `LoadPersistentStateRequest` (not a generated per-state load action).
 4. Open a second tab to the same URL. The accent is still there. The draft is empty. Session storage is per tab.
 5. **Reload from session storage** / **Reload from local storage** call the generated `Load()` method, which sends `LoadPersistentStateRequest` again.
 
@@ -37,8 +37,6 @@ Use **session storage** for data that belongs to one tab: an unsaved draft, a wi
 Use **local storage** for preferences that should stick: theme, density, last-used view. It is shared by every tab on the origin. This library does not push a write from one tab into another; the other tab sees it on its next load.
 
 Both stores are readable by any script on the origin. Do not persist credentials, tokens, or anything you would refuse to put in a non-HttpOnly cookie. Keep the persisted type small: every action on that type serializes the whole state and writes one string.
-
-`PersistentStateMethod.Server` and `PersistentStateMethod.PreRender` are not implemented. This sample does not use them.
 
 ## Keys and shape changes
 
@@ -53,9 +51,9 @@ There is no migration framework in TimeWarp.State. Do not add one beside this sa
 ## Host checklist
 
 - `[PersistentState(PersistentStateMethod.SessionStorage | LocalStorage)]` on a **top-level** state. Nested states are TWSG001.
-- `[JsonConstructor]` plus a parameterless constructor so JSON can construct the state. TWS001 accepts any accessible constructor, or `ICloneable`; it no longer requires a parameterless constructor.
+- `[JsonConstructor]` plus a parameterless constructor so JSON can construct the state. TWS0009 accepts any accessible constructor, or `ICloneable`; it no longer requires a parameterless constructor.
 - `[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]`.
 - `AddGeneratedMediator<ClientPipeline>()`.
-- `AddScoped<IPersistenceService, PersistenceService>()`.
+- `AddTimeWarpStatePersistence()`.
 - `UseReduxDevTools()` so the linked `CommitHandler` can be constructed when the Development host validates DI. This sample does not render `<ReduxDevTools />`, so the extension is not initialized.
 - Alias `PersistentStateAttribute` to `TimeWarp.Features.Persistence.PersistentStateAttribute`. .NET 10 also defines `Microsoft.AspNetCore.Components.PersistentStateAttribute`.

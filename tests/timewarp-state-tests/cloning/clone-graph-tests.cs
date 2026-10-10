@@ -1,6 +1,6 @@
 #region Purpose
-// Proves TimeWarp.Features.Cloning deep-copies state graphs (AnyClone replacement) with the rules
-// StateTransactionBehavior relies on: ignored members keep constructor values, graphs are independent.
+// Proves the generated clone deep-copies state graphs with the rules StateTransactionBehavior relies on:
+// ignored members keep constructor values, and graphs are independent.
 #endregion
 
 #region Design
@@ -8,7 +8,7 @@
 // tests, which run the same cloner in a real browser on net11.
 #endregion
 
-namespace DeepClonerTests;
+namespace CloneGraphTests;
 
 public class Should_
 {

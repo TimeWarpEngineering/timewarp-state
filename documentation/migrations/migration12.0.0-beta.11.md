@@ -32,10 +32,45 @@ The clone creates each instance with a constructor: the parameterless one at any
 
 A member typed as a non-sealed class, an abstract class, or an interface is cloned by its runtime type, using the types the generator saw in the compilation. A subclass declared in another assembly throws `InvalidOperationException` when cloned unless it implements `ICloneable`. A collection interface holding a value of an unknown type (a LINQ iterator, for example) is copied into a `List<T>`, `HashSet<T>`, or `Dictionary<TKey,TValue>`.
 
-### TWS001
+### TWS0009
 
-A concrete class that derives directly from `State<T>` must implement `ICloneable` or have an accessible constructor. A parameterless constructor is no longer required. Abstract bases such as `TimeWarpCacheableState<TState>` are not flagged. Persistence still wants `[JsonConstructor]` on a constructor JSON can call. That requirement is separate from TWS001.
+A concrete class that derives directly from `State<T>` must implement `ICloneable` or have an accessible constructor. A parameterless constructor is no longer required. Abstract bases such as `TimeWarpCacheableState<TState>` are not flagged. Persistence still wants `[JsonConstructor]` on a constructor JSON can call. That requirement is separate from TWS0009.
 
 ### What stays the same
 
 A member marked `[CloneShared]` is the same instance on the clone. Ignored members (`IgnoreDataMember`, `NonSerialized`, `JsonIgnore`) keep constructor values. `[CloneShared]` wins when a member has both. Cycles and shared references inside one graph are preserved. The clone does not block.
+
+## Store
+
+`IStore.GetSemaphore` and the public `StateInitializationTasks` dictionary are removed. Replace a dictionary wait with `await store.WaitForInitializationAsync<YourState>()`. `GetState(Type)` returns `IState`. `FindInitializationTask` does not create a state. `Reset` now cancels and drops each state.
+
+## Transactions
+
+A cancelled action throws `OperationCanceledException` after rollback. Do not treat a cancelled `Send` as success. Handler exceptions still publish `ExceptionNotification` and, unless you set `TimeWarpStateOptions.RethrowHandlerExceptions = true`, `Send` returns the default response. See [State transactions](xref:TimeWarpState:StateTransactions.md).
+
+## Persistence
+
+Delete `PersistentStateMethod.PreRender` and `PersistentStateMethod.Server`. Call `AddTimeWarpStatePersistence()` instead of `AddScoped<IPersistenceService, PersistenceService>()`. Register only the Blazored stores you use. A missing store is skipped with a warning.
+
+## Blazor `HttpClient`
+
+`AddTimeWarpStateBlazor` no longer registers a server `HttpClient`. Register one on the host when a component or handler injects `HttpClient`:
+
+```csharp
+builder.Services.AddScoped(sp => new HttpClient
+{
+  BaseAddress = new Uri(sp.GetRequiredService<NavigationManager>().BaseUri)
+});
+```
+
+## Test-only members
+
+Call `StateTestOptions.Enable()` from the test host before using test-only `Initialize` overloads. The assembly-name check is gone.
+
+## Analyzer ids
+
+Update `.editorconfig` and suppressions: `TWS001` is `TWS0009`, `StateInheritanceTypeArgumentRule` is `TWS0010`, `StateSealedClassRule` is `TWS0011`, and `StateReadOnlyPublicPropertiesRule` is `TWS0012`. `init` accessors, `internal set`, positional record properties, and `protected set` on an abstract state are allowed. A public setter and a `protected set` on a non-abstract state are `TWS0012`.
+
+## Page title
+
+`PushRouteInfo` imports `./_content/TimeWarp.State.Plus/js/document-title.js` and calls `getDocumentTitle`. Content-Security-Policy no longer needs `unsafe-eval` for the route stack. Hosts that block script modules still get the URL, with an empty title.

@@ -4,8 +4,9 @@
 #endregion
 
 #region Design
-// Looks up Store.StateInitializationTasks by the enclosing state's FullName. With no task registered it passes
-// straight through. Sealed, closes only onto IAction requests, and logs then rethrows initialization failures.
+// Looks up IStore.FindInitializationTask by the enclosing state type. With no task registered it passes
+// straight through and does not create the state. Sealed, closes only onto IAction requests, and logs then
+// rethrows initialization failures.
 #endregion
 
 namespace TimeWarp.State;
@@ -34,10 +35,13 @@ public sealed class StateInitializationPreProcessor<TMessage, TResponse> : IPipe
     CancellationToken cancellationToken
   )
   {
-    string typeName = typeof(TMessage).GetEnclosingStateType().FullName ?? throw new InvalidOperationException();
+    Type enclosingStateType = typeof(TMessage).GetEnclosingStateType();
+    string typeName = enclosingStateType.FullName ?? throw new InvalidOperationException();
 
-    // Wait for the state initialization to complete before processing the action
-    if (Store.StateInitializationTasks.TryGetValue(typeName, out Task? initializationTask))
+    // Wait for the state initialization to complete before processing the action.
+    // FindInitializationTask does not create the state; the transaction behavior does that on the way in.
+    Task? initializationTask = Store.FindInitializationTask(enclosingStateType);
+    if (initializationTask is not null)
     {
       try
       {

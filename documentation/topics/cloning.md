@@ -83,7 +83,7 @@ Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it 
 
 A state that is dispatched without a registration throws `InvalidOperationException` from `StateCloneRegistry.Clone`. That happens when the state's assembly was built without the generator.
 
-`TWS001` requires a concrete type that derives directly from `State<T>` to implement `ICloneable` or to have a public constructor (or an internal one in the same assembly). A parameterless constructor is not required. Abstract states are exempt.
+`TWS0009` requires a concrete type that derives directly from `State<T>` to implement `ICloneable` or to have a public constructor (or an internal one in the same assembly). A parameterless constructor is not required. Abstract states are exempt.
 
 ## Constructors
 

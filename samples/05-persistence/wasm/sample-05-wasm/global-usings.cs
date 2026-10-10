@@ -17,6 +17,7 @@ global using TimeWarp.Features.Persistence;
 global using TimeWarp.Mediator;
 global using TimeWarp.State;
 global using TimeWarp.State.Plus;
+global using TimeWarp.State.Plus.Extensions;
 // .NET 10 added Microsoft.AspNetCore.Components.PersistentStateAttribute. The Blazor WebAssembly
 // SDK imports that namespace globally, so [PersistentState] is ambiguous without this alias.
 global using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAttribute;

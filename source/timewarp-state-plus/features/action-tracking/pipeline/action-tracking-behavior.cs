@@ -6,6 +6,7 @@
 // IsInternal / IsTracked are cached per closed generic. IInternalAction replaces the former
 // EnsureNotType list for StartProcessing / CompleteProcessing so a forgotten exclusion skips
 // tracking instead of throwing. Re-entrant start/complete sends stay on ClientPipeline.
+// CompleteProcessing uses CancellationToken.None so a cancelled request cannot leave IsActive stuck.
 #endregion
 
 namespace TimeWarp.Features.ActionTracking;
@@ -69,7 +70,7 @@ public class ActiveActionBehavior<TAction, TResponse> : IPipelineBehavior<TActio
           action.GetType().FullName
         );
         
-        await Sender.Send(new CompleteProcessingActionSet.Action(action), cancellationToken);
+        await Sender.Send(new CompleteProcessingActionSet.Action(action), CancellationToken.None);
         Logger.LogDebug
         (
           State.Plus.EventIds.ActionTrackingBehavior_CompletedTracking,

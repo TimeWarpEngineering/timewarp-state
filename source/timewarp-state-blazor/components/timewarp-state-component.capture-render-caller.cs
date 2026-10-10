@@ -15,6 +15,7 @@ public partial class TimeWarpStateComponent
 {
   [Inject] private TimeWarpStateOptions TimeWarpStateOptions { get; set; } = null!;
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "CaptureRenderCaller is a diagnostic opt-in. The frame names the app method that called ShouldRender, SetParametersAsync, or StateHasChanged.")]
   private static string FormatRenderCaller(StackFrame? frame)
   {
     MethodBase? method = frame?.GetMethod();

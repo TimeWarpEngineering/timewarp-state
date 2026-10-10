@@ -5,7 +5,9 @@
 #region Design
 // Clone is outside the try; the catch is a handler failure, not a clone failure.
 // ExceptionNotification is published with CancellationToken.None so a cancelled request token cannot skip reporting.
-// OperationCanceledException rolls back when this action's clone is live; it is not published because cancellation is not a failure.
+// OperationCanceledException rolls back when this action's clone is live, is not published, and is rethrown.
+// Other handler exceptions are published and then rethrown only when TimeWarpStateOptions.RethrowHandlerExceptions is set.
+// Otherwise Send returns the default response after rollback.
 // Rollback uses ReferenceEquals against the clone this action installed. A different instance is a later action's
 // committed clone, so the snapshot stays out of the store and the skip is logged. Actions are not serialized: a
 // per-state lock can deadlock a handler that waits on work which re-enters that state, and WaitAsync does not
@@ -39,6 +41,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
   private readonly IPublisher<ClientPipeline> Publisher;
   private readonly IStore Store;
   private readonly bool Enabled;
+  private readonly bool RethrowHandlerExceptions;
 
   public StateTransactionBehavior
   (
@@ -53,6 +56,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     Publisher = publisher;
     // The behavior is woven at compile time; TimeWarpStateOptions.UseStateTransactionBehavior turns it off at runtime.
     Enabled = timeWarpStateOptions.UseStateTransactionBehavior;
+    RethrowHandlerExceptions = timeWarpStateOptions.RethrowHandlerExceptions;
 
     string className = typeof(StateTransactionBehavior<,>).GetSimpleName();
 
@@ -157,6 +161,13 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
         );
 
         await Publisher.Publish(exceptionNotification, CancellationToken.None);
+      }
+
+      // Cancellation must propagate so callers stop chaining work. Handler exceptions propagate only
+      // when the host opts in; the default keeps Send from faulting after ExceptionNotification.
+      if (isCancellation || RethrowHandlerExceptions)
+      {
+        throw;
       }
 
       return default!;// It can be null, but we don't care since TimeWarp.Mediator handles null values gracefully.

@@ -10,6 +10,8 @@
   topicUid: TimeWarp.State:Routing.md
 - name: Persistence
   topicUid: TimeWarpState:Persistence.md
+- name: State transactions
+  topicUid: TimeWarpState:StateTransactions.md
 - name: Render control
   topicUid: TimeWarpState:RenderControl.md
 - name: Action catalog

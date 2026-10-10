@@ -5,7 +5,7 @@ title: Summary
 
 # TimeWarp.State
 
-**TimeWarp.State** (previously known as Blazor-State [![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/) ) 
+**TimeWarp.State** (previously known as Blazor-State) 
 is a fully asynchronous state management library for Blazor applications,
 leveraging the TimeWarp.Mediator 14-beta generated pipeline (`AddGeneratedMediator<ClientPipeline>()` / named pipelines) to implement the Flux pattern. 
 It handles both Reducers and Effects consistently using async Handlers,

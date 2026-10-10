@@ -48,7 +48,7 @@ public class Should_Not_Trigger_StateInheritanceRules
   }
 }
 
-public class Should_Trigger_StateInheritanceTypeArgumentRule
+public class Should_Trigger_TWS0010
 {
   public static async Task Given_TimeWarpState_WithWrongTypeArg()
   {
@@ -67,7 +67,7 @@ public class Should_Trigger_StateInheritanceTypeArgumentRule
       }
       """;
 
-    DiagnosticResult expectedDiagnostic = new DiagnosticResult("StateInheritanceTypeArgumentRule", DiagnosticSeverity.Error)
+    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS0010", DiagnosticSeverity.Error)
       .WithSpan(8, 21, 8, 31);
 
     CSharpAnalyzerTest<StateInheritanceAnalyzer, FixieVerifier> analyzerTest = new()
@@ -123,7 +123,7 @@ public class Should_Allow_Abstract_Self_Constrained_Intermediate
   }
 }
 
-public class Should_Still_Trigger_StateInheritanceTypeArgumentRule_For_Concrete_Generic
+public class Should_Still_Trigger_TWS0010_For_Concrete_Generic
 {
   public static async Task Given_Concrete_Generic_With_Self_Constraint()
   {
@@ -138,9 +138,9 @@ public class Should_Still_Trigger_StateInheritanceTypeArgumentRule_For_Concrete_
       }
       """;
 
-    DiagnosticResult expectedDiagnostic = new DiagnosticResult("StateInheritanceTypeArgumentRule", DiagnosticSeverity.Error)
+    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS0010", DiagnosticSeverity.Error)
       .WithSpan(3, 14, 3, 34);
-    DiagnosticResult sealedDiagnostic = new DiagnosticResult("StateSealedClassRule", DiagnosticSeverity.Warning)
+    DiagnosticResult sealedDiagnostic = new DiagnosticResult("TWS0011", DiagnosticSeverity.Warning)
       .WithSpan(3, 14, 3, 34);
 
     CSharpAnalyzerTest<StateInheritanceAnalyzer, FixieVerifier> analyzerTest = new()
@@ -173,7 +173,7 @@ public class Should_Still_Trigger_StateInheritanceTypeArgumentRule_For_Concrete_
       }
       """;
 
-    DiagnosticResult expectedDiagnostic = new DiagnosticResult("StateInheritanceTypeArgumentRule", DiagnosticSeverity.Error)
+    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS0010", DiagnosticSeverity.Error)
       .WithSpan(3, 23, 3, 32);
 
     CSharpAnalyzerTest<StateInheritanceAnalyzer, FixieVerifier> analyzerTest = new()

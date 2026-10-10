@@ -6,6 +6,8 @@
 // Deserialize with a clone of TimeWarpStateOptions.JsonSerializerOptions (PropertyNameCaseInsensitive)
 // so leftover Blazored PascalCase payloads under the simple Name key still bind; do not mutate the shared Store options.
 // Key lookup is FullName then Name: new writes use FullName; leftover simple-name entries still load.
+// Session and local storage services are optional. A missing service logs and loads nothing, matching
+// PersistentStatePostProcessor. Register both with AddTimeWarpStatePersistence plus the Blazored helpers.
 #endregion
 
 namespace TimeWarp.Features.Persistence;
@@ -22,18 +24,18 @@ namespace TimeWarp.Features.Persistence;
 public class PersistenceService : IPersistenceService
 {
   private readonly JsonSerializerOptions JsonSerializerOptions;
-  private readonly ISessionStorageService SessionStorageService;
-  private readonly ILocalStorageService LocalStorageService;
+  private readonly ISessionStorageService? SessionStorageService;
+  private readonly ILocalStorageService? LocalStorageService;
   private readonly ILogger<PersistenceService> Logger;
   private readonly ISender<ClientPipeline> Sender;
 
   public PersistenceService
   (
     ISender<ClientPipeline> sender,
-    ISessionStorageService sessionStorageService,
-    ILocalStorageService localStorageService,
     ILogger<PersistenceService> logger,
-    TimeWarpStateOptions timeWarpStateOptions
+    TimeWarpStateOptions timeWarpStateOptions,
+    ISessionStorageService? sessionStorageService = null,
+    ILocalStorageService? localStorageService = null
   )
   {
     ArgumentNullException.ThrowIfNull(timeWarpStateOptions);
@@ -47,6 +49,9 @@ public class PersistenceService : IPersistenceService
     };
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "stateType is a [PersistentState] state rooted by the generated StateCloneRegistry registration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "stateType is a [PersistentState] state rooted by the generated StateCloneRegistry registration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "stateType is a [PersistentState] state rooted by the generated StateCloneRegistry registration.")]
   public async Task<object?> LoadState(Type stateType, PersistentStateMethod persistentStateMethod)
   {
     string writeKey = PersistentStateStorageKey.ForWrite(stateType);
@@ -100,13 +105,28 @@ public class PersistenceService : IPersistenceService
 
   private async Task<string?> ReadSerializedState(string storageKey, PersistentStateMethod persistentStateMethod)
   {
-    return persistentStateMethod switch
+    switch (persistentStateMethod)
     {
-      PersistentStateMethod.SessionStorage => await SessionStorageService.GetItemAsStringAsync(storageKey),
-      PersistentStateMethod.LocalStorage => await LocalStorageService.GetItemAsStringAsync(storageKey),
-      PersistentStateMethod.PreRender => null, // TODO
-      PersistentStateMethod.Server => null, // TODO
-      _ => null
-    };
+      case PersistentStateMethod.SessionStorage when SessionStorageService is null:
+        LogMissingStorage<ISessionStorageService>();
+        return null;
+      case PersistentStateMethod.SessionStorage:
+        return await SessionStorageService!.GetItemAsStringAsync(storageKey);
+      case PersistentStateMethod.LocalStorage when LocalStorageService is null:
+        LogMissingStorage<ILocalStorageService>();
+        return null;
+      case PersistentStateMethod.LocalStorage:
+        return await LocalStorageService!.GetItemAsStringAsync(storageKey);
+      default:
+        return null;
+    }
   }
+
+  private void LogMissingStorage<TService>() =>
+    Logger.LogWarning
+    (
+      EventIds.PersistenceService_StorageNotRegistered,
+      "No {ServiceName} is registered; skipping persistence load. Register it (for example AddBlazoredSessionStorage or AddBlazoredLocalStorage) in the host.",
+      typeof(TService).Name
+    );
 }

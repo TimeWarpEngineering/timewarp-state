@@ -4,8 +4,8 @@
 #endregion
 
 #region Design
-// Currently [Ignore]d: the serializer and key round trip is covered by plus-tests PersistenceRoundTrip_Should. The
-// ignore reason still says Playwright chromium cannot be installed on this host.
+// Runs in the e2e job. ubuntu-latest installs Playwright chromium. The serializer and key round trip is also
+// covered by plus-tests PersistenceRoundTrip_Should.
 #endregion
 
 namespace PersistenceTestPageTests;
@@ -45,7 +45,6 @@ public class PersistenceTest : PageTest
   }
 
   [TestMethod]
-  [Ignore("065 serializer/key round-trip is covered by plus-tests PersistenceRoundTrip_Should. Browser path left ignored: Playwright chromium is not installable on this host (ubuntu26.04-x64), so TestPersistence was not proven green.")]
   public async Task TestPersistence()
   {
     // Validate Server Side

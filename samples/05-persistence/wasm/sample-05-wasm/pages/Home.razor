@@ -23,18 +23,9 @@
   {
     _ = DraftNoteState;
     _ = DisplayPreferencesState;
-    await WhenInitialized(typeof(DraftNoteState));
-    await WhenInitialized(typeof(DisplayPreferencesState));
+    await Store.WaitForInitializationAsync<DraftNoteState>();
+    await Store.WaitForInitializationAsync<DisplayPreferencesState>();
     Ready = true;
-  }
-
-  private async Task WhenInitialized(Type stateType)
-  {
-    string? typeName = stateType.FullName;
-    if (typeName is not null && Store.StateInitializationTasks.TryGetValue(typeName, out Task? initializationTask))
-    {
-      await initializationTask;
-    }
   }
 
   private async Task CommitDraft(ChangeEventArgs changeEventArgs)

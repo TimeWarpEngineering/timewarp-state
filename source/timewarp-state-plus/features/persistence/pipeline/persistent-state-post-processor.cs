@@ -4,7 +4,7 @@
 
 #region Design
 // Enclosing state type and [PersistentState] are cached per closed generic so the hot path does not reflect on every IAction.
-// Serialize only after Session/Local storage is present; Server/PreRender remain no-ops without serializing.
+// Serialize only after Session/Local storage is present. PreRender and Server are not enum values.
 // Serialize with TimeWarpStateOptions.JsonSerializerOptions and write the JSON string (SetItemAsStringAsync) under FullName.
 // Storage services stay optional: skip + warning when Blazored is not registered.
 #endregion
@@ -48,7 +48,7 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
     }
 
     EnclosingStateType = enclosingStateType;
-    CachedPersistentStateAttribute = enclosingStateType.GetCustomAttribute<PersistentStateAttribute>();
+    CachedPersistentStateAttribute = ReadPersistentStateAttribute(enclosingStateType);
   }
 
   public PersistentStatePostProcessor
@@ -89,9 +89,6 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
 
     switch (CachedPersistentStateAttribute.PersistentStateMethod)
     {
-      case PersistentStateMethod.Server:
-        // TODO:
-        break;
       case PersistentStateMethod.SessionStorage:
         if (SessionStorageService is null)
         {
@@ -126,9 +123,6 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
           cancellationToken
         );
         break;
-      case PersistentStateMethod.PreRender:
-        // TODO: This needs to be tried and see if improves UX.
-        break;
       default:
         throw new InvalidOperationException($"The {CachedPersistentStateAttribute.PersistentStateMethod} is not supported.");
     }
@@ -136,6 +130,13 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
     return response;
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "PersistentStateAttribute is on state types the clone generator roots. The attribute type is referenced by this assembly.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "PersistentStateAttribute is on state types the clone generator roots. The attribute type is referenced by this assembly.")]
+  private static PersistentStateAttribute? ReadPersistentStateAttribute(Type stateType) =>
+    stateType.GetCustomAttribute<PersistentStateAttribute>();
+
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "EnclosingStateType is a [PersistentState] state rooted by the generated StateCloneRegistry registration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "EnclosingStateType is a [PersistentState] state rooted by the generated StateCloneRegistry registration.")]
   private string SerializeState(object state) =>
     JsonSerializer.Serialize(state, EnclosingStateType!, TimeWarpStateOptions.JsonSerializerOptions);
 

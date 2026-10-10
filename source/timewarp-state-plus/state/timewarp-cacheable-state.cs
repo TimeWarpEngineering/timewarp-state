@@ -37,6 +37,8 @@ where TState : TimeWarpCacheableState<TState>
   // use System.Text.Json to serialize the action to a string
   // public bool IsCacheValid(IAction action) => IsCacheValid(JsonSerializer.Serialize(action));
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The cache key serializes the action instance. The action type is a nested type on a state the clone generator roots.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "The cache key serializes the action instance. The action type is a nested type on a state the clone generator roots.")]
   protected static string GenerateCacheKey<TAction>(TAction action) where TAction : IAction
   {
     Type actionType = action.GetType();

@@ -24,6 +24,10 @@ public abstract partial class TimeWarpStateComponent
   private bool SetParametersAsyncWasCalled;
   public string? SetParametersAsyncWasCalledBy  { get; private set; }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "The component type is rooted by the render tree. Blazor keeps [Parameter] properties. Follow-up: a generated parameter map.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "The component type is rooted by the render tree. Blazor keeps [Parameter] properties. Follow-up: a generated parameter map.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "The component type is rooted by the render tree. Blazor keeps [Parameter] properties. Follow-up: a generated parameter map.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The component type is rooted by the render tree. Blazor keeps [Parameter] properties. Follow-up: a generated parameter map.")]
   private Dictionary<string, PropertyInfo> ParameterProperties => 
     TypeParameterProperties.GetOrAdd(GetType(), type => 
       type.GetProperties()
@@ -63,6 +67,9 @@ public abstract partial class TimeWarpStateComponent
     return base.SetParametersAsync(parameters);
   }
   
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Looks up four virtual methods on this component type, which the render tree roots. Follow-up: a generated override flag.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Looks up four virtual methods on this component type, which the render tree roots. Follow-up: a generated override flag.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Looks up four virtual methods on this component type, which the render tree roots. Follow-up: a generated override flag.")]
   private bool CheckForOverriddenMethods()
   {
     return HasOverriddenMethods.GetOrAdd(GetType(), type =>

@@ -1,5 +1,6 @@
 #region Purpose
-// The storage options for a [PersistentState] state: PreRender, Server, SessionStorage or LocalStorage.
+// The storage options for a [PersistentState] state: SessionStorage or LocalStorage.
+// PreRender and Server were removed until a host implementation exists.
 #endregion
 
 #region Design
@@ -10,8 +11,6 @@ namespace TimeWarp.Features.Persistence;
 
 public enum PersistentStateMethod
 {
-  PreRender,
-  Server,
   SessionStorage,
   LocalStorage
 }

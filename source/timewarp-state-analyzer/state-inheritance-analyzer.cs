@@ -6,7 +6,7 @@
 #region Design
 // An abstract intermediate such as TimeWarpCacheableState<TState> : State<TState> where TState :
 // TimeWarpCacheableState<TState> is allowed. A concrete class, including a concrete generic with the same shape,
-// still reports StateInheritanceTypeArgumentRule. The check looks at the type parameter's constraint types.
+// still reports TWS0010. The check looks at the type parameter's constraint types.
 // Resolves State<T> once per compilation and does nothing when it is absent. Only the first base type in each class
 // declaration is checked.
 #endregion
@@ -18,8 +18,8 @@ using Microsoft.CodeAnalysis.CSharp;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class StateInheritanceAnalyzer : DiagnosticAnalyzer
 {
-  public const string InheritanceDiagnosticId = "StateInheritanceTypeArgumentRule";
-  public const string SealedDiagnosticId = "StateSealedClassRule";
+  public const string InheritanceDiagnosticId = "TWS0010";
+  public const string SealedDiagnosticId = "TWS0011";
 
   private static readonly LocalizableString InheritanceTitle = "Incorrect State<T> inheritance";
   private static readonly LocalizableString InheritanceMessageFormat = "The type argument for State<T> must be the derived class itself";

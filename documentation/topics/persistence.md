@@ -18,7 +18,7 @@ builder.Services.AddTimeWarpState(options =>
   options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 builder.Services.AddTimeWarpStateBlazor();
-builder.Services.AddScoped<IPersistenceService, PersistenceService>();
+builder.Services.AddTimeWarpStatePersistence();
 ```
 
 ```csharp
@@ -26,7 +26,7 @@ builder.Services.AddScoped<IPersistenceService, PersistenceService>();
 [assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]
 ```
 
-`PersistentStatePostProcessor` is opt-in. Blazored is how the host selects session storage versus local storage. `PersistenceService` depends on both services. On .NET 10 and .NET 11, alias `PersistentStateAttribute` to `TimeWarp.Features.Persistence.PersistentStateAttribute` so it does not collide with `Microsoft.AspNetCore.Components.PersistentStateAttribute`.
+`PersistentStatePostProcessor` is opt-in. Blazored is how the host selects session storage versus local storage. `AddTimeWarpStatePersistence` registers `PersistenceService`. Each storage service is optional: a missing one logs a warning and that store is skipped. On .NET 10 and .NET 11, alias `PersistentStateAttribute` to `TimeWarp.Features.Persistence.PersistentStateAttribute` so it does not collide with `Microsoft.AspNetCore.Components.PersistentStateAttribute`.
 
 ```csharp
 [PersistentState(PersistentStateMethod.LocalStorage)]
@@ -35,13 +35,13 @@ public sealed partial class DisplayPreferencesState : State<DisplayPreferencesSt
 }
 ```
 
-Use `PersistentStateMethod.SessionStorage` for tab-scoped data and `LocalStorage` for values that should survive a new tab. `Server` and `PreRender` are not implemented.
+Use `PersistentStateMethod.SessionStorage` for tab-scoped data and `LocalStorage` for values that should survive a new tab.
 
 ## Load
 
 The first `GetState` publishes `StateInitializedNotification`. `StateInitializedNotificationHandler` sends `LoadPersistentStateRequest` for types marked `[PersistentState]`. The generated `Load()` method on the state sends that same request when a page needs to read storage again.
 
-The load replaces the store entry. It is not an action, so it does not go through render subscriptions. A page that needs the snapshot on first paint can await `IStore.StateInitializationTasks` for that state's full name.
+The load replaces the store entry. It is not an action, so it does not go through render subscriptions. A page that needs the snapshot on first paint can await `store.WaitForInitializationAsync<DraftNoteState>()`. That task finishes when `StateInitializedNotification` has been handled. `FindInitializationTask` looks up a state that already exists and does not create one.
 
 ## JSON and keys
 

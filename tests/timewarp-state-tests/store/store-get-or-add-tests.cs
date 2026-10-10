@@ -1,6 +1,7 @@
 #region Purpose
-// Proves Store.GetState and GetSemaphore survive concurrent first access without throwing,
-// initialize once, and re-initialize after Reset/RemoveState.
+// Proves Store.GetState survives concurrent first access without throwing,
+// initializes once, and re-initializes after Reset/RemoveState.
+// Reset drops the initialization task and cancels the removed instance.
 #endregion
 
 #region Design
@@ -47,36 +48,23 @@ public class Should_
     notification.StateType.ShouldBe(typeof(TestState));
   }
 
-  public void Parallel_GetSemaphore_Returns_Same_Instance_After_State_Exists()
+  public void Reset_Drops_The_Initialization_Task_And_Cancels_The_Removed_State()
   {
     Harness harness = CreateHarness();
-    harness.Store.GetSemaphore(typeof(TestState)).ShouldBeNull();
+    TestState original = harness.Store.GetState<TestState>();
+    Task? firstInitialization = harness.Store.FindInitializationTask(typeof(TestState));
+    firstInitialization.ShouldNotBeNull();
 
-    harness.Store.GetState<TestState>();
+    harness.Store.Reset();
 
-    const int participantCount = 32;
-    using Barrier barrier = new(participantCount);
-    Task<SemaphoreSlim?>[] tasks = new Task<SemaphoreSlim?>[participantCount];
-    for (int i = 0; i < participantCount; i++)
-    {
-      tasks[i] = Task.Run
-      (
-        () =>
-        {
-          barrier.SignalAndWait();
-          return harness.Store.GetSemaphore(typeof(TestState));
-        }
-      );
-    }
+    harness.Store.FindInitializationTask(typeof(TestState)).ShouldBeNull();
+    original.WasCancelled.ShouldBeTrue();
 
-    Should.NotThrow(() => Task.WaitAll(tasks));
-
-    SemaphoreSlim? canonical = tasks[0].Result;
-    canonical.ShouldNotBeNull();
-    for (int i = 0; i < participantCount; i++)
-    {
-      tasks[i].Result.ShouldBeSameAs(canonical);
-    }
+    TestState next = harness.Store.GetState<TestState>();
+    next.ShouldNotBeSameAs(original);
+    Task? secondInitialization = harness.Store.FindInitializationTask(typeof(TestState));
+    secondInitialization.ShouldNotBeNull();
+    secondInitialization.ShouldNotBeSameAs(firstInitialization);
   }
 
   public void GetState_After_Reset_Creates_New_Instance_And_Initializes_Again()
@@ -153,6 +141,7 @@ public class Should_
     public ISender<ClientPipeline> Sender { get; set; } = null!;
     public Guid Guid { get; } = Guid.NewGuid();
     public int InitializedFlag { get; private set; }
+    public bool WasCancelled { get; private set; }
 
     public TestState(InitializeCounter initializeCounter)
     {
@@ -165,7 +154,7 @@ public class Should_
       Interlocked.Increment(ref InitializeCounter.Count);
     }
 
-    public void CancelOperations() { }
+    public void CancelOperations() => WasCancelled = true;
   }
 
   private sealed class ThrowingSender : ISender<ClientPipeline>

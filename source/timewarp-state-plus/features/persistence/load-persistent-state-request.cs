@@ -48,6 +48,8 @@ public class LoadPersistentStateRequestHandler : IRequestHandler<LoadPersistentS
     Logger = logger;
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "PersistentStateAttribute is on state types the clone generator roots. The attribute type is referenced by this assembly.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "PersistentStateAttribute is on state types the clone generator roots. The attribute type is referenced by this assembly.")]
   public async Task Handle(LoadPersistentStateRequest request, CancellationToken cancellationToken)
   {
     Type stateType = request.StateType;

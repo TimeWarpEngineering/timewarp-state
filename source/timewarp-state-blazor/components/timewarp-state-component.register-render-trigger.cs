@@ -148,6 +148,7 @@ public partial class TimeWarpStateComponent
     };
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "RegisterRenderTrigger compiles a caller-supplied selector. Native AOT cannot compile expression trees; the state type is rooted by the component. Follow-up: a source-generated comparison.")]
   private static Func<TState, TState, bool> CreateComparisonFunc<TState>(Expression<Func<TState, object?>> propertySelector) where TState : IState
   {
     Func<TState, object?> compiledSelector = propertySelector.Compile();

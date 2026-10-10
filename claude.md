@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **TimeWarp.State** is a state management library implementing the Flux pattern using the Mediator pipeline. The core package has no Blazor dependency. **TimeWarp.State.Blazor** holds components, JavaScript interop, render subscriptions, and Redux DevTools. It handles both client-side (WebAssembly) and server-side Blazor with async state management, and console hosts can use the core package alone.
 
+Package layout, host registration, and which packages are AOT-compatible are summarized in [ai-context.md](ai-context.md).
+
 ## Development Commands
 
 ### Git Workflow
@@ -50,9 +52,9 @@ dotnet build --project <ProjectPath> --configuration Release
 - Release workflow validates version matches tag before publishing
 
 ### Analysis
-```powershell
-# Build and package analyzer
-./BuildAndPackageAnalyzer.ps1
+```bash
+# Pack the libraries, including the embedded analyzer
+./bin/dev pack
 ```
 
 ## Architecture Overview
@@ -124,13 +126,13 @@ public class UserService
 - **Target**: .NET 11 (`net11.0`)
 - **SDK**: 11.0.100-rc.1.26425.128 from `global.json` (rollForward latestMinor, allowPrerelease true until .NET 11 GA on 2026-11-10; re-pin to 11.0.100 then)
 - **Cloning**: `StateCloneSourceGenerator` emits the clone for each concrete `State<T>` (and for `[GenerateClone]` types). `StateTransactionBehavior` calls `ICloneable` first, then `StateCloneRegistry`. There is no reflection cloner. `TWSG002` is an error when a reachable member cannot be cloned. Never use blocking waits (`SemaphoreSlim.Wait`, `Task.Wait`, `.Result`) in library code: .NET 11 throws on single-threaded browser WASM. Library projects declare `<SupportedPlatform Include="browser" />` so CA1416 flags them.
-- **Nullable**: Disabled project-wide
+- **Nullable**: Enabled in `Directory.Build.props`
 - **ImplicitUsings**: Enabled
 
 ### Package Management
 - **Central Management**: Uses Directory.Packages.props
-- **Lock Files**: Enabled for repeatable builds
-- **Local Feed**: ./LocalNugetFeed for development
+- **Lock Files**: Not enabled. There is no `packages.lock.json`.
+- **Local Feed**: `artifacts/packages` (`LocalNuGetFeed` maps to `PackagesDirectory`)
 
 ### Build Process
 1. Analyzers and Source Generators built first

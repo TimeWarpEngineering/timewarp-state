@@ -173,10 +173,10 @@ public class PersistenceRoundTrip_Should
     new
     (
       storageHarness.Sender,
-      storageHarness.SessionStorageService,
-      storageHarness.LocalStorageService,
       NullLogger<PersistenceService>.Instance,
-      storageHarness.TimeWarpStateOptions
+      storageHarness.TimeWarpStateOptions,
+      storageHarness.SessionStorageService,
+      storageHarness.LocalStorageService
     );
 
   private static TimeWarpStateOptions CreateOptions()

@@ -98,6 +98,7 @@ public class ReduxDevToolsBehavior<TRequest, TResponse> : IPipelineBehavior<TReq
     return response;
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Redux DevTools stack traces are a development diagnostic. The frames are the app's own action dispatch.")]
   private static string BuildStackTrace(int maxItems, Regex traceFilterRegex)
   {
     StringBuilder stringBuilder = new();

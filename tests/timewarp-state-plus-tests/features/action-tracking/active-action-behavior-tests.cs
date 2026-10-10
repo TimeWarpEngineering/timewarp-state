@@ -95,6 +95,36 @@ public class ActiveActionBehavior_Should
     recordingSender.Sent[1].ShouldBeOfType<ActionTrackingState.CompleteProcessingActionSet.Action>();
   }
 
+  public async Task Complete_Tracking_With_None_When_The_Handler_Is_Cancelled()
+  {
+    RecordingSender recordingSender = new();
+    ActiveActionBehavior<TrackedUserAction, object> behavior = new
+    (
+      recordingSender,
+      NullLogger<ActiveActionBehavior<TrackedUserAction, object>>.Instance
+    );
+
+    using CancellationTokenSource cancellationTokenSource = new();
+    await Should.ThrowAsync<OperationCanceledException>
+    (
+      () => behavior.Handle
+      (
+        new TrackedUserAction(),
+        _ =>
+        {
+          cancellationTokenSource.Cancel();
+          throw new OperationCanceledException(cancellationTokenSource.Token);
+        },
+        cancellationTokenSource.Token
+      )
+    );
+
+    recordingSender.Sent.Count.ShouldBe(2);
+    recordingSender.Sent[1].ShouldBeOfType<ActionTrackingState.CompleteProcessingActionSet.Action>();
+    recordingSender.Tokens[1].ShouldBe(CancellationToken.None);
+    recordingSender.Tokens[0].CanBeCanceled.ShouldBeTrue();
+  }
+
   [TrackAction]
   private sealed class TrackedUserAction : IAction;
 
@@ -104,22 +134,26 @@ public class ActiveActionBehavior_Should
   private sealed class RecordingSender : ISender<ClientPipeline>
   {
     public List<object> Sent { get; } = [];
+    public List<CancellationToken> Tokens { get; } = [];
 
     public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
       Sent.Add(request);
+      Tokens.Add(cancellationToken);
       return Task.FromResult(default(TResponse)!);
     }
 
     public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest
     {
       Sent.Add(request!);
+      Tokens.Add(cancellationToken);
       return Task.CompletedTask;
     }
 
     public Task<object?> Send(object request, CancellationToken cancellationToken = default)
     {
       Sent.Add(request);
+      Tokens.Add(cancellationToken);
       return Task.FromResult<object?>(null);
     }
 

@@ -1,11 +1,13 @@
 #region Purpose
-// Verify sample projects compile
+// Verify sample projects compile, then publish the persistence sample trimmed.
 #endregion
 #region Design
 // Builds each samples/**/*.csproj so the required verify-samples capability is
 // a real gate, not a stub. Samples PackageReference TimeWarp.State / Plus from
 // LocalNuGetFeed; workflow runs pack before this command so that restore can
 // succeed (nuget.org does not have the in-tree version).
+// After the builds, publishes samples/05-persistence trimmed with TrimmerSingleWarn=false
+// so Blazor and Plus trim warnings fail this gate.
 #endregion
 
 namespace DevCli.Commands;
@@ -71,6 +73,36 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
         {
           Terminal.WriteErrorLine($"Sample failed: {relativePath}".Red());
           Environment.ExitCode = exitCode;
+          return Value;
+        }
+      }
+
+      string persistenceProject = Path.Combine
+      (
+        repoRoot,
+        "samples",
+        "05-persistence",
+        "wasm",
+        "sample-05-wasm",
+        "sample-05-wasm.csproj"
+      );
+      if (File.Exists(persistenceProject))
+      {
+        string publishOutput = Path.Combine(repoRoot, "artifacts", "publish", "sample-05-wasm-trimmed");
+        Terminal.WriteLine("\nPublishing samples/05-persistence trimmed...");
+        int publishExitCode = await DotNet.Publish()
+          .WithProject(persistenceProject)
+          .WithConfiguration("Release")
+          .WithOutput(publishOutput)
+          .WithTrimmed()
+          .WithProperty("TrimmerSingleWarn", "false")
+          .WithNoValidation()
+          .RunAsync(ct);
+
+        if (publishExitCode != 0)
+        {
+          Terminal.WriteErrorLine("Trimmed publish failed: samples/05-persistence".Red());
+          Environment.ExitCode = publishExitCode;
           return Value;
         }
       }

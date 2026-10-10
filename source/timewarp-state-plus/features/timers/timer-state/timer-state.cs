@@ -7,6 +7,10 @@
 // Add/Update/Initialize all go through it so action-created timers publish the same way as option-seeded ones.
 // CreateTimer Stop+Disposes a same-name replacement; Remove and Dispose walk the same Stop+Dispose path.
 // Clone shares the Timers dictionary (transaction rollback must not duplicate running timers).
+// Elapsed is async Task, not async void. Failures are logged. When the state is created on a
+// synchronization context (the Blazor Server circuit), the publish is posted there. Otherwise
+// TimerElapsedNotification handlers must marshal UI work with InvokeAsync.
+// System.Timers.Timer stays: AutoReset false plus Start is the one-shot contract RestartTimer uses.
 #endregion
 
 namespace TimeWarp.State.Plus.Features.Timers;
@@ -19,6 +23,7 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
   private readonly ILogger<TimerState> Logger;
   private readonly IPublisher<ClientPipeline> Publisher;
   private readonly MultiTimerOptions MultiTimerOptions;
+  private readonly SynchronizationContext? CircuitContext = SynchronizationContext.Current;
   private Dictionary<string, (Timer Timer, TimerConfig TimerConfig)> Timers = new();
 
   public TimerState
@@ -79,7 +84,7 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
     }
 
     Timer timer = new(timerConfig.Duration);
-    timer.Elapsed += (_, _) => OnTimerElapsed(timerName);
+    timer.Elapsed += (_, _) => DispatchElapsed(timerName);
     timer.AutoReset = false;
     timer.Start();
     Timers[timerName] = (timer, timerConfig);
@@ -99,11 +104,35 @@ public sealed partial class TimerState : State<TimerState>, ICloneable
     timer.Dispose();
   }
   
-  private async void OnTimerElapsed(string timerName)
+  private void DispatchElapsed(string timerName)
   {
-    Logger.LogInformation(EventIds.MultiTimerPostProcessor_TimerElapsed, message: "{TimerName} elapsed", timerName);
-    var notification = new TimerElapsedNotification(timerName, restartTimer: () => RestartTimer(timerName));
-    await Publisher.Publish(notification, CancellationToken.None);
+    if (CircuitContext is { } circuitContext)
+    {
+      circuitContext.Post(_ => _ = PublishElapsedAsync(timerName), null);
+      return;
+    }
+
+    _ = PublishElapsedAsync(timerName);
+  }
+
+  internal async Task PublishElapsedAsync(string timerName)
+  {
+    try
+    {
+      Logger.LogInformation(EventIds.MultiTimerPostProcessor_TimerElapsed, message: "{TimerName} elapsed", timerName);
+      TimerElapsedNotification notification = new(timerName, restartTimer: () => RestartTimer(timerName));
+      await Publisher.Publish(notification, CancellationToken.None);
+    }
+    catch (Exception exception)
+    {
+      Logger.LogError
+      (
+        EventIds.MultiTimerPostProcessor_TimerElapsedFailed,
+        exception,
+        message: "Timer {TimerName} elapsed handler failed",
+        timerName
+      );
+    }
   }
   
   private void RestartTimer(string timerName)

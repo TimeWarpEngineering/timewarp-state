@@ -14,7 +14,6 @@ internal sealed class RecordingStore : IStore
   public Guid Guid { get; } = Guid.NewGuid();
   public IState CurrentState { get; set; }
   public int GetStateCallCount { get; private set; }
-  public ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
 
   public RecordingStore(IState currentState)
   {
@@ -29,13 +28,15 @@ internal sealed class RecordingStore : IStore
 
   public TState? GetPreviousState<TState>() where TState : IState => default;
 
-  public object GetState(Type stateType)
+  public IState GetState(Type stateType)
   {
     GetStateCallCount++;
     return CurrentState;
   }
 
-  public SemaphoreSlim? GetSemaphore(Type stateType) => null;
+  public Task WaitForInitializationAsync<TState>() where TState : IState => Task.CompletedTask;
+
+  public Task? FindInitializationTask(Type stateType) => null;
 
   public void SetState(IState newState)
   {

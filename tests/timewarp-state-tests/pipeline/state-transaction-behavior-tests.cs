@@ -1,6 +1,7 @@
 #region Purpose
 // Proves StateTransactionBehavior rolls back on handler failure, publishes ExceptionNotification with
-// CancellationToken.None for non-cancellation errors, skips notification for OperationCanceledException, and
+// CancellationToken.None for non-cancellation errors, rethrows OperationCanceledException without a
+// notification, rethrows other handler exceptions only when RethrowHandlerExceptions is set, and
 // leaves a newer clone in place when an overlapping action fails.
 #endregion
 
@@ -60,11 +61,14 @@ public class Should_
       return Task.FromException<Unit>(new OperationCanceledException());
     };
 
-    await harness.Behavior.Handle
+    await Should.ThrowAsync<OperationCanceledException>
     (
-      new TransactionTestState.ThrowAction(),
-      next,
-      CancellationToken.None
+      () => harness.Behavior.Handle
+      (
+        new TransactionTestState.ThrowAction(),
+        next,
+        CancellationToken.None
+      )
     );
 
     harness.Store.CurrentState.ShouldBeSameAs(harness.OriginalState);
@@ -85,16 +89,56 @@ public class Should_
       return Task.FromException<Unit>(new OperationCanceledException(cancellationToken));
     };
 
-    await harness.Behavior.Handle
+    await Should.ThrowAsync<OperationCanceledException>
     (
-      new TransactionTestState.ThrowAction(),
-      next,
-      cancellationTokenSource.Token
+      () => harness.Behavior.Handle
+      (
+        new TransactionTestState.ThrowAction(),
+        next,
+        cancellationTokenSource.Token
+      )
     );
 
     harness.Store.CurrentState.ShouldBeSameAs(harness.OriginalState);
     harness.OriginalState.Value.ShouldBe(5);
     harness.Publisher.Publications.ShouldBeEmpty();
+  }
+
+  public async Task Rethrow_Handler_Exception_After_Notification_When_Option_Is_Set()
+  {
+    TransactionTestState originalState = new(Guid.NewGuid(), value: 5);
+    RecordingStore recordingStore = new(originalState);
+    RecordingPublisher recordingPublisher = new();
+    ServiceCollection serviceCollection = new();
+    TimeWarpStateOptions options = new(serviceCollection)
+    {
+      RethrowHandlerExceptions = true
+    };
+    StateTransactionBehavior<TransactionTestState.ThrowAction, Unit> behavior = new
+    (
+      NullLogger<StateTransactionBehavior<TransactionTestState.ThrowAction, Unit>>.Instance,
+      recordingStore,
+      recordingPublisher,
+      options
+    );
+
+    RequestHandlerDelegate<Unit> next = _ =>
+    {
+      var current = (TransactionTestState)recordingStore.CurrentState;
+      current.Value = 99;
+      return Task.FromException<Unit>(new InvalidOperationException("handler failed"));
+    };
+
+    InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>
+    (
+      () => behavior.Handle(new TransactionTestState.ThrowAction(), next, CancellationToken.None)
+    );
+
+    exception.Message.ShouldBe("handler failed");
+    recordingStore.CurrentState.ShouldBeSameAs(originalState);
+    originalState.Value.ShouldBe(5);
+    recordingPublisher.Publications.Count.ShouldBe(1);
+    recordingPublisher.Publications[0].CancellationToken.ShouldBe(CancellationToken.None);
   }
 
   public async Task Throw_InvalidCloneException_When_Clone_Copies_Guid()
@@ -591,7 +635,6 @@ public class Should_
   {
     public Guid Guid { get; } = Guid.NewGuid();
     public IState CurrentState { get; private set; }
-    public ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
 
     public RecordingStore(IState currentState)
     {
@@ -602,9 +645,11 @@ public class Should_
 
     public TState? GetPreviousState<TState>() where TState : IState => default;
 
-    public object GetState(Type stateType) => CurrentState;
+    public IState GetState(Type stateType) => CurrentState;
 
-    public SemaphoreSlim? GetSemaphore(Type stateType) => null;
+    public Task WaitForInitializationAsync<TState>() where TState : IState => Task.CompletedTask;
+
+    public Task? FindInitializationTask(Type stateType) => null;
 
     public void SetState(IState newState)
     {

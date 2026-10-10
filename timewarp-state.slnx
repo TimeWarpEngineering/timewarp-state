@@ -13,7 +13,7 @@
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
-  <Folder Name="/Samples/03-ServerSide/">
+  <Folder Name="/Samples/00-Server/">
     <Project Path="samples\00-state-action-handler\server\sample-00-server\sample-00-server.csproj">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
@@ -66,13 +66,30 @@
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
-    <File Path="Build\documentation.yml" />
     <File Path="global.json" />
     <File Path="nuget.config" />
   </Folder>
   <Folder Name="/source/">
+    <Project Path="source/timewarp-state/timewarp-state.csproj">
+      <BuildDependency Project="source/timewarp-state-analyzer/timewarp-state-analyzer.csproj" />
+    </Project>
     <Project Path="source/timewarp-state-blazor/timewarp-state-blazor.csproj">
       <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+    <Project Path="source/timewarp-state-plus/timewarp-state-plus.csproj">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
+    </Project>
+    <Project Path="source/timewarp-state-telemetry/timewarp-state-telemetry.csproj">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
+    </Project>
+    <Project Path="source/timewarp-state-analyzer/timewarp-state-analyzer.csproj">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
+    </Project>
+    <Project Path="source/timewarp-state-source-generator/timewarp-state-source-generator.csproj">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
+    </Project>
+    <Project Path="source/timewarp-state-policies/timewarp-state-policies.csproj">
+      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
   <Folder Name="/Tests/">
@@ -112,22 +129,4 @@
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
-  <Project Path="source\timewarp-state-analyzer\timewarp-state-analyzer.csproj">
-    <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
-  </Project>
-  <Project Path="source\timewarp-state-plus\timewarp-state-plus.csproj">
-    <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
-  </Project>
-  <Project Path="source\timewarp-state-telemetry\timewarp-state-telemetry.csproj">
-    <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
-  </Project>
-  <Project Path="source\timewarp-state-policies\timewarp-state-policies.csproj">
-    <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
-  </Project>
-  <Project Path="source\timewarp-state-source-generator\timewarp-state-source-generator.csproj">
-    <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
-  </Project>
-  <Project Path="source\timewarp-state\timewarp-state.csproj">
-    <BuildDependency Project="source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" />
-  </Project>
 </Solution>

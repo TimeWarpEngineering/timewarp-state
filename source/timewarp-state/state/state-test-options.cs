@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// ThrowIfNotTestAssembly reads AllowTestAccess before the assembly-name fallback.
+// ThrowIfNotTestAssembly reads AllowTestAccess and nothing else.
 // Enable() is the contract a test host calls. Reset() is internal so unit tests
 // can isolate the flag; production hosts call Enable() only.
 #endregion
@@ -16,8 +16,7 @@ namespace TimeWarp.State;
 public static class StateTestOptions
 {
   /// <summary>
-  /// Gets a value indicating whether test-only state entry points are allowed
-  /// without an assembly-name check.
+  /// Gets a value indicating whether test-only state entry points are allowed.
   /// </summary>
   public static bool AllowTestAccess { get; private set; }
 

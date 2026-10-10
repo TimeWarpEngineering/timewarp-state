@@ -1,18 +1,22 @@
 #region Purpose
-// Per-scope bag of IState instances, keyed by type name, with per-type SemaphoreSlim gates.
+// Per-scope bag of IState instances, keyed by type name.
 #endregion
 
 #region Design
-// GetState/GetSemaphore use ConcurrentDictionary.GetOrAdd so concurrent first access does not throw.
-// Per-type locks serialize construction: Initialize and StateInitializedNotification run on the
+// GetState uses a per-type lock so concurrent first access does not throw.
+// The lock serializes construction: Initialize and StateInitializedNotification run on the
 // canonical instance only, and the instance is inserted only after Initialize succeeds so a
-// TryGetValue hit is always initialized. RemoveState takes the same lock. Reset clears States.
+// TryGetValue hit is always initialized. RemoveState and Reset take the same lock.
+// Reset removes every key the way RemoveState does: cancel, drop previous state, drop the
+// initialization task. A later GetState starts a new instance and a new initialization task.
+// StateInitializationTasks stays internal. IStore exposes WaitForInitializationAsync and
+// FindInitializationTask instead of the dictionary.
 #endregion
 
 namespace TimeWarp.State;
 
 /// <summary>
-/// 
+///
 /// </summary>
 internal partial class Store : IStore
 {
@@ -21,7 +25,6 @@ internal partial class Store : IStore
   private readonly IServiceProvider ServiceProvider;
   private readonly ConcurrentDictionary<string, IState> States;
   private readonly ConcurrentDictionary<string, IState> PreviousStates;
-  private readonly ConcurrentDictionary<string, SemaphoreSlim> Semaphores;
   private readonly ConcurrentDictionary<string, object> StateInitializationLocks;
   private readonly IPublisher<ClientPipeline> Publisher;
   private readonly TimeWarpStateOptions TimeWarpStateOptions;
@@ -31,7 +34,7 @@ internal partial class Store : IStore
   /// </summary>
   /// <remarks>Useful when logging </remarks>
   public Guid Guid { get; } = Guid.NewGuid();
-  public ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
+  internal ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
 
   public Store
   (
@@ -50,7 +53,6 @@ internal partial class Store : IStore
 
     States = new ConcurrentDictionary<string, IState>();
     PreviousStates = new ConcurrentDictionary<string, IState>();
-    Semaphores = new ConcurrentDictionary<string, SemaphoreSlim>();
     StateInitializationLocks = new ConcurrentDictionary<string, object>();
   }
 
@@ -74,60 +76,33 @@ internal partial class Store : IStore
   public void RemoveState<TState>() where TState : IState
   {
     string typeName = typeof(TState).FullName ?? throw new InvalidOperationException();
-    object initializationLock = StateInitializationLocks.GetOrAdd(typeName, static _ => new object());
-    lock (initializationLock)
-    {
-      Logger.LogDebug
-      (
-        EventIds.Store_RemoveState,
-        "{Timestamp:O} Removing State: {TypeName}",
-        DateTime.UtcNow,
-        typeName
-      );
-      PreviousStates.Remove(typeName, out _);
-      States.Remove(typeName, out IState? state);
-      state?.CancelOperations();
-
-      // Remove and dispose the associated Semaphore
-      if (Semaphores.TryRemove(typeName, out SemaphoreSlim? semaphore))
-      {
-        semaphore.Dispose();
-      }
-
-      // Optionally, remove the initialization task
-      StateInitializationTasks.TryRemove(typeName, out _);
-    }
+    RemoveStateByName(typeName);
   }
 
   /// <summary>
-  /// Clear all the states
+  /// Remove every state the way <see cref="RemoveState{TState}"/> does.
   /// </summary>
-  public void Reset() => States.Clear();
-
-  /// <summary>
-  /// Get the Semaphore for the specific State
-  /// </summary>
-  public SemaphoreSlim? GetSemaphore(Type stateType)
+  public void Reset()
   {
+    foreach (string typeName in States.Keys.ToArray())
+    {
+      RemoveStateByName(typeName);
+    }
+  }
+
+  public Task WaitForInitializationAsync<TState>() where TState : IState
+  {
+    _ = GetState<TState>();
+    return FindInitializationTask(typeof(TState)) ?? Task.CompletedTask;
+  }
+
+  public Task? FindInitializationTask(Type stateType)
+  {
+    ArgumentNullException.ThrowIfNull(stateType);
     string typeName = stateType.FullName ?? throw new InvalidOperationException();
-    if (Semaphores.TryGetValue(typeName, out SemaphoreSlim? existing))
-    {
-      return existing;
-    }
-
-    if (!States.ContainsKey(typeName))
-    {
-      return null;
-    }
-
-    SemaphoreSlim created = new(1, 1);
-    SemaphoreSlim semaphore = Semaphores.GetOrAdd(typeName, created);
-    if (!ReferenceEquals(semaphore, created))
-    {
-      created.Dispose();
-    }
-
-    return semaphore;
+    return StateInitializationTasks.TryGetValue(typeName, out Task? initializationTask)
+      ? initializationTask
+      : null;
   }
 
   /// <summary>
@@ -140,7 +115,7 @@ internal partial class Store : IStore
     SetState(typeName, newState);
   }
 
-  public object GetState(Type stateType)
+  public IState GetState(Type stateType)
   {
     using (Logger.BeginScope(nameof(GetState)))
     {
@@ -205,12 +180,31 @@ internal partial class Store : IStore
     return state;
   }
 
+  private void RemoveStateByName(string typeName)
+  {
+    object initializationLock = StateInitializationLocks.GetOrAdd(typeName, static _ => new object());
+    lock (initializationLock)
+    {
+      Logger.LogDebug
+      (
+        EventIds.Store_RemoveState,
+        "{Timestamp:O} Removing State: {TypeName}",
+        DateTime.UtcNow,
+        typeName
+      );
+      PreviousStates.Remove(typeName, out _);
+      States.Remove(typeName, out IState? state);
+      state?.CancelOperations();
+      StateInitializationTasks.TryRemove(typeName, out _);
+    }
+  }
+
   private void SetState(string typeName, object newStateObject)
   {
     var newState = (IState)newStateObject;
-    
+
     // Check if the state exists before trying to access it
-    // If the state has been removed then does it make sense to keep this new one? 
+    // If the state has been removed then does it make sense to keep this new one?
     if (States.TryGetValue(typeName, out var currentState))
     {
       Logger.LogDebug

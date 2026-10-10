@@ -1,5 +1,5 @@
 #region Purpose
-// TWS001 (error): a concrete type deriving directly from State<T> must implement ICloneable or have a constructor
+// TWS0009 (error): a concrete type deriving directly from State<T> must implement ICloneable or have a constructor
 // the clone source generator can call.
 #endregion
 
@@ -14,7 +14,7 @@ namespace TimeWarp.State.Analyzer;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class StateImplementationAnalyzer : DiagnosticAnalyzer
 {
-  public const string DiagnosticId = "TWS001";
+  public const string DiagnosticId = "TWS0009";
 
   private static readonly LocalizableString Title = "State implementation must implement ICloneable or have an accessible constructor";
   private static readonly LocalizableString MessageFormat = "The state implementation '{0}' must implement ICloneable or have a constructor the clone source generator can call";
