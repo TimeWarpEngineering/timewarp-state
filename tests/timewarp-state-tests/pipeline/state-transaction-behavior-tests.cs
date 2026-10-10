@@ -7,9 +7,8 @@
 // Constructs StateTransactionBehavior directly over a RecordingStore and RecordingPublisher. TransactionTestState
 // implements ICloneable so the clone is predictable; next mutates the current state and then fails, so a rollback
 // shows up as the original instance with its original value. EqualGuidState.Clone is MemberwiseClone, so Guid is
-// copied. EmptyGuidState.Clone returns Guid.Empty. ThrowingConstructorState is not ICloneable, so it goes through the
-// default cloner; its only constructor throws on the default argument, so the cloner falls back to an
-// uninitialized instance whose [IgnoreDataMember] Guid stays empty.
+// copied. EmptyGuidState.Clone returns Guid.Empty. ThrowingConstructorState is not ICloneable and not a State<T>,
+// so the registry has no generated clone and Clone throws InvalidOperationException.
 #endregion
 
 namespace StateTransactionBehaviorTests;
@@ -135,14 +134,14 @@ public class Should_
     exception.Message.ShouldContain("construct the clone so the initializer runs");
   }
 
-  public async Task Throw_InvalidCloneException_When_Default_Cloner_Constructor_Throws()
+  public async Task Throw_When_State_Has_No_Clone()
   {
     ThrowingConstructorState originalState = new(seed: 1);
     originalState.Guid.ShouldNotBe(Guid.Empty);
     StateTransactionBehavior<ThrowingConstructorState.ThrowAction, Unit> behavior =
       CreateBehavior<ThrowingConstructorState.ThrowAction>(originalState);
 
-    InvalidCloneException exception = await Should.ThrowAsync<InvalidCloneException>
+    InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>
     (
       () => behavior.Handle
       (
@@ -152,11 +151,8 @@ public class Should_
       )
     );
 
-    exception.EnclosingStateType.ShouldBe(typeof(ThrowingConstructorState));
-    exception.CloneCause.ShouldBe(InvalidCloneException.Cause.EmptyGuid);
-    exception.Message.ShouldContain("empty Guid");
-    exception.Message.ShouldContain("default cloner");
-    exception.Message.ShouldContain("fell back to an uninitialized instance");
+    exception.Message.ShouldContain(nameof(ThrowingConstructorState));
+    exception.Message.ShouldContain("ICloneable");
   }
 
   private static StateTransactionBehavior<TAction, Unit> CreateBehavior<TAction>(IState originalState)

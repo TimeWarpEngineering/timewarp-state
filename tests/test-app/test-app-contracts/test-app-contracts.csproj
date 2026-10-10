@@ -3,6 +3,9 @@
   <PropertyGroup>
     <AssemblyName>Test.App.Contracts</AssemblyName>
     <RootNamespace>Test.App.Contracts</RootNamespace>
+    <!-- Client states hold these DTOs. A reference assembly hides private fields, so the state clone generator
+         (TWSG002) needs the implementation assembly to prove the DTOs have no hidden state. -->
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TimeWarp.Mediator.Contracts" />

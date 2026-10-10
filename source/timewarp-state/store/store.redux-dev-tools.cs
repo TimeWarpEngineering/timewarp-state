@@ -40,6 +40,8 @@ internal partial class Store : IReduxDevToolsStore
   /// Needed for ReduxDevTools time travel
   /// </summary>
   /// <param name="jsonString"></param>
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Redux DevTools time travel only: deserializes untyped JSON into Dictionary<string, object>. Follow-up: replace with generated hydration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Redux DevTools time travel only: deserializes untyped JSON into Dictionary<string, object>. Follow-up: replace with generated hydration.")]
   public void LoadStatesFromJson(string jsonString)
   {
     if (string.IsNullOrWhiteSpace(jsonString))
@@ -62,6 +64,11 @@ internal partial class Store : IReduxDevToolsStore
     }
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Redux DevTools time travel reflects over loaded assemblies. Follow-up: replace with generated hydration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Redux DevTools time travel reflects over loaded assemblies. Follow-up: replace with generated hydration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Redux DevTools time travel reflects over loaded assemblies. Follow-up: replace with generated hydration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Redux DevTools time travel reflects over loaded assemblies. Follow-up: replace with generated hydration.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Redux DevTools time travel reflects over loaded assemblies. Follow-up: replace with generated hydration.")]
   private void LoadStateFromJson(KeyValuePair<string, object> keyValuePair)
   {
     string typeName = keyValuePair.Key;

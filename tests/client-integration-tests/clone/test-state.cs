@@ -9,6 +9,7 @@
 namespace TestApp.Client.Integration.Tests.Clone;
 
 
+[GenerateClone]
 [NotTest]
 public class TestState
 {

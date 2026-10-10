@@ -123,7 +123,7 @@ public class UserService
 ### Framework
 - **Target**: .NET 11 (`net11.0`)
 - **SDK**: 11.0.100-rc.1.26425.128 from `global.json` (rollForward latestMinor, allowPrerelease true until .NET 11 GA on 2026-11-10; re-pin to 11.0.100 then)
-- **Cloning**: default state clone is `TimeWarp.Features.Cloning` (no AnyClone/TypeSupport). Never use blocking waits (`SemaphoreSlim.Wait`, `Task.Wait`, `.Result`) in library code: .NET 11 throws on single-threaded browser WASM. Library projects declare `<SupportedPlatform Include="browser" />` so CA1416 flags them.
+- **Cloning**: `StateCloneSourceGenerator` emits the clone for each concrete `State<T>` (and for `[GenerateClone]` types). `StateTransactionBehavior` calls `ICloneable` first, then `StateCloneRegistry`. There is no reflection cloner. `TWSG002` is an error when a reachable member cannot be cloned. Never use blocking waits (`SemaphoreSlim.Wait`, `Task.Wait`, `.Result`) in library code: .NET 11 throws on single-threaded browser WASM. Library projects declare `<SupportedPlatform Include="browser" />` so CA1416 flags them.
 - **Nullable**: Disabled project-wide
 - **ImplicitUsings**: Enabled
 

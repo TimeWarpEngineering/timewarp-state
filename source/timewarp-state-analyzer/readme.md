@@ -16,8 +16,9 @@ Roslyn analyzers packed into `TimeWarp.State` at `analyzers/dotnet/cs`. Consumer
 | TWS0006 | Error | Design | `CatalogActionAnalyzer` — duplicate catalog `Name` in one assembly |
 | TWS0007 | Warning | Design | `CatalogActionAnalyzer` — `Description` should be one plain sentence |
 | TWS0008 | Error | Design | `CatalogActionAnalyzer` — `DisplayName`, when given, must not be empty or whitespace |
-| TWS001 | Error | Design | `StateImplementationAnalyzer` |
+| TWS001 | Error | Design | `StateImplementationAnalyzer` — concrete `State<T>` must implement `ICloneable` or have an accessible constructor (parameterless is not required; abstract states are exempt) |
 | TWSG001 | Error | Persistence | `PersistenceStateSourceGenerator` — `[PersistentState]` is not supported on nested classes |
+| TWSG002 | Error | Cloning | `StateCloneSourceGenerator` — a reachable member cannot be cloned (reported at that member, naming the root state); implement `ICloneable` or change the member |
 | StateInheritanceTypeArgumentRule | Error | Design | `StateInheritanceAnalyzer` |
 | StateSealedClassRule | Warning | Design | `StateInheritanceAnalyzer` |
 | StateReadOnlyPublicPropertiesRule | Error | Design | `StateReadOnlyPublicPropertiesAnalyzer` |
