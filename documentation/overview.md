@@ -64,8 +64,10 @@ TimeWarp.State ships with the following ClientPipeline middleware (declared via 
 
 #### StateTransactionBehavior
 
-To ensure your application is in a known good state the `StateTransactionBehavior` creates a clone of the `State` prior to processing the `Action`.
-If any exception occurs during the processing of the `Action` the state is rolled back.
+To ensure your application is in a known good state the `StateTransactionBehavior` creates a clone of the `State` prior to processing the `Action` and installs that clone as the live state.
+If the action fails or is cancelled, and the store holds that action's clone, the behavior restores the pre-action state.
+If another action on the same state has installed a newer clone, the behavior leaves the newer state in place and logs that a concurrent action advanced the state.
+Overlapping actions are not serialized, and the behavior does not wait on a lock. Handlers re-read the store for each access. A failure rolls back only its own clone, so one action cannot discard another action's committed clone. In-place writes on the live clone are part of that clone: the action that installed it still restores the snapshot when its handler fails.
 
 #### RenderSubscriptionsPostProcessor
 

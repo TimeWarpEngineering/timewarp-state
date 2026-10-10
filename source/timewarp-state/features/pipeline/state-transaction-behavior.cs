@@ -1,18 +1,23 @@
 #region Purpose
-// Clone state before the handler runs; on failure, restore the original and optionally notify.
+// Clone state before the handler runs; on failure, restore that clone only when it is the live state.
 #endregion
 
 #region Design
 // Clone is outside the try; the catch is a handler failure, not a clone failure.
 // ExceptionNotification is published with CancellationToken.None so a cancelled request token cannot skip reporting.
-// OperationCanceledException still rolls back; it is not published because cancellation is not a failure.
+// OperationCanceledException rolls back when this action's clone is live; it is not published because cancellation is not a failure.
+// Rollback uses ReferenceEquals against the clone this action installed. A different instance is a later action's
+// committed clone, so the snapshot stays out of the store and the skip is logged. Actions are not serialized: a
+// per-state lock can deadlock a handler that waits on work which re-enters that state, and WaitAsync does not
+// remove that deadlock. In-place writes on the live clone are not a separate commit.
 #endregion
 
 namespace TimeWarp.Features.StateTransactions;
 
 /// <summary>
 ///   Represents a pipeline behavior in TimeWarp.State that clones the current state before processing a request.
-///   This behavior ensures that the state can be reverted to its original form in case of an error during the request handling.
+///   This behavior ensures that the state can be reverted to its original form in case of an error during the request handling,
+///   unless a later action has already committed a newer clone of that state.
 ///   A state that implements <see cref="ICloneable"/> is cloned with that method. Every other state is cloned with the
 ///   delegate the clone source generator registered in <see cref="TimeWarp.Features.Cloning.StateCloneRegistry"/>.
 ///   The clone does not block, so it stays safe on single-threaded browser WebAssembly. This behavior is
@@ -20,8 +25,9 @@ namespace TimeWarp.Features.StateTransactions;
 /// </summary>
 /// <remarks>
 ///   This behavior is part of the TimeWarp.State pipeline, intercepting actions (requests) to clone the relevant state before
-///   proceeding. If an action fails, the system reverts to the cloned state, thus preventing partial state updates
-///   from corrupting the application state. It uses TimeWarp.Mediator's pipeline behavior feature to hook into the request handling
+///   proceeding. If an action fails or is cancelled, and the store holds this action's clone, the behavior restores the
+///   pre-action state. When the store holds a different instance, a concurrent action has committed a newer clone, the
+///   behavior leaves that state in place, and it logs the skipped rollback. It uses TimeWarp.Mediator's pipeline behavior feature to hook into the request handling
 ///   process.
 /// </remarks>
 /// <typeparam name="TRequest"></typeparam>
@@ -120,15 +126,27 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
         );
       }
 
-      // If something fails we restore system to previous state.
-      Logger.LogInformation
-      (
-        EventIds.StateTransactionBehavior_Restoring,
-        message: "Attempting to restore State of type: {enclosingStateType}",
-        enclosingStateType
-      );
+      // A newer clone belongs to a concurrent action. Restoring this snapshot would discard that commit.
+      if (ReferenceEquals(Store.GetState(enclosingStateType), newState))
+      {
+        Logger.LogInformation
+        (
+          EventIds.StateTransactionBehavior_Restoring,
+          message: "Attempting to restore State of type: {enclosingStateType}",
+          enclosingStateType
+        );
 
-      Store.SetState(originalState);
+        Store.SetState(originalState);
+      }
+      else
+      {
+        Logger.LogWarning
+        (
+          EventIds.StateTransactionBehavior_ConcurrentAdvance,
+          message: "Skipping rollback because a concurrent action advanced the state. Type:{enclosingStateType}",
+          enclosingStateType
+        );
+      }
 
       if (!isCancellation)
       {

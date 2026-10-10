@@ -47,6 +47,7 @@ internal static class EventIds
   public static readonly EventId StateTransactionBehavior_Ignoring = new(402, nameof(StateTransactionBehavior_Ignoring));
   public static readonly EventId StateTransactionBehavior_Exception = new(403, nameof(StateTransactionBehavior_Exception));
   public static readonly EventId StateTransactionBehavior_Restoring = new(404, nameof(StateTransactionBehavior_Restoring));
+  public static readonly EventId StateTransactionBehavior_ConcurrentAdvance = new(405, nameof(StateTransactionBehavior_ConcurrentAdvance));
 
   //   ReduxDevTools
   public static readonly EventId StartHandler_Initializing = new(500, nameof(StartHandler_Initializing));
