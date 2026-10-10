@@ -9,7 +9,7 @@ title: Cloning
 
 ## Transaction rollback
 
-The behavior installs the clone as the live state before the handler runs. On exception or cancellation it restores the pre-action snapshot when `ReferenceEquals` shows that the store holds that clone. A different instance means a later action already committed its own clone. The behavior leaves that state in place and logs that a concurrent action advanced the state. `ExceptionNotification` is published for a non-cancellation failure. Actions on one state are not serialized. The behavior never blocks and never calls `SemaphoreSlim.Wait`. In-place mutation of the live clone is not a new commit: when the action that installed the clone fails, those writes roll back with it.
+The behavior installs the clone as the live state before the handler runs. On exception or cancellation it restores the pre-action snapshot when `ReferenceEquals` shows that the store holds that clone. A different instance means a later action already committed its own clone. The behavior leaves that state in place and logs that a concurrent action advanced the state. `ExceptionNotification` is published for a non-cancellation failure. Actions on one state are not serialized. The behavior never blocks and never calls `SemaphoreSlim.Wait`. In-place mutation of the live clone is not a new commit: when the action that installed the clone fails, those writes roll back with it. The guard does not undo writes another action has already copied. If a failing action mutated its clone before a concurrent action cloned it, those writes carry into the concurrent action's clone and stay when the failing action's rollback is skipped.
 
 ## What gets a clone
 

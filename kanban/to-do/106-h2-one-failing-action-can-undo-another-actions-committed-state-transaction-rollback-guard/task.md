@@ -43,7 +43,7 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 - [x] Log when a concurrent action advanced the state
 - [x] Interleaved-actions tests: A fails after B commits; B fails while A in flight
 - [x] Docs (transaction semantics)
-- [ ] Code review
+- [x] Code review
 
 Decision: minimal `ReferenceEquals` guard, not per-state serialization. Fable's order is one reference check. A per-state `SemaphoreSlim` can deadlock when a handler waits on work that re-enters the same state; `WaitAsync` does not remove that deadlock. `IStore.GetSemaphore` stays for task 109 M5.
 
@@ -59,6 +59,7 @@ Rollback restores the snapshot only when the store holds this action's clone. A 
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: Grok session 01a126c3-5c43-7a40-854c-f8cfd7fa93d0 (2026-10-11)
+- Review: Claude Opus 5.5 review oracle (2026-10-11), effort 2, roster general
 
 ## Results
 
@@ -79,6 +80,13 @@ Minimal `ReferenceEquals` guard. Per-state serialization is deferred because a l
 The guard treats "advanced" as a different state instance. An in-flight handler that only mutates the live clone does not count as a commit. `Restore_Earlier_Clone_When_Overlapping_Action_Fails_While_Earlier_Action_Is_In_Flight` pins that case: the overlapping failure restores the earlier clone, and the earlier action's later re-read write sticks.
 
 Code review is the host review node. This implement pass did not run it.
+
+### Review disposition
+
+- Rounds: 1. Effort 2, roster: general.
+- Final counts: bug 0. Suggestion 1 (fixed). Nit 1 (wontfix). Open 0.
+- Disposition: **accepted-exceptions**. M1 (docs did not say that a failing action's in-place writes, made before a concurrent action cloned the state, carry into that clone) is fixed in `documentation/topics/cloning.md`. M2 (the skip warning says "concurrent action advanced" after a `RemoveState` or `Reset`) is wontfix. The skip is correct, and the wording matches the recorded decision and the tests.
+- Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
 ### Test outcomes
 
@@ -115,7 +123,7 @@ dotnet fixie timewarp-state-tests --tests '*StateTransactionBehavior*'
 ganda repo audit
 ```
 
-**Not in scope:** deleting `IStore.GetSemaphore`, per-state serialization, and the host review node.
+**Not in scope:** deleting `IStore.GetSemaphore` and per-state serialization.
 
 ## Notes
 
