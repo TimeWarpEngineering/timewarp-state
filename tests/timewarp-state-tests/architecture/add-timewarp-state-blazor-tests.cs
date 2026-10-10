@@ -4,8 +4,8 @@
 #endregion
 
 #region Design
-// Inspects ServiceDescriptors instead of resolving: JsonRequestHandler and the HttpClient factory need a
-// mediator and NavigationManager, which these tests do not build.
+// Inspects ServiceDescriptors instead of resolving: JsonRequestHandler needs a mediator, which these tests do not build.
+// AddTimeWarpStateBlazor does not register HttpClient.
 #endregion
 
 namespace AddTimeWarpStateBlazorTests;

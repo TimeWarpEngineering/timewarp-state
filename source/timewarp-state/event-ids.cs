@@ -19,9 +19,9 @@ internal static class EventIds
   public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
   public static readonly EventId Store_RemoveState = new (105, nameof(Store_RemoveState));
 
-  // Store.ReduxDevTools
-  public static readonly EventId LoadStatesFromJson = new(104, nameof(LoadStatesFromJson));
-  public static readonly EventId LoadStateFromJson = new(105, nameof(LoadStateFromJson));
+  // Store.ReduxDevTools. 104 and 105 belong to Store_SetState and Store_RemoveState.
+  public static readonly EventId LoadStatesFromJson = new(106, nameof(LoadStatesFromJson));
+  public static readonly EventId LoadStateFromJson = new(107, nameof(LoadStateFromJson));
   
   // Features - Normal
   //   JavascriptInterop

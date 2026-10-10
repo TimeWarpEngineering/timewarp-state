@@ -21,21 +21,21 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 ## Checklist
 
-- [ ] M1. Redux DevTools time travel unreachable / only trim-unsafe reflection: handled by task 104 (finish or delete, Steven decides); companion inspector is task 103
-- [ ] M2. `IsAotCompatible` on `TimeWarp.State.Blazor` and `TimeWarp.State.Plus`, annotate/suppress with justification, `PublishTrimmed` smoke of `samples/05-persistence` in `dev verify-samples` (last in Fable's order)
-- [ ] M3. Rethrow `OperationCanceledException` after rollback; consider an option to rethrow handler exceptions; document semantics
-- [ ] M4. `Store.Reset` as `RemoveState` for every key under the per-type lock (or test-only, off `IStore`)
-- [ ] M5. `IStore`: remove `GetSemaphore` after H2 (task 106), `WaitForInitializationAsync<TState>()`, `GetState(Type)` returns `IState`
-- [ ] M6. `PushRouteInfo`: replace JavaScript `eval` for `document.title` with a module export or the title from `TwPageTitle`
-- [ ] M7. Action tracking: send `CompleteProcessing` with `CancellationToken.None`; pre-cancelled token test
-- [ ] M8. `TimerState`: `async Task` callback with try/catch logging; marshal through the circuit; consider `PeriodicTimer`/`TimeProvider`
-- [ ] M9. Persistence: remove `PreRender`/`Server` until implemented, optional storage services in `PersistenceService`, add `AddTimeWarpStatePersistence()` (with M1, the "dead DevTools and persistence code" step in Fable's order)
-- [ ] M10. Drop the "test" assembly-name sniff; require `StateTestOptions.Enable()` or make guarded members internal
-- [ ] M11. Remove the Blazor Server `HttpClient` registration from `AddTimeWarpStateBlazor` (or explicit opt-in method)
-- [ ] M12. `JsonRequestHandler`: delete or guard the `JsonSerializer.Serialize(JsonSerializerOptions)` debug log
-- [ ] M13. Renumber diagnostics to `TWS0009`..`TWS0012`, prefix the three prose ids, symbol-based read-only rule, shipped/unshipped release files
-- [ ] M14. Close test coverage gaps listed in the finding (incl. un-ignore persistence e2e, delete `sample-test.cs`, rename cloner test file, nuspec allow-list overlaps task 105)
-- [ ] M15. One docs/readme/metadata pass for the drift listed in the finding (incl. duplicate event id 104)
+- [x] M1. Closed here with a recorded reason: task 104 still owns finish-vs-delete for Redux DevTools time travel (Steven decides). Companion inspector remains task 103. `LoadStatesFromJson` was not deleted on this id.
+- [x] M2. `IsAotCompatible` on `TimeWarp.State.Blazor` and `TimeWarp.State.Plus`, IL suppressions with rooting justification, `PublishTrimmed` smoke of `samples/05-persistence` in `dev verify-samples`
+- [x] M3. Rethrow `OperationCanceledException` after rollback; `TimeWarpStateOptions.RethrowHandlerExceptions` (default false); semantics in `documentation/topics/state-transactions.md`
+- [x] M4. `Store.Reset` removes every key through the same cancel/dispose path as `RemoveState`
+- [x] M5. `IStore`: `GetSemaphore` and the public initialization dictionary removed; `WaitForInitializationAsync<TState>()` and `FindInitializationTask`; `GetState(Type)` returns `IState`
+- [x] M6. `PushRouteInfo` reads `document.title` from `wwwroot/js/document-title.js` (`getDocumentTitle`); disconnect returns an empty title
+- [x] M7. Action tracking sends `CompleteProcessing` with `CancellationToken.None`; pre-cancelled token test
+- [x] M8. `TimerState` posts an `async Task` through the captured circuit `SynchronizationContext`, with try/catch logging (event 1405). `System.Timers.Timer` kept.
+- [x] M9. `PreRender`/`Server` removed; storage services optional on `PersistenceService`; `AddTimeWarpStatePersistence()`
+- [x] M10. Assembly-name sniff removed. Guarded members require `StateTestOptions.Enable()`
+- [x] M11. `AddTimeWarpStateBlazor` no longer registers `HttpClient`. Hosts register it. No opt-in helper.
+- [x] M12. `JsonRequestHandler` logs a hand-picked options subset only when Debug is enabled
+- [x] M13. Diagnostics renumbered to `TWS0009`..`TWS0012`. Read-only rule is symbol-based. Entries stay in `AnalyzerReleases.Unshipped.md` until 12.0 ships.
+- [x] M14. Unit gaps closed. Persistence e2e un-ignored. `sample-test.cs` deleted. Cloner tests renamed to `clone-graph-tests.cs`. Nuspec allow-list already landed on task 105. Interleaved rollback tests already landed on task 106. Redux DevTools tests stay with task 104.
+- [x] M15. Docs, readmes, slnx, and the duplicate event id 104 (`LoadStatesFromJson` is 106, `LoadStateFromJson` is 107)
 
 ## Acceptance criteria
 
@@ -201,8 +201,104 @@ Verbatim from `kanban/done/102-full-codebase-review-by-claude-fable-review-only/
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implementer: Grok session 01a12712-c358-7502-b742-e3d0a464b84e (2026-10-11)
+- Review oracle: Claude Opus 5.5 (ganda task work, 2026-10-11), effort 3, roster general (Sonnet subagent)
+- Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-10T19:33:55Z
+- Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-10T20:26:57Z
 
 ## Notes
 
+- CI fix required before merge. PR #634 run 38079798434 failed the e2e job (10 tests). This is not a flake.
+  `TestThrowException`, `TestResetStore`, `TestJavaScriptInterop`, `TestGoBack`, `TestEventStream`,
+  `CloneSuitePassesInServerAndWasm`, `TestCounterComponents`, and `TestChangeRoute` expected render mode
+  `WebAssembly` after reload and got `Static`. `TestPersistence` and `TestCacheableWeather` expected state
+  text and got `null`. The persistence page snapshot shows the nav button disabled. `scripts/test.cs` does
+  not run e2e; CI does (`scripts/e2e.cs`). Fix the product change that keeps the test app on static render
+  after the WASM reload, then push so CI on this PR is green. Do not split this into a new task.
+  The fix is on this branch (Results, CI e2e). The published Release probe reached WebAssembly and the
+  persistence counts survived a reload. The e2e job itself still runs only in CI.
 - Related: 103 (companion DevTools app, relevant to M1), 104 (M1), 105 (H1; overlaps M14 packaging test),
   106 (H2; prerequisite for M5 `GetSemaphore` removal), 107 (H3), 108 (H4). M14 also lists the missing interleaved-actions test that 106 adds.
+- The kitchen text asked for child tasks. This walk implemented M2–M15 on task 109 because the implementer brief said to finish the remaining product work on this id. M1 stays on task 104.
+
+## Results
+
+M2–M15 are implemented on this branch at version `12.0.0-beta.11` (no version bump). M1 is closed on this checklist with a recorded reason: Steven still chooses finish-versus-delete on task 104, and `LoadStatesFromJson` stays.
+
+- **M2.** `IsAotCompatible` and the same IL2xxx/IL3xxx warnings-as-errors list as the core package are on Blazor and Plus. Trim suppressions name the rooting (generated `StateCloneRegistry`, `AddJavaScriptDispatch`, the app's component type). `dev verify-samples` publishes `samples/05-persistence/wasm/sample-05-wasm` trimmed with `TrimmerSingleWarn=false`.
+- **M3.** After rollback, `OperationCanceledException` is always rethrown and is not published. Other handler exceptions still publish `ExceptionNotification` and return `default!` unless `TimeWarpStateOptions.RethrowHandlerExceptions` is true. Topic: `documentation/topics/state-transactions.md`.
+- **M4.** `Store.Reset` calls the remove path for every key (cancel, drop previous state, drop the initialization task).
+- **M5.** `IStore` no longer exposes `GetSemaphore` or `StateInitializationTasks`. `GetState(Type)` returns `IState`. `WaitForInitializationAsync<TState>()` ensures the state and returns its init task. `FindInitializationTask` looks up without creating state.
+- **M6.** `PushRouteInfo` imports `./_content/TimeWarp.State.Plus/js/document-title.js` and calls `getDocumentTitle`. A disconnected circuit, a JS exception, or prerender yields an empty title.
+- **M7.** `ActiveActionBehavior` sends `CompleteProcessing` with `CancellationToken.None`.
+- **M8.** Elapsed work is an `async Task` posted on the `SynchronizationContext` captured at construction, logged on failure (event 1405). The timer type is unchanged.
+- **M9.** `PersistentStateMethod` is only `SessionStorage` and `LocalStorage`. `PersistenceService` takes optional storage services and logs when one is missing. Hosts call `AddTimeWarpStatePersistence()`.
+- **M10.** `ThrowIfNotTestAssembly` requires `StateTestOptions.Enable()`. Calling test assemblies that are not the core test project enable it from a module initializer.
+- **M11.** `AddTimeWarpStateBlazor` does not register `HttpClient`. The beta.11 migration guide shows the one-line host registration.
+- **M12.** The constructor logs naming policy and converter count only when Debug logging is enabled.
+- **M13.** `TWS0009` (was `TWS001`), `TWS0010`, `TWS0011`, `TWS0012`. The read-only analyzer uses symbols (`init` allowed; `protected set` only on an abstract state). Ids stay unshipped until 12.0 GA. A positional record cannot inherit `State<T>` (the language forbids it); get-only and init cover that rule.
+- **M14.** New tests: state-initialization preprocessor, `RouteState.ChangeRoute`, timer elapsed/restart, `TwPageTitle` / `TimeWarpPageRenderNotifier`, `JsonRequestHandler` init/dispose. Persistence e2e `[Ignore]` removed. `sample-test.cs` deleted. `deep-cloner-tests.cs` renamed to `clone-graph-tests.cs`. Packaging allow-list is task 105. Interleaved actions are task 106. Redux DevTools behavior/interop tests stay with M1.
+- **M15.** `claude.md` points at `ai-context.md`. Badges, package readmes, getting-started sample link, solution folders, and the duplicate event id are corrected. `Store_SetState` stays 104. `LoadStatesFromJson` is 106 and `LoadStateFromJson` is 107.
+
+### CI e2e (PR #634, run 38079798434)
+
+`IsAotCompatible` on Blazor and Plus lets the published test-app WebAssembly client trim those assemblies. Two gaps left the reload on the static prerender (`RendererInfo.Name` stayed `Static`, so the `data-qa` spans the e2e job reads were absent and their text was null):
+
+- ICloneable states are not field-cloned. `ActionTrackingState` and `TimerState` were constructed only through `EnsureStates`, and `Clone()` was the only call to their members, so the trimmer dropped the DI constructors and stubbed `Clone()`. Development host validation then threw `NoConstructorMatch` before interactive WebAssembly replaced the prerender. The clone generator emits `RootICloneableStates`: a module initializer that names each ICloneable state with `DynamicallyAccessedMembers` for public constructors and public methods. An ICloneable-only compilation still emits that root.
+- `Routes.razor` on the server names `ReduxDevTools`, `TimeWarpJavaScriptInterop`, and `TimeWarpPageRenderNotifier`. That reference is not a root for the client trim, so the WASM runtime reported that the root component type could not be found. `ComponentTrimRoots` in Blazor and Plus names those components from a module initializer (`DynamicallyAccessedMembers.All`). CA2255 is suppressed on that initializer: the root has to live in the library.
+
+After those roots, a published reload reaches `WebAssembly`. Persistence load already wrote the snapshot back with `Store.SetState` (the browser log showed the stored JSON and the loaded guid). `LoadPersistentStateRequest` is not an action, so nothing re-rendered and the page kept the `Initialize()` defaults. `PersistenceTestPage` and `ServerSidePersistenceTestPage` now await `WaitForInitializationAsync` for purple and blue, and they leave the counter buttons out of the DOM until that task finishes. That matches `documentation/topics/persistence.md` and sample 05, and a click cannot increment the defaults before the snapshot is in the store.
+
+Local published Release probe of `tests/test-app/test-app-server` (content root `/tmp/task109-sut`, `ASPNETCORE_ENVIRONMENT=Development`, Chromium). This is not the CI e2e job:
+
+- Counter after reload: `WebAssembly` / `InteractiveWebAssemblyRenderMode`, count `3` to `8`, `#blazor-error-ui` hidden.
+- Persistence: purple guid and count `6`, and blue guid and count `5`, survived a reload in `WebAssembly`. A new tab kept the purple guid and count and showed a new blue guid with count `2`.
+- Cacheable weather after reload: `WebAssembly`, cache duration `00:00:10`.
+
+### How to validate
+
+**Smoke**
+
+```bash
+dotnet build source/timewarp-state-blazor/timewarp-state-blazor.csproj -c Release
+dotnet build source/timewarp-state-plus/timewarp-state-plus.csproj -c Release
+dotnet run --file scripts/test.cs
+ganda repo audit
+```
+
+**Expect**
+
+- Both Release builds exit 0. IL2xxx/IL3xxx are warnings-as-errors on those projects, so a trim warning fails the build.
+- `scripts/test.cs` exits 0. This walk: analyzer 44 passed; source generator 80 passed; state 115 passed, 1 skipped; plus 40 passed, 1 skipped; telemetry 13 passed; client 65 passed, 1 skipped; architecture 7 passed, 1 skipped.
+- `ganda repo audit` exits 0. This walk: Passed 29, Skipped 1, one non-blocking `kebab-path-names` warning on the five Blazor `lib.module` paths. Those names are the Razor static-web-asset convention and were left as they are.
+
+**Automated gate**
+
+```bash
+dotnet run --file scripts/test.cs
+```
+
+`./bin/dev test` is the same suite. It does not run end-to-end tests.
+
+**Depends on**
+
+- .NET 11 SDK. The trimmed sample publish in `dev verify-samples` runs after `dev pack`, because samples reference the packed feed.
+
+**Not in scope**
+
+- Task 104 still decides whether Redux DevTools time travel is finished or deleted. This branch does not delete `LoadStatesFromJson`.
+- The full e2e job (`scripts/e2e.cs` on `ubuntu-latest`) was not executed on this machine. The published Release probe above covers the ten failures from run 38079798434: WebAssembly after reload, persistence guid/count across reload and a new tab, and the cache-duration text. CI on PR #634 is the remaining run of that job.
+- The trimmed `sample-05-wasm` publish is wired into `verify-samples` and was not executed in this walk. Library Release builds already fail on IL warnings. The test-app client publish used for the probe above is trimmed (`Optimizing assemblies for size`).
+
+### Review disposition
+
+- **Rounds:** 3. Effort 3 (Budget.ByDiff: 1914 lines for rounds 1–2, 2432 for round 3). Roster: general. Round 3 covered the PR #634 e2e fix (`2d150884..d2e2e215`) and found nothing new.
+- **Final counts:** bug 0; suggestion 2 fixed; nit 1 fixed, 1 wontfix; open 0.
+- **Disposition:** `accepted-exceptions`.
+- **Fixed on this task:**
+  - `Store.Reset` walks every key in `States`, `PreviousStates` and the init-task map, and rethrows per-key failures as `AggregateException`.
+  - The `TimerState` Design region says the circuit context is captured at first construction.
+  - TWS0012 now reports once per property on partial states. New test: `Given_PartialTimeWarpState_ReportsOnce`.
+- **Wontfix (M4, nit):** the transaction rollback check can re-create a state that `Reset` or `RemoveState` removed mid-action. The reviewer rated this acceptable, and a non-creating lookup would widen `IStore` again right after M5 narrowed it.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/round-3/{general,merged}.md`, `review/disposition.md`.
+- After the fixes, `./bin/dev build` and `./bin/dev test` are green. Analyzer tests: 44 passed.

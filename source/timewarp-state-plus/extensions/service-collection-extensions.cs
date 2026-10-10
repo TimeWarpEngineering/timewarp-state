@@ -1,10 +1,12 @@
 #region Purpose
-// AddTimeWarpStateRouting: registers RouteState for TimeWarp.State.Plus routing.
+// AddTimeWarpStateRouting registers RouteState. AddTimeWarpStatePersistence registers IPersistenceService.
 #endregion
 
 #region Design
-// Only RouteState is registered (TryAddScoped). The routing handlers are linked at compile time by the host's
+// Only RouteState is registered by routing (TryAddScoped). The routing handlers are linked at compile time by the host's
 // generated mediator, so they need no registration.
+// AddTimeWarpStatePersistence registers PersistenceService. The host still registers the Blazored storage
+// services it uses. Those services are optional on PersistenceService.
 #endregion
 
 namespace TimeWarp.State.Plus.Extensions;
@@ -26,6 +28,15 @@ public static class ServiceCollectionExtensions
     // [assembly: MediatorAssembly] and [assembly: MediatorScope(typeof(ClientPipeline))], so the
     // TimeWarp.Mediator generator discovers them at compile time and no manual registration is needed.
 
+    return serviceCollection;
+  }
+
+  /// <summary>
+  /// Registers <see cref="IPersistenceService"/>. The host still calls the Blazored storage helpers it uses.
+  /// </summary>
+  public static IServiceCollection AddTimeWarpStatePersistence(this IServiceCollection serviceCollection)
+  {
+    serviceCollection.TryAddScoped<IPersistenceService, PersistenceService>();
     return serviceCollection;
   }
 }

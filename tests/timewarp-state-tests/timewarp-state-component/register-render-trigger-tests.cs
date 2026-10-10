@@ -270,7 +270,7 @@ public class TestStore : IStore
   private IState State { get; set; } = null!;
   private IState PreviousState { get; set; } = null!;
   
-  public object GetState(Type stateType) => State;
+  public IState GetState(Type stateType) => State;
   public TState GetState<TState>() where TState : IState => (TState)State;
   public void SetState(IState newState)
   {
@@ -287,8 +287,8 @@ public class TestStore : IStore
   
   // Members below are not used by the tests
   public Guid Guid { get; } = Guid.Empty;
-  public SemaphoreSlim GetSemaphore(Type stateType) => throw new NotImplementedException();
   public void Reset() => throw new NotImplementedException();
-  public ConcurrentDictionary<string, Task> StateInitializationTasks { get; } = new();
+  public Task WaitForInitializationAsync<TState>() where TState : IState => Task.CompletedTask;
+  public Task? FindInitializationTask(Type stateType) => null;
   public void RemoveState<TState>() where TState : IState => throw new NotImplementedException();
 }

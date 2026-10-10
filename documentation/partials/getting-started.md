@@ -5,7 +5,7 @@ title: Getting Started
 
 ## Getting Started
 
-I recommend the [samples](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/Samples) for step-by-step guides to building Blazor apps with TimeWarp.State.
+I recommend the [samples](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples) for step-by-step guides to building Blazor apps with TimeWarp.State.
 
 👉 Official [documentation](https://timewarpengineering.github.io/timewarp-state/).
 

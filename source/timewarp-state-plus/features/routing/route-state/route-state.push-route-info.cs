@@ -8,6 +8,9 @@
 // No stack-depth cap: truncate-on-revisit is the unbounded-duplicate fix; unique-URL growth is a real
 // trail (TwBreadcrumb.MaxLinks already limits display). Dropping oldest would hide Home. Revisit if
 // a consumer reports unique-URL blowup.
+// The page title comes from the document-title.js module export. eval is not used.
+// A disconnected circuit or a host without the script records an empty title and still pushes the URL.
+// Route updates are not serialized by a store semaphore. The transaction clone is the concurrency story.
 #endregion
 
 namespace TimeWarp.Features.Routing;
@@ -31,19 +34,36 @@ public partial class RouteState
 
       public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        SemaphoreSlim? semaphoreSlim = Store.GetSemaphore(typeof(RouteState));
-        if (semaphoreSlim == null) return;
-        await semaphoreSlim.WaitAsync(cancellationToken);
+        string currentUri = NavigationManager.Uri;
+        string title = await ReadDocumentTitleAsync(cancellationToken);
+        TruncateToOrPush(currentUri, title);
+      }
+
+      private async Task<string> ReadDocumentTitleAsync(CancellationToken cancellationToken)
+      {
+        const string modulePath = "./_content/TimeWarp.State.Plus/js/document-title.js";
         try
         {
-          string currentUri = NavigationManager.Uri;
-
-          string title = await JsRuntime.InvokeAsync<string>("eval", cancellationToken, "document.title");
-          TruncateToOrPush(currentUri, title);
+          await using IJSObjectReference module = await JsRuntime.InvokeAsync<IJSObjectReference>
+          (
+            "import",
+            cancellationToken,
+            modulePath
+          );
+          return await module.InvokeAsync<string>("getDocumentTitle", cancellationToken);
         }
-        finally
+        catch (JSDisconnectedException)
         {
-          semaphoreSlim.Release();
+          return string.Empty;
+        }
+        catch (JSException)
+        {
+          return string.Empty;
+        }
+        catch (InvalidOperationException)
+        {
+          // Prerender and tests that have no JavaScript runtime.
+          return string.Empty;
         }
       }
 

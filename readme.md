@@ -1,16 +1,15 @@
 [![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/timewarp-state?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state)
-[![workflow](https://github.com/TimeWarpEngineering/timewarp-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/timewarp-state/actions)
+[![workflow](https://github.com/TimeWarpEngineering/timewarp-state/actions/workflows/workflow.yml/badge.svg)](https://github.com/TimeWarpEngineering/timewarp-state/actions)
 [![Forks](https://img.shields.io/github/forks/TimeWarpEngineering/timewarp-state)](https://github.com/TimeWarpEngineering/timewarp-state)
 [![License](https://img.shields.io/github/license/TimeWarpEngineering/timewarp-state.svg?style=flat-square&logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
 [![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/timewarp-state.svg?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/TimeWarpEngineering/timewarp-state/badge)](https://scorecard.dev/viewer/?uri=github.com/TimeWarpEngineering/timewarp-state)
 
 [![nuget](https://img.shields.io/nuget/v/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
-[![nuget](https://img.shields.io/nuget/dt/Blazor-State?logo=nuget)](https://www.nuget.org/packages/Blazor-State/)
 [![nuget](https://img.shields.io/nuget/dt/TimeWarp.State?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State/)
 
 [![Twitter](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2FTimeWarpEngineering%2Ftimewarp-state)](https://twitter.com/intent/tweet?url=https://github.com/TimeWarpEngineering/timewarp-state)
-[![Dotnet](https://img.shields.io/badge/dotnet-10.0-blue)](https://dotnet.microsoft.com)
+[![Dotnet](https://img.shields.io/badge/dotnet-11.0-blue)](https://dotnet.microsoft.com)
 
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
 [![Twitter](https://img.shields.io/twitter/follow/StevenTCramer.svg)](https://twitter.com/intent/follow?screen_name=StevenTCramer)
@@ -34,7 +33,7 @@ If you find this project useful, please give it a star. Thanks!
 
 ## Getting Started
 
-I recommend the [tutorial](xref:TimeWarp.State:00-StateActionHandler.md) for a step-by-step guide to building a Blazor app with TimeWarp.State.
+I recommend the [state and action handler sample](samples/00-state-action-handler) for a step-by-step guide to building a Blazor app with TimeWarp.State. The published docs are at [timewarpengineering.github.io/timewarp-state](https://timewarpengineering.github.io/timewarp-state/).
 
 See full [documentation](https://timewarpengineering.github.io/timewarp-state/).
 

@@ -43,12 +43,16 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
     Sender = sender;
     JsRuntime = jsRuntime;
     JsonSerializerOptions = timeWarpStateOptions.JsonSerializerOptions;
-    Logger.LogDebug
-    (
-      EventIds.JsonRequestHandler_Initializing,
-      "constructed with {JsonSerializerOptions}",
-      JsonSerializer.Serialize(JsonSerializerOptions)
-    );
+    if (Logger.IsEnabled(LogLevel.Debug))
+    {
+      Logger.LogDebug
+      (
+        EventIds.JsonRequestHandler_Initializing,
+        "constructed with PropertyNamingPolicy {PropertyNamingPolicy} and {ConverterCount} converters",
+        JsonSerializerOptions.PropertyNamingPolicy?.GetType().Name ?? "(none)",
+        JsonSerializerOptions.Converters.Count
+      );
+    }
   }
 
   /// <summary>
@@ -112,6 +116,12 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
     return result;
   }
 
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
   private object CreateRequest(string requestTypeName, Type requestType, string? requestAsJson)
   {
     Exception? innerException = null;

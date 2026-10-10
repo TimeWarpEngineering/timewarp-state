@@ -1,5 +1,5 @@
 #region Purpose
-// StateCloneSourceGenerator: TWSG002 on an unsupported member, ICloneable is skipped, and a simple state is registered.
+// StateCloneSourceGenerator: TWSG002 on an unsupported member, ICloneable skips the field clone but is rooted for trimming, and a simple state is registered.
 #endregion
 
 #region Design
@@ -46,13 +46,15 @@ public class Should_Skip_ICloneable
       }
       """;
 
-    (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Source);
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
     runResult.Diagnostics.ShouldBeEmpty();
-    string? source = StateCloneGeneratorTestDriver.CloneSource(runResult);
-    if (source is not null)
-    {
-      source.ShouldNotContain("HandState");
-    }
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    source.ShouldNotContain("UnsafeAccessor");
+    source.ShouldContain("RootStateForTrim<global::HandState>()");
+    outputCompilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+      .Select(diagnostic => diagnostic.ToString())
+      .ShouldBeEmpty();
   }
 }
 

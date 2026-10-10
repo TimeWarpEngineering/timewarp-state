@@ -28,6 +28,14 @@ public class TimeWarpStateOptions
   /// </summary>
   public bool UseStateTransactionBehavior { get; set; } = true;
 
+  /// <summary>
+  /// When true, a handler exception is published as <c>ExceptionNotification</c> and then rethrown so
+  /// <c>Send</c> faults. Default false: the notification is published and <c>Send</c> returns the default
+  /// response. <see cref="OperationCanceledException"/> is always rethrown after rollback. Cancellation is
+  /// not a failure and is not published.
+  /// </summary>
+  public bool RethrowHandlerExceptions { get; set; }
+
   public bool UseRouting { get; set; } = true;
 
   /// <summary>

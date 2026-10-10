@@ -3,8 +3,8 @@
 #endregion
 
 #region Design
-// Calls the PushRouteInfo handler directly with a fake store and semaphore, a NavigationManager whose Uri can be set,
-// and an IJSRuntime that answers only "eval" (for the page title).
+// Calls the PushRouteInfo handler directly with a fake store, a NavigationManager whose Uri can be set,
+// and an IJSRuntime that answers "import" with a module exporting getDocumentTitle.
 #endregion
 
 // ReSharper disable UnusedType.Global
@@ -31,17 +31,42 @@ public class PushRouteInfo_Should
   {
     public string Title { get; set; } = "";
 
+    public bool ThrowOnImport { get; set; }
+
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
       InvokeAsync<TValue>(identifier, CancellationToken.None, args);
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
     {
-      if (identifier != "eval")
+      if (ThrowOnImport)
+      {
+        throw new JSDisconnectedException("The circuit disconnected.");
+      }
+
+      if (identifier != "import")
       {
         throw new InvalidOperationException($"Unexpected JS identifier: {identifier}");
       }
 
-      return new ValueTask<TValue>((TValue)(object)Title);
+      return new ValueTask<TValue>((TValue)(object)new TitleModule(Title));
+    }
+
+    private sealed class TitleModule(string title) : IJSObjectReference
+    {
+      public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
+        InvokeAsync<TValue>(identifier, CancellationToken.None, args);
+
+      public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
+      {
+        if (identifier != "getDocumentTitle")
+        {
+          throw new InvalidOperationException($"Unexpected JS identifier: {identifier}");
+        }
+
+        return new ValueTask<TValue>((TValue)(object)title);
+      }
+
+      public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
   }
 
@@ -59,8 +84,6 @@ public class PushRouteInfo_Should
 
     IStore store = A.Fake<IStore>();
     A.CallTo(() => store.GetState<RouteState>()).Returns(routeState);
-    SemaphoreSlim semaphoreSlim = new(1, 1);
-    A.CallTo(() => store.GetSemaphore(typeof(RouteState))).Returns(semaphoreSlim);
 
     MutableNavigationManager nav = new();
     TitleJsRuntime jsRuntime = new();
@@ -133,5 +156,17 @@ public class PushRouteInfo_Should
     await PushAsync(handler, nav, jsRuntime, UrlC, "C");
 
     routeState.Routes.Select(routeInfo => routeInfo.Url).ShouldBe([UrlC, UrlB, UrlA]);
+  }
+
+  public async Task Push_With_An_Empty_Title_When_JavaScript_Disconnects()
+  {
+    (RouteState.PushRouteInfoActionSet.Handler handler, MutableNavigationManager nav, TitleJsRuntime jsRuntime, RouteState routeState) =
+      CreateHandler();
+    jsRuntime.ThrowOnImport = true;
+
+    await PushAsync(handler, nav, jsRuntime, UrlA, "A");
+
+    routeState.Routes.Single().Url.ShouldBe(UrlA);
+    routeState.Routes.Single().PageTitle.ShouldBe(string.Empty);
   }
 }

@@ -68,7 +68,7 @@ public class Program
     serviceCollection.AddActionCatalog(typeof(Test.App.Client.AssemblyMarker).Assembly);
     // JavaScriptInteropPage dispatches this action from Test.App.Client.lib.module.js.
     serviceCollection.AddJavaScriptDispatch(b => b.Allow<Test.App.Client.Features.Counter.CounterState.IncrementCountActionSet.Action>());
-    serviceCollection.AddScoped<IPersistenceService, PersistenceService>();
+    serviceCollection.AddTimeWarpStatePersistence();
     serviceCollection.AddSingleton(serviceCollection);
     serviceCollection.AddTimeWarpStateRouting();
 

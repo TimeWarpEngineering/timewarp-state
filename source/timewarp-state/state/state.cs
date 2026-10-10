@@ -4,12 +4,8 @@
 
 #region Design
 // Test-only members call ThrowIfNotTestAssembly.
-// StateTestOptions.Enable() is the supported opt-in. A test host calls it and the guard allows the call.
-// Assembly-name sniffing (ordinal ignore-case substring "test") is a fallback shipped in 12.0.0-beta.5.
-// The next release drops the sniff; hosts call StateTestOptions.Enable().
-// Sniffing matches by name convention. The flag does not.
-// Kebab-case names such as web-spa-integration-tests match the fallback, so an AssemblyName override
-// that only capitalizes "Test" can be removed.
+// StateTestOptions.Enable() is the only opt-in. The assembly-name sniff is gone: a name that contains
+// "test" (Contoso.Latest, Acme.Testimonials) is not enough.
 #endregion
 
 namespace TimeWarp.State;
@@ -65,11 +61,10 @@ where TState : State<TState>
   /// Throws when the caller is not allowed to use a test-only member.
   /// </summary>
   /// <param name="assembly">
-  /// Assembly classified when <see cref="StateTestOptions.AllowTestAccess"/> is false.
+  /// Caller assembly. Recorded only so the exception can name it. The name is not a pass.
   /// </param>
   /// <exception cref="FieldAccessException">
-  /// The process has not called <see cref="StateTestOptions.Enable"/> and <paramref name="assembly"/>
-  /// does not contain "test" in its full name (ordinal, ignore case).
+  /// The process has not called <see cref="StateTestOptions.Enable"/>.
   /// </exception>
   protected void ThrowIfNotTestAssembly(Assembly assembly)
   {
@@ -80,13 +75,10 @@ where TState : State<TState>
       return;
     }
 
-    string? fullName = assembly.FullName;
-    ArgumentNullException.ThrowIfNull(fullName);
-
-    if (!fullName.Contains("test", StringComparison.OrdinalIgnoreCase))
-    {
-      throw new FieldAccessException("Do not use this in production. This method is intended for Test access only!");
-    }
+    throw new FieldAccessException
+    (
+      $"Do not use this in production. Call {nameof(StateTestOptions)}.{nameof(StateTestOptions.Enable)}() from the test host. Caller: {assembly.FullName}"
+    );
   }
 
   /// <summary>

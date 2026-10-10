@@ -2,6 +2,39 @@
 @rendermode InteractiveServer
 @attribute [Route(Route)]
 @inherits BaseComponent
+@inject IStore Store
+
+@code
+{
+  /// <summary>
+  /// The title of the page
+  /// </summary>
+  public const string Title = "Server Side Persistence";
+
+  /// <summary>
+  /// The route for the page
+  /// </summary>
+  public const string Route = "/ServerSidePersistenceTestPage";
+
+  // Load replaces the store entry and does not re-render. The buttons stay out of the DOM until
+  // that task finishes, so a click cannot increment the Initialize() defaults.
+  private bool StorageReady { get; set; }
+
+  protected override async Task OnInitializedAsync()
+  {
+    if (IsPreRendering)
+    {
+      return;
+    }
+
+    await Store.WaitForInitializationAsync<PurpleState>();
+    await Store.WaitForInitializationAsync<BlueState>();
+    StorageReady = true;
+  }
+
+  private async Task IncrementPurpleCount() => await Send(new PurpleState.IncrementCountActionSet.Action { Amount = 5 });
+  private async Task IncrementBlueCount() => await Send(new BlueState.IncrementCountActionSet.Action { Amount = 3 });
+}
 
 <TwPageTitle>@Title</TwPageTitle>
 <h1>@Title</h1>
@@ -19,7 +52,7 @@
   <h2>System Under Test</h2>
   <h3>Purple (Local)</h3>
 
-  @if (IsPreRendering)
+  @if (IsPreRendering || !StorageReady)
   {
     <div role="status">PurpleState.Guid: </div>
     <div role="status">Purple Count: </div>
@@ -34,7 +67,7 @@
   <br/>
 
   <h3>Blue (Session)</h3>
-  @if (IsPreRendering)
+  @if (IsPreRendering || !StorageReady)
   {
     <div role="status">BlueState.Guid: </div>
     <div role="status">Blue Count: </div>
@@ -71,19 +104,3 @@
   The `Guid` for BlueState is different and the Count is 2.<br/>
 </p>
 <hr>
-
-@code
-{
-  /// <summary>
-  /// The title of the page
-  /// </summary>
-  public const string Title = "Server Side Persistence";
-
-  /// <summary>
-  /// The route for the page
-  /// </summary>
-  public const string Route = "/ServerSidePersistenceTestPage";
-
-  private async Task IncrementPurpleCount() => await Send(new PurpleState.IncrementCountActionSet.Action { Amount = 5 });
-  private async Task IncrementBlueCount() => await Send(new BlueState.IncrementCountActionSet.Action { Amount = 3 });
-}

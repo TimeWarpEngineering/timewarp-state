@@ -5,8 +5,8 @@
 #region Design
 // Which browser API a state uses is PersistentStateMethod. Which implementation is registered is
 // Blazored: AddBlazoredSessionStorage versus AddBlazoredLocalStorage.
-// PersistenceService takes both storage services, so this host registers both even though each
-// state uses only one.
+// AddTimeWarpStatePersistence registers PersistenceService. Storage services are optional on that
+// service. This host registers both because the two states use both stores.
 // Save and load share TimeWarpStateOptions.JsonSerializerOptions. The enum converter is added
 // there so accent values round-trip as names.
 // AddTimeWarpStateBlazor registers render subscriptions. UseReduxDevTools satisfies CommitHandler, which the mediator links even when the sample
@@ -46,7 +46,7 @@ public class Program
     );
     builder.Services.AddTimeWarpStateBlazor();
 
-    builder.Services.AddScoped<IPersistenceService, PersistenceService>();
+    builder.Services.AddTimeWarpStatePersistence();
 
     await builder.Build().RunAsync();
   }

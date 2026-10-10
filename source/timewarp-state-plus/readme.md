@@ -1,7 +1,7 @@
-[![Dotnet](https://img.shields.io/badge/dotnet-8.0-blue)](https://dotnet.microsoft.com)
+[![Dotnet](https://img.shields.io/badge/dotnet-11.0-blue)](https://dotnet.microsoft.com)
 [![Stars](https://img.shields.io/github/stars/TimeWarpEngineering/timewarp-state?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state)
 [![Discord](https://img.shields.io/discord/715274085940199487?logo=discord)](https://discord.gg/7F4bS2T)
-[![workflow](https://github.com/TimeWarpEngineering/timewarp-state/actions/workflows/release-build.yml/badge.svg)](https://github.com/TimeWarpEngineering/timewarp-state/actions)
+[![workflow](https://github.com/TimeWarpEngineering/timewarp-state/actions/workflows/workflow.yml/badge.svg)](https://github.com/TimeWarpEngineering/timewarp-state/actions)
 [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 [![nuget](https://img.shields.io/nuget/dt/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 [![Issues Open](https://img.shields.io/github/issues/TimeWarpEngineering/timewarp-state.svg?logo=github)](https://github.com/TimeWarpEngineering/timewarp-state/issues)
@@ -14,7 +14,7 @@
 
 # TimeWarp.State.Plus
 
-![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/Assets/Logo.svg)
+![TimeWarp Logo](https://raw.githubusercontent.com/TimeWarpEngineering/timewarp-state/master/assets/logo.svg)
 
 TimeWarp.State.Plus extends TimeWarp.State with routing, persistence, and action tracking for Blazor applications. It depends on TimeWarp.State.Blazor. The package id stays `TimeWarp.State.Plus`.
 
@@ -28,7 +28,7 @@ TimeWarp.State.Plus extends the core functionality with additional features:
 - **PersistentState**
   - **Key Feature**: Automates the persistence of state in browser storage.
   - **Usage**: Annotate a top-level state with `[PersistentState(PersistentStateMethod.SessionStorage)]` or `LocalStorage`.
-  - **Host**: `AddBlazoredSessionStorage` / `AddBlazoredLocalStorage`, `AddScoped<IPersistenceService, PersistenceService>()`, and `[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]`. Auto-load sends `LoadPersistentStateRequest`.
+  - **Host**: `AddBlazoredSessionStorage` / `AddBlazoredLocalStorage`, `AddTimeWarpStatePersistence()`, and `[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]`. Storage services are optional. Auto-load sends `LoadPersistentStateRequest`.
   - **Storage keys**: New writes use the state's `FullName` so two types with the same simple name do not collide. Load tries `FullName` first, then the simple `Name`, so existing browser entries are not dropped. There is no migration framework.
   - **JSON**: Save and load use `TimeWarpStateOptions.JsonSerializerOptions` (the same options as `Store` and `JsonRequestHandler`). Configure converters there so persisted state round-trips. Load is property-name case-insensitive so leftover PascalCase entries still hydrate.
   - **Sample**: [samples/05-persistence](../../samples/05-persistence/readme.md).
@@ -44,10 +44,6 @@ TimeWarp.State.Plus extends the core functionality with additional features:
 - **TwPageTitle**
   - **Key Feature**: Records the page title onto `RouteState` for the breadcrumb trail.
   - **Usage**: `<TwPageTitle>Home</TwPageTitle>`
-- **InputColor**
-  - **Key Feature**: A color picker input component.
-  - **Usage**: `<InputColor @bind-Value="Color" />`
-  - **ValueType**: System.Drawing.Color
 
 ## Available Features
 - **ThemeState**

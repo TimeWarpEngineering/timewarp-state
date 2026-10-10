@@ -73,13 +73,36 @@ internal abstract class DefaultApiHandler<TAction, TRequest, TResponse> : ApiHan
 
 Reported by `PersistenceStateSourceGenerator`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.
 
-## TWS001 — State needs ICloneable or an accessible constructor
+## TWS0009 — State needs ICloneable or an accessible constructor
 
 - **Severity:** Error
 - **Category:** Design
 - **Message:** The state implementation '{0}' must implement ICloneable or have a constructor the clone source generator can call
 
 A concrete type that derives directly from `State<T>` must implement `ICloneable` or declare a constructor the generator can call. Public constructors count. Internal constructors count in the same assembly. Protected constructors do not. A parameterless constructor is not required. Abstract states, including `TimeWarpCacheableState<TState>`, are exempt.
+
+The unshipped id was `TWS001`. It is `TWS0009` so it sorts with `TWS0001`–`TWS0008`.
+
+## TWS0010 — State&lt;T&gt; type argument
+
+- **Severity:** Error
+- **Category:** Design
+
+`T` must be the derived class. An abstract class whose type argument is its own self-constrained type parameter is allowed. A concrete class with that shape is not.
+
+## TWS0011 — Non-abstract state should be sealed
+
+- **Severity:** Warning
+- **Category:** Design
+
+A non-abstract class that derives from `State<T>` should be sealed.
+
+## TWS0012 — Public state properties are read-only
+
+- **Severity:** Error
+- **Category:** Design
+
+A public property needs no setter, or an `init` setter, or a setter that is private, internal, private protected, or protected internal. A protected setter is allowed on an abstract state. Positional record properties are `init` and are not flagged. The rule reads symbols, so it sees members the compiler generates for a record.
 
 ## TWSG002 — State clone cannot be generated
 

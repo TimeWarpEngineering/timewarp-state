@@ -1,5 +1,5 @@
 #region Purpose
-// Tests for StateImplementationAnalyzer (TWS001): a concrete TimeWarp.State state needs ICloneable or an accessible constructor.
+// Tests for StateImplementationAnalyzer (TWS0009): a concrete TimeWarp.State state needs ICloneable or an accessible constructor.
 #endregion
 
 #region Design
@@ -10,7 +10,7 @@
 // ReSharper disable InconsistentNaming
 namespace StateImplementationAnalyzer_;
 
-public class Should_Not_Trigger_TWS001
+public class Should_Not_Trigger_TWS0009
 {
   public static async Task Given_ForeignState_WithNoCloneOrCtor()
   {
@@ -43,7 +43,7 @@ public class Should_Not_Trigger_TWS001
   }
 }
 
-public class Should_Trigger_TWS001
+public class Should_Trigger_TWS0009
 {
   public static async Task Given_TimeWarpState_WithoutCloneOrAccessibleCtor()
   {
@@ -59,7 +59,7 @@ public class Should_Trigger_TWS001
       }
       """;
 
-    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS001", DiagnosticSeverity.Error)
+    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS0009", DiagnosticSeverity.Error)
       .WithSpan(3, 14, 3, 22)
       .WithArguments("BadState");
 
@@ -81,7 +81,7 @@ public class Should_Trigger_TWS001
   }
 }
 
-public class Should_Not_Trigger_TWS001_For_AccessibleCtor_Or_Abstract
+public class Should_Not_Trigger_TWS0009_For_AccessibleCtor_Or_Abstract
 {
   public static async Task Given_PublicParameterizedCtor()
   {
