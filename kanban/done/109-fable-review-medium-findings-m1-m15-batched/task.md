@@ -291,7 +291,7 @@ dotnet run --file scripts/test.cs
 
 ### Review disposition
 
-- **Rounds:** 2. Effort 3 (Budget.ByDiff, 1914 lines). Roster: general.
+- **Rounds:** 3. Effort 3 (Budget.ByDiff: 1914 lines for rounds 1–2, 2432 for round 3). Roster: general. Round 3 covered the PR #634 e2e fix (`2d150884..d2e2e215`) and found nothing new.
 - **Final counts:** bug 0; suggestion 2 fixed; nit 1 fixed, 1 wontfix; open 0.
 - **Disposition:** `accepted-exceptions`.
 - **Fixed on this task:**
@@ -299,5 +299,5 @@ dotnet run --file scripts/test.cs
   - The `TimerState` Design region says the circuit context is captured at first construction.
   - TWS0012 now reports once per property on partial states. New test: `Given_PartialTimeWarpState_ReportsOnce`.
 - **Wontfix (M4, nit):** the transaction rollback check can re-create a state that `Reset` or `RemoveState` removed mid-action. The reviewer rated this acceptable, and a non-creating lookup would widen `IStore` again right after M5 narrowed it.
-- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/disposition.md`.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/round-3/{general,merged}.md`, `review/disposition.md`.
 - After the fixes, `./bin/dev build` and `./bin/dev test` are green. Analyzer tests: 44 passed.

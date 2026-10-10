@@ -18,8 +18,12 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 2130
+- Lines changed: 2432
 - Effort: 3
 - TCB hits: none
 - Roster axes: general
 - Turn cap: 200 (--max-turns; cursor uncapped)
+
+## Round 3 scope
+
+- Fix delta after the round-2 disposition: `2d150884..d2e2e215` (PR #634 e2e fix, commit `1c8b959d`).
