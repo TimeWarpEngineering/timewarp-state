@@ -83,6 +83,32 @@ public class Should_Trigger_TWS0012
     await Run(TestCode, expectedDiagnostic);
   }
 
+  public static async Task Given_PartialTimeWarpState_ReportsOnce()
+  {
+    const string TestCode =
+      """
+      using TimeWarp.State;
+
+      public sealed partial class SampleState : State<SampleState>
+      {
+        public int PublicProperty { get; set; }
+
+        public override void Initialize() { }
+      }
+
+      public sealed partial class SampleState
+      {
+        public int Other => PublicProperty;
+      }
+      """;
+
+    DiagnosticResult expectedDiagnostic = new DiagnosticResult("TWS0012", DiagnosticSeverity.Error)
+      .WithSpan(5, 14, 5, 28)
+      .WithArguments("PublicProperty");
+
+    await Run(TestCode, expectedDiagnostic);
+  }
+
   private static async Task Run(string testCode, DiagnosticResult expectedDiagnostic)
   {
     CSharpAnalyzerTest<StateReadOnlyPublicPropertiesAnalyzer, FixieVerifier> analyzerTest = new()

@@ -9,6 +9,8 @@
 // TryGetValue hit is always initialized. RemoveState and Reset take the same lock.
 // Reset removes every key the way RemoveState does: cancel, drop previous state, drop the
 // initialization task. A later GetState starts a new instance and a new initialization task.
+// Reset walks every key in States, PreviousStates and StateInitializationTasks. A throwing
+// CancelOperations does not stop the walk; failures are rethrown together afterwards.
 // StateInitializationTasks stays internal. IStore exposes WaitForInitializationAsync and
 // FindInitializationTask instead of the dictionary.
 #endregion
@@ -84,9 +86,28 @@ internal partial class Store : IStore
   /// </summary>
   public void Reset()
   {
-    foreach (string typeName in States.Keys.ToArray())
+    string[] typeNames = States.Keys
+      .Concat(PreviousStates.Keys)
+      .Concat(StateInitializationTasks.Keys)
+      .Distinct()
+      .ToArray();
+
+    List<Exception>? exceptions = null;
+    foreach (string typeName in typeNames)
     {
-      RemoveStateByName(typeName);
+      try
+      {
+        RemoveStateByName(typeName);
+      }
+      catch (Exception exception)
+      {
+        (exceptions ??= []).Add(exception);
+      }
+    }
+
+    if (exceptions is not null)
+    {
+      throw new AggregateException(exceptions);
     }
   }
 

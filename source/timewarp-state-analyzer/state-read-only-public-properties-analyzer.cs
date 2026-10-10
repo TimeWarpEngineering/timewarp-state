@@ -73,7 +73,12 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
       if (IsAllowedSetter(setter, type.IsAbstract))
         continue;
 
-      Location? location = property.Locations.FirstOrDefault();
+      // Partial states are visited once per declaration. Report from the declaration that holds the property.
+      Location? location = property.Locations.FirstOrDefault
+      (
+        candidate => candidate.SourceTree == typeDeclaration.SyntaxTree
+          && typeDeclaration.Span.Contains(candidate.SourceSpan)
+      );
       if (location is null)
         continue;
 

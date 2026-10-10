@@ -202,6 +202,7 @@ Verbatim from `kanban/done/102-full-codebase-review-by-claude-fable-review-only/
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementer: Grok session 01a12712-c358-7502-b742-e3d0a464b84e (2026-10-11)
+- Review oracle: Claude Opus 5.5 (ganda task work, 2026-10-11), effort 3, roster general (Sonnet subagent)
 
 ## Notes
 
@@ -262,3 +263,16 @@ dotnet run --file scripts/test.cs
 - Task 104 still decides whether Redux DevTools time travel is finished or deleted. This branch does not delete `LoadStatesFromJson`.
 - The persistence browser test is no longer ignored. It was not executed on this machine. CI runs it on `ubuntu-latest` via the e2e job (`scripts/e2e.cs` installs Chromium).
 - The trimmed `sample-05-wasm` publish is wired into `verify-samples` and was not executed in this walk. Library Release builds already fail on IL warnings.
+
+### Review disposition
+
+- **Rounds:** 2. Effort 3 (Budget.ByDiff, 1914 lines). Roster: general.
+- **Final counts:** bug 0; suggestion 2 fixed; nit 1 fixed, 1 wontfix; open 0.
+- **Disposition:** `accepted-exceptions`.
+- **Fixed on this task:**
+  - `Store.Reset` walks every key in `States`, `PreviousStates` and the init-task map, and rethrows per-key failures as `AggregateException`.
+  - The `TimerState` Design region says the circuit context is captured at first construction.
+  - TWS0012 now reports once per property on partial states. New test: `Given_PartialTimeWarpState_ReportsOnce`.
+- **Wontfix (M4, nit):** the transaction rollback check can re-create a state that `Reset` or `RemoveState` removed mid-action. The reviewer rated this acceptable, and a non-creating lookup would widen `IStore` again right after M5 narrowed it.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/disposition.md`.
+- After the fixes, `./bin/dev build` and `./bin/dev test` are green. Analyzer tests: 44 passed.

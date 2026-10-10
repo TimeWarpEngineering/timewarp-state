@@ -10,6 +10,8 @@
 // Elapsed is async Task, not async void. Failures are logged. When the state is created on a
 // synchronization context (the Blazor Server circuit), the publish is posted there. Otherwise
 // TimerElapsedNotification handlers must marshal UI work with InvokeAsync.
+// The context is captured when the Store first constructs the state, so first access from a
+// thread-pool continuation captures none. Touch TimerState from the circuit to get marshalling.
 // System.Timers.Timer stays: AutoReset false plus Start is the one-shot contract RestartTimer uses.
 #endregion
 
