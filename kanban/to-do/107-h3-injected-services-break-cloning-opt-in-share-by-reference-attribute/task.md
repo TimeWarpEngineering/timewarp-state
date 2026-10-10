@@ -45,7 +45,7 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 - [x] Docs: cloning topic + beta.11 migration guide
 - [x] `invalid-clone-exception.cs` message
 - [x] Tests: `ILogger<T>` field shape test; injected-service state survives two consecutive actions
-- [ ] Code review
+- [x] Code review
 
 ### Rule
 
@@ -62,6 +62,7 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: 2026-10-11 (implementer oracle, `[CloneShared]`)
+- Review: 2026-10-11 (review oracle Claude Opus 5.5; general reviewer subagent aeae3ae5348e3b8b8)
 
 ## Results
 
@@ -83,6 +84,14 @@ Expect:
 - `GeneratedCloneShapeTests.Should_.Share_Injected_Services_By_Reference` passes. The clone's `ILogger<ServiceState>`, `HttpClient`, and `NavigationManager` are the same non-null instances, and `Guid` differs.
 - `StateTransactionBehaviorTests.Should_.Keep_Injected_Services_Across_Two_Actions` passes. After two actions the live state is a new instance, `Count` is 2, and the three services are the originals.
 - Both suites pass (generator 78, state 106 passed and 1 skipped on 2026-10-11). `./bin/dev check-version` is clean at `12.0.0-beta.11` (ahead of published `12.0.0-beta.10`).
+
+### Review disposition
+
+- Rounds: 1. Effort 2, roster: general.
+- Final counts: bug 0. Suggestion 2 fixed. Nit 1 fixed and 2 wontfix. 0 open.
+- Disposition: **accepted-exceptions**. M4 (redundant struct assignment) and M5 (simple-name attribute match, consistent with the ignore attributes) are wontfix.
+- Fixes: `CloneSharedPrecedence` shape test. Hidden metadata private fields marked `[CloneShared]` now get an accurate TWSG002 reason. cloning.md notes that non-auto properties need the attribute on the backing field.
+- Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
 ## Notes
 

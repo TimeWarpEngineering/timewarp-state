@@ -1659,12 +1659,28 @@ internal sealed class StateClonePlanner
     HashSet<string> events = new(full.GetMembers().OfType<IEventSymbol>().Select(item => item.Name), StringComparer.Ordinal);
     foreach (IFieldSymbol field in full.GetMembers().OfType<IFieldSymbol>())
     {
-      if (field.IsStatic || field.IsConst || visibleFields.Contains(field.Name) || HasIgnoreAttribute(field) || events.Contains(field.Name))
+      if (field.IsStatic || field.IsConst || visibleFields.Contains(field.Name) || events.Contains(field.Name))
       {
         continue;
       }
 
       string propertyName = DisplayMemberName(field.Name);
+      IPropertySymbol? hidden = propertyName != field.Name
+        ? full.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault()
+        : null;
+
+      // The generated clone never enumerates a hidden field, so CloneShared on it cannot be honored. Report that
+      // instead of dropping it silently (CloneShared wins over an ignore attribute) or advising CloneShared again.
+      if (HasCloneSharedAttribute(field) || (hidden is not null && HasCloneSharedAttribute(hidden)))
+      {
+        return $"'{definition.ToDisplayString()}' has private member '{propertyName}' marked [CloneShared] that generated code cannot see";
+      }
+
+      if (HasIgnoreAttribute(field))
+      {
+        continue;
+      }
+
       if (propertyName != field.Name)
       {
         IPropertySymbol? property = definition.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
@@ -1673,7 +1689,6 @@ internal sealed class StateClonePlanner
           continue;
         }
 
-        IPropertySymbol? hidden = full.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
         if (hidden is not null && HasIgnoreAttribute(hidden))
         {
           continue;
