@@ -22,11 +22,11 @@ public sealed class StateCloneSourceGenerator : IIncrementalGenerator
     (
       DiagnosticId,
       title: "State clone cannot be generated",
-      messageFormat: "Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', or change the unsupported member.",
+      messageFormat: "Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', mark the member [CloneShared] to copy it by reference, or change the unsupported member.",
       category: "Cloning",
       defaultSeverity: DiagnosticSeverity.Error,
       isEnabledByDefault: true,
-      description: "The state clone source generator could not emit a clone. Implement ICloneable or change the member named in the message."
+      description: "The state clone source generator could not emit a clone. Implement ICloneable, mark the member [CloneShared] to copy it by reference, or change the member named in the message."
     );
 
   public void Initialize(IncrementalGeneratorInitializationContext context)

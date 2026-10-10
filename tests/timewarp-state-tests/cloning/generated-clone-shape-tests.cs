@@ -2,7 +2,7 @@
 // Runs the generated clone for member shapes the first generator round got wrong: generic declaring types, tuples,
 // KeyValuePair, Nullable structs, BCL values behind collection interfaces, polymorphic members, ImmutableStack order,
 // sorted and linked collections, StringBuilder, overloaded and dependency constructors, required members, ICloneable
-// members and subtypes, and generic subtypes of generic members.
+// members and subtypes, generic subtypes of generic members, and [CloneShared] injected services.
 #endregion
 
 #region Design
@@ -213,6 +213,25 @@ public class Should_
 
     clone.Ticks.ShouldBe(7);
     clone.HasClock.ShouldBeFalse();
+  }
+
+  public void Share_Injected_Services_By_Reference()
+  {
+    ILogger<ServiceState> logger = NullLogger<ServiceState>.Instance;
+    using HttpClient httpClient = new();
+    NavigationManager navigationManager = new TestNavigationManager();
+    var original = new ServiceState(logger, httpClient, navigationManager) { Count = 4 };
+
+    var clone = (ServiceState)StateCloneRegistry.Clone(original);
+
+    clone.ShouldNotBeSameAs(original);
+    clone.Count.ShouldBe(4);
+    clone.Logger.ShouldBeSameAs(logger);
+    clone.HttpClient.ShouldBeSameAs(httpClient);
+    clone.NavigationManager.ShouldBeSameAs(navigationManager);
+    clone.Guid.ShouldNotBe(original.Guid);
+    clone.Logger.LogInformation("clone kept the logger");
+    clone.NavigationManager.BaseUri.ShouldBe("https://example.test/");
   }
 
   [GenerateClone]
@@ -456,7 +475,7 @@ public class Should_
   public sealed class Clock;
 
   // A state constructed with a service: the clone receives default arguments, so the constructor must accept null,
-  // and the service field is ignored so the clone does not try to copy it.
+  // and the ignored service field keeps that null. [CloneShared] is the opt-in that keeps the instance; see ServiceState.
   [NotTest]
   public sealed class ClockState : State<ClockState>
   {
@@ -471,5 +490,40 @@ public class Should_
     public int Ticks { get; set; }
     public bool HasClock => ClockService is not null;
     public override void Initialize() { }
+  }
+
+  [NotTest]
+  public sealed class ServiceState : State<ServiceState>
+  {
+    [CloneShared]
+    public ILogger<ServiceState> Logger { get; }
+
+    [CloneShared]
+    public HttpClient HttpClient { get; }
+
+    [CloneShared]
+    public NavigationManager NavigationManager { get; }
+
+    public int Count { get; set; }
+
+    public ServiceState(ILogger<ServiceState>? logger, HttpClient? httpClient, NavigationManager? navigationManager)
+    {
+      Logger = logger!;
+      HttpClient = httpClient!;
+      NavigationManager = navigationManager!;
+    }
+
+    public override void Initialize() { }
+  }
+
+  [NotTest]
+  private sealed class TestNavigationManager : NavigationManager
+  {
+    public TestNavigationManager()
+    {
+      Initialize("https://example.test/", "https://example.test/");
+    }
+
+    protected override void NavigateToCore(string uri, bool forceLoad) { }
   }
 }

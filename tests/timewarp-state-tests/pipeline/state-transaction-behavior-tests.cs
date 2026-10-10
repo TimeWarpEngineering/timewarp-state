@@ -12,6 +12,8 @@
 // so the registry has no generated clone and Clone throws InvalidOperationException.
 // Overlap tests share one behavior instance and interleave two next delegates with TaskCompletionSource. The store
 // reference, not a timer, decides whether a failure restores its snapshot.
+// Keep_Injected_Services_Across_Two_Actions uses the generated clone of a [CloneShared] service state. Two successful
+// actions must leave the same non-null logger, HttpClient, and NavigationManager on the live state.
 #endregion
 
 namespace StateTransactionBehaviorTests;
@@ -114,6 +116,7 @@ public class Should_
     exception.EnclosingStateType.ShouldBe(typeof(EqualGuidState));
     exception.CloneCause.ShouldBe(InvalidCloneException.Cause.EqualGuid);
     exception.Message.ShouldContain("equal Guid");
+    exception.Message.ShouldContain("[CloneShared]");
   }
 
   public async Task Throw_InvalidCloneException_When_Clone_Guid_Is_Empty()
@@ -135,6 +138,7 @@ public class Should_
     exception.CloneCause.ShouldBe(InvalidCloneException.Cause.EmptyGuid);
     exception.Message.ShouldContain("empty Guid");
     exception.Message.ShouldContain("construct the clone so the initializer runs");
+    exception.Message.ShouldContain("[CloneShared]");
   }
 
   public async Task Throw_When_State_Has_No_Clone()
@@ -361,6 +365,53 @@ public class Should_
     publisher.Publications.Count.ShouldBe(1);
   }
 
+  public async Task Keep_Injected_Services_Across_Two_Actions()
+  {
+    ILogger<ServiceState> logger = NullLogger<ServiceState>.Instance;
+    using HttpClient httpClient = new();
+    NavigationManager navigationManager = new TestNavigationManager();
+    ServiceState original = new(logger, httpClient, navigationManager);
+    RecordingStore store = new(original);
+    RecordingPublisher publisher = new();
+    StateTransactionBehavior<ServiceState.TickAction, Unit> behavior = new
+    (
+      NullLogger<StateTransactionBehavior<ServiceState.TickAction, Unit>>.Instance,
+      store,
+      publisher,
+      new TimeWarpStateOptions(new ServiceCollection())
+    );
+
+    RequestHandlerDelegate<Unit> next = _ =>
+    {
+      ServiceState current = (ServiceState)store.GetState(typeof(ServiceState));
+      current.Logger.LogInformation("tick {Count}", current.Count);
+      current.NavigationManager.BaseUri.ShouldBe("https://example.test/");
+      current.HttpClient.ShouldBeSameAs(httpClient);
+      current.Count++;
+      return Task.FromResult(Unit.Value);
+    };
+
+    await behavior.Handle(new ServiceState.TickAction(), next, CancellationToken.None);
+    ServiceState afterFirst = (ServiceState)store.CurrentState;
+    afterFirst.ShouldNotBeSameAs(original);
+    afterFirst.Count.ShouldBe(1);
+    afterFirst.Logger.ShouldBeSameAs(logger);
+    afterFirst.HttpClient.ShouldBeSameAs(httpClient);
+    afterFirst.NavigationManager.ShouldBeSameAs(navigationManager);
+
+    await behavior.Handle(new ServiceState.TickAction(), next, CancellationToken.None);
+    ServiceState afterSecond = (ServiceState)store.CurrentState;
+    afterSecond.ShouldNotBeSameAs(afterFirst);
+    afterSecond.ShouldNotBeSameAs(original);
+    afterSecond.Count.ShouldBe(2);
+    afterSecond.Logger.ShouldBeSameAs(logger);
+    afterSecond.HttpClient.ShouldBeSameAs(httpClient);
+    afterSecond.NavigationManager.ShouldBeSameAs(navigationManager);
+    afterSecond.Guid.ShouldNotBe(original.Guid);
+    afterSecond.Guid.ShouldNotBe(afterFirst.Guid);
+    publisher.Publications.ShouldBeEmpty();
+  }
+
   private static StateTransactionBehavior<TAction, Unit> CreateBehavior<TAction>(IState originalState)
     where TAction : IAction
   {
@@ -497,6 +548,43 @@ public class Should_
     public void CancelOperations() { }
 
     public sealed class ThrowAction : IAction;
+  }
+
+  [NotTest]
+  public sealed class ServiceState : State<ServiceState>
+  {
+    [CloneShared]
+    public ILogger<ServiceState> Logger { get; }
+
+    [CloneShared]
+    public HttpClient HttpClient { get; }
+
+    [CloneShared]
+    public NavigationManager NavigationManager { get; }
+
+    public int Count { get; set; }
+
+    public ServiceState(ILogger<ServiceState>? logger, HttpClient? httpClient, NavigationManager? navigationManager)
+    {
+      Logger = logger!;
+      HttpClient = httpClient!;
+      NavigationManager = navigationManager!;
+    }
+
+    public override void Initialize() { }
+
+    public sealed class TickAction : IAction;
+  }
+
+  [NotTest]
+  private sealed class TestNavigationManager : NavigationManager
+  {
+    public TestNavigationManager()
+    {
+      Initialize("https://example.test/", "https://example.test/");
+    }
+
+    protected override void NavigateToCore(string uri, bool forceLoad) { }
   }
 
   private sealed class RecordingStore : IStore
