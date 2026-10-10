@@ -20,13 +20,13 @@ The generator fails the build when it cannot clone a reachable member. The error
 - a framework class with private state, for example `MemoryStream` (known collections and `StringBuilder` are supported)
 - an open generic, a pointer, or a ref struct
 
-Fix the member, or implement `ICloneable` on that type. `ICloneable.Clone` must return a new instance whose `Guid` is not empty and not equal to the source. Leave `Guid` to the constructor (mark it `[IgnoreDataMember]` if you copy fields yourself).
+Fix the member, implement `ICloneable` on that type, or mark the member `[CloneShared]` to copy it by reference. `[CloneShared]` is the opt-in for an injected service. `ICloneable.Clone` must return a new instance whose `Guid` is not empty and not equal to the source. Leave `Guid` to the constructor (mark it `[IgnoreDataMember]` if you copy fields yourself).
 
 Types that are not states, and that you clone with `.Clone()`, need `[GenerateClone]` from `TimeWarp.State`.
 
 ### Constructors
 
-The clone creates each instance with a constructor: the parameterless one at any accessibility, otherwise the accessible one with the fewest parameters, otherwise any constructor through `[UnsafeAccessor]`. Arguments are the declared defaults or `default`. A state constructor that takes services must accept `null`, and a field that stores a service should be marked `[IgnoreDataMember]` or `[JsonIgnore]`. Otherwise implement `ICloneable`.
+The clone creates each instance with a constructor: the parameterless one at any accessibility, otherwise the accessible one with the fewest parameters, otherwise any constructor through `[UnsafeAccessor]`. Arguments are the declared defaults or `default`. A state constructor that takes services must accept `null`. Mark the field or auto-property that stores a service with `[CloneShared]` so the clone keeps that instance. `[IgnoreDataMember]` or `[JsonIgnore]` leave the constructor value, which is null, and the next action fails when it uses the service. Otherwise implement `ICloneable`.
 
 ### Runtime types
 
@@ -38,4 +38,4 @@ A concrete class that derives directly from `State<T>` must implement `ICloneabl
 
 ### What stays the same
 
-Ignored members (`IgnoreDataMember`, `NonSerialized`, `JsonIgnore`) keep constructor values. Cycles and shared references inside one graph are preserved. The clone does not block.
+A member marked `[CloneShared]` is the same instance on the clone. Ignored members (`IgnoreDataMember`, `NonSerialized`, `JsonIgnore`) keep constructor values. `[CloneShared]` wins when a member has both. Cycles and shared references inside one graph are preserved. The clone does not block.

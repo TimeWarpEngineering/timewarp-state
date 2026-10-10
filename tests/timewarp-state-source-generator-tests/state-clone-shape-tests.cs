@@ -252,6 +252,51 @@ public class Should_Compile_Supported_Shape
         public int Ticks { get; set; }
         public override void Initialize() { }
       }
+      """,
+    ["CloneSharedServices"] =
+      """
+      using Microsoft.Extensions.Logging;
+      using TimeWarp.State;
+      public abstract class AppNavigation { public abstract string Uri { get; } }
+      public sealed class ServiceState : State<ServiceState>
+      {
+        [CloneShared]
+        public ILogger<ServiceState> Logger { get; }
+        [CloneShared]
+        private readonly System.Net.Http.HttpClient HttpClient;
+        [CloneShared]
+        public AppNavigation? Navigation { get; set; }
+        public ServiceState(ILogger<ServiceState>? logger, System.Net.Http.HttpClient? httpClient)
+        {
+          Logger = logger!;
+          HttpClient = httpClient!;
+        }
+        public int Count { get; set; }
+        public override void Initialize() { }
+      }
+      """,
+    ["CloneSharedPrecedence"] =
+      """
+      using Microsoft.Extensions.Logging;
+      using TimeWarp.State;
+      public interface IClock { }
+      public abstract class ServiceStateBase<T> : State<T> where T : ServiceStateBase<T>
+      {
+        [CloneShared]
+        private IClock? BaseClock;
+        protected IClock? Clock => BaseClock;
+      }
+      public sealed class PrecedenceState : ServiceStateBase<PrecedenceState>
+      {
+        [CloneShared, System.Runtime.Serialization.IgnoreDataMember]
+        private readonly ILogger<PrecedenceState>? Logger;
+        [CloneShared, System.Text.Json.Serialization.JsonIgnore]
+        public IClock? Timer { get; init; }
+        [field: CloneShared]
+        public IClock? Stopwatch { get; set; }
+        public PrecedenceState(ILogger<PrecedenceState>? logger) { Logger = logger; }
+        public override void Initialize() { }
+      }
       """
   };
 
@@ -277,6 +322,8 @@ public class Should_Compile_Supported_Shape
   [Input("GenericSubclassOfGenericClass")]
   [Input("GenericSubclassOfAbstractGenericClass")]
   [Input("GenericImplementationOfGenericInterface")]
+  [Input("CloneSharedServices")]
+  [Input("CloneSharedPrecedence")]
   public static void Given_Shape(string shape)
   {
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Shapes[shape]);
@@ -336,6 +383,43 @@ public class Should_Compile_Supported_Shape
     string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
     source.ShouldNotContain(".Select(");
   }
+
+  // [CloneShared] assigns the service from the source. The generator must not try to clone ILogger, HttpClient,
+  // or an abstract navigation type.
+  public static void Given_CloneShared_Assigns_The_Source_Reference()
+  {
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Shapes["CloneSharedServices"]);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.ToString()).ShouldBeEmpty();
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    source.ShouldContain("F_Logger_");
+    source.ShouldContain("F_HttpClient_");
+    source.ShouldContain("F_Navigation_");
+    source.ShouldNotContain("Clone_ILogger");
+    source.ShouldNotContain("Clone_HttpClient");
+    source.ShouldNotContain("Clone_AppNavigation");
+    outputCompilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+      .Select(diagnostic => diagnostic.ToString())
+      .ShouldBeEmpty();
+  }
+
+  // [CloneShared] wins over an ignore attribute, and also applies through [field: CloneShared] and on a private
+  // field of a base class in the compilation.
+  public static void Given_CloneShared_Wins_Over_Ignore_Attributes()
+  {
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Shapes["CloneSharedPrecedence"]);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.ToString()).ShouldBeEmpty();
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    source.ShouldContain("F_Logger_");
+    source.ShouldContain("F_Timer_");
+    source.ShouldContain("F_Stopwatch_");
+    source.ShouldContain("F_BaseClock_");
+    source.ShouldNotContain("Clone_IClock");
+    outputCompilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+      .Select(diagnostic => diagnostic.ToString())
+      .ShouldBeEmpty();
+  }
 }
 
 public class Should_Report_TWSG002_At_Source
@@ -372,6 +456,17 @@ public class Should_Report_TWSG002_At_Source
       using TimeWarp.State;
       public interface IThing { }
       [GenerateClone] public class Holder { public IThing? Thing { get; set; } }
+      """,
+    ["ServiceWithoutCloneShared"] =
+      """
+      using Microsoft.Extensions.Logging;
+      using TimeWarp.State;
+      public sealed class ServiceState : State<ServiceState>
+      {
+        public ILogger<ServiceState> Logger { get; }
+        public ServiceState(ILogger<ServiceState>? logger) { Logger = logger!; }
+        public override void Initialize() { }
+      }
       """,
     ["UncloneableDerivedType"] =
       """
@@ -460,6 +555,7 @@ public class Should_Report_TWSG002_At_Source
   [Input("PrivateNestedState")]
   [Input("BclClassWithPrivateState")]
   [Input("InterfaceWithoutImplementation")]
+  [Input("ServiceWithoutCloneShared")]
   [Input("UncloneableDerivedType")]
   [Input("PrivateNestedSubclass")]
   [Input("ProtectedNestedSubclass")]

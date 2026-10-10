@@ -21,7 +21,7 @@ Mark a class or struct that is not a state with `[GenerateClone]` (`TimeWarp.Sta
 
 ## What is copied
 
-The clone assigns each instance field, including auto-property backing fields. Members marked `IgnoreDataMember`, `NonSerialized`, or `JsonIgnore` (any namespace, on the field or on the associated property or event) keep the value the constructor set. `State<T>.Guid` stays unique. `Sender` and `CancellationTokenSource` are not shared. The behavior assigns `Sender` after the clone.
+The clone assigns each instance field, including auto-property backing fields. A field or auto-property marked `[CloneShared]` (`TimeWarp.State.CloneSharedAttribute`) is assigned from the source. The generator does not walk that member's type, so the clone holds the same instance. Use it for an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`, `IJSRuntime`). On a property with a hand-written getter or setter the attribute has no effect, so put it on the backing field. Members marked `IgnoreDataMember`, `NonSerialized`, or `JsonIgnore` (any namespace, on the field or on the associated property or event) keep the value the constructor set. When a member has both `[CloneShared]` and an ignore attribute, `[CloneShared]` wins for cloning. The ignore attribute applies to serialization. `State<T>.Guid` stays unique. `Sender` and `CancellationTokenSource` are not shared. The behavior assigns `Sender` after the clone.
 
 Primitives, enums, `string`, dates, `Guid`, `Uri`, `Version`, `BigInteger`, delegates, `Type`, `MemberInfo`, comparers, `IServiceProvider`, and types in `System.Threading` or `System.Threading.Tasks` are copied by reference or by value, matching the old shared-type list. A struct with no reference fields is copied by value. Cycles and repeated references inside one clone go through `CloneMap` (`ReferenceEqualityComparer`). The clone never waits, so it stays safe on single-threaded browser WebAssembly.
 
@@ -79,7 +79,7 @@ Other types from other assemblies are TWSG002. Set `<ProduceReferenceAssembly>fa
 - a subclass of `ReadOnlyCollection<T>` or `ReadOnlyDictionary<TKey,TValue>`
 - a derived type in the compilation that cannot be cloned itself
 
-Implement `ICloneable` on that type, or change the member. The build fails. There is no runtime reflection fallback.
+Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it by reference, or change the member. `[CloneShared]` is the opt-in for an injected service whose type the generator cannot clone. The build fails. There is no runtime reflection fallback.
 
 A state that is dispatched without a registration throws `InvalidOperationException` from `StateCloneRegistry.Clone`. That happens when the state's assembly was built without the generator.
 
@@ -95,4 +95,4 @@ The generated clone creates the new instance with a constructor so field initial
 
 Each argument is the parameter's declared default value, or `default` cast to the parameter type, so overloads with the same number of parameters stay unambiguous. A `required` member, on the type or a base type, is set to `default` in an object initializer unless the constructor has `SetsRequiredMembers`. The copied fields then overwrite those values. The clone does not call `GetUninitializedObject`.
 
-A constructor that throws on a `default` argument throws on every clone. A state whose constructor takes services must accept `null` for them, and should mark any field that stores a service with `[IgnoreDataMember]` or `[JsonIgnore]` so the clone does not try to copy it. Otherwise implement `ICloneable` on that state.
+A constructor that throws on a `default` argument throws on every clone. The clone passes `default` for each constructor parameter, including services, so a constructor that takes a service must accept `null`. Mark the field or auto-property that stores the service with `[CloneShared]`. The generator assigns that member from the original after construction, and the live state keeps the same instance. `[IgnoreDataMember]` or `[JsonIgnore]` leave the constructor value, which is null for a service parameter, and the next action fails when it uses the service. `ICloneable` on the state remains the escape hatch when the generated clone cannot express the copy.

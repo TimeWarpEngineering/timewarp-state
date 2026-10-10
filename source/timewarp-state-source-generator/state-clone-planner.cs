@@ -22,6 +22,9 @@
 // constructor, an accessor or compiler-generated (records); other classes and managed structs are TWSG002.
 // Cycles use a method name assigned before the body exists. Method names carry a stable hash so they never collide.
 // Diagnostics are reported once, at the source-located member that cannot be cloned, for types reachable from a root.
+// A member marked CloneShared (the field or its property) is assigned from the source and is not walked, so an
+// injected service stays the same instance. IgnoreDataMember, NonSerialized and JsonIgnore leave the constructor
+// value. CloneShared wins when a member has both.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -1158,12 +1161,23 @@ internal sealed class StateClonePlanner
         copiedMembers.Add(field.AssociatedSymbol);
       }
 
-      if (IsIgnored(field))
+      bool shared = IsCloneShared(field);
+      if (!shared && IsIgnored(field))
       {
         continue;
       }
 
       Member member = new(field.Type, field.OriginalDefinition.Type, field.Name, field.ContainingType, FieldLocation(field));
+      if (shared)
+      {
+        if (!TryAppendSharedMember(slot, type, lines, member, ref copied))
+        {
+          return copied;
+        }
+
+        continue;
+      }
+
       if (!TryAppendMember(slot, type, lines, member, ref copied))
       {
         return copied;
@@ -1174,13 +1188,29 @@ internal sealed class StateClonePlanner
     // CompilerGenerated, and the field name is fixed, so copy those properties the same way.
     foreach ((IPropertySymbol property, INamedTypeSymbol declaringType) in EnumerateAutoProperties(type, stopBefore))
     {
-      if (!copiedMembers.Add(property) || HasIgnoreAttribute(property))
+      if (!copiedMembers.Add(property))
+      {
+        continue;
+      }
+
+      bool shared = HasCloneSharedAttribute(property);
+      if (!shared && HasIgnoreAttribute(property))
       {
         continue;
       }
 
       Location? location = property.Locations.FirstOrDefault(candidate => candidate.IsInSource);
       Member member = new(property.Type, property.OriginalDefinition.Type, $"<{property.Name}>k__BackingField", declaringType, location);
+      if (shared)
+      {
+        if (!TryAppendSharedMember(slot, type, lines, member, ref copied))
+        {
+          return copied;
+        }
+
+        continue;
+      }
+
       if (!TryAppendMember(slot, type, lines, member, ref copied))
       {
         return copied;
@@ -1216,6 +1246,25 @@ internal sealed class StateClonePlanner
     string read = type.IsValueType ? $"{accessor}(ref source)" : $"{accessor}(source)";
     string write = type.IsValueType ? $"{accessor}(ref clone)" : $"{accessor}(clone)";
     lines.Add($"{write} = {CopyExpression(fieldSlot, read)};");
+    copied = true;
+    return true;
+  }
+
+  // Copy the reference (or the whole value) without classifying the member type. Classification is what rejects
+  // an interface with no visible implementation and a framework type whose private fields cannot be seen.
+  private bool TryAppendSharedMember(Slot slot, INamedTypeSymbol type, List<string> lines, Member member, ref bool copied)
+  {
+    Location? location = member.Location is { IsInSource: true } ? member.Location : SourceLocation(type);
+    string? accessor = FieldAccessor(member.DeclaringType, member.FieldName, member.DefinitionType, out string? problem);
+    if (accessor is null)
+    {
+      Fail(slot, $"member '{DisplayMemberName(member.FieldName)}' cannot be written ({problem})", location, member: true);
+      return false;
+    }
+
+    string read = type.IsValueType ? $"{accessor}(ref source)" : $"{accessor}(source)";
+    string write = type.IsValueType ? $"{accessor}(ref clone)" : $"{accessor}(clone)";
+    lines.Add($"{write} = {read};");
     copied = true;
     return true;
   }
@@ -1610,12 +1659,28 @@ internal sealed class StateClonePlanner
     HashSet<string> events = new(full.GetMembers().OfType<IEventSymbol>().Select(item => item.Name), StringComparer.Ordinal);
     foreach (IFieldSymbol field in full.GetMembers().OfType<IFieldSymbol>())
     {
-      if (field.IsStatic || field.IsConst || visibleFields.Contains(field.Name) || HasIgnoreAttribute(field) || events.Contains(field.Name))
+      if (field.IsStatic || field.IsConst || visibleFields.Contains(field.Name) || events.Contains(field.Name))
       {
         continue;
       }
 
       string propertyName = DisplayMemberName(field.Name);
+      IPropertySymbol? hidden = propertyName != field.Name
+        ? full.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault()
+        : null;
+
+      // The generated clone never enumerates a hidden field, so CloneShared on it cannot be honored. Report that
+      // instead of dropping it silently (CloneShared wins over an ignore attribute) or advising CloneShared again.
+      if (HasCloneSharedAttribute(field) || (hidden is not null && HasCloneSharedAttribute(hidden)))
+      {
+        return $"'{definition.ToDisplayString()}' has private member '{propertyName}' marked [CloneShared] that generated code cannot see";
+      }
+
+      if (HasIgnoreAttribute(field))
+      {
+        continue;
+      }
+
       if (propertyName != field.Name)
       {
         IPropertySymbol? property = definition.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
@@ -1624,7 +1689,6 @@ internal sealed class StateClonePlanner
           continue;
         }
 
-        IPropertySymbol? hidden = full.GetMembers(propertyName).OfType<IPropertySymbol>().FirstOrDefault();
         if (hidden is not null && HasIgnoreAttribute(hidden))
         {
           continue;
@@ -1825,11 +1889,34 @@ internal sealed class StateClonePlanner
     return field.AssociatedSymbol is not null && HasIgnoreAttribute(field.AssociatedSymbol);
   }
 
+  private static bool IsCloneShared(IFieldSymbol field)
+  {
+    if (HasCloneSharedAttribute(field))
+    {
+      return true;
+    }
+
+    return field.AssociatedSymbol is not null && HasCloneSharedAttribute(field.AssociatedSymbol);
+  }
+
   private static bool HasIgnoreAttribute(ISymbol symbol)
   {
     foreach (AttributeData attribute in symbol.GetAttributes())
     {
       if (attribute.AttributeClass?.Name is "IgnoreDataMemberAttribute" or "NonSerializedAttribute" or "JsonIgnoreAttribute")
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private static bool HasCloneSharedAttribute(ISymbol symbol)
+  {
+    foreach (AttributeData attribute in symbol.GetAttributes())
+    {
+      if (attribute.AttributeClass?.Name is "CloneShared" or "CloneSharedAttribute")
       {
         return true;
       }

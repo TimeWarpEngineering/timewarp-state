@@ -40,12 +40,16 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 ## Checklist
 
-- [ ] Choose the rule (attribute vs alternatives) and record it here
-- [ ] Generator support (`source/timewarp-state-source-generator/state-clone-planner.cs`, TWSG002 path `:1082`)
-- [ ] Docs: cloning topic + beta.11 migration guide
-- [ ] `invalid-clone-exception.cs` message
-- [ ] Tests: `ILogger<T>` field shape test; injected-service state survives two consecutive actions
-- [ ] Code review
+- [x] Choose the rule (attribute vs alternatives) and record it here
+- [x] Generator support (`source/timewarp-state-source-generator/state-clone-planner.cs`, TWSG002 path `:1082`)
+- [x] Docs: cloning topic + beta.11 migration guide
+- [x] `invalid-clone-exception.cs` message
+- [x] Tests: `ILogger<T>` field shape test; injected-service state survives two consecutive actions
+- [x] Code review
+
+### Rule
+
+`[CloneShared]` (`TimeWarp.State.CloneSharedAttribute`) on a field or auto-property assigns that member from the source. The generator does not walk the member type, so an injected `ILogger<T>`, `HttpClient`, or `NavigationManager` compiles without TWSG002 and stays the same instance on the live state. `[IgnoreDataMember]`, `[NonSerialized]`, and `[JsonIgnore]` keep the constructor value. `[CloneShared]` wins when a member has both. The ignore attribute applies to serialization. Construction passes `default` for service parameters, so the constructor must accept null.
 
 ## Acceptance criteria
 
@@ -57,6 +61,38 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implementation: 2026-10-11 (implementer oracle, `[CloneShared]`)
+- Review: 2026-10-11 (review oracle Claude Opus 5.5; general reviewer subagent aeae3ae5348e3b8b8)
+- Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 120 — 2026-10-10T17:54:36Z
+
+## Results
+
+`[CloneShared]` is the share-by-reference opt-in. The generated cloner assigns a marked field or auto-property from the source and does not classify that type, so `ILogger<T>`, `HttpClient`, and an abstract navigation type no longer produce TWSG002. After each action, `StateTransactionBehavior` installs a new state whose service members are the original instances. Ignored members keep the constructor value. `ClockState` proves that `[IgnoreDataMember]` leaves the service null.
+
+### How to validate
+
+Smoke:
+
+```bash
+dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo
+dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo
+```
+
+Expect:
+
+- `StateCloneSourceGenerator_.Should_Compile_Supported_Shape.Given_CloneShared_Assigns_The_Source_Reference` passes. The generated source contains `F_Logger_`, `F_HttpClient_`, and `F_Navigation_`, and it does not contain `Clone_ILogger`, `Clone_HttpClient`, or `Clone_AppNavigation`.
+- `ServiceWithoutCloneShared` is TWSG002 at the source member.
+- `GeneratedCloneShapeTests.Should_.Share_Injected_Services_By_Reference` passes. The clone's `ILogger<ServiceState>`, `HttpClient`, and `NavigationManager` are the same non-null instances, and `Guid` differs.
+- `StateTransactionBehaviorTests.Should_.Keep_Injected_Services_Across_Two_Actions` passes. After two actions the live state is a new instance, `Count` is 2, and the three services are the originals.
+- Both suites pass (generator 78, state 106 passed and 1 skipped on 2026-10-11). `./bin/dev check-version` is clean at `12.0.0-beta.11` (ahead of published `12.0.0-beta.10`).
+
+### Review disposition
+
+- Rounds: 1. Effort 2, roster: general.
+- Final counts: bug 0. Suggestion 2 fixed. Nit 1 fixed and 2 wontfix. 0 open.
+- Disposition: **accepted-exceptions**. M4 (redundant struct assignment) and M5 (simple-name attribute match, consistent with the ignore attributes) are wontfix.
+- Fixes: `CloneSharedPrecedence` shape test. Hidden metadata private fields marked `[CloneShared]` now get an accurate TWSG002 reason. cloning.md notes that non-auto properties need the attribute on the backing field.
+- Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
 ## Notes
 

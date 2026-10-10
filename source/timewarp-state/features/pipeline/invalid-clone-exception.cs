@@ -5,8 +5,8 @@
 #region Design
 // The cause distinguishes an empty Guid (initializer did not run) from a Guid copied off the original.
 // An empty Guid means the clone was not constructed, so the Guid initializer did not run. An equal Guid means the
-// clone copied the original. Both messages point at ICloneable and the opt-out attributes the generated cloner
-// honors: IgnoreDataMember, NonSerialized and JsonIgnore.
+// clone copied the original. Both messages point at ICloneable, at [CloneShared] for an injected service, and at
+// the attributes that leave a member at its constructor value: IgnoreDataMember, NonSerialized and JsonIgnore.
 #endregion
 
 namespace TimeWarp.Features.StateTransactions;
@@ -51,12 +51,14 @@ public class InvalidCloneException : Exception
         $"State of type {enclosingStateType} has an invalid clone: the clone has an empty Guid. " +
         "The state initializer did not run. With a custom ICloneable, Clone skipped construction: construct the " +
         "clone so the initializer runs. The generated cloner leaves members marked [IgnoreDataMember], " +
-        "[NonSerialized], or [JsonIgnore] at their constructor values so Guid is regenerated.",
+        "[NonSerialized], or [JsonIgnore] at their constructor values so Guid is regenerated. " +
+        "Mark an injected service with [CloneShared] so the clone keeps that instance; an ignore attribute leaves it null.",
       Cause.EqualGuid =>
         $"State of type {enclosingStateType} has an invalid clone: the clone has an equal Guid to the original. " +
         "A custom ICloneable.Clone, such as MemberwiseClone, copied Guid, or [IgnoreDataMember] is missing from " +
         "Guid. Implement ICloneable.Clone so the clone gets a new Guid, or mark Guid with [IgnoreDataMember]. " +
-        "The generated cloner also skips [NonSerialized] and [JsonIgnore].",
+        "The generated cloner also skips [NonSerialized] and [JsonIgnore]. " +
+        "Mark an injected service with [CloneShared] so the clone keeps that instance; an ignore attribute leaves it null.",
       _ => throw new ArgumentOutOfRangeException(nameof(cause), cause, null)
     };
 }
