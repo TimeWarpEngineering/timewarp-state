@@ -9,6 +9,6 @@ Enhance your debugging experience with practical tools:
 📝 Examine action payloads and timestamps
 🔄 Track state changes as they happen
 
-Explore real-world debugging capabilities in our comprehensive sample: https://github.com/TimeWarpEngineering/timewarp-state/tree/main/Samples/01-ReduxDevTools
+Explore real-world debugging capabilities in our comprehensive sample: https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/01-redux-dev-tools
 
 #blazor #dotnet #debugging #webdev #opensource

@@ -9,10 +9,10 @@ description: Learn TimeWarp.State basics using Blazor with Interactive Server re
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [sample-00-server Project](./sample-00-server/)
-> - [CounterState Implementation](./sample-00-server/features/counter/counter-state.cs)
-> - [Counter Page Component](./sample-00-server/components/pages/counter.razor)
-> - [Program.cs with Service Configuration](./sample-00-server/program.cs)
+> - [sample-00-server Project](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/00-state-action-handler/server/sample-00-server)
+> - [CounterState Implementation](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/server/sample-00-server/features/counter/counter-state.cs)
+> - [Counter Page Component](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/server/sample-00-server/components/pages/Counter.razor)
+> - [Program.cs with Service Configuration](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/server/sample-00-server/program.cs)
 
 ## State, Actions, and Handlers
 

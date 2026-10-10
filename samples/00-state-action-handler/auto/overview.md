@@ -9,11 +9,11 @@ description: Learn TimeWarp.State basics using Blazor with Interactive Auto rend
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [sample-00-auto Project](./sample-00-auto/)
-> - [Client Project with TimeWarp.State](./sample-00-auto/sample-00-auto-client/)
-> - [CounterState Implementation](./sample-00-auto/sample-00-auto-client/Features/Counter/CounterState.cs)
-> - [Counter Page Component](./sample-00-auto/sample-00-auto-client/Pages/Counter.razor)
-> - [Program.cs with Service Configuration](./sample-00-auto/sample-00-auto/Program.cs)
+> - [sample-00-auto Project](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/00-state-action-handler/auto/sample-00-auto)
+> - [Client Project with TimeWarp.State](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto-client)
+> - [CounterState Implementation](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto-client/features/counter/counter-state.cs)
+> - [Counter Page Component](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto-client/pages/Counter.razor)
+> - [Program.cs with Service Configuration](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto/program.cs)
 
 ## State, Actions, and Handlers
 

@@ -2,15 +2,15 @@
 uid: TimeWarpState:Overview.md
 title: TimeWarp.State Overview
 ---
-[!include[Badges](Partials/Badges.md)]
+[!include[Badges](partials/badges.md)]
 
-[!include[Installation](Partials/Summary.md)]
+[!include[Summary](partials/summary.md)]
 
 Please see the **[GitHub Site](https://github.com/TimeWarpEngineering/timewarp-state)** for source and filing of issues.
 
-[!include[Installation](Partials/Installation.md)]
+[!include[Installation](partials/installation.md)]
 
-[!include[Installation](Partials/GettingStarted.md)]
+[!include[GettingStarted](partials/getting-started.md)]
 
 ## The TimeWarp.State Architecture
 
@@ -89,7 +89,7 @@ TimeWarp.State also uses the same "Command Pattern" for JavaScript interoperabil
 The JavaScript creates a request and dispatches it to Blazor where it is added to the pipeline.
 Handlers on the Blazor side can callback to the JavaScript side if needed.
 
-[!include[Terminology](Partials/terminology.md)]
+[!include[Terminology](partials/terminology.md)]
 
 ### PureFunctions vs NonPureFunctions
 
@@ -99,7 +99,7 @@ Thus, async calls to fetch data, send emails, or just update local state
 are implemented in the same manner. Although the developer **should** be aware when Handlers have side effects and
 if the developer chose they could mark the Requests as such. For example **IActionWithSideEffect**
 
-[!include[Acknowledgements](Partials/Acknowledgements.md)]
+[!include[Acknowledgements](partials/acknowledgements.md)]
 
 #### Footnotes:
 

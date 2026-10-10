@@ -5,4 +5,4 @@ title: Releases
 
 ## Releases
 
-View the [Release Notes](https://timewarpengineering.github.io/timewarp-state/ReleaseNotes/Release11.0.0.html) for detailed information on each release.
+View the [Release Notes](xref:TimeWarpState:Release.11.0.0.md) for detailed information on each release.

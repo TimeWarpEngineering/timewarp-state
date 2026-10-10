@@ -8,10 +8,10 @@ description: Learn how to implement stack-based routing in TimeWarp.State applic
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [sample-03-wasm Project](./sample-03-wasm/)
-> - [Program.cs with Routing Configuration](./sample-03-wasm/program.cs)
-> - [MainLayout with TwBreadcrumb](./sample-03-wasm/layout/main-layout.razor)
-> - [Example Pages with TwPageTitle](./sample-03-wasm/pages/)
+> - [sample-03-wasm Project](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/03-routing/wasm/sample-03-wasm)
+> - [Program.cs with Routing Configuration](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/03-routing/wasm/sample-03-wasm/program.cs)
+> - [MainLayout with TwBreadcrumb](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/03-routing/wasm/sample-03-wasm/layout/MainLayout.razor)
+> - [Example Pages with TwPageTitle](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/03-routing/wasm/sample-03-wasm/pages)
 
 ## What is Stack-Based Routing?
 

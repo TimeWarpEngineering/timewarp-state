@@ -9,9 +9,9 @@ description: Learn how to integrate Redux DevTools with TimeWarp.State for enhan
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [sample-01-wasm Project](./sample-01-wasm/)
-> - [Program.cs with Redux Configuration](./sample-01-wasm/program.cs)
-> - [App.razor with Redux Components](./sample-01-wasm/app.razor)
+> - [sample-01-wasm Project](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/01-redux-dev-tools/wasm/sample-01-wasm)
+> - [Program.cs with Redux Configuration](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/01-redux-dev-tools/wasm/sample-01-wasm/program.cs)
+> - [App.razor with Redux Components](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/01-redux-dev-tools/wasm/sample-01-wasm/App.razor)
 
 This tutorial demonstrates how to add Redux DevTools support to your TimeWarp.State Blazor WebAssembly application. Redux DevTools provides powerful debugging capabilities, allowing you to monitor state changes, inspect actions, and understand your application's behavior.
 
@@ -88,7 +88,7 @@ dotnet run
 
 3. Interact with the Counter page and observe in Redux DevTools:
 
-![Redux DevTools Interface](../../documentation/images/redux-dev-tools.png)
+![Redux DevTools Interface](../images/redux-dev-tools.png)
 
 As shown above, Redux DevTools provides a comprehensive view of:
 - Actions being dispatched (left panel)
@@ -98,7 +98,7 @@ As shown above, Redux DevTools provides a comprehensive view of:
 
 The interface also shows the RouteState being tracked:
 
-![Route State in Redux DevTools](../../documentation/images/redux-route-state.png)
+![Route State in Redux DevTools](../images/redux-route-state.png)
 
 This view demonstrates how TimeWarp.State automatically maintains route information in the state tree, making it easy to debug navigation-related issues.
 

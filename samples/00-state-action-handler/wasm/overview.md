@@ -9,9 +9,9 @@ description: Learn TimeWarp.State basics using Blazor WebAssembly
 
 > [!TIP]
 > View the complete reference implementation for this tutorial:
-> - [sample-00-wasm Project](./sample-00-wasm/)
-> - [CounterState Implementation](./sample-00-wasm/features/counter/counter-state.cs)
-> - [Counter Page Component](./sample-00-wasm/pages/counter.razor)
+> - [sample-00-wasm Project](https://github.com/TimeWarpEngineering/timewarp-state/tree/master/samples/00-state-action-handler/wasm/sample-00-wasm)
+> - [CounterState Implementation](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/wasm/sample-00-wasm/features/counter/counter-state.cs)
+> - [Counter Page Component](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/samples/00-state-action-handler/wasm/sample-00-wasm/pages/Counter.razor)
 
 ## State, Actions, and Handlers
 
