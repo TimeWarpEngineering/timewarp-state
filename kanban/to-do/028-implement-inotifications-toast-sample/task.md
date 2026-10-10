@@ -54,7 +54,7 @@ Verify each path against the current timewarp-architecture master before linking
 ## Checklist
 
 - [x] Write `samples/08-notifications/readme.md` (paths verified against timewarp-architecture)
-- [ ] Code review
+- [x] Code review (review/disposition.md: clean)
 
 ~~Old checklist (superseded 2026-10-10):~~
 
@@ -87,6 +87,7 @@ Verify each path against the current timewarp-architecture master before linking
 ## Session
 
 - Implementer: Grok session 01a124c0-171f-7072-a4b3-39810d0c890e (2026-10-10)
+- Review oracle: Claude Opus 5.5 (2026-10-10). Effort 2, roster: general.
 
 ## Results
 
@@ -116,6 +117,15 @@ present on `origin/master` at `0500982b7e5d7632aa3442c42cf29259696b1136`.
   sample project, code, and tests.
 - `samples/overview.md` does not list sample 08, so the samples index will not link here
   until a later change is allowed to edit it.
+
+**Review**
+
+- Rounds: 1. Effort 2 (by-diff, 349 lines). Roster: general.
+- Final counts: bug 0, suggestion 0, nit 0. Open 0, fixed 0, wontfix 0.
+- Disposition: **clean**. No findings. Every Architecture link resolves at `0500982b`, and the
+  behavior the README describes matches the source.
+- Artifacts: `review/review-framework.md`, `review/round-1/general.md`,
+  `review/round-1/merged.md`, `review/disposition.md`.
 
 **Tests:** none in this repo. The README points at Architecture's
 `notification-state-tests.cs`. No build is required for a markdown pointer.
