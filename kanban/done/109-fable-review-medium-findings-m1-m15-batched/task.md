@@ -214,6 +214,8 @@ Verbatim from `kanban/done/102-full-codebase-review-by-claude-fable-review-only/
   text and got `null`. The persistence page snapshot shows the nav button disabled. `scripts/test.cs` does
   not run e2e; CI does (`scripts/e2e.cs`). Fix the product change that keeps the test app on static render
   after the WASM reload, then push so CI on this PR is green. Do not split this into a new task.
+  The fix is on this branch (Results, CI e2e). The published Release probe reached WebAssembly and the
+  persistence counts survived a reload. The e2e job itself still runs only in CI.
 - Related: 103 (companion DevTools app, relevant to M1), 104 (M1), 105 (H1; overlaps M14 packaging test),
   106 (H2; prerequisite for M5 `GetSemaphore` removal), 107 (H3), 108 (H4). M14 also lists the missing interleaved-actions test that 106 adds.
 - The kitchen text asked for child tasks. This walk implemented M2–M15 on task 109 because the implementer brief said to finish the remaining product work on this id. M1 stays on task 104.
@@ -237,6 +239,21 @@ M2–M15 are implemented on this branch at version `12.0.0-beta.11` (no version 
 - **M14.** New tests: state-initialization preprocessor, `RouteState.ChangeRoute`, timer elapsed/restart, `TwPageTitle` / `TimeWarpPageRenderNotifier`, `JsonRequestHandler` init/dispose. Persistence e2e `[Ignore]` removed. `sample-test.cs` deleted. `deep-cloner-tests.cs` renamed to `clone-graph-tests.cs`. Packaging allow-list is task 105. Interleaved actions are task 106. Redux DevTools behavior/interop tests stay with M1.
 - **M15.** `claude.md` points at `ai-context.md`. Badges, package readmes, getting-started sample link, solution folders, and the duplicate event id are corrected. `Store_SetState` stays 104. `LoadStatesFromJson` is 106 and `LoadStateFromJson` is 107.
 
+### CI e2e (PR #634, run 38079798434)
+
+`IsAotCompatible` on Blazor and Plus lets the published test-app WebAssembly client trim those assemblies. Two gaps left the reload on the static prerender (`RendererInfo.Name` stayed `Static`, so the `data-qa` spans the e2e job reads were absent and their text was null):
+
+- ICloneable states are not field-cloned. `ActionTrackingState` and `TimerState` were constructed only through `EnsureStates`, and `Clone()` was the only call to their members, so the trimmer dropped the DI constructors and stubbed `Clone()`. Development host validation then threw `NoConstructorMatch` before interactive WebAssembly replaced the prerender. The clone generator emits `RootICloneableStates`: a module initializer that names each ICloneable state with `DynamicallyAccessedMembers` for public constructors and public methods. An ICloneable-only compilation still emits that root.
+- `Routes.razor` on the server names `ReduxDevTools`, `TimeWarpJavaScriptInterop`, and `TimeWarpPageRenderNotifier`. That reference is not a root for the client trim, so the WASM runtime reported that the root component type could not be found. `ComponentTrimRoots` in Blazor and Plus names those components from a module initializer (`DynamicallyAccessedMembers.All`). CA2255 is suppressed on that initializer: the root has to live in the library.
+
+After those roots, a published reload reaches `WebAssembly`. Persistence load already wrote the snapshot back with `Store.SetState` (the browser log showed the stored JSON and the loaded guid). `LoadPersistentStateRequest` is not an action, so nothing re-rendered and the page kept the `Initialize()` defaults. `PersistenceTestPage` and `ServerSidePersistenceTestPage` now await `WaitForInitializationAsync` for purple and blue, and they leave the counter buttons out of the DOM until that task finishes. That matches `documentation/topics/persistence.md` and sample 05, and a click cannot increment the defaults before the snapshot is in the store.
+
+Local published Release probe of `tests/test-app/test-app-server` (content root `/tmp/task109-sut`, `ASPNETCORE_ENVIRONMENT=Development`, Chromium). This is not the CI e2e job:
+
+- Counter after reload: `WebAssembly` / `InteractiveWebAssemblyRenderMode`, count `3` to `8`, `#blazor-error-ui` hidden.
+- Persistence: purple guid and count `6`, and blue guid and count `5`, survived a reload in `WebAssembly`. A new tab kept the purple guid and count and showed a new blue guid with count `2`.
+- Cacheable weather after reload: `WebAssembly`, cache duration `00:00:10`.
+
 ### How to validate
 
 **Smoke**
@@ -251,7 +268,7 @@ ganda repo audit
 **Expect**
 
 - Both Release builds exit 0. IL2xxx/IL3xxx are warnings-as-errors on those projects, so a trim warning fails the build.
-- `scripts/test.cs` exits 0. This walk: analyzer 43 passed; source generator 80 passed; state 115 passed, 1 skipped; plus 40 passed, 1 skipped; telemetry 13 passed; client 65 passed, 1 skipped; architecture 7 passed, 1 skipped.
+- `scripts/test.cs` exits 0. This walk: analyzer 44 passed; source generator 80 passed; state 115 passed, 1 skipped; plus 40 passed, 1 skipped; telemetry 13 passed; client 65 passed, 1 skipped; architecture 7 passed, 1 skipped.
 - `ganda repo audit` exits 0. This walk: Passed 29, Skipped 1, one non-blocking `kebab-path-names` warning on the five Blazor `lib.module` paths. Those names are the Razor static-web-asset convention and were left as they are.
 
 **Automated gate**
@@ -269,8 +286,8 @@ dotnet run --file scripts/test.cs
 **Not in scope**
 
 - Task 104 still decides whether Redux DevTools time travel is finished or deleted. This branch does not delete `LoadStatesFromJson`.
-- The persistence browser test is no longer ignored. It was not executed on this machine. CI runs it on `ubuntu-latest` via the e2e job (`scripts/e2e.cs` installs Chromium).
-- The trimmed `sample-05-wasm` publish is wired into `verify-samples` and was not executed in this walk. Library Release builds already fail on IL warnings.
+- The full e2e job (`scripts/e2e.cs` on `ubuntu-latest`) was not executed on this machine. The published Release probe above covers the ten failures from run 38079798434: WebAssembly after reload, persistence guid/count across reload and a new tab, and the cache-duration text. CI on PR #634 is the remaining run of that job.
+- The trimmed `sample-05-wasm` publish is wired into `verify-samples` and was not executed in this walk. Library Release builds already fail on IL warnings. The test-app client publish used for the probe above is trimmed (`Optimizing assemblies for size`).
 
 ### Review disposition
 
