@@ -40,9 +40,9 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 ## Checklist
 
-- [ ] Fix collection comparison (`:189`)
-- [ ] Route non-primitive value types through `Equals` (`:132`, `:222`)
-- [ ] Tests: same-count-different-items re-renders; equal value-type parameter does not report a change
+- [x] Fix collection comparison (`:189`)
+- [x] Route non-primitive value types through `Equals` (`:132`, `:222`)
+- [x] Tests: same-count-different-items re-renders; equal value-type parameter does not report a change
 - [ ] Code review
 
 ## Acceptance criteria
@@ -55,7 +55,60 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implementer: Grok session 01a126fb-2629-7b71-9d9e-f5aa777d2134 (2026-10-11)
 
 ## Notes
 
 - Source: 102 review-findings.md finding H4. Related batch: 109 (Medium findings).
+
+## Results
+
+Collection parameters are compared element by element on a snapshot. Non-primitive value types use `Equals`. A same-length replacement list re-renders when any check hook is overridden, and an equal `DateTime`, `Guid`, or `decimal` does not write a new `RenderReasonDetail`.
+
+### Files
+
+- `source/timewarp-state-blazor/components/timewarp-state-component.check-complex-parameter-changed.cs`
+- `tests/timewarp-state-tests/timewarp-state-component/parameter-change-tests.cs`
+- `documentation/topics/render-control.md`
+
+### Decisions
+
+- Collections use `SequenceEqual` on materialized snapshots. Order is significant. Equal contents do not count as a change, so the diagnostic does not claim one.
+- `IQueryable` is never enumerated. A different instance counts as changed.
+- `decimal`, `DateTime`, `Guid`, enums, structs, and other value types, including `Nullable<T>`, go through `CheckPrimitiveParameterChanged` (`Equals`). Other reference types still compare by reference.
+
+### Tests
+
+`dotnet fixie timewarp-state-tests`: 110 passed, 1 skipped. New cases passed: `SameCount_DifferentItems_Rerenders`, `SameItems_DoNotReportAChange`, `Equal_ValueType_Parameters_DoNotReportAChange`, `Query_IsNotEnumerated_And_ADifferentInstance_Rerenders`.
+
+`ganda repo audit` exited 0. The kebab-path advisory is the pre-existing Blazor `lib.module` filenames.
+
+Code review stays open for the host review node. This walk did not run `tw-implementation-review`.
+
+### How to validate
+
+**Smoke**
+
+```bash
+dotnet tool restore
+dotnet fixie timewarp-state-tests
+```
+
+**Expect**
+
+Exit 0. The log runs these tests and they pass:
+
+- `ParameterChangeTests.Should_.SameCount_DifferentItems_Rerenders`
+- `ParameterChangeTests.Should_.SameItems_DoNotReportAChange`
+- `ParameterChangeTests.Should_.Equal_ValueType_Parameters_DoNotReportAChange`
+- `ParameterChangeTests.Should_.Query_IsNotEnumerated_And_ADifferentInstance_Rerenders`
+
+**Automated gate**
+
+```bash
+ganda repo audit
+```
+
+Expect exit 0.
+
+**Not in scope:** the should-render browser page. `ChildComponentWithCollection` does not override a check hook, so that page still takes the event path. The unit tests cover the override case.
