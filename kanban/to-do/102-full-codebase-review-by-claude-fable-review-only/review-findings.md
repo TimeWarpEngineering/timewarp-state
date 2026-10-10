@@ -57,7 +57,7 @@ None.
 ### M1. Redux DevTools time travel is unreachable from the shipped JavaScript, but keeps the core package's only trim-unsafe reflection
 
 - `source/timewarp-state-blazor/wwwroot/typescript/redux-dev-tools.ts:61` onward maps every `DISPATCH` payload (`COMMIT`, `JUMP_TO_STATE`, `IMPORT_STATE`, ...) to `undefined`, and `MessageHandler` ignores unmapped types. Only `START` reaches .NET. `CommitHandler` and `IReduxDevToolsStore.LoadStatesFromJson` are therefore dead at runtime.
-- `source/timewarp-state/store/store.redux-dev-tools.cs:274-349` carries seven `UnconditionalSuppressMessage` attributes (IL2026, IL2070, IL2072, IL2075, IL3050) to scan `AppDomain.CurrentDomain.GetAssemblies()` and invoke `Hydrate` through `MethodInfo.Invoke`. Together with `EnsureStates` (`service-collection-extensions.add-timewarp-state.cs:85`) these are the only reflection sites left after task 097, and 097's own requirement was "no reflection in TimeWarp.State at all, used or unused".
+- `source/timewarp-state/store/store.redux-dev-tools.cs:43-71` carries seven `UnconditionalSuppressMessage` attributes (IL2026, IL2070, IL2072, IL2075, IL3050) to scan `AppDomain.CurrentDomain.GetAssemblies()` and invoke `Hydrate` through `MethodInfo.Invoke`. Together with `EnsureStates` (`service-collection-extensions.add-timewarp-state.cs:85`) these are the only reflection sites left after task 097, and 097's own requirement was "no reflection in TimeWarp.State at all, used or unused".
 - `State<T>.Hydrate` (`state/state.cs:62`) throws `NotImplementedException` by default; only five states in the repo override it.
 - Suggestion: pick one. Either finish time travel (map `JUMP_TO_STATE`/`JUMP_TO_ACTION`, have the clone generator emit `Hydrate` so the reflection goes away, and test it), or delete `LoadStatesFromJson`, `Hydrate`, `IState<TState>`, `CommitHandler` and the seven suppressions now. The scratch backlog already lists splitting DevTools into its own package; deleting is consistent with that.
 
@@ -81,7 +81,7 @@ None.
 
 ### M5. `IStore` exposes implementation details: `GetSemaphore`, `StateInitializationTasks`, `GetState(Type)` returning `object`
 
-- `source/timewarp-state/store/i-store.cs:379,387`. `GetSemaphore` returns null until the state exists, is used by exactly one caller (`route-state.push-route-info.cs:34`), and is no longer used by the transaction behavior. `StateInitializationTasks` is a mutable `ConcurrentDictionary<string, Task>` keyed by type full name, which `documentation/topics/persistence.md` tells users to await directly. `GetState(Type)` returns `object` although every implementation returns `IState`.
+- `source/timewarp-state/store/i-store.cs:27` (`GetState(Type)` returns `object` although every implementation returns `IState`), `:29` (`GetSemaphore`), and `:37` (`StateInitializationTasks`). `GetSemaphore` returns null until the state exists, is used by exactly one caller (`route-state.push-route-info.cs:34`), and is no longer used by the transaction behavior. `StateInitializationTasks` is a mutable `ConcurrentDictionary<string, Task>` keyed by type full name, which `documentation/topics/persistence.md` tells users to await directly.
 - Consequence of the `GetSemaphore` null contract: when a host sets `UseStateTransactionBehavior = false`, nothing creates `RouteState` before the handler runs, `GetSemaphore` returns null and `PushRouteInfo` silently does nothing (`push-route-info.cs:35`).
 - Suggestion: remove `GetSemaphore` once H2 lands; replace the dictionary with `Task WaitForInitializationAsync<TState>()`; return `IState` from `GetState(Type)`. These are breaking changes that fit the 12.0 beta window.
 
@@ -151,7 +151,7 @@ None.
 
 ### L1. `StateTransactionBehavior` is bypassed for `UseStateTransactionBehavior = false` but still clones nothing and still gates render; document or remove the option
 
-`timewarp-state-options.cs:25`. The option is honored, but with it off the store never creates the state before the handler (see M5) and `GetPreviousState` is never populated, so `RegisterRenderTrigger` always renders. Either document those consequences or drop the option.
+`timewarp-state-options.cs:29`. The option is honored, but with it off the store never creates the state before the handler (see M5) and `GetPreviousState` is never populated, so `RegisterRenderTrigger` always renders. Either document those consequences or drop the option.
 
 ### L2. `TimeWarpStateOptions` surface
 
@@ -202,7 +202,7 @@ BL0010 and BL0016 in the Release build: `redux-dev-tools-interop.cs:52,61,71` an
 - `StartHandler_RequestHandled` event id is declared and never used; `CommitHandler` logs under `JumpToStateHandler_RequestReceived`.
 - `ReduxDevToolsOptions.TFeatures` and the "serialize is not implemented" comment block; `BaseJsonRequest`/`JsonRequest<T>` are shipped public types the library does not use (Design region says so).
 - 62 `TW0007` warnings (local `using` directives) in the Release build, 20 of them in `source/` (`timer-state.cs`, `assembly-extensions.cs`, `service-collection-extensions.cs` in Plus, `handler-must-not-send-action-analyzer.cs`, `action-catalog-arguments.cs`, `policies.state-policy.cs`); 12 `RS0030` `Console` uses in the test app; 42 nullable warnings in `tests/test-app/test-app-client/tests/clone-provider-tests.cs`.
-- `kanban/backlog/scratch/todo.md` still lists "Convert js to ts" as the only done item and "Review TODOs in source" as open; the four remaining `TODO`s are all the persistence no-ops in M9.
+- `kanban/backlog/scratch/todo.md` still lists "Convert js to ts" as the only done item and "Review TODOs in source" as open. Five `TODO` comments remain under `source/`. Four are the persistence no-ops in M9 (`persistent-state-post-processor.cs:93` and `:130`, `persistence-service.cs:107-108`). The fifth is a file-layout note at `source/timewarp-state-policies/policies.action-policy.cs:15`.
 - `documentation/toc.yml` lists the topics folder and then each topic again at top level.
 
 ## Strengths worth keeping
