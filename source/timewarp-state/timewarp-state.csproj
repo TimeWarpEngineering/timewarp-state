@@ -36,7 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations"/>
+    <PackageReference Include="JetBrains.Annotations" PrivateAssets="all"/>
     <!--
       The library references ONLY TimeWarp.Mediator.Contracts (the interfaces and membership
       attributes) plus TimeWarp.Mediator.Analyzers (TWM001-TWM004 diagnostics). It must NOT

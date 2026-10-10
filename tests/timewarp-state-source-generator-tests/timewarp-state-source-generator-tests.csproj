@@ -4,6 +4,8 @@
     <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="TimeWarp.Fixie" />
+    <!-- The generator marks Roslyn PrivateAssets, so this project needs its own compile reference at the same 4.14.0 floor. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

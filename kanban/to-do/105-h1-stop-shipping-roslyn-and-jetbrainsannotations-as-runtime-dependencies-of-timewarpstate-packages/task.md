@@ -39,10 +39,10 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 ## Checklist
 
-- [ ] Move/condition the Roslyn reference (`Directory.Build.props:39`)
-- [ ] `JetBrains.Annotations` private (`source/timewarp-state/timewarp-state.csproj:39`)
-- [ ] Nuspec dependency allow-list check (test or `dev pack` step) for all packed packages
-- [ ] Verify analyzer/generator still load in consumers and the 4.14.0 Roslyn floor (task 101) still holds
+- [x] Move/condition the Roslyn reference (`Directory.Build.props:39`)
+- [x] `JetBrains.Annotations` private (`source/timewarp-state/timewarp-state.csproj:39`)
+- [x] Nuspec dependency allow-list check (test or `dev pack` step) for all packed packages
+- [x] Verify analyzer/generator still load in consumers and the 4.14.0 Roslyn floor (task 101) still holds
 - [ ] Code review
 
 ## Acceptance criteria
@@ -52,9 +52,52 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 - The allow-list check fails when an unexpected dependency is added (demonstrated in the PR) and passes on master.
 - Build, tests and `ganda repo audit` green.
 
+## Results
+
+`Microsoft.CodeAnalysis.CSharp` is a compile reference of the analyzer, the source generator, and their test projects, each with `PrivateAssets="all"`. `Directory.Build.props` no longer adds that package to every project. The central pin stays `4.14.0` (task 101 consumer compiler floor: 5.9.0 needs SDK 10.0.400+).
+
+`JetBrains.Annotations` is `PrivateAssets="all"` on `TimeWarp.State` and on `TimeWarp.State.Plus` (`[UsedImplicitly]`). Unused `global using JetBrains.Annotations` lines were removed from Blazor, client integration tests, and the test-app client.
+
+`dev pack` reads each packed nuspec and exits 1 when a dependency id is outside `NuspecDependencyAllowList` (`tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs`). The same type is linked into `timewarp-state-tests`. The check compares ids, so an allowed dependency can change version without a failure. A package id with no entry fails closed. Version stays `12.0.0-beta.11`.
+
+Release nupkgs in `artifacts/packages` declare these dependency ids:
+
+- TimeWarp.State: TimeWarp.Mediator.Contracts. Analyzer payload: `analyzers/dotnet/cs/timewarp-state-analyzer.dll`, `analyzers/dotnet/cs/timewarp-state-source-generator.dll`.
+- TimeWarp.State.Blazor: TimeWarp.State, Microsoft.AspNetCore.Components.Web
+- TimeWarp.State.Plus: TimeWarp.State.Blazor, TimeWarp.State, Blazored.LocalStorage, Blazored.SessionStorage, Microsoft.AspNetCore.Components.Web
+- TimeWarp.State.Policies: TimeWarp.State, NetArchTest.eNhancedEdition, Shouldly
+- TimeWarp.State.Telemetry: TimeWarp.State, TimeWarp.Mediator.Contracts
+
+None of those nuspecs list `Microsoft.CodeAnalysis.CSharp` or `JetBrains.Annotations`.
+
+`NuspecDependencyAllowList_Should_` rejects those two ids on every packed package, rejects a package id with no allow-list entry, and rejects a nuspec that adds `Microsoft.CodeAnalysis.CSharp` beside `TimeWarp.Mediator.Contracts`. `PinRoslynAtTheConsumerCompilerFloor` locks the `4.14.0` package version and requires `Directory.Build.props` to omit a repo-wide Roslyn `PackageReference`. `dotnet run --file tools/dev-cli/dev.cs -- pack` printed the five allow-list lines and `Packed set verified`.
+
+A throwaway `net11.0` consumer of `TimeWarp.State` 12.0.0-beta.11, restored from a fresh `--packages` folder and the local `artifacts/packages` feed, compiled a public `State<T>` and reported `TWS001` for a state type with a private constructor. Its assets file lists both analyzer assemblies and does not list `Microsoft.CodeAnalysis.CSharp` or `JetBrains.Annotations`.
+
+`./bin/dev test` exited 0 (`Tests completed successfully!`). `ganda repo audit` exited 0: 29 passed, 1 advisory failure, 1 skipped. The advisory is the pre-existing `kebab-path-names` warning on five `*.lib.module.*` paths (Blazor JS module names). Banner: `Repository passes — 1 advisory (non-blocking) warning(s).`
+
+### How to validate
+
+Smoke:
+
+- `dotnet run --file tools/dev-cli/dev.cs -- pack`
+- `dotnet run --file scripts/test.cs`
+- `ganda repo audit`
+- Optional consumer: a `net11.0` project that references `TimeWarp.State` 12.0.0-beta.11 from `artifacts/packages` only (`dotnet build --packages <fresh-folder>`), with one valid `State<T>` and one state whose only constructor is private.
+
+Expect:
+
+- Pack prints `TimeWarp.State dependencies: TimeWarp.Mediator.Contracts`, the Blazor, Plus, Policies, and Telemetry lines from Results, then `Packed set verified`. Unzipped nuspecs contain neither `Microsoft.CodeAnalysis.CSharp` nor `JetBrains.Annotations`. `TimeWarp.State` still contains both analyzer assemblies under `analyzers/dotnet/cs/`.
+- `scripts/test.cs` exits 0, including `NuspecDependencyAllowList_Should_` (rejection of Roslyn and JetBrains.Annotations, and the 4.14.0 pin).
+- `ganda repo audit` exits 0.
+- The valid state builds. The private-constructor state fails with `TWS001`. The consumer assets file does not list `Microsoft.CodeAnalysis.CSharp` or `JetBrains.Annotations`.
+
+Run pack through `dotnet run --file tools/dev-cli/dev.cs -- pack`. The checked-in `./bin/dev` binary is built separately and can lag the allow-list check in source.
+
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implementation: grok task-work implementer (2026-10-10)
 
 ## Notes
 

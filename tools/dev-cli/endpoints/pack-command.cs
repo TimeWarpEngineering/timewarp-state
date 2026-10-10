@@ -4,7 +4,8 @@
 #region Design
 // Discovers packable projects via IPackableProjectService (MSBuild IsPackable).
 // Clears artifacts/packages first so leftovers cannot ship. Reads <Version> from
-// source/Directory.Build.props and verifies the nupkg set with CiRunPromotion.
+// source/Directory.Build.props, verifies the nupkg set with CiRunPromotion, then
+// rejects any nuspec dependency id outside NuspecDependencyAllowList.
 #endregion
 
 namespace DevCli.Commands;
@@ -109,6 +110,12 @@ internal sealed class PackCommand : ICommand<Unit>
         return Value;
       }
 
+      if (!NuspecDependenciesAllowed(actualNupkgPaths, version))
+      {
+        Environment.ExitCode = 1;
+        return Value;
+      }
+
       Terminal.WriteLine("\nPacked set verified.".Green());
       foreach (string fileName in actualFileNames.OrderBy(name => name, StringComparer.Ordinal))
       {
@@ -116,6 +123,41 @@ internal sealed class PackCommand : ICommand<Unit>
       }
 
       return Value;
+    }
+
+    private bool NuspecDependenciesAllowed(IEnumerable<string> nupkgPaths, string version)
+    {
+      bool allowed = true;
+      foreach (string nupkgPath in nupkgPaths.OrderBy(path => path, StringComparer.Ordinal))
+      {
+        string fileName = Path.GetFileName(nupkgPath);
+        string packageId = PackageIdFromNupkgFileName(fileName, version);
+        IReadOnlyList<string> dependencyIds = NuspecDependencyAllowList.ReadDependencyIdsFromNupkg(nupkgPath);
+        IReadOnlyList<string> disallowed = NuspecDependencyAllowList.FindDisallowed(packageId, dependencyIds);
+        if (disallowed.Count > 0)
+        {
+          Terminal.WriteErrorLine(
+            $"Pack failed: {packageId} nuspec dependency outside the allow-list: {string.Join(", ", disallowed)}.".Red());
+          allowed = false;
+          continue;
+        }
+
+        string listed = dependencyIds.Count == 0 ? "(none)" : string.Join(", ", dependencyIds);
+        Terminal.WriteLine($"  {packageId} dependencies: {listed}");
+      }
+
+      return allowed;
+    }
+
+    private static string PackageIdFromNupkgFileName(string fileName, string version)
+    {
+      string suffix = $".{version}.nupkg";
+      if (!fileName.EndsWith(suffix, StringComparison.Ordinal))
+      {
+        throw new InvalidOperationException($"Nupkg '{fileName}' does not end with '{suffix}'.");
+      }
+
+      return fileName[..^suffix.Length];
     }
 
     private static string? ReadPropsVersion(string repoRoot)
