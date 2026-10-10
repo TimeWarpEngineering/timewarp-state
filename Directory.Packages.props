@@ -41,8 +41,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
-    <!-- Keep Microsoft.CodeAnalysis.CSharp at the lowest Roslyn the analyzer + source generator need: it is the compiler floor
-         for every consumer (5.9.0 would require SDK 10.0.400+; 4.14.0 loads on every .NET 10 SDK). Analyzers package above is PrivateAssets. -->
+    <!-- Analyzer and source generator compile against this Roslyn. 4.14.0 loads on every .NET 10 SDK
+         (5.9.0 would require SDK 10.0.400+). Those projects mark the reference PrivateAssets so it is not a package dependency. -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 

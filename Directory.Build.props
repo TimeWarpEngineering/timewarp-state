@@ -36,7 +36,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <!-- Microsoft.CodeAnalysis.CSharp is a compile reference of the analyzer and source generator only.
+         A repo-wide reference ships the Roslyn compiler as a runtime dependency of every packed library. -->
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
     <!-- TW0007 file-level usings → kebab global-usings.cs -->
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />

@@ -8,7 +8,6 @@
 // usings that the Razor SDK does not import.
 #endregion
 
-global using JetBrains.Annotations;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Forms;
 global using Microsoft.Extensions.DependencyInjection;
