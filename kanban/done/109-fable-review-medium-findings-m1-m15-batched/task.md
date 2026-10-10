@@ -206,6 +206,13 @@ Verbatim from `kanban/done/102-full-codebase-review-by-claude-fable-review-only/
 
 ## Notes
 
+- CI fix required before merge. PR #634 run 38079798434 failed the e2e job (10 tests). This is not a flake.
+  `TestThrowException`, `TestResetStore`, `TestJavaScriptInterop`, `TestGoBack`, `TestEventStream`,
+  `CloneSuitePassesInServerAndWasm`, `TestCounterComponents`, and `TestChangeRoute` expected render mode
+  `WebAssembly` after reload and got `Static`. `TestPersistence` and `TestCacheableWeather` expected state
+  text and got `null`. The persistence page snapshot shows the nav button disabled. `scripts/test.cs` does
+  not run e2e; CI does (`scripts/e2e.cs`). Fix the product change that keeps the test app on static render
+  after the WASM reload, then push so CI on this PR is green. Do not split this into a new task.
 - Related: 103 (companion DevTools app, relevant to M1), 104 (M1), 105 (H1; overlaps M14 packaging test),
   106 (H2; prerequisite for M5 `GetSemaphore` removal), 107 (H3), 108 (H4). M14 also lists the missing interleaved-actions test that 106 adds.
 - The kitchen text asked for child tasks. This walk implemented M2–M15 on task 109 because the implementer brief said to finish the remaining product work on this id. M1 stays on task 104.
