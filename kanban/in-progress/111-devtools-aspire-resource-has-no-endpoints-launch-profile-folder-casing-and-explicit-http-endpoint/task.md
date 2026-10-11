@@ -49,17 +49,47 @@ Filed by Claude (cockpit) at Steven's request, 2026-10-12, after watching task 1
 
 ## Checklist
 
-- [ ] `WithHttpEndpoint("http")` in `add-timewarp-state-dev-tools.cs`; Design region updated
-- [ ] `git mv properties Properties` for DevTools app and sample-04-server (and 00-03 if cheap)
-- [ ] Hosting test: endpoint exists without a seeded annotation
-- [ ] `program.cs` environment handling verified for both profile / no-profile
-- [ ] `./bin/dev pack` then run the AppHost on Linux; both resources Running; inspector shows clicks
-- [ ] Docs: hosting readme notes the explicit endpoint (and `Properties/` for external AppHosts)
-- [ ] `ganda repo audit` clean; build warning-free for touched projects; tests green
+- [x] `WithHttpEndpoint("http")` in `add-timewarp-state-dev-tools.cs`; Design region updated
+- [x] `git mv properties Properties` for DevTools app and sample-04-server (and 00-03 if cheap)
+- [x] Hosting test: endpoint exists without a seeded annotation
+- [x] `program.cs` environment handling verified for both profile / no-profile
+- [x] `./bin/dev pack` then run the AppHost on Linux; both resources Running; inspector shows clicks
+- [x] Docs: hosting readme notes the explicit endpoint (and `Properties/` for external AppHosts)
+- [x] `ganda repo audit` clean; build warning-free for touched projects; tests green
 
 ## Session
 
 - Created: 183858 (2026-10-12)
+- Implementation: grok 01a12c00-1bbe-7cb1-8593-1963f29d0f4e (2026-10-12)
+
+## Results
+
+`AddTimeWarpStateDevTools` declares the UI endpoint with `WithHttpEndpoint(name: "http")`. Aspire updates an endpoint of the same name, so a launch profile that already added `http` is not duplicated. Without a profile the resource still has an `http` endpoint and Aspire can set `ASPNETCORE_URLS`.
+
+`properties/` is now `Properties/` for the DevTools app, `sample-04-server`, and samples 00-03. Aspire reads launch settings only from that capital-P path, so the profile supplies `ASPNETCORE_ENVIRONMENT=Development` and the profile URL.
+
+`source/timewarp-state-devtools/program.cs` keeps the non-Development exception handler and calls `StaticWebAssetsLoader.UseStaticWebAssets` in every environment. With the profile applied the host runs as Development. Without it the host stays Production, skips the developer exception page, and still serves static web assets.
+
+Sample 04 calls `UseReduxDevTools()` so Development container validation can construct `CommitHandler`. The sample does not render the Redux DevTools component.
+
+### How to validate
+
+Smoke:
+
+1. `./bin/dev pack`
+2. `dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj`
+3. `aspire describe --apphost samples/04-telemetry/apphost/sample-04-apphost.csproj --format Json`
+4. Open the dashboard URL from the AppHost log. On the resources page, `timewarp-state-devtools` is Running and its link reads **TimeWarp.State DevTools**.
+5. Open the sample `http` URL `/counter` and click **Click me**. Open the DevTools link. The action list shows `IncrementCountActionSet.Action` for `CounterState`.
+
+Expect:
+
+- `aspire describe` reports `sample-04-server` and `timewarp-state-devtools` as Running. The DevTools URL object has `displayName` `TimeWarp.State DevTools` (this run: `http://localhost:5288`). The server URL is the `http` profile endpoint (this run: `http://localhost:5086`).
+- DevTools and server logs say `Hosting environment: Development`. DevTools is not stuck on Kestrel's default `http://localhost:5000` without `ASPNETCORE_URLS`.
+- The counter starts at 3. One click makes it 8, and the inspector shows that action as Ok.
+- `dotnet fixie timewarp-state-devtools-tests` passes. `DeclareTheHttpEndpointWithoutALaunchProfile` sees one `http` endpoint and a null port on a csproj that has no `Properties/launchSettings.json`. `LabelTheDashboardLinkAndPublishTheEndpoint` sees one `http` endpoint whose port stays 5288 when the in-repo profile is also applied.
+
+Linux check on 2026-10-12, after `./bin/dev pack`: both resources Running, dashboard link **TimeWarp.State DevTools**, counter 3 → 8, inspector row `IncrementCountActionSet.Action` / `CounterState`. DevTools tests: 30 passed. `./bin/dev test` completed successfully. `ganda repo audit` passed (one pre-existing advisory, `kebab-path-names`, unrelated to `Properties/`). Hosting and DevTools projects build with no warnings of their own.
 
 ## Notes
 

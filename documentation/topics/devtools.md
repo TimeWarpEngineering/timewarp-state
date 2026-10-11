@@ -25,7 +25,7 @@ builder.AddProject<Projects.MyApp>("my-app")
   .WithTimeWarpStateDevTools(devtools);
 ```
 
-`AddTimeWarpStateDevTools` finds `source/timewarp-state-devtools/timewarp-state-devtools.csproj` by walking up from the AppHost directory. Set `TIMEWARP_STATE_DEVTOOLS_PROJECT` when the AppHost is outside this repository.
+`AddTimeWarpStateDevTools` finds `source/timewarp-state-devtools/timewarp-state-devtools.csproj` by walking up from the AppHost directory. Set `TIMEWARP_STATE_DEVTOOLS_PROJECT` when the AppHost is outside this repository. It declares an HTTP endpoint named `http`, so the resource has an endpoint even when Aspire does not find `Properties/launchSettings.json`. An external checkout still needs that `Properties/` folder (capital P) for the Development launch profile.
 
 The DevTools app is not packed into this package. Outside this repository, set `TIMEWARP_STATE_DEVTOOLS_PROJECT` to the full path of a checkout's `source/timewarp-state-devtools/timewarp-state-devtools.csproj`; without it `AddTimeWarpStateDevTools` throws.
 
