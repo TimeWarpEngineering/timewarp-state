@@ -131,7 +131,7 @@ public sealed class DevToolsSpanExporter : BaseExporter<Activity>
       using HttpResponseMessage response = HttpClient.Send(request, CancellationToken.None);
       return response.IsSuccessStatusCode ? ExportResult.Success : ExportResult.Failure;
     }
-    catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or InvalidOperationException)
+    catch (Exception exception) when (exception is not OutOfMemoryException)
     {
       return ExportResult.Failure;
     }

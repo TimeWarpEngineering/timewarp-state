@@ -51,7 +51,6 @@ internal static class NuspecDependencyAllowList
       ["TimeWarp.State.DevTools.Hosting"] = new HashSet<string>(StringComparer.Ordinal)
       {
         "Aspire.Hosting",
-        "TimeWarp.State.DevTools.Export",
       },
     };
 

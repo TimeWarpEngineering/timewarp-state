@@ -23,7 +23,19 @@
       return;
     }
 
-    _ = InvokeAsync(SyncLogAsync);
+    _ = SyncLogSafeAsync();
+  }
+
+  private async Task SyncLogSafeAsync()
+  {
+    try
+    {
+      await InvokeAsync(SyncLogAsync);
+    }
+    catch (Exception exception) when (exception is ObjectDisposedException or InvalidOperationException)
+    {
+      // The circuit ended between the event and the dispatch. Nothing left to refresh.
+    }
   }
 
   private async Task SyncLogAsync()
@@ -99,6 +111,9 @@
   <p class="lede">Action log from the inspected app. This page's own actions stay out of the list.</p>
 </header>
 
+@{
+  IReadOnlyList<ActionLogEntry> visible = VisibleEntries();
+}
 <div class="toolbar">
   <label class="filter">
     <span>Filter</span>
@@ -110,22 +125,22 @@
       data-qa="filter" />
   </label>
   <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
-    @(InspectorState.Paused ? "Resume" : "Pause")
+    @(InspectorLog.IsPaused ? "Resume" : "Pause")
   </button>
   <button type="button" class="toolbar-button" @onclick="ClearLog" data-qa="clear">Clear</button>
-  <p class="count" data-qa="count">@VisibleEntries().Count()</p>
+  <p class="count" data-qa="count">@visible.Count</p>
 </div>
 
 <div class="workspace">
   <section class="log" aria-label="Action log">
-    @if (VisibleEntries().Count == 0)
+    @if (visible.Count == 0)
     {
       <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
     }
     else
     {
       <ul>
-        @foreach (ActionLogEntry entry in VisibleEntries())
+        @foreach (ActionLogEntry entry in visible)
         {
           <li>
             <button

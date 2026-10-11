@@ -20,6 +20,6 @@ builder.Services.AddOpenTelemetry()
   });
 ```
 
-When the variable is unset, `AddTimeWarpStateDevToolsExporter` does nothing.
+When the variable is unset or blank, `AddTimeWarpStateDevToolsExporter` does nothing. When it is set to a value that is not an absolute URI, it throws `InvalidOperationException`.
 
 Spans whose `timewarp.state.state_type` is `InspectorState`, or whose `timewarp.state.inspector` tag is `true`, are dropped so the inspector cannot log itself.

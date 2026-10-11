@@ -9,6 +9,7 @@
 global using System.Text.Json;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Http.Features;
 global using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.Mediator;

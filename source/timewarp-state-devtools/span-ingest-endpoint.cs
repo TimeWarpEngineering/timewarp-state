@@ -4,7 +4,9 @@
 
 #region Design
 // Does not dispatch. The circuit hears InspectorLog.Changed and dispatches NoteLogChanged on its
-// own store. InspectorCapture drops InspectorState here as well as in the exporter.
+// own store. InspectorCapture drops InspectorState here as well as in the exporter. The body is
+// untrusted: JSON content type only (415), 1 MiB cap including chunked bodies (413), null-safe
+// mapping, and snapshots capped at MaxSnapshotLength.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -16,6 +18,12 @@ public static class SpanIngestEndpoint
 {
   /// <summary>Maximum spans accepted from one body.</summary>
   public const int MaxSpansPerRequest = 512;
+
+  /// <summary>Maximum request body in bytes, enforced for chunked bodies too.</summary>
+  public const int MaxBodyBytes = 1_048_576;
+
+  /// <summary>Maximum stored snapshot length in characters. Longer snapshots are cut and marked truncated.</summary>
+  public const int MaxSnapshotLength = 65_536;
 
   /// <summary>
   /// Maps <c>POST /ingest/spans</c>.
@@ -33,9 +41,20 @@ public static class SpanIngestEndpoint
     CancellationToken cancellationToken
   )
   {
-    if (request.ContentLength is > 1_048_576)
+    if (!request.HasJsonContentType())
+    {
+      return Results.StatusCode(StatusCodes.Status415UnsupportedMediaType);
+    }
+
+    if (request.ContentLength is > MaxBodyBytes)
     {
       return Results.StatusCode(StatusCodes.Status413PayloadTooLarge);
+    }
+
+    IHttpMaxRequestBodySizeFeature? sizeFeature = request.HttpContext.Features.Get<IHttpMaxRequestBodySizeFeature>();
+    if (sizeFeature is { IsReadOnly: false })
+    {
+      sizeFeature.MaxRequestBodySize = MaxBodyBytes;
     }
 
     SpanIngestDocument? document;
@@ -52,18 +71,23 @@ public static class SpanIngestEndpoint
     {
       return Results.BadRequest();
     }
+    catch (BadHttpRequestException exception) when (exception.StatusCode == StatusCodes.Status413PayloadTooLarge)
+    {
+      return Results.StatusCode(StatusCodes.Status413PayloadTooLarge);
+    }
 
-    if (document is null)
+    IReadOnlyList<SpanIngestItem?>? spans = document?.Spans;
+    if (spans is null)
     {
       return Results.BadRequest();
     }
 
     int accepted = 0;
-    int limit = Math.Min(document.Spans.Count, MaxSpansPerRequest);
+    int limit = Math.Min(spans.Count, MaxSpansPerRequest);
     for (int index = 0; index < limit; index++)
     {
-      SpanIngestItem item = document.Spans[index];
-      if (!TryMap(item, out ActionLogEntry? entry))
+      SpanIngestItem? item = spans[index];
+      if (item is null || !TryMap(item, out ActionLogEntry? entry))
       {
         continue;
       }
@@ -89,7 +113,7 @@ public static class SpanIngestEndpoint
     string actionName = Attribute(item, InspectorCapture.ActionTagName);
     if (actionName.Length == 0)
     {
-      actionName = item.Name;
+      actionName = item.Name ?? "";
     }
 
     (string? snapshotJson, string? snapshotKind, bool snapshotTruncated) = LatestSnapshot(item);
@@ -100,13 +124,13 @@ public static class SpanIngestEndpoint
     entry = new ActionLogEntry
     {
       Sequence = 0,
-      Name = item.Name,
+      Name = item.Name ?? "",
       ActionName = actionName,
       StateTypeName = stateTypeName,
-      Status = item.Status,
+      Status = item.Status ?? "",
       DurationMilliseconds = item.DurationMilliseconds,
       StartTimeUtc = startTimeUtc,
-      SpanId = item.SpanId,
+      SpanId = item.SpanId ?? "",
       SnapshotJson = snapshotJson,
       SnapshotKind = snapshotKind,
       SnapshotTruncated = snapshotTruncated
@@ -116,7 +140,7 @@ public static class SpanIngestEndpoint
 
   private static string Attribute(SpanIngestItem item, string name)
   {
-    if (item.Attributes.TryGetValue(name, out string? value) && value is not null)
+    if (item.Attributes is not null && item.Attributes.TryGetValue(name, out string? value) && value is not null)
     {
       return value;
     }
@@ -129,8 +153,13 @@ public static class SpanIngestEndpoint
     string? json = null;
     string? kind = null;
     bool truncated = false;
-    foreach (SpanIngestEvent spanEvent in item.Events)
+    foreach (SpanIngestEvent? spanEvent in item.Events ?? [])
     {
+      if (spanEvent is null || spanEvent.Attributes is null)
+      {
+        continue;
+      }
+
       if
       (
         !string.Equals(spanEvent.Name, InspectorCapture.SnapshotEventName, StringComparison.Ordinal)
@@ -145,10 +174,15 @@ public static class SpanIngestEndpoint
         continue;
       }
 
-      json = eventJson;
+      json = eventJson ?? "";
       kind = spanEvent.Name;
       truncated = spanEvent.Attributes.TryGetValue(InspectorCapture.SnapshotTruncatedTagName, out string? truncatedText)
         && string.Equals(truncatedText, "true", StringComparison.OrdinalIgnoreCase);
+      if (json.Length > MaxSnapshotLength)
+      {
+        json = json[..MaxSnapshotLength];
+        truncated = true;
+      }
     }
 
     return (json, kind, truncated);

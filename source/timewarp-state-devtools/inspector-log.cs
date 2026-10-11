@@ -5,7 +5,8 @@
 #region Design
 // IStore is scoped. An ingest request and a circuit would otherwise each hold an empty log.
 // This mailbox is the one list both sides see. Add raises Changed outside the lock; the circuit
-// dispatches NoteLogChanged, which re-renders from Snapshot. Pause parks spans in Pending so they
+// dispatches NoteLogChanged, which re-renders from Snapshot. SetPaused and Clear raise Changed too,
+// so a second tab sees the shared pause flag and list. Pause parks spans in Pending so they
 // stay out of the displayed list until Resume flushes them. UI actions never call Add.
 #endregion
 
@@ -81,14 +82,22 @@ public sealed class InspectorLog
   }
 
   /// <summary>
-  /// Sets the pause flag. Does not move spans; <see cref="FlushPending"/> does that.
+  /// Sets the pause flag and raises <see cref="Changed"/> when the flag changed, so every circuit
+  /// refreshes its pause display. Does not move spans; <see cref="FlushPending"/> does that.
   /// </summary>
   public void SetPaused(bool paused)
   {
+    Action? changed = null;
     lock (Sync)
     {
-      Paused = paused;
+      if (Paused != paused)
+      {
+        Paused = paused;
+        changed = Changed;
+      }
     }
+
+    changed?.Invoke();
   }
 
   /// <summary>
@@ -116,16 +125,16 @@ public sealed class InspectorLog
   /// <summary>
   /// Drops visible spans and the pause buffer.
   /// </summary>
-  /// <param name="raiseChanged">When true and the visible list was non-empty, raises <see cref="Changed"/>.</param>
+  /// <param name="raiseChanged">When true and anything was dropped, raises <see cref="Changed"/> so every circuit refreshes.</param>
   public void Clear(bool raiseChanged)
   {
     Action? changed = null;
     lock (Sync)
     {
-      bool hadEntries = Entries.Count > 0;
+      bool hadAny = Entries.Count > 0 || Pending.Count > 0;
       Entries.Clear();
       Pending.Clear();
-      if (raiseChanged && hadEntries)
+      if (raiseChanged && hadAny)
       {
         changed = Changed;
       }

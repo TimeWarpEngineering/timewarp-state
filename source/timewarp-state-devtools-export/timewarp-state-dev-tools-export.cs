@@ -4,7 +4,8 @@
 
 #region Design
 // No-op when TIMEWARP_STATE_DEVTOOLS_ENDPOINT is unset, so a production host that references this
-// package by accident does not open a socket. The batch delay is short so the inspector stays
+// package by accident does not open a socket. A value that is set but not an absolute URI throws
+// InvalidOperationException: only the AppHost sets it, so a bad value is a wiring error to fail fast. The batch delay is short so the inspector stays
 // close to the click. Protocol is the dev-only JSON document, not OTLP.
 #endregion
 
@@ -23,11 +24,12 @@ public static class TimeWarpStateDevToolsExport
 
   /// <summary>
   /// Adds a batch processor that copies <c>TimeWarp.State</c> activities to DevTools.
-  /// Does nothing when <see cref="EndpointEnvironmentVariable"/> is unset or not an absolute URI.
+  /// Does nothing when <see cref="EndpointEnvironmentVariable"/> is unset or blank.
   /// </summary>
   /// <param name="builder">The tracer provider builder.</param>
   /// <returns>The same builder.</returns>
   /// <exception cref="ArgumentNullException"><paramref name="builder"/> is null.</exception>
+  /// <exception cref="InvalidOperationException"><see cref="EndpointEnvironmentVariable"/> is set but is not an absolute URI.</exception>
   public static TracerProviderBuilder AddTimeWarpStateDevToolsExporter(this TracerProviderBuilder builder)
   {
     ArgumentNullException.ThrowIfNull(builder);

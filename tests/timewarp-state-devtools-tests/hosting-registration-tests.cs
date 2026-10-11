@@ -72,7 +72,7 @@ public class AddTimeWarpStateDevTools_Should
       (await DashboardLabel(devtools.Resource)).ShouldBe(TimeWarpStateDevToolsHosting.DashboardLinkText);
 
       Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(server.Resource);
-      variables.ContainsKey(TimeWarpStateDevToolsExport.EndpointEnvironmentVariable).ShouldBeTrue();
+      variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeTrue();
     }
     finally
     {
@@ -124,5 +124,11 @@ public class AddTimeWarpStateDevTools_Should
     }
 
     return variables;
+  }
+
+  public static void ShareTheEndpointVariableNameWithTheExporter()
+  {
+    TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable
+      .ShouldBe(TimeWarpStateDevToolsExport.EndpointEnvironmentVariable);
   }
 }

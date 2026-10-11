@@ -13,7 +13,7 @@ The inspector uses TimeWarp.State for its own filter, selection, and pause. That
 
 `TimeWarp.State.Telemetry` emits spans on ActivitySource `TimeWarp.State`. `AddTimeWarpStateDevToolsExporter()` copies those spans to `POST /ingest/spans` as a small JSON document (name, tags, snapshot or diff events, status, duration). It is not an OTLP collector. Aspire's OTLP endpoint is unchanged, so the dashboard still receives traces.
 
-`WithTimeWarpStateDevTools` sets `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` on the inspected resource. When that variable is unset, the exporter does nothing.
+`WithTimeWarpStateDevTools` sets `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` on the inspected resource. When that variable is unset or blank, the exporter does nothing. A value that is not an absolute URI throws `InvalidOperationException`.
 
 There is no time-travel, commit, or import/export channel. Those stay on `UseReduxDevTools` until generated hydration exists.
 
@@ -26,6 +26,8 @@ builder.AddProject<Projects.MyApp>("my-app")
 ```
 
 `AddTimeWarpStateDevTools` finds `source/timewarp-state-devtools/timewarp-state-devtools.csproj` by walking up from the AppHost directory. Set `TIMEWARP_STATE_DEVTOOLS_PROJECT` when the AppHost is outside this repository.
+
+The DevTools app is not packed into this package. Outside this repository, set `TIMEWARP_STATE_DEVTOOLS_PROJECT` to the full path of a checkout's `source/timewarp-state-devtools/timewarp-state-devtools.csproj`; without it `AddTimeWarpStateDevTools` throws.
 
 In the inspected app:
 

@@ -14,14 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\timewarp-state-devtools-export\timewarp-state-devtools-export.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <InternalsVisibleTo Include="TimeWarp.State.DevTools.Hosting.Tests" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include=".\readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

@@ -3,8 +3,8 @@
 #endregion
 
 #region Design
-// Clear on InspectorLog does not raise Changed; this handler bumps Revision so the circuit
-// re-renders the empty snapshot. Selection is dropped with the rows.
+// Clear on InspectorLog raises Changed so other circuits refresh; this handler also bumps Revision so
+// this circuit re-renders the empty snapshot. Selection is dropped with the rows.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -25,7 +25,7 @@ partial class InspectorState
       /// <inheritdoc />
       public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        inspectorLog.Clear(raiseChanged: false);
+        inspectorLog.Clear(raiseChanged: true);
         InspectorState.SelectedSequence = 0;
         InspectorState.Revision++;
         return default;

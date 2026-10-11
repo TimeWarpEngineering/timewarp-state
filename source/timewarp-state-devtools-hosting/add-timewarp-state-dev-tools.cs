@@ -16,6 +16,12 @@ namespace TimeWarp.State.DevTools.Hosting;
 /// </summary>
 public static class TimeWarpStateDevToolsHosting
 {
+  /// <summary>
+  /// Environment variable that carries the DevTools origin to the inspected app. Must equal
+  /// <c>TimeWarpStateDevToolsExport.EndpointEnvironmentVariable</c>; a test asserts the match.
+  /// </summary>
+  public const string EndpointEnvironmentVariable = "TIMEWARP_STATE_DEVTOOLS_ENDPOINT";
+
   /// <summary>Default Aspire resource name.</summary>
   public const string DefaultResourceName = "timewarp-state-devtools";
 
@@ -58,7 +64,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
 
   /// <summary>
   /// Publishes the DevTools origin to <paramref name="builder"/> and waits for DevTools to start.
-  /// The inspected app reads <see cref="TimeWarpStateDevToolsExport.EndpointEnvironmentVariable"/>
+  /// The inspected app reads <see cref="TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable"/>
   /// and calls <c>AddTimeWarpStateDevToolsExporter</c>.
   /// </summary>
   /// <typeparam name="T">Inspected resource type.</typeparam>
@@ -78,7 +84,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
     return builder
       .WithEnvironment
       (
-        TimeWarpStateDevToolsExport.EndpointEnvironmentVariable,
+        TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable,
         devtools.GetEndpoint(TimeWarpStateDevToolsHosting.UiEndpointName)
       )
       .WaitFor(devtools);
