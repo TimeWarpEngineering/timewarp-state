@@ -75,6 +75,7 @@ From `kanban/done/097-proposal-source-generator-for-state-cloning-aot-friendly/t
 - [x] Sample AppHost wiring (e.g. extend `samples/04-telemetry`)
 - [x] Docs: topic page + readme; note on Redux DevTools deprecation path
 - [x] Code review
+- [x] Isolation tests restore in the pre-pack build filter (no sample PackageReference)
 
 ## Acceptance criteria
 
@@ -105,7 +106,7 @@ From `kanban/done/097-proposal-source-generator-for-state-cloning-aot-friendly/t
 
 ### Implementation
 
-`TimeWarp.State.DevTools.Export` posts captured `TimeWarp.State` activities to `POST /ingest/spans`. `TimeWarp.State.DevTools.Hosting` adds the Blazor project as resource `timewarp-state-devtools`, labels endpoint `http` "TimeWarp.State DevTools", and `WithTimeWarpStateDevTools` publishes `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` and waits for the resource. `samples/04-telemetry` wires both. The DevTools app is its own store. `InspectorCapture` drops inspector spans on export and on ingest. A separate test project references the sample and the exporter and does not reference the DevTools app, so `InspectorState` is absent from that process's clone registry and from the sample sender.
+`TimeWarp.State.DevTools.Export` posts captured `TimeWarp.State` activities to `POST /ingest/spans`. `TimeWarp.State.DevTools.Hosting` adds the Blazor project as resource `timewarp-state-devtools`, labels endpoint `http` "TimeWarp.State DevTools", and `WithTimeWarpStateDevTools` publishes `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` and waits for the resource. `samples/04-telemetry` wires both. The DevTools app is its own store. `InspectorCapture` drops inspector spans on export and on ingest. The isolation tests reference `tests/timewarp-state-devtools-inspected-app` and the exporter, not the DevTools app and not the telemetry sample. That fixture project-references `TimeWarp.State`, the clone generator, and the mediator generator, so the pre-pack build filter restores without a packed `TimeWarp.State` package. `InspectorState` is absent from that process's clone registry, and the fixture sender has no `Inspector` dispatch method. The sample stays on PackageReferences and is still omitted from `artifacts/timewarp-state.build.slnf`. `tools/dev-cli/endpoints/workflow-command.cs` runs assert-version-ssot, clean, build, test, e2e, pack, then verify-samples.
 
 The DevTools host calls `UseReduxDevTools` because referencing `TimeWarp.State.Blazor` links `CommitHandler`, and Development validates that constructor. The Redux DevTools component is not rendered, so `InitAsync` does not run. `MapStaticAssets` serves `_framework/blazor.web.js`. `StaticWebAssetsLoader.UseStaticWebAssets` attaches the manifest outside Development, where `dotnet run` otherwise looks for that script under `wwwroot`.
 
@@ -113,9 +114,9 @@ The DevTools host calls `UseReduxDevTools` because referencing `TimeWarp.State.B
 
 ### How to validate
 
-**Smoke:** `dotnet fixie timewarp-state-devtools-tests` and `dotnet fixie timewarp-state-devtools-isolation-tests`. From `samples/04-telemetry/apphost`, run the AppHost, open the Aspire dashboard, and follow the resource link "TimeWarp.State DevTools". Increment the sample counter. In DevTools, select the row, type in Filter, press Pause, increment again, press Resume, then Clear.
+**Smoke:** `dotnet fixie timewarp-state-devtools-tests` and `dotnet fixie timewarp-state-devtools-isolation-tests`. Restore `artifacts/timewarp-state.build.slnf` (the filter `dev build` writes, samples omitted) with nuget.org as the only package source. From `samples/04-telemetry/apphost`, run the AppHost, open the Aspire dashboard, and follow the resource link "TimeWarp.State DevTools". Increment the sample counter. In DevTools, select the row, type in Filter, press Pause, increment again, press Resume, then Clear.
 
-**Expect:** DevTools tests: 29 passed. Isolation tests: 4 passed. The dashboard resource is `timewarp-state-devtools` and the link text is "TimeWarp.State DevTools". Counter actions appear as rows; with the endpoint set, the selected row shows `state.snapshot` JSON. Filter, pause, resume, and clear change the inspector and add no rows named for those actions. A span posted while paused stays off the list until Resume. The isolation assembly's clone registry contains `CounterState` and no `InspectorState`, and the sample sender has no `Inspector` dispatch method.
+**Expect:** DevTools tests: 29 passed. Isolation tests: 4 passed. The nuget.org-only restore of the filter succeeds, and no project in that filter lists a `TimeWarp.State`, `TimeWarp.State.Blazor`, or `TimeWarp.State.Telemetry` package. The dashboard resource is `timewarp-state-devtools` and the link text is "TimeWarp.State DevTools". Counter actions appear as rows; with the endpoint set, the selected row shows `state.snapshot` JSON. Filter, pause, resume, and clear change the inspector and add no rows named for those actions. A span posted while paused stays off the list until Resume. The isolation assembly's clone registry contains `CounterState` and no `InspectorState`, and the inspected-app sender has no `Inspector` dispatch method.
 
 Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the static-asset path is the one Aspire uses when the environment is not Development): `blazor.web.js` returned 200, the circuit connected, a posted `IncrementCount` span rendered with snapshot `{"Count":4}`, an `InspectorState` span in the same body did not render, Filter `zzz` hid the row and `count` restored it, Pause held a second ingest off the list, Clear emptied the list, and the console had no errors at 390×844. The Aspire dashboard click itself was not exercised here; the hosting test invokes the URL callback and the environment callback without starting DCP.
 
@@ -136,17 +137,7 @@ Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the 
 
 ## Session
 
-- CI fix required before merge (2026-10-11). PR #635 run 38115759236 failed at the build stage with
-  NU1102: `tests/timewarp-state-devtools-isolation-tests` has a ProjectReference to
-  `samples/04-telemetry/server/sample-04-server`, which consumes `TimeWarp.State`, `TimeWarp.State.Blazor`,
-  and `TimeWarp.State.Telemetry` as PackageReferences pinned to 12.0.0-beta.11. CI fills the local feed only
-  at the pack stage (after build and test), so samples are excluded from the build filter; the isolation
-  tests drag the sample into the build stage where nuget.org has only beta.10 and LocalNuGetFeed is empty.
-  It restored locally because this worktree's local feed already had beta.11. Fix: decouple the isolation
-  tests from the sample project (reference source projects directly, or host a small test server of their
-  own) so `artifacts/timewarp-state.build.slnf` restores without packed TimeWarp.State packages. Confirm with
-  the CI pipeline order (`build -> test -> e2e -> pack -> verify-samples`), then push so CI on PR #635 is green.
-  Do not split this into a new task.
+- CI restore fix (2026-10-11). PR #635 run 38115759236 failed at build with NU1102 because the isolation tests project-referenced `samples/04-telemetry`, whose PackageReferences are `TimeWarp.State` 12.0.0-beta.11. The fixture `tests/timewarp-state-devtools-inspected-app` replaces that reference and project-references source. Pipeline order in `workflow-command.cs` is assert-version-ssot → clean → build → test → e2e → pack → verify-samples. A nuget.org-only restore of the 24-project build filter succeeded, with no `TimeWarp.State*` package in those assets. Isolation tests: 4 passed.
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: 2026-10-11 (implementer)

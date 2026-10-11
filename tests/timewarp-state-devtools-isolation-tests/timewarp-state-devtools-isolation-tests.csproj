@@ -9,11 +9,11 @@
     <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="TimeWarp.Fixie" />
-    <PackageReference Include="TimeWarp.State" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\samples\04-telemetry\server\sample-04-server\sample-04-server.csproj" />
+    <ProjectReference Include="..\timewarp-state-devtools-inspected-app\timewarp-state-devtools-inspected-app.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state\timewarp-state.csproj" />
     <ProjectReference Include="..\..\source\timewarp-state-devtools-export\timewarp-state-devtools-export.csproj" />
   </ItemGroup>
 

@@ -1,11 +1,13 @@
 #region Purpose
-// Proves the inspected sample does not clone or pipeline DevTools states.
+// Proves the inspected-app fixture does not clone or pipeline DevTools states.
 #endregion
 
 #region Design
-// This assembly references the sample and the exporter, not the DevTools app. Loading it runs the
-// sample's clone initializer and not the inspector's. The sample sender dispatches CounterState
-// through StateTransactionBehavior and has no InspectorState dispatch method.
+// This assembly references the inspected-app fixture and the exporter, not the DevTools app and not
+// the telemetry sample. The fixture project-references TimeWarp.State source, so restore does not
+// need a packed TimeWarp.State package. Loading it runs the fixture's clone initializer and not the
+// inspector's. The fixture sender dispatches CounterState through StateTransactionBehavior and has
+// no InspectorState dispatch method.
 #endregion
 
 namespace TimeWarp.State.DevTools.Isolation.Tests;
@@ -14,8 +16,8 @@ public class InspectedApp_Should
 {
   public static void NotReferenceTheDevToolsApp()
   {
-    Assembly sample = typeof(Program).Assembly;
-    string[] referenced = sample.GetReferencedAssemblies().Select(name => name.Name!).ToArray();
+    Assembly inspectedApp = typeof(Program).Assembly;
+    string[] referenced = inspectedApp.GetReferencedAssemblies().Select(name => name.Name!).ToArray();
     referenced.ShouldContain("TimeWarp.State.DevTools.Export");
     referenced.ShouldNotContain("TimeWarp.State.DevTools");
     referenced.ShouldContain("TimeWarp.State");
@@ -42,8 +44,8 @@ public class InspectedApp_Should
   public static void RunCounterActionsThroughStateTransactionBehaviorAndNotInspectorActions()
   {
     IReadOnlyList<string> methods = MethodNames(typeof(Program).Assembly.Location);
-    methods.ShouldContain("Dispatch_global__Sample04Server_Features_Counter_CounterState_IncrementCountActionSet_Action");
-    methods.ShouldContain(name => name.Contains("Clone_Sample04Server_Features_Counter_CounterState", StringComparison.Ordinal));
+    methods.ShouldContain("Dispatch_global__InspectedApp_Features_Counter_CounterState_IncrementCountActionSet_Action");
+    methods.ShouldContain(name => name.Contains("Clone_InspectedApp_Features_Counter_CounterState", StringComparison.Ordinal));
     methods.ShouldNotContain(name => name.Contains("Inspector", StringComparison.Ordinal));
 
     using FileStream stream = File.OpenRead(typeof(Program).Assembly.Location);

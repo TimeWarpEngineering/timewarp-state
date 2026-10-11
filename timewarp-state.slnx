@@ -102,6 +102,9 @@
     </Project>
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="tests/timewarp-state-devtools-inspected-app/timewarp-state-devtools-inspected-app.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
     <Project Path="tests/timewarp-state-devtools-isolation-tests/timewarp-state-devtools-isolation-tests.csproj">
       <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
     </Project>
