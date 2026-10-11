@@ -97,6 +97,24 @@ public class InspectorLoop_Should
     methods.ShouldContain(name => name.Contains("Clone_TimeWarp_State_DevTools_Features_Inspector_InspectorState", StringComparison.Ordinal));
   }
 
+  public static async Task ToggleFromTheSharedPauseFlag()
+  {
+    await using WebApplicationFactory<Program> factory = new();
+    InspectorLog log = factory.Services.GetRequiredService<InspectorLog>();
+
+    using IServiceScope tabA = factory.Services.CreateScope();
+    using IServiceScope tabB = factory.Services.CreateScope();
+    ISender<ClientPipeline> senderA = tabA.ServiceProvider.GetRequiredService<ISender<ClientPipeline>>();
+    ISender<ClientPipeline> senderB = tabB.ServiceProvider.GetRequiredService<ISender<ClientPipeline>>();
+
+    await senderA.Send(new InspectorState.TogglePauseActionSet.Action());
+    log.IsPaused.ShouldBeTrue();
+
+    await senderB.Send(new InspectorState.TogglePauseActionSet.Action());
+    log.IsPaused.ShouldBeFalse();
+    tabB.ServiceProvider.GetRequiredService<IStore>().GetState<InspectorState>().Paused.ShouldBeFalse();
+  }
+
   private static List<string> Names(InspectorLog log) =>
     log.Snapshot().Select(entry => entry.ActionName).ToList();
 

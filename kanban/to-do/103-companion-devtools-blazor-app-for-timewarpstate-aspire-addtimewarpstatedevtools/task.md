@@ -74,7 +74,7 @@ From `kanban/done/097-proposal-source-generator-for-state-cloning-aot-friendly/t
 - [x] Inspector states not in the app's clone registry / transaction pipeline (test)
 - [x] Sample AppHost wiring (e.g. extend `samples/04-telemetry`)
 - [x] Docs: topic page + readme; note on Redux DevTools deprecation path
-- [ ] Code review
+- [x] Code review
 
 ## Acceptance criteria
 
@@ -115,14 +115,30 @@ The DevTools host calls `UseReduxDevTools` because referencing `TimeWarp.State.B
 
 **Smoke:** `dotnet fixie timewarp-state-devtools-tests` and `dotnet fixie timewarp-state-devtools-isolation-tests`. From `samples/04-telemetry/apphost`, run the AppHost, open the Aspire dashboard, and follow the resource link "TimeWarp.State DevTools". Increment the sample counter. In DevTools, select the row, type in Filter, press Pause, increment again, press Resume, then Clear.
 
-**Expect:** DevTools tests: 17 passed. Isolation tests: 4 passed. The dashboard resource is `timewarp-state-devtools` and the link text is "TimeWarp.State DevTools". Counter actions appear as rows; with the endpoint set, the selected row shows `state.snapshot` JSON. Filter, pause, resume, and clear change the inspector and add no rows named for those actions. A span posted while paused stays off the list until Resume. The isolation assembly's clone registry contains `CounterState` and no `InspectorState`, and the sample sender has no `Inspector` dispatch method.
+**Expect:** DevTools tests: 29 passed. Isolation tests: 4 passed. The dashboard resource is `timewarp-state-devtools` and the link text is "TimeWarp.State DevTools". Counter actions appear as rows; with the endpoint set, the selected row shows `state.snapshot` JSON. Filter, pause, resume, and clear change the inspector and add no rows named for those actions. A span posted while paused stays off the list until Resume. The isolation assembly's clone registry contains `CounterState` and no `InspectorState`, and the sample sender has no `Inspector` dispatch method.
 
 Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the static-asset path is the one Aspire uses when the environment is not Development): `blazor.web.js` returned 200, the circuit connected, a posted `IncrementCount` span rendered with snapshot `{"Count":4}`, an `InspectorState` span in the same body did not render, Filter `zzz` hid the row and `count` restored it, Pause held a second ingest off the list, Clear emptied the list, and the console had no errors at 390×844. The Aspire dashboard click itself was not exercised here; the hosting test invokes the URL callback and the environment callback without starting DCP.
+
+### Review disposition
+
+- **Rounds:** 2. **Effort:** 3 (by-diff, 2893 lines). **Roster:** general (Claude Sonnet subagent). The orchestrator was the review oracle (Claude Opus 5.5, headless `ganda task work`).
+- **Final counts (round 2):** bug 3 fixed, suggestion 5 fixed, nit 3 fixed. 0 open, 0 wontfix.
+- **Disposition:** `clean`.
+- **Main fixes:**
+  - Ingest now tolerates null fields, rejects non-JSON content with 415, enforces 1 MiB even for chunked bodies (413), and caps snapshots at 64 Ki characters.
+  - The exporter doc now matches its throw on a bad endpoint, and its catch is wider.
+  - `InspectorLog` notifies every circuit when pause or clear changes, and the toggle reads the shared flag.
+  - The page computes visible entries once per render.
+  - Hosting no longer references Export or OpenTelemetry, and the docs say the app is not packed.
+  - New `InspectorLog` and ingest tests.
+- **Remaining:** the isolation test still reads the private `StateCloneRegistry.Cloners` field by reflection. Adding an accessor to `TimeWarp.State` is outside this task.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/disposition.md`.
 
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: 2026-10-11 (implementer)
+- Review: 2026-10-11 (review oracle, Claude Opus 5.5; general reviewer subagents; 2 rounds, clean)
 
 ## Notes
 

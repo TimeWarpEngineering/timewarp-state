@@ -3,8 +3,9 @@
 #endregion
 
 #region Design
-// The pause flag is on both InspectorState (the circuit) and InspectorLog (ingest). Resume flushes
-// the buffer onto the visible list. The handler bumps Revision so the circuit re-renders even when
+// InspectorLog owns the pause flag; it is process-wide, so the toggle reads it rather than this
+// circuit's copy, which another tab may have left stale. InspectorState.Paused mirrors it. Resume
+// flushes the buffer onto the visible list. The handler bumps Revision so the circuit re-renders even when
 // FlushPending raises Changed on this same turn.
 #endregion
 
@@ -26,7 +27,7 @@ partial class InspectorState
       /// <inheritdoc />
       public override ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        bool paused = !InspectorState.Paused;
+        bool paused = !inspectorLog.IsPaused;
         InspectorState.Paused = paused;
         inspectorLog.SetPaused(paused);
         if (!paused)

@@ -5,8 +5,8 @@
 #region Design
 // No-op when TIMEWARP_STATE_DEVTOOLS_ENDPOINT is unset, so a production host that references this
 // package by accident does not open a socket. A value that is set but not an absolute URI throws
-// InvalidOperationException: only the AppHost sets it, so a bad value is a wiring error to fail fast. The batch delay is short so the inspector stays
-// close to the click. Protocol is the dev-only JSON document, not OTLP.
+// InvalidOperationException: only the AppHost sets it, so a bad value is a wiring error to fail
+// fast. The batch delay is short so the inspector stays close to the click. Protocol is the dev-only JSON document, not OTLP.
 #endregion
 
 namespace TimeWarp.State.DevTools.Export;
