@@ -136,6 +136,18 @@ Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the 
 
 ## Session
 
+- CI fix required before merge (2026-10-11). PR #635 run 38115759236 failed at the build stage with
+  NU1102: `tests/timewarp-state-devtools-isolation-tests` has a ProjectReference to
+  `samples/04-telemetry/server/sample-04-server`, which consumes `TimeWarp.State`, `TimeWarp.State.Blazor`,
+  and `TimeWarp.State.Telemetry` as PackageReferences pinned to 12.0.0-beta.11. CI fills the local feed only
+  at the pack stage (after build and test), so samples are excluded from the build filter; the isolation
+  tests drag the sample into the build stage where nuget.org has only beta.10 and LocalNuGetFeed is empty.
+  It restored locally because this worktree's local feed already had beta.11. Fix: decouple the isolation
+  tests from the sample project (reference source projects directly, or host a small test server of their
+  own) so `artifacts/timewarp-state.build.slnf` restores without packed TimeWarp.State packages. Confirm with
+  the CI pipeline order (`build -> test -> e2e -> pack -> verify-samples`), then push so CI on PR #635 is green.
+  Do not split this into a new task.
+
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: 2026-10-11 (implementer)
 - Review: 2026-10-11 (review oracle, Claude Opus 5.5; general reviewer subagents; 2 rounds, clean)
