@@ -122,8 +122,9 @@ Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the 
 
 ### Review disposition
 
-- **Rounds:** 2. **Effort:** 3 (by-diff, 2893 lines). **Roster:** general (Claude Sonnet subagent). The orchestrator was the review oracle (Claude Opus 5.5, headless `ganda task work`).
-- **Final counts (round 2):** bug 3 fixed, suggestion 5 fixed, nit 3 fixed. 0 open, 0 wontfix.
+- **Rounds:** 3. **Effort:** 3 (by-diff: 2893 lines in rounds 1–2, 3842 lines in round 3). **Roster:** general (Claude Sonnet subagent). The orchestrator was the review oracle (Claude Opus 5.5, headless `ganda task work`).
+- **Round 3:** re-review of the PR #635 NU1102 fix (`fdb92fda..03d4d931`, the inspected-app fixture). No new findings. Isolation tests: 4 passed.
+- **Final counts (round 3):** bug 3 fixed, suggestion 5 fixed, nit 3 fixed. 0 open, 0 wontfix.
 - **Disposition:** `clean`.
 - **Main fixes:**
   - Ingest now tolerates null fields, rejects non-JSON content with 415, enforces 1 MiB even for chunked bodies (413), and caps snapshots at 64 Ki characters.
@@ -133,7 +134,7 @@ Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the 
   - Hosting no longer references Export or OpenTelemetry, and the docs say the app is not packed.
   - New `InspectorLog` and ingest tests.
 - **Remaining:** the isolation test still reads the private `StateCloneRegistry.Cloners` field by reflection. Adding an accessor to `TimeWarp.State` is outside this task.
-- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/disposition.md`.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/{general,merged}.md`, `review/round-2/{general,merged}.md`, `review/round-3/{general,merged}.md`, `review/disposition.md`.
 
 ## Session
 
@@ -142,6 +143,7 @@ Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
 - Implementation: 2026-10-11 (implementer)
 - Review: 2026-10-11 (review oracle, Claude Opus 5.5; general reviewer subagents; 2 rounds, clean)
+- Review round 3: 2026-10-11 (review oracle, Claude Opus 5.5, headless; re-review of the NU1102 fix delta; clean)
 - Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-11T05:43:31Z
 - Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-11T07:52:17Z
 

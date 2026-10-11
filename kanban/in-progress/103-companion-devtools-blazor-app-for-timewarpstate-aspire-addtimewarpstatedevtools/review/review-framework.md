@@ -2,7 +2,7 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 3697
+- Lines changed: 3842
 - Effort: 3
 - TCB hits: none
 - Roster axes: general
