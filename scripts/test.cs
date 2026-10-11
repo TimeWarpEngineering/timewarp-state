@@ -9,8 +9,9 @@
 #endregion
 
 #region Design
-// Restores local tools, then for each suite (analyzer, source generator, state, plus, telemetry, client
-// integration, architecture) builds the project and runs dotnet fixie. RunStep names the failing suite and
+// Restores local tools, then for each suite (analyzer, source generator, state, plus, telemetry,
+// devtools, devtools isolation, client integration, architecture) builds the project and runs
+// dotnet fixie. RunStep names the failing suite and
 // exits 1, whether Amuru throws or returns a non-zero code.
 #endregion
 
@@ -75,6 +76,22 @@ static class App
 
   await RunStep("Run telemetry tests", () => Shell.Builder("dotnet")
     .WithArguments("fixie", "timewarp-state-telemetry-tests")
+    .RunAsync());
+
+  await RunStep("Build devtools tests", () => DotNet.Build()
+    .WithProject("./tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj")
+    .RunAsync());
+
+  await RunStep("Run devtools tests", () => Shell.Builder("dotnet")
+    .WithArguments("fixie", "timewarp-state-devtools-tests")
+    .RunAsync());
+
+  await RunStep("Build devtools isolation tests", () => DotNet.Build()
+    .WithProject("./tests/timewarp-state-devtools-isolation-tests/timewarp-state-devtools-isolation-tests.csproj")
+    .RunAsync());
+
+  await RunStep("Run devtools isolation tests", () => Shell.Builder("dotnet")
+    .WithArguments("fixie", "timewarp-state-devtools-isolation-tests")
     .RunAsync());
 
   await RunStep("Build client integration tests", () => DotNet.Build()

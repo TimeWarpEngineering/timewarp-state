@@ -3,7 +3,9 @@ uid: TimeWarpState:AddReduxDevTools.md
 title: Add Redux Dev Tools
 ---
 
-For the **observation** half (action log, timing, snapshots) without the browser extension, use [TimeWarp.State.Telemetry](xref:TimeWarpState:Telemetry.md) and the Aspire dashboard. Keep Redux Dev Tools when you still need time-travel / commit / import-export.
+For the **observation** half (action log, timing, snapshots) without the browser extension, use [TimeWarp.State.Telemetry](xref:TimeWarpState:Telemetry.md) and the [DevTools app](xref:TimeWarpState:DevTools.md). The AppHost calls `AddTimeWarpStateDevTools()`, and the Aspire dashboard links to that resource.
+
+Keep Redux Dev Tools when you still need time-travel, commit, or import/export. That control surface stays until generated hydration replaces it. This does not obsolete `UseReduxDevTools`.
 
 ## Add Redux Dev Tools to your project
 

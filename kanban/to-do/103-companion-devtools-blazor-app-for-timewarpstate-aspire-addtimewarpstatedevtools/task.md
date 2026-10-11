@@ -67,13 +67,13 @@ From `kanban/done/097-proposal-source-generator-for-state-cloning-aot-friendly/t
 
 ## Checklist
 
-- [ ] Design: transport, package layout, separate-store vs filter decision (record in Results before code)
-- [ ] `AddTimeWarpStateDevTools()` Aspire hosting integration (resource + dashboard link)
-- [ ] DevTools Blazor app: action log and state view, using its own TimeWarp.State store
-- [ ] Recursion guard: inspector actions excluded from capture (test)
-- [ ] Inspector states not in the app's clone registry / transaction pipeline (test)
-- [ ] Sample AppHost wiring (e.g. extend `samples/04-telemetry`)
-- [ ] Docs: topic page + readme; note on Redux DevTools deprecation path
+- [x] Design: transport, package layout, separate-store vs filter decision (record in Results before code)
+- [x] `AddTimeWarpStateDevTools()` Aspire hosting integration (resource + dashboard link)
+- [x] DevTools Blazor app: action log and state view, using its own TimeWarp.State store
+- [x] Recursion guard: inspector actions excluded from capture (test)
+- [x] Inspector states not in the app's clone registry / transaction pipeline (test)
+- [x] Sample AppHost wiring (e.g. extend `samples/04-telemetry`)
+- [x] Docs: topic page + readme; note on Redux DevTools deprecation path
 - [ ] Code review
 
 ## Acceptance criteria
@@ -87,9 +87,42 @@ From `kanban/done/097-proposal-source-generator-for-state-cloning-aot-friendly/t
 - `TimeWarp.State` gains no reflection or new IL2xxx/IL3xxx warnings.
 - Build warning-free for new projects, tests green, `ganda repo audit` clean.
 
+## Results
+
+### Design (recorded before code)
+
+**Transport.** Observation only, from the `TimeWarp.State` ActivitySource (`TimeWarp.State.Telemetry`). The pinned OpenTelemetry exporter (1.19.1) speaks gRPC and HTTP/protobuf, so DevTools does not embed a protobuf decoder and is not a general OTLP backend. `AddTimeWarpStateDevToolsExporter()` copies completed `TimeWarp.State` activities (name, tags, snapshot or diff events, status, duration) to `POST /ingest/spans` as a small JSON document. The AppHost sets `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` to the DevTools HTTP endpoint. No control channel: time-travel, commit, and import/export stay out (task 104 / 109) and `TimeWarp.State` gains no reflection.
+
+**Packages (this repo).**
+
+- `TimeWarp.State.DevTools.Export` — dev-only exporter. No `IState` types, so the inspected app can reference it without registering inspector states.
+- `TimeWarp.State.DevTools` — Blazor Server app. Not packed. Not referenced by production packages or by the inspected app.
+- `TimeWarp.State.DevTools.Hosting` — `AddTimeWarpStateDevTools()` and `WithTimeWarpStateDevTools()`. Finds `source/timewarp-state-devtools/timewarp-state-devtools.csproj` by walking up from the AppHost, or `TIMEWARP_STATE_DEVTOOLS_PROJECT`. The HTTP endpoint is labeled "TimeWarp.State DevTools" on the Aspire dashboard.
+
+**Separate store, plus a capture filter.** The inspector is another process with its own store. Its states are registered only by its own compilation's clone generator. The inspected app does not reference the DevTools assembly, so those states are not in its `StateCloneRegistry` and its actions are not woven into the app's `StateTransactionBehavior`. `InspectorCapture` also drops `timewarp.state.state_type=InspectorState` and `timewarp.state.inspector=true` on the exporter and on ingest, so a miswired export cannot loop. The DevTools host does not reference `TimeWarp.State.Telemetry` and does not call the exporter. UI state (filter, selection, pause, revision) is `InspectorState`. The span list is a process-wide mailbox (`InspectorLog`) because ingest is an HTTP request scope and the Blazor circuit is another scope; the circuit copies the mailbox into a re-render by dispatching `NoteLogChanged`.
+
+**Redux DevTools.** Observation moves to telemetry plus this app. `UseReduxDevTools` stays for time-travel, commit, and import/export until generated hydration (task 104) or that surface is removed (task 109). This change does not obsolete it.
+
+### Implementation
+
+`TimeWarp.State.DevTools.Export` posts captured `TimeWarp.State` activities to `POST /ingest/spans`. `TimeWarp.State.DevTools.Hosting` adds the Blazor project as resource `timewarp-state-devtools`, labels endpoint `http` "TimeWarp.State DevTools", and `WithTimeWarpStateDevTools` publishes `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` and waits for the resource. `samples/04-telemetry` wires both. The DevTools app is its own store. `InspectorCapture` drops inspector spans on export and on ingest. A separate test project references the sample and the exporter and does not reference the DevTools app, so `InspectorState` is absent from that process's clone registry and from the sample sender.
+
+The DevTools host calls `UseReduxDevTools` because referencing `TimeWarp.State.Blazor` links `CommitHandler`, and Development validates that constructor. The Redux DevTools component is not rendered, so `InitAsync` does not run. `MapStaticAssets` serves `_framework/blazor.web.js`. `StaticWebAssetsLoader.UseStaticWebAssets` attaches the manifest outside Development, where `dotnet run` otherwise looks for that script under `wwwroot`.
+
+`TimeWarp.State` was not edited. Export and Hosting are the new packable packages, at the repo version `12.0.0-beta.11`. The Blazor app is not packed.
+
+### How to validate
+
+**Smoke:** `dotnet fixie timewarp-state-devtools-tests` and `dotnet fixie timewarp-state-devtools-isolation-tests`. From `samples/04-telemetry/apphost`, run the AppHost, open the Aspire dashboard, and follow the resource link "TimeWarp.State DevTools". Increment the sample counter. In DevTools, select the row, type in Filter, press Pause, increment again, press Resume, then Clear.
+
+**Expect:** DevTools tests: 17 passed. Isolation tests: 4 passed. The dashboard resource is `timewarp-state-devtools` and the link text is "TimeWarp.State DevTools". Counter actions appear as rows; with the endpoint set, the selected row shows `state.snapshot` JSON. Filter, pause, resume, and clear change the inspector and add no rows named for those actions. A span posted while paused stays off the list until Resume. The isolation assembly's clone registry contains `CounterState` and no `InspectorState`, and the sample sender has no `Inspector` dispatch method.
+
+Browser check on 2026-10-11 against `http://127.0.0.1:5288` (Production, so the static-asset path is the one Aspire uses when the environment is not Development): `blazor.web.js` returned 200, the circuit connected, a posted `IncrementCount` span rendered with snapshot `{"Count":4}`, an `InspectorState` span in the same body did not render, Filter `zzz` hid the row and `count` restored it, Pause held a second ingest off the list, Clear emptied the list, and the console had no errors at 390×844. The Aspire dashboard click itself was not exercised here; the hosting test invokes the URL callback and the environment callback without starting DCP.
+
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implementation: 2026-10-11 (implementer)
 
 ## Notes
 

@@ -3,10 +3,12 @@
 #endregion
 
 #region Design
-// Top-level statements: adds the sample-04-server project (Projects.sample_04_server) to the distributed
-// application and runs it.
+// Adds the sample server and the DevTools Blazor app. WithTimeWarpStateDevTools publishes the
+// DevTools origin so the server can export TimeWarp.State activities to the inspector.
 #endregion
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
-builder.AddProject<Projects.sample_04_server>("sample-04-server");
+IResourceBuilder<ProjectResource> devtools = builder.AddTimeWarpStateDevTools();
+builder.AddProject<Projects.sample_04_server>("sample-04-server")
+  .WithTimeWarpStateDevTools(devtools);
 builder.Build().Run();

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-devtools-export\timewarp-state-devtools-export.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="TimeWarp.State" />
     <PackageReference Include="TimeWarp.State.Blazor" />
     <PackageReference Include="TimeWarp.State.Telemetry" />

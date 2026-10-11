@@ -17,6 +17,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\server\sample-04-server\sample-04-server.csproj" />
+    <ProjectReference
+      Include="..\..\..\source\timewarp-state-devtools-hosting\timewarp-state-devtools-hosting.csproj"
+      IsAspireProjectResource="false" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,30 @@
+@namespace TimeWarp.State.DevTools.Components.Pages
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Http
+@code {
+  [CascadingParameter]
+  private HttpContext? HttpContext { get; set; }
+
+  private string? RequestId { get; set; }
+
+  private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+  protected override void OnInitialized() =>
+    RequestId = HttpContext?.TraceIdentifier;
+}
+
+@page "/Error"
+
+<PageTitle>Error</PageTitle>
+
+<header class="mast">
+  <div>
+    <p class="eyebrow">TimeWarp.State</p>
+    <h1>DevTools</h1>
+  </div>
+</header>
+<p class="lede">Something went wrong while handling that request.</p>
+@if (ShowRequestId)
+{
+  <p class="meta">Request ID: <code>@RequestId</code></p>
+}

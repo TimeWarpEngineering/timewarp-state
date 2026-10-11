@@ -44,6 +44,15 @@ internal static class NuspecDependencyAllowList
         "Shouldly",
         "TimeWarp.State",
       },
+      ["TimeWarp.State.DevTools.Export"] = new HashSet<string>(StringComparer.Ordinal)
+      {
+        "OpenTelemetry",
+      },
+      ["TimeWarp.State.DevTools.Hosting"] = new HashSet<string>(StringComparer.Ordinal)
+      {
+        "Aspire.Hosting",
+        "TimeWarp.State.DevTools.Export",
+      },
     };
 
   internal static IReadOnlyList<string> ReadDependencyIds(string nuspecXml) =>
