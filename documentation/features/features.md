@@ -18,8 +18,8 @@ title: Features
 
 # Roadmap
 * Action Based Cloning. To reduce the size of the clone based on the action.
-* TimeWarp.State DevTools
-  * Event Stream
+* TimeWarp.State DevTools companion app (action log and state snapshots). See [DevTools](xref:TimeWarpState:DevTools.md).
+  * Event Stream beyond the action log
   * Console and CLI
   * Object Inspector
   * Middleware Viewer

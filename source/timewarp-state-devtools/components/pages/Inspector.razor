@@ -1,0 +1,189 @@
+@namespace TimeWarp.State.DevTools.Components.Pages
+@page "/"
+@rendermode InteractiveServer
+@inherits TimeWarpStateComponent
+@implements IDisposable
+
+@code {
+  [Inject] private InspectorLog InspectorLog { get; set; } = null!;
+
+  private int Disposed;
+
+  private InspectorState InspectorState => GetState<InspectorState>();
+
+  protected override void OnInitialized()
+  {
+    InspectorLog.Changed += OnLogChanged;
+  }
+
+  private void OnLogChanged()
+  {
+    if (Volatile.Read(ref Disposed) != 0)
+    {
+      return;
+    }
+
+    _ = SyncLogSafeAsync();
+  }
+
+  private async Task SyncLogSafeAsync()
+  {
+    try
+    {
+      await InvokeAsync(SyncLogAsync);
+    }
+    catch (Exception exception) when (exception is ObjectDisposedException or InvalidOperationException)
+    {
+      // The circuit ended between the event and the dispatch. Nothing left to refresh.
+    }
+  }
+
+  private async Task SyncLogAsync()
+  {
+    await InspectorState.NoteLogChanged();
+  }
+
+  private async Task OnFilter(ChangeEventArgs changeEventArgs)
+  {
+    await InspectorState.SetFilter(changeEventArgs.Value?.ToString() ?? "");
+  }
+
+  private async Task Select(long sequence)
+  {
+    await InspectorState.SelectEntry(sequence);
+  }
+
+  private async Task TogglePause()
+  {
+    await InspectorState.TogglePause();
+  }
+
+  private async Task ClearLog()
+  {
+    await InspectorState.ClearLog();
+  }
+
+  public override void Dispose()
+  {
+    if (Interlocked.Exchange(ref Disposed, 1) != 0)
+    {
+      return;
+    }
+
+    InspectorLog.Changed -= OnLogChanged;
+    base.Dispose();
+  }
+
+  private IReadOnlyList<ActionLogEntry> VisibleEntries()
+  {
+    IReadOnlyList<ActionLogEntry> entries = InspectorLog.Snapshot();
+    string filter = InspectorState.Filter.Trim();
+    if (filter.Length == 0)
+    {
+      return entries;
+    }
+
+    return entries
+      .Where(entry =>
+        entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)
+        || entry.ActionName.Contains(filter, StringComparison.OrdinalIgnoreCase)
+        || entry.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase))
+      .ToArray();
+  }
+
+  private ActionLogEntry? SelectedEntry()
+  {
+    long sequence = InspectorState.SelectedSequence;
+    if (sequence == 0)
+    {
+      return null;
+    }
+
+    return InspectorLog.Snapshot().FirstOrDefault(entry => entry.Sequence == sequence);
+  }
+}
+
+<header class="mast">
+  <div>
+    <p class="eyebrow">TimeWarp.State</p>
+    <h1>DevTools</h1>
+  </div>
+  <p class="lede">Action log from the inspected app. This page's own actions stay out of the list.</p>
+</header>
+
+@{
+  IReadOnlyList<ActionLogEntry> visible = VisibleEntries();
+}
+<div class="toolbar">
+  <label class="filter">
+    <span>Filter</span>
+    <input
+      type="search"
+      value="@InspectorState.Filter"
+      @oninput="OnFilter"
+      placeholder="Action or state"
+      data-qa="filter" />
+  </label>
+  <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
+    @(InspectorLog.IsPaused ? "Resume" : "Pause")
+  </button>
+  <button type="button" class="toolbar-button" @onclick="ClearLog" data-qa="clear">Clear</button>
+  <p class="count" data-qa="count">@visible.Count</p>
+</div>
+
+<div class="workspace">
+  <section class="log" aria-label="Action log">
+    @if (visible.Count == 0)
+    {
+      <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
+    }
+    else
+    {
+      <ul>
+        @foreach (ActionLogEntry entry in visible)
+        {
+          <li>
+            <button
+              type="button"
+              class="@(entry.Sequence == InspectorState.SelectedSequence ? "row selected" : "row")"
+              @onclick="() => Select(entry.Sequence)"
+              data-qa="row">
+              <span class="when">@entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</span>
+              <span class="action">@entry.ActionName</span>
+              <span class="state">@entry.StateTypeName</span>
+              <span class="duration">@entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</span>
+              <span class="status @entry.Status.ToLowerInvariant()">@entry.Status</span>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="detail" aria-label="State" data-qa="detail">
+    @{
+      ActionLogEntry? selected = SelectedEntry();
+    }
+    @if (selected is null)
+    {
+      <p class="empty">Select an action to see its state snapshot.</p>
+    }
+    else
+    {
+      <h2>@selected.ActionName</h2>
+      <p class="meta">@selected.Name</p>
+      @if (string.IsNullOrEmpty(selected.SnapshotJson))
+      {
+        <p class="empty">No snapshot on this span. Enable IncludeSnapshots on the inspected app.</p>
+      }
+      else
+      {
+        <p class="meta">
+          @(selected.SnapshotKind ?? "state")
+          @(selected.SnapshotTruncated ? " (truncated)" : "")
+        </p>
+        <pre data-qa="snapshot">@selected.SnapshotJson</pre>
+      }
+    }
+  </section>
+</div>

@@ -8,6 +8,9 @@
 | `TimeWarp.State.Blazor` | `source/timewarp-state-blazor` | `TimeWarpStateComponent`, `TimeWarpStateInputComponent`, `TimeWarpStateDevComponent`, `RenderModeDisplay`, `ReduxDevTools`, `TimeWarpJavaScriptInterop`, JavaScript dispatch, Redux DevTools interop and behavior (order 100), render subscriptions (order 400), `wwwroot` scripts. Static web assets stay at `_content/TimeWarp.State/`. `IsAotCompatible`. Does not register `HttpClient`. |
 | `TimeWarp.State.Plus` | `source/timewarp-state-plus` | Routing, persistence, action tracking. Package id is not renamed. Depends on `TimeWarp.State` and `TimeWarp.State.Blazor`. `IsAotCompatible`. `AddTimeWarpStatePersistence()` registers `IPersistenceService`. |
 | `TimeWarp.State.Telemetry` | `source/timewarp-state-telemetry` | OpenTelemetry action spans. Depends on `TimeWarp.State` only. Behavior order 350. `IsAotCompatible`. |
+| `TimeWarp.State.DevTools.Export` | `source/timewarp-state-devtools-export` | Dev-only exporter. Copies `TimeWarp.State` activities to the inspector. No `IState` types. |
+| `TimeWarp.State.DevTools.Hosting` | `source/timewarp-state-devtools-hosting` | Aspire `AddTimeWarpStateDevTools()` / `WithTimeWarpStateDevTools()`. |
+| `TimeWarp.State.DevTools` | `source/timewarp-state-devtools` | Blazor Server inspector. Not packed. Own store. Not referenced by production packages. |
 
 Blazor hosts:
 

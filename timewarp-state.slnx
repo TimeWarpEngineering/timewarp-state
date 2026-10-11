@@ -76,6 +76,15 @@
     <Project Path="source/timewarp-state-blazor/timewarp-state-blazor.csproj">
       <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
     </Project>
+    <Project Path="source/timewarp-state-devtools-export/timewarp-state-devtools-export.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+    <Project Path="source/timewarp-state-devtools-hosting/timewarp-state-devtools-hosting.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+    <Project Path="source/timewarp-state-devtools/timewarp-state-devtools.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
     <Project Path="source/timewarp-state-plus/timewarp-state-plus.csproj">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Release|Any CPU" />
     </Project>
@@ -93,6 +102,15 @@
     </Project>
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="tests/timewarp-state-devtools-inspected-app/timewarp-state-devtools-inspected-app.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/timewarp-state-devtools-isolation-tests/timewarp-state-devtools-isolation-tests.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj">
+      <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
+    </Project>
     <Project Path="tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj">
       <BuildType Solution="ReduxDevToolsEnabled|*" Project="Debug" />
     </Project>

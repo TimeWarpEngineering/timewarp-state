@@ -5,6 +5,8 @@
 #region Design
 // Adds AddTimeWarpStateBlazor(), AddTimeWarpStateTelemetry() and OpenTelemetry tracing for the TimeWarp.State ActivitySource and
 // ASP.NET Core. The OTLP exporter is added only when OTEL_EXPORTER_OTLP_ENDPOINT is set.
+// AddTimeWarpStateDevToolsExporter copies the same activities to DevTools when
+// TIMEWARP_STATE_DEVTOOLS_ENDPOINT is set, and turns snapshots on for that run.
 #endregion
 
 namespace Sample04Server;
@@ -21,7 +23,24 @@ public class Program
     builder.Services.AddGeneratedMediator<ClientPipeline>();
     builder.Services.AddTimeWarpState();
     builder.Services.AddTimeWarpStateBlazor();
-    builder.Services.AddTimeWarpStateTelemetry();
+
+    string? devToolsEndpoint = Environment.GetEnvironmentVariable
+    (
+      TimeWarpStateDevToolsExport.EndpointEnvironmentVariable
+    );
+    builder.Services.AddTimeWarpStateTelemetry
+    (
+      options =>
+      {
+        if (string.IsNullOrWhiteSpace(devToolsEndpoint))
+        {
+          return;
+        }
+
+        options.IncludeSnapshots = true;
+        options.JsonSerializerOptions = SampleJsonContext.Default.Options;
+      }
+    );
 
     builder.Services.AddOpenTelemetry()
       .WithTracing
@@ -34,6 +53,8 @@ public class Program
           {
             tracing.AddOtlpExporter();
           }
+
+          tracing.AddTimeWarpStateDevToolsExporter();
         }
       );
 

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>TimeWarp.State.DevTools.Export</Title>
+    <Description>Dev-only exporter that copies TimeWarp.State activity spans to the DevTools inspector. Not a production dependency.</Description>
+    <PackageId>TimeWarp.State.DevTools.Export</PackageId>
+    <AssemblyName>TimeWarp.State.DevTools.Export</AssemblyName>
+    <RootNamespace>TimeWarp.State.DevTools.Export</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <PackageTags>TimeWarp.State; DevTools; OpenTelemetry; Aspire</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="TimeWarp.State.DevTools.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".\readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
