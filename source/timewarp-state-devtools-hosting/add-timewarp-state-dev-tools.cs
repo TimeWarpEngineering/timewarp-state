@@ -4,7 +4,10 @@
 
 #region Design
 // AddProject by path, so the AppHost does not need a compile-time Projects.* type for DevTools.
-// The http endpoint's dashboard text is "TimeWarp.State DevTools". WithTimeWarpStateDevTools sets
+// WithHttpEndpoint(name: "http") declares the UI endpoint. Aspire updates an endpoint of the same
+// name, so a launch profile that already added "http" is not duplicated. Without a profile, that
+// call is what gives the resource an endpoint and lets Aspire set ASPNETCORE_URLS. The dashboard
+// text is "TimeWarp.State DevTools". WithTimeWarpStateDevTools sets
 // TIMEWARP_STATE_DEVTOOLS_ENDPOINT from that endpoint and waits until DevTools is running.
 // The OTLP endpoint Aspire already injects is left alone; the dashboard still receives traces.
 #endregion
@@ -25,7 +28,10 @@ public static class TimeWarpStateDevToolsHosting
   /// <summary>Default Aspire resource name.</summary>
   public const string DefaultResourceName = "timewarp-state-devtools";
 
-  /// <summary>HTTP endpoint name taken from the DevTools launch profile.</summary>
+  /// <summary>
+  /// HTTP endpoint name. <see cref="TimeWarpStateDevToolsHostingExtensions.AddTimeWarpStateDevTools"/>
+  /// declares it with <c>WithHttpEndpoint</c>. The DevTools launch profile uses the same name.
+  /// </summary>
   public const string UiEndpointName = "http";
 
   /// <summary>Dashboard link text for the DevTools UI.</summary>
@@ -38,7 +44,8 @@ public static class TimeWarpStateDevToolsHosting
 public static class TimeWarpStateDevToolsHostingExtensions
 {
   /// <summary>
-  /// Adds the DevTools Blazor app as a project resource and labels its HTTP endpoint on the dashboard.
+  /// Adds the DevTools Blazor app as a project resource, declares its HTTP endpoint, and labels that
+  /// endpoint on the dashboard.
   /// </summary>
   /// <param name="builder">The distributed application builder.</param>
   /// <param name="name">Resource name. Defaults to <see cref="TimeWarpStateDevToolsHosting.DefaultResourceName"/>.</param>
@@ -55,6 +62,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
     string projectPath = DevToolsProjectLocator.Resolve(builder.AppHostDirectory);
     return builder
       .AddProject(name, projectPath)
+      .WithHttpEndpoint(name: TimeWarpStateDevToolsHosting.UiEndpointName)
       .WithUrlForEndpoint
       (
         TimeWarpStateDevToolsHosting.UiEndpointName,

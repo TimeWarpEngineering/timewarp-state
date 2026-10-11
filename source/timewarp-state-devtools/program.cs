@@ -9,9 +9,11 @@
 // shared by ingest and the circuit. Referencing TimeWarp.State.Blazor links CommitHandler, whose
 // constructor needs IReduxDevToolsStore. UseReduxDevTools supplies that registration. This host does
 // not render the Redux DevTools component, so InitAsync never runs and inspector actions stay here.
-// MapStaticAssets serves _framework/blazor.web.js. Outside Development, dotnet run does not attach the
-// static web asset file provider, and the asset endpoint then looks for that script under wwwroot.
-// UseStaticWebAssets attaches the manifest in every environment.
+// Aspire applies ASPNETCORE_ENVIRONMENT from Properties/launchSettings.json when that profile is found,
+// so this host runs as Development. When the profile is missing the host stays Production: the exception
+// handler replaces the developer exception page. MapStaticAssets serves _framework/blazor.web.js. Outside
+// Development, dotnet run does not attach the static web asset file provider, and the asset endpoint then
+// looks for that script under wwwroot. UseStaticWebAssets attaches the manifest in every environment.
 #endregion
 
 namespace TimeWarp.State.DevTools;
