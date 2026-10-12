@@ -69,17 +69,16 @@ public class InspectorLog_Should
     folded.Json.ShouldBe("""{"count":1}""");
   }
 
-  public static void DropAStateWhoseOnlySnapshotWasTrimmed()
+  public static void KeepAnIdleStatesSnapshotAfterItsEntryIsTrimmed()
   {
     InspectorLog log = new();
-    log.Add(Snap("OldState", """{"n":1}""", "Init"));
-    for (int index = 0; index < InspectorLog.MaxEntries; index++)
+    log.Add(Snap("IdleState", """{"n":1}""", "Init"));
+    for (int index = 0; index < InspectorLog.MaxEntries + 5; index++)
     {
-      log.Add(Snap("LiveState", """{"n":2}""", "Tick" + index));
+      log.Add(Snap("BusyState", """{"n":2}""", "Tick" + index));
     }
 
-    log.Snapshot().Count.ShouldBe(InspectorLog.MaxEntries);
-    log.FoldCurrent().ShouldHaveSingleItem().StateTypeName.ShouldBe("LiveState");
+    log.FoldCurrent().Select(state => state.StateTypeName).ShouldBe(["BusyState", "IdleState"]);
   }
 
   public static void LeaveTheCurrentFoldUnchangedUntilPendingRowsFlush()
@@ -90,7 +89,6 @@ public class InspectorLog_Should
     log.Add(Snap("CounterState", """{"count":2}""", "Second"));
     log.FoldCurrent().ShouldHaveSingleItem().Json.ShouldBe("""{"count":1}""");
     log.SetPaused(false);
-    log.FlushPending();
     log.FoldCurrent().ShouldHaveSingleItem().Json.ShouldBe("""{"count":2}""");
   }
 
@@ -111,11 +109,8 @@ public class InspectorLog_Should
     log.SetPaused(false);
     changes.ShouldBe(2);
 
-    log.FlushPending();
-    changes.ShouldBe(3);
-
     log.Clear(raiseChanged: true);
-    changes.ShouldBe(4);
+    changes.ShouldBe(3);
     log.Snapshot().ShouldBeEmpty();
   }
 

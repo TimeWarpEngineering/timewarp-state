@@ -10,6 +10,8 @@
 // so InspectorCapture drops them if they are ever exported.
 // ExpandedNodes records an explicit open or closed choice. A path with no entry is open only at the
 // root (no '.' and no '['), so new rows do not collapse a tree the user has already opened.
+// Diff branches use their own keys (DiffKey) and default open, so every changed path is visible;
+// the tree and the diff no longer share a choice.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -82,6 +84,16 @@ public sealed partial class InspectorState : State<InspectorState>
     return path.IndexOf('.', StringComparison.Ordinal) < 0
       && path.IndexOf('[', StringComparison.Ordinal) < 0;
   }
+
+  /// <summary>Key in <see cref="ExpandedNodes"/> for a diff node, distinct from the tree's key for the same path.</summary>
+  public static string DiffKey(string path) => "diff:" + path;
+
+  /// <summary>
+  /// True when the diff node at <paramref name="path"/> is expanded. Diff branches start open until
+  /// <see cref="ExpandedNodes"/> records a choice under <see cref="DiffKey"/>.
+  /// </summary>
+  public bool IsDiffNodeExpanded(string path) =>
+    !ExpandedNodes.TryGetValue(DiffKey(path), out bool expanded) || expanded;
 
   /// <inheritdoc />
   public override void Initialize()

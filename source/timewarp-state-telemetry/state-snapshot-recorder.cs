@@ -65,16 +65,30 @@ internal static class StateSnapshotRecorder
       return false;
     }
 
-    string cacheKey = stateType.FullName ?? stateType.Name;
-    SnapshotChange snapshotChange = cache.Record(cacheKey, json);
-    if (snapshotChange == SnapshotChange.Unchanged)
+    try
     {
+      string cacheKey = stateType.FullName ?? stateType.Name;
+      SnapshotChange snapshotChange = cache.Record(cacheKey, json);
+      if (snapshotChange == SnapshotChange.Unchanged)
+      {
+        return false;
+      }
+
+      string eventName = snapshotChange == SnapshotChange.Initial ? SnapshotEventName : DiffEventName;
+      AddEvent(activity, eventName, json, telemetryOptions.MaxSnapshotChars);
+      return true;
+    }
+    catch (Exception exception)
+    {
+      logger.LogDebug
+      (
+        EventIds.TelemetryBehavior_SnapshotFailed,
+        exception,
+        "Snapshot recording failed for {ActionType}",
+        logName
+      );
       return false;
     }
-
-    string eventName = snapshotChange == SnapshotChange.Initial ? SnapshotEventName : DiffEventName;
-    AddEvent(activity, eventName, json, telemetryOptions.MaxSnapshotChars);
-    return true;
   }
 
   internal static bool TryCaptureJson

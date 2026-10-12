@@ -47,9 +47,6 @@ h1 {
 .theme,
 .toolbar-button,
 .tab {
-  background: transparent;
-  color: var(--twe-header-ink);
-  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: var(--twe-radius-sm);
   padding: 0.4rem 0.75rem;
   font-family: var(--twe-font-sans);
@@ -57,9 +54,13 @@ h1 {
   cursor: pointer;
 }
 
-.theme:hover,
-.toolbar-button:hover,
-.tab:hover {
+.theme {
+  background: transparent;
+  color: var(--twe-header-ink);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.theme:hover {
   background: var(--twe-purple-active);
 }
 
@@ -92,7 +93,7 @@ h1 {
 .toolbar-button,
 .tab {
   color: var(--twe-ink);
-  border-color: var(--twe-purple);
+  border: 1px solid var(--twe-purple);
   background: var(--twe-paper);
 }
 
@@ -129,6 +130,10 @@ h1 {
   border-radius: var(--twe-radius);
   min-height: 18rem;
   overflow: auto;
+}
+
+.detail {
+  padding: 0.85rem 1rem 1rem;
 }
 
 .log ul {
@@ -185,10 +190,6 @@ h1 {
 .status.error { color: var(--twe-status-error); }
 .status.unset { color: var(--twe-muted); }
 
-.detail {
-  padding: 0.85rem 1rem 1rem;
-}
-
 .tabs,
 .view-tabs {
   display: flex;
@@ -241,8 +242,11 @@ h3 {
 
 .empty,
 .hint {
-  color: var(--twe-muted);
   margin: 0.4rem 0;
+}
+
+.empty {
+  color: var(--twe-muted);
 }
 
 .hint {

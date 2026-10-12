@@ -4,9 +4,9 @@
 
 #region Design
 // Walks JsonNode trees. Objects match by property name, arrays by index.
-// Equal subtrees are omitted. A truncated side is not parsed.
+// Equal subtrees are omitted. A truncated side is not parsed; the result records which side was truncated.
 // Missing previous JSON is an initial snapshot: every node is added.
-// No reflection. Paths match StateTree so expansion state can be shared.
+// No reflection. Paths have the same shape as StateTree; the inspector keys diff expansion separately.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -41,7 +41,7 @@ public static class StateDiff
 
     if (beforeTruncated || afterTruncated)
     {
-      return new Result(Status.Truncated, [], afterJson, initial: false);
+      return new Result(Status.Truncated, [], afterJson, initial: false, beforeTruncated, afterTruncated);
     }
 
     JsonNode? afterNode;
@@ -259,13 +259,29 @@ public static class StateDiff
   public sealed class Result
   {
     /// <summary>Creates a result.</summary>
-    public Result(Status status, IReadOnlyList<Node> nodes, string raw, bool initial)
+    public Result
+    (
+      Status status,
+      IReadOnlyList<Node> nodes,
+      string raw,
+      bool initial,
+      bool beforeTruncated = false,
+      bool afterTruncated = false
+    )
     {
+      BeforeTruncated = beforeTruncated;
+      AfterTruncated = afterTruncated;
       Status = status;
       Nodes = nodes;
       Raw = raw;
       Initial = initial;
     }
+
+    /// <summary>True when the previous snapshot was truncated. Set with <see cref="StateDiff.Status.Truncated"/>.</summary>
+    public bool BeforeTruncated { get; }
+
+    /// <summary>True when the selected snapshot was truncated. Set with <see cref="StateDiff.Status.Truncated"/>.</summary>
+    public bool AfterTruncated { get; }
 
     /// <summary>How the two snapshots compared.</summary>
     public Status Status { get; }

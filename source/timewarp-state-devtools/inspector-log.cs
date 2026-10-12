@@ -7,10 +7,12 @@
 // This mailbox is the one list both sides see. Add raises Changed outside the lock; the circuit
 // dispatches NoteLogChanged, which re-renders from Snapshot. SetPaused and Clear raise Changed too,
 // so a second tab sees the shared pause flag and list. Pause parks spans in Pending so they
-// stay out of the displayed list until Resume flushes them. UI actions never call Add.
-// LatestByStateType tracks the newest snapshot per state type on the visible list, so the current
-// fold is one slot per state. FoldThrough walks entries only when a historical sequence is asked for.
-// Trim rebuilds the index: the evicted prefix may be a state's only snapshot.
+// stay out of the displayed list until SetPaused(false) moves them onto Entries inside the same lock,
+// so no ingest can interleave and Entries stays in sequence order. UI actions never call Add.
+// LatestByStateType tracks the newest snapshot per state type ever seen since the last Clear, so the
+// current fold is one slot per state. FoldThrough walks entries only when a historical sequence is asked for.
+// Trim does not touch the index: an idle state whose only snapshot was evicted from the display cap
+// still appears in Current state. Only Clear resets it.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -120,6 +122,11 @@ public sealed class InspectorLog
   {
     ArgumentNullException.ThrowIfNull(stateTypeName);
     previous = null;
+    if (stateTypeName.Length == 0)
+    {
+      return false;
+    }
+
     lock (Sync)
     {
       foreach (ActionLogEntry entry in Entries)
@@ -174,7 +181,8 @@ public sealed class InspectorLog
 
   /// <summary>
   /// Sets the pause flag and raises <see cref="Changed"/> when the flag changed, so every circuit
-  /// refreshes its pause display. Does not move spans; <see cref="FlushPending"/> does that.
+  /// refreshes its pause display. Resuming moves the pause buffer onto the visible list in the same
+  /// lock acquisition, so no concurrent <see cref="Add"/> can interleave with the flush.
   /// </summary>
   public void SetPaused(bool paused)
   {
@@ -186,37 +194,19 @@ public sealed class InspectorLog
         Paused = paused;
         changed = Changed;
       }
-    }
 
-    changed?.Invoke();
-  }
-
-  /// <summary>
-  /// Moves the pause buffer onto the visible list and raises <see cref="Changed"/> when anything moved.
-  /// </summary>
-  public void FlushPending()
-  {
-    Action? changed = null;
-    lock (Sync)
-    {
-      if (Pending.Count == 0)
+      if (!paused && Pending.Count > 0)
       {
-        return;
-      }
+        foreach (ActionLogEntry entry in Pending)
+        {
+          Entries.Add(entry);
+          Note(LatestByStateType, entry);
+        }
 
-      foreach (ActionLogEntry entry in Pending)
-      {
-        Entries.Add(entry);
-        Note(LatestByStateType, entry);
+        Pending.Clear();
+        Trim(Entries);
+        changed = Changed;
       }
-
-      Pending.Clear();
-      if (Trim(Entries))
-      {
-        RebuildLatest();
-      }
-
-      changed = Changed;
     }
 
     changed?.Invoke();
@@ -270,19 +260,7 @@ public sealed class InspectorLog
   {
     Entries.Add(stored);
     Note(LatestByStateType, stored);
-    if (Trim(Entries))
-    {
-      RebuildLatest();
-    }
-  }
-
-  private void RebuildLatest()
-  {
-    LatestByStateType.Clear();
-    foreach (ActionLogEntry entry in Entries)
-    {
-      Note(LatestByStateType, entry);
-    }
+    Trim(Entries);
   }
 
   private static void Note(Dictionary<string, FoldedState> folded, ActionLogEntry entry)

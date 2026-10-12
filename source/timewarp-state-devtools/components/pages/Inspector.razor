@@ -9,11 +9,32 @@
 
   private int Disposed;
 
+  [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
+
   private InspectorState InspectorState => GetState<InspectorState>();
 
   protected override void OnInitialized()
   {
     InspectorLog.Changed += OnLogChanged;
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender)
+  {
+    await base.OnAfterRenderAsync(firstRender);
+    if (!firstRender)
+    {
+      return;
+    }
+
+    // A reconnected circuit starts from default state while <html data-theme> keeps the old value.
+    try
+    {
+      await JsRuntime.InvokeVoidAsync("timeWarpDevToolsTheme.apply", InspectorState.Theme);
+    }
+    catch (Exception exception) when (exception is JSException or JSDisconnectedException or InvalidOperationException or ObjectDisposedException)
+    {
+      // The circuit ended or script is not loaded. The CSS already paints the system theme.
+    }
   }
 
   private void OnLogChanged()
@@ -83,6 +104,20 @@
     bool expanded = InspectorState.IsNodeExpanded(path);
     await InspectorState.SetNodeExpanded(path, !expanded);
   }
+
+  private async Task ToggleDiffNode(string path)
+  {
+    bool expanded = InspectorState.IsDiffNodeExpanded(path);
+    await InspectorState.SetNodeExpanded(InspectorState.DiffKey(path), !expanded);
+  }
+
+  private static string TruncatedHint(StateDiff.Result diff) =>
+    (diff.BeforeTruncated, diff.AfterTruncated) switch
+    {
+      (true, true) => "The previous and selected snapshots are truncated.",
+      (true, false) => "The previous snapshot is truncated.",
+      _ => "The selected snapshot is truncated."
+    };
 
   public override void Dispose()
   {
@@ -301,7 +336,7 @@
           }
           else if (diff.Status == StateDiff.Status.Truncated)
           {
-            <p class="hint">Snapshot truncated. Raise MaxSnapshotChars on the inspected app. Showing raw text.</p>
+            <p class="hint">@TruncatedHint(diff) Raise MaxSnapshotChars on the inspected app. Showing raw text of the selected snapshot.</p>
             <pre data-qa="snapshot">@diff.Raw</pre>
           }
           else if (diff.Status == StateDiff.Status.Unparsed)
@@ -322,7 +357,7 @@
             <div data-qa="diff">
               @foreach (StateDiff.Node node in diff.Nodes)
               {
-                <StateDiffView Node="node" InspectorState="InspectorState" OnToggle="ToggleNode" />
+                <StateDiffView Node="node" InspectorState="InspectorState" OnToggle="ToggleDiffNode" />
               }
             </div>
           }

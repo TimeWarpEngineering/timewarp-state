@@ -5,7 +5,7 @@
   [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
   [Parameter] public EventCallback<string> OnToggle { get; set; }
 
-  private bool Expanded => InspectorState.IsNodeExpanded(Node.Path);
+  private bool Expanded => InspectorState.IsDiffNodeExpanded(Node.Path);
 
   private bool Branch => Node.Children.Count > 0;
 

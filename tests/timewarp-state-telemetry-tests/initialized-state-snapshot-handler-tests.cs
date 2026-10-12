@@ -53,6 +53,37 @@ public class InitializedStateSnapshotHandler_Should
     recordingStore.GetStateCallCount.ShouldBe(2);
   }
 
+  public async Task Truncate_The_Init_Snapshot_Past_MaxSnapshotChars()
+  {
+    RecordingStore recordingStore = new(new TelemetryTestState { Count = 1 });
+    TimeWarpStateTelemetryOptions timeWarpStateTelemetryOptions = SnapshotOptions();
+    timeWarpStateTelemetryOptions.MaxSnapshotChars = 8;
+    InitializedStateSnapshotHandler handler = Handler(recordingStore, timeWarpStateTelemetryOptions, new StateSnapshotCache());
+
+    using ActivityListenerHarness activityListenerHarness = new();
+    await handler.Handle(new StateInitializedNotification(typeof(TelemetryTestState)), CancellationToken.None);
+
+    RecordedActivity initialized = activityListenerHarness.Activities.ShouldHaveSingleItem();
+    initialized.Status.ShouldBe(ActivityStatusCode.Ok);
+    ActivityEvent snapshotEvent = initialized.Events.ShouldHaveSingleItem();
+    snapshotEvent.Name.ShouldBe("state.snapshot");
+    EventJson(snapshotEvent).ShouldContain("…(truncated)");
+    snapshotEvent.Tags.Single(tag => tag.Key == "snapshot.truncated").Value.ShouldBe(true);
+  }
+
+  public async Task Set_Error_Status_When_Serialization_Fails()
+  {
+    RecordingStore recordingStore = new(new TelemetryTestState { Count = 1 }) { ThrowOnGetState = true };
+    InitializedStateSnapshotHandler handler = Handler(recordingStore, SnapshotOptions(), new StateSnapshotCache());
+
+    using ActivityListenerHarness activityListenerHarness = new();
+    await handler.Handle(new StateInitializedNotification(typeof(TelemetryTestState)), CancellationToken.None);
+
+    RecordedActivity initialized = activityListenerHarness.Activities.ShouldHaveSingleItem();
+    initialized.Status.ShouldBe(ActivityStatusCode.Error);
+    initialized.Events.ShouldBeEmpty();
+  }
+
   public async Task Skip_When_IncludeSnapshots_Is_False()
   {
     RecordingStore recordingStore = new(new TelemetryTestState { Count = 0 });

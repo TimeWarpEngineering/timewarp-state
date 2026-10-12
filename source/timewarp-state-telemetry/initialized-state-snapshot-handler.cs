@@ -7,7 +7,9 @@
 // Initialize has returned. This handler does not await, so the snapshot is recorded before GetState
 // returns and before a later action span runs. The cache key matches TelemetryBehavior, so the first
 // mutating action is a state.diff. IncludeSnapshots off, no listener, or no JsonTypeInfo skips the
-// activity and logs the same warning as an action snapshot. No property reflection.
+// activity and logs the same warning as an action snapshot. A sampled-out init span (no activity or
+// IsAllDataRequested false) does not prime the cache, so the first action then emits state.snapshot
+// rather than state.diff. No property reflection.
 #endregion
 
 namespace TimeWarp.State.Telemetry;
