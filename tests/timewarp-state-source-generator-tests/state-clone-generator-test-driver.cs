@@ -34,9 +34,54 @@ internal static class StateCloneGeneratorTestDriver
       )
     );
 
-    GeneratorDriver driver = CSharpGeneratorDriver.Create(new StateCloneSourceGenerator().AsSourceGenerator());
+    return Run(compilation, new StateCloneSourceGenerator());
+  }
+
+  public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) Run
+  (
+    string source,
+    IIncrementalGenerator generator,
+    bool allowUnsafe = false
+  )
+  {
+    SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
+    CSharpCompilation compilation = CompilationFor(source: null, syntaxTree, allowUnsafe);
+    return Run(compilation, generator);
+  }
+
+  private static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) Run
+  (
+    CSharpCompilation compilation,
+    IIncrementalGenerator generator
+  )
+  {
+    GeneratorDriver driver = CSharpGeneratorDriver.Create(generator.AsSourceGenerator());
     driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out _);
     return (driver.GetRunResult(), outputCompilation);
+  }
+
+  private static CSharpCompilation CompilationFor(string? source, SyntaxTree? syntaxTree, bool allowUnsafe)
+  {
+    SyntaxTree tree = syntaxTree ?? CSharpSyntaxTree.ParseText(source!, new CSharpParseOptions(LanguageVersion.Latest));
+    IEnumerable<MetadataReference> references =
+      ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
+      .Split(Path.PathSeparator)
+      .Select(path => MetadataReference.CreateFromFile(path))
+      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.State.State<>).Assembly.Location))
+      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
+
+    return CSharpCompilation.Create
+    (
+      assemblyName: "CloneGeneratorTests",
+      syntaxTrees: [tree],
+      references: references,
+      options: new CSharpCompilationOptions
+      (
+        OutputKind.DynamicallyLinkedLibrary,
+        nullableContextOptions: NullableContextOptions.Enable,
+        allowUnsafe: allowUnsafe
+      )
+    );
   }
 
   public static string? CloneSource(GeneratorDriverRunResult runResult) =>

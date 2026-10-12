@@ -1,12 +1,14 @@
 #region Purpose
-// AddTimeWarpState: registers the Store, Subscriptions, options and every State<T> found in the configured assemblies.
+// AddTimeWarpState: registers the Store, Subscriptions, options, and the generated state registrations.
 #endregion
 
 #region Design
 // Defaults to the calling assembly when none are configured. Uses TryAdd so hosts can pre-register overrides, adds
-// a NullLogger, and registers states as transient. Blazor services (render subscriptions, JavaScript dispatch,
-// NavigationManager HttpClient) are AddTimeWarpStateBlazor in TimeWarp.State.Blazor. Nothing mediator-related
-// is registered: behaviors are woven at compile time (see assembly-marker.cs).
+// a NullLogger, and applies StateRegistrationRegistry for the configured assemblies. The clone source generator
+// fills that registry with TryAddTransient<T>() calls. There is no assembly scan. Blazor services (render
+// subscriptions, JavaScript dispatch, NavigationManager HttpClient) are AddTimeWarpStateBlazor in
+// TimeWarp.State.Blazor. Nothing mediator-related is registered: behaviors are woven at compile time
+// (see assembly-marker.cs).
 #endregion
 
 namespace TimeWarp.State;
@@ -71,45 +73,8 @@ public static partial class ServiceCollectionExtensions
     serviceCollection.TryAddSingleton(typeof(ILogger<>), typeof(NullLogger<>));
   }
 
-  // Known trim-unsafe assembly scan, kept until states are registered by generated code (follow-up in task 097 Results).
-  // Trimming does not keep a type because GetTypes() could return it: console PublishTrimmed and PublishAot default to
-  // TrimMode=full, which trims the application assembly. Generated clones root the constructor they call.
-  // ICloneable states are not field-cloned; their assembly's module initializer roots public constructors and
-  // public methods so ActivatorUtilities and ICloneable.Clone survive trimming.
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Concrete states are rooted by the generated StateCloneRegistry, or by RootICloneableStates for ICloneable states, so the scan finds them after trimming. Follow-up: generated state registration.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Generated clone code or RootICloneableStates keeps the constructor ActivatorUtilities calls. Follow-up: generated state registration.")]
   private static void EnsureStates(IServiceCollection serviceCollection, TimeWarpStateOptions timeWarpStateOptions)
   {
-    foreach (Assembly assembly in timeWarpStateOptions.Assemblies)
-    {
-      IEnumerable<Type> types = assembly.GetTypes().Where
-      (
-        type =>
-          type is { IsAbstract: false, IsInterface: false } &&
-          type.BaseType != null &&
-          IsDerivedFromGenericType(type.BaseType, typeof(State<>))
-      );
-
-      foreach (Type type in types)
-      {
-        serviceCollection.TryAddTransient(type);
-      }
-    }
-    return;
-
-    bool IsDerivedFromGenericType(Type type, Type genericType)
-    {
-      Type? currentType = type;
-
-      while (currentType != null && currentType != typeof(object))
-      {
-        if (currentType.IsGenericType && currentType.GetGenericTypeDefinition() == genericType)
-        {
-          return true;
-        }
-        currentType = currentType.BaseType;
-      }
-      return false;
-    }
+    StateRegistrationRegistry.Apply(serviceCollection, timeWarpStateOptions.Assemblies);
   }
 }

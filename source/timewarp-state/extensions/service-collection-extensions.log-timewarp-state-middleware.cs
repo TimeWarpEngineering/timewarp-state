@@ -5,6 +5,8 @@
 #region Design
 // Only closed constructed behavior registrations are listed, because those are what the generated mediator
 // registers and runs. Open-generic registrations are inert and would misreport the pipeline.
+// The behavior's open definition comes from PipelineBehaviorRegistry, which each compilation fills with a
+// module initializer. The list does not walk the implementation's interfaces.
 #endregion
 
 namespace TimeWarp.State;
@@ -30,19 +32,23 @@ public static partial class ServiceCollectionExtensions
   // Only closed constructed implementation types are considered: those are what TimeWarp.Mediator's generator
   // registers and runs. A legacy open-generic registration (AddScoped(typeof(IPipelineBehavior<,>), typeof(X<,>)))
   // is inert under the generated mediator, so listing it here would misreport the pipeline.
+  // PipelineBehaviorRegistry.Matches compares open definitions the source generator recorded. It does not walk
+  // the implementation's interfaces.
+  /// <summary>
+  /// Lists the distinct simple names of the closed implementation types registered for <paramref name="componentType"/>, in registration order.
+  /// </summary>
+  /// <remarks>
+  /// Only behaviors the source generator recorded for <c>IPipelineBehavior&lt;,&gt;</c> are matched.
+  /// Any other component type returns an empty list.
+  /// </remarks>
   public static List<string> GetComponentOrder(this IServiceCollection serviceCollection, Type componentType)
   {
+    ArgumentNullException.ThrowIfNull(serviceCollection);
+    ArgumentNullException.ThrowIfNull(componentType);
     return serviceCollection
-      .Where
-      (
-        sd =>
-          sd.ImplementationType is { IsConstructedGenericType: true } implementationType &&
-          implementationType.GetInterfaces().Any
-          (
-            i => i.IsGenericType && i.GetGenericTypeDefinition() == componentType
-          )
-      )
-      .Select(sd => sd.ImplementationType!.Name.Split('`')[0])
+      .Select(descriptor => descriptor.ImplementationType)
+      .Where(type => type is not null && PipelineBehaviorRegistry.Matches(type, componentType))
+      .Select(type => type!.GetSimpleName())
       .Distinct()
       .ToList();
   }

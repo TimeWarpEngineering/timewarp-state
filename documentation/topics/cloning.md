@@ -17,7 +17,17 @@ Every concrete, closed, accessible `State<T>` that does not implement `ICloneabl
 
 Mark a class or struct that is not a state with `[GenerateClone]` (`TimeWarp.State`, `Inherited = false`) when that type should get the same clone. Open generics are not emitted until a closed construction appears in the compilation.
 
-`ICloneable` is the escape hatch. The generator emits nothing for that type, and the behavior calls `Clone()` first.
+`ICloneable` is the escape hatch. The generator emits no field clone for that type, and the behavior calls `Clone()` first.
+
+## Dependency injection
+
+`AddTimeWarpState` applies a registrar the same generator emits for that assembly. The registrar calls `TryAddTransient<T>()` for each concrete state. There is no assembly scan.
+
+Registered states are the nameable concrete states that join `StateCloneRegistry`, plus nameable `ICloneable` states. A closed construction of an open generic `ICloneable` state is included when that construction appears in the compilation. The open generic definition is not registered. A `[GenerateClone]` type that is not a state is not registered. A private, protected, or file-local state is not registered.
+
+The assembly that declares the states must be compiled with the TimeWarp.State source generator. `PackageReference` consumers get it automatically. A `ProjectReference` to `timewarp-state.csproj` must also reference the generator as an Analyzer. An assembly without it registers no states.
+
+`TimeWarpStateOptions.Assemblies` selects which assemblies' registrars run. When the option is empty, `AddTimeWarpState` uses the calling assembly. A host that already registered the same service keeps that registration, because the generated calls use `TryAdd`.
 
 ## What is copied
 

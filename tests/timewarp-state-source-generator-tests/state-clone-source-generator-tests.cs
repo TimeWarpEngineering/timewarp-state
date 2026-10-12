@@ -51,6 +51,8 @@ public class Should_Skip_ICloneable
     string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
     source.ShouldNotContain("UnsafeAccessor");
     source.ShouldContain("RootStateForTrim<global::HandState>()");
+    source.ShouldContain("StateRegistrationRegistry.Register");
+    source.ShouldContain("TryAddTransient<global::HandState>");
     outputCompilation.GetDiagnostics()
       .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
       .Select(diagnostic => diagnostic.ToString())
@@ -78,6 +80,8 @@ public class Should_Emit_Registry_And_UnsafeAccessor
     string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
     source.ShouldContain("UnsafeAccessor");
     source.ShouldContain("StateCloneRegistry.Register<global::CountState>");
+    source.ShouldContain("StateRegistrationRegistry.Register");
+    source.ShouldContain("TryAddTransient<global::CountState>");
     outputCompilation.GetDiagnostics()
       .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
       .Select(diagnostic => diagnostic.ToString())

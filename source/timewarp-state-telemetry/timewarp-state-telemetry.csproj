@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\timewarp-state\timewarp-state.csproj" />
+    <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
