@@ -213,19 +213,29 @@ h3 {
 
 .facts {
   display: grid;
-  grid-template-columns: 7rem minmax(0, 1fr);
+  grid-template-columns: minmax(7rem, max-content) minmax(0, 1fr);
   gap: 0.28rem 0.75rem;
   margin: 0;
+  min-width: 0;
   font-size: 0.84rem;
 }
 
 .facts dt {
   margin: 0;
+  /* A bare max-content track grows to the longest key and collapses the value track. */
+  min-width: 0;
+  max-width: 16rem;
+  overflow-wrap: anywhere;
   color: var(--twe-muted);
+}
+
+.facts dt.key {
+  font-family: var(--twe-font-mono);
 }
 
 .facts dd {
   margin: 0;
+  min-width: 0;
   font-family: var(--twe-font-mono);
   overflow-wrap: anywhere;
 }

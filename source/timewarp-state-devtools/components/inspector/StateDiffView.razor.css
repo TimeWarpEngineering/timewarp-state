@@ -1,5 +1,6 @@
 .node {
   margin: 0;
+  min-width: 0;
 }
 
 .row {
@@ -7,6 +8,7 @@
   align-items: baseline;
   gap: 0.4rem;
   width: 100%;
+  min-width: 0;
   text-align: left;
   background: transparent;
   color: var(--twe-ink);
@@ -62,6 +64,8 @@ button.row:hover {
 }
 
 .key {
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--twe-json-key);
 }
 

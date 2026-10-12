@@ -311,7 +311,7 @@
             <dd>@selected.Name</dd>
             @foreach (KeyValuePair<string, string> attribute in selected.Attributes.OrderBy(pair => pair.Key, StringComparer.Ordinal))
             {
-              <dt>@(attribute.Key)</dt>
+              <dt class="key">@(attribute.Key)</dt>
               <dd>@(attribute.Value)</dd>
             }
           </dl>
