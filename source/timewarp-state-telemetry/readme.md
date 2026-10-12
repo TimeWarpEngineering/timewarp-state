@@ -66,7 +66,8 @@ Or set `TypeInfoResolver` on `TimeWarpStateOptions.JsonSerializerOptions` (the s
 
 Events (not span attributes):
 
-- First JSON for a state type in the scope: `state.snapshot` with tag `snapshot.json`
+- When a state finishes `Initialize`, and snapshots are on: activity `{StateTypeName}.Initialized` tagged `timewarp.state.action` = `init`, `timewarp.state.state_type`, and `timewarp.state.kind` = `init`, plus a `state.snapshot` event. The snapshot cache records that JSON, so the first later change is `state.diff`. No `JsonTypeInfo` skips it with the same warning as an action snapshot. The handler does not await, so the event is recorded before `Store.GetState` returns.
+- First JSON for a state type that was not initialized under snapshots: `state.snapshot` with tag `snapshot.json`
 - Later unequal JSON: `state.diff` with the new JSON (string compare of the full JSON, no reflection property walk)
 - Equal JSON: no event
 - `MaxSnapshotChars` truncates only the event payload and sets boolean tag `snapshot.truncated`

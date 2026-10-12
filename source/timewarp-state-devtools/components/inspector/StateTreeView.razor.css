@@ -1,0 +1,65 @@
+.node {
+  margin: 0;
+}
+
+.toggle,
+.leaf {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--twe-ink);
+  border: 0;
+  padding: 0.12rem 0.2rem;
+  font-family: var(--twe-font-mono);
+  font-size: 0.82rem;
+}
+
+.toggle {
+  cursor: pointer;
+  border-radius: var(--twe-radius-sm);
+}
+
+.toggle:hover {
+  background: var(--twe-paper-2);
+}
+
+.chevron {
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid var(--twe-muted);
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.chevron[data-open="true"] {
+  transform: rotate(90deg);
+}
+
+.key {
+  color: var(--twe-json-key);
+}
+
+.count {
+  color: var(--twe-muted);
+}
+
+.value[data-kind="string"] { color: var(--twe-json-string); }
+.value[data-kind="number"] { color: var(--twe-json-number); }
+.value[data-kind="boolean"],
+.value[data-kind="null"] { color: var(--twe-json-bool); }
+
+.children {
+  margin-left: 0.85rem;
+  border-left: 1px solid var(--twe-border);
+  padding-left: 0.35rem;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--twe-blue-bright);
+  outline-offset: 2px;
+}

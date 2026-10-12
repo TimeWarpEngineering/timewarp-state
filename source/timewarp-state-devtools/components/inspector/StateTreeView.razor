@@ -1,0 +1,52 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public StateTree.Node Node { get; set; } = null!;
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter] public EventCallback<string> OnToggle { get; set; }
+
+  private bool Expanded => InspectorState.IsNodeExpanded(Node.Path);
+
+  private Task Toggle() => OnToggle.InvokeAsync(Node.Path);
+
+  private static string KindName(StateTree.ValueKind kind) =>
+    kind switch
+    {
+      StateTree.ValueKind.String => "string",
+      StateTree.ValueKind.Number => "number",
+      StateTree.ValueKind.Boolean => "boolean",
+      _ => "null"
+    };
+}
+
+<div class="node">
+  @if (Node is StateTree.Branch branch)
+  {
+    <button
+      type="button"
+      class="toggle"
+      @onclick="Toggle"
+      aria-expanded="@(Expanded ? "true" : "false")"
+      data-qa="tree-toggle">
+      <span class="chevron" data-open="@(Expanded ? "true" : "false")"></span>
+      <span class="key">@branch.Name</span>
+      <span class="count">@(branch.Array ? "[" + branch.Children.Count + "]" : "{" + branch.Children.Count + "}")</span>
+    </button>
+    @if (Expanded)
+    {
+      <div class="children">
+        @foreach (StateTree.Node child in branch.Children)
+        {
+          <StateTreeView Node="child" InspectorState="InspectorState" OnToggle="OnToggle" />
+        }
+      </div>
+    }
+  }
+  else if (Node is StateTree.Scalar scalar)
+  {
+    <div class="leaf">
+      <span class="key">@scalar.Name</span>
+      <span class="value" data-kind="@KindName(scalar.Kind)">@scalar.Text</span>
+    </div>
+  }
+</div>

@@ -1,0 +1,77 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public StateDiff.Node Node { get; set; } = null!;
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter] public EventCallback<string> OnToggle { get; set; }
+
+  private bool Expanded => InspectorState.IsNodeExpanded(Node.Path);
+
+  private bool Branch => Node.Children.Count > 0;
+
+  private Task Toggle() => OnToggle.InvokeAsync(Node.Path);
+
+  private static string ChangeName(StateDiff.ChangeKind kind) =>
+    kind switch
+    {
+      StateDiff.ChangeKind.Added => "added",
+      StateDiff.ChangeKind.Removed => "removed",
+      StateDiff.ChangeKind.Changed => "changed",
+      _ => "nested"
+    };
+
+  private static string KindName(StateTree.ValueKind kind) =>
+    kind switch
+    {
+      StateTree.ValueKind.String => "string",
+      StateTree.ValueKind.Number => "number",
+      StateTree.ValueKind.Boolean => "boolean",
+      _ => "null"
+    };
+}
+
+<div class="node">
+  @if (Branch)
+  {
+    <button
+      type="button"
+      class="row"
+      data-change="@ChangeName(Node.Kind)"
+      @onclick="Toggle"
+      aria-expanded="@(Expanded ? "true" : "false")">
+      <span class="chevron" data-open="@(Expanded ? "true" : "false")"></span>
+      <span class="mark" data-change="@ChangeName(Node.Kind)"></span>
+      <span class="key">@Node.Name</span>
+    </button>
+    @if (Expanded)
+    {
+      <div class="children">
+        @foreach (StateDiff.Node child in Node.Children)
+        {
+          <StateDiffView Node="child" InspectorState="InspectorState" OnToggle="OnToggle" />
+        }
+      </div>
+    }
+  }
+  else
+  {
+    <div class="row leaf" data-change="@ChangeName(Node.Kind)">
+      <span class="mark" data-change="@ChangeName(Node.Kind)"></span>
+      <span class="key">@Node.Name</span>
+      @if (Node.Kind == StateDiff.ChangeKind.Changed)
+      {
+        <span class="value before">@Node.BeforeText</span>
+        <span class="arrow">→</span>
+        <span class="value after" data-kind="@(Node.ValueKind is null ? "" : KindName(Node.ValueKind.Value))">@Node.AfterText</span>
+      }
+      else if (Node.Kind == StateDiff.ChangeKind.Removed)
+      {
+        <span class="value">@Node.BeforeText</span>
+      }
+      else
+      {
+        <span class="value" data-kind="@(Node.ValueKind is null ? "" : KindName(Node.ValueKind.Value))">@Node.AfterText</span>
+      }
+    </div>
+  }
+</div>

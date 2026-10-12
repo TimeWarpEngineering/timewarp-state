@@ -1,0 +1,21 @@
+h3 {
+  margin: 0.8rem 0 0.3rem;
+  font-size: 0.95rem;
+  font-family: var(--twe-font-sans);
+  color: var(--twe-json-key);
+}
+
+pre {
+  margin: 0.4rem 0 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--twe-font-mono);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--twe-ink);
+}
+
+.hint {
+  color: var(--twe-warning);
+  margin: 0.4rem 0;
+}

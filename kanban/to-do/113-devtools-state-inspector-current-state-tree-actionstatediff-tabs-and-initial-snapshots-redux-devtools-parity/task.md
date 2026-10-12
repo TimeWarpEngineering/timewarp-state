@@ -120,22 +120,39 @@ view, Trace tab, persistence of the log across DevTools restarts.
 
 ## Checklist
 
-- [ ] `InspectorLog`: per-state latest-snapshot index + fold-up-to-sequence
-- [ ] `state-tree.cs` + `state-diff.cs` (JsonNode based) with unit tests
-- [ ] State panel: per-state collapsible tree, Tree / Raw, expand state persisted in `InspectorState`
-- [ ] Detail: Action / State / Diff tabs; "State after action" wording; truncated marker kept
-- [ ] Filter matches state type names in the State panel
-- [ ] Telemetry: snapshot on state initialization (opt-in via `IncludeSnapshots`), `init` rows in DevTools
+- [x] `InspectorLog`: per-state latest-snapshot index + fold-up-to-sequence
+- [x] `state-tree.cs` + `state-diff.cs` (JsonNode based) with unit tests
+- [x] State panel: per-state collapsible tree, Tree / Raw, expand state persisted in `InspectorState`
+- [x] Detail: Action / State / Diff tabs; "State after action" wording; truncated marker kept
+- [x] Filter matches state type names in the State panel
+- [x] Telemetry: snapshot on state initialization (opt-in via `IncludeSnapshots`), `init` rows in DevTools
       (or child task filed and linked here)
-- [ ] Ingest tests for interleaved states and init rows
-- [ ] Theme: `tokens.css` (`--twe-*`), dark default + light, header band, status and JSON colours; screenshots
-- [ ] Docs: `documentation/topics/devtools.md` and the DevTools readme describe the State panel and tabs
-- [ ] Manual Linux check recorded in `## Results`
-- [ ] `ganda repo audit` clean; build warning-free for touched projects; tests green
+- [x] Ingest tests for interleaved states and init rows
+- [x] Theme: `tokens.css` (`--twe-*`), dark default + light, header band, status and JSON colours; screenshots
+- [x] Docs: `documentation/topics/devtools.md` and the DevTools readme describe the State panel and tabs
+- [x] Manual Linux check recorded in `## Results`
+- [x] `ganda repo audit` clean; build warning-free for touched projects; tests green
 
 ## Session
 
 - Created: cockpit (2026-10-12)
+- Implemented: Grok (2026-10-12). State tree, diff, init snapshots, and the TimeWarp theme landed on this branch.
+
+## Results
+
+The inspector folds snapshots into a per-state tree and shows Action, State, and Diff for the selected row. With `IncludeSnapshots` on, state initialization emits `{StateType}.Initialized` (`timewarp.state.kind` = `init` and `state.snapshot`) so the panel is populated before the first action. The first later change is `state.diff`.
+
+Screenshots: [devtools-dark.png](review/devtools-dark.png), [devtools-light.png](review/devtools-light.png).
+
+`dotnet test` on `tests/timewarp-state-devtools-tests` passed 45. `dotnet test` on `tests/timewarp-state-telemetry-tests` passed 17. Touched DevTools and telemetry projects built without new warnings. `ganda repo audit` passed (29 pass, 1 pre-existing kebab-path advisory on backlog 110 and existing `*.lib.module.*` names).
+
+### How to validate
+
+Smoke: pack this branch (`./bin/dev pack`), restore the sample so `TimeWarp.State` and `TimeWarp.State.Telemetry` 12.0.0-beta.11 are the packages just packed (a stale global-packages copy of the same version lacks `IStore.GetState(Type)` and snapshot capture throws `MissingMethodException`). Run the DevTools project and sample 04 server with `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` set to the DevTools origin. Open `/counter` and click **Click me** once.
+
+Expect: the log gains `init` rows for `CounterState` and an `IncrementCountActionSet.Action` row with status Ok. **Current state** shows `Count` 8 (`Initialize` sets 3, each click adds 5). Select that increment: **State after action** shows `Count` 8, and **Diff** shows `Count` 3 → 8. A filter that matches no state type clears the State panel. Theme cycles system, dark, and light.
+
+Manual Linux check (2026-10-12): port 5288 was already held by an Aspire `dcp` proxy, so this walk did not start the AppHost. DevTools listened on `http://127.0.0.1:5391` and sample 04 server on `http://127.0.0.1:5392` with `TIMEWARP_STATE_DEVTOOLS_ENDPOINT=http://127.0.0.1:5391`. After rebuilding the sample against the packed packages from this branch, one click moved the page from `Current count: 3` to `Current count: 8`. DevTools showed Ok `init` rows and the increment. Selecting the increment showed **State after action** `Count` 8 and **Diff** `Count` 3 → 8. A static render and the interactive circuit each initialize a store, so one page load produces two `init` rows. Typing `zzzz` in the filter replaced the tree with the empty-snapshot message.
 
 ## Notes
 

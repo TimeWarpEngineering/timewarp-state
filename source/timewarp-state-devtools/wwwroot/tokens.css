@@ -1,0 +1,107 @@
+/* TimeWarp tokens. Names match timewarp-architecture --twe-* tokens.
+   Dark values follow https://timewarp.enterprises/css/styles.css.
+   Light values follow the architecture tokens.css palette.
+   JSON and muted text are stepped darker or lighter per theme so body text stays WCAG AA. */
+
+:root {
+  color-scheme: dark;
+  --twe-font-sans: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --twe-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --twe-radius: 12px;
+  --twe-radius-sm: 8px;
+  --twe-purple: #55409c;
+  --twe-purple-hover: #6953b1;
+  --twe-purple-active: #352078;
+  --twe-purple-soft: #c5b4ff;
+  --twe-blue: #0085b2;
+  --twe-blue-bright: #00ccff;
+  --twe-blue-deep: #004f78;
+  --twe-green: #69a144;
+  --twe-green-deep: #50852c;
+  --twe-green-soft: #d2ffb4;
+  --twe-danger: #c2342a;
+  --twe-warning: #d97706;
+  --twe-positive: #50852c;
+  --twe-info: #0085b2;
+  --twe-lavender: #c5b4ff;
+  --twe-cyan: #00ccff;
+  --twe-cyan-deep: #004f78;
+  --twe-background: #10081f;
+  --twe-background-soft: #18102c;
+  --twe-paper: #18102c;
+  --twe-paper-2: rgba(255, 255, 255, 0.08);
+  --twe-ink: #f7fbff;
+  --twe-ink-soft: #c6bfdc;
+  --twe-muted: #c6bfdc;
+  --twe-border: rgba(197, 180, 255, 0.22);
+  --twe-header: #55409c;
+  --twe-header-ink: #ffffff;
+  --twe-selected: rgba(105, 83, 177, 0.45);
+  --twe-init: rgba(0, 204, 255, 0.14);
+  --twe-json-key: #c5b4ff;
+  --twe-json-string: #79b253;
+  --twe-json-number: #00ccff;
+  --twe-json-bool: #e0a045;
+  --twe-status-ok: #8fce6a;
+  --twe-status-error: #ff9b92;
+  --twe-diff-added: #d2ffb4;
+  --twe-diff-removed: #ffb4ae;
+  --twe-diff-changed: #7eebff;
+  --twe-diff-added-bg: rgba(210, 255, 180, 0.14);
+  --twe-diff-removed-bg: rgba(194, 52, 42, 0.32);
+  --twe-diff-changed-bg: rgba(0, 204, 255, 0.16);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --twe-background: #fafafb;
+  --twe-background-soft: #f5f5f7;
+  --twe-paper: #ffffff;
+  --twe-paper-2: #f5f5f7;
+  --twe-ink: #1a1d28;
+  --twe-ink-soft: #3b3f4d;
+  --twe-muted: #5e6270;
+  --twe-border: rgba(53, 32, 120, 0.16);
+  --twe-selected: #ebe4ff;
+  --twe-init: #e5f7ff;
+  --twe-json-key: #352078;
+  --twe-json-string: #3a701f;
+  --twe-json-number: #005f82;
+  --twe-json-bool: #8a4e08;
+  --twe-status-ok: #3a701f;
+  --twe-status-error: #a3201a;
+  --twe-diff-added: #2f6b1c;
+  --twe-diff-removed: #8d1f1a;
+  --twe-diff-changed: #004f78;
+  --twe-diff-added-bg: #e5f6d4;
+  --twe-diff-removed-bg: #fde8e6;
+  --twe-diff-changed-bg: #e5f6fc;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+    --twe-background: #fafafb;
+    --twe-background-soft: #f5f5f7;
+    --twe-paper: #ffffff;
+    --twe-paper-2: #f5f5f7;
+    --twe-ink: #1a1d28;
+    --twe-ink-soft: #3b3f4d;
+    --twe-muted: #5e6270;
+    --twe-border: rgba(53, 32, 120, 0.16);
+    --twe-selected: #ebe4ff;
+    --twe-init: #e5f7ff;
+    --twe-json-key: #352078;
+    --twe-json-string: #3a701f;
+    --twe-json-number: #005f82;
+    --twe-json-bool: #8a4e08;
+    --twe-status-ok: #3a701f;
+    --twe-status-error: #a3201a;
+    --twe-diff-added: #2f6b1c;
+    --twe-diff-removed: #8d1f1a;
+    --twe-diff-changed: #004f78;
+    --twe-diff-added-bg: #e5f6d4;
+    --twe-diff-removed-bg: #fde8e6;
+    --twe-diff-changed-bg: #e5f6fc;
+  }
+}

@@ -63,6 +63,27 @@
     await InspectorState.ClearLog();
   }
 
+  private Task SetTab(string tab) => InspectorState.SetDetailTab(tab);
+
+  private Task SetView(string view) => InspectorState.SetJsonView(view);
+
+  private async Task CycleTheme()
+  {
+    string next = InspectorState.Theme switch
+    {
+      InspectorState.ThemeDark => InspectorState.ThemeLight,
+      InspectorState.ThemeLight => InspectorState.ThemeSystem,
+      _ => InspectorState.ThemeDark
+    };
+    await InspectorState.SetTheme(next);
+  }
+
+  private async Task ToggleNode(string path)
+  {
+    bool expanded = InspectorState.IsNodeExpanded(path);
+    await InspectorState.SetNodeExpanded(path, !expanded);
+  }
+
   public override void Dispose()
   {
     if (Interlocked.Exchange(ref Disposed, 1) != 0)
@@ -73,6 +94,13 @@
     InspectorLog.Changed -= OnLogChanged;
     base.Dispose();
   }
+
+  private string ThemeLabel => InspectorState.Theme switch
+  {
+    InspectorState.ThemeDark => "Dark",
+    InspectorState.ThemeLight => "Light",
+    _ => "System"
+  };
 
   private IReadOnlyList<ActionLogEntry> VisibleEntries()
   {
@@ -99,91 +127,240 @@
       return null;
     }
 
-    return InspectorLog.Snapshot().FirstOrDefault(entry => entry.Sequence == sequence);
+    return InspectorLog.TryGetEntry(sequence, out ActionLogEntry? entry) ? entry : null;
   }
+
+  private IReadOnlyList<FoldedState> VisibleStates()
+  {
+    ActionLogEntry? selected = SelectedEntry();
+    IReadOnlyList<FoldedState> folded = selected is null
+      ? InspectorLog.FoldCurrent()
+      : InspectorLog.FoldThrough(selected.Sequence);
+    string filter = InspectorState.Filter.Trim();
+    if (filter.Length == 0)
+    {
+      return folded;
+    }
+
+    return folded
+      .Where(state => state.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase))
+      .ToArray();
+  }
+
+  private StateDiff.Result DiffFor(ActionLogEntry entry)
+  {
+    string rootName = entry.StateTypeName.Length == 0 ? entry.Name : entry.StateTypeName;
+    InspectorLog.TryGetPreviousSnapshot(entry.StateTypeName, entry.Sequence, out FoldedState? previous);
+    return StateDiff.Compare
+    (
+      previous?.Json,
+      previous?.Truncated ?? false,
+      entry.SnapshotJson,
+      entry.SnapshotTruncated,
+      rootName.Length == 0 ? "state" : rootName
+    );
+  }
+
+  private static string RowClass(ActionLogEntry entry, long selectedSequence)
+  {
+    string css = "row";
+    if (entry.Sequence == selectedSequence)
+    {
+      css += " selected";
+    }
+
+    if (string.Equals(entry.Kind, InspectorCapture.InitKind, StringComparison.Ordinal))
+    {
+      css += " init";
+    }
+
+    return css;
+  }
+
+  private static string TabClass(string tab, string current) =>
+    tab == current ? "tab active" : "tab";
 }
 
-<header class="mast">
-  <div>
-    <p class="eyebrow">TimeWarp.State</p>
-    <h1>DevTools</h1>
+<PageTitle>TimeWarp State DevTools</PageTitle>
+
+<div class="app">
+  <header class="mast">
+    <div class="brand">
+      <p class="eyebrow">TimeWarp</p>
+      <h1>State DevTools</h1>
+    </div>
+    <p class="lede">Current state, and the action that produced it.</p>
+    <button type="button" class="theme" @onclick="CycleTheme" data-qa="theme">Theme: @ThemeLabel</button>
+  </header>
+
+  @{
+    IReadOnlyList<ActionLogEntry> visible = VisibleEntries();
+    ActionLogEntry? selected = SelectedEntry();
+    IReadOnlyList<FoldedState> states = VisibleStates();
+    StateDiff.Result? diff = selected is null ? null : DiffFor(selected);
+  }
+  <div class="toolbar">
+    <label class="filter">
+      <span>Filter</span>
+      <input
+        type="search"
+        value="@InspectorState.Filter"
+        @oninput="OnFilter"
+        placeholder="Action or state"
+        data-qa="filter" />
+    </label>
+    <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
+      @(InspectorLog.IsPaused ? "Resume" : "Pause")
+    </button>
+    <button type="button" class="toolbar-button" @onclick="ClearLog" data-qa="clear">Clear</button>
+    <p class="count" data-qa="count">@visible.Count</p>
   </div>
-  <p class="lede">Action log from the inspected app. This page's own actions stay out of the list.</p>
-</header>
 
-@{
-  IReadOnlyList<ActionLogEntry> visible = VisibleEntries();
-}
-<div class="toolbar">
-  <label class="filter">
-    <span>Filter</span>
-    <input
-      type="search"
-      value="@InspectorState.Filter"
-      @oninput="OnFilter"
-      placeholder="Action or state"
-      data-qa="filter" />
-  </label>
-  <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
-    @(InspectorLog.IsPaused ? "Resume" : "Pause")
-  </button>
-  <button type="button" class="toolbar-button" @onclick="ClearLog" data-qa="clear">Clear</button>
-  <p class="count" data-qa="count">@visible.Count</p>
-</div>
-
-<div class="workspace">
-  <section class="log" aria-label="Action log">
-    @if (visible.Count == 0)
-    {
-      <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
-    }
-    else
-    {
-      <ul>
-        @foreach (ActionLogEntry entry in visible)
-        {
-          <li>
-            <button
-              type="button"
-              class="@(entry.Sequence == InspectorState.SelectedSequence ? "row selected" : "row")"
-              @onclick="() => Select(entry.Sequence)"
-              data-qa="row">
-              <span class="when">@entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</span>
-              <span class="action">@entry.ActionName</span>
-              <span class="state">@entry.StateTypeName</span>
-              <span class="duration">@entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</span>
-              <span class="status @entry.Status.ToLowerInvariant()">@entry.Status</span>
-            </button>
-          </li>
-        }
-      </ul>
-    }
-  </section>
-
-  <section class="detail" aria-label="State" data-qa="detail">
-    @{
-      ActionLogEntry? selected = SelectedEntry();
-    }
-    @if (selected is null)
-    {
-      <p class="empty">Select an action to see its state snapshot.</p>
-    }
-    else
-    {
-      <h2>@selected.ActionName</h2>
-      <p class="meta">@selected.Name</p>
-      @if (string.IsNullOrEmpty(selected.SnapshotJson))
+  <div class="workspace">
+    <section class="log" aria-label="Action log">
+      @if (visible.Count == 0)
       {
-        <p class="empty">No snapshot on this span. Enable IncludeSnapshots on the inspected app.</p>
+        <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
       }
       else
       {
-        <p class="meta">
-          @(selected.SnapshotKind ?? "state")
-          @(selected.SnapshotTruncated ? " (truncated)" : "")
-        </p>
-        <pre data-qa="snapshot">@selected.SnapshotJson</pre>
+        <ul>
+          @foreach (ActionLogEntry entry in visible)
+          {
+            <li>
+              <button
+                type="button"
+                class="@RowClass(entry, InspectorState.SelectedSequence)"
+                @onclick="() => Select(entry.Sequence)"
+                data-qa="row">
+                <span class="when">@entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</span>
+                <span class="action">@entry.ActionName</span>
+                <span class="state">@entry.StateTypeName</span>
+                <span class="duration">@entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</span>
+                <span class="status @entry.Status.ToLowerInvariant()">@entry.Status</span>
+              </button>
+            </li>
+          }
+        </ul>
       }
-    }
-  </section>
+    </section>
+
+    <section class="detail" aria-label="State" data-qa="detail">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" class="@TabClass(InspectorState.DetailTabAction, InspectorState.DetailTab)" aria-selected="@(InspectorState.DetailTab == InspectorState.DetailTabAction)" @onclick="() => SetTab(InspectorState.DetailTabAction)" data-qa="tab-action">Action</button>
+        <button type="button" role="tab" class="@TabClass(InspectorState.DetailTabState, InspectorState.DetailTab)" aria-selected="@(InspectorState.DetailTab == InspectorState.DetailTabState)" @onclick="() => SetTab(InspectorState.DetailTabState)" data-qa="tab-state">State</button>
+        <button type="button" role="tab" class="@TabClass(InspectorState.DetailTabDiff, InspectorState.DetailTab)" aria-selected="@(InspectorState.DetailTab == InspectorState.DetailTabDiff)" @onclick="() => SetTab(InspectorState.DetailTabDiff)" data-qa="tab-diff">Diff</button>
+      </div>
+
+      @if (InspectorState.DetailTab == InspectorState.DetailTabAction)
+      {
+        @if (selected is null)
+        {
+          <p class="empty">Select an action to see its name, status, and tags.</p>
+        }
+        else
+        {
+          <h2>@selected.ActionName</h2>
+          <dl class="facts">
+            <dt>State</dt>
+            <dd>@(selected.StateTypeName.Length == 0 ? "—" : selected.StateTypeName)</dd>
+            <dt>Status</dt>
+            <dd class="status @selected.Status.ToLowerInvariant()">@selected.Status</dd>
+            <dt>Duration</dt>
+            <dd>@selected.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</dd>
+            <dt>Started</dt>
+            <dd>@selected.StartTimeUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture)</dd>
+            <dt>Span</dt>
+            <dd>@(selected.SpanId.Length == 0 ? "—" : selected.SpanId)</dd>
+            <dt>Activity</dt>
+            <dd>@selected.Name</dd>
+            @foreach (KeyValuePair<string, string> attribute in selected.Attributes.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+            {
+              <dt>@(attribute.Key)</dt>
+              <dd>@(attribute.Value)</dd>
+            }
+          </dl>
+        }
+      }
+      else if (InspectorState.DetailTab == InspectorState.DetailTabDiff)
+      {
+        @if (selected is null)
+        {
+          <p class="empty">Select an action to diff its state against the previous snapshot.</p>
+        }
+        else
+        {
+          <h2>@selected.ActionName</h2>
+          @if (diff is null)
+          {
+            <p class="empty">Select an action to diff its state against the previous snapshot.</p>
+          }
+          else if (diff.Status == StateDiff.Status.NoSnapshot)
+          {
+            <p class="empty">No snapshot on this span. Enable IncludeSnapshots on the inspected app.</p>
+          }
+          else if (diff.Status == StateDiff.Status.Truncated)
+          {
+            <p class="hint">Snapshot truncated. Raise MaxSnapshotChars on the inspected app. Showing raw text.</p>
+            <pre data-qa="snapshot">@diff.Raw</pre>
+          }
+          else if (diff.Status == StateDiff.Status.Unparsed)
+          {
+            <p class="hint">This snapshot is not valid JSON.</p>
+            <pre data-qa="snapshot">@diff.Raw</pre>
+          }
+          else if (diff.Status == StateDiff.Status.NoChange)
+          {
+            <p class="empty" data-qa="diff-none">No change.</p>
+          }
+          else
+          {
+            @if (diff.Initial)
+            {
+              <p class="hint">No earlier snapshot of this state.</p>
+            }
+            <div data-qa="diff">
+              @foreach (StateDiff.Node node in diff.Nodes)
+              {
+                <StateDiffView Node="node" InspectorState="InspectorState" OnToggle="ToggleNode" />
+              }
+            </div>
+          }
+        }
+      }
+      else
+      {
+        <div class="view-tabs" role="tablist" aria-label="State format">
+          <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewTree, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewTree)" @onclick="() => SetView(InspectorState.JsonViewTree)" data-qa="view-tree">Tree</button>
+          <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewRaw, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewRaw)" @onclick="() => SetView(InspectorState.JsonViewRaw)" data-qa="view-raw">Raw</button>
+        </div>
+        <h2>@(selected is null ? "Current state" : "State after action")</h2>
+        @if (states.Count == 0)
+        {
+          <p class="empty">No state snapshots yet. Enable IncludeSnapshots on the inspected app.</p>
+        }
+        else if (InspectorState.JsonView == InspectorState.JsonViewRaw)
+        {
+          @foreach (FoldedState state in states)
+          {
+            <h3>@state.StateTypeName</h3>
+            @if (state.Truncated)
+            {
+              <p class="hint">Snapshot truncated. Raise MaxSnapshotChars on the inspected app.</p>
+            }
+            <pre data-qa="snapshot">@state.Json</pre>
+          }
+        }
+        else
+        {
+          <div data-qa="state-tree">
+            @foreach (FoldedState state in states)
+            {
+              <FoldedStateNode State="state" InspectorState="InspectorState" OnToggle="ToggleNode" />
+            }
+          </div>
+        }
+      }
+    </section>
+  </div>
 </div>

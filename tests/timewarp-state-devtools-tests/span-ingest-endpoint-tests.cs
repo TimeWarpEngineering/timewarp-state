@@ -100,6 +100,69 @@ public class SpanIngestEndpoint_Should
     }
   }
 
+  public static async Task RecordInterleavedStatesAndAnInitRow()
+  {
+    await using WebApplicationFactory<Program> factory = new();
+    HttpClient client = factory.CreateClient();
+    SpanIngestDocument document = new()
+    {
+      Spans =
+      [
+        Tagged
+        (
+          "CounterState.Initialized",
+          "init",
+          "CounterState",
+          InspectorCapture.InitKind,
+          InspectorCapture.SnapshotEventName,
+          """{"count":0}"""
+        ),
+        Tagged
+        (
+          "OtherState.SetAction",
+          "Set",
+          "OtherState",
+          "",
+          InspectorCapture.SnapshotEventName,
+          """{"name":"a"}"""
+        ),
+        Tagged
+        (
+          "CounterState.IncrementCountActionSet.Action",
+          "IncrementCountActionSet.Action",
+          "CounterState",
+          "",
+          InspectorCapture.DiffEventName,
+          """{"count":5}"""
+        )
+      ]
+    };
+
+    HttpResponseMessage response = await client.PostAsJsonAsync
+    (
+      "/ingest/spans",
+      document,
+      SpanIngestJsonContext.Default.SpanIngestDocument
+    );
+    response.EnsureSuccessStatusCode();
+
+    InspectorLog log = factory.Services.GetRequiredService<InspectorLog>();
+    IReadOnlyList<ActionLogEntry> entries = log.Snapshot();
+    entries.Count.ShouldBe(3);
+    entries[0].Kind.ShouldBe(InspectorCapture.InitKind);
+    entries[0].ActionName.ShouldBe("init");
+    entries[0].StateTypeName.ShouldBe("CounterState");
+    entries[0].SnapshotKind.ShouldBe(InspectorCapture.SnapshotEventName);
+    entries[1].StateTypeName.ShouldBe("OtherState");
+    entries[1].Kind.ShouldBe("");
+    entries[2].SnapshotKind.ShouldBe(InspectorCapture.DiffEventName);
+    entries[2].SnapshotJson.ShouldBe("""{"count":5}""");
+
+    log.FoldCurrent().Single(state => state.StateTypeName == "CounterState").Json.ShouldBe("""{"count":5}""");
+    log.FoldThrough(entries[0].Sequence).ShouldHaveSingleItem().Json.ShouldBe("""{"count":0}""");
+    log.FoldCurrent().Single(state => state.StateTypeName == "OtherState").Json.ShouldBe("""{"name":"a"}""");
+  }
+
   public static async Task CapAndMarkAnOversizedSnapshot()
   {
     await using WebApplicationFactory<Program> factory = new();
@@ -120,6 +183,38 @@ public class SpanIngestEndpoint_Should
     entry.SnapshotJson!.Length.ShouldBe(SpanIngestEndpoint.MaxSnapshotLength);
     entry.SnapshotTruncated.ShouldBeTrue();
   }
+
+  private static SpanIngestItem Tagged
+  (
+    string name,
+    string actionName,
+    string stateTypeName,
+    string kind,
+    string eventName,
+    string json
+  ) =>
+    new()
+    {
+      Name = name,
+      Status = "Ok",
+      Attributes = new Dictionary<string, string>
+      {
+        [InspectorCapture.ActionTagName] = actionName,
+        [InspectorCapture.StateTypeTagName] = stateTypeName,
+        [InspectorCapture.KindTagName] = kind
+      },
+      Events =
+      [
+        new SpanIngestEvent
+        {
+          Name = eventName,
+          Attributes = new Dictionary<string, string>
+          {
+            [InspectorCapture.SnapshotJsonTagName] = json
+          }
+        }
+      ]
+    };
 
   private static SpanIngestItem AppSpan(string actionName) =>
     new()

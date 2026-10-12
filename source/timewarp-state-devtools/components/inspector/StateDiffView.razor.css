@@ -1,0 +1,85 @@
+.node {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: var(--twe-ink);
+  border: 0;
+  border-radius: var(--twe-radius-sm);
+  padding: 0.12rem 0.25rem;
+  font-family: var(--twe-font-mono);
+  font-size: 0.82rem;
+}
+
+button.row {
+  cursor: pointer;
+}
+
+button.row:hover {
+  background: var(--twe-paper-2);
+}
+
+.row[data-change="added"] { background: var(--twe-diff-added-bg); color: var(--twe-diff-added); }
+.row[data-change="removed"] { background: var(--twe-diff-removed-bg); color: var(--twe-diff-removed); }
+.row[data-change="changed"] { background: var(--twe-diff-changed-bg); color: var(--twe-diff-changed); }
+
+.row[data-change="added"] .key,
+.row[data-change="removed"] .key,
+.row[data-change="changed"] .key,
+.row[data-change="added"] .value,
+.row[data-change="removed"] .value,
+.row[data-change="changed"] .value {
+  color: inherit;
+}
+
+.mark::before {
+  font-weight: 700;
+}
+
+.mark[data-change="added"]::before { content: "+"; }
+.mark[data-change="removed"]::before { content: "−"; }
+.mark[data-change="changed"]::before { content: "~"; }
+.mark[data-change="nested"]::before { content: ""; }
+
+.chevron {
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 5px solid currentColor;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.chevron[data-open="true"] {
+  transform: rotate(90deg);
+}
+
+.key {
+  color: var(--twe-json-key);
+}
+
+.before {
+  text-decoration: line-through;
+}
+
+.arrow {
+  color: var(--twe-muted);
+}
+
+.children {
+  margin-left: 0.85rem;
+  border-left: 1px solid var(--twe-border);
+  padding-left: 0.35rem;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--twe-blue-bright);
+  outline-offset: 2px;
+}

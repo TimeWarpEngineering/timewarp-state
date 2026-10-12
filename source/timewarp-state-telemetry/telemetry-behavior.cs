@@ -9,9 +9,10 @@
 // the Activity. Snapshots only when IncludeSnapshots, IsAllDataRequested, and caller JsonTypeInfo
 // exist. Serialize through JsonTypeInfo from caller options — never new JsonSerializerOptions()
 // and never JsonSerializer.Serialize(object) on open TState. Diff is full-JSON string compare
-// (no GetProperties); MaxSnapshotChars truncates the event payload only. Type names from typeof
-// and DeclaringType; no AssemblyQualifiedName or Type.GetType. Per-closed-generic Type/Name are
-// static readonly (finding 19). Snapshot failures never fail the action.
+// (no GetProperties); MaxSnapshotChars truncates the event payload only. The write itself is
+// StateSnapshotRecorder, shared with the initialization handler so both use one cache key.
+// Type names from typeof and DeclaringType; no AssemblyQualifiedName or Type.GetType.
+// Per-closed-generic Type/Name are static readonly (finding 19). Snapshot failures never fail the action.
 #endregion
 
 namespace TimeWarp.State.Telemetry;
@@ -36,12 +37,8 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
   private static readonly string? EnclosingStateTypeName;
   private static readonly string ActivityName;
 
-  private const string ActionTagName = "timewarp.state.action";
-  private const string StateTypeTagName = "timewarp.state.state_type";
-  private const string SnapshotJsonTagName = "snapshot.json";
-  private const string SnapshotTruncatedTagName = "snapshot.truncated";
-  private const string SnapshotEventName = "state.snapshot";
-  private const string DiffEventName = "state.diff";
+  private const string ActionTagName = StateSnapshotRecorder.ActionTagName;
+  private const string StateTypeTagName = StateSnapshotRecorder.StateTypeTagName;
 
   private readonly ILogger Logger;
   private readonly IStore Store;
@@ -136,101 +133,22 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
 
   private void TryRecordSnapshot(Activity activity)
   {
-    if (!activity.IsAllDataRequested)
+    if (EnclosingStateType is null)
     {
       return;
     }
 
-    if (TimeWarpStateTelemetryOptions is null || !TimeWarpStateTelemetryOptions.IncludeSnapshots)
-    {
-      return;
-    }
-
-    if (EnclosingStateType is null || StateSnapshotCache is null)
-    {
-      return;
-    }
-
-    JsonSerializerOptions? jsonSerializerOptions =
-      TimeWarpStateTelemetryOptions.JsonSerializerOptions ?? TimeWarpStateOptions?.JsonSerializerOptions;
-
-    if (jsonSerializerOptions is null)
-    {
-      Logger.LogDebug
-      (
-        EventIds.TelemetryBehavior_SnapshotSkipped,
-        "Skipping snapshot for {ActionType}: no JsonSerializerOptions",
-        ActionTypeName
-      );
-      return;
-    }
-
-    JsonTypeInfo? jsonTypeInfo = jsonSerializerOptions.TypeInfoResolver?.GetTypeInfo
+    StateSnapshotRecorder.TryRecord
     (
+      activity,
+      Store,
       EnclosingStateType,
-      jsonSerializerOptions
+      ActionTypeName,
+      TimeWarpStateTelemetryOptions,
+      TimeWarpStateOptions,
+      StateSnapshotCache,
+      Logger
     );
-
-    if (jsonTypeInfo is null)
-    {
-      Logger.LogDebug
-      (
-        EventIds.TelemetryBehavior_SnapshotSkipped,
-        "Skipping snapshot for {ActionType}: no JsonTypeInfo for {StateType}",
-        ActionTypeName,
-        EnclosingStateTypeName
-      );
-      return;
-    }
-
-    try
-    {
-      object state = Store.GetState(EnclosingStateType);
-      string json = JsonSerializer.Serialize(state, jsonTypeInfo);
-
-      string cacheKey = EnclosingStateType.FullName ?? EnclosingStateType.Name;
-      SnapshotChange snapshotChange = StateSnapshotCache.Record(cacheKey, json);
-      if (snapshotChange == SnapshotChange.Unchanged)
-      {
-        return;
-      }
-
-      string eventName = snapshotChange == SnapshotChange.Initial ? SnapshotEventName : DiffEventName;
-      int maxSnapshotChars = TimeWarpStateTelemetryOptions.MaxSnapshotChars;
-      bool snapshotTruncated = maxSnapshotChars > 0 && json.Length > maxSnapshotChars;
-      activity.AddEvent
-      (
-        new ActivityEvent
-        (
-          eventName,
-          tags: new ActivityTagsCollection
-          {
-            { SnapshotJsonTagName, Truncate(json, maxSnapshotChars) },
-            { SnapshotTruncatedTagName, snapshotTruncated }
-          }
-        )
-      );
-    }
-    catch (Exception exception)
-    {
-      Logger.LogDebug
-      (
-        EventIds.TelemetryBehavior_SnapshotFailed,
-        exception,
-        "Snapshot serialization failed for {ActionType}",
-        ActionTypeName
-      );
-    }
-  }
-
-  private static string Truncate(string json, int maxSnapshotChars)
-  {
-    if (maxSnapshotChars <= 0 || json.Length <= maxSnapshotChars)
-    {
-      return json;
-    }
-
-    return string.Concat(json.AsSpan(0, maxSnapshotChars), "…(truncated)");
   }
 
   private static string NestedTypeName(Type type, Type? stopAtType)

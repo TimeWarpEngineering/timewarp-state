@@ -17,6 +17,22 @@ The inspector uses TimeWarp.State for its own filter, selection, and pause. That
 
 There is no time-travel, commit, or import/export channel. Those stay on `UseReduxDevTools` until generated hydration exists.
 
+## State panel
+
+The right-hand pane has **Action**, **State**, and **Diff** tabs.
+
+**Action** lists the selected span: activity name, state type, status, duration, start time, span id, and the other tags.
+
+**State** lists every state type seen. Each node is a collapsible JSON tree. **Tree** and **Raw** switch the format. With no row selected the heading is **Current state**: the latest snapshot of each state type. With a row selected the heading is **State after action**: the fold of snapshots up to and including that row. Expanded and collapsed paths stay put as new rows arrive.
+
+**Diff** compares the selected snapshot with the previous snapshot of the same state type. Added, removed, and changed values are colour coded. Equal JSON says **No change.** A span with no snapshot says so. A truncated payload is shown as raw text with a hint to raise `MaxSnapshotChars`; it is not parsed as a tree.
+
+The filter box matches action names and state type names in the log and in the State panel.
+
+A row whose `timewarp.state.kind` tag is `init` is a state-initialization snapshot. It is tinted like Redux DevTools' `init` row and folds like any other snapshot. With `IncludeSnapshots` on, telemetry emits that row when the state is created, before its first action.
+
+The header theme control uses the TimeWarp palette. Dark is the default. Light follows `prefers-color-scheme` or an explicit choice on the control.
+
 ## AppHost
 
 ```csharp
