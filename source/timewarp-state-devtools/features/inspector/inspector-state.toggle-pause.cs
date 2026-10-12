@@ -5,8 +5,8 @@
 #region Design
 // InspectorLog owns the pause flag; it is process-wide, so the toggle reads it rather than this
 // circuit's copy, which another tab may have left stale. InspectorState.Paused mirrors it. Resume
-// flushes the buffer onto the visible list. The handler bumps Revision so the circuit re-renders even when
-// FlushPending raises Changed on this same turn.
+// moves the buffer onto the visible list atomically inside SetPaused(false). The handler bumps Revision
+// so the circuit re-renders even when SetPaused raises Changed on this same turn.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -30,11 +30,6 @@ partial class InspectorState
         bool paused = !inspectorLog.IsPaused;
         InspectorState.Paused = paused;
         inspectorLog.SetPaused(paused);
-        if (!paused)
-        {
-          inspectorLog.FlushPending();
-        }
-
         InspectorState.Revision++;
         return default;
       }

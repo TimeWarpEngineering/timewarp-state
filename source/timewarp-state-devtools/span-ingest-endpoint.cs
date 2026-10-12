@@ -116,6 +116,13 @@ public static class SpanIngestEndpoint
       actionName = item.Name ?? "";
     }
 
+    IReadOnlyDictionary<string, string> attributes = CopyAttributes(item);
+    string kind = Attribute(item, InspectorCapture.KindTagName);
+    if (kind.Length == 0 && string.Equals(actionName, InspectorCapture.InitKind, StringComparison.Ordinal))
+    {
+      kind = InspectorCapture.InitKind;
+    }
+
     (string? snapshotJson, string? snapshotKind, bool snapshotTruncated) = LatestSnapshot(item);
     DateTime startTimeUtc = item.StartTimeUnixMilliseconds <= 0
       ? DateTime.UnixEpoch
@@ -133,9 +140,33 @@ public static class SpanIngestEndpoint
       SpanId = item.SpanId ?? "",
       SnapshotJson = snapshotJson,
       SnapshotKind = snapshotKind,
-      SnapshotTruncated = snapshotTruncated
+      SnapshotTruncated = snapshotTruncated,
+      Kind = kind,
+      Attributes = attributes
     };
     return true;
+  }
+
+  private static IReadOnlyDictionary<string, string> CopyAttributes(SpanIngestItem item)
+  {
+    if (item.Attributes is null || item.Attributes.Count == 0)
+    {
+      return ImmutableDictionary<string, string>.Empty;
+    }
+
+    ImmutableDictionary<string, string>.Builder builder =
+      ImmutableDictionary.CreateBuilder<string, string>(StringComparer.Ordinal);
+    foreach (KeyValuePair<string, string> pair in item.Attributes)
+    {
+      if (pair.Value is null)
+      {
+        continue;
+      }
+
+      builder[pair.Key] = pair.Value;
+    }
+
+    return builder.ToImmutable();
   }
 
   private static string Attribute(SpanIngestItem item, string name)

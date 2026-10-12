@@ -1,0 +1,22 @@
+.shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#blazor-error-ui {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.6rem 1rem;
+  background: var(--twe-danger);
+  color: var(--twe-header-ink);
+  font-family: var(--twe-font-sans);
+}
+
+#blazor-error-ui .reload {
+  color: var(--twe-header-ink);
+  margin-left: 0.75rem;
+}

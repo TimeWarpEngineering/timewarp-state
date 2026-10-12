@@ -47,4 +47,13 @@ public sealed class ActionLogEntry
 
   /// <summary>True when the snapshot event set <c>snapshot.truncated</c>.</summary>
   public bool SnapshotTruncated { get; init; }
+
+  /// <summary>
+  /// Value of <c>timewarp.state.kind</c>. <see cref="InspectorCapture.InitKind"/> marks a state-initialization row.
+  /// </summary>
+  public string Kind { get; init; } = "";
+
+  /// <summary>Stringified span tags, including the well-known TimeWarp tags.</summary>
+  public IReadOnlyDictionary<string, string> Attributes { get; init; } =
+    ImmutableDictionary<string, string>.Empty;
 }

@@ -14,6 +14,7 @@ internal sealed class RecordingStore : IStore
   public Guid Guid { get; } = Guid.NewGuid();
   public IState CurrentState { get; set; }
   public int GetStateCallCount { get; private set; }
+  public bool ThrowOnGetState { get; set; }
 
   public RecordingStore(IState currentState)
   {
@@ -31,6 +32,11 @@ internal sealed class RecordingStore : IStore
   public IState GetState(Type stateType)
   {
     GetStateCallCount++;
+    if (ThrowOnGetState)
+    {
+      throw new InvalidOperationException("GetState failed");
+    }
+
     return CurrentState;
   }
 

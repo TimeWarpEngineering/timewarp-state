@@ -1,0 +1,29 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public FoldedState State { get; set; } = null!;
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter] public EventCallback<string> OnToggle { get; set; }
+}
+
+@{
+  StateTree.Document document = StateTree.Parse(State.Json, State.Truncated, State.StateTypeName);
+}
+
+@if (!document.Parsed || document.Root is null)
+{
+  <h3>@State.StateTypeName</h3>
+  @if (document.Truncated)
+  {
+    <p class="hint">Snapshot truncated. Raise MaxSnapshotChars on the inspected app. Showing raw text.</p>
+  }
+  else
+  {
+    <p class="hint">This snapshot is not valid JSON.</p>
+  }
+  <pre data-qa="snapshot">@document.Raw</pre>
+}
+else
+{
+  <StateTreeView Node="document.Root" InspectorState="InspectorState" OnToggle="OnToggle" />
+}

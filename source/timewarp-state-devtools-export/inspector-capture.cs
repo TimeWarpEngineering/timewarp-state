@@ -39,6 +39,12 @@ public static class InspectorCapture
   /// <summary>Later unequal JSON event name emitted by TimeWarp.State.Telemetry.</summary>
   public const string DiffEventName = "state.diff";
 
+  /// <summary>Span tag: <see cref="InitKind"/> on a state-initialization activity.</summary>
+  public const string KindTagName = "timewarp.state.kind";
+
+  /// <summary>Value of <see cref="KindTagName"/> for a snapshot emitted when a state is initialized.</summary>
+  public const string InitKind = "init";
+
   /// <summary>Simple name of the DevTools UI state. Spans for this state are not captured.</summary>
   public const string InspectorStateTypeName = "InspectorState";
 

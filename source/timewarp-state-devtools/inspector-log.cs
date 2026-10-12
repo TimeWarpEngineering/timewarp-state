@@ -7,7 +7,12 @@
 // This mailbox is the one list both sides see. Add raises Changed outside the lock; the circuit
 // dispatches NoteLogChanged, which re-renders from Snapshot. SetPaused and Clear raise Changed too,
 // so a second tab sees the shared pause flag and list. Pause parks spans in Pending so they
-// stay out of the displayed list until Resume flushes them. UI actions never call Add.
+// stay out of the displayed list until SetPaused(false) moves them onto Entries inside the same lock,
+// so no ingest can interleave and Entries stays in sequence order. UI actions never call Add.
+// LatestByStateType tracks the newest snapshot per state type ever seen since the last Clear, so the
+// current fold is one slot per state. FoldThrough walks entries only when a historical sequence is asked for.
+// Trim does not touch the index: an idle state whose only snapshot was evicted from the display cap
+// still appears in Current state. Only Clear resets it.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -23,6 +28,7 @@ public sealed class InspectorLog
   private readonly object Sync = new();
   private readonly List<ActionLogEntry> Entries = [];
   private readonly List<ActionLogEntry> Pending = [];
+  private readonly Dictionary<string, FoldedState> LatestByStateType = new(StringComparer.Ordinal);
   private long NextSequence = 1;
   private bool Paused;
 
@@ -55,6 +61,99 @@ public sealed class InspectorLog
   }
 
   /// <summary>
+  /// Latest snapshot per state type across the visible list. One slot per state, not a walk of every entry.
+  /// </summary>
+  public IReadOnlyList<FoldedState> FoldCurrent()
+  {
+    lock (Sync)
+    {
+      return Order(LatestByStateType.Values);
+    }
+  }
+
+  /// <summary>
+  /// Latest snapshot per state type among visible entries with <see cref="ActionLogEntry.Sequence"/>
+  /// less than or equal to <paramref name="sequence"/>.
+  /// </summary>
+  public IReadOnlyList<FoldedState> FoldThrough(long sequence)
+  {
+    lock (Sync)
+    {
+      Dictionary<string, FoldedState> folded = new(StringComparer.Ordinal);
+      foreach (ActionLogEntry entry in Entries)
+      {
+        if (entry.Sequence > sequence)
+        {
+          break;
+        }
+
+        Note(folded, entry);
+      }
+
+      return Order(folded.Values);
+    }
+  }
+
+  /// <summary>
+  /// Finds the visible entry with <paramref name="sequence"/>.
+  /// </summary>
+  public bool TryGetEntry(long sequence, out ActionLogEntry? entry)
+  {
+    lock (Sync)
+    {
+      foreach (ActionLogEntry candidate in Entries)
+      {
+        if (candidate.Sequence == sequence)
+        {
+          entry = candidate;
+          return true;
+        }
+      }
+    }
+
+    entry = null;
+    return false;
+  }
+
+  /// <summary>
+  /// Latest snapshot of <paramref name="stateTypeName"/> with sequence strictly less than <paramref name="sequence"/>.
+  /// </summary>
+  public bool TryGetPreviousSnapshot(string stateTypeName, long sequence, out FoldedState? previous)
+  {
+    ArgumentNullException.ThrowIfNull(stateTypeName);
+    previous = null;
+    if (stateTypeName.Length == 0)
+    {
+      return false;
+    }
+
+    lock (Sync)
+    {
+      foreach (ActionLogEntry entry in Entries)
+      {
+        if (entry.Sequence >= sequence)
+        {
+          break;
+        }
+
+        if (!string.Equals(entry.StateTypeName, stateTypeName, StringComparison.Ordinal))
+        {
+          continue;
+        }
+
+        if (string.IsNullOrEmpty(entry.SnapshotJson))
+        {
+          continue;
+        }
+
+        previous = ToFolded(entry);
+      }
+    }
+
+    return previous is not null;
+  }
+
+  /// <summary>
   /// Appends <paramref name="entry"/> to the visible list, or to the pause buffer when paused.
   /// Assigns <see cref="ActionLogEntry.Sequence"/>.
   /// </summary>
@@ -72,8 +171,7 @@ public sealed class InspectorLog
       }
       else
       {
-        Entries.Add(stored);
-        Trim(Entries);
+        AppendVisible(stored);
         changed = Changed;
       }
     }
@@ -83,7 +181,8 @@ public sealed class InspectorLog
 
   /// <summary>
   /// Sets the pause flag and raises <see cref="Changed"/> when the flag changed, so every circuit
-  /// refreshes its pause display. Does not move spans; <see cref="FlushPending"/> does that.
+  /// refreshes its pause display. Resuming moves the pause buffer onto the visible list in the same
+  /// lock acquisition, so no concurrent <see cref="Add"/> can interleave with the flush.
   /// </summary>
   public void SetPaused(bool paused)
   {
@@ -95,28 +194,19 @@ public sealed class InspectorLog
         Paused = paused;
         changed = Changed;
       }
-    }
 
-    changed?.Invoke();
-  }
-
-  /// <summary>
-  /// Moves the pause buffer onto the visible list and raises <see cref="Changed"/> when anything moved.
-  /// </summary>
-  public void FlushPending()
-  {
-    Action? changed = null;
-    lock (Sync)
-    {
-      if (Pending.Count == 0)
+      if (!paused && Pending.Count > 0)
       {
-        return;
-      }
+        foreach (ActionLogEntry entry in Pending)
+        {
+          Entries.Add(entry);
+          Note(LatestByStateType, entry);
+        }
 
-      Entries.AddRange(Pending);
-      Pending.Clear();
-      Trim(Entries);
-      changed = Changed;
+        Pending.Clear();
+        Trim(Entries);
+        changed = Changed;
+      }
     }
 
     changed?.Invoke();
@@ -134,6 +224,7 @@ public sealed class InspectorLog
       bool hadAny = Entries.Count > 0 || Pending.Count > 0;
       Entries.Clear();
       Pending.Clear();
+      LatestByStateType.Clear();
       if (raiseChanged && hadAny)
       {
         changed = Changed;
@@ -159,16 +250,50 @@ public sealed class InspectorLog
       SpanId = entry.SpanId,
       SnapshotJson = entry.SnapshotJson,
       SnapshotKind = entry.SnapshotKind,
-      SnapshotTruncated = entry.SnapshotTruncated
+      SnapshotTruncated = entry.SnapshotTruncated,
+      Kind = entry.Kind,
+      Attributes = entry.Attributes
     };
   }
 
-  private static void Trim(List<ActionLogEntry> entries)
+  private void AppendVisible(ActionLogEntry stored)
+  {
+    Entries.Add(stored);
+    Note(LatestByStateType, stored);
+    Trim(Entries);
+  }
+
+  private static void Note(Dictionary<string, FoldedState> folded, ActionLogEntry entry)
+  {
+    if (entry.StateTypeName.Length == 0 || string.IsNullOrEmpty(entry.SnapshotJson))
+    {
+      return;
+    }
+
+    folded[entry.StateTypeName] = ToFolded(entry);
+  }
+
+  private static FoldedState ToFolded(ActionLogEntry entry) =>
+    new()
+    {
+      StateTypeName = entry.StateTypeName,
+      Sequence = entry.Sequence,
+      Json = entry.SnapshotJson ?? "",
+      Truncated = entry.SnapshotTruncated
+    };
+
+  private static FoldedState[] Order(IEnumerable<FoldedState> folded) =>
+    folded.OrderBy(state => state.StateTypeName, StringComparer.Ordinal).ToArray();
+
+  private static bool Trim(List<ActionLogEntry> entries)
   {
     int overflow = entries.Count - MaxEntries;
     if (overflow > 0)
     {
       entries.RemoveRange(0, overflow);
+      return true;
     }
+
+    return false;
   }
 }
