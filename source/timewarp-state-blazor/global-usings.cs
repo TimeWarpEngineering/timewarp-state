@@ -29,7 +29,6 @@ global using System.Text.RegularExpressions;
 global using TimeWarp.Features.Developer;
 global using TimeWarp.Features.StateTransactions;
 global using TimeWarp.Features.JavaScriptInterop;
-global using TimeWarp.Features.ReduxDevTools;
 global using TimeWarp.Features.RenderSubscriptions;
 global using TimeWarp.Mediator;
 global using TimeWarp.State;

@@ -57,8 +57,7 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
 
   /// <summary>
   /// Dispatches a request from JavaScript. Only types allow-listed with
-  /// <see cref="ServiceCollectionExtensions.AddJavaScriptDispatch"/> (and Redux DevTools requests when
-  /// DevTools is enabled) are dispatched; everything else is rejected.
+  /// <see cref="ServiceCollectionExtensions.AddJavaScriptDispatch"/> are dispatched; everything else is rejected.
   /// </summary>
   /// <param name="requestTypeAssemblyQualifiedName">
   /// The allowed type's full name, "FullName, AssemblyName", assembly-qualified name, or alias.
@@ -97,7 +96,7 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
       );
     }
 
-    if (!typeof(IAction).IsAssignableFrom(requestType) && !typeof(IReduxRequest).IsAssignableFrom(requestType))
+    if (!typeof(IAction).IsAssignableFrom(requestType))
     {
       Logger.LogWarning
       (
@@ -116,12 +115,12 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
     return result;
   }
 
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
-  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>, or a Redux DevTools request the host opted into.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>.")]
+  [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("AOT", "IL3050", Justification = "requestType is an action the host rooted with AddJavaScriptDispatch Allow<T>.")]
   private object CreateRequest(string requestTypeName, Type requestType, string? requestAsJson)
   {
     Exception? innerException = null;

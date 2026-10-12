@@ -11,14 +11,8 @@
 namespace Test.App.Client.Features.Base.Components;
 
 /// <summary>
-/// Makes access to the State a little easier and by inheriting from
-/// TimeWarpStateDevToolsInputComponent it allows for ReduxDevTools operation.
+/// Makes access to the State a little easier for test-app input components.
 /// </summary>
-/// <remarks>
-/// In production one would NOT be required to use these base components
-/// But would be required to properly implement the required interfaces.
-/// one could conditionally inherit from BaseComponent for production build.
-/// </remarks>
 public abstract class BaseInputComponent<T> : TimeWarpStateInputComponent<T>
 {
   internal ApplicationState ApplicationState => GetState<ApplicationState>();

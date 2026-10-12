@@ -74,3 +74,31 @@ Update `.editorconfig` and suppressions: `TWS001` is `TWS0009`, `StateInheritanc
 ## Page title
 
 `PushRouteInfo` imports `./_content/TimeWarp.State.Plus/js/document-title.js` and calls `getDocumentTitle`. Content-Security-Policy no longer needs `unsafe-eval` for the route stack. Hosts that block script modules still get the URL, with an empty title.
+
+## Redux DevTools
+
+`UseReduxDevTools()`, `<ReduxDevTools />`, `IReduxDevToolsStore`, and `State<T>.Hydrate` are removed. Delete the call, the component, and any `Hydrate` override. `UseFullNameForStatesInDevTools` is removed with them.
+
+The browser extension no longer receives commits. The action log, state tree, and diff are telemetry plus the companion DevTools app:
+
+```csharp
+builder.Services.AddTimeWarpState();
+builder.Services.AddTimeWarpStateBlazor();
+builder.Services.AddTimeWarpStateTelemetry();
+builder.Services.AddOpenTelemetry()
+  .WithTracing(tracing =>
+  {
+    tracing.AddSource(TimeWarpStateTelemetry.ActivitySourceName);
+    tracing.AddTimeWarpStateDevToolsExporter();
+  });
+```
+
+On the Aspire AppHost:
+
+```csharp
+IResourceBuilder<ProjectResource> devtools = builder.AddTimeWarpStateDevTools();
+builder.AddProject<Projects.MyApp>("my-app")
+  .WithTimeWarpStateDevTools(devtools);
+```
+
+Remove `<ReduxDevTools />` from the root component. There is no time-travel, commit, or import/export replacement.

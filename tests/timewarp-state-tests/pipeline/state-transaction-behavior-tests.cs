@@ -617,7 +617,9 @@ public class Should_
 
     public override void Initialize() { }
 
+#pragma warning disable TWM001 // Behavior fixture. The test calls the behavior directly and does not dispatch this action.
     public sealed class TickAction : IAction;
+#pragma warning restore TWM001
   }
 
   [NotTest]

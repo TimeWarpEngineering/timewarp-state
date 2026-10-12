@@ -1,15 +1,11 @@
 ﻿import {JsonRequestHandlerMethodName} from './constants.js';
 import {DotNetReference} from './dot-net-reference';
 import {log} from './logger.js';
-import {ReduxDevTools} from "./redux-dev-tools";
 
 export class TimeWarpState {
 
   // Holds the .NET instance of JsonRequestHandler
   jsonRequestHandler: DotNetReference;
-
-  // Holds the Redux DevTools instance
-  reduxDevTools: ReduxDevTools;
 
   // @ts-ignore
   /**

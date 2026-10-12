@@ -55,5 +55,4 @@ There is no migration framework in TimeWarp.State. Do not add one beside this sa
 - `[assembly: MediatorBehavior(typeof(PersistentStatePostProcessor<,>), order: 520, Scope = typeof(ClientPipeline))]`.
 - `AddGeneratedMediator<ClientPipeline>()`.
 - `AddTimeWarpStatePersistence()`.
-- `UseReduxDevTools()` so the linked `CommitHandler` can be constructed when the Development host validates DI. This sample does not render `<ReduxDevTools />`, so the extension is not initialized.
 - Alias `PersistentStateAttribute` to `TimeWarp.Features.Persistence.PersistentStateAttribute`. .NET 10 also defines `Microsoft.AspNetCore.Components.PersistentStateAttribute`.

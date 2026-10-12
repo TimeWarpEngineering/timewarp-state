@@ -23,11 +23,6 @@
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
     </Project>
   </Folder>
-  <Folder Name="/Samples/01-ReduxDevTools/">
-    <Project Path="samples\01-redux-dev-tools\wasm\sample-01-wasm\sample-01-wasm.csproj">
-      <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />
-    </Project>
-  </Folder>
   <Folder Name="/Samples/02-ActionTracking/">
     <Project Path="samples\02-action-tracking\wasm\sample-02-wasm\sample-02-wasm.csproj">
       <Configuration Solution="ReduxDevToolsEnabled|Any CPU" Project="Debug|Any CPU" />

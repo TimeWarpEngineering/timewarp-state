@@ -5,7 +5,7 @@
 
 #region Design
 // TryAdd and JavaScriptDispatchRegistry.GetOrAdd make the call idempotent and order-independent
-// relative to UseReduxDevTools and AddJavaScriptDispatch.
+// relative to AddJavaScriptDispatch.
 #endregion
 
 namespace TimeWarp.State;

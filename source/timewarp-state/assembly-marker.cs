@@ -4,9 +4,9 @@
 #endregion
 
 #region Design
-// StateInitialization (200) and StateTransaction (300) are woven here. ReduxDevTools (100) and
-// RenderSubscriptions (400) are woven by TimeWarp.State.Blazor so this assembly has no Blazor
-// reference. Order is compared across assemblies. AssemblyMarker is a sealed, empty marker.
+// StateInitialization (200) and StateTransaction (300) are woven here. RenderSubscriptions (400)
+// are woven by TimeWarp.State.Blazor so this assembly has no Blazor reference. Order is compared
+// across assemblies. AssemblyMarker is a sealed, empty marker.
 #endregion
 
 // This assembly is a member of the TimeWarp.Mediator compile-time graph. The host generator
@@ -19,8 +19,8 @@
 // `request is IAction` at runtime: membership is decided at compile time.
 //
 // Order is the pipeline order (lower = outermost):
-// ReduxDevTools (TimeWarp.State.Blazor, 100) -> StateInitialization (200) -> StateTransaction (300)
-// -> RenderSubscriptions (TimeWarp.State.Blazor, 400) -> handler.
+// StateInitialization (200) -> StateTransaction (300) -> RenderSubscriptions (TimeWarp.State.Blazor, 400)
+// -> handler.
 // Hosts declare their own client behaviors with order >= 500 and Scope = typeof(ClientPipeline)
 // so they run inside the State pipeline.
 [assembly: MediatorAssembly]

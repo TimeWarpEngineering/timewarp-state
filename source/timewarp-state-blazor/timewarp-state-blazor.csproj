@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <Title>TimeWarp State Blazor</Title>
-    <Description>Blazor components, JavaScript interop, render subscriptions, and Redux DevTools for TimeWarp.State.</Description>
+    <Description>Blazor components, JavaScript interop, and render subscriptions for TimeWarp.State.</Description>
     <PackageId>TimeWarp.State.Blazor</PackageId>
     <AssemblyName>TimeWarp.State.Blazor</AssemblyName>
     <RootNamespace>TimeWarp.State.Blazor</RootNamespace>

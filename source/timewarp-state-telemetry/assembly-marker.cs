@@ -7,7 +7,7 @@
 // StateTransactionBehavior is woven: closed TelemetryBehavior<TAction,TResponse> types stay
 // visible to the trimmer. Order 350 sits inside StateTransactionBehavior (300) and outside
 // RenderSubscriptionsPostProcessor (400) so handler exceptions hit this catch before the
-// transaction swallows them. Duration covers handler + render, not clone/Redux JS.
+// transaction swallows them. Duration covers handler + render, not the clone.
 // Snapshots stay off until AddTimeWarpStateTelemetry sets IncludeSnapshots.
 #endregion
 

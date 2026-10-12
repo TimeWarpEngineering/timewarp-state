@@ -3,8 +3,8 @@
 #endregion
 
 #region Design
-// Registers an HttpClient, AddGeneratedMediator<ClientPipeline>(), AddTimeWarpState with Redux DevTools
-// enabled, AddTimeWarpStateBlazor(), and AddTimeWarpStateRouting().
+// Registers an HttpClient, AddGeneratedMediator<ClientPipeline>(), AddTimeWarpState(),
+// AddTimeWarpStateBlazor(), and AddTimeWarpStateRouting().
 #endregion
 
 namespace Sample03Wasm;
@@ -26,13 +26,7 @@ public class Program
     // generator into this host assembly, scoped to the client pipeline (see mediator-scope.cs).
     builder.Services.AddGeneratedMediator<ClientPipeline>();
 
-    builder.Services.AddTimeWarpState
-    (
-      options =>
-      {
-        options.UseReduxDevTools();
-      }
-    );
+    builder.Services.AddTimeWarpState();
     builder.Services.AddTimeWarpStateBlazor();
     
     builder.Services.AddTimeWarpStateRouting();

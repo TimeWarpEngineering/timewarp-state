@@ -77,13 +77,7 @@ So you don't have to worry about where to call `StateHasChanged` and still have 
 
 Apply `[SuppressRender]` to an action type that must never re-render subscribers. The check is cached per closed generic. `IInternalAction` still re-renders (ActionTracking and timer UI). `RenderSubscriptionContext.EnsureAction` is obsolete: it keys by the in-flight instance and is cleared when the pipeline completes.
 
-#### ReduxDevToolsBehavior
-
-> [!NOTE]
-> Opt-in via `UseReduxDevTools`. Disabled by default. This should be disabled in production as it consumes significant resources.
-
-One of the nice features of redux is the developer tools [^6].
-This behavior implements the integration of these developer tools.
+The action log, state tree, and diff live in the companion [DevTools](topics/devtools.md) app, fed by [telemetry](topics/telemetry.md).
 
 ### JavaScript Interop
 
@@ -110,5 +104,3 @@ if the developer chose they could mark the Requests as such. For example **IActi
 [^2]: https://redux.js.org/
 
 [^3]: https://en.wikipedia.org/wiki/Command_pattern
-
-[^6]: https://github.com/reduxjs/redux-devtools

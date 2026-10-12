@@ -1,24 +1,13 @@
 import { timeWarpState } from './timewarp-state.js';
-import { ReduxDevTools } from './redux-dev-tools.js';
 import { log, LogAction } from './logger.js';
-import { TimeWarpStateName, InitializeJavaScriptInteropName, ReduxDevToolsFactoryName, ReduxDevToolsName, } from './constants.js';
+import { TimeWarpStateName, InitializeJavaScriptInteropName, } from './constants.js';
 function InitializeJavaScriptInterop(JsonRequestHandler) {
     log("TimeWarp.State", "InitializeJavaScriptInterop", "info");
     timeWarpState.jsonRequestHandler = JsonRequestHandler;
 }
-function ReduxDevToolsFactory(reduxDevToolsOptions) {
-    log("TimeWarp.State", "ReduxDevToolsFactory", "info");
-    if (!window[ReduxDevToolsName]) {
-        const reduxDevTools = new ReduxDevTools(reduxDevToolsOptions);
-        timeWarpState.reduxDevTools = reduxDevTools;
-        window[ReduxDevToolsName] = reduxDevTools;
-    }
-    return window[ReduxDevToolsName].IsEnabled;
-}
 function initializeEnvironment() {
     log("TimeWarp.State", "initializeEnvironment", "info", LogAction.Begin);
     window[InitializeJavaScriptInteropName] = InitializeJavaScriptInterop;
-    window[ReduxDevToolsFactoryName] = ReduxDevToolsFactory;
     window[TimeWarpStateName] = timeWarpState;
     log("TimeWarp.State", "initializeEnvironment", "info", LogAction.End);
 }

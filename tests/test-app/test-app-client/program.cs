@@ -4,8 +4,8 @@
 
 #region Design
 // ConfigureServices is public so Test.App.Server can register the same client services for server rendering. It calls
-// AddGeneratedMediator<ClientPipeline>() only, so an unscoped ISender injection fails fast. It turns on Redux DevTools
-// and CaptureRenderCaller, calls AddTimeWarpStateBlazor, registers the action catalog and JavaScript dispatch for
+// AddGeneratedMediator<ClientPipeline>() only, so an unscoped ISender injection fails fast. It turns on
+// CaptureRenderCaller, calls AddTimeWarpStateBlazor, registers the action catalog and JavaScript dispatch for
 // IncrementCount, and an HttpClient for localhost:7011. The culture is fixed to en-US with ISO date patterns so tests
 // see stable formatting.
 #endregion
@@ -46,15 +46,6 @@ public class Program
     (
       options =>
       {
-        options
-        .UseReduxDevTools
-        (
-          reduxDevToolsOptions =>
-            {
-              reduxDevToolsOptions.Name = "Test App";
-              reduxDevToolsOptions.Trace = true;
-            }
-        );
         options.CaptureRenderCaller = true;
         options.Assemblies =
           new[]

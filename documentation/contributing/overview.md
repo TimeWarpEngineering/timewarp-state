@@ -12,7 +12,7 @@ DocFX builds `documentation/docfx.json`. Paths are case-sensitive. Folders and m
 | Topic cross-reference | `xref:` plus the target file's YAML `uid`, for example `[Routing](xref:TimeWarp.State:Routing.md)` |
 | TOC entry | `topicUid` set to that same `uid`, or `href` to a directory that contains `toc.yml` (`topics/`, `release-notes/`, `migrations/`) |
 | Include | `[!include[Name](partials/badges.md)]` with the real relative path |
-| Code from a sample | `[!code-csharp[Name](../../samples/01-redux-dev-tools/wasm/sample-01-wasm/program.cs)]` — the file must exist on disk |
+| Code from a sample | `[!code-csharp[Name](../../samples/00-state-action-handler/wasm/sample-00-wasm/program.cs)]` — the file must exist on disk |
 | Source file outside the docset | Absolute GitHub URL (`blob` for a file, `tree` for a directory). A relative link to `.cs`, `.razor`, or a project folder is an invalid file link |
 | Sample article | Link to `overview.md` or `readme.md`, not a bare directory and not a renamed PascalCase folder |
 

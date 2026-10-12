@@ -1,11 +1,10 @@
 #region Purpose
-// Contracts every state implements: the ClientPipeline Sender, Guid, Initialize and CancelOperations, plus
-// IState<TState>.Hydrate for Redux DevTools time travel.
+// Contracts every state implements: the ClientPipeline Sender, Guid, Initialize and CancelOperations.
 #endregion
 
 #region Design
-// Split in two so non-generic code (Store, behaviors) can work with IState while Hydrate stays strongly typed.
-// IState<TState> is covariant.
+// Split in two so non-generic code (Store, behaviors) can work with IState while IState<TState> carries the
+// self type. IState<TState> is covariant.
 #endregion
 
 namespace TimeWarp.State;
@@ -28,14 +27,4 @@ public interface IState
   public void CancelOperations();
 }
 
-public interface IState<out TState> : IState
-{
-  /// <summary>
-  /// Set the state from Dictionary
-  /// Used by ReduxDevTools to support TimeTravel
-  /// </summary>
-  /// <param name="keyValuePairs"></param>
-  /// <returns></returns>
-  /// <remarks>Only needed for time travel which I think is waste anyway.</remarks>
-  TState Hydrate(IDictionary<string, object> keyValuePairs);
-}
+public interface IState<out TState> : IState;

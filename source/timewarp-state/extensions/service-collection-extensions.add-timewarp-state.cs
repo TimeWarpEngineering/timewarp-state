@@ -55,8 +55,8 @@ public static partial class ServiceCollectionExtensions
     // [assembly: MediatorAssembly], is scoped to the ClientPipeline via [assembly: MediatorScope] and
     // declares its behaviors with [assembly: MediatorBehavior(..., Scope = typeof(ClientPipeline))]
     // (see assembly-marker.cs): state-initialization -> state-transaction.
-    // Redux DevTools and render subscriptions are woven by TimeWarp.State.Blazor when that package
-    // is referenced. Nothing mediator-related is registered here. UseStateTransactionBehavior is
+    // Render subscriptions are woven by TimeWarp.State.Blazor when that package is referenced.
+    // Nothing mediator-related is registered here. UseStateTransactionBehavior is
     // honored at runtime by StateTransactionBehavior itself (it reads TimeWarpStateOptions).
 
     return serviceCollection;

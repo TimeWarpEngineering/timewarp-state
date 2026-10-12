@@ -51,11 +51,7 @@ to `Type.GetType`.
 - the JSON cannot be deserialized into the type, or deserializes to `null`;
 - the JSON is empty and the type has no public parameterless constructor.
 
-## Redux DevTools
-
-Redux DevTools messages (Start, Commit) reach .NET through the same handler. They are not actions, so
-`UseReduxDevTools()` allow-lists them itself. Without `UseReduxDevTools()` they are rejected. Call
-`UseReduxDevTools()` only in Development if you do not want DevTools in production.
+The handler allow-lists actions only. A type that does not implement `IAction` is rejected.
 
 ## Why explicit registration
 

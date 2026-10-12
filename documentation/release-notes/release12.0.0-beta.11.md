@@ -25,11 +25,13 @@ title: Release 12.0.0-beta.11
 
 - **`PushRouteInfo` reads `document.title` from `document-title.js`.** It no longer calls JavaScript `eval`. A disconnected circuit records an empty title and still pushes the URL.
 
+- **Redux DevTools is removed.** `UseReduxDevTools()`, `<ReduxDevTools />`, `IReduxDevToolsStore`, and `State<T>.Hydrate` are gone. The generated mediator no longer links `CommitHandler`, so a Development host that references `TimeWarp.State.Blazor` validates the container without that registration. Observe actions with `AddTimeWarpStateTelemetry()` and `AddTimeWarpStateDevToolsExporter()`, and add the inspector with Aspire `AddTimeWarpStateDevTools()`. See the [12.0.0-beta.11 migration](xref:TimeWarpState:Migration12.0.0-beta.11.md).
+
 ### Other changes
 
 - `State<T>.Guid`, `Sender`, and `CancellationTokenSource` stay unshared. Ignored members are `IgnoreDataMember`, `NonSerialized`, and `JsonIgnore`, including on backing fields.
 - `[CloneShared]` on a field or auto-property copies that member by reference. Use it for an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`, `IJSRuntime`). An ignore attribute leaves the constructor value, which is null for a service parameter. `[CloneShared]` wins when a member has both.
-- `TimeWarp.State` builds with `IsAotCompatible=true`, and trim/AOT warnings (IL2xxx/IL3xxx) are build errors in that project. The remaining reflection is suppressed in place with a justification and is a follow-up: the state assembly scan in `AddTimeWarpState` (`EnsureStates`, IL2026 and IL2072), Redux DevTools time travel in `Store.LoadStatesFromJson` (IL2026, IL3050) and `LoadStateFromJson` (IL2026, IL2070, IL2072, IL2075, IL3050), and `GetInterfaces` in `LogTimeWarpStateMiddleware` (no warning). `MethodInfoExtensions.InvokeAsync` is removed.
+- `TimeWarp.State` builds with `IsAotCompatible=true`, and trim/AOT warnings (IL2xxx/IL3xxx) are build errors in that project. The remaining reflection is suppressed in place with a justification and is a follow-up: the state assembly scan in `AddTimeWarpState` (`EnsureStates`, IL2026 and IL2072) and `GetInterfaces` in `LogTimeWarpStateMiddleware` (no warning). `LoadStatesFromJson` / `LoadStateFromJson` left with Redux DevTools. `MethodInfoExtensions.InvokeAsync` is removed.
 - The generated clone covers fields declared on generic types, tuples, `KeyValuePair`, `Nullable<T>` structs, sorted, linked, concurrent, and read-only collections, `StringBuilder`, and BCL values held behind collection interfaces (copied into `List<T>`, `HashSet<T>`, or `Dictionary<TKey,TValue>` when the type is unknown). Polymorphic members keep their runtime type. See [Cloning](xref:TimeWarpState:Cloning.md).
 - A type from another assembly is cloned only when the generator can see all of its fields. DTOs from a sibling project that are not plain auto-property types need `ProduceReferenceAssembly=false` on that project, or `ICloneable`.
 

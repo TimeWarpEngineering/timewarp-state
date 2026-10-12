@@ -28,7 +28,7 @@ This is particularly useful for:
 - Breadcrumb trail implementation
 - History-based navigation
 - Concurrent route handling
-- Debugging navigation with ReduxDevTools
+- Debugging navigation with the DevTools app
 
 ## Prerequisites
 
@@ -40,36 +40,31 @@ This is particularly useful for:
 >    - Sets up state management foundation
 >    - Implements action/handler pattern
 > 
-> 2. Then complete [Sample01 ReduxDevTools tutorial](xref:TimeWarp.State:01-ReduxDevTools.md)
->    - Adds TimeWarp.State.Plus package
->    - Integrates Redux DevTools
->    - Sets up required components
-> 
-> 3. Only then proceed with this routing tutorial
+> 2. Only then proceed with this routing tutorial
 >    - Builds on the established foundation
->    - Uses features from previous tutorials
+>    - Uses features from the previous tutorial
 >
 > Attempting to skip tutorials or complete them out of order will result in errors, as each tutorial depends on the setup and concepts from the previous ones.
 
 Additional requirements:
 - Understanding of TimeWarp.State concepts (State, Actions, and Handlers)
-- [Redux DevTools Extension](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd) installed in Chrome
+- [TimeWarp.State DevTools](xref:TimeWarpState:DevTools.md) when you want the action log while navigating
 
 ## Implementation Steps
 
-### 1. Start from ReduxDevTools Sample
+### 1. Start from the StateActionHandler sample
 
-First, complete the [Sample01 ReduxDevTools tutorial](xref:TimeWarp.State:01-ReduxDevTools.md), but use `Sample03Wasm` as the project name:
+Complete the [Sample00 StateActionHandler tutorial](xref:TimeWarp.State:00-StateActionHandler.md), but use `Sample03Wasm` as the project name:
 
 ```pwsh
 dotnet new blazorwasm -n Sample03Wasm --use-program-main
 ```
 
-Follow all steps in the Sample01 tutorial until you have a working application with ReduxDevTools integration.
+Follow that tutorial until the counter dispatches an action.
 
 ### 2. Add Required Dependencies
 
-The TimeWarp.State.Plus package should already be installed from the ReduxDevTools tutorial. If not:
+Add TimeWarp.State.Plus if the previous tutorial did not:
 
 ```pwsh
 dotnet add package TimeWarp.State.Plus --prerelease
@@ -102,7 +97,6 @@ public class Program
     (
       options =>
       {
-        options.UseReduxDevTools();
         options.Assemblies = new[]
         {
           typeof(Program).Assembly,
@@ -184,11 +178,9 @@ The `TwPageTitle` component:
 - Leverage semaphore-based protection for custom navigation logic
 - Monitor route stack modifications in development
 
-### 3. ReduxDevTools Integration
-- Monitor route state changes in real-time
-- Use time-travel debugging for navigation issues
-- Track route stack modifications
-- Analyze navigation patterns during development
+### 3. DevTools
+
+Watch route actions in [TimeWarp.State DevTools](xref:TimeWarpState:DevTools.md) when the host exports telemetry. The sample itself does not start the inspector.
 
 ## Troubleshooting
 
@@ -203,37 +195,18 @@ The `TwPageTitle` component:
 2. **Breadcrumbs Not Showing**
    - Confirm TwBreadcrumb placement in MainLayout
    - Verify TwPageTitle usage on all pages
-   - Check route state updates in ReduxDevTools
+   - Check route state updates in the DevTools app
    - Validate MaxLinks parameter value
 
 3. **Navigation History Issues**
    - Ensure consistent TwPageTitle implementation
-   - Monitor route stack in ReduxDevTools
+   - Monitor the route stack in the DevTools app
    - Verify concurrent navigation handling
    - Check for custom navigation interference
 
 ### Debugging Tips
 
-1. **Using ReduxDevTools**
-   ```csharp
-   // Enable detailed logging in development
-   builder.Services.AddTimeWarpState
-   (
-     options =>
-     {
-       options.UseReduxDevTools
-       (
-         config =>
-         {
-           config.EnableDetailedLogs = true;
-           config.TraceLimit = 25;
-         }
-       );
-     }
-   );
-   ```
-
-2. **Route State Inspection**
+1. **Route State Inspection**
    ```csharp
    // Inject IState<RouteState> to inspect current route
    @inject IState<RouteState> RouteState
@@ -248,4 +221,4 @@ The `TwPageTitle` component:
    }
    ```
 
-This tutorial demonstrates how to implement comprehensive routing features in a TimeWarp.State application using the built-in TwPageTitle and TwBreadcrumb components, while maintaining debuggability through ReduxDevTools integration.
+This tutorial demonstrates how to implement comprehensive routing features in a TimeWarp.State application using the built-in TwPageTitle and TwBreadcrumb components. Watch the route actions in the companion DevTools app when you want a log.

@@ -3,26 +3,36 @@
 #endregion
 
 #region Design
-// Inherits TimeWarpStateDevComponent so pages can show the @RenderModeDisplay fragment the E2E tests read. Every
-// property subscribes the component to that state's changes, except NoSubRouteState, which uses placeSubscription:
-// false.
+// Builds the @RenderModeDisplay fragment the E2E tests read, on top of TimeWarpStateComponent. Every property
+// subscribes the component to that state's changes, except NoSubRouteState, which uses placeSubscription: false.
 #endregion
 
 namespace Test.App.Client.Features.Base.Components;
 
 using CloneTest;
+using Microsoft.AspNetCore.Components.Rendering;
 
 /// <summary>
-/// Makes access to the State a little easier and by inheriting from
-/// TimeWarpStateDevToolsComponent it allows for ReduxDevTools operation.
+/// Makes access to the State a little easier and exposes the render-mode fragment the test pages render.
 /// </summary>
-/// <remarks>
-/// In production one would NOT be required to use these base components
-/// But would be required to properly implement the required interfaces.
-/// one could conditionally inherit from BaseComponent for production build.
-/// </remarks>
-public abstract class BaseComponent : TimeWarpStateDevComponent
+public abstract class BaseComponent : TimeWarpStateComponent
 {
+  protected readonly RenderFragment RenderModeDisplay;
+
+  protected string RenderModeDisplayString => $"RendererInfo.Name: {RendererInfo.Name}\nAssignedRenderMode: {AssignedRenderMode?.GetType().Name ?? "None"}\nRendererInfo.IsInteractive: {RendererInfo.IsInteractive}";
+
+  protected BaseComponent()
+  {
+    RenderModeDisplay = builder =>
+    {
+      builder.OpenComponent<TimeWarp.Features.Developer.RenderModeDisplay>(0);
+      builder.AddComponentParameter(1, nameof(TimeWarp.Features.Developer.RenderModeDisplay.RendererInfoName), RendererInfo.Name);
+      builder.AddComponentParameter(2, nameof(TimeWarp.Features.Developer.RenderModeDisplay.AssignedRenderModeName), AssignedRenderMode?.GetType().Name ?? "None");
+      builder.AddComponentParameter(3, nameof(TimeWarp.Features.Developer.RenderModeDisplay.RendererInfoIsInteractive), RendererInfo.IsInteractive);
+      builder.CloseComponent();
+    };
+  }
+
   protected ApplicationState ApplicationState => GetState<ApplicationState>();
   internal BlueState BlueState => GetState<BlueState>();
   internal CounterState CounterState => GetState<CounterState>();

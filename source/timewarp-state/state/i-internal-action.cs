@@ -7,7 +7,7 @@
 // Cached as typeof(IInternalAction).IsAssignableFrom(typeof(TRequest)) on each closed generic.
 // Render suppression is [SuppressRender] (task 067). Start/Complete processing must still
 // re-render ActionTracking UI; user actions may also want to skip render.
-// StateTransaction, initialization, persistence, and Redux DevTools still run for internals.
+// StateTransaction, initialization, and persistence still run for internals.
 #endregion
 
 namespace TimeWarp.State;

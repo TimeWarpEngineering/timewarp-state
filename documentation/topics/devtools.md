@@ -15,7 +15,7 @@ The inspector uses TimeWarp.State for its own filter, selection, and pause. That
 
 `WithTimeWarpStateDevTools` sets `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` on the inspected resource. When that variable is unset or blank, the exporter does nothing. A value that is not an absolute URI throws `InvalidOperationException`.
 
-There is no time-travel, commit, or import/export channel. Those stay on `UseReduxDevTools` until generated hydration exists.
+There is no time-travel, commit, or import/export channel. The browser-extension surface was removed in 12.0.0-beta.11.
 
 ## State panel
 
@@ -75,6 +75,6 @@ Spans whose `timewarp.state.state_type` is `InspectorState`, or whose `timewarp.
 
 Production packages do not reference these.
 
-## Redux DevTools
+## Replaces the browser extension
 
-Use this app plus [telemetry](xref:TimeWarpState:Telemetry.md) for the action log. Keep [Redux DevTools](xref:TimeWarpState:AddReduxDevTools.md) only when you still need time-travel, commit, or import/export. `UseReduxDevTools` is unchanged.
+Use this app plus [telemetry](xref:TimeWarpState:Telemetry.md) for the action log, the state tree, and the diff. `UseReduxDevTools()` and `<ReduxDevTools />` are removed in 12.0.0-beta.11.
