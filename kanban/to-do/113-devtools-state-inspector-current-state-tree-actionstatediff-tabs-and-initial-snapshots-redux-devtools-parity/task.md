@@ -137,6 +137,7 @@ view, Trace tab, persistence of the log across DevTools restarts.
 
 - Created: cockpit (2026-10-12)
 - Implemented: Grok (2026-10-12). State tree, diff, init snapshots, and the TimeWarp theme landed on this branch.
+- Reviewed: Claude Opus 5.5 review oracle (2026-10-12), effort 3, Sonnet sub-reviewers; review fixes in 656b438a.
 
 ## Results
 
@@ -153,6 +154,12 @@ Smoke: pack this branch (`./bin/dev pack`), restore the sample so `TimeWarp.Stat
 Expect: the log gains `init` rows for `CounterState` and an `IncrementCountActionSet.Action` row with status Ok. **Current state** shows `Count` 8 (`Initialize` sets 3, each click adds 5). Select that increment: **State after action** shows `Count` 8, and **Diff** shows `Count` 3 → 8. A filter that matches no state type clears the State panel. Theme cycles system, dark, and light.
 
 Manual Linux check (2026-10-12): port 5288 was already held by an Aspire `dcp` proxy, so this walk did not start the AppHost. DevTools listened on `http://127.0.0.1:5391` and sample 04 server on `http://127.0.0.1:5392` with `TIMEWARP_STATE_DEVTOOLS_ENDPOINT=http://127.0.0.1:5391`. After rebuilding the sample against the packed packages from this branch, one click moved the page from `Current count: 3` to `Current count: 8`. DevTools showed Ok `init` rows and the increment. Selecting the increment showed **State after action** `Count` 8 and **Diff** `Count` 3 → 8. A static render and the interactive circuit each initialize a store, so one page load produces two `init` rows. Typing `zzzz` in the filter replaced the tree with the empty-snapshot message.
+
+### Review disposition
+
+Implementation review (`tw-implementation-review`, effort 3, roster: general ×2 — DevTools UI/inspector and telemetry/core) ran 2 rounds. Final counts: bug 1 fixed; suggestion 4 fixed / 1 wontfix; nit 3 fixed / 1 wontfix; 0 open. Disposition: **accepted-exceptions** (M3 per-render re-parse bounded by caps; M9 two-line duplication in the init handler). Fixes landed in 656b438a: idle-state snapshot survives log trim, atomic resume flush, truncated-side hint, diff branches default open with separate expansion keys, CSS dedupe, theme re-sync, init-span truncation/failure tests. After fixes: devtools tests 45/45, telemetry tests 19/19, `ganda repo audit` passes (advisory kebab-path warning on pre-existing paths only).
+
+Artifacts: [review-framework.md](review/review-framework.md), [round-2/merged.md](review/round-2/merged.md), [disposition.md](review/disposition.md).
 
 ## Notes
 
