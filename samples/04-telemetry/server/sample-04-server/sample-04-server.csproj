@@ -4,7 +4,7 @@
     <AssemblyName>Sample04Server</AssemblyName>
     <RootNamespace>Sample04Server</RootNamespace>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <!-- Server-side Blazor is not trimmable. Package trim checks live in IsAotCompatible and the WASM PublishTrimmed smoke. -->
   </PropertyGroup>
 
   <ItemGroup>
