@@ -5,7 +5,10 @@
 #region Design
 // pre and live come from timewarp.state.render. Without that tag the label is the first
 // four characters of the store id. Hue is a stable hash of the full id so two stores
-// that share a label still look different. Eight hues match the stylesheet data-hue rules.
+// that share a label usually look different; with eight buckets two stores share a colour about one
+// time in eight. Eight hues match the stylesheet data-hue rules and the --twe-store-hue-* tokens.
+// Matches is a prefix match on the id and on the badge word. A substring match over a Guid hits
+// nearly every row for any hex character or short word, so the filter would barely narrow the log.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -72,7 +75,7 @@ public static class StoreBadge
   }
 
   /// <summary>
-  /// True when <paramref name="filter"/> matches the store id or the badge text.
+  /// True when the store id or the badge text starts with <paramref name="filter"/>, ignoring case.
   /// </summary>
   public static bool Matches(string storeId, string render, string filter)
   {
@@ -81,12 +84,12 @@ public static class StoreBadge
       return true;
     }
 
-    if (storeId.Contains(filter, StringComparison.OrdinalIgnoreCase))
+    if (storeId.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
     {
       return true;
     }
 
     string label = Label(storeId, render);
-    return label.Length > 0 && label.Contains(filter, StringComparison.OrdinalIgnoreCase);
+    return label.Length > 0 && label.StartsWith(filter, StringComparison.OrdinalIgnoreCase);
   }
 }

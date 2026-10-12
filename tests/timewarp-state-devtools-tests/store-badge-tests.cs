@@ -4,7 +4,7 @@
 
 #region Design
 // Label and hue are pure functions of the store id and the render tag, so these tests
-// do not start the inspector page.
+// do not start the inspector page. Matching is by prefix so short filters narrow the log.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -37,5 +37,15 @@ public class StoreBadge_Should
     StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "live").ShouldBeTrue();
     StoreBadge.Matches(storeId, "", "nope").ShouldBeFalse();
     StoreBadge.Matches(storeId, "", "").ShouldBeTrue();
+  }
+
+  public static void MatchOnlyTheStartOfAStoreIdOrBadge()
+  {
+    const string storeId = "791f2c3d-0000-4000-8000-00000000abcd";
+    StoreBadge.Matches(storeId, "", "791f").ShouldBeTrue();
+    StoreBadge.Matches(storeId, "", "abcd").ShouldBeFalse();
+    StoreBadge.Matches(storeId, "", "f").ShouldBeFalse();
+    StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "liv").ShouldBeTrue();
+    StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "ive").ShouldBeFalse();
   }
 }

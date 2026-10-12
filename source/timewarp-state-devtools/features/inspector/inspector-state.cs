@@ -31,9 +31,10 @@ public sealed partial class InspectorState : State<InspectorState>
   public long SelectedSequence { get; private set; }
 
   /// <summary>
-  /// Pinned store id for the State panel. Empty follows the newest store.
+  /// Pinned store id for the State panel. Null follows the default store (<see cref="StoreSelection.Default"/>).
+  /// Empty pins the untagged bucket.
   /// </summary>
-  public string SelectedStoreId { get; private set; } = "";
+  public string? SelectedStoreId { get; private set; }
 
   /// <summary>True when ingest is parking spans instead of showing them.</summary>
   public bool Paused { get; private set; }
@@ -106,7 +107,7 @@ public sealed partial class InspectorState : State<InspectorState>
     Revision = 0;
     Filter = "";
     SelectedSequence = 0;
-    SelectedStoreId = "";
+    SelectedStoreId = null;
     Paused = false;
     DetailTab = DetailTabState;
     JsonView = JsonViewTree;

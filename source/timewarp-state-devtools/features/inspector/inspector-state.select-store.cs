@@ -3,8 +3,11 @@
 #endregion
 
 #region Design
-// Empty StoreId means follow the newest store. A picked id stays put when a later store arrives,
-// so looking at a prerender fold is not replaced by the next page load.
+// Null StoreId means follow the default store (StoreSelection.Default). Empty StoreId pins the
+// untagged bucket, so "no pin" and "spans with no store tag" never collide. A picked id stays put
+// when a later store arrives, so looking at a prerender fold is not replaced by the next page load.
+// The action always pins (empty is the untagged bucket); FollowDefaultStore clears the pin to null.
+// Two actions, because the generated SelectStore method does not carry a nullable parameter.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -23,7 +26,7 @@ partial class InspectorState
         StoreId = storeId ?? "";
       }
 
-      /// <summary>Store id to pin, or empty to follow the newest store.</summary>
+      /// <summary>Store id to pin, or empty for the untagged bucket.</summary>
       public string StoreId { get; }
     }
 

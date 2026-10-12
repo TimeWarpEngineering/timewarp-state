@@ -68,9 +68,17 @@ public class InspectorLoop_Should
     Names(log).ShouldBe(["IncrementCount", "IncrementCount"]);
     log.Snapshot().ShouldAllBe(entry => entry.StateTypeName != InspectorCapture.InspectorStateTypeName);
 
+    await sender.Send(new InspectorState.SelectStoreActionSet.Action("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"));
+    store.GetState<InspectorState>().SelectedStoreId.ShouldBe("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    await sender.Send(new InspectorState.FollowDefaultStoreActionSet.Action());
+    store.GetState<InspectorState>().SelectedStoreId.ShouldBeNull();
+    await sender.Send(new InspectorState.SelectStoreActionSet.Action(""));
+    store.GetState<InspectorState>().SelectedStoreId.ShouldBe("");
+
     await sender.Send(new InspectorState.ClearLogActionSet.Action());
     log.Snapshot().ShouldBeEmpty();
     store.GetState<InspectorState>().SelectedSequence.ShouldBe(0);
+    store.GetState<InspectorState>().SelectedStoreId.ShouldBeNull();
   }
 
   public static void RejectABodyThatIsNotTheDocument()

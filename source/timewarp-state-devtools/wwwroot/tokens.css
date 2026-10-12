@@ -1,7 +1,9 @@
 /* TimeWarp tokens. Names match timewarp-architecture --twe-* tokens.
    Dark values follow https://timewarp.enterprises/css/styles.css.
    Light values follow the architecture tokens.css palette.
-   JSON and muted text are stepped darker or lighter per theme so body text stays WCAG AA. */
+   JSON and muted text are stepped darker or lighter per theme so body text stays WCAG AA.
+   Store badge hues (--twe-store-hue-0..7) sit behind --twe-store-ink; light values are
+   mid-tone so every badge stands off the light background. */
 
 :root {
   color-scheme: dark;
@@ -50,6 +52,15 @@
   --twe-diff-added-bg: rgba(210, 255, 180, 0.14);
   --twe-diff-removed-bg: rgba(194, 52, 42, 0.32);
   --twe-diff-changed-bg: rgba(0, 204, 255, 0.16);
+  --twe-store-ink: #10081f;
+  --twe-store-hue-0: #c5b4ff;
+  --twe-store-hue-1: #00ccff;
+  --twe-store-hue-2: #d2ffb4;
+  --twe-store-hue-3: #ffb4ae;
+  --twe-store-hue-4: #e0a045;
+  --twe-store-hue-5: #7eebff;
+  --twe-store-hue-6: #f7fbff;
+  --twe-store-hue-7: #79b253;
 }
 
 :root[data-theme="light"] {
@@ -76,6 +87,14 @@
   --twe-diff-added-bg: #e5f6d4;
   --twe-diff-removed-bg: #fde8e6;
   --twe-diff-changed-bg: #e5f6fc;
+  --twe-store-hue-0: #b8a4ff;
+  --twe-store-hue-1: #5fd3f5;
+  --twe-store-hue-2: #a6dc80;
+  --twe-store-hue-3: #ff9f97;
+  --twe-store-hue-4: #e8a64a;
+  --twe-store-hue-5: #7cc7d6;
+  --twe-store-hue-6: #c3c7d4;
+  --twe-store-hue-7: #86c164;
 }
 
 @media (prefers-color-scheme: light) {
@@ -103,5 +122,13 @@
     --twe-diff-added-bg: #e5f6d4;
     --twe-diff-removed-bg: #fde8e6;
     --twe-diff-changed-bg: #e5f6fc;
+    --twe-store-hue-0: #b8a4ff;
+    --twe-store-hue-1: #5fd3f5;
+    --twe-store-hue-2: #a6dc80;
+    --twe-store-hue-3: #ff9f97;
+    --twe-store-hue-4: #e8a64a;
+    --twe-store-hue-5: #7cc7d6;
+    --twe-store-hue-6: #c3c7d4;
+    --twe-store-hue-7: #86c164;
   }
 }

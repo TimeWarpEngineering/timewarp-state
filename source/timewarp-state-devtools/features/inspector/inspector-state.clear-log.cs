@@ -4,7 +4,8 @@
 
 #region Design
 // Clear on InspectorLog raises Changed so other circuits refresh; this handler also bumps Revision so
-// this circuit re-renders the empty snapshot. Selection is dropped with the rows.
+// this circuit re-renders the empty snapshot. Selection and the store pin are dropped with the rows,
+// so the State panel follows the default store again.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -27,7 +28,7 @@ partial class InspectorState
       {
         inspectorLog.Clear(raiseChanged: true);
         InspectorState.SelectedSequence = 0;
-        InspectorState.SelectedStoreId = "";
+        InspectorState.SelectedStoreId = null;
         InspectorState.Revision++;
         return default;
       }

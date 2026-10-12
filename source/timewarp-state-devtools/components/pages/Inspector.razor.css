@@ -186,17 +186,17 @@ h1 {
 }
 
 .store-badge.on {
-  color: #10081f;
+  color: var(--twe-store-ink);
 }
 
-.store-badge.on[data-hue="0"] { background: #c5b4ff; }
-.store-badge.on[data-hue="1"] { background: #00ccff; }
-.store-badge.on[data-hue="2"] { background: #d2ffb4; }
-.store-badge.on[data-hue="3"] { background: #ffb4ae; }
-.store-badge.on[data-hue="4"] { background: #e0a045; }
-.store-badge.on[data-hue="5"] { background: #7eebff; }
-.store-badge.on[data-hue="6"] { background: #f7fbff; }
-.store-badge.on[data-hue="7"] { background: #79b253; }
+.store-badge.on[data-hue="0"] { background: var(--twe-store-hue-0); }
+.store-badge.on[data-hue="1"] { background: var(--twe-store-hue-1); }
+.store-badge.on[data-hue="2"] { background: var(--twe-store-hue-2); }
+.store-badge.on[data-hue="3"] { background: var(--twe-store-hue-3); }
+.store-badge.on[data-hue="4"] { background: var(--twe-store-hue-4); }
+.store-badge.on[data-hue="5"] { background: var(--twe-store-hue-5); }
+.store-badge.on[data-hue="6"] { background: var(--twe-store-hue-6); }
+.store-badge.on[data-hue="7"] { background: var(--twe-store-hue-7); }
 
 .store-select {
   display: flex;

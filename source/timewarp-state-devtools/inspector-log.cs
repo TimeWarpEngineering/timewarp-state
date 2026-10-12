@@ -10,8 +10,9 @@
 // stay out of the displayed list until SetPaused(false) moves them onto Entries inside the same lock,
 // so no ingest can interleave and Entries stays in sequence order. UI actions never call Add.
 // LatestByStoreAndState tracks the newest snapshot per store and state type since the last Clear.
-// Current state is the store that first appeared latest. A later span on an older store
-// updates that store's fold and does not replace the newer store on screen.
+// ListStores orders stores by their first span, newest first. Current state is StoreSelection.Default:
+// the newest store that is not a prerender, so a prerender from enhanced navigation does not replace
+// the live circuit's fold. A later span on an older store updates that store's fold only.
 // FoldThrough walks that store's entries up to the asked sequence. Trim does not touch the index:
 // an idle state whose only snapshot was evicted from the display cap still appears in its store's fold.
 // Only Clear resets the index.
@@ -74,19 +75,15 @@ public sealed class InspectorLog
   }
 
   /// <summary>
-  /// Latest snapshot per state type for the newest store. One slot per state in that store.
+  /// Latest snapshot per state type for the default store (<see cref="StoreSelection.Default"/>):
+  /// the newest store that is not a prerender. One slot per state in that store.
   /// </summary>
   public IReadOnlyList<FoldedState> FoldCurrent()
   {
     lock (Sync)
     {
-      IReadOnlyList<StoreSummary> stores = OrderStores(CollectStores());
-      if (stores.Count == 0)
-      {
-        return [];
-      }
-
-      return FoldStoreLocked(stores[0].StoreId);
+      StoreSummary? store = StoreSelection.Default(OrderStores(CollectStores()));
+      return store is null ? [] : FoldStoreLocked(store.StoreId);
     }
   }
 
