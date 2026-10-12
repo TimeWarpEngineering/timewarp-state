@@ -18,7 +18,6 @@ global using TimeWarp.Features.Persistence;
 // TimeWarp's under the global Components using. Alias [PersistentState] to TimeWarp's attribute.
 global using PersistentStateAttribute = TimeWarp.Features.Persistence.PersistentStateAttribute;
 global using TimeWarp.Features.Routing;
-global using TimeWarp.Features.ReduxDevTools;
 global using Shouldly;
 global using TimeWarp.Mediator;
 // ReSharper disable once RedundantUsingDirective.Global

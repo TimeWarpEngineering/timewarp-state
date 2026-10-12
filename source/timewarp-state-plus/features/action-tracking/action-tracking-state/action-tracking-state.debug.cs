@@ -1,32 +1,15 @@
 #region Purpose
-// ActionTrackingState's Redux DevTools Hydrate and a test-only Initialize.
+// Test-only Initialize for ActionTrackingState.
 #endregion
 
 #region Design
-// Hydrate restores only the Guid; the in-flight action list is not rehydrated. Initialize is guarded by
-// ThrowIfNotTestAssembly.
+// Initialize is guarded by ThrowIfNotTestAssembly.
 #endregion
 
 namespace TimeWarp.Features.ActionTracking;
 
 public partial class ActionTrackingState
 {
-  public override ActionTrackingState Hydrate(IDictionary<string, object> keyValuePairs)
-  {
-    string guidKey = JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid));
-    
-    if (!keyValuePairs.TryGetValue(guidKey, out object? guidValue))
-    {
-      throw new InvalidOperationException($"Expected key '{guidKey}' not found or value is null.");
-    }
-    
-    var processingState = new ActionTrackingState(this.Sender)
-    {
-      Guid = Guid.Parse(guidValue.ToString()!)
-    };
-    return processingState;
-  }
-
   internal void Initialize(List<IAction> processingList)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());

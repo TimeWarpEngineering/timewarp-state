@@ -1,31 +1,15 @@
 #region Purpose
-// CounterState's Redux DevTools Hydrate and a test-only Initialize.
+// Test-only Initialize for CounterState.
 #endregion
 
 #region Design
-// Hydrate reads camelCase Count and Guid keys. Initialize(count) is test-only, guarded by ThrowIfNotTestAssembly.
+// Initialize(count) is test-only, guarded by ThrowIfNotTestAssembly.
 #endregion
 
 namespace Test.App.Client.Features.Counter;
 
 public partial class CounterState
 {
-  public override CounterState Hydrate(IDictionary<string, object> keyValuePairs)
-  {
-    var counterState = new CounterState
-    {
-      Count = Convert.ToInt32(keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Count))].ToString()),
-      Guid =
-        new Guid
-        (
-          keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid))].ToString() ??
-          throw new InvalidOperationException()
-        )
-    };
-
-    return counterState;
-  }
-
   /// <summary>
   /// Use in Tests ONLY, to initialize the State
   /// </summary>

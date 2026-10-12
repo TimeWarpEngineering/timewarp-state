@@ -63,8 +63,6 @@ The tick buttons ignore a second click while a send is in flight. A canceled sen
 
 This host sets `TimeWarpStateOptions.CaptureRenderCaller`. Leave the flag false on a production host. When it is true, `ShouldRender`, `SetParametersAsync`, and `StateHasChanged` each allocate a `StackTrace`. This page allocates one more frame inside its `ShouldRender` override so the column is not the override itself.
 
-`UseReduxDevTools()` is on the host so `CommitHandler` can be constructed when Development validates DI. The sample does not render `<ReduxDevTools />`, so the extension is not initialized and actions are not forwarded.
-
 ## Practices
 
 - Subscribe in the component that reads the state. `GetState` there is the subscription.
@@ -82,4 +80,3 @@ This host sets `TimeWarpStateOptions.CaptureRenderCaller`. Leave the flag false 
 - `[assembly: MediatorScope(typeof(ClientPipeline))]`.
 - `AddGeneratedMediator<ClientPipeline>()`.
 - `AddTimeWarpState`. Set `CaptureRenderCaller` only on a diagnostic host.
-- `options.UseReduxDevTools()` when the generated mediator links `CommitHandler` and Development validates the container. Skip `<ReduxDevTools />` when the extension is not part of the lesson.

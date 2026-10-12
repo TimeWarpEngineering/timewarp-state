@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Options carry the IServiceCollection so extension methods such as UseReduxDevTools can register services.
+// Options carry the IServiceCollection so extension methods can register services during configuration.
 // CaptureRenderCaller defaults to false so production render paths skip StackTrace allocation.
 #endregion
 
@@ -38,10 +38,6 @@ public class TimeWarpStateOptions
 
   public bool UseRouting { get; set; } = true;
 
-  /// <summary>
-  /// Use the FullName of the State in the ReduxDevTools
-  /// </summary>
-  public bool UseFullNameForStatesInDevTools { get; set; } = false;
   /// <summary>
   /// Capture <c>Class.Method</c> of the caller of <c>ShouldRender</c>, <c>SetParametersAsync</c>,
   /// and <c>StateHasChanged</c> onto the public <c>*WasCalledBy</c> diagnostic properties.

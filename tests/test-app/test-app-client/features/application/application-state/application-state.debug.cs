@@ -1,9 +1,8 @@
 #region Purpose
-// ApplicationState's Redux DevTools Hydrate and a test-only Initialize.
+// Test-only Initialize for ApplicationState.
 #endregion
 
 #region Design
-// Hydrate reads camelCase Guid and Name keys and throws if either is missing; ExceptionMessage is not rehydrated.
 // Initialize(name, exceptionMessage) is test-only, guarded by ThrowIfNotTestAssembly.
 #endregion
 
@@ -11,19 +10,6 @@ namespace Test.App.Client.Features.Application;
 
 public partial class ApplicationState
 {
-  public override ApplicationState Hydrate(IDictionary<string, object> keyValuePairs) => new()
-  {
-    Guid =
-      new Guid
-      (
-        keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Guid))].ToString() ??
-        throw new InvalidOperationException("Guid is required.")
-      ),
-    Name =
-      keyValuePairs[JsonNamingPolicy.CamelCase.ConvertName(nameof(Name))].ToString() ??
-      throw new InvalidOperationException("Name is required.")
-  };
-
   internal void Initialize(string name, string exceptionMessage)
   {
     ThrowIfNotTestAssembly(Assembly.GetCallingAssembly());

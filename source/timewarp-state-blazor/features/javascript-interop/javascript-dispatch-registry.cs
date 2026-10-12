@@ -18,12 +18,9 @@
 // the existing DispatchRequest("Ns.Type+Nested, Assembly, Version=…", …) call shape keeps
 // working when the version differs.
 //
-// Redux DevTools requests are not actions. UseReduxDevTools adds them through the internal
-// AllowReduxDevToolsRequests, so they are dispatchable only when DevTools is enabled.
-//
 // One instance per IServiceCollection: GetOrAdd finds the registered singleton instance so
-// AddJavaScriptDispatch, AddTimeWarpState and UseReduxDevTools can run in any order. The registry
-// is written during service registration only and read-only afterwards (not thread-safe to mutate).
+// AddJavaScriptDispatch and AddTimeWarpState can run in any order. The registry is written during
+// service registration only and read-only afterwards (not thread-safe to mutate).
 #endregion
 
 namespace TimeWarp.Features.JavaScriptInterop;
@@ -64,12 +61,6 @@ public sealed class JavaScriptDispatchRegistry
     }
 
     foreach (string name in names) TypesByName[name] = requestType;
-  }
-
-  internal void AllowReduxDevToolsRequests()
-  {
-    Add(typeof(StartRequest));
-    Add(typeof(CommitRequest));
   }
 
   /// <summary>Resolves a wire name sent from JavaScript against the allow-list only.</summary>

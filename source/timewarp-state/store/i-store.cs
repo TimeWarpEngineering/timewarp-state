@@ -1,22 +1,13 @@
 #region Purpose
-// Store contracts: IStore (get, set, remove and reset states, previous states, initialization wait) and
-// IReduxDevToolsStore (serializable snapshot and JSON load).
+// Store contract: get, set, remove and reset states, previous states, and initialization wait.
 #endregion
 
 #region Design
-// The Redux DevTools surface is a separate interface so it is only registered and used when DevTools is enabled.
 // GetState(Type) returns IState. Callers wait with WaitForInitializationAsync. The task dictionary stays on
 // the store implementation. There is no public per-state semaphore.
 #endregion
 
 namespace TimeWarp.State;
-
-public interface IReduxDevToolsStore
-{
-  IDictionary<string, object> GetSerializableState();
-
-  void LoadStatesFromJson(string jsonString);
-}
 
 public interface IStore
 {

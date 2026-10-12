@@ -11,13 +11,6 @@ Demonstrates the fundamental StateActionHandler pattern, which implements unidir
 - Handler implementation for processing actions
 - Examples in multiple Blazor render modes (Auto, Server, WebAssembly)
 
-### [01-ReduxDevTools](01-redux-dev-tools/wasm/overview.md)
-Shows integration with Redux DevTools for enhanced debugging capabilities:
-- Real-time state monitoring
-- Action tracking and time-travel debugging
-- State inspection and modification
-- WebAssembly implementation example
-
 ### [02-ActionTracking](02-action-tracking/wasm/overview.md)
 Illustrates action tracking functionality:
 - Monitoring action execution

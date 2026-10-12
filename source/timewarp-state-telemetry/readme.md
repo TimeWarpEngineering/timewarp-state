@@ -1,8 +1,8 @@
 # TimeWarp.State.Telemetry
 
-OpenTelemetry instrumentation for the TimeWarp.State mediator pipeline. Each dispatched action becomes a span with type names, duration, and success/failure — the observation half of Redux DevTools, on any OTel backend (Aspire dashboard, Jaeger, Seq, Application Insights).
+OpenTelemetry instrumentation for the TimeWarp.State mediator pipeline. Each dispatched action becomes a span with type names, duration, and success/failure on any OTel backend (Aspire dashboard, Jaeger, Seq, Application Insights).
 
-Time-travel, commit, and import/export stay out of this package. Those need a dev-only back-channel; OTLP is one-directional.
+The companion DevTools app reads these spans for the action log, state tree, and diff. OTLP is one-directional.
 
 ## Install
 
@@ -10,7 +10,7 @@ Time-travel, commit, and import/export stay out of this package. Those need a de
 dotnet add package TimeWarp.State.Telemetry
 ```
 
-The package weaves `TelemetryBehavior<TAction, TResponse>` into `ClientPipeline` the same way `StateTransactionBehavior` is woven (generated mediator, closed types visible to the trimmer). Order 350 sits inside `StateTransactionBehavior` (300) and outside `RenderSubscriptionsPostProcessor` (400): handler failures are recorded as `Error` before the transaction restores state and swallows the exception. Span duration is handler + render, not clone or Redux DevTools JS.
+The package weaves `TelemetryBehavior<TAction, TResponse>` into `ClientPipeline` the same way `StateTransactionBehavior` is woven (generated mediator, closed types visible to the trimmer). Order 350 sits inside `StateTransactionBehavior` (300) and outside `RenderSubscriptionsPostProcessor` (400): handler failures are recorded as `Error` before the transaction restores state and swallows the exception. Span duration is handler + render, not the clone.
 
 ## Register
 
@@ -90,7 +90,7 @@ Do not enable `IncludeSnapshots` in production unless the OTel backend is access
 - Default spans use `typeof` names only.
 - Snapshots require caller `JsonTypeInfo` (typically a `JsonSerializerContext`).
 - No `Type.GetType`, no `AssemblyQualifiedName`, no `GetProperties` walk.
-- Time-travel / `LoadStatesFromJson` is not in this package.
+- No reflection hydration. State JSON comes from the caller `JsonTypeInfo`.
 
 ## Blazor Server
 
@@ -98,7 +98,7 @@ Works out of the box: the circuit runs .NET, so `ActivitySource` spans export ov
 
 ## Blazor WebAssembly / browser telemetry
 
-WASM process telemetry is the **JS OpenTelemetry SDK**, not this `ActivitySource`. That is maintained SDK code, not the custom `redux-dev-tools.ts` / `timewarp-state.ts` bridge.
+WASM process telemetry is the **JS OpenTelemetry SDK**, not this `ActivitySource`. That is maintained SDK code.
 
 Aspire dashboard browser telemetry (OTLP/HTTP + CORS):
 
@@ -107,9 +107,9 @@ Aspire dashboard browser telemetry (OTLP/HTTP + CORS):
 
 This JS is not the C# trimmer’s problem.
 
-## Redux DevTools
+## DevTools
 
-Use this package for the **observation** half (action log, timing, snapshots). Keep `UseReduxDevTools` only if you still need time-travel / commit / import-export in the browser extension. A dedicated control channel is a follow-on; that path is AOT-hostile.
+Use this package with [TimeWarp.State DevTools](../../documentation/topics/devtools.md) for the action log, timing, and snapshots. `UseReduxDevTools()` was removed in 12.0.0-beta.11.
 
 ## Sample
 

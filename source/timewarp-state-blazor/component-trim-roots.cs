@@ -20,7 +20,6 @@ internal static class ComponentTrimRoots
     Justification = "Hosts reference these components from markup in another assembly. The client's trim does not see that reference.")]
   internal static void Root()
   {
-    Root<ReduxDevTools>();
     Root<RenderModeDisplay>();
     Root<TimeWarpJavaScriptInterop>();
   }

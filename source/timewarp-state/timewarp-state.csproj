@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Title>TimeWarp State</Title>
-    <Description>State management for .NET. Blazor components, JavaScript interop, and Redux DevTools are in TimeWarp.State.Blazor.</Description>
+    <Description>State management for .NET. Blazor components, JavaScript interop, and render subscriptions are in TimeWarp.State.Blazor.</Description>
     <PackageId>TimeWarp.State</PackageId>
     <AssemblyName>TimeWarp.State</AssemblyName>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -10,7 +10,6 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <Configurations>Debug;Release;ReduxDevToolsEnabled</Configurations>
     <IsPackable>true</IsPackable>
     <IncludeContentInPack>true</IncludeContentInPack>
     <IncludeBuildOutput>true</IncludeBuildOutput>
@@ -29,10 +28,6 @@
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput)</TargetsForTfmSpecificBuildOutput>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageReleaseNotes>https://timewarpengineering.github.io/timewarp-state/Overview.html</PackageReleaseNotes>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DefaultReduxEnabled|AnyCPU'">
-    <DefineConstants>TRACE; EnableRedux</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

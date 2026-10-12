@@ -6,9 +6,7 @@
 // AddTimeWarpState and AddTimeWarpStateBlazor dogfood the store for InspectorState. This host does
 // not reference TimeWarp.State.Telemetry and does not call AddTimeWarpStateDevToolsExporter, so its
 // actions are not activities and are not posted back to /ingest/spans. InspectorLog is a singleton
-// shared by ingest and the circuit. Referencing TimeWarp.State.Blazor links CommitHandler, whose
-// constructor needs IReduxDevToolsStore. UseReduxDevTools supplies that registration. This host does
-// not render the Redux DevTools component, so InitAsync never runs and inspector actions stay here.
+// shared by ingest and the circuit. Inspector actions stay in this process.
 // Aspire applies ASPNETCORE_ENVIRONMENT from Properties/launchSettings.json when that profile is found,
 // so this host runs as Development. When the profile is missing the host stays Production: the exception
 // handler replaces the developer exception page. MapStaticAssets serves _framework/blazor.web.js. Outside
@@ -35,7 +33,7 @@ public class Program
 
     builder.Services.AddSingleton<InspectorLog>();
     builder.Services.AddGeneratedMediator<ClientPipeline>();
-    builder.Services.AddTimeWarpState(options => options.UseReduxDevTools());
+    builder.Services.AddTimeWarpState();
     builder.Services.AddTimeWarpStateBlazor();
 
     WebApplication app = builder.Build();

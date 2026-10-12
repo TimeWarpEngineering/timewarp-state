@@ -9,8 +9,7 @@
 // service. This host registers both because the two states use both stores.
 // Save and load share TimeWarpStateOptions.JsonSerializerOptions. The enum converter is added
 // there so accent values round-trip as names.
-// AddTimeWarpStateBlazor registers render subscriptions. UseReduxDevTools satisfies CommitHandler, which the mediator links even when the sample
-// does not show the extension. The component that would call InitAsync is absent.
+// AddTimeWarpStateBlazor registers render subscriptions.
 // AddGeneratedMediator is emitted into this assembly. There is no reflection AddMediator call.
 #endregion
 
@@ -37,11 +36,6 @@ public class Program
       options =>
       {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        // CommitHandler is linked by the generated mediator and its constructor needs the
-        // redux services. Development validates the container, so those services must exist.
-        // This sample does not render <ReduxDevTools />, so InitAsync never runs and actions
-        // are not forwarded to the browser extension.
-        options.UseReduxDevTools();
       }
     );
     builder.Services.AddTimeWarpStateBlazor();

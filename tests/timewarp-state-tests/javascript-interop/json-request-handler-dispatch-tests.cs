@@ -126,28 +126,6 @@ public class Should_
     registry.TryResolve(typeof(OtherAction).FullName!, out _).ShouldBeFalse();
   }
 
-  public static void Reject_Redux_DevTools_Requests_When_DevTools_Is_Disabled()
-  {
-    RecordingSender sender = new();
-    JsonRequestHandler handler = CreateHandler(sender, _ => { });
-
-    Should.Throw<InvalidRequestTypeException>(() => handler.Handle("TimeWarp.Features.ReduxDevTools.StartRequest", StartMessageJson));
-    sender.Sent.ShouldBeEmpty();
-  }
-
-  public async Task Dispatch_Redux_DevTools_Requests_When_DevTools_Is_Enabled()
-  {
-    RecordingSender sender = new();
-    JsonRequestHandler handler = CreateHandler(sender, services => new TimeWarpStateOptions(services).UseReduxDevTools());
-
-    await handler.Handle("TimeWarp.Features.ReduxDevTools.StartRequest", StartMessageJson);
-
-    sender.Sent.ShouldHaveSingleItem().GetType().FullName.ShouldBe("TimeWarp.Features.ReduxDevTools.StartRequest");
-  }
-
-  private const string StartMessageJson =
-    """{"id":1,"payload":{},"source":"@devtools-extension","state":"{}","type":"START"}""";
-
   private static JsonRequestHandler CreateHandler(RecordingSender sender, Action<IServiceCollection> configure)
   {
     ServiceCollection services = new();
@@ -166,14 +144,14 @@ public class Should_
     );
   }
 
-  public sealed class IncrementAction : IAction
+  private sealed class IncrementAction : IAction
   {
     public int Amount { get; set; }
   }
 
-  public sealed class OtherAction : IAction;
+  private sealed class OtherAction : IAction;
 
-  public sealed class NoDefaultConstructorAction : IAction
+  private sealed class NoDefaultConstructorAction : IAction
   {
     public NoDefaultConstructorAction(int amount)
     {
@@ -183,7 +161,7 @@ public class Should_
     public int Amount { get; }
   }
 
-  public sealed class ThrowingSetterAction : IAction
+  private sealed class ThrowingSetterAction : IAction
   {
     public int Amount { get => 0; set => throw new InvalidOperationException("setter rejects input"); }
   }

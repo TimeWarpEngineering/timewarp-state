@@ -17,14 +17,6 @@ YOU MUST COMPLETE THESE IN ORDER:
    - DO NOT CONTINUE UNTIL THIS WORKS
 
 3. ONLY AFTER Sample00 works:
-   - Go to ../../01-redux-dev-tools/wasm/overview.md
-   - Add EVERYTHING from Sample01
-   - IN THE SAME Sample03Wasm project
-   - TEST IT WORKS
-   - Reference implementation: samples/01-redux-dev-tools/wasm/sample-01-wasm
-   - DO NOT CONTINUE UNTIL THIS WORKS
-
-4. ONLY AFTER Sample01 works:
    - NOW you can look at ./overview.md
    - Add the routing features
    - Reference implementation: samples/03-routing/wasm/sample-03-wasm
@@ -38,12 +30,10 @@ If you try to implement everything at once:
 
 ## REFERENCE IMPLEMENTATIONS
 1. Sample00: samples/00-state-action-handler/wasm/sample-00-wasm
-2. Sample01: samples/01-redux-dev-tools/wasm/sample-01-wasm
-3. Sample03: samples/03-routing/wasm/sample-03-wasm
+2. Sample03: samples/03-routing/wasm/sample-03-wasm
 
 ## TUTORIAL PATHS (BUT DO THEM IN ORDER!)
 1. FIRST: ../../00-state-action-handler/wasm/overview.md
-2. SECOND: ../../01-redux-dev-tools/wasm/overview.md
-3. LAST: ./overview.md
+2. LAST: ./overview.md
 
 Remember: Source generators will create the extension methods. DO NOT CREATE THEM MANUALLY.

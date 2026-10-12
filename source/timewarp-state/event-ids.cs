@@ -19,10 +19,6 @@ internal static class EventIds
   public static readonly EventId Store_SetState = new(104, nameof(Store_SetState));
   public static readonly EventId Store_RemoveState = new (105, nameof(Store_RemoveState));
 
-  // Store.ReduxDevTools. 104 and 105 belong to Store_SetState and Store_RemoveState.
-  public static readonly EventId LoadStatesFromJson = new(106, nameof(LoadStatesFromJson));
-  public static readonly EventId LoadStateFromJson = new(107, nameof(LoadStateFromJson));
-  
   // Features - Normal
   //   JavascriptInterop
   //     JsonRequestHandler
@@ -48,28 +44,6 @@ internal static class EventIds
   public static readonly EventId StateTransactionBehavior_Exception = new(403, nameof(StateTransactionBehavior_Exception));
   public static readonly EventId StateTransactionBehavior_Restoring = new(404, nameof(StateTransactionBehavior_Restoring));
   public static readonly EventId StateTransactionBehavior_ConcurrentAdvance = new(405, nameof(StateTransactionBehavior_ConcurrentAdvance));
-
-  //   ReduxDevTools
-  public static readonly EventId StartHandler_Initializing = new(500, nameof(StartHandler_Initializing));
-  public static readonly EventId StartHandler_RequestReceived = new(501, nameof(StartHandler_RequestReceived));
-  public static readonly EventId StartHandler_RequestHandled = new(502, nameof(StartHandler_RequestHandled));
-
-  public static readonly EventId JumpToStateHandler_Initializing = new(510, nameof(JumpToStateHandler_Initializing));
-  public static readonly EventId JumpToStateHandler_RequestReceived = new(511, nameof(JumpToStateHandler_RequestReceived));
-  public static readonly EventId JumpToStateHandler_RequestHandled = new(512, nameof(JumpToStateHandler_RequestHandled));
-
-  public static readonly EventId ReduxDevToolsInterop_Initializing = new(520, nameof(ReduxDevToolsInterop_Initializing));
-  public static readonly EventId ReduxDevToolsInterop_DispatchingInit = new(521, nameof(ReduxDevToolsInterop_DispatchingInit));
-  public static readonly EventId ReduxDevToolsInterop_DispatchingRequest = new(522, nameof(ReduxDevToolsInterop_DispatchingRequest));
-
-  public static readonly EventId ReduxDevToolsBehavior_Constructing = new(530, nameof(ReduxDevToolsBehavior_Constructing));
-  public static readonly EventId ReduxDevToolsBehavior_Begin = new(531, nameof(ReduxDevToolsBehavior_Begin));
-  public static readonly EventId ReduxDevToolsBehavior_End = new(532, nameof(ReduxDevToolsBehavior_End));
-  public static readonly EventId ReduxDevToolsBehavior_Exception = new(533, nameof(ReduxDevToolsBehavior_Exception));
-
-  public static readonly EventId CommitHandler_Initializing = new(540, nameof(CommitHandler_Initializing));
-  public static readonly EventId CommitHandler_RequestReceived = new(541, nameof(CommitHandler_RequestReceived));
-  public static readonly EventId CommitHandler_RequestHandled = new(542, nameof(CommitHandler_RequestHandled));
 
   //   RenderSubscriptions
   public static readonly EventId RenderSubscriptionsPostProcessor_Constructing = new(600, nameof(RenderSubscriptionsPostProcessor_Constructing));

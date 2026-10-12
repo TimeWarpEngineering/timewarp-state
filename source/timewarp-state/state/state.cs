@@ -1,5 +1,5 @@
 #region Purpose
-// Base state type: identity, hydration, disposal, and the test-only access guard.
+// Base state type: identity, disposal, and the test-only access guard.
 #endregion
 
 #region Design
@@ -20,7 +20,7 @@ where TState : State<TState>
 
   #region JsonIgnore
 
-  // JsonIgnore is used to prevent serialization of the property by both the state deep clone and ReduxDevTools
+  // JsonIgnore keeps Sender out of JSON serialization and out of the state deep clone.
 
   [JsonIgnore]
   public ISender<ClientPipeline> Sender { get; set; } = null!;
@@ -48,14 +48,6 @@ where TState : State<TState>
 
   [JsonConstructor]
   protected State() {}
-
-  /// <summary>
-  /// returns a new instance of type TState
-  /// </summary>
-  /// <param name="keyValuePairs">Initialize the TState instance with these values</param>
-  /// <returns>The particular State of type TState</returns>
-  /// <remarks>Implement this if you want to use ReduxDevTools Time Travel</remarks>
-  public virtual TState Hydrate(IDictionary<string, object> keyValuePairs) => throw new NotImplementedException();
 
   /// <summary>
   /// Throws when the caller is not allowed to use a test-only member.

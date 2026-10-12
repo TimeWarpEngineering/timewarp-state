@@ -23,5 +23,4 @@ global using TimeWarp.Features.RenderSubscriptions;
 global using System.Runtime.CompilerServices;
 global using Microsoft.Extensions.Logging;
 global using TimeWarp.Features.Cloning;
-global using TimeWarp.Features.ReduxDevTools;
 global using System.Collections.Immutable;

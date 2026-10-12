@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**TimeWarp.State** is a state management library implementing the Flux pattern using the Mediator pipeline. The core package has no Blazor dependency. **TimeWarp.State.Blazor** holds components, JavaScript interop, render subscriptions, and Redux DevTools. It handles both client-side (WebAssembly) and server-side Blazor with async state management, and console hosts can use the core package alone.
+**TimeWarp.State** is a state management library implementing the Flux pattern using the Mediator pipeline. The core package has no Blazor dependency. **TimeWarp.State.Blazor** holds components, JavaScript interop, and render subscriptions. It handles both client-side (WebAssembly) and server-side Blazor with async state management, and console hosts can use the core package alone.
 
 Package layout, host registration, and which packages are AOT-compatible are summarized in [ai-context.md](ai-context.md).
 
@@ -61,7 +61,7 @@ dotnet build --project <ProjectPath> --configuration Release
 
 ### Core Libraries (Source/)
 - **TimeWarp.State**: Store, state, actions, handlers, state-initialization and state-transaction behaviors. No Blazor reference. Embeds Analyzer and SourceGenerator as analyzers (not separate packages)
-- **TimeWarp.State.Blazor**: Components, JavaScript interop, render subscriptions, Redux DevTools, wwwroot assets. Static web assets stay under `_content/TimeWarp.State/`
+- **TimeWarp.State.Blazor**: Components, JavaScript interop, render subscriptions, wwwroot assets. Static web assets stay under `_content/TimeWarp.State/`
 - **TimeWarp.State.Plus**: ActionTracking, Routing, persistence. Package id unchanged. Depends on TimeWarp.State.Blazor
 - **TimeWarp.State.Analyzer**: Roslyn analyzers (embedded in main package)
 - **TimeWarp.State.SourceGenerator**: Code generation (embedded in main package)

@@ -17,7 +17,7 @@ namespace TimeWarp.State;
 /// <remarks>
 /// <para>
 /// Every state action, its handler and the State pipeline behaviors belong to this pipeline.
-/// Redux DevTools and render subscriptions are woven when the host references TimeWarp.State.Blazor.
+/// Render subscriptions are woven when the host references TimeWarp.State.Blazor.
 /// Blazor hosts and non-UI hosts dispatch through <c>ISender&lt;ClientPipeline&gt;</c> /
 /// <c>IPublisher&lt;ClientPipeline&gt;</c>, and the host registers it with the generated
 /// <c>AddGeneratedMediator&lt;ClientPipeline&gt;()</c>.

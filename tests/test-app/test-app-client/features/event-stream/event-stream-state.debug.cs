@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Guarded by ThrowIfNotTestAssembly so it is test-only; there is no Hydrate override.
+// Guarded by ThrowIfNotTestAssembly so it is test-only.
 #endregion
 
 namespace Test.App.Client.Features.EventStream;
