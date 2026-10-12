@@ -5,6 +5,7 @@
 #region Design
 // The endpoint is reachable by any local page, so the body is untrusted: JSON content type only,
 // size capped, and null members never reach the inspector page.
+// Attribute keys are copied unchanged, including a key with no spaces, so the detail model can carry it.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -182,6 +183,31 @@ public class SpanIngestEndpoint_Should
     ActionLogEntry entry = factory.Services.GetRequiredService<InspectorLog>().Snapshot().Single();
     entry.SnapshotJson!.Length.ShouldBe(SpanIngestEndpoint.MaxSnapshotLength);
     entry.SnapshotTruncated.ShouldBeTrue();
+  }
+
+  public static async Task KeepALongAttributeKeyOnTheDetailModel()
+  {
+    const string longKey =
+      "timewarp.state.attribute.with.a.deliberately.long.key.that.must.wrap.instead.of.overflowing.the.label.column";
+
+    await using WebApplicationFactory<Program> factory = new();
+    HttpClient client = factory.CreateClient();
+    SpanIngestItem item = AppSpan("IncrementCountActionSet.Action");
+    item.Attributes[longKey] = "kept";
+    SpanIngestDocument document = new() { Spans = [item] };
+
+    HttpResponseMessage response = await client.PostAsJsonAsync
+    (
+      "/ingest/spans",
+      document,
+      SpanIngestJsonContext.Default.SpanIngestDocument
+    );
+    response.EnsureSuccessStatusCode();
+
+    ActionLogEntry entry = factory.Services.GetRequiredService<InspectorLog>().Snapshot().Single();
+    entry.Attributes[longKey].ShouldBe("kept");
+    entry.Attributes[InspectorCapture.ActionTagName].ShouldBe("IncrementCountActionSet.Action");
+    entry.Attributes[InspectorCapture.StateTypeTagName].ShouldBe("CounterState");
   }
 
   private static SpanIngestItem Tagged

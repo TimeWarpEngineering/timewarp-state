@@ -39,16 +39,37 @@ Filed by Claude (cockpit) at Steven's request, 2026-10-12.
 
 ## Checklist
 
-- [ ] `.facts` grid: content-sized label column with floor/cap; `dt` wraps
-- [ ] Attribute keys in mono
-- [ ] State and Diff key columns checked for the same overflow
-- [ ] Narrow breakpoint verified
-- [ ] Screenshot of the fixed Action tab in `review/`
-- [ ] `ganda repo audit` clean; devtools tests green
+- [x] `.facts` grid: content-sized label column with floor/cap; `dt` wraps
+- [x] Attribute keys in mono
+- [x] State and Diff key columns checked for the same overflow
+- [x] Narrow breakpoint verified
+- [x] Screenshot of the fixed Action tab in `review/`
+- [x] `ganda repo audit` clean; devtools tests green
+
+## Results
+
+The Action tab label column sizes to its content between a 7rem floor and a 16rem cap. `dt` uses `min-width: 0` and `overflow-wrap: anywhere`. A bare `max-content` track grows to the longest key and collapses the value track, so the cap lives on `dt` as `max-width: 16rem` (wide enough for `timewarp.state.state_type` on one line). Attribute keys use the mono font and keep the muted colour. Built-in labels stay in the sans font.
+
+State and Diff keys use the same wrap (`min-width: 0`, `overflow-wrap: anywhere`) so a long JSON property name stays inside the row.
+
+At the 800px breakpoint the workspace stacks to one column. The facts list stays two columns, and the labels do not overlap the values. On a 390px viewport the page does not scroll sideways.
+
+`SpanIngestEndpoint_Should.KeepALongAttributeKeyOnTheDetailModel` posts a span whose attribute key has no spaces and asserts the log entry keeps that key, plus `timewarp.state.action` and `timewarp.state.state_type`.
+
+Screenshot (dark theme, Action tab): [review/action-tab-dark.png](review/action-tab-dark.png).
+
+DevTools tests: `dotnet fixie timewarp-state-devtools-tests --no-build` — 46 passed.
+
+### How to validate
+
+Smoke: From the repo root, `dotnet fixie timewarp-state-devtools-tests`. Then run the DevTools app, post an increment span that carries `timewarp.state.action` and `timewarp.state.state_type`, open the inspector, choose Theme: Dark, select the increment row, and open the Action tab. Repeat with the window narrower than 800px.
+
+Expect: `timewarp.state.action` and `timewarp.state.state_type` are muted mono text in the label column and do not paint over `IncrementCountActionSet.Action` or `CounterState`. A longer key wraps inside the label column. The value column stays visible. Under 800px the action log and the detail pane stack, and the facts list remains two columns with no overlap. The new ingest test passes.
 
 ## Session
 
 - Created: cockpit (2026-10-12)
+- Implementation: grok 01a12eee-f405-7d12-87da-f4c8cfdd06a5 (2026-10-12)
 
 ## Notes
 
