@@ -76,18 +76,29 @@ review (109 M1) already called the browser-extension time-travel path unreachabl
 
 ## Checklist
 
-- [ ] Blazor package: feature folder, component, extension, TypeScript + built JS, trim roots, registry, readme
-- [ ] Core: `store.redux-dev-tools.cs`, `IReduxDevToolsStore`, `Hydrate` surface (if unused), event id, options, csproj items
-- [ ] Samples: 01 deleted; 03/04/05/06 and overview cleaned; sample 04 workaround gone
-- [ ] Test app and tests cleaned; `start-handler-tests.cs` deleted; generated mediator files regenerated if committed
-- [ ] Regression test: ValidateOnBuild + ValidateScopes passes without `UseReduxDevTools`
-- [ ] Docs: topic deleted, toc, cross-links, release notes + migration for beta.11
-- [ ] `dev test`, `dev verify-samples`, e2e, `ganda repo audit` all green
+- [x] Blazor package: feature folder, component, extension, TypeScript + built JS, trim roots, registry, readme
+- [x] Core: `store.redux-dev-tools.cs`, `IReduxDevToolsStore`, `Hydrate` surface (if unused), event id, options, csproj items
+- [x] Samples: 01 deleted; 03/04/05/06 and overview cleaned; sample 04 workaround gone
+- [x] Test app and tests cleaned; `start-handler-tests.cs` deleted; generated mediator files regenerated if committed
+- [x] Regression test: ValidateOnBuild + ValidateScopes passes without `UseReduxDevTools`
+- [x] Docs: topic deleted, toc, cross-links, release notes + migration for beta.11
+- [x] `dev test`, `dev verify-samples`, e2e, `ganda repo audit` all green
 
 ## Session
 
 - Created: cockpit (2026-10-12)
 - Decision recorded: 2026-10-12 (Steven: delete; relayed by Claude cockpit)
+- Implemented: 2026-10-12 (Grok). One change: package deletion, samples, docs, and the regression test. `IState<TState>` stays as the covariant self-type marker; only `Hydrate` is gone. `JsonRequestHandler` stays.
+
+## Results
+
+`UseReduxDevTools()`, `<ReduxDevTools />`, `IReduxDevToolsStore`, and `State<T>.Hydrate` are removed from 12.0.0-beta.11. The generated mediator no longer links `CommitHandler`, so a Development host that calls `AddTimeWarpState()` and `AddTimeWarpStateBlazor()` passes `ValidateOnBuild` and `ValidateScopes` without a Redux registration. The action log, state tree, and diff are `AddTimeWarpStateTelemetry()` plus `AddTimeWarpStateDevToolsExporter()` and Aspire `AddTimeWarpStateDevTools()`. Sample 01 is deleted. Sample 04 no longer calls `UseReduxDevTools()` to satisfy container validation. No checked-in mediator generator output needed regenerating.
+
+### How to validate
+
+Smoke: `./bin/dev test` then `./bin/dev pack` and `./bin/dev verify-samples`, then `./bin/dev e2e`, then `ganda repo audit`.
+
+Expect: `./bin/dev test` ends with "Tests completed successfully!". `verify-samples` ends with "Samples verified successfully!" and does not build `samples/01-redux-dev-tools`. `./bin/dev e2e` reports 12 passed. `ganda repo audit` exits 0. `AddTimeWarpStateBlazorTests.Should_.ValidateOnBuild_Without_ReduxDevTools` passes.
 
 ## Notes
 
