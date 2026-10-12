@@ -27,6 +27,8 @@ Pack the in-tree packages first so the sample can restore `TimeWarp.State.Teleme
 dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj
 ```
 
+The Aspire CLI writes `aspire.config.json` beside the AppHost; that file is gitignored.
+
 Open the dashboard URL printed by the AppHost. Start the `sample-04-server` resource if it is not already running. The `timewarp-state-devtools` resource is the inspector. Its HTTP endpoint is labeled **TimeWarp.State DevTools**. Open that link, then open the sample's `/counter`.
 
 On connect, DevTools shows an `init` row and a **CounterState** node (snapshots are on because the AppHost set the DevTools endpoint). Click **Click me**. The **State** tab updates `Count` live (each click adds 5). Select an older row: **State** shows the count as of that row, and **Diff** shows the +5 change. **Action**, **State**, and **Diff** are the right-hand tabs; **Tree** and **Raw** switch the state format. Filter, pause, and clear in DevTools do not add rows. The same click is also a trace named `CounterState.IncrementCountActionSet.Action` on source `TimeWarp.State`.
