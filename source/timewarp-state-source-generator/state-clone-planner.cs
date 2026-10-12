@@ -18,7 +18,8 @@
 // An ICloneable type is cloned by its own Clone(), cast to the declared type, and is never wrapped in that dispatch.
 // The generator does not emit a field clone for that type. It does emit a module initializer that names the type
 // with DynamicallyAccessedMembers for public constructors and public methods, so a trimmed host can still
-// activate the state (EnsureStates uses ActivatorUtilities) and call ICloneable.Clone.
+// construct the state and call ICloneable.Clone. DI registration is a separate module initializer that calls
+// TryAddTransient of the closed state type.
 // Types from other assemblies are cloned only when their full field list is known: TimeWarp.State's own types, or an
 // implementation assembly inspected with MetadataImportOptions.All. Reference assemblies hide private fields, so
 // their types are accepted only when every instance property is an auto-property and every instance method is a
@@ -50,6 +51,7 @@ internal sealed class StateClonePlanner
   private readonly Dictionary<IAssemblySymbol, List<INamedTypeSymbol>> AssemblyTypes = new(SymbolEqualityComparer.Default);
   private readonly List<Slot> Roots = [];
   private readonly List<INamedTypeSymbol> ICloneableStates = [];
+  private readonly List<INamedTypeSymbol> OpenGenericICloneableStates = [];
   private readonly INamedTypeSymbol? StateType;
   private Compilation? FullCompilation;
 
@@ -73,6 +75,7 @@ internal sealed class StateClonePlanner
     }
 
     CollectClosedGenerateCloneTypes();
+    CollectClosedICloneableStates();
     PropagateErrors();
     Report(sourceContext);
     MaterializeDispatches();
@@ -150,6 +153,64 @@ internal sealed class StateClonePlanner
       _ => false
     };
 
+  // Closed constructions of an ICloneable open generic state are nameable services. The open definition is not.
+  private void CollectClosedICloneableStates()
+  {
+    if (OpenGenericICloneableStates.Count == 0)
+    {
+      return;
+    }
+
+    HashSet<string> names = new(StringComparer.Ordinal);
+    foreach (INamedTypeSymbol open in OpenGenericICloneableStates)
+    {
+      names.Add(open.Name);
+    }
+
+    foreach (SyntaxTree tree in Compilation.SyntaxTrees)
+    {
+      SemanticModel? model = null;
+      foreach (GenericNameSyntax genericName in tree.GetRoot().DescendantNodes().OfType<GenericNameSyntax>())
+      {
+        if (!names.Contains(genericName.Identifier.ValueText))
+        {
+          continue;
+        }
+
+        model ??= Compilation.GetSemanticModel(tree);
+        if (model.GetSymbolInfo(genericName).Symbol is not INamedTypeSymbol symbol)
+        {
+          continue;
+        }
+
+        if (symbol.IsUnboundGenericType || symbol.TypeArguments.Any(ContainsTypeParameter))
+        {
+          continue;
+        }
+
+        if (!IsOpenGenericICloneableState(symbol.OriginalDefinition) || !ImplementsICloneable(symbol))
+        {
+          continue;
+        }
+
+        RememberICloneableState(symbol);
+      }
+    }
+  }
+
+  private bool IsOpenGenericICloneableState(INamedTypeSymbol definition)
+  {
+    foreach (INamedTypeSymbol open in OpenGenericICloneableStates)
+    {
+      if (SymbolEqualityComparer.Default.Equals(open, definition))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private void Consider(INamedTypeSymbol type)
   {
     if (type.TypeKind is TypeKind.Interface or TypeKind.Delegate or TypeKind.Enum)
@@ -168,6 +229,11 @@ internal sealed class StateClonePlanner
       if (HasGenerateClone(type))
       {
         GenericCloneNames.Add(type.Name);
+      }
+
+      if (isState && ImplementsICloneable(type))
+      {
+        OpenGenericICloneableStates.Add(type);
       }
 
       if (isState && !ImplementsICloneable(type))
@@ -3043,12 +3109,12 @@ internal sealed class StateClonePlanner
       builder.AppendLine("    }");
     }
 
+    List<string> serviceTypes = ServiceTypes(registrations, iCloneableStates);
     if (iCloneableStates.Count > 0)
     {
       builder.AppendLine();
-      // ICloneable states keep their own Clone(). EnsureStates still constructs them by reflection,
-      // and the transaction behavior calls Clone(). Neither is a static newobj, so the trimmer drops
-      // the DI constructor and stubs Clone() unless this root names them.
+      // ICloneable states keep their own Clone(). TryAddTransient<T> names the DI constructor. Clone()
+      // is still an interface call, so this root keeps the public methods for the trimmer.
       builder.AppendLine("    [global::System.Runtime.CompilerServices.ModuleInitializer]");
       builder.AppendLine("    internal static void RootICloneableStates()");
       builder.AppendLine("    {");
@@ -3066,6 +3132,29 @@ internal sealed class StateClonePlanner
       builder.AppendLine("      where T : class");
       builder.AppendLine("    {");
       builder.AppendLine("    }");
+    }
+
+    if (serviceTypes.Count > 0)
+    {
+      builder.AppendLine();
+      builder.AppendLine("    [global::System.Runtime.CompilerServices.ModuleInitializer]");
+      builder.AppendLine("    internal static void RegisterServices()");
+      builder.AppendLine("    {");
+      builder.AppendLine("      global::TimeWarp.State.StateRegistrationRegistry.Register");
+      builder.AppendLine("      (");
+      builder.AppendLine("        typeof(RegistrationAnchor).Assembly,");
+      builder.AppendLine("        static services =>");
+      builder.AppendLine("        {");
+      foreach (string serviceType in serviceTypes)
+      {
+        builder.AppendLine($"          global::Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddTransient<{serviceType}>(services);");
+      }
+
+      builder.AppendLine("        }");
+      builder.AppendLine("      );");
+      builder.AppendLine("    }");
+      builder.AppendLine();
+      builder.AppendLine("    private sealed class RegistrationAnchor;");
     }
 
     builder.AppendLine("  }");
@@ -3091,6 +3180,32 @@ internal sealed class StateClonePlanner
 
     builder.AppendLine("}");
     return builder.ToString();
+  }
+
+  private List<string> ServiceTypes(List<Slot> registrations, List<INamedTypeSymbol> iCloneableStates)
+  {
+    List<string> serviceTypes = [];
+    foreach (Slot slot in registrations)
+    {
+      if (slot.Kind != SlotKind.Clone || slot.Type is not INamedTypeSymbol named || !CanName(named))
+      {
+        continue;
+      }
+
+      serviceTypes.Add(slot.FullyQualified);
+    }
+
+    foreach (INamedTypeSymbol type in iCloneableStates)
+    {
+      if (!CanName(type))
+      {
+        continue;
+      }
+
+      serviceTypes.Add(type.ToDisplayString(Format));
+    }
+
+    return serviceTypes;
   }
 
   private static bool IsPubliclyVisible(ITypeSymbol type)

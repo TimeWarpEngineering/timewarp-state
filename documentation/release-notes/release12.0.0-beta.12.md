@@ -12,3 +12,9 @@ title: Release 12.0.0-beta.12
 - **The State panel folds one store.** Current state is the store that first appeared latest in the log. A selector lists stores newest first, so a prerender snapshot does not replace the live store.
 
 See [DevTools](xref:TimeWarpState:DevTools.md).
+
+### State registration and pipeline log
+
+- **States are registered by the clone source generator.** `AddTimeWarpState` applies `TryAddTransient<T>()` for the concrete states in `TimeWarpStateOptions.Assemblies`. The assembly type scan is gone. A host registration of the same service is kept. See [Cloning](xref:TimeWarpState:Cloning.md).
+- **The pipeline log uses generated behavior definitions.** `LogTimeWarpStateMiddleware` still lists closed behavior registrations in service-collection order. `GetComponentOrder` keeps the same signature. A behavior compiled without the generator is omitted.
+- **No public API was removed.** `GetComponentOrder` and `AddTimeWarpState` keep their signatures.

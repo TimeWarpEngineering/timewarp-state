@@ -15,10 +15,10 @@ namespace TimeWarp.State;
 public class TimeWarpStateOptions
 {
   /// <summary>
-  /// Assemblies to be searched for TimeWarp.Mediator Actions and Handlers
+  /// Assemblies whose generated state registrations <c>AddTimeWarpState</c> applies.
   /// </summary>
   /// <remarks>
-  /// Will default to the calling assembly
+  /// Will default to the calling assembly.
   /// If the user specifies any assemblies they will have to specify the calling assembly also if they want it to be used.
   /// </remarks>
   public IEnumerable<Assembly> Assemblies { get; set; }
@@ -69,7 +69,7 @@ public class TimeWarpStateOptionsValidator
   {
     if (options.Assemblies == null || !options.Assemblies.Any())
     {
-      throw new TimeWarpStateConfigurationException(nameof(options.Assemblies), "At least one assembly must be specified for scanning.");
+      throw new TimeWarpStateConfigurationException(nameof(options.Assemblies), "At least one assembly must be specified.");
     }
 
     if (options.ServiceCollection == null)

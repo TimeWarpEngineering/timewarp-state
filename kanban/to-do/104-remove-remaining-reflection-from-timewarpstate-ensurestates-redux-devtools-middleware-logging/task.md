@@ -88,12 +88,12 @@ hydration) are closed by 112.
 ## Checklist
 
 - [x] Decide M1: **delete** — done in task 112 / PR #640
-- [ ] Generated state registration replaces `EnsureStates` reflection
+- [x] Generated state registration replaces `EnsureStates` reflection
 - [x] DevTools hydration deleted with the feature (task 112 / PR #640)
-- [ ] Non-reflection pipeline listing replaces `GetComponentOrder`'s `Type.GetInterfaces()`
-- [ ] Remove the IL2026/IL2070/IL2072/IL2075/IL3050 suppressions
-- [ ] Tests: registration of all states (incl. generic/nested), hydration round-trip (if kept), middleware logging output
-- [ ] Docs/release notes for any public API removed
+- [x] Non-reflection pipeline listing replaces `GetComponentOrder`'s `Type.GetInterfaces()`
+- [x] Remove the IL2026/IL2070/IL2072/IL2075/IL3050 suppressions
+- [x] Tests: registration of all states (incl. generic/nested), hydration round-trip (if kept), middleware logging output
+- [x] Docs/release notes for any public API removed
 - [ ] Code review
 
 ## Acceptance criteria
@@ -107,6 +107,25 @@ hydration) are closed by 112.
 ## Session
 
 - Created: 2026-10-10 (Grok Bot, at Steven's request via Amina; not launched)
+- Implemented: 2026-10-12. Generated `TryAddTransient<T>` registration and a pipeline-behavior registry. Code review stays for the review node.
+
+## Results
+
+`AddTimeWarpState` applies source-generated `TryAddTransient<T>()` registrars. `LogTimeWarpStateMiddleware` matches closed behavior registrations against definitions recorded by `PipelineBehaviorRegistrySourceGenerator`. `TimeWarp.State` no longer suppresses trimming or AOT warnings. No public API was removed. Redux DevTools stays deleted (task 112).
+
+### How to validate
+
+Smoke:
+
+```bash
+dotnet build source/timewarp-state/timewarp-state.csproj -c Release --nologo
+rg -n 'UnconditionalSuppressMessage|GetTypes\(|GetAssemblies\(|GetMethod\(|GetInterfaces\(|\.Invoke\(' source/timewarp-state
+dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo
+dotnet test tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj --nologo
+ganda repo audit
+```
+
+Expect: the Release build reports zero IL2xxx/IL3xxx warnings. `rg` prints only `configureTimeWarpStateOptionsAction?.Invoke` in `service-collection-extensions.add-timewarp-state.cs`. Both test projects pass, including nested, generic-base, closed `ICloneable`, and host-registration cases, plus the middleware order log. `ganda repo audit` exits 0.
 
 ## Notes
 
