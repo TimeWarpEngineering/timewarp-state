@@ -22,6 +22,22 @@ public class DevToolsSpanExporter_Should
     item.Attributes[InspectorCapture.ActionTagName].ShouldBe("IncrementCount");
   }
 
+  public static void CopyStoreAndRenderTagsOntoTheIngestItem()
+  {
+    const string storeId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    using Activity activity = StartActivity
+    (
+      "CounterState",
+      "IncrementCount",
+      storeId: storeId,
+      render: InspectorCapture.InteractiveRender
+    );
+    SpanIngestItem? item = DevToolsSpanExporter.BuildItem(activity);
+    item.ShouldNotBeNull();
+    item.Attributes[InspectorCapture.StoreTagName].ShouldBe(storeId);
+    item.Attributes[InspectorCapture.RenderTagName].ShouldBe(InspectorCapture.InteractiveRender);
+  }
+
   public static void DropInspectorStateActivities()
   {
     using Activity inspectorState = StartActivity(InspectorCapture.InspectorStateTypeName, "SetFilter");
@@ -120,7 +136,14 @@ public class DevToolsSpanExporter_Should
     }
   }
 
-  private static Activity StartActivity(string stateTypeName, string actionName, bool inspector = false)
+  private static Activity StartActivity
+  (
+    string stateTypeName,
+    string actionName,
+    bool inspector = false,
+    string? storeId = null,
+    string? render = null
+  )
   {
     ActivityListener listener = Listen(InspectorCapture.ActivitySourceName);
     ActivitySource source = new(InspectorCapture.ActivitySourceName);
@@ -131,6 +154,16 @@ public class DevToolsSpanExporter_Should
     if (inspector)
     {
       activity.SetTag(InspectorCapture.InspectorTagName, "true");
+    }
+
+    if (storeId is not null)
+    {
+      activity.SetTag(InspectorCapture.StoreTagName, storeId);
+    }
+
+    if (render is not null)
+    {
+      activity.SetTag(InspectorCapture.RenderTagName, render);
     }
 
     activity.Stop();

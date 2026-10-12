@@ -25,7 +25,7 @@ builder.Services.AddOpenTelemetry()
   });
 ```
 
-Default spans have **no payload**. Snapshots are opt-in, sampled, and serialized only through caller `JsonSerializerOptions` / `JsonTypeInfo` (the same options as `TimeWarpStateOptions` after task 065). With snapshots on, state initialization emits `{StateTypeName}.Initialized` (`timewarp.state.kind` = `init` and a `state.snapshot`) before the first action. See the [package README](../../source/timewarp-state-telemetry/readme.md) for AOT, security, and performance notes.
+Default spans have **no payload**. Snapshots are opt-in, sampled, and serialized only through caller `JsonSerializerOptions` / `JsonTypeInfo` (the same options as `TimeWarpStateOptions` after task 065). With snapshots on, state initialization emits `{StateTypeName}.Initialized` (`timewarp.state.kind` = `init` and a `state.snapshot`) before the first action. Every span, init and action, is tagged `timewarp.state.store` with that scope's `Store.Guid`. When the host registered `IStateRenderKind` and a component has observed the renderer, the span also carries `timewarp.state.render` (`prerender` or `interactive`). `AddTimeWarpStateBlazor` registers that service. A non-Blazor host omits the tag. See the [package README](../../source/timewarp-state-telemetry/readme.md) for AOT, security, and performance notes.
 
 ## Sample
 

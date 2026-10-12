@@ -25,4 +25,10 @@ public sealed class FoldedState
 
   /// <summary>True when the payload was cut at <c>MaxSnapshotChars</c> or at ingest.</summary>
   public required bool Truncated { get; init; }
+
+  /// <summary>Store that produced this snapshot. Empty when the span had no store tag.</summary>
+  public string StoreId { get; init; } = "";
+
+  /// <summary><c>prerender</c>, <c>interactive</c>, or empty.</summary>
+  public string Render { get; init; } = "";
 }

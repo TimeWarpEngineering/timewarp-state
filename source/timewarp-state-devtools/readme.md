@@ -10,9 +10,10 @@ The inspector does not reference `TimeWarp.State.Telemetry` and does not export 
 
 The page is an action log on the left and **Action**, **State**, and **Diff** tabs on the right.
 
-- **State** shows every state type as a collapsible JSON tree (**Tree**) or as text (**Raw**). Nothing selected means the latest snapshot of each state (**Current state**). A selected row means the fold up to that row (**State after action**).
-- **Diff** is the structural change against the previous snapshot of that state type: added, removed, and changed. Equal snapshots say **No change.** A missing snapshot says so. Truncated JSON stays raw and names `MaxSnapshotChars`.
-- The filter matches action names and state type names in the log and in the State panel.
-- `init` rows (`timewarp.state.kind` = `init`) are state initialization and fold like any snapshot.
+- **State** shows one store's state types as a collapsible JSON tree (**Tree**) or as text (**Raw**). **Current state** is the newest store's fold. A store selector (newest first) switches stores. A selected row in that store means the fold up to that row (**State after action**).
+- Each log row has a store badge: **pre** or **live** from `timewarp.state.render`, otherwise the first four characters of `timewarp.state.store`. The colour stays with the full id. The Action tab shows the full id.
+- **Diff** is the structural change against the previous snapshot of that state type in the same store: added, removed, and changed. Equal snapshots say **No change.** A missing snapshot says so. Truncated JSON stays raw and names `MaxSnapshotChars`.
+- The filter matches action names, state type names, store ids, and store badges in the log. In the State panel it matches the store badge or a state type name.
+- `init` rows (`timewarp.state.kind` = `init`) are state initialization and fold like any snapshot. A prerender and an interactive circuit each produce their own init row. Both stay visible.
 - Expanded tree paths stay expanded as new rows arrive.
 - The header switches dark, light, and system theme. Dark is the default. Colours come from `wwwroot/tokens.css` (`--twe-*`).

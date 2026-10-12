@@ -9,7 +9,8 @@
 // mutating action is a state.diff. IncludeSnapshots off, no listener, or no JsonTypeInfo skips the
 // activity and logs the same warning as an action snapshot. A sampled-out init span (no activity or
 // IsAllDataRequested false) does not prime the cache, so the first action then emits state.snapshot
-// rather than state.diff. No property reflection.
+// rather than state.diff. The span carries the store Guid, and the render kind when the host
+// recorded one. No property reflection.
 #endregion
 
 namespace TimeWarp.State.Telemetry;
@@ -24,6 +25,7 @@ public sealed class InitializedStateSnapshotHandler : INotificationHandler<State
   private readonly TimeWarpStateTelemetryOptions? TimeWarpStateTelemetryOptions;
   private readonly TimeWarpStateOptions? TimeWarpStateOptions;
   private readonly StateSnapshotCache? StateSnapshotCache;
+  private readonly IStateRenderKind? StateRenderKind;
 
   /// <summary>
   /// Creates the handler. Snapshot services are optional; without them the handler returns.
@@ -34,7 +36,8 @@ public sealed class InitializedStateSnapshotHandler : INotificationHandler<State
     IStore store,
     TimeWarpStateTelemetryOptions? timeWarpStateTelemetryOptions = null,
     TimeWarpStateOptions? timeWarpStateOptions = null,
-    StateSnapshotCache? stateSnapshotCache = null
+    StateSnapshotCache? stateSnapshotCache = null,
+    IStateRenderKind? stateRenderKind = null
   )
   {
     Logger = logger;
@@ -42,6 +45,7 @@ public sealed class InitializedStateSnapshotHandler : INotificationHandler<State
     TimeWarpStateTelemetryOptions = timeWarpStateTelemetryOptions;
     TimeWarpStateOptions = timeWarpStateOptions;
     StateSnapshotCache = stateSnapshotCache;
+    StateRenderKind = stateRenderKind;
   }
 
   /// <inheritdoc />
@@ -126,6 +130,7 @@ public sealed class InitializedStateSnapshotHandler : INotificationHandler<State
     activity.SetTag(StateSnapshotRecorder.ActionTagName, StateSnapshotRecorder.InitKind);
     activity.SetTag(StateSnapshotRecorder.StateTypeTagName, stateTypeName);
     activity.SetTag(StateSnapshotRecorder.KindTagName, StateSnapshotRecorder.InitKind);
+    StateSnapshotRecorder.TagOrigin(activity, Store, StateRenderKind);
 
     if
     (

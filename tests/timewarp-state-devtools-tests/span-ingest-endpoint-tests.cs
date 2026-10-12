@@ -164,6 +164,90 @@ public class SpanIngestEndpoint_Should
     log.FoldCurrent().Single(state => state.StateTypeName == "OtherState").Json.ShouldBe("""{"name":"a"}""");
   }
 
+  public static async Task RecordTwoInterleavedStoresAndFoldTheNewest()
+  {
+    const string prerenderStoreId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const string interactiveStoreId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    await using WebApplicationFactory<Program> factory = new();
+    HttpClient client = factory.CreateClient();
+    SpanIngestDocument document = new()
+    {
+      Spans =
+      [
+        Tagged
+        (
+          "CounterState.Initialized",
+          "init",
+          "CounterState",
+          InspectorCapture.InitKind,
+          InspectorCapture.SnapshotEventName,
+          """{"count":0}""",
+          prerenderStoreId,
+          InspectorCapture.PrerenderRender
+        ),
+        Tagged
+        (
+          "CounterState.Initialized",
+          "init",
+          "CounterState",
+          InspectorCapture.InitKind,
+          InspectorCapture.SnapshotEventName,
+          """{"count":0}""",
+          interactiveStoreId,
+          InspectorCapture.InteractiveRender
+        ),
+        Tagged
+        (
+          "CounterState.IncrementCountActionSet.Action",
+          "IncrementCountActionSet.Action",
+          "CounterState",
+          "",
+          InspectorCapture.DiffEventName,
+          """{"count":5}""",
+          interactiveStoreId,
+          InspectorCapture.InteractiveRender
+        ),
+        Tagged
+        (
+          "OtherState.SetAction",
+          "Set",
+          "OtherState",
+          "",
+          InspectorCapture.SnapshotEventName,
+          """{"name":"a"}""",
+          prerenderStoreId,
+          InspectorCapture.PrerenderRender
+        )
+      ]
+    };
+
+    HttpResponseMessage response = await client.PostAsJsonAsync
+    (
+      "/ingest/spans",
+      document,
+      SpanIngestJsonContext.Default.SpanIngestDocument
+    );
+    response.EnsureSuccessStatusCode();
+
+    InspectorLog log = factory.Services.GetRequiredService<InspectorLog>();
+    IReadOnlyList<ActionLogEntry> entries = log.Snapshot();
+    entries.Count.ShouldBe(4);
+    entries[0].StoreId.ShouldBe(prerenderStoreId);
+    entries[0].Render.ShouldBe(InspectorCapture.PrerenderRender);
+    entries[1].StoreId.ShouldBe(interactiveStoreId);
+    entries[2].StoreId.ShouldBe(interactiveStoreId);
+    entries[2].Render.ShouldBe(InspectorCapture.InteractiveRender);
+    entries[3].StoreId.ShouldBe(prerenderStoreId);
+
+    FoldedState current = log.FoldCurrent().ShouldHaveSingleItem();
+    current.StoreId.ShouldBe(interactiveStoreId);
+    current.Json.ShouldBe("""{"count":5}""");
+
+    IReadOnlyList<FoldedState> prerenderFold = log.FoldStore(prerenderStoreId);
+    prerenderFold.Single(state => state.StateTypeName == "CounterState").Json.ShouldBe("""{"count":0}""");
+    prerenderFold.Single(state => state.StateTypeName == "OtherState").Json.ShouldBe("""{"name":"a"}""");
+  }
+
   public static async Task CapAndMarkAnOversizedSnapshot()
   {
     await using WebApplicationFactory<Program> factory = new();
@@ -217,18 +301,32 @@ public class SpanIngestEndpoint_Should
     string stateTypeName,
     string kind,
     string eventName,
-    string json
-  ) =>
-    new()
+    string json,
+    string storeId = "",
+    string render = ""
+  )
+  {
+    Dictionary<string, string> attributes = new()
+    {
+      [InspectorCapture.ActionTagName] = actionName,
+      [InspectorCapture.StateTypeTagName] = stateTypeName,
+      [InspectorCapture.KindTagName] = kind
+    };
+    if (storeId.Length > 0)
+    {
+      attributes[InspectorCapture.StoreTagName] = storeId;
+    }
+
+    if (render.Length > 0)
+    {
+      attributes[InspectorCapture.RenderTagName] = render;
+    }
+
+    return new SpanIngestItem
     {
       Name = name,
       Status = "Ok",
-      Attributes = new Dictionary<string, string>
-      {
-        [InspectorCapture.ActionTagName] = actionName,
-        [InspectorCapture.StateTypeTagName] = stateTypeName,
-        [InspectorCapture.KindTagName] = kind
-      },
+      Attributes = attributes,
       Events =
       [
         new SpanIngestEvent
@@ -241,6 +339,7 @@ public class SpanIngestEndpoint_Should
         }
       ]
     };
+  }
 
   private static SpanIngestItem AppSpan(string actionName) =>
     new()

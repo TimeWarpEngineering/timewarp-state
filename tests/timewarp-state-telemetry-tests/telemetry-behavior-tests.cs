@@ -51,6 +51,8 @@ public class Should_
     recordedActivity.Status.ShouldBe(ActivityStatusCode.Ok);
     TagValue(recordedActivity, "timewarp.state.action").ShouldBe("IncrementAction");
     TagValue(recordedActivity, "timewarp.state.state_type").ShouldBe("TelemetryTestState");
+    TagValue(recordedActivity, "timewarp.state.store").ShouldBe(harness.Store.Guid.ToString("D"));
+    recordedActivity.Tags.Any(tag => tag.Key == "timewarp.state.render").ShouldBeFalse();
     recordedActivity.Events.ShouldBeEmpty();
     harness.Store.GetStateCallCount.ShouldBe(0);
   }
@@ -81,6 +83,27 @@ public class Should_
     recordedActivity.Status.ShouldBe(ActivityStatusCode.Ok);
     TagValue(recordedActivity, "timewarp.state.action").ShouldBe("IncrementCountActionSet.Action");
     TagValue(recordedActivity, "timewarp.state.state_type").ShouldBe("TelemetryTestState");
+  }
+
+  public async Task Tag_Each_Store_And_The_Render_Kind_The_Host_Supplies()
+  {
+    RecordingStore prerenderStore = new(new TelemetryTestState { Count = 1 });
+    RecordingStore interactiveStore = new(new TelemetryTestState { Count = 1 });
+    using ActivityListenerHarness activityListenerHarness = new();
+
+    await Dispatch(prerenderStore, new FixedRenderKind(StateRenderKinds.Prerender));
+    await Dispatch(interactiveStore, new FixedRenderKind(StateRenderKinds.Interactive));
+
+    activityListenerHarness.Activities.Count.ShouldBe(2);
+    TagValue(activityListenerHarness.Activities[0], "timewarp.state.store")
+      .ShouldBe(prerenderStore.Guid.ToString("D"));
+    TagValue(activityListenerHarness.Activities[0], "timewarp.state.render")
+      .ShouldBe(StateRenderKinds.Prerender);
+    TagValue(activityListenerHarness.Activities[1], "timewarp.state.store")
+      .ShouldBe(interactiveStore.Guid.ToString("D"));
+    TagValue(activityListenerHarness.Activities[1], "timewarp.state.render")
+      .ShouldBe(StateRenderKinds.Interactive);
+    prerenderStore.Guid.ShouldNotBe(interactiveStore.Guid);
   }
 
   public async Task Set_Error_Status_And_Rethrow_When_Handler_Throws()
@@ -298,6 +321,25 @@ public class Should_
     harness.Store.GetStateCallCount.ShouldBe(0);
   }
 
+  private static async Task Dispatch(RecordingStore recordingStore, IStateRenderKind? stateRenderKind)
+  {
+    TelemetryBehavior<TelemetryTestState.IncrementAction, Unit> telemetryBehavior = new
+    (
+      NullLogger<TelemetryBehavior<TelemetryTestState.IncrementAction, Unit>>.Instance,
+      recordingStore,
+      timeWarpStateTelemetryOptions: null,
+      timeWarpStateOptions: null,
+      stateSnapshotCache: null,
+      stateRenderKind: stateRenderKind
+    );
+    await telemetryBehavior.Handle
+    (
+      new TelemetryTestState.IncrementAction(),
+      _ => Task.FromResult(Unit.Value),
+      CancellationToken.None
+    );
+  }
+
   private static Harness CreateHarness(bool includeSnapshots = false)
   {
     TimeWarpStateTelemetryOptions timeWarpStateTelemetryOptions = new()
@@ -354,6 +396,13 @@ public class Should_
     public required RecordingStore Store { get; init; }
     public required TelemetryBehavior<TelemetryTestState.IncrementAction, Unit> IncrementBehavior { get; init; }
     public required TelemetryBehavior<TelemetryTestState.ThrowAction, Unit> ThrowBehavior { get; init; }
+  }
+
+  private sealed class FixedRenderKind(string name) : IStateRenderKind
+  {
+    public string? Name { get; } = name;
+
+    public void Observe(bool isInteractive) { }
   }
 
   private sealed class EmptyJsonTypeInfoResolver : IJsonTypeInfoResolver

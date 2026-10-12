@@ -27,6 +27,7 @@ partial class InspectorState
       {
         inspectorLog.Clear(raiseChanged: true);
         InspectorState.SelectedSequence = 0;
+        InspectorState.SelectedStoreId = "";
         InspectorState.Revision++;
         return default;
       }

@@ -142,6 +142,8 @@ public static class SpanIngestEndpoint
       SnapshotKind = snapshotKind,
       SnapshotTruncated = snapshotTruncated,
       Kind = kind,
+      StoreId = Attribute(item, InspectorCapture.StoreTagName),
+      Render = Attribute(item, InspectorCapture.RenderTagName),
       Attributes = attributes
     };
     return true;

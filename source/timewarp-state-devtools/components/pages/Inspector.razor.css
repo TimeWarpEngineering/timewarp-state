@@ -145,7 +145,7 @@ h1 {
 .row {
   width: 100%;
   display: grid;
-  grid-template-columns: 7.2rem minmax(0, 1.4fr) minmax(0, 0.8fr) 5.5rem 4.5rem;
+  grid-template-columns: 7.2rem 3.4rem minmax(0, 1.4fr) minmax(0, 0.8fr) 5.5rem 4.5rem;
   gap: 0.6rem;
   align-items: baseline;
   text-align: left;
@@ -171,6 +171,52 @@ h1 {
 .row.init.selected {
   background: var(--twe-selected);
   box-shadow: inset 3px 0 0 var(--twe-cyan);
+}
+
+.store-badge {
+  display: inline-block;
+  min-width: 2.6rem;
+  text-align: center;
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: transparent;
+}
+
+.store-badge.on {
+  color: #10081f;
+}
+
+.store-badge.on[data-hue="0"] { background: #c5b4ff; }
+.store-badge.on[data-hue="1"] { background: #00ccff; }
+.store-badge.on[data-hue="2"] { background: #d2ffb4; }
+.store-badge.on[data-hue="3"] { background: #ffb4ae; }
+.store-badge.on[data-hue="4"] { background: #e0a045; }
+.store-badge.on[data-hue="5"] { background: #7eebff; }
+.store-badge.on[data-hue="6"] { background: #f7fbff; }
+.store-badge.on[data-hue="7"] { background: #79b253; }
+
+.store-select {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
+  color: var(--twe-muted);
+  font-size: 0.75rem;
+}
+
+.store-select select {
+  flex: 1;
+  min-width: 0;
+  background: var(--twe-paper);
+  color: var(--twe-ink);
+  border: 1px solid var(--twe-border);
+  border-radius: var(--twe-radius-sm);
+  padding: 0.35rem 0.45rem;
+  font-family: var(--twe-font-mono);
+  font-size: 0.75rem;
 }
 
 .action {

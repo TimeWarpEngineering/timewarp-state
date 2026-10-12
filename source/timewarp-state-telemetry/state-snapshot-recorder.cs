@@ -19,6 +19,8 @@ internal static class StateSnapshotRecorder
   internal const string StateTypeTagName = "timewarp.state.state_type";
   internal const string KindTagName = "timewarp.state.kind";
   internal const string InitKind = "init";
+  internal const string StoreTagName = "timewarp.state.store";
+  internal const string RenderTagName = "timewarp.state.render";
   internal const string SnapshotJsonTagName = "snapshot.json";
   internal const string SnapshotTruncatedTagName = "snapshot.truncated";
   internal const string SnapshotEventName = "state.snapshot";
@@ -144,6 +146,16 @@ internal static class StateSnapshotRecorder
         logName
       );
       return false;
+    }
+  }
+
+  internal static void TagOrigin(Activity activity, IStore store, IStateRenderKind? stateRenderKind)
+  {
+    activity.SetTag(StoreTagName, store.Guid.ToString("D"));
+    string? render = stateRenderKind?.Name;
+    if (!string.IsNullOrEmpty(render))
+    {
+      activity.SetTag(RenderTagName, render);
     }
   }
 

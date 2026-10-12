@@ -17,17 +17,25 @@ The inspector uses TimeWarp.State for its own filter, selection, and pause. That
 
 There is no time-travel, commit, or import/export channel. The browser-extension surface was removed in 12.0.0-beta.11.
 
+## Prerender and interactive stores
+
+A Blazor Server page with prerendering builds two stores for one page load. The static render creates a scoped store, initializes each state, and discards that store with the request. The interactive circuit then creates a second store and initializes the same states again. Both initializations run through the pipeline, so the log shows both `init` rows. Neither row is skipped or deduped.
+
+Every span carries `timewarp.state.store`, the `Guid` created with that `Store`. When the host registered `IStateRenderKind` (Blazor does, through `AddTimeWarpStateBlazor`), the span also carries `timewarp.state.render` as `prerender` or `interactive`. Components record that from `RendererInfo.IsInteractive` before `GetState` initializes the state. A host that cannot tell leaves the render tag off; the store id is enough.
+
+Each row shows a short badge. **pre** and **live** come from the render tag. Without that tag the badge is the first four characters of the store id. The badge colour is a stable hash of the full id, so the prerender store and the circuit store stay visually distinct even when both badges read the same word. Hover the badge, or open the **Action** tab, for the full id. No rows are hidden by default.
+
 ## State panel
 
 The right-hand pane has **Action**, **State**, and **Diff** tabs.
 
-**Action** lists the selected span: activity name, state type, status, duration, start time, span id, and the other tags.
+**Action** lists the selected span: activity name, state type, status, duration, start time, span id, store id, render kind when the span carried one, and the other tags.
 
-**State** lists every state type seen. Each node is a collapsible JSON tree. **Tree** and **Raw** switch the format. With no row selected the heading is **Current state**: the latest snapshot of each state type. With a row selected the heading is **State after action**: the fold of snapshots up to and including that row. Expanded and collapsed paths stay put as new rows arrive.
+**State** lists every state type in one store. Each node is a collapsible JSON tree. **Tree** and **Raw** switch the format. **Current state** is the newest store's fold: the latest snapshot of each state type in the store that first appeared latest in the log. A later span from an older store updates that store and leaves the newer store on screen. A store selector above the tree lists stores newest first. Choosing one pins that store, so a prerender snapshot does not replace the live store, and the prerender fold stays available. Selecting a row pins that row's store. With a row selected in the store on screen, the heading is **State after action**: that store's fold up to and including the row. Expanded and collapsed paths stay put as new rows arrive.
 
-**Diff** compares the selected snapshot with the previous snapshot of the same state type. Added, removed, and changed values are colour coded. Equal JSON says **No change.** A span with no snapshot says so. A truncated payload is shown as raw text with a hint to raise `MaxSnapshotChars`; it is not parsed as a tree.
+**Diff** compares the selected snapshot with the previous snapshot of the same state type in the same store. Added, removed, and changed values are colour coded. Equal JSON says **No change.** A span with no snapshot says so. A truncated payload is shown as raw text with a hint to raise `MaxSnapshotChars`; it is not parsed as a tree.
 
-The filter box matches action names and state type names in the log and in the State panel.
+The filter box matches action names, state type names, store ids, and store badges (`pre`, `live`, or the id prefix) in the log. In the State panel, a filter that matches the store on screen shows that store's whole fold; any other filter matches state type names.
 
 A row whose `timewarp.state.kind` tag is `init` is a state-initialization snapshot. It is tinted like Redux DevTools' `init` row and folds like any other snapshot. With `IncludeSnapshots` on, telemetry emits that row when the state is created, before its first action.
 

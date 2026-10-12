@@ -43,6 +43,7 @@ public class InitializedStateSnapshotHandler_Should
     TagValue(initialized, "timewarp.state.action").ShouldBe("init");
     TagValue(initialized, "timewarp.state.state_type").ShouldBe("TelemetryTestState");
     TagValue(initialized, "timewarp.state.kind").ShouldBe("init");
+    TagValue(initialized, "timewarp.state.store").ShouldBe(recordingStore.Guid.ToString("D"));
     ActivityEvent snapshotEvent = initialized.Events.ShouldHaveSingleItem();
     snapshotEvent.Name.ShouldBe("state.snapshot");
     EventJson(snapshotEvent).ShouldContain("\"count\":1");
@@ -51,6 +52,28 @@ public class InitializedStateSnapshotHandler_Should
     diffEvent.Name.ShouldBe("state.diff");
     EventJson(diffEvent).ShouldContain("\"count\":2");
     recordingStore.GetStateCallCount.ShouldBe(2);
+  }
+
+  public async Task Tag_Init_With_The_Render_Kind_When_The_Host_Supplies_One()
+  {
+    RecordingStore recordingStore = new(new TelemetryTestState { Count = 1 });
+    InitializedStateSnapshotHandler handler = new
+    (
+      NullLogger<InitializedStateSnapshotHandler>.Instance,
+      recordingStore,
+      SnapshotOptions(),
+      timeWarpStateOptions: null,
+      new StateSnapshotCache(),
+      new FixedRenderKind(StateRenderKinds.Prerender)
+    );
+
+    using ActivityListenerHarness activityListenerHarness = new();
+    await handler.Handle(new StateInitializedNotification(typeof(TelemetryTestState)), CancellationToken.None);
+
+    RecordedActivity initialized = activityListenerHarness.Activities.ShouldHaveSingleItem();
+    TagValue(initialized, "timewarp.state.store").ShouldBe(recordingStore.Guid.ToString("D"));
+    TagValue(initialized, "timewarp.state.render").ShouldBe(StateRenderKinds.Prerender);
+    TagValue(initialized, "timewarp.state.kind").ShouldBe("init");
   }
 
   public async Task Truncate_The_Init_Snapshot_Past_MaxSnapshotChars()
@@ -173,6 +196,13 @@ public class InitializedStateSnapshotHandler_Should
 
   private static string EventJson(ActivityEvent activityEvent) =>
     activityEvent.Tags.Single(tag => tag.Key == "snapshot.json").Value.ShouldBeOfType<string>();
+
+  private sealed class FixedRenderKind(string name) : IStateRenderKind
+  {
+    public string? Name { get; } = name;
+
+    public void Observe(bool isInteractive) { }
+  }
 
   private sealed class EmptyJsonTypeInfoResolver : IJsonTypeInfoResolver
   {
