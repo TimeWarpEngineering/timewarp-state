@@ -7,7 +7,8 @@
 // delegate under that assembly. AddTimeWarpState applies the delegates for TimeWarpStateOptions.Assemblies.
 // The delegate calls TryAddTransient<T>() for each concrete state, so the trimmer sees the closed type. There is
 // no type scan and no untyped transient registration. A host registration wins because the generated calls
-// use TryAdd. An assembly with no generated states contributes nothing.
+// use TryAdd. An assembly with no generated states contributes nothing. Apply runs each assembly's module
+// constructor first, because ECMA-335 does not guarantee the module initializer has run until code in the module executes.
 #endregion
 
 namespace TimeWarp.State;
@@ -40,9 +41,10 @@ public static class StateRegistrationRegistry
   {
     ArgumentNullException.ThrowIfNull(serviceCollection);
     ArgumentNullException.ThrowIfNull(assemblies);
-    ImmutableDictionary<Assembly, Action<IServiceCollection>> registrars = Registrars;
     foreach (Assembly assembly in assemblies)
     {
+      System.Runtime.CompilerServices.RuntimeHelpers.RunModuleConstructor(assembly.ManifestModule.ModuleHandle);
+      ImmutableDictionary<Assembly, Action<IServiceCollection>> registrars = Registrars;
       if (registrars.TryGetValue(assembly, out Action<IServiceCollection>? register))
       {
         register(serviceCollection);

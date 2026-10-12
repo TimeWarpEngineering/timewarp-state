@@ -34,6 +34,13 @@ public static partial class ServiceCollectionExtensions
   // is inert under the generated mediator, so listing it here would misreport the pipeline.
   // PipelineBehaviorRegistry.Matches compares open definitions the source generator recorded. It does not walk
   // the implementation's interfaces.
+  /// <summary>
+  /// Lists the distinct simple names of the closed implementation types registered for <paramref name="componentType"/>, in registration order.
+  /// </summary>
+  /// <remarks>
+  /// Only behaviors the source generator recorded for <c>IPipelineBehavior&lt;,&gt;</c> are matched.
+  /// Any other component type returns an empty list.
+  /// </remarks>
   public static List<string> GetComponentOrder(this IServiceCollection serviceCollection, Type componentType)
   {
     ArgumentNullException.ThrowIfNull(serviceCollection);

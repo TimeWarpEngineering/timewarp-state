@@ -6,7 +6,8 @@
 // The runtime log matches service descriptors against PipelineBehaviorRegistry instead of calling GetInterfaces.
 // Only a class the generated file can name is recorded: public or internal, not private, protected, or file-local.
 // Abstract classes are skipped. The service collection still supplies pipeline order. Nothing is emitted when
-// this compilation declares no such behavior, or when IPipelineBehavior is not referenced.
+// this compilation declares no such behavior, when IPipelineBehavior is not referenced, or when
+// TimeWarp.State.PipelineBehaviorRegistry is not referenced.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -15,6 +16,8 @@ namespace TimeWarp.State.SourceGenerator;
 public sealed class PipelineBehaviorRegistrySourceGenerator : IIncrementalGenerator
 {
   private const string BehaviorMetadataName = "TimeWarp.Mediator.IPipelineBehavior`2";
+
+  private const string RegistryMetadataName = "TimeWarp.State.PipelineBehaviorRegistry";
 
   public void Initialize(IncrementalGeneratorInitializationContext context)
   {
@@ -28,6 +31,11 @@ public sealed class PipelineBehaviorRegistrySourceGenerator : IIncrementalGenera
   private static void Execute(Compilation compilation, SourceProductionContext sourceContext)
   {
     if (compilation.GetTypeByMetadataName(BehaviorMetadataName) is not INamedTypeSymbol behavior)
+    {
+      return;
+    }
+
+    if (compilation.GetTypeByMetadataName(RegistryMetadataName) is null)
     {
       return;
     }
