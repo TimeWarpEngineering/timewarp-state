@@ -25,6 +25,15 @@ public class StoreSelection_Should
     StoreSelection.Effective(log.ListStores(), null).ShouldBe(NewerLiveStoreId);
   }
 
+  public static void TreatAStoreWithNoRenderTagAsLive()
+  {
+    InspectorLog log = new();
+    log.Add(Init(LiveStoreId, ""));
+    log.Add(Init(NewerLiveStoreId, InspectorCapture.PrerenderRender));
+
+    StoreSelection.Effective(log.ListStores(), null).ShouldBe(LiveStoreId);
+  }
+
   public static void TellTheUntaggedBucketApartFromNoPin()
   {
     InspectorLog log = new();

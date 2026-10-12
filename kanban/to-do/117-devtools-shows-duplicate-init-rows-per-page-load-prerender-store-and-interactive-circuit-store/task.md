@@ -53,6 +53,7 @@ not dedupe rows; the log must reflect what happened.
 - Created: cockpit (2026-10-12)
 - Decision recorded: 2026-10-12 (Steven: show both, attribute to store)
 - Implemented: Grok (2026-10-12)
+- Reviewed: Claude Opus 5.5 review oracle (2026-10-12), effort 3, 2 rounds, clean
 
 ## Results
 
@@ -82,6 +83,14 @@ DevTools tests: 52 passed. Telemetry tests: 21 passed. State tests: 112 passed, 
 One `/counter` page load shows two init rows with different badges (`pre` and `live`) and different colours. The increment row carries the `live` badge and the same store id as the second init. Current state is the live store (Count 8 after IncrementCount adds 5 to the initial 3). The store selector lists the live store first (`791300f3-12e2-464f-bd33-ffc5036e752c` on the recorded run). Choosing the prerender store shows Count 3. Filtering `pre` leaves the prerender row. The Action tab shows the full store id and Render `interactive`.
 
 Screenshot: `review/page-load-two-stores.png`.
+
+### Review disposition
+
+- Rounds: 2 · effort 3 · roster: general (Claude Opus 5.5 review oracle, general-purpose subagents)
+- Final counts: bug 1 fixed · suggestion 3 fixed · nit 5 fixed · 0 open · 0 wontfix
+- Disposition: **clean**. Round 1 bug: Current state now defaults to the newest non-prerender store (a store with no render tag counts as live), so an enhanced-navigation prerender cannot replace the live circuit's fold. The selector gained **Follow live** and **(untagged)**. Store filter matches by prefix. Badge colours are `--twe-store-hue-*` tokens. Fixes in 9548c05e plus a test for the no-render-tag rule.
+- Artifacts: `review/review-framework.md`, `review/round-1/` and `review/round-2/` (`general.md`, `merged.md`), `review/disposition.md`
+- Tests after fixes: devtools 60/60, telemetry 21/21, timewarp-state 116 passed / 1 skipped
 
 ## Notes
 
