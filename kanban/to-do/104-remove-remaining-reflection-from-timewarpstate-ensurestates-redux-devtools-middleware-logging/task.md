@@ -49,6 +49,27 @@ Fable's recommended order (verbatim, `kanban/done/102-full-codebase-review-by-cl
 
 Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback guard) -> 107 (H3, share-by-reference attribute) -> 104 and 109 M1/M9 (dead DevTools and persistence paths) -> 109 M2 (AOT checks on Blazor and Plus). 108 (H4) and the remaining Medium items are not in Fable's ordered list; schedule them after 107.
 
+## Scope update (2026-10-12, cockpit, before launch)
+
+Task 112 (PR #640, merged `7ceb5225`) took the **delete** branch of M1: `store.redux-dev-tools.cs`,
+`IReduxDevToolsStore`, `LoadStatesFromJson`, `State<T>.Hydrate`, `CommitHandler`, and their seven
+suppressions are gone, and the whole Redux DevTools feature with them. The companion DevTools app
+(103 / 113 / 117) is the replacement. Do not re-create any of it.
+
+Remaining scope for this task, all in `source/timewarp-state`:
+
+1. `EnsureStates` in `extensions/service-collection-extensions.add-timewarp-state.cs` (`:85`,
+   suppressions `:79-80`): generated state registration replaces `Assembly.GetTypes()` +
+   `TryAddTransient(Type)`.
+2. `GetComponentOrder` in `extensions/service-collection-extensions.log-timewarp-state-middleware.cs`:
+   non-reflection pipeline listing replaces `Type.GetInterfaces()`.
+3. After 1 and 2, `TimeWarp.State` has zero `UnconditionalSuppressMessage` for trimming/AOT.
+
+Out of scope: the justified suppressions in `TimeWarp.State.Plus` (persistence JSON, cacheable
+state) and `TimeWarp.State.Blazor` (render-caller capture, complex-parameter comparison) — those
+were reviewed and kept under task 109 M2. Checklist item 1 (decide M1) and item 3 (DevTools
+hydration) are closed by 112.
+
 ## Requirements
 
 - `EnsureStates`: the source generator emits state registration for the states in the compilation
@@ -66,9 +87,9 @@ Filed tasks in that order: 105 (H1, package dependency) -> 106 (H2, rollback gua
 
 ## Checklist
 
-- [ ] Decide M1: finish time travel with generated hydration, or delete it (record Steven's choice here)
+- [x] Decide M1: **delete** — done in task 112 / PR #640
 - [ ] Generated state registration replaces `EnsureStates` reflection
-- [ ] Generated DevTools hydration replaces `LoadStatesFromJson`/`LoadStateFromJson` reflection (or delete per decision)
+- [x] DevTools hydration deleted with the feature (task 112 / PR #640)
 - [ ] Non-reflection pipeline listing replaces `GetComponentOrder`'s `Type.GetInterfaces()`
 - [ ] Remove the IL2026/IL2070/IL2072/IL2075/IL3050 suppressions
 - [ ] Tests: registration of all states (incl. generic/nested), hydration round-trip (if kept), middleware logging output
