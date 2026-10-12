@@ -54,6 +54,7 @@ not dedupe rows; the log must reflect what happened.
 - Decision recorded: 2026-10-12 (Steven: show both, attribute to store)
 - Implemented: Grok (2026-10-12)
 - Reviewed: Claude Opus 5.5 review oracle (2026-10-12), effort 3, 2 rounds, clean
+- Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-12T10:45:29Z
 
 ## Results
 

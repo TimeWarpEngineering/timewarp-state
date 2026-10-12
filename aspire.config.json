@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "samples/04-telemetry/apphost/sample-04-apphost.csproj"
+  }
+}
