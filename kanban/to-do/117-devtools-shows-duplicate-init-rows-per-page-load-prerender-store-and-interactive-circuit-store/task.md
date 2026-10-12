@@ -41,17 +41,47 @@ not dedupe rows; the log must reflect what happened.
 
 ## Checklist
 
-- [ ] Telemetry: per-store id tag on init and action spans (+ optional render tag); tests
-- [ ] Exporter/ingest: `StoreId` on `ActionLogEntry`; tests for two interleaved stores
-- [ ] Inspector: store badge on rows, full id in Action tab, filter support
-- [ ] State panel: fold per store with a newest-first store selector
-- [ ] Docs updated; manual Linux check recorded in `## Results` with a screenshot under `review/`
-- [ ] `ganda repo audit` clean; devtools + telemetry tests green
+- [x] Telemetry: per-store id tag on init and action spans (+ optional render tag); tests
+- [x] Exporter/ingest: `StoreId` on `ActionLogEntry`; tests for two interleaved stores
+- [x] Inspector: store badge on rows, full id in Action tab, filter support
+- [x] State panel: fold per store with a newest-first store selector
+- [x] Docs updated; manual Linux check recorded in `## Results` with a screenshot under `review/`
+- [x] `ganda repo audit` clean; devtools + telemetry tests green
 
 ## Session
 
 - Created: cockpit (2026-10-12)
 - Decision recorded: 2026-10-12 (Steven: show both, attribute to store)
+- Implemented: Grok (2026-10-12)
+
+## Results
+
+Both init rows stay in the log. Every init and action span is tagged `timewarp.state.store` with that scope's `Store.Guid`. `AddTimeWarpStateBlazor` registers a scoped `IStateRenderKind`. Components record `RendererInfo.IsInteractive` before `GetState`, and the span then carries `timewarp.state.render` (`prerender` or `interactive`). A host that does not register the service omits the render tag. The row badge reads **pre** or **live** from that tag, otherwise the first four characters of the store id. The colour is a stable hash of the full id. The Action tab shows the full id. The filter matches a store id or badge. Every row stays visible.
+
+The State panel folds one store. Current state is the store that first appeared latest in the log, so a later span from the prerender store leaves the interactive store on screen. The selector lists stores newest first. Diffs stay inside one store.
+
+Package version is `12.0.0-beta.12`. `12.0.0-beta.11` is already on NuGet, and sample 04 restores packages at `TimeWarpStateVersion`, so the sample sees this change only after the version moves.
+
+### How to validate
+
+**Smoke**
+
+```bash
+dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj
+dotnet test tests/timewarp-state-telemetry-tests/timewarp-state-telemetry-tests.csproj
+dotnet test tests/timewarp-state-tests/timewarp-state-tests.csproj
+ganda repo audit
+```
+
+Manual: pack `12.0.0-beta.12` into `artifacts/packages`, then `aspire start --isolated --non-interactive` on `samples/04-telemetry/apphost`. Open `/counter`, click once, then open DevTools.
+
+**Expect**
+
+DevTools tests: 52 passed. Telemetry tests: 21 passed. State tests: 112 passed, 1 skipped. `ganda repo audit` exits 0 with "Repository passes". The kebab-path advisory is the existing Blazor module filenames and task 110's folder. `./bin/dev check-version --strict` reports source is one prerelease increment ahead of NuGet `12.0.0-beta.11`.
+
+One `/counter` page load shows two init rows with different badges (`pre` and `live`) and different colours. The increment row carries the `live` badge and the same store id as the second init. Current state is the live store (Count 8 after IncrementCount adds 5 to the initial 3). The store selector lists the live store first (`791300f3-12e2-464f-bd33-ffc5036e752c` on the recorded run). Choosing the prerender store shows Count 3. Filtering `pre` leaves the prerender row. The Action tab shows the full store id and Render `interactive`.
+
+Screenshot: `review/page-load-two-stores.png`.
 
 ## Notes
 
