@@ -19,6 +19,7 @@ namespace TimeWarp.State;
 public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeWarpStateComponent
 {
   [Inject] private IStore Store { get; set; } = null!;
+  [Inject] private IServiceProvider ServiceProvider { get; set; } = null!;
   [Inject] private ILogger<TimeWarpStateComponent> Logger { get; set; } = null!;
 
   /// <summary>
@@ -74,6 +75,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
     {
       CancellationTokenSource.Cancel();
     }
+
     CancellationTokenSource.Dispose();
 
     GC.SuppressFinalize(this);
@@ -90,6 +92,7 @@ public partial class TimeWarpStateComponent : ComponentBase, IDisposable, ITimeW
   {
     Type stateType = typeof(TState);
     if (placeSubscription) Subscriptions.Add(stateType, this);
+    StateRenderKindObserver.Observe(ServiceProvider, () => RendererInfo.IsInteractive);
     return Store.GetState<TState>();
   }
 

@@ -51,6 +51,17 @@ public class Should_
     Count<RenderSubscriptionContext>(services).ShouldBe(1);
     Count<JsonRequestHandler>(services).ShouldBe(1);
     Count<JavaScriptDispatchRegistry>(services).ShouldBe(1);
+    Count<IStateRenderKind>(services).ShouldBe(1);
+  }
+
+  public static void KeepTheFirstObservedRenderKind()
+  {
+    StateRenderKind stateRenderKind = new();
+    stateRenderKind.Name.ShouldBeNull();
+    stateRenderKind.Observe(isInteractive: false);
+    stateRenderKind.Name.ShouldBe(StateRenderKinds.Prerender);
+    stateRenderKind.Observe(isInteractive: true);
+    stateRenderKind.Name.ShouldBe(StateRenderKinds.Prerender);
   }
 
   public static void ValidateOnBuild_Without_ReduxDevTools()

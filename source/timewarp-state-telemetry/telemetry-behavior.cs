@@ -5,7 +5,9 @@
 #region Design
 // Hot path: ActivitySource.HasListeners() then StartActivity. No GetState, no JSON, no snapshot
 // cache when there is no listener or the span is unsampled.
-// Default tags: nested DeclaringType action name, state type name, success/failure. Duration is
+// Default tags: nested DeclaringType action name, state type name, store Guid, success/failure.
+// timewarp.state.render is set only when the host registered IStateRenderKind and Observe ran.
+// Duration is
 // the Activity. Snapshots only when IncludeSnapshots, IsAllDataRequested, and caller JsonTypeInfo
 // exist. Serialize through JsonTypeInfo from caller options — never new JsonSerializerOptions()
 // and never JsonSerializer.Serialize(object) on open TState. Diff is full-JSON string compare
@@ -45,6 +47,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
   private readonly TimeWarpStateTelemetryOptions? TimeWarpStateTelemetryOptions;
   private readonly TimeWarpStateOptions? TimeWarpStateOptions;
   private readonly StateSnapshotCache? StateSnapshotCache;
+  private readonly IStateRenderKind? StateRenderKind;
 
   static TelemetryBehavior()
   {
@@ -67,7 +70,8 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
     IStore store,
     TimeWarpStateTelemetryOptions? timeWarpStateTelemetryOptions = null,
     TimeWarpStateOptions? timeWarpStateOptions = null,
-    StateSnapshotCache? stateSnapshotCache = null
+    StateSnapshotCache? stateSnapshotCache = null,
+    IStateRenderKind? stateRenderKind = null
   )
   {
     Logger = logger;
@@ -75,6 +79,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
     TimeWarpStateTelemetryOptions = timeWarpStateTelemetryOptions;
     TimeWarpStateOptions = timeWarpStateOptions;
     StateSnapshotCache = stateSnapshotCache;
+    StateRenderKind = stateRenderKind;
 
     Logger.LogDebug
     (
@@ -115,6 +120,8 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
     {
       activity.SetTag(StateTypeTagName, EnclosingStateTypeName);
     }
+
+    StateSnapshotRecorder.TagOrigin(activity, Store, StateRenderKind);
 
     try
     {

@@ -2,7 +2,7 @@
 
 Dev-only exporter for the TimeWarp.State DevTools inspector. It copies completed activities from ActivitySource `TimeWarp.State` to `POST /ingest/spans` on the DevTools app.
 
-This package has no `IState` types. Referencing it does not register inspector states in `StateCloneRegistry`.
+This package has no `IState` types. Referencing it does not register inspector states in `StateCloneRegistry`. Activity tags, including `timewarp.state.store` and `timewarp.state.render`, are copied onto the ingest item.
 
 It is not an OpenTelemetry collector. The body is a small JSON document (name, tags, snapshot events, status, duration), not OTLP. Time-travel and other control operations are not in this package.
 

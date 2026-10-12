@@ -45,6 +45,18 @@ public static class InspectorCapture
   /// <summary>Value of <see cref="KindTagName"/> for a snapshot emitted when a state is initialized.</summary>
   public const string InitKind = "init";
 
+  /// <summary>Span tag: store Guid (<c>IStore.Guid</c>) that emitted the span.</summary>
+  public const string StoreTagName = "timewarp.state.store";
+
+  /// <summary>Span tag: <see cref="PrerenderRender"/> or <see cref="InteractiveRender"/> when the host can tell.</summary>
+  public const string RenderTagName = "timewarp.state.render";
+
+  /// <summary>Value of <see cref="RenderTagName"/> for a static server render.</summary>
+  public const string PrerenderRender = "prerender";
+
+  /// <summary>Value of <see cref="RenderTagName"/> for an interactive circuit or WebAssembly session.</summary>
+  public const string InteractiveRender = "interactive";
+
   /// <summary>Simple name of the DevTools UI state. Spans for this state are not captured.</summary>
   public const string InspectorStateTypeName = "InspectorState";
 

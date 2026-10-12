@@ -114,7 +114,99 @@ public class InspectorLog_Should
     log.Snapshot().ShouldBeEmpty();
   }
 
-  private static ActionLogEntry Snap(string stateTypeName, string json, string actionName, bool truncated = false) =>
+  public static void KeepEachStoresFoldWhenTwoStoresInterleave()
+  {
+    const string prerenderStoreId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const string interactiveStoreId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    InspectorLog log = new();
+    log.Add(Snap("CounterState", """{"count":0}""", "init", storeId: prerenderStoreId, render: InspectorCapture.PrerenderRender));
+    log.Add(Snap("CounterState", """{"count":0}""", "init", storeId: interactiveStoreId, render: InspectorCapture.InteractiveRender));
+    log.Add(Snap("CounterState", """{"count":5}""", "Increment", storeId: interactiveStoreId, render: InspectorCapture.InteractiveRender));
+    log.Add(Snap("OtherState", """{"name":"a"}""", "Set", storeId: prerenderStoreId, render: InspectorCapture.PrerenderRender));
+
+    IReadOnlyList<StoreSummary> stores = log.ListStores();
+    stores.Count.ShouldBe(2);
+    stores[0].StoreId.ShouldBe(interactiveStoreId);
+    stores[0].Render.ShouldBe(InspectorCapture.InteractiveRender);
+    stores[1].StoreId.ShouldBe(prerenderStoreId);
+
+    FoldedState current = log.FoldCurrent().ShouldHaveSingleItem();
+    current.StateTypeName.ShouldBe("CounterState");
+    current.Json.ShouldBe("""{"count":5}""");
+    current.StoreId.ShouldBe(interactiveStoreId);
+
+    IReadOnlyList<FoldedState> prerenderFold = log.FoldStore(prerenderStoreId);
+    prerenderFold.Count.ShouldBe(2);
+    prerenderFold.Single(state => state.StateTypeName == "CounterState").Json.ShouldBe("""{"count":0}""");
+    prerenderFold.Single(state => state.StateTypeName == "OtherState").Json.ShouldBe("""{"name":"a"}""");
+
+    long increment = log.Snapshot().Single(entry => entry.ActionName == "Increment").Sequence;
+    log.TryGetPreviousSnapshot("CounterState", increment, out FoldedState? previous).ShouldBeTrue();
+    previous.ShouldNotBeNull();
+    previous.StoreId.ShouldBe(interactiveStoreId);
+    previous.Json.ShouldBe("""{"count":0}""");
+  }
+
+  public static void KeepTheLiveStoreCurrentWhenALaterPrerenderStoreArrives()
+  {
+    const string interactiveStoreId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const string prerenderStoreId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    InspectorLog log = new();
+    log.Add(Snap("CounterState", """{"count":0}""", "init", storeId: interactiveStoreId, render: InspectorCapture.InteractiveRender));
+    log.Add(Snap("CounterState", """{"count":5}""", "Increment", storeId: interactiveStoreId, render: InspectorCapture.InteractiveRender));
+    // Enhanced navigation prerenders the next page into a new store; the circuit emits no new init.
+    log.Add(Snap("CounterState", """{"count":0}""", "init", storeId: prerenderStoreId, render: InspectorCapture.PrerenderRender));
+
+    log.ListStores()[0].StoreId.ShouldBe(prerenderStoreId);
+    StoreSelection.Default(log.ListStores())!.StoreId.ShouldBe(interactiveStoreId);
+    FoldedState current = log.FoldCurrent().ShouldHaveSingleItem();
+    current.StoreId.ShouldBe(interactiveStoreId);
+    current.Json.ShouldBe("""{"count":5}""");
+  }
+
+  public static void FallBackToTheNewestStoreWhenEveryStoreIsAPrerender()
+  {
+    const string olderStoreId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const string newerStoreId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    InspectorLog log = new();
+    log.Add(Snap("CounterState", """{"count":1}""", "init", storeId: olderStoreId, render: InspectorCapture.PrerenderRender));
+    log.Add(Snap("CounterState", """{"count":2}""", "init", storeId: newerStoreId, render: InspectorCapture.PrerenderRender));
+
+    log.FoldCurrent().ShouldHaveSingleItem().StoreId.ShouldBe(newerStoreId);
+  }
+
+  public static void FoldThroughOnlyTheSelectedRowsStoreWhenStoresInterleave()
+  {
+    const string storeA = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const string storeB = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    InspectorLog log = new();
+    log.Add(Snap("CounterState", """{"count":1}""", "A1", storeId: storeA));
+    log.Add(Snap("CounterState", """{"count":100}""", "B1", storeId: storeB));
+    log.Add(Snap("OtherState", """{"name":"b"}""", "B2", storeId: storeB));
+    log.Add(Snap("CounterState", """{"count":2}""", "A2", storeId: storeA));
+    log.Add(Snap("CounterState", """{"count":200}""", "B3", storeId: storeB));
+
+    long a2 = log.Snapshot().Single(entry => entry.ActionName == "A2").Sequence;
+    FoldedState throughA2 = log.FoldThrough(a2).ShouldHaveSingleItem();
+    throughA2.StoreId.ShouldBe(storeA);
+    throughA2.Json.ShouldBe("""{"count":2}""");
+
+    long b2 = log.Snapshot().Single(entry => entry.ActionName == "B2").Sequence;
+    IReadOnlyList<FoldedState> throughB2 = log.FoldThrough(b2);
+    throughB2.Select(state => state.StateTypeName).ShouldBe(["CounterState", "OtherState"]);
+    throughB2.ShouldAllBe(state => state.StoreId == storeB);
+    throughB2[0].Json.ShouldBe("""{"count":100}""");
+  }
+
+  private static ActionLogEntry Snap
+  (
+    string stateTypeName,
+    string json,
+    string actionName,
+    bool truncated = false,
+    string storeId = "",
+    string render = ""
+  ) =>
     new()
     {
       Name = stateTypeName + "." + actionName,
@@ -126,7 +218,9 @@ public class InspectorLog_Should
       StartTimeUtc = DateTime.UtcNow,
       SnapshotJson = json,
       SnapshotKind = InspectorCapture.SnapshotEventName,
-      SnapshotTruncated = truncated
+      SnapshotTruncated = truncated,
+      StoreId = storeId,
+      Render = render
     };
 
   private static ActionLogEntry Entry(string actionName) =>

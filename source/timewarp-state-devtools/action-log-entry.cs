@@ -5,7 +5,8 @@
 #region Design
 // Immutable value copied from a span ingest item. It is not an IState. The list lives on
 // InspectorLog, not on InspectorState, because the HTTP ingest scope and the Blazor circuit
-// do not share a scoped store.
+// do not share a scoped store. StoreId is the emitting store's Guid. Render is prerender or
+// interactive when the host knew; empty leaves the badge as an id prefix.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -52,6 +53,15 @@ public sealed class ActionLogEntry
   /// Value of <c>timewarp.state.kind</c>. <see cref="InspectorCapture.InitKind"/> marks a state-initialization row.
   /// </summary>
   public string Kind { get; init; } = "";
+
+  /// <summary>Value of <c>timewarp.state.store</c>. Empty when the span had no store tag.</summary>
+  public string StoreId { get; init; } = "";
+
+  /// <summary>
+  /// Value of <c>timewarp.state.render</c>: <see cref="InspectorCapture.PrerenderRender"/>,
+  /// <see cref="InspectorCapture.InteractiveRender"/>, or empty.
+  /// </summary>
+  public string Render { get; init; } = "";
 
   /// <summary>Stringified span tags, including the well-known TimeWarp tags.</summary>
   public IReadOnlyDictionary<string, string> Attributes { get; init; } =

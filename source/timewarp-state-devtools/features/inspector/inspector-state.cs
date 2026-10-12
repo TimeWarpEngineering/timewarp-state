@@ -6,7 +6,7 @@
 // The span list is InspectorLog, not a property here. A list on this state would be cloned by the
 // DevTools compilation only, which is correct, but the HTTP ingest scope cannot see a scoped store.
 // Revision bumps when the mailbox changes so subscribers re-render and read Snapshot. Filter,
-// selection, pause, tabs, theme, and node expansion are ordinary actions. They are InspectorState,
+// selection, the pinned store, pause, tabs, theme, and node expansion are ordinary actions. They are InspectorState,
 // so InspectorCapture drops them if they are ever exported.
 // ExpandedNodes records an explicit open or closed choice. A path with no entry is open only at the
 // root (no '.' and no '['), so new rows do not collapse a tree the user has already opened.
@@ -29,6 +29,12 @@ public sealed partial class InspectorState : State<InspectorState>
 
   /// <summary>Selected <see cref="ActionLogEntry.Sequence"/>, or 0 when nothing is selected.</summary>
   public long SelectedSequence { get; private set; }
+
+  /// <summary>
+  /// Pinned store id for the State panel. Null follows the default store (<see cref="StoreSelection.Default"/>).
+  /// Empty pins the untagged bucket.
+  /// </summary>
+  public string? SelectedStoreId { get; private set; }
 
   /// <summary>True when ingest is parking spans instead of showing them.</summary>
   public bool Paused { get; private set; }
@@ -101,6 +107,7 @@ public sealed partial class InspectorState : State<InspectorState>
     Revision = 0;
     Filter = "";
     SelectedSequence = 0;
+    SelectedStoreId = null;
     Paused = false;
     DetailTab = DetailTabState;
     JsonView = JsonViewTree;

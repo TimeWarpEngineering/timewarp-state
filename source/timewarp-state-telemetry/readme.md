@@ -39,6 +39,8 @@ Default (no payload):
 | Name | Nested declaring-type chain, e.g. `CounterState.IncrementCountActionSet.Action` |
 | `timewarp.state.action` | Nested name relative to the enclosing state, e.g. `IncrementCountActionSet.Action` |
 | `timewarp.state.state_type` | Enclosing state type name |
+| `timewarp.state.store` | `Store.Guid` for the scope that handled the action, formatted `D` |
+| `timewarp.state.render` | Optional. `prerender` or `interactive` when the host registered `IStateRenderKind` and a component called `Observe`. Absent otherwise |
 | Duration | Activity start/stop (handler + render) |
 | Status | `Ok` or `Error` (exception recorded) |
 
@@ -66,7 +68,7 @@ Or set `TypeInfoResolver` on `TimeWarpStateOptions.JsonSerializerOptions` (the s
 
 Events (not span attributes):
 
-- When a state finishes `Initialize`, and snapshots are on: activity `{StateTypeName}.Initialized` tagged `timewarp.state.action` = `init`, `timewarp.state.state_type`, and `timewarp.state.kind` = `init`, plus a `state.snapshot` event. The snapshot cache records that JSON, so the first later change is `state.diff`. No `JsonTypeInfo` skips it with the same warning as an action snapshot. The handler does not await, so the event is recorded before `Store.GetState` returns.
+- When a state finishes `Initialize`, and snapshots are on: activity `{StateTypeName}.Initialized` tagged `timewarp.state.action` = `init`, `timewarp.state.state_type`, `timewarp.state.store`, `timewarp.state.kind` = `init`, and `timewarp.state.render` when the host supplied a render kind, plus a `state.snapshot` event. The snapshot cache records that JSON, so the first later change is `state.diff`. No `JsonTypeInfo` skips it with the same warning as an action snapshot. The handler does not await, so the event is recorded before `Store.GetState` returns. A Blazor prerender and the interactive circuit are different stores, so one page load emits two init spans with different store ids.
 - First JSON for a state type that was not initialized under snapshots: `state.snapshot` with tag `snapshot.json`
 - Later unequal JSON: `state.diff` with the new JSON (string compare of the full JSON, no reflection property walk)
 - Equal JSON: no event

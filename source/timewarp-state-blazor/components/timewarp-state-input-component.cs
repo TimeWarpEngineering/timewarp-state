@@ -40,6 +40,7 @@ public abstract class TimeWarpStateInputComponent<TValue> : InputBase<TValue>, I
   /// </summary>
   [Inject] public ISender<ClientPipeline> Sender { get; set; } = null!;
   [Inject] public IStore Store { get; set; } = null!;
+  [Inject] private IServiceProvider ServiceProvider { get; set; } = null!;
 
   /// <summary>
   /// Maintains all components that subscribe to a State.
@@ -53,6 +54,15 @@ public abstract class TimeWarpStateInputComponent<TValue> : InputBase<TValue>, I
   public void ReRender() => base.InvokeAsync(StateHasChanged);
 
   /// <summary>
+  /// Records the render kind, then applies parameters.
+  /// </summary>
+  public override Task SetParametersAsync(ParameterView parameters)
+  {
+    StateRenderKindObserver.Observe(ServiceProvider, () => RendererInfo.IsInteractive);
+    return base.SetParametersAsync(parameters);
+  }
+
+  /// <summary>
   /// Place a Subscription for the calling component
   /// And returns the requested state
   /// </summary>
@@ -62,6 +72,7 @@ public abstract class TimeWarpStateInputComponent<TValue> : InputBase<TValue>, I
   {
     Type stateType = typeof(TState);
     Subscriptions.Add(stateType, this);
+    StateRenderKindObserver.Observe(ServiceProvider, () => RendererInfo.IsInteractive);
     return Store.GetState<TState>();
   }
 

@@ -38,6 +38,7 @@ public abstract partial class TimeWarpStateComponent
 
   public override Task SetParametersAsync(ParameterView parameters)
   {
+    StateRenderKindObserver.Observe(ServiceProvider, () => RendererInfo.IsInteractive);
     if (Constructed)
     {
       // Logger is property injected so not available in constructor.

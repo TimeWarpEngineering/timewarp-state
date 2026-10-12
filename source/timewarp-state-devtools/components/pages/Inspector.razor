@@ -72,6 +72,29 @@
   private async Task Select(long sequence)
   {
     await InspectorState.SelectEntry(sequence);
+    if (InspectorLog.TryGetEntry(sequence, out ActionLogEntry? entry) && entry is not null)
+    {
+      await InspectorState.SelectStore(entry.StoreId);
+    }
+  }
+
+  // Store selector option values. Store ids are Guids, so neither collides with a real id.
+  private const string FollowOption = "follow:";
+  private const string UntaggedOption = "untagged:";
+
+  private async Task OnStore(ChangeEventArgs changeEventArgs)
+  {
+    string value = changeEventArgs.Value?.ToString() ?? FollowOption;
+    if (value == FollowOption)
+    {
+      await InspectorState.FollowDefaultStore();
+    }
+    else
+    {
+      await InspectorState.SelectStore(value == UntaggedOption ? "" : value);
+    }
+
+    await InspectorState.SelectEntry(0);
   }
 
   private async Task TogglePause()
@@ -150,7 +173,8 @@
       .Where(entry =>
         entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)
         || entry.ActionName.Contains(filter, StringComparison.OrdinalIgnoreCase)
-        || entry.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase))
+        || entry.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase)
+        || StoreBadge.Matches(entry.StoreId, entry.Render, filter))
       .ToArray();
   }
 
@@ -165,14 +189,24 @@
     return InspectorLog.TryGetEntry(sequence, out ActionLogEntry? entry) ? entry : null;
   }
 
-  private IReadOnlyList<FoldedState> VisibleStates()
+  private IReadOnlyList<FoldedState> FoldedStates(string storeId, ActionLogEntry? selected)
   {
-    ActionLogEntry? selected = SelectedEntry();
-    IReadOnlyList<FoldedState> folded = selected is null
-      ? InspectorLog.FoldCurrent()
-      : InspectorLog.FoldThrough(selected.Sequence);
+    bool selectedStore = selected is not null
+      && string.Equals(selected.StoreId, storeId, StringComparison.Ordinal);
+    return selectedStore
+      ? InspectorLog.FoldThrough(selected!.Sequence)
+      : InspectorLog.FoldStore(storeId);
+  }
+
+  private IReadOnlyList<FoldedState> VisibleStates
+  (
+    IReadOnlyList<FoldedState> folded,
+    IReadOnlyList<StoreSummary> stores,
+    string storeId
+  )
+  {
     string filter = InspectorState.Filter.Trim();
-    if (filter.Length == 0)
+    if (filter.Length == 0 || StoreBadge.Matches(storeId, StoreSelection.RenderOf(stores, storeId), filter))
     {
       return folded;
     }
@@ -180,6 +214,36 @@
     return folded
       .Where(state => state.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase))
       .ToArray();
+  }
+
+  private string StoreSelectValue(IReadOnlyList<StoreSummary> stores)
+  {
+    string? pinned = InspectorState.SelectedStoreId;
+    if (!StoreSelection.IsListed(stores, pinned))
+    {
+      return FollowOption;
+    }
+
+    return pinned!.Length == 0 ? UntaggedOption : pinned;
+  }
+
+  private static string StoreOptionValue(StoreSummary store) =>
+    store.StoreId.Length == 0 ? UntaggedOption : store.StoreId;
+
+  private static string StoreOption(StoreSummary store)
+  {
+    if (store.StoreId.Length == 0)
+    {
+      return "(untagged)";
+    }
+
+    string label = StoreBadge.Label(store.StoreId, store.Render);
+    if (label.Length == 0)
+    {
+      return store.StoreId;
+    }
+
+    return label + " " + store.StoreId;
   }
 
   private StateDiff.Result DiffFor(ActionLogEntry entry)
@@ -231,7 +295,12 @@
   @{
     IReadOnlyList<ActionLogEntry> visible = VisibleEntries();
     ActionLogEntry? selected = SelectedEntry();
-    IReadOnlyList<FoldedState> states = VisibleStates();
+    IReadOnlyList<StoreSummary> stores = InspectorLog.ListStores();
+    string storeId = StoreSelection.Effective(stores, InspectorState.SelectedStoreId);
+    IReadOnlyList<FoldedState> folded = FoldedStates(storeId, selected);
+    IReadOnlyList<FoldedState> states = VisibleStates(folded, stores, storeId);
+    bool stateAfterAction = selected is not null
+      && string.Equals(selected.StoreId, storeId, StringComparison.Ordinal);
     StateDiff.Result? diff = selected is null ? null : DiffFor(selected);
   }
   <div class="toolbar">
@@ -241,7 +310,7 @@
         type="search"
         value="@InspectorState.Filter"
         @oninput="OnFilter"
-        placeholder="Action or state"
+        placeholder="Action, state, or store"
         data-qa="filter" />
     </label>
     <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
@@ -269,6 +338,13 @@
                 @onclick="() => Select(entry.Sequence)"
                 data-qa="row">
                 <span class="when">@entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</span>
+                @{
+                  string badge = StoreBadge.Label(entry.StoreId, entry.Render);
+                }
+                <span
+                  class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
+                  data-hue="@StoreBadge.Hue(entry.StoreId)"
+                  title="@entry.StoreId">@badge</span>
                 <span class="action">@entry.ActionName</span>
                 <span class="state">@entry.StateTypeName</span>
                 <span class="duration">@entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</span>
@@ -307,6 +383,13 @@
             <dd>@selected.StartTimeUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture)</dd>
             <dt>Span</dt>
             <dd>@(selected.SpanId.Length == 0 ? "—" : selected.SpanId)</dd>
+            <dt>Store</dt>
+            <dd data-qa="store-id">@(selected.StoreId.Length == 0 ? "—" : selected.StoreId)</dd>
+            @if (selected.Render.Length > 0)
+            {
+              <dt>Render</dt>
+              <dd>@selected.Render</dd>
+            }
             <dt>Activity</dt>
             <dd>@selected.Name</dd>
             @foreach (KeyValuePair<string, string> attribute in selected.Attributes.OrderBy(pair => pair.Key, StringComparer.Ordinal))
@@ -365,12 +448,34 @@
       }
       else
       {
+        @if (stores.Any(store => store.StoreId.Length > 0))
+        {
+          string badge = StoreBadge.Label(storeId, StoreSelection.RenderOf(stores, storeId));
+          <label class="store-select">
+            <span>Store</span>
+            <span
+              class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
+              data-hue="@StoreBadge.Hue(storeId)"
+              title="@storeId">@badge</span>
+            <select data-qa="store" value="@StoreSelectValue(stores)" @onchange="OnStore">
+              <option value="@FollowOption">Follow live</option>
+              @foreach (StoreSummary store in stores)
+              {
+                <option value="@StoreOptionValue(store)">@StoreOption(store)</option>
+              }
+            </select>
+          </label>
+        }
         <div class="view-tabs" role="tablist" aria-label="State format">
           <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewTree, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewTree)" @onclick="() => SetView(InspectorState.JsonViewTree)" data-qa="view-tree">Tree</button>
           <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewRaw, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewRaw)" @onclick="() => SetView(InspectorState.JsonViewRaw)" data-qa="view-raw">Raw</button>
         </div>
-        <h2>@(selected is null ? "Current state" : "State after action")</h2>
-        @if (states.Count == 0)
+        <h2>@(stateAfterAction ? "State after action" : "Current state")</h2>
+        @if (states.Count == 0 && folded.Count > 0)
+        {
+          <p class="empty" data-qa="state-filtered">No state matches the filter.</p>
+        }
+        else if (states.Count == 0)
         {
           <p class="empty">No state snapshots yet. Enable IncludeSnapshots on the inspected app.</p>
         }
