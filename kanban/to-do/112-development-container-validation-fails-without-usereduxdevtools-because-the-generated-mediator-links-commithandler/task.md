@@ -90,6 +90,7 @@ review (109 M1) already called the browser-extension time-travel path unreachabl
 - Decision recorded: 2026-10-12 (Steven: delete; relayed by Claude cockpit)
 - Implemented: 2026-10-12 (Grok). One change: package deletion, samples, docs, and the regression test. `IState<TState>` stays as the covariant self-type marker; only `Hydrate` is gone. `JsonRequestHandler` stays.
 - Reviewed: 2026-10-12 (Claude Opus 5.5 review oracle, effort 3, roster general; general reviewer = Claude Sonnet subagent `a7388e257c7a9e941`).
+- Review oracle: review by implementer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-12T08:17:45Z
 
 ## Results
 
