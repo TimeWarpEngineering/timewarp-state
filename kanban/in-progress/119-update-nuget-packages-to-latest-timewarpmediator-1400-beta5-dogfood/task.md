@@ -97,10 +97,18 @@ ganda repo audit
 - `e2e` exits 0: Failed 0, Passed 12, Total 12. The weather API path runs through `AddGeneratedMediator<ServerPipeline>()`.
 - `ganda repo audit` exits 0. The advisory is `kebab-path-names` with the same 6 pre-existing paths.
 
+### Review disposition
+
+- **Outcome:** `clean`. 1 round, effort 2 (Budget.ByDiff: 245 lines changed), roster `general`.
+- **Final counts:** bug 0, suggestion 0, nit 0 (open 0, fixed 0, wontfix 0).
+- The reviewer confirmed that the generated `AddGeneratedMediator_ServerPipeline` registers the same services, with the same lifetimes, as the deleted `AddServerPipelineMediator`. The generated `GeneratedMediatorServiceCollectionExtensions` is `internal`. Both hosts grant `InternalsVisibleTo` only to `Client.Integration.Tests`, so keeping the `TestAppServer` alias there is correct. No `AddServerPipelineMediator` / `ServerPipelineRegistration` references remain. A rebuild reported no TWM, CS1591 or CS0121 warnings. `./bin/dev test` reproduced every count above.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: 1013002 (2026-10-13)
 - Implementation: implementer oracle (2026-10-13)
+- Review: review oracle (ganda task work, Claude Opus 5.5), 2026-10-13. Effort 2, roster general, 1 round, disposition `clean`. The first review run was blocked because it could not write task.md or commit. A re-run recorded the disposition here.
 
 ## Notes
 
