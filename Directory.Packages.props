@@ -11,9 +11,9 @@
     <PackageVersion Include="TimeWarp.Architecture.Analyzers" Version="2.0.0-beta.19" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
-    <PackageVersion Include="TimeWarp.Mediator.Contracts" Version="14.0.0-beta.4" />
-    <PackageVersion Include="TimeWarp.Mediator.Generators" Version="14.0.0-beta.4" />
-    <PackageVersion Include="TimeWarp.Mediator.Analyzers" Version="14.0.0-beta.4" />
+    <PackageVersion Include="TimeWarp.Mediator.Contracts" Version="14.0.0-beta.5" />
+    <PackageVersion Include="TimeWarp.Mediator.Generators" Version="14.0.0-beta.5" />
+    <PackageVersion Include="TimeWarp.Mediator.Analyzers" Version="14.0.0-beta.5" />
     <PackageVersion Include="TimeWarp.Nuru" Version="3.0.0-beta.80" />
     <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="3.0.0-beta.80" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
