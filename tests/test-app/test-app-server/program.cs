@@ -3,10 +3,11 @@
 #endregion
 
 #region Design
-// Reuses Client.Program.ConfigureServices so server-rendered pages get the same store, then adds the ServerPipeline
-// mediator through AddServerPipelineMediator to avoid CS0121. The weather endpoint passes the Days query value to
-// the handler; Days defaults to 5 so a plain api/weather request still works. The throw-server-side-exception
-// endpoint throws InvalidOperationException with the query message.
+// Reuses Client.Program.ConfigureServices so server-rendered pages get the same store, then registers the
+// ServerPipeline mediator with AddGeneratedMediator. Generated extensions are internal to each host, so the
+// client's extension is not in scope here. The weather endpoint passes the Days query value to the handler;
+// Days defaults to 5 so a plain api/weather request still works. The throw-server-side-exception endpoint
+// throws InvalidOperationException with the query message.
 #endregion
 
 namespace Test.App.Server;
@@ -30,9 +31,9 @@ internal class Program
 
     // Server-scoped pipeline: only handlers/behaviors marked ServerPipeline. The client store
     // pipeline was already registered above by Client.Program.ConfigureServices as ISender<ClientPipeline>.
-    // Use AddServerPipelineMediator (not AddGeneratedMediator<ServerPipeline>) to avoid CS0121 with
-    // the client's identically named DI extension in Microsoft.Extensions.DependencyInjection.
-    builder.Services.AddServerPipelineMediator();
+    // AddGeneratedMediator is internal to this assembly (TimeWarp.Mediator 14.0.0-beta.4+), so the
+    // client's copy is not visible and the call is not ambiguous.
+    builder.Services.AddGeneratedMediator<ServerPipeline>();
 
     builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
 
