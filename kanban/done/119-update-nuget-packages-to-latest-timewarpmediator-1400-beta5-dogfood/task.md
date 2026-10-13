@@ -106,6 +106,7 @@ ganda repo audit
 
 ## Session
 
+- Version bump: 2026-10-13 (cockpit) — `12.0.0-beta.13` so this Mediator bump ships as a State prerelease before timewarp-architecture 342.
 - Created: 1013002 (2026-10-13)
 - Implementation: implementer oracle (2026-10-13)
 - Review: review oracle (ganda task work, Claude Opus 5.5), 2026-10-13. Effort 2, roster general, 1 round, disposition `clean`. The first review run was blocked because it could not write task.md or commit. A re-run recorded the disposition here.
