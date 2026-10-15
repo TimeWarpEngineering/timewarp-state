@@ -99,6 +99,10 @@ have required the env-var workaround.)
   `./bin/dev verify-samples` printed "Samples verified successfully!". `./bin/dev test` had
   already printed "Tests completed successfully!". `ganda repo audit` exited 0 with one
   pre-existing kebab-path advisory (Blazor `*.lib.module.*` names and backlog 110).
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-15T17:44:53Z
+- Review oracle round 1 (2026-10-16): general reviewer, claude-opus-5-5, session
+  3bc6725a-883d-4f3b-b451-3c8caedd96e0, effort 3 (by-diff, 976 lines). 5 open findings (1 bug,
+  3 suggestions, 1 nit) in `review/round-1/merged.md`; returned Blocked for a fix pass.
 
 ## References
 
@@ -123,3 +127,15 @@ have required the env-var workaround.)
 Smoke: `dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj`. `PackagedDevToolsApp_Should.StartFromAnOutOfTreeAppHost` packs App and Hosting into a temp feed, builds an Aspire AppHost outside this repo that only package-references Hosting, and GETs the inspector.
 
 Expect: The test passes. The stamped path is `tools/TimeWarp.State.DevTools.dll` under the restored `timewarp.state.devtools.app` package, not a csproj in this repo. The response body contains `TimeWarp State DevTools`. `AddTimeWarpStateDevTools_Should` shows endpoint name `http`, `ASPNETCORE_HTTP_PORTS`, `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`, no `DevToolsProjectLocator`, and the resource excluded from publish. `./bin/dev check-version` reports 12.0.0-beta.14 ahead of 12.0.0-beta.13. `ganda repo audit` exits 0.
+
+### Review
+
+- Status: **disposition pending** (round 1 open findings; fix pass requested).
+- Rounds: 1. Roster: general. Effort: 3.
+- Round 1 counts: bug 1 open; suggestion 3 open; nit 1 open; 0 fixed; 0 wontfix.
+- Open: M1 (bug: `WithTimeWarpStateDevTools` still references the excluded inspector in publish mode),
+  M2 (out-of-tree test does not run the resource's real launch shape or check `blazor.web.js`),
+  M3 (bare `dotnet` from PATH), M4 (build-time publish races the normal inspector build),
+  M5 (nit: dev-only files in `tools/`).
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+  `review/disposition.md` is written once open count reaches 0.
