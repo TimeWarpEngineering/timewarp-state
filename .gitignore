@@ -349,3 +349,7 @@ task-work.progress.log
 # can find the AppHost project. It is not repo content; a dirty copy blocked
 # `dev release --dry-run` on 2026-10-12.
 aspire.config.json
+
+# Review-round markers beside kitchens (local; not product)
+**/review/round-*/base.sha
+**/review/round-*/closed
