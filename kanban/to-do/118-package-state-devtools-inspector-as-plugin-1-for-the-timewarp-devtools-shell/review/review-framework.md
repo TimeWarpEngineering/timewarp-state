@@ -2,21 +2,18 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 976
-- Effort: 3
+- Lines changed: 275
+- Effort: 2
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 120 (--max-turns; cursor uncapped)
 
-# Review framework — task 118
+## Rounds
 
-**Date:** 2026-10-16
-**Host task:** kanban/to-do/118-package-state-devtools-inspector-as-plugin-1-for-the-timewarp-devtools-shell/
-**Diff scope:** branch `task/118-package-state-devtools-inspector-as-plugin-1-for-t`, `99585466..f075d4a3` (merge base = origin/master; one commit "feat: run the DevTools inspector from a NuGet package")
-**Plan / brief:** task.md Requirements: ship the inspector as `TimeWarp.State.DevTools.App` (dashboard pattern), Hosting runs the packaged executable, `DevToolsProjectLocator` removed, explicit inner-loop project switch, run-mode only, out-of-tree consumer test, docs.
-**Effort:** 3 (by-diff budget above); roster axes: general
-**Reviewer roster:** general (review oracle, claude-opus-5-5)
-**Session IDs:** review oracle 3bc6725a-883d-4f3b-b451-3c8caedd96e0
+- Round 1: `99585466..f075d4a3`, effort 3 (976 lines), general. Review oracle session
+  3bc6725a-883d-4f3b-b451-3c8caedd96e0. 5 open findings.
+- Round 2: fix delta `9f4be5b8..04c63679`, effort 2 (275 lines), general (review oracle,
+  claude-opus-5-5, session 532d65d0-a89f-4bd9-949d-fc9f1773beb0). M1–M5 fixed, no new findings.
 
 ## Ground rules
 
