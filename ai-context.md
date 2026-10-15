@@ -9,8 +9,9 @@
 | `TimeWarp.State.Plus` | `source/timewarp-state-plus` | Routing, persistence, action tracking. Package id is not renamed. Depends on `TimeWarp.State` and `TimeWarp.State.Blazor`. `IsAotCompatible`. `AddTimeWarpStatePersistence()` registers `IPersistenceService`. |
 | `TimeWarp.State.Telemetry` | `source/timewarp-state-telemetry` | OpenTelemetry action spans. Depends on `TimeWarp.State` only. Behavior order 350. `IsAotCompatible`. |
 | `TimeWarp.State.DevTools.Export` | `source/timewarp-state-devtools-export` | Dev-only exporter. Copies `TimeWarp.State` activities to the inspector. No `IState` types. |
-| `TimeWarp.State.DevTools.Hosting` | `source/timewarp-state-devtools-hosting` | Aspire `AddTimeWarpStateDevTools()` / `WithTimeWarpStateDevTools()`. |
-| `TimeWarp.State.DevTools` | `source/timewarp-state-devtools` | Blazor Server inspector. Not packed. Own store. Not referenced by production packages. |
+| `TimeWarp.State.DevTools.Hosting` | `source/timewarp-state-devtools-hosting` | Aspire `AddTimeWarpStateDevTools()` / `WithTimeWarpStateDevTools()`. Runs the App package. |
+| `TimeWarp.State.DevTools.App` | `source/timewarp-state-devtools-app` | Published inspector (`tools/TimeWarp.State.DevTools.dll`). Framework-dependent, no RID. Same version as Hosting. |
+| `TimeWarp.State.DevTools` | `source/timewarp-state-devtools` | Blazor Server inspector project. Unpackable. Own store. Publish output is the App package. Not referenced by production packages. |
 
 Blazor hosts:
 

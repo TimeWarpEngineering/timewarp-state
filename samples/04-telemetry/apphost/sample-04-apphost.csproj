@@ -22,4 +22,7 @@
       IsAspireProjectResource="false" />
   </ItemGroup>
 
+  <!-- In-repo import of the same targets the TimeWarp.State.DevTools.App package imports for consumers. ProjectReference does not flow that package's buildTransitive assets. -->
+  <Import Project="..\..\..\source\timewarp-state-devtools-app\build\TimeWarp.State.DevTools.App.targets" />
+
 </Project>

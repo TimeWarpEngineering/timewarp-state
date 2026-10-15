@@ -44,6 +44,7 @@ internal static class NuspecDependencyAllowList
         "Shouldly",
         "TimeWarp.State",
       },
+      ["TimeWarp.State.DevTools.App"] = new HashSet<string>(StringComparer.Ordinal),
       ["TimeWarp.State.DevTools.Export"] = new HashSet<string>(StringComparer.Ordinal)
       {
         "OpenTelemetry",
@@ -51,6 +52,7 @@ internal static class NuspecDependencyAllowList
       ["TimeWarp.State.DevTools.Hosting"] = new HashSet<string>(StringComparer.Ordinal)
       {
         "Aspire.Hosting",
+        "TimeWarp.State.DevTools.App",
       },
     };
 

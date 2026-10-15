@@ -72,13 +72,13 @@ contract must not depend on State.
 
 ## Checklist
 
-- [ ] Inspector published into a NuGet package (dashboard pattern); RID/runtime strategy recorded
-- [ ] Hosting runs the packaged executable; `DevToolsProjectLocator` + source `AddProject` removed
-- [ ] Optional explicit dev-only project mode (if needed), never a folder walk
-- [ ] Out-of-tree consumer test proves it works from packages alone
-- [ ] Run-mode only / not in publish output
-- [ ] Readme + Design regions; version aligned with Hosting; release
-- [ ] Gates: build, tests, `ganda repo audit`
+- [x] Inspector published into a NuGet package (dashboard pattern); RID/runtime strategy recorded
+- [x] Hosting runs the packaged executable; `DevToolsProjectLocator` + source `AddProject` removed
+- [x] Optional explicit dev-only project mode (if needed), never a folder walk
+- [x] Out-of-tree consumer test proves it works from packages alone
+- [x] Run-mode only / not in publish output
+- [x] Readme + Design regions; version aligned with Hosting; release
+- [x] Gates: build, tests, `ganda repo audit`
 
 ## Sequencing
 
@@ -92,6 +92,13 @@ have required the env-var workaround.)
 - Created: 1230420 (2026-10-12)
 - 2026-10-15: rescoped by the timewarp-architecture cockpit per Steve. Packaged app, dashboard
   pattern; locator removed; shell/plugin work moved to "Later"; now precedes Architecture 335-001.
+- 2026-10-15: packaged `TimeWarp.State.DevTools.App` and pointed Hosting at the published dll.
+  Version pin is 12.0.0-beta.14. NuGet release is not cut here.
+- 2026-10-16: `dotnet run --file tools/dev-cli/dev.cs -- pack` verified the set. App nuspec
+  dependencies are none. Hosting depends on Aspire.Hosting and TimeWarp.State.DevTools.App.
+  `./bin/dev verify-samples` printed "Samples verified successfully!". `./bin/dev test` had
+  already printed "Tests completed successfully!". `ganda repo audit` exited 0 with one
+  pre-existing kebab-path advisory (Blazor `*.lib.module.*` names and backlog 110).
 
 ## References
 
@@ -101,3 +108,18 @@ have required the env-var workaround.)
 
 ## Learnings
 - 2026-10-15 (boyscout, to pass the publish audit): TimeWarp.Nuru/Nuru.DevCli 3.0.0-beta.80 → 3.0.0 with TimeWarp.Amuru/Amuru.Tools → 2.0.0 (Nuru 3.0.0 requires Amuru ≥ 2.0.0; NU1605 otherwise); root .gitignore lines for the new kanban-porcelain / routine-journals audit checks. `dev build` 0 errors; 158 pre-existing warnings (e.g. BL0010 from the RC2 SDK analyzers), unrelated to the bump.
+- NuGet restore drops a `ProjectReference` whose `ReferenceOutputAssembly` is false, so Hosting must reference the App project normally or the packed nuspec will not depend on `TimeWarp.State.DevTools.App`.
+- `IResourceBuilder<T>` is invariant. `WaitFor` takes `IResourceBuilder<IResource>`. Rewrap with `CreateResourceBuilder` before waiting.
+- Stamp `timewarpstatedevtoolspath` in a target `BeforeTargets="GetAssemblyAttributes"`. An evaluation-time `AssemblyAttribute` in the imported targets file was not emitted.
+- Pack the published files as `TfmSpecificPackageFile`. A `None` item added only before `GenerateNuspec` is too late, and `%(RecursiveDir)` on `None` batches against the targets file already in that item list.
+- `./bin/dev` is a gitignored AOT build. CI runs `dotnet run --file tools/dev-cli/dev.cs`. A local `./bin/dev pack` keeps the allow-list from the last `self-install` until that binary is rebuilt.
+
+## Results
+
+`TimeWarp.State.DevTools.App` 12.0.0-beta.14 is one framework-dependent package (no runtime identifier, `UseAppHost=false`). Its `tools/` folder is the published inspector. `TimeWarp.State.DevTools.Hosting` depends on that package at the same version. The package targets stamp `timewarpstatedevtoolspath` onto the AppHost, and `AddTimeWarpStateDevTools()` starts `dotnet` on `tools/TimeWarp.State.DevTools.dll`. The resource is an `ExecutableResource` named `timewarp-state-devtools`, the endpoint name is still `http`, and `ExcludeFromManifest` keeps it out of publish output. `DevToolsProjectLocator` and `TIMEWARP_STATE_DEVTOOLS_PROJECT` are gone. `AddTimeWarpStateDevToolsProject(projectPath)` is the explicit inner-loop switch. The sample AppHost uses the same public `AddTimeWarpStateDevTools()` call. The inspector still has its own store.
+
+### How to validate
+
+Smoke: `dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj`. `PackagedDevToolsApp_Should.StartFromAnOutOfTreeAppHost` packs App and Hosting into a temp feed, builds an Aspire AppHost outside this repo that only package-references Hosting, and GETs the inspector.
+
+Expect: The test passes. The stamped path is `tools/TimeWarp.State.DevTools.dll` under the restored `timewarp.state.devtools.app` package, not a csproj in this repo. The response body contains `TimeWarp State DevTools`. `AddTimeWarpStateDevTools_Should` shows endpoint name `http`, `ASPNETCORE_HTTP_PORTS`, `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`, no `DevToolsProjectLocator`, and the resource excluded from publish. `./bin/dev check-version` reports 12.0.0-beta.14 ahead of 12.0.0-beta.13. `ganda repo audit` exits 0.

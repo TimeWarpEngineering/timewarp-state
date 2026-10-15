@@ -8,6 +8,7 @@
 
 global using System.Diagnostics;
 global using System.Net;
+global using System.Net.Http;
 global using System.Net.Http.Json;
 global using System.Net.Sockets;
 global using System.Reflection;
@@ -21,6 +22,7 @@ global using Microsoft.Extensions.Logging.Abstractions;
 global using OpenTelemetry;
 global using OpenTelemetry.Trace;
 global using Shouldly;
+global using TimeWarp.Amuru;
 global using TimeWarp.Features.Cloning;
 global using TimeWarp.Mediator;
 global using TimeWarp.State;

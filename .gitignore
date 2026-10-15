@@ -353,3 +353,6 @@ aspire.config.json
 # Review-round markers beside kitchens (local; not product)
 **/review/round-*/base.sha
 **/review/round-*/closed
+
+# Publish output staged into TimeWarp.State.DevTools.App before pack.
+source/timewarp-state-devtools-app/tools/

@@ -13,6 +13,15 @@
     <PackageReference Include="Aspire.Hosting" />
   </ItemGroup>
 
+  <!--
+    NuGet restore omits a project reference whose ReferenceOutputAssembly is false, so the
+    packed nuspec would not depend on TimeWarp.State.DevTools.App. Leave the reference on.
+    Hosting source does not use that assembly.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\timewarp-state-devtools-app\timewarp-state-devtools-app.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Include=".\readme.md" Pack="true" PackagePath="\" />
   </ItemGroup>

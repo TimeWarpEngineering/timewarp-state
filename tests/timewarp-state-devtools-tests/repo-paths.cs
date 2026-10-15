@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Walks parents for timewarp-state.slnx. Tests resolve the DevTools csproj and the sample the same way an AppHost does.
+// Walks parents for timewarp-state.slnx so tests can find the repository root.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;

@@ -1,0 +1,38 @@
+<Project>
+
+  <!--
+    Dashboard pattern: this file lives in the package at build/ and buildTransitive/.
+    tools/ sits beside those folders, so the published inspector is one directory up.
+    In this repo the same file is imported by the sample AppHost and the DevTools tests;
+    MSBuildThisFileDirectory is then source/timewarp-state-devtools-app/build/ and tools/
+    is the publish output of timewarp-state-devtools-app.
+    One framework-dependent package, no RID. The AppHost starts it with `dotnet`.
+  -->
+
+  <PropertyGroup>
+    <TimeWarpStateDevToolsAppDir Condition="'$(TimeWarpStateDevToolsAppDir)' == ''">$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), '..', 'tools'))</TimeWarpStateDevToolsAppDir>
+    <TimeWarpStateDevToolsAppDir>$([MSBuild]::EnsureTrailingSlash('$(TimeWarpStateDevToolsAppDir)'))</TimeWarpStateDevToolsAppDir>
+    <TimeWarpStateDevToolsAppPath Condition="'$(TimeWarpStateDevToolsAppPath)' == ''">$([MSBuild]::NormalizePath($(TimeWarpStateDevToolsAppDir), 'TimeWarp.State.DevTools.dll'))</TimeWarpStateDevToolsAppPath>
+  </PropertyGroup>
+
+  <!--
+    Stamp inside a target. An evaluation-time AssemblyAttribute in this file is absent
+    from the generated assembly info in this SDK. GetAssemblyAttributes is the same hook
+    TimeWarp.Build.Tasks uses for CommitHash.
+  -->
+  <Target
+    Name="TimeWarpStateDevToolsStampAppPath"
+    BeforeTargets="GetAssemblyAttributes"
+    Condition="('$(IsAspireHost)' == 'true' or '$(TimeWarpStateDevToolsStampPath)' == 'true') and '$(TimeWarpStateDevToolsPathStamped)' != 'true'">
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>timewarpstatedevtoolspath</_Parameter1>
+        <_Parameter2>$(TimeWarpStateDevToolsAppPath)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+    <PropertyGroup>
+      <TimeWarpStateDevToolsPathStamped>true</TimeWarpStateDevToolsPathStamped>
+    </PropertyGroup>
+  </Target>
+
+</Project>

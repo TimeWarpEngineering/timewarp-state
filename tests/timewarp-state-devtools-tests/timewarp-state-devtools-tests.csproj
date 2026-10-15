@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="OpenTelemetry" />
     <PackageReference Include="Shouldly" />
+    <PackageReference Include="TimeWarp.Amuru" />
     <PackageReference Include="TimeWarp.Fixie" />
   </ItemGroup>
 
@@ -18,5 +19,11 @@
     <ProjectReference Include="..\..\source\timewarp-state-devtools-export\timewarp-state-devtools-export.csproj" />
     <ProjectReference Include="..\..\source\timewarp-state-devtools-hosting\timewarp-state-devtools-hosting.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <TimeWarpStateDevToolsStampPath>true</TimeWarpStateDevToolsStampPath>
+  </PropertyGroup>
+
+  <Import Project="..\..\source\timewarp-state-devtools-app\build\TimeWarp.State.DevTools.App.targets" />
 
 </Project>

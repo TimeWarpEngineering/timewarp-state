@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>TimeWarp.State.DevTools.App</Title>
+    <Description>Published TimeWarp.State DevTools inspector. Framework-dependent, no runtime identifier. Started by TimeWarp.State.DevTools.Hosting.</Description>
+    <PackageId>TimeWarp.State.DevTools.App</PackageId>
+    <AssemblyName>TimeWarp.State.DevTools.App</AssemblyName>
+    <RootNamespace>TimeWarp.State.DevTools.App</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <PackageTags>TimeWarp.State; DevTools; Aspire</PackageTags>
+    <DefaultItemExcludes>$(DefaultItemExcludes);tools/**</DefaultItemExcludes>
+    <DevToolsProject>$(MSBuildThisFileDirectory)..\timewarp-state-devtools\timewarp-state-devtools.csproj</DevToolsProject>
+    <DevToolsToolsDir Condition="'$(DevToolsToolsDir)' == ''">$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), 'tools'))</DevToolsToolsDir>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddDevToolsToolsToPackage</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <!-- Private so the nupkg does not depend on the unpackable inspector project. The publish output under tools/ already contains those assemblies. -->
+  <ItemGroup>
+    <ProjectReference Include="$(DevToolsProject)">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <PrivateAssets>all</PrivateAssets>
+      <SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="readme.md" Pack="true" PackagePath="\" />
+    <!-- Full package path. A directory-only PackagePath is prefixed with this item's RecursiveDir (build\). -->
+    <None Update="build\TimeWarp.State.DevTools.App.targets" Pack="true" PackagePath="build\TimeWarp.State.DevTools.App.targets" />
+  </ItemGroup>
+
+  <!--
+    Publish for in-repo runs (tests, the sample AppHost). Pack publishes again with a different
+    global property: the MSBuild task skips a second Publish of the same project with the same
+    properties, and a clean between them would drop the files from the package.
+  -->
+  <Target Name="PublishDevToolsAppOnBuild" BeforeTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+    <MSBuild
+      Projects="$(DevToolsProject)"
+      Targets="Publish"
+      Properties="Configuration=$(Configuration);SelfContained=false;UseAppHost=false;PublishDir=$(DevToolsToolsDir)" />
+  </Target>
+
+  <!--
+    NuGet reads TfmSpecificPackageFile from this target. A None item whose PackagePath uses
+    %(RecursiveDir) is batched against the targets file already in None, which nests every
+    published file under that targets path.
+  -->
+  <Target Name="AddDevToolsToolsToPackage" Condition="'$(DesignTimeBuild)' != 'true'">
+    <RemoveDir Directories="$(DevToolsToolsDir)" />
+    <MSBuild
+      Projects="$(DevToolsProject)"
+      Targets="Publish"
+      Properties="Configuration=$(Configuration);SelfContained=false;UseAppHost=false;PublishDir=$(DevToolsToolsDir);DevToolsPackPublish=true" />
+    <Copy
+      SourceFiles="$(MSBuildThisFileDirectory)build\TimeWarp.State.DevTools.App.targets"
+      DestinationFiles="$(IntermediateOutputPath)TimeWarp.State.DevTools.App.targets" />
+    <ItemGroup>
+      <_DevToolsPublishedFile Include="$(DevToolsToolsDir)**\*.*" />
+    </ItemGroup>
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(IntermediateOutputPath)TimeWarp.State.DevTools.App.targets">
+        <PackagePath>buildTransitive\TimeWarp.State.DevTools.App.targets</PackagePath>
+      </TfmSpecificPackageFile>
+      <TfmSpecificPackageFile Include="@(_DevToolsPublishedFile)">
+        <PackagePath>tools\%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      </TfmSpecificPackageFile>
+    </ItemGroup>
+  </Target>
+</Project>
