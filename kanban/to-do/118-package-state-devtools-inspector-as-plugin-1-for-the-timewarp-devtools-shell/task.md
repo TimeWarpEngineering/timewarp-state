@@ -145,4 +145,4 @@ Expect: 66 passed. `AddTimeWarpStateDevTools_Should.LeaveTheInspectedAppUnwiredW
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4, M5
-- Round 2: Done — M1–M5 fixed, no new findings; disposition clean
+- Round 2: Done
