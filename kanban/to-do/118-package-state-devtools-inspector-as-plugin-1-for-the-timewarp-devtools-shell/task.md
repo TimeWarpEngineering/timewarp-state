@@ -100,3 +100,4 @@ have required the env-var workaround.)
 - Aspire dashboard packaging: `Aspire.Dashboard.Sdk` (executable resource from a NuGet package)
 
 ## Learnings
+- 2026-10-15 (boyscout, to pass the publish audit): TimeWarp.Nuru/Nuru.DevCli 3.0.0-beta.80 → 3.0.0 with TimeWarp.Amuru/Amuru.Tools → 2.0.0 (Nuru 3.0.0 requires Amuru ≥ 2.0.0; NU1605 otherwise); root .gitignore lines for the new kanban-porcelain / routine-journals audit checks. `dev build` 0 errors; 158 pre-existing warnings (e.g. BL0010 from the RC2 SDK analyzers), unrelated to the bump.
