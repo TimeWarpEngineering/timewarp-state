@@ -3,20 +3,20 @@
 #endregion
 
 #region Design
-// TimeWarp.State.DevTools.App is a framework-dependent NuGet package with no runtime identifier.
-// Its tools/ folder is the publish output. The package targets stamp AssemblyMetadata
-// timewarpstatedevtoolspath onto the Aspire AppHost (and onto test assemblies that opt in).
-// AddExecutable runs `dotnet` on that dll, which is already on PATH because the AppHost is a
-// dotnet process. Per-RID self-contained packages were rejected: the dll is portable.
-// ASPNETCORE_HTTP_PORTS receives the http endpoint's target port. The endpoint name stays http
-// and the dashboard text stays "TimeWarp.State DevTools". WithTimeWarpStateDevTools sets
-// TIMEWARP_STATE_DEVTOOLS_ENDPOINT from that endpoint and waits until the inspector is running.
-// IResourceBuilder<T> is invariant, so WaitFor cannot take IResourceBuilder<TDevTools>. The call
-// rewraps devtools.Resource as IResourceBuilder<IResource> and uses Aspire's WaitFor.
-// ExcludeFromManifest keeps the inspector out of publish output.
+// TimeWarp.State.DevTools.App is a framework-dependent package with no runtime identifier.
+// Its tools/ folder is the publish output. Package targets stamp AssemblyMetadata
+// timewarpstatedevtoolspath onto the AppHost. AddExecutable starts that dll with the .NET host:
+// DOTNET_HOST_PATH, otherwise the running muxer when this process is dotnet or dotnet.exe,
+// otherwise DOTNET_ROOT/dotnet (dotnet.exe on Windows), otherwise the name "dotnet".
+// An apphost or IDE launch does not put that muxer on PATH. Per-RID packages were rejected.
+// ASPNETCORE_HTTP_PORTS receives the http endpoint port. The endpoint name stays http.
+// WithTimeWarpStateDevTools sets TIMEWARP_STATE_DEVTOOLS_ENDPOINT and waits for the inspector
+// in run mode. In publish mode it returns the inspected resource unchanged. ExcludeFromManifest
+// keeps the inspector resource itself out of the manifest, so publish output has no reference to it.
+// A missing inspector file is an error in run mode and is ignored in publish mode.
+// IResourceBuilder<T> is invariant, so WaitFor rewraps the inspector as IResource.
 // AddTimeWarpStateDevToolsProject is the inner-loop switch: the caller passes a csproj path.
 // There is no parent-folder walk and no TIMEWARP_STATE_DEVTOOLS_PROJECT override.
-// The OTLP endpoint Aspire already injects is left alone; the dashboard still receives traces.
 #endregion
 
 namespace TimeWarp.State.DevTools.Hosting;
@@ -53,11 +53,68 @@ public static class TimeWarpStateDevToolsHosting
   /// <summary>File name of the published inspector assembly.</summary>
   public const string AppAssemblyFileName = "TimeWarp.State.DevTools.dll";
 
-  /// <summary>Command Aspire runs. Resolved from the AppHost PATH.</summary>
+  /// <summary>
+  /// Fallback command name when <see cref="ResolveAppLaunchCommand()"/> finds no host path.
+  /// </summary>
   public const string AppLaunchCommand = "dotnet";
 
   /// <summary>Environment variable that receives the inspector's HTTP target port.</summary>
   public const string HttpPortsEnvironmentVariable = "ASPNETCORE_HTTP_PORTS";
+
+  /// <summary>
+  /// .NET host Aspire should execute. <see cref="AppLaunchCommand"/> is the last fallback.
+  /// </summary>
+  internal static string ResolveAppLaunchCommand()
+  {
+    return ResolveAppLaunchCommand
+    (
+      Environment.GetEnvironmentVariable("DOTNET_HOST_PATH"),
+      Environment.ProcessPath,
+      Environment.GetEnvironmentVariable("DOTNET_ROOT")
+    );
+  }
+
+  /// <summary>
+  /// Resolves the host from an explicit <paramref name="dotnetHostPath"/>, then
+  /// <paramref name="processPath"/> when that file is the muxer, then <paramref name="dotnetRoot"/>.
+  /// </summary>
+  internal static string ResolveAppLaunchCommand
+  (
+    string? dotnetHostPath,
+    string? processPath,
+    string? dotnetRoot
+  )
+  {
+    if (!string.IsNullOrWhiteSpace(dotnetHostPath))
+    {
+      return dotnetHostPath.Trim();
+    }
+
+    if (IsDotNetMuxer(processPath))
+    {
+      return processPath!;
+    }
+
+    if (!string.IsNullOrWhiteSpace(dotnetRoot))
+    {
+      string hostFileName = OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet";
+      return Path.Combine(dotnetRoot.Trim(), hostFileName);
+    }
+
+    return AppLaunchCommand;
+  }
+
+  private static bool IsDotNetMuxer(string? processPath)
+  {
+    if (string.IsNullOrWhiteSpace(processPath))
+    {
+      return false;
+    }
+
+    string fileName = Path.GetFileName(processPath);
+    return fileName.Equals("dotnet", StringComparison.OrdinalIgnoreCase)
+      || fileName.Equals("dotnet.exe", StringComparison.OrdinalIgnoreCase);
+  }
 }
 
 /// <summary>
@@ -85,7 +142,8 @@ public static class TimeWarpStateDevToolsHostingExtensions
 
     string? appPath = ReadAppPath(Assembly.GetEntryAssembly())
       ?? ReadAppPath(Assembly.GetCallingAssembly());
-    if (string.IsNullOrWhiteSpace(appPath) || !File.Exists(appPath))
+    bool publishMode = builder.ExecutionContext.IsPublishMode;
+    if (string.IsNullOrWhiteSpace(appPath) || (!publishMode && !File.Exists(appPath)))
     {
       throw new InvalidOperationException
       (
@@ -107,7 +165,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
       .AddExecutable
       (
         name,
-        TimeWarpStateDevToolsHosting.AppLaunchCommand,
+        TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(),
         appDirectory,
         appPath
       )
@@ -154,7 +212,8 @@ public static class TimeWarpStateDevToolsHostingExtensions
   /// <summary>
   /// Publishes the DevTools origin to <paramref name="builder"/> and waits for DevTools to start.
   /// The inspected app reads <see cref="TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable"/>
-  /// and calls <c>AddTimeWarpStateDevToolsExporter</c>.
+  /// and calls <c>AddTimeWarpStateDevToolsExporter</c>. In publish mode the inspected resource is
+  /// returned unchanged, so publish output does not reference the inspector.
   /// </summary>
   /// <typeparam name="T">Inspected resource type.</typeparam>
   /// <typeparam name="TDevTools">DevTools resource type. The packaged app is an executable; the project switch is a project.</typeparam>
@@ -171,6 +230,11 @@ public static class TimeWarpStateDevToolsHostingExtensions
   {
     ArgumentNullException.ThrowIfNull(builder);
     ArgumentNullException.ThrowIfNull(devtools);
+
+    if (builder.ApplicationBuilder.ExecutionContext.IsPublishMode)
+    {
+      return builder;
+    }
 
     IResource devtoolsResource = devtools.Resource;
     IResourceBuilder<IResource> dependency = builder.ApplicationBuilder.CreateResourceBuilder(devtoolsResource);

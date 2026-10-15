@@ -34,15 +34,20 @@
   </ItemGroup>
 
   <!--
-    Publish for in-repo runs (tests, the sample AppHost). Pack publishes again with a different
-    global property: the MSBuild task skips a second Publish of the same project with the same
-    properties, and a clean between them would drop the files from the package.
+    The ProjectReference builds the inspector with the solution's properties. Publish then copies
+    that output. NoBuild keeps this invocation from compiling into the same obj folder under a
+    second set of global properties. Pack publishes again after deleting tools/; DevToolsPackPublish
+    is a distinct global property so the MSBuild task does not reuse this result.
   -->
-  <Target Name="PublishDevToolsAppOnBuild" BeforeTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+  <Target Name="PublishDevToolsAppOnBuild" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+    <MSBuild
+      Projects="$(DevToolsProject)"
+      Targets="Build"
+      Properties="Configuration=$(Configuration)" />
     <MSBuild
       Projects="$(DevToolsProject)"
       Targets="Publish"
-      Properties="Configuration=$(Configuration);SelfContained=false;UseAppHost=false;PublishDir=$(DevToolsToolsDir)" />
+      Properties="Configuration=$(Configuration);SelfContained=false;UseAppHost=false;PublishDir=$(DevToolsToolsDir);NoBuild=true;BuildProjectReferences=false" />
   </Target>
 
   <!--
@@ -55,12 +60,14 @@
     <MSBuild
       Projects="$(DevToolsProject)"
       Targets="Publish"
-      Properties="Configuration=$(Configuration);SelfContained=false;UseAppHost=false;PublishDir=$(DevToolsToolsDir);DevToolsPackPublish=true" />
+      Properties="Configuration=$(Configuration);SelfContained=false;UseAppHost=false;PublishDir=$(DevToolsToolsDir);NoBuild=true;BuildProjectReferences=false;DevToolsPackPublish=true" />
     <Copy
       SourceFiles="$(MSBuildThisFileDirectory)build\TimeWarp.State.DevTools.App.targets"
       DestinationFiles="$(IntermediateOutputPath)TimeWarp.State.DevTools.App.targets" />
     <ItemGroup>
       <_DevToolsPublishedFile Include="$(DevToolsToolsDir)**\*.*" />
+      <!-- The packaged inspector runs as Production. These files are not used. Pdbs stay. -->
+      <_DevToolsPublishedFile Remove="$(DevToolsToolsDir)**\appsettings.Development.json;$(DevToolsToolsDir)**\tsconfig.json;$(DevToolsToolsDir)**\web.config;$(DevToolsToolsDir)**\*.xml" />
     </ItemGroup>
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(IntermediateOutputPath)TimeWarp.State.DevTools.App.targets">

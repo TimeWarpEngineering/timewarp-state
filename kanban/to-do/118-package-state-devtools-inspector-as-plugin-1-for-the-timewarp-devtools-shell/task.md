@@ -103,6 +103,8 @@ have required the env-var workaround.)
 - Review oracle round 1 (2026-10-16): general reviewer, claude-opus-5-5, session
   3bc6725a-883d-4f3b-b451-3c8caedd96e0, effort 3 (by-diff, 976 lines). 5 open findings (1 bug,
   3 suggestions, 1 nit) in `review/round-1/merged.md`; returned Blocked for a fix pass.
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-15T17:59:33Z
+- 2026-10-16: fix pass for review round 1. Publish mode does not wire the inspector. The launch command resolves the AppHost .NET host. The inspector is published after its build. The package `tools/` folder omits development settings, `tsconfig.json`, `web.config`, and XML docs. `dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj` passed 66. `ganda repo audit` exited 0 with the pre-existing kebab-path advisory.
 
 ## References
 
@@ -120,22 +122,23 @@ have required the env-var workaround.)
 
 ## Results
 
-`TimeWarp.State.DevTools.App` 12.0.0-beta.14 is one framework-dependent package (no runtime identifier, `UseAppHost=false`). Its `tools/` folder is the published inspector. `TimeWarp.State.DevTools.Hosting` depends on that package at the same version. The package targets stamp `timewarpstatedevtoolspath` onto the AppHost, and `AddTimeWarpStateDevTools()` starts `dotnet` on `tools/TimeWarp.State.DevTools.dll`. The resource is an `ExecutableResource` named `timewarp-state-devtools`, the endpoint name is still `http`, and `ExcludeFromManifest` keeps it out of publish output. `DevToolsProjectLocator` and `TIMEWARP_STATE_DEVTOOLS_PROJECT` are gone. `AddTimeWarpStateDevToolsProject(projectPath)` is the explicit inner-loop switch. The sample AppHost uses the same public `AddTimeWarpStateDevTools()` call. The inspector still has its own store.
+`TimeWarp.State.DevTools.App` 12.0.0-beta.14 is one framework-dependent package (no runtime identifier, `UseAppHost=false`). Its `tools/` folder is the published inspector. `TimeWarp.State.DevTools.Hosting` depends on that package at the same version. The package targets stamp `timewarpstatedevtoolspath` onto the AppHost. `AddTimeWarpStateDevTools()` starts that dll with the AppHost's .NET host: `DOTNET_HOST_PATH` when it is set, otherwise the running `dotnet` muxer, otherwise `DOTNET_ROOT/dotnet`, otherwise `dotnet`. The resource is an `ExecutableResource` named `timewarp-state-devtools`, the endpoint name is still `http`, and `ExcludeFromManifest` keeps it out of publish output. In publish mode, `WithTimeWarpStateDevTools` returns the inspected resource unchanged: no `WaitFor` on the inspector and no `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`. `DevToolsProjectLocator` and `TIMEWARP_STATE_DEVTOOLS_PROJECT` are gone. `AddTimeWarpStateDevToolsProject(projectPath)` is the explicit inner-loop switch. The sample AppHost uses the same public `AddTimeWarpStateDevTools()` call. The inspector still has its own store. The package build publishes the inspector after that project's build (`NoBuild` on the publish). Pack omits `appsettings.Development.json`, `tsconfig.json`, `web.config`, and `*.xml` from `tools/` and still ships the pdbs.
 
 ### How to validate
 
-Smoke: `dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj`. `PackagedDevToolsApp_Should.StartFromAnOutOfTreeAppHost` packs App and Hosting into a temp feed, builds an Aspire AppHost outside this repo that only package-references Hosting, and GETs the inspector.
+Smoke: `dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj`.
 
-Expect: The test passes. The stamped path is `tools/TimeWarp.State.DevTools.dll` under the restored `timewarp.state.devtools.app` package, not a csproj in this repo. The response body contains `TimeWarp State DevTools`. `AddTimeWarpStateDevTools_Should` shows endpoint name `http`, `ASPNETCORE_HTTP_PORTS`, `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`, no `DevToolsProjectLocator`, and the resource excluded from publish. `./bin/dev check-version` reports 12.0.0-beta.14 ahead of 12.0.0-beta.13. `ganda repo audit` exits 0.
+Expect: 66 passed. `AddTimeWarpStateDevTools_Should.LeaveTheInspectedAppUnwiredWhenPublishing` builds with `--operation publish` and finds no `WaitAnnotation` on the inspector and no `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` callback. `ResolveTheDotNetHostInOrder` covers host path, muxer, `DOTNET_ROOT/dotnet`, then `dotnet`. `PackagedDevToolsApp_Should.StartFromAnOutOfTreeAppHost` packs App and Hosting into a temp feed, builds an Aspire AppHost outside this repo that only package-references Hosting, and starts the packaged dll with the resource's command, the dll directory as the working directory, and only `ASPNETCORE_HTTP_PORTS`. The nupkg contains `tools/wwwroot/_framework/blazor.web.js` and a `tools/*.pdb`, and does not contain `appsettings.Development.json`, `tsconfig.json`, `web.config`, or `*.xml` under `tools/`. GET `/` returns a body containing `TimeWarp State DevTools`. GET `/_framework/blazor.web.js` returns 200. The stamped path is `tools/TimeWarp.State.DevTools.dll` under the restored `timewarp.state.devtools.app` package, not a csproj in this repo. `ganda repo audit` exits 0. The kebab-path advisory remains (Blazor `*.lib.module.*` names, backlog 110, and the NuGet `TimeWarp.State.DevTools.App.targets` filename).
 
 ### Review
 
-- Status: **disposition pending** (round 1 open findings; fix pass requested).
+- Status: **disposition pending** (fix pass implemented M1–M5; round 2 has not dispositioned them).
 - Rounds: 1. Roster: general. Effort: 3.
-- Round 1 counts: bug 1 open; suggestion 3 open; nit 1 open; 0 fixed; 0 wontfix.
-- Open: M1 (bug: `WithTimeWarpStateDevTools` still references the excluded inspector in publish mode),
-  M2 (out-of-tree test does not run the resource's real launch shape or check `blazor.web.js`),
-  M3 (bare `dotnet` from PATH), M4 (build-time publish races the normal inspector build),
-  M5 (nit: dev-only files in `tools/`).
+- Round 1 counts at review time: bug 1 open; suggestion 3 open; nit 1 open; 0 fixed; 0 wontfix.
+- Fix pass: publish mode leaves the inspected app unwired (M1); the out-of-tree test launches with the resolved command, `ASPNETCORE_HTTP_PORTS`, and checks `blazor.web.js` (M2); host resolution order (M3); publish after the inspector build (M4); package `tools/` omits development files and XML docs (M5).
 - Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
   `review/disposition.md` is written once open count reaches 0.
+
+## Review
+
+- Round 1: Blocked — open M1, M2, M3, M4, M5

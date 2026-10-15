@@ -6,7 +6,7 @@
     In this repo the same file is imported by the sample AppHost and the DevTools tests;
     MSBuildThisFileDirectory is then source/timewarp-state-devtools-app/build/ and tools/
     is the publish output of timewarp-state-devtools-app.
-    One framework-dependent package, no RID. The AppHost starts it with `dotnet`.
+    One framework-dependent package, no RID. Hosting starts the dll with the AppHost's .NET host.
   -->
 
   <PropertyGroup>

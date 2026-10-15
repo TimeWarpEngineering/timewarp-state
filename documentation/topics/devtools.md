@@ -49,7 +49,7 @@ builder.AddProject<Projects.MyApp>("my-app")
   .WithTimeWarpStateDevTools(devtools);
 ```
 
-`TimeWarp.State.DevTools.Hosting` depends on `TimeWarp.State.DevTools.App` at the same version. That package contains the published inspector (`tools/TimeWarp.State.DevTools.dll`). The publish is framework-dependent and has no runtime identifier. The AppHost starts it with `dotnet`. Package targets stamp the dll path onto the AppHost. `AddTimeWarpStateDevTools` adds that executable, declares an HTTP endpoint named `http`, and is left out of publish output.
+`TimeWarp.State.DevTools.Hosting` depends on `TimeWarp.State.DevTools.App` at the same version. That package contains the published inspector (`tools/TimeWarp.State.DevTools.dll`). The publish is framework-dependent and has no runtime identifier. The AppHost starts it with the .NET host (`DOTNET_HOST_PATH`, the running `dotnet` muxer, `DOTNET_ROOT/dotnet`, then `dotnet`). Package targets stamp the dll path onto the AppHost. `AddTimeWarpStateDevTools` adds that executable and declares an HTTP endpoint named `http`. The resource is left out of the publish manifest, and `WithTimeWarpStateDevTools` does nothing in publish mode, so publish output does not reference the inspector.
 
 `AddTimeWarpStateDevToolsProject(projectPath)` is the explicit project switch for inner-loop work on the inspector. The sample AppHost calls `AddTimeWarpStateDevTools()`.
 

@@ -8,6 +8,8 @@
 // csproj path. URL and environment callbacks run against a seeded http endpoint so the dashboard
 // text and TIMEWARP_STATE_DEVTOOLS_ENDPOINT are visible without the Aspire dashboard.
 // AddTimeWarpStateDevToolsProject covers the explicit csproj switch.
+// ResolveAppLaunchCommand is called with explicit inputs so the host order does not depend on
+// this process. Publish mode is `--operation publish` on the builder.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -26,7 +28,7 @@ public class AddTimeWarpStateDevTools_Should
     IDistributedApplicationBuilder builder = CreateBuilder();
     IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
     devtools.Resource.Name.ShouldBe(TimeWarpStateDevToolsHosting.DefaultResourceName);
-    devtools.Resource.Command.ShouldBe(TimeWarpStateDevToolsHosting.AppLaunchCommand);
+    devtools.Resource.Command.ShouldBe(TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand());
     devtools.Resource.WorkingDirectory.ShouldBe(Path.GetDirectoryName(path));
     devtools.Resource.Annotations.OfType<IProjectMetadata>().ShouldBeEmpty();
     devtools.Resource.IsExcludedFromPublish().ShouldBeTrue();
@@ -59,7 +61,7 @@ public class AddTimeWarpStateDevTools_Should
     {
       IDistributedApplicationBuilder builder = CreateBuilder();
       IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
-      devtools.Resource.Command.ShouldBe(TimeWarpStateDevToolsHosting.AppLaunchCommand);
+      devtools.Resource.Command.ShouldBe(TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand());
       devtools.Resource.Annotations.OfType<IProjectMetadata>().ShouldBeEmpty();
     }
     finally
@@ -119,6 +121,48 @@ public class AddTimeWarpStateDevTools_Should
     variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeTrue();
   }
 
+  public static void ResolveTheDotNetHostInOrder()
+  {
+    const string hostPath = "/opt/dotnet/dotnet";
+    const string muxer = "/usr/share/dotnet/dotnet";
+    const string muxerExe = "/usr/share/dotnet/DOTNET.EXE";
+    const string appHost = "/apps/TwDevToolsConsumer";
+    const string root = "/preview/dotnet";
+    string rootHost = Path.Combine(root, OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet");
+
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(hostPath, muxer, root).ShouldBe(hostPath);
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand("  " + hostPath + "  ", appHost, null).ShouldBe(hostPath);
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(null, muxer, root).ShouldBe(muxer);
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand("   ", muxerExe, root).ShouldBe(muxerExe);
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(null, appHost, root).ShouldBe(rootHost);
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(null, appHost, null)
+      .ShouldBe(TimeWarpStateDevToolsHosting.AppLaunchCommand);
+    TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(null, null, "   ")
+      .ShouldBe(TimeWarpStateDevToolsHosting.AppLaunchCommand);
+  }
+
+  public static async Task LeaveTheInspectedAppUnwiredWhenPublishing()
+  {
+    IDistributedApplicationBuilder builder = CreateBuilder(publish: true);
+    builder.ExecutionContext.IsPublishMode.ShouldBeTrue();
+
+    IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
+    string serverProject = Path.Combine
+    (
+      RepoPaths.Root(),
+      "samples/04-telemetry/server/sample-04-server/sample-04-server.csproj"
+    );
+    IResourceBuilder<ProjectResource> server = builder
+      .AddProject("sample-04-server", serverProject)
+      .WithTimeWarpStateDevTools(devtools);
+
+    server.Resource.Annotations.OfType<WaitAnnotation>()
+      .ShouldNotContain(annotation => annotation.Resource == devtools.Resource);
+
+    Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(server.Resource);
+    variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeFalse();
+  }
+
   public static void ShareTheEndpointVariableNameWithTheExporter()
   {
     TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable
@@ -135,13 +179,14 @@ public class AddTimeWarpStateDevTools_Should
     return path;
   }
 
-  private static IDistributedApplicationBuilder CreateBuilder()
+  private static IDistributedApplicationBuilder CreateBuilder(bool publish = false)
   {
+    string[] args = publish ? ["--operation", "publish"] : [];
     return DistributedApplication.CreateBuilder
     (
       new DistributedApplicationOptions
       {
-        Args = [],
+        Args = args,
         DisableDashboard = true,
         AllowUnsecuredTransport = true,
         AssemblyName = "TimeWarp.State.DevTools.Tests",

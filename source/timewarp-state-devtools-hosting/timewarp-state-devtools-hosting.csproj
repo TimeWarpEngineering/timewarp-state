@@ -13,6 +13,10 @@
     <PackageReference Include="Aspire.Hosting" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="TimeWarp.State.DevTools.Tests" />
+  </ItemGroup>
+
   <!--
     NuGet restore omits a project reference whose ReferenceOutputAssembly is false, so the
     packed nuspec would not depend on TimeWarp.State.DevTools.App. Leave the reference on.

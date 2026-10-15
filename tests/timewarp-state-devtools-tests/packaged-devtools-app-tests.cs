@@ -5,8 +5,11 @@
 #region Design
 // Packs TimeWarp.State.DevTools.App and TimeWarp.State.DevTools.Hosting into a temp feed, restores
 // a temp AppHost that PackageReferences Hosting only, and reads the stamped assembly metadata.
-// The stamped path has to sit in that temp package folder, not in this repo. The test then runs
-// `dotnet` on that dll through TimeWarp.Amuru and requests the inspector page.
+// The stamped path has to sit in that temp package folder, not in this repo. The test builds the
+// same executable resource AddTimeWarpStateDevTools adds, then starts the packaged dll with that
+// resource's command, the dll's directory as the working directory, and ASPNETCORE_HTTP_PORTS.
+// It requests the inspector page and /_framework/blazor.web.js. The package must not ship
+// appsettings.Development.json, tsconfig.json, web.config, or XML doc files.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -108,6 +111,10 @@ public class PackagedDevToolsApp_Should
         """
       );
 
+      string appPackage = Directory.GetFiles(feed, "*.nupkg")
+        .Single(path => Path.GetFileName(path).Contains("DevTools.App", StringComparison.OrdinalIgnoreCase));
+      AssertPackagedTools(appPackage);
+
       await RunAsync(consumer, "dotnet", ["build", "--configuration", "Debug"]);
 
       string consumerAssembly = Path.Combine(consumer, "bin", "Debug", "net11.0", "TwDevToolsConsumer.dll");
@@ -122,21 +129,37 @@ public class PackagedDevToolsApp_Should
       appPath.Contains("timewarp-state-devtools.csproj", StringComparison.Ordinal).ShouldBeFalse();
       Path.GetFullPath(appPath).StartsWith(Path.GetFullPath(packages), StringComparison.Ordinal).ShouldBeTrue();
 
+      IDistributedApplicationBuilder appBuilder = DistributedApplication.CreateBuilder
+      (
+        new DistributedApplicationOptions
+        {
+          Args = [],
+          DisableDashboard = true,
+          AllowUnsecuredTransport = true,
+          AssemblyName = "TimeWarp.State.DevTools.Tests",
+          ProjectDirectory = Path.Combine(repo, "samples/04-telemetry/apphost")
+        }
+      );
+      IResourceBuilder<ExecutableResource> devtools = appBuilder.AddTimeWarpStateDevTools();
+      string command = devtools.Resource.Command;
+      command.ShouldBe(TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand());
+      devtools.Resource.WorkingDirectory.ShouldNotBeNullOrWhiteSpace();
+
       int port = FreePort();
       string? directory = Path.GetDirectoryName(appPath);
       directory.ShouldNotBeNullOrWhiteSpace();
       using CancellationTokenSource lifetime = new(TimeSpan.FromSeconds(45));
-      Task<CommandOutput> running = Shell.Builder("dotnet")
+      Task<CommandOutput> running = Shell.Builder(command)
         .WithArguments(appPath)
         .WithWorkingDirectory(directory)
-        .WithEnvironmentVariable("ASPNETCORE_URLS", $"http://127.0.0.1:{port}")
-        .WithEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production")
+        .WithEnvironmentVariable(TimeWarpStateDevToolsHosting.HttpPortsEnvironmentVariable, port.ToString())
         .WithNoValidation()
         .CaptureAsync(lifetime.Token);
       try
       {
         using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(2) };
         string? body = null;
+        HttpStatusCode? scriptStatus = null;
         DateTime deadline = DateTime.UtcNow.AddSeconds(40);
         while (DateTime.UtcNow < deadline)
         {
@@ -148,7 +171,19 @@ public class PackagedDevToolsApp_Should
 
           try
           {
-            body = await client.GetStringAsync($"http://127.0.0.1:{port}/");
+            using HttpResponseMessage page = await client.GetAsync($"http://127.0.0.1:{port}/");
+            if (!page.IsSuccessStatusCode)
+            {
+              await Task.Delay(250);
+              continue;
+            }
+
+            body = await page.Content.ReadAsStringAsync();
+            using HttpResponseMessage script = await client.GetAsync
+            (
+              $"http://127.0.0.1:{port}/_framework/blazor.web.js"
+            );
+            scriptStatus = script.StatusCode;
             break;
           }
           catch (HttpRequestException)
@@ -159,6 +194,7 @@ public class PackagedDevToolsApp_Should
 
         body.ShouldNotBeNullOrWhiteSpace();
         body.ShouldContain("TimeWarp State DevTools");
+        scriptStatus.ShouldBe(HttpStatusCode.OK);
       }
       finally
       {
@@ -182,6 +218,28 @@ public class PackagedDevToolsApp_Should
       {
       }
     }
+  }
+
+  private static void AssertPackagedTools(string packagePath)
+  {
+    using FileStream stream = File.OpenRead(packagePath);
+    using System.IO.Compression.ZipArchive package = new(stream, System.IO.Compression.ZipArchiveMode.Read);
+    var names = package.Entries
+      .Select(entry => entry.FullName.Replace('\\', '/'))
+      .ToList();
+    names.ShouldContain(name => name.EndsWith("tools/wwwroot/_framework/blazor.web.js", StringComparison.Ordinal));
+    names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith("appsettings.Development.json", StringComparison.OrdinalIgnoreCase));
+    names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith("tsconfig.json", StringComparison.OrdinalIgnoreCase));
+    names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith("web.config", StringComparison.OrdinalIgnoreCase));
+    names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith(".xml", StringComparison.OrdinalIgnoreCase));
+    names.ShouldContain(name => IsToolsPackageEntry(name) && name.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase));
+  }
+
+  // Package paths are tools/file, not a tfm folder plus /tools/.
+  private static bool IsToolsPackageEntry(string name)
+  {
+    return name.StartsWith("tools/", StringComparison.OrdinalIgnoreCase)
+      || name.Contains("/tools/", StringComparison.OrdinalIgnoreCase);
   }
 
   private static string PackageVersion(string repo)
