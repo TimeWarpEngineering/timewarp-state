@@ -132,6 +132,11 @@ h1 {
   overflow: auto;
 }
 
+.log {
+  /* One template for the header and every row, including an empty runtime cell. */
+  --log-columns: 6.4rem 3.2rem 3.6rem minmax(7rem, 2.6fr) minmax(5rem, 0.9fr) 4.2rem 3rem;
+}
+
 .detail {
   padding: 0.85rem 1rem 1rem;
 }
@@ -142,12 +147,43 @@ h1 {
   padding: 0;
 }
 
+.log li {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.log-head,
 .row {
-  width: 100%;
   display: grid;
-  grid-template-columns: 7.2rem 3.4rem minmax(0, 1.4fr) minmax(0, 0.8fr) 5.5rem 4.5rem;
-  gap: 0.6rem;
-  align-items: baseline;
+  grid-template-columns: var(--log-columns);
+  column-gap: 0.6rem;
+  align-items: center;
+  width: 100%;
+}
+
+.log-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  margin: 0;
+  background: var(--twe-paper);
+  color: var(--twe-muted);
+  border-bottom: 1px solid var(--twe-border);
+  padding: 0.4rem 0.7rem;
+  font-family: var(--twe-font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.log-head .cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row {
   text-align: left;
   background: transparent;
   color: var(--twe-ink);
@@ -200,6 +236,9 @@ h1 {
 
 .runtime-badge {
   display: inline-block;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
   border: 1px solid var(--twe-paper-2);
   border-radius: 999px;
   padding: 0.05rem 0.35rem;
@@ -207,15 +246,24 @@ h1 {
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--twe-muted);
+  white-space: nowrap;
 }
 
 .store-select {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.45rem;
   margin: 0 0 0.7rem;
   color: var(--twe-muted);
   font-size: 0.75rem;
+}
+
+.store-help {
+  flex: 1 0 100%;
+  color: var(--twe-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
 }
 
 .store-select select {
@@ -230,10 +278,18 @@ h1 {
   font-size: 0.75rem;
 }
 
-.action {
+.when,
+.action,
+.state,
+.duration,
+.status {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.action {
   font-family: var(--twe-font-mono);
 }
 
@@ -335,9 +391,5 @@ input:focus-visible {
 
   .workspace {
     grid-template-columns: 1fr;
-  }
-
-  .row {
-    grid-template-columns: 1fr 1fr;
   }
 }

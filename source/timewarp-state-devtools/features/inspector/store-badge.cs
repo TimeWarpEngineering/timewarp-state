@@ -11,6 +11,8 @@
 // A substring match over a Guid hits nearly every row for any hex character or short word, so the
 // filter would barely narrow the log. Runtime text is separate from the store badge so interactive
 // server and interactive WebAssembly rows are not both only "live".
+// Label and Description both switch on KindOf, so the badge word and its explanation cannot drift.
+// Tooltip is Description plus the store id. The log row and the Store picker both call Tooltip.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -32,6 +34,16 @@ public static class StoreBadge
   /// <summary>Badge for an interactive store.</summary>
   public const string InteractiveLabel = "live";
 
+  /// <summary>Explanation for <see cref="PrerenderLabel"/>.</summary>
+  public const string PrerenderDescription =
+    "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request.";
+
+  /// <summary>Explanation for <see cref="InteractiveLabel"/>.</summary>
+  public const string InteractiveDescription = "Live: an interactive store.";
+
+  /// <summary>Explanation when the badge is an id prefix because the render kind is unknown.</summary>
+  public const string PrefixDescription = "Store id prefix: render kind unknown.";
+
   /// <summary>Short label for <see cref="InspectorCapture.WasmRuntime"/>.</summary>
   public const string WasmLabel = "wasm";
 
@@ -43,12 +55,13 @@ public static class StoreBadge
   /// </summary>
   public static string Label(string storeId, string render)
   {
-    if (string.Equals(render, InspectorCapture.PrerenderRender, StringComparison.OrdinalIgnoreCase))
+    BadgeKind kind = KindOf(render);
+    if (kind == BadgeKind.Prerender)
     {
       return PrerenderLabel;
     }
 
-    if (string.Equals(render, InspectorCapture.InteractiveRender, StringComparison.OrdinalIgnoreCase))
+    if (kind == BadgeKind.Interactive)
     {
       return InteractiveLabel;
     }
@@ -60,6 +73,39 @@ public static class StoreBadge
 
     int length = Math.Min(PrefixLength, storeId.Length);
     return storeId[..length];
+  }
+
+  /// <summary>
+  /// Explanation of the badge <see cref="Label"/> draws for <paramref name="render"/>.
+  /// </summary>
+  public static string Description(string render)
+  {
+    BadgeKind kind = KindOf(render);
+    if (kind == BadgeKind.Prerender)
+    {
+      return PrerenderDescription;
+    }
+
+    if (kind == BadgeKind.Interactive)
+    {
+      return InteractiveDescription;
+    }
+
+    return PrefixDescription;
+  }
+
+  /// <summary>
+  /// Tooltip text: <see cref="Description"/> and, when present, the full store id.
+  /// </summary>
+  public static string Tooltip(string storeId, string render)
+  {
+    string description = Description(render);
+    if (storeId.Length == 0)
+    {
+      return description;
+    }
+
+    return description + "\n" + storeId;
   }
 
   /// <summary>
@@ -127,5 +173,27 @@ public static class StoreBadge
 
     string runtimeLabel = RuntimeLabel(runtime);
     return runtimeLabel.Length > 0 && runtimeLabel.StartsWith(filter, StringComparison.OrdinalIgnoreCase);
+  }
+
+  private static BadgeKind KindOf(string render)
+  {
+    if (string.Equals(render, InspectorCapture.PrerenderRender, StringComparison.OrdinalIgnoreCase))
+    {
+      return BadgeKind.Prerender;
+    }
+
+    if (string.Equals(render, InspectorCapture.InteractiveRender, StringComparison.OrdinalIgnoreCase))
+    {
+      return BadgeKind.Interactive;
+    }
+
+    return BadgeKind.Unknown;
+  }
+
+  private enum BadgeKind
+  {
+    Prerender,
+    Interactive,
+    Unknown
   }
 }

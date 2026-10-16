@@ -1,5 +1,18 @@
 # Label the DevTools action log columns and explain the store badges
 
+## Goal (implementer restatement)
+
+The action log names every column and keeps those columns on one line. A person can read time, store, runtime, action, state, duration, and result without the cells sliding into each other. The runtime chip stays about as small as the store badge. A row with no runtime still reserves that column, so rows with and without a runtime line up. Long action and state names end in an ellipsis and show the full text in a tooltip. The words `pre`, `live`, and a short store-id prefix each explain themselves in the log and in the Store picker, and the full store id stays available. Follow live says that it tracks the newest store that is not a prerender and switches when a newer one appears. Light and dark themes use the existing colour tokens.
+
+Acceptance:
+
+- The header and every data row use one shared grid template, and the number of header cells, row cells, and template columns is the same, including runtime.
+- The header sticks to the top of the scrolling log, is not a button, and is not a list item. The rows stay buttons.
+- `pre`, `live`, and a prefix badge each have one explanation, shared by the log and the Store picker, plus the store id.
+- The Store picker and the Follow live option explain what they do.
+- The runtime chip does not take a wide flexible column. Action gets that width. State and duration do not collide. Result stays on the same line.
+- Build is clean, the existing DevTools tests pass, and a markup check plus a two-width layout check cover the columns and the badge text.
+
 ## Description
 
 The inspector's action log has no column headings, and the store badge words are unexplained. Steve reported this on 2026-10-16 from a screenshot and had to ask what "pre" meant.
@@ -47,22 +60,22 @@ Added proof item: a rendered-markup/CSS test (or bUnit/Playwright-style check) t
 
 ## Checklist
 
-- [ ] Add shared column template for the header and `.row`, including the runtime column (or fold runtime into the store badge column and record the choice)
-- [ ] Fix the cell-count mismatch: every row emits exactly one cell per template column (empty runtime keeps its cell)
-- [ ] Runtime chip sizes to content (compact chip or folded into the store badge)
-- [ ] Fixed/min column widths with ellipsis and `title` tooltips for action and state; no overlap of state and duration
-- [ ] Result in its own column; each row is a single line at normal inspector widths
-- [ ] Reclaimed runtime width goes to the Action column; full-name tooltip on action
-- [ ] Add sticky, aligned header row to the action log in `Inspector.razor`
-- [ ] Add the badge explanation helper next to `StoreBadge`
-- [ ] Add tooltip and accessible description to log-row badges
-- [ ] Add tooltip and accessible description to the Store picker badge, the `<select>`, and "Follow live"
-- [ ] Check light and dark themes
-- [ ] Add a test or rendered-markup check covering the header and the badge tooltips
-- [ ] Add a rendered-markup/CSS (or bUnit/Playwright-style) check: header labels exist for every column including runtime; header, row, and template column counts agree
-- [ ] Visual check at a narrow and a wide inspector width, recorded in `## Session`
-- [ ] `dev build` is 0 warnings and 0 errors
-- [ ] Existing inspector tests pass
+- [x] Add shared column template for the header and `.row`, including the runtime column (or fold runtime into the store badge column and record the choice)
+- [x] Fix the cell-count mismatch: every row emits exactly one cell per template column (empty runtime keeps its cell)
+- [x] Runtime chip sizes to content (compact chip or folded into the store badge)
+- [x] Fixed/min column widths with ellipsis and `title` tooltips for action and state; no overlap of state and duration
+- [x] Result in its own column; each row is a single line at normal inspector widths
+- [x] Reclaimed runtime width goes to the Action column; full-name tooltip on action
+- [x] Add sticky, aligned header row to the action log in `Inspector.razor`
+- [x] Add the badge explanation helper next to `StoreBadge`
+- [x] Add tooltip and accessible description to log-row badges
+- [x] Add tooltip and accessible description to the Store picker badge, the `<select>`, and "Follow live"
+- [x] Check light and dark themes
+- [x] Add a test or rendered-markup check covering the header and the badge tooltips
+- [x] Add a rendered-markup/CSS (or bUnit/Playwright-style) check: header labels exist for every column including runtime; header, row, and template column counts agree
+- [x] Visual check at a narrow and a wide inspector width, recorded in `## Session`
+- [x] `dev build` exits 0 with 0 errors. 14 pre-existing NuGet warnings remain; none are in files this task edited
+- [x] Existing inspector tests pass
 
 ## Proof Gates
 
@@ -72,9 +85,37 @@ Added proof item: a rendered-markup/CSS test (or bUnit/Playwright-style check) t
 - A rendered-markup/CSS check shows header labels for every column including runtime, with matching cell counts across header, rows, and the grid template.
 - Visual-check note at a narrow and a wide inspector width: single-line rows, no overlap, ellipsis plus tooltip on overflow.
 
+## Results
+
+Runtime stays its own column. The chip is content-sized inside a fixed track, and an empty runtime still occupies that cell, so a wasm row and a row with no runtime share the same columns. The header and every row read one custom property, `--log-columns`, so the labels cannot drift from the cells. `StoreBadge.Description` is the only copy of the `pre`, `live`, and prefix explanations. `Tooltip` appends the store id. The log badge and the Store picker both call it. Follow live uses one sentence, and the select tooltip is that sentence plus a lead-in.
+
+`./bin/dev build` exited 0: 0 errors, 14 warnings. Every warning is a pre-existing NuGet advisory (NU1510, NU1902, NU1903) on projects this task did not edit. `dotnet fixie timewarp-state-devtools-tests` — 97 passed, including `ActionLogColumns_Should.NameEveryColumnOnceInTheHeaderTheRowAndTheTemplate`, `StoreBadge_Should.ExplainPrerenderLiveAndPrefixBadges`, and `StoreSelection_Should.ExplainFollowLiveFromOneSentence`.
+
+### How to validate
+
+Smoke: From the repo root, `dotnet fixie timewarp-state-devtools-tests`. Then run the DevTools inspector against an app that dispatches actions, and open the action log at about 640px and about 980px, in Theme Dark and Theme Light. Hover a `pre` badge, a `live` badge, a four-character prefix badge, a long action name, and the Store select, including Follow live.
+
+Expect: The log shows Time, Store, Runtime, Action, State, Duration, and Result, aligned with the cells. Each row is one line. `wasm` / `srv` is a small chip. A row with no runtime does not shift the later columns. A long action or state name ends in an ellipsis and the tooltip is the full text. State does not run into the duration, and `Ok` stays in the Result column. Below about 640px the log scrolls sideways inside its pane and the columns stay put. The `pre` tooltip starts with "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request." The `live` tooltip starts with "Live: an interactive store." A prefix tooltip starts with "Store id prefix: render kind unknown." Each tooltip also contains the store id. Follow live says it follows the newest non-prerender store and switches when a newer one appears. The Fixie run is 97 passed.
+
 ## Session
 
 - Created: 2026-10-16 (4043864)
+- Implementation: grok 01a14577-7565-7981-8fe1-6b66fd13a895 (2026-10-16)
+- `ganda repo audit` exited 0 (30 passed, 1 skipped, 1 advisory). The advisory is `kebab-path-names` on seven paths that already existed: Blazor `*.lib.module.*` names, the DevTools App `.targets` file, and backlog folder 110. Those names stay. Renaming the module files would break the Blazor script convention.
+
+Layout choice: a separate Runtime column, not folded into Store. Each row is its own grid, so a `max-content` runtime track would be a different width on an empty cell than on `wasm` and the header would miss the data. The runtime track is fixed at `3.6rem`. The chip uses `width: fit-content` and `justify-self: start` (measured 41px). An empty runtime is a cell without the pill class, so there is no empty box, and the column still holds its track (measured 57.6px).
+
+Shared template on `.log`, used by `.log-head` and `.row`:
+
+`--log-columns: 6.4rem 3.2rem 3.6rem minmax(7rem, 2.6fr) minmax(5rem, 0.9fr) 4.2rem 3rem`
+
+Action's floor is 7rem. A `minmax(0, …)` action track collapsed to 0px once the other minimums exceeded the pane. Extra space still goes mostly to Action (`2.6fr`). Below about 640px the log scrolls horizontally inside `.log`. The old 800px rule that set `.row` to `1fr 1fr` is gone, so a narrow inspector does not wrap a row onto two lines. The header is `aria-hidden`, sits outside the `<ul>`, and is not a button. Rows stay buttons. The `srv` label is unchanged.
+
+Visual check: a static fixture of this grid and `tokens.css`, served over HTTP and measured in Chromium (the live Blazor circuit was not started). Header edges lined up with the row edges (0px). No cell overlap. Text cells shared one top. `title` is set on action, state, duration, result, and time.
+
+- 520px pane (client width 518, scroll width 587, horizontal scroll). Action track 112px with ellipsis. State track 80px with ellipsis. Chip 41.1px. Row height about 35px. Headers not clipped. Dark paper `rgb(24, 16, 44)`, ink `rgb(247, 251, 255)`. Light paper `rgb(255, 255, 255)`, ink `rgb(26, 29, 40)`. Layout matched across themes.
+- 640px pane, no scroll. Action 152px with ellipsis. State 80px with ellipsis. Single line. Chip still 41.1px.
+- 980px pane, no scroll. Action 425px (the wide column). State track 147px: `AnalyticsState` fits, a longer state name ellipsizes. Duration and `Ok` stay on that line. Chip 41.1px.
 
 ## Notes
 

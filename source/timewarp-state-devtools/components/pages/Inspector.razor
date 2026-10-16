@@ -322,6 +322,15 @@
 
   <div class="workspace">
     <section class="log" aria-label="Action log">
+      <div class="log-head" aria-hidden="true">
+        <span class="cell" data-col="time">Time</span>
+        <span class="cell" data-col="store">Store</span>
+        <span class="cell" data-col="runtime">Runtime</span>
+        <span class="cell" data-col="action">Action</span>
+        <span class="cell" data-col="state">State</span>
+        <span class="cell" data-col="duration">Duration</span>
+        <span class="cell" data-col="result">Result</span>
+      </div>
       @if (visible.Count == 0)
       {
         <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
@@ -337,23 +346,29 @@
                 class="@RowClass(entry, InspectorState.SelectedSequence)"
                 @onclick="() => Select(entry.Sequence)"
                 data-qa="row">
-                <span class="when">@entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</span>
                 @{
                   string badge = StoreBadge.Label(entry.StoreId, entry.Render);
                   string runtimeLabel = StoreBadge.RuntimeLabel(entry.Runtime);
+                  string badgeHelp = StoreBadge.Tooltip(entry.StoreId, entry.Render);
+                  string when = entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
+                  string duration = entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) + " ms";
                 }
+                <span class="cell when" data-col="time" title="@when">@when</span>
                 <span
-                  class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
+                  class="cell @(badge.Length == 0 ? "store-badge" : "store-badge on")"
+                  data-col="store"
                   data-hue="@StoreBadge.Hue(entry.StoreId)"
-                  title="@entry.StoreId">@badge</span>
-                @if (runtimeLabel.Length > 0)
-                {
-                  <span class="runtime-badge" data-qa="runtime" title="@entry.Runtime">@runtimeLabel</span>
-                }
-                <span class="action">@entry.ActionName</span>
-                <span class="state">@entry.StateTypeName</span>
-                <span class="duration">@entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</span>
-                <span class="status @entry.Status.ToLowerInvariant()">@entry.Status</span>
+                  title="@badgeHelp"
+                  aria-label="@badgeHelp">@badge</span>
+                <span
+                  class="@("cell runtime" + (runtimeLabel.Length == 0 ? "" : " runtime-badge"))"
+                  data-col="runtime"
+                  data-qa="runtime"
+                  title="@(runtimeLabel.Length == 0 ? null : entry.Runtime)">@runtimeLabel</span>
+                <span class="cell action" data-col="action" title="@entry.ActionName">@entry.ActionName</span>
+                <span class="cell state" data-col="state" title="@entry.StateTypeName">@entry.StateTypeName</span>
+                <span class="cell duration" data-col="duration" title="@duration">@duration</span>
+                <span class="cell status @entry.Status.ToLowerInvariant()" data-col="result" title="@entry.Status">@entry.Status</span>
               </button>
             </li>
           }
@@ -460,20 +475,29 @@
       {
         @if (stores.Any(store => store.StoreId.Length > 0))
         {
-          string badge = StoreBadge.Label(storeId, StoreSelection.RenderOf(stores, storeId));
+          string render = StoreSelection.RenderOf(stores, storeId);
+          string badge = StoreBadge.Label(storeId, render);
+          string badgeHelp = StoreBadge.Tooltip(storeId, render);
           <label class="store-select">
             <span>Store</span>
             <span
               class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
               data-hue="@StoreBadge.Hue(storeId)"
-              title="@storeId">@badge</span>
-            <select data-qa="store" value="@StoreSelectValue(stores)" @onchange="OnStore">
-              <option value="@FollowOption">Follow live</option>
+              title="@badgeHelp"
+              aria-label="@badgeHelp">@badge</span>
+            <select
+              data-qa="store"
+              title="@StoreSelection.PickerHelp"
+              aria-describedby="store-picker-help"
+              value="@StoreSelectValue(stores)"
+              @onchange="OnStore">
+              <option value="@FollowOption" title="@StoreSelection.FollowLiveHelp">Follow live</option>
               @foreach (StoreSummary store in stores)
               {
-                <option value="@StoreOptionValue(store)">@StoreOption(store)</option>
+                <option value="@StoreOptionValue(store)" title="@StoreBadge.Tooltip(store.StoreId, store.Render)">@StoreOption(store)</option>
               }
             </select>
+            <span id="store-picker-help" class="store-help">@StoreSelection.FollowLiveHelp</span>
           </label>
         }
         <div class="view-tabs" role="tablist" aria-label="State format">

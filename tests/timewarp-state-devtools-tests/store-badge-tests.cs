@@ -49,6 +49,30 @@ public class StoreBadge_Should
     StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "ive").ShouldBeFalse();
   }
 
+  public static void ExplainPrerenderLiveAndPrefixBadges()
+  {
+    StoreBadge.PrerenderDescription.ShouldBe(
+      "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request.");
+    StoreBadge.InteractiveDescription.ShouldBe("Live: an interactive store.");
+    StoreBadge.PrefixDescription.ShouldBe("Store id prefix: render kind unknown.");
+
+    StoreBadge.Description(InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderDescription);
+    StoreBadge.Description("PRERENDER").ShouldBe(StoreBadge.PrerenderDescription);
+    StoreBadge.Description(InspectorCapture.InteractiveRender).ShouldBe(StoreBadge.InteractiveDescription);
+    StoreBadge.Description("").ShouldBe(StoreBadge.PrefixDescription);
+    StoreBadge.Description("other").ShouldBe(StoreBadge.PrefixDescription);
+
+    const string storeId = "cdef-rest-of-the-id";
+    StoreBadge.Label(storeId, "").ShouldBe("cdef");
+    StoreBadge.Tooltip(storeId, "").ShouldBe(StoreBadge.PrefixDescription + "\n" + storeId);
+    StoreBadge.Tooltip("", InspectorCapture.InteractiveRender).ShouldBe(StoreBadge.InteractiveDescription);
+    StoreBadge.Tooltip(storeId, InspectorCapture.PrerenderRender)
+      .ShouldBe(StoreBadge.PrerenderDescription + "\n" + storeId);
+
+    StoreBadge.Label(storeId, InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderLabel);
+    StoreBadge.Description(InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderDescription);
+  }
+
   public static void LabelWasmAndServerRuntimes()
   {
     StoreBadge.RuntimeLabel(InspectorCapture.WasmRuntime).ShouldBe(StoreBadge.WasmLabel);
