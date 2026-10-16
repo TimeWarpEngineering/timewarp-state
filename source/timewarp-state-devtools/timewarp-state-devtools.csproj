@@ -21,4 +21,25 @@
     <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <!--
+    The brand original stays at assets/logo.png. The link discovers it as a static web asset.
+    DefineStaticWebAssets pins ContentRoot at this project's wwwroot, so the dev manifest would
+    look for wwwroot/logo.png, which is not a copy of the original. Point the asset back at
+    assets/ before the manifests are written. assets/logo.svg is the wordmark, not a tab icon.
+  -->
+  <ItemGroup>
+    <Content Include="..\..\assets\logo.png" Link="wwwroot\logo.png" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="PointDevToolsFaviconAtBrandFile" AfterTargets="ResolveProjectStaticWebAssets" BeforeTargets="GenerateStaticWebAssetsManifest">
+    <PropertyGroup>
+      <_BrandFaviconDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory), '..', '..', 'assets'))</_BrandFaviconDirectory>
+    </PropertyGroup>
+    <ItemGroup>
+      <StaticWebAsset Condition="$([System.String]::Copy('%(Identity)').EndsWith('assets/logo.png')) or $([System.String]::Copy('%(Identity)').EndsWith('assets\logo.png'))">
+        <ContentRoot>$(_BrandFaviconDirectory)</ContentRoot>
+      </StaticWebAsset>
+    </ItemGroup>
+  </Target>
 </Project>
