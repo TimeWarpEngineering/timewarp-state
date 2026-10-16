@@ -68,6 +68,21 @@ The inspector tab icon is `assets/logo.png`, the same 64×64 TimeWarp mark timew
 
 `InspectorFavicon_Should.ServeTheBrandPngFromTheHostPage` reads the host page head and requests `/logo.png`. `PackagedDevToolsApp_Should.StartFromAnOutOfTreeAppHost` checks the nupkg lists `tools/wwwroot/logo.png` with the original bytes, then starts the packaged inspector and requests the same URL.
 
+### Review
+
+The review ran one round at effort 1 with one `general` reviewer. Final counts: bug 0, suggestion 0, nit 1 (wontfix), open 0. Disposition: `accepted-exceptions`.
+
+M1 is a nit. `PointDevToolsFaviconAtBrandFile` matches any static web asset whose path ends with `assets/logo.png`, including assets from referenced projects. Today it hits only the brand file. It was marked wontfix as latent only. Tighten it to the exact path if the target is touched again.
+
+During review, the DevTools tests passed (99/99), `dotnet build` of the inspector had 0 errors with no warnings in changed files, and `ganda repo audit` passed. The proof gate asks for 0 warnings. It is not met repo-wide, because master already has warnings in files this change does not touch.
+
+Paths:
+
+- `review/review-framework.md`
+- `review/round-1/general.md`
+- `review/round-1/merged.md`
+- `review/disposition.md`
+
 ### How to validate
 
 Smoke: From a clean browser profile, run the inspector (`dotnet run` on `source/timewarp-state-devtools`, or the packaged dll from `TimeWarp.State.DevTools.App` `tools/` with that directory as the working directory). Open `/`. Hard-refresh once so a cached globe is not reused.
@@ -79,6 +94,8 @@ Expect: The document head contains `<link rel="icon" type="image/png" href="logo
 - Created: 2026-10-16
 - Implementation: 2026-10-17
 - Visual check: `dotnet run` on the inspector (Development, `http://127.0.0.1:5288/`). The head links `logo.png`. `GET /logo.png` was 200 `image/png` and matched `assets/logo.png`. Chromium painted that response at 16 px and 32 px on white and on `#1e1e1e`: the TimeWarp infinity mark, not a globe. The page itself loaded the State DevTools inspector. An X11 grab of this display was black, so the window chrome was not photographed. The profile was new, so no cached globe was in play.
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T17:24:13Z
+- Review oracle: round 1, effort 1, roster `general` (claude-opus-5-5, headless `ganda task work`, session id not exposed). Disposition `accepted-exceptions`, with 0 open and M1 nit wontfix. Recorded 2026-10-17.
 
 ## Notes
 
