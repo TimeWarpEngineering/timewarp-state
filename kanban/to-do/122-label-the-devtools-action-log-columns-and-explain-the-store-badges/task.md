@@ -113,6 +113,8 @@ Expect: The log shows Time, Store, Runtime, Action, State, Duration, and Result,
 
 Round 1 (effort 2, roster: general). Final counts so far: bug 1 open, suggestion 2 open, nit 2 open; 0 fixed, 0 wontfix. Disposition: pending. A fix pass is needed for M1–M5. The bug (M1): at log widths below about 598px, the header and row boxes stop at the pane edge while their tracks overflow. Sideways scroll then leaves the sticky header without a background under Duration and Result, and cuts off row dividers and the selected-row highlight. The reviewer re-ran `dotnet fixie timewarp-state-devtools-tests`: 97 passed. Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
 
+Round 2 (effort 2, roster: general) reviewed fix delta b2bccf43. M1–M5 are all fixed, and the round found nothing new. Final counts: bug 0 open / 1 fixed, suggestion 0 open / 2 fixed, nit 0 open / 2 fixed, 0 wontfix. **Disposition: clean.** The reviewer re-ran `dotnet fixie timewarp-state-devtools-tests`: 98 passed. Artifacts: `review/review-framework.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: 2026-10-16 (4043864)
@@ -136,10 +138,12 @@ Visual check: a static fixture of this grid and `tokens.css`, served over HTTP a
 - Review oracle round 1: claude (claude-opus-5-5), effort 2, roster general, 2026-10-16. 1 bug, 2 suggestions, 2 nits open; fix pass requested.
 - Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 120 — 2026-10-16T16:37:21Z
 - Fix pass: grok 01a14593-463e-72e1-995e-b5db9038846f (2026-10-16). M1–M5. Chromium fixture of the real inspector stylesheet, 520px pane (client 503) scrolled to scrollLeft 95 and scrollTop 160: header and row 598px, both cover Result, the right-edge hit is the sticky header (`rgb(24, 16, 44)` dark, `rgb(255, 255, 255)` light), the visible row covers its right edge, action ellipsis at 112px, runtime chip 41px. 980px pane: no sideways scroll, action 414px. `dotnet fixie timewarp-state-devtools-tests`: 98 passed. `./bin/dev build`: 0 errors, 154 pre-existing warnings. `ganda repo audit`: exit 0, same kebab-path advisory as the implementation session.
+- Review oracle round 2: claude (claude-opus-5-5), effort 2, roster general, 2026-10-16. M1–M5 fixed, 0 open. Disposition: clean.
 
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4, M5
+- Round 2: M1–M5 fixed, no new findings — disposition clean (`review/disposition.md`)
 
 ## Notes
 

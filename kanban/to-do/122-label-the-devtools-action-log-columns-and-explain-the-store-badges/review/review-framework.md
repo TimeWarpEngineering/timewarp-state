@@ -2,7 +2,7 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 471
+- Lines changed: 231
 - Effort: 2
 - TCB hits: none
 - Roster axes: general
@@ -16,6 +16,14 @@
 - **Plan / brief:** task.md Requirements + 2026-10-16 amendment; `## Goal (implementer restatement)`
 - **Effort:** 2 — roster: general
 - **Session IDs:** reviewer claude (claude-opus-5-5), session id not exposed in print mode
+
+## Round 2
+
+- **Date:** 2026-10-16
+- **Diff scope:** fix delta b2bccf43 vs round-1 base 7f941cfc (231 lines changed)
+- **Brief:** re-check M1–M5 from `round-1/merged.md` and look for new defects in the fix delta
+- **Effort:** 2 — roster: general
+- **Session IDs:** reviewer claude (claude-opus-5-5); print mode does not expose the session id
 
 ## Ground rules
 
