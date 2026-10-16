@@ -96,6 +96,11 @@ Expect: The document head contains `<link rel="icon" type="image/png" href="logo
 - Visual check: `dotnet run` on the inspector (Development, `http://127.0.0.1:5288/`). The head links `logo.png`. `GET /logo.png` was 200 `image/png` and matched `assets/logo.png`. Chromium painted that response at 16 px and 32 px on white and on `#1e1e1e`: the TimeWarp infinity mark, not a globe. The page itself loaded the State DevTools inspector. An X11 grab of this display was black, so the window chrome was not photographed. The profile was new, so no cached globe was in play.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T17:24:13Z
 - Review oracle: round 1, effort 1, roster `general` (claude-opus-5-5, headless `ganda task work`, session id not exposed). Disposition `accepted-exceptions`, with 0 open and M1 nit wontfix. Recorded 2026-10-17.
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 80 — 2026-10-16T17:27:35Z
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
