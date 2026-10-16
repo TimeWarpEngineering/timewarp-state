@@ -55,6 +55,13 @@ public class StoreSelection_Should
     StoreSelection.Default(log.ListStores()).ShouldBeNull();
   }
 
+  public static void ExplainFollowLiveFromOneSentence()
+  {
+    StoreSelection.FollowLiveHelp.ShouldBe(
+      "Follow live follows the newest non-prerender store and switches when a newer one appears.");
+    StoreSelection.PickerHelp.ShouldBe("Choose a store to pin. " + StoreSelection.FollowLiveHelp);
+  }
+
   private static ActionLogEntry Init(string storeId, string render) =>
     new()
     {

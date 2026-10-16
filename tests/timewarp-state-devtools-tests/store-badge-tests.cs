@@ -5,6 +5,7 @@
 #region Design
 // Label and hue are pure functions of the store id and the render tag, so these tests
 // do not start the inspector page. Matching is by prefix so short filters narrow the log.
+// An empty label uses the untagged explanation, not the prefix sentence.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -47,6 +48,46 @@ public class StoreBadge_Should
     StoreBadge.Matches(storeId, "", "f").ShouldBeFalse();
     StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "liv").ShouldBeTrue();
     StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "ive").ShouldBeFalse();
+  }
+
+  public static void ExplainPrerenderLiveAndPrefixBadges()
+  {
+    StoreBadge.PrerenderDescription.ShouldBe(
+      "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request.");
+    StoreBadge.InteractiveDescription.ShouldBe("Live: an interactive store.");
+    StoreBadge.PrefixDescription.ShouldBe("Store id prefix: render kind unknown.");
+
+    StoreBadge.Description(InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderDescription);
+    StoreBadge.Description("PRERENDER").ShouldBe(StoreBadge.PrerenderDescription);
+    StoreBadge.Description(InspectorCapture.InteractiveRender).ShouldBe(StoreBadge.InteractiveDescription);
+    StoreBadge.Description("").ShouldBe(StoreBadge.PrefixDescription);
+    StoreBadge.Description("other").ShouldBe(StoreBadge.PrefixDescription);
+
+    const string storeId = "cdef-rest-of-the-id";
+    StoreBadge.Label(storeId, "").ShouldBe("cdef");
+    StoreBadge.Tooltip(storeId, "").ShouldBe(StoreBadge.PrefixDescription + "\n" + storeId);
+    StoreBadge.Tooltip("", InspectorCapture.InteractiveRender).ShouldBe(StoreBadge.InteractiveDescription);
+    StoreBadge.Tooltip(storeId, InspectorCapture.PrerenderRender)
+      .ShouldBe(StoreBadge.PrerenderDescription + "\n" + storeId);
+
+    StoreBadge.Label(storeId, InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderLabel);
+    StoreBadge.Description(InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderDescription);
+  }
+
+  public static void ExplainAnEmptyBadgeAsUntagged()
+  {
+    StoreBadge.UntaggedDescription.ShouldBe("Untagged: no store id.");
+    StoreBadge.Label("", "").ShouldBe("");
+    StoreBadge.Tooltip("", "").ShouldBe(StoreBadge.UntaggedDescription);
+    StoreBadge.Tooltip("", "").ShouldNotContain(StoreBadge.PrefixDescription);
+    StoreBadge.DescriptionElementId("", "").ShouldBe(StoreBadge.UntaggedDescriptionId);
+    StoreBadge.DescriptionElementId("cdef-rest", "").ShouldBe(StoreBadge.PrefixDescriptionId);
+    StoreBadge.DescriptionElementId("id", InspectorCapture.PrerenderRender).ShouldBe(StoreBadge.PrerenderDescriptionId);
+    StoreBadge.DescriptionElementId("id", InspectorCapture.InteractiveRender).ShouldBe(StoreBadge.InteractiveDescriptionId);
+    StoreBadge.PrerenderDescriptionId.ShouldBe("store-badge-pre");
+    StoreBadge.InteractiveDescriptionId.ShouldBe("store-badge-live");
+    StoreBadge.PrefixDescriptionId.ShouldBe("store-badge-prefix");
+    StoreBadge.UntaggedDescriptionId.ShouldBe("store-badge-untagged");
   }
 
   public static void LabelWasmAndServerRuntimes()

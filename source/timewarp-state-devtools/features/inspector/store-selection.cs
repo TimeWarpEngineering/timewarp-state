@@ -10,6 +10,8 @@
 // A store with no render tag counts as live, because the host could not tell.
 // A null pin follows the default. An empty pin is the untagged bucket, a real store choice.
 // A pin on a store that is no longer listed (trimmed or cleared) falls back to the default.
+// PickerHelp is FollowLiveHelp with a lead-in, so the select tooltip and the visible hint
+// cannot describe Follow live differently.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -19,6 +21,15 @@ namespace TimeWarp.State.DevTools.Features.Inspector;
 /// </summary>
 public static class StoreSelection
 {
+  /// <summary>
+  /// What Follow live does: the newest non-prerender store, switching when a newer one appears.
+  /// </summary>
+  public const string FollowLiveHelp =
+    "Follow live follows the newest non-prerender store and switches when a newer one appears.";
+
+  /// <summary>Help for the store picker. Built from <see cref="FollowLiveHelp"/>.</summary>
+  public const string PickerHelp = "Choose a store to pin. " + FollowLiveHelp;
+
   /// <summary>
   /// Newest store whose render is not <c>prerender</c>; the newest store when all are prerender;
   /// null when <paramref name="stores"/> is empty.
