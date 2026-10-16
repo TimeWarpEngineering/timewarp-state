@@ -97,6 +97,10 @@ Smoke: From the repo root, `dotnet fixie timewarp-state-devtools-tests`. Then ru
 
 Expect: The log shows Time, Store, Runtime, Action, State, Duration, and Result, aligned with the cells. Each row is one line. `wasm` / `srv` is a small chip. A row with no runtime does not shift the later columns. A long action or state name ends in an ellipsis and the tooltip is the full text. State does not run into the duration, and `Ok` stays in the Result column. Below about 640px the log scrolls sideways inside its pane and the columns stay put. The `pre` tooltip starts with "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request." The `live` tooltip starts with "Live: an interactive store." A prefix tooltip starts with "Store id prefix: render kind unknown." Each tooltip also contains the store id. Follow live says it follows the newest non-prerender store and switches when a newer one appears. The Fixie run is 97 passed.
 
+### Review
+
+Round 1 (effort 2, roster: general). Final counts so far: bug 1 open, suggestion 2 open, nit 2 open; 0 fixed, 0 wontfix. Disposition: pending. A fix pass is needed for M1–M5. The bug (M1): at log widths below about 598px, the header and row boxes stop at the pane edge while their tracks overflow. Sideways scroll then leaves the sticky header without a background under Duration and Result, and cuts off row dividers and the selected-row highlight. The reviewer re-ran `dotnet fixie timewarp-state-devtools-tests`: 97 passed. Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+
 ## Session
 
 - Created: 2026-10-16 (4043864)
@@ -116,6 +120,8 @@ Visual check: a static fixture of this grid and `tokens.css`, served over HTTP a
 - 520px pane (client width 518, scroll width 587, horizontal scroll). Action track 112px with ellipsis. State track 80px with ellipsis. Chip 41.1px. Row height about 35px. Headers not clipped. Dark paper `rgb(24, 16, 44)`, ink `rgb(247, 251, 255)`. Light paper `rgb(255, 255, 255)`, ink `rgb(26, 29, 40)`. Layout matched across themes.
 - 640px pane, no scroll. Action 152px with ellipsis. State 80px with ellipsis. Single line. Chip still 41.1px.
 - 980px pane, no scroll. Action 425px (the wide column). State track 147px: `AnalyticsState` fits, a longer state name ellipsizes. Duration and `Ok` stay on that line. Chip 41.1px.
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T16:31:40Z
+- Review oracle round 1: claude (claude-opus-5-5), effort 2, roster general, 2026-10-16. 1 bug, 2 suggestions, 2 nits open; fix pass requested.
 
 ## Notes
 
