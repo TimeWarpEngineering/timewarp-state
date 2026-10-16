@@ -6,7 +6,9 @@
 // BaseExporter.Export is synchronous; the batch processor calls it off the request thread.
 // HttpClient.Send stays on that thread. Failures return Failure and do not throw, so a stopped
 // inspector cannot fail the inspected app. Only ActivitySource TimeWarp.State is copied, and
-// InspectorCapture drops the inspector's own spans before the POST.
+// InspectorCapture drops the inspector's own spans before the POST. This path is the server
+// exporter. The browser uses TimeWarp.State.DevTools.Wasm because this Send cannot run there.
+// A copied span with no timewarp.state.runtime tag is stamped server.
 #endregion
 
 namespace TimeWarp.State.DevTools.Export;
@@ -61,27 +63,15 @@ public sealed class DevToolsSpanExporter : BaseExporter<Activity>
       return null;
     }
 
-    SpanIngestItem item = new()
+    SpanIngestItem? item = SpanIngestMapping.FromActivity(activity);
+    if (item is null)
     {
-      Name = activity.DisplayName ?? activity.OperationName,
-      TraceId = activity.TraceId.ToString(),
-      SpanId = activity.SpanId.ToString(),
-      Status = activity.Status.ToString(),
-      StartTimeUnixMilliseconds = new DateTimeOffset(activity.StartTimeUtc).ToUnixTimeMilliseconds(),
-      DurationMilliseconds = activity.Duration.TotalMilliseconds,
-      Attributes = StringTags(activity.TagObjects)
-    };
+      return null;
+    }
 
-    foreach (ActivityEvent activityEvent in activity.Events)
+    if (!item.Attributes.ContainsKey(InspectorCapture.RuntimeTagName))
     {
-      item.Events.Add
-      (
-        new SpanIngestEvent
-        {
-          Name = activityEvent.Name,
-          Attributes = StringTags(activityEvent.Tags)
-        }
-      );
+      item.Attributes[InspectorCapture.RuntimeTagName] = InspectorCapture.ServerRuntime;
     }
 
     return item;
@@ -152,21 +142,5 @@ public sealed class DevToolsSpanExporter : BaseExporter<Activity>
   {
     object? value = activity.GetTagItem(name);
     return value as string ?? value?.ToString();
-  }
-
-  private static Dictionary<string, string> StringTags(IEnumerable<KeyValuePair<string, object?>> tags)
-  {
-    Dictionary<string, string> attributes = [];
-    foreach (KeyValuePair<string, object?> tag in tags)
-    {
-      if (tag.Value is null)
-      {
-        continue;
-      }
-
-      attributes[tag.Key] = tag.Value as string ?? tag.Value.ToString() ?? "";
-    }
-
-    return attributes;
   }
 }

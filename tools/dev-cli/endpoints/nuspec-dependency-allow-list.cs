@@ -54,6 +54,10 @@ internal static class NuspecDependencyAllowList
         "Aspire.Hosting",
         "TimeWarp.State.DevTools.App",
       },
+      ["TimeWarp.State.DevTools.Wasm"] = new HashSet<string>(StringComparer.Ordinal)
+      {
+        "Microsoft.AspNetCore.Components.WebAssembly",
+      },
     };
 
   internal static IReadOnlyList<string> ReadDependencyIds(string nuspecXml) =>

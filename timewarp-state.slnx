@@ -23,6 +23,7 @@
   <Folder Name="/Samples/04-Telemetry/">
     <Project Path="samples/04-telemetry/apphost/sample-04-apphost.csproj" />
     <Project Path="samples/04-telemetry/server/sample-04-server/sample-04-server.csproj" />
+    <Project Path="samples/04-telemetry/wasm/sample-04-wasm/sample-04-wasm.csproj" />
   </Folder>
   <Folder Name="/Samples/05-Persistence/">
     <Project Path="samples/05-persistence/wasm/sample-05-wasm/sample-05-wasm.csproj" />
@@ -49,6 +50,7 @@
     <Project Path="source/timewarp-state-devtools-app/timewarp-state-devtools-app.csproj" />
     <Project Path="source/timewarp-state-devtools-export/timewarp-state-devtools-export.csproj" />
     <Project Path="source/timewarp-state-devtools-hosting/timewarp-state-devtools-hosting.csproj" />
+    <Project Path="source/timewarp-state-devtools-wasm/timewarp-state-devtools-wasm.csproj" />
     <Project Path="source/timewarp-state-devtools/timewarp-state-devtools.csproj" />
     <Project Path="source/timewarp-state-plus/timewarp-state-plus.csproj" />
     <Project Path="source/timewarp-state-telemetry/timewarp-state-telemetry.csproj" />

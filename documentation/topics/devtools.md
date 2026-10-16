@@ -35,7 +35,7 @@ The right-hand pane has **Action**, **State**, and **Diff** tabs.
 
 **Diff** compares the selected snapshot with the previous snapshot of the same state type in the same store. Added, removed, and changed values are colour coded. Equal JSON says **No change.** A span with no snapshot says so. A truncated payload is shown as raw text with a hint to raise `MaxSnapshotChars`; it is not parsed as a tree.
 
-The filter box matches action names, state type names, and the start of a store id or store badge (`pre`, `live`, or the id prefix) in the log. In the State panel, a filter that matches the store on screen shows that store's whole fold; any other filter matches state type names, and says **No state matches the filter** when none do.
+The filter box matches action names, state type names, and the start of a store id, store badge (`pre`, `live`, or the id prefix), or runtime badge (`wasm`, `srv`) in the log. In the State panel, a filter that matches the store on screen shows that store's whole fold; any other filter matches state type names, and says **No state matches the filter** when none do.
 
 A row whose `timewarp.state.kind` tag is `init` is a state-initialization snapshot. It is tinted like Redux DevTools' `init` row and folds like any other snapshot. With `IncludeSnapshots` on, telemetry emits that row when the state is created, before its first action.
 
@@ -67,6 +67,16 @@ builder.Services.AddOpenTelemetry()
 
 Turn on snapshots only with caller `JsonTypeInfo`. The [telemetry sample](../../samples/04-telemetry/overview.md) does that when the DevTools endpoint is set.
 
+## WebAssembly
+
+Stores that run in the browser are a different process from the server. `TimeWarp.State.DevTools.Wasm` posts the same JSON document with `HttpClient.SendAsync` and stamps `timewarp.state.runtime=wasm`. The server exporter stamps `server` when that tag is absent. The log shows **wasm** or **srv** beside the store badge. The store id still separates instances.
+
+The browser learns the origin from configuration `TimeWarp:State:DevTools:Endpoint`, then from `GET /_timewarp/state-devtools` on the host (`MapTimeWarpStateDevToolsClientConfig`, Development only). The call is a no-op outside Development and when no origin is available.
+
+`WithTimeWarpStateDevTools` publishes the inspected app's http and https origins as `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector. CORS is registered only in Development and only when that list has an absolute http(s) origin. The inspector is not an open cross-origin sink.
+
+Reference `TimeWarp.State.DevTools.Wasm` from Debug builds only, and wrap the registration in `#if DEBUG`, so a published bundle does not contain it. The telemetry sample keeps the reference so the wiring stays on the page `/counter-wasm`.
+
 ## Separate store
 
 The inspector's states are compiled into the DevTools assembly. The inspected app references `TimeWarp.State.DevTools.Export` only. That package has no `IState` types, so the app's `StateCloneRegistry` and `StateTransactionBehavior` never see `InspectorState`.
@@ -77,7 +87,8 @@ Spans whose `timewarp.state.state_type` is `InspectorState`, or whose `timewarp.
 
 | Package | Role |
 | --- | --- |
-| `TimeWarp.State.DevTools.Export` | Dev-only exporter. Safe for the inspected app to reference. |
+| `TimeWarp.State.DevTools.Export` | Dev-only exporter. Safe for the inspected app to reference. Maps the Development discovery route. |
+| `TimeWarp.State.DevTools.Wasm` | Browser exporter. `ActivityListener` and `SendAsync`. No OpenTelemetry package. |
 | `TimeWarp.State.DevTools.Hosting` | `AddTimeWarpStateDevTools()` and `WithTimeWarpStateDevTools()`. Depends on the App package. |
 | `TimeWarp.State.DevTools.App` | Published inspector. Framework-dependent. Same version as Hosting. |
 | `TimeWarp.State.DevTools` | The Blazor app project. Not itself a NuGet package. Its publish output is the App package. |

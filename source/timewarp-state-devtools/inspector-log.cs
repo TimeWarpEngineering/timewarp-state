@@ -15,7 +15,8 @@
 // the live circuit's fold. A later span on an older store updates that store's fold only.
 // FoldThrough walks that store's entries up to the asked sequence. Trim does not touch the index:
 // an idle state whose only snapshot was evicted from the display cap still appears in its store's fold.
-// Only Clear resets the index.
+// Only Clear resets the index. WithSequence copies every ActionLogEntry field, including Runtime,
+// because the stored row is a new instance.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -300,6 +301,7 @@ public sealed class InspectorLog
       Kind = entry.Kind,
       StoreId = entry.StoreId,
       Render = entry.Render,
+      Runtime = entry.Runtime,
       Attributes = entry.Attributes
     };
   }

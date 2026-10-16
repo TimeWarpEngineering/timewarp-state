@@ -1,0 +1,22 @@
+@namespace Sample04Wasm.Pages
+@page "/counter-wasm"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@inherits TimeWarp.State.TimeWarpStateComponent
+
+<PageTitle>WASM counter</PageTitle>
+
+<h1>WASM counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+  WasmCounterState WasmCounterState => GetState<WasmCounterState>();
+  private int currentCount => WasmCounterState.Count;
+
+  private async Task IncrementCount()
+  {
+    await WasmCounterState.IncrementCount(amount: 5);
+  }
+}

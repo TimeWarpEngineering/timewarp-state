@@ -20,6 +20,15 @@ public class DevToolsSpanExporter_Should
     item.ShouldNotBeNull();
     item.Attributes[InspectorCapture.StateTypeTagName].ShouldBe("CounterState");
     item.Attributes[InspectorCapture.ActionTagName].ShouldBe("IncrementCount");
+    item.Attributes[InspectorCapture.RuntimeTagName].ShouldBe(InspectorCapture.ServerRuntime);
+  }
+
+  public static void KeepAnExistingRuntimeTag()
+  {
+    using Activity activity = StartActivity("CounterState", "IncrementCount", runtime: "custom");
+    SpanIngestItem? item = DevToolsSpanExporter.BuildItem(activity);
+    item.ShouldNotBeNull();
+    item.Attributes[InspectorCapture.RuntimeTagName].ShouldBe("custom");
   }
 
   public static void CopyStoreAndRenderTagsOntoTheIngestItem()
@@ -142,7 +151,8 @@ public class DevToolsSpanExporter_Should
     string actionName,
     bool inspector = false,
     string? storeId = null,
-    string? render = null
+    string? render = null,
+    string? runtime = null
   )
   {
     ActivityListener listener = Listen(InspectorCapture.ActivitySourceName);
@@ -164,6 +174,11 @@ public class DevToolsSpanExporter_Should
     if (render is not null)
     {
       activity.SetTag(InspectorCapture.RenderTagName, render);
+    }
+
+    if (runtime is not null)
+    {
+      activity.SetTag(InspectorCapture.RuntimeTagName, runtime);
     }
 
     activity.Stop();

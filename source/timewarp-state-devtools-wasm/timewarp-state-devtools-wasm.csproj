@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>TimeWarp.State.DevTools.Wasm</Title>
+    <Description>Dev-only browser exporter that posts TimeWarp.State activities to the DevTools inspector. Not a production dependency.</Description>
+    <PackageId>TimeWarp.State.DevTools.Wasm</PackageId>
+    <AssemblyName>TimeWarp.State.DevTools.Wasm</AssemblyName>
+    <RootNamespace>TimeWarp.State.DevTools.Wasm</RootNamespace>
+    <IsPackable>true</IsPackable>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PackageTags>TimeWarp.State; DevTools; Blazor; WebAssembly</PackageTags>
+    <DefineConstants>$(DefineConstants);DEVTOOLS_WASM</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\timewarp-state-devtools-export\inspector-capture.cs" Link="shared\inspector-capture.cs" />
+    <Compile Include="..\timewarp-state-devtools-export\span-ingest-document.cs" Link="shared\span-ingest-document.cs" />
+    <Compile Include="..\timewarp-state-devtools-export\span-ingest-mapping.cs" Link="shared\span-ingest-mapping.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".\readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>

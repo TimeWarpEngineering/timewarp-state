@@ -10,6 +10,9 @@
 // AddTimeWarpStateDevToolsProject covers the explicit csproj switch.
 // ResolveAppLaunchCommand is called with explicit inputs so the host order does not depend on
 // this process. Publish mode is `--operation publish` on the builder.
+// Run mode sets ASPNETCORE_ENVIRONMENT=Development. The ingest preflight is checked by launching
+// the stamped tools dll with that value, the same shape AddExecutable uses. CORS origins from two
+// inspected apps stay in one reference expression.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -42,6 +45,129 @@ public class AddTimeWarpStateDevTools_Should
     );
     portVariable.ShouldNotBeNull();
     portVariable.GetValue(httpEndpoint).ShouldBe(TimeWarpStateDevToolsHosting.HttpPortsEnvironmentVariable);
+  }
+
+  public static async Task RunThePackagedInspectorAsDevelopment()
+  {
+    IDistributedApplicationBuilder builder = CreateBuilder();
+    IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
+    Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    variables[TimeWarpStateDevToolsHosting.AspNetCoreEnvironmentVariable]
+      .ShouldBe(TimeWarpStateDevToolsHosting.DevelopmentEnvironmentName);
+  }
+
+  public static async Task KeepCorsOriginsFromEveryInspectedApp()
+  {
+    string root = RepoPaths.Root();
+    IDistributedApplicationBuilder builder = CreateBuilder();
+    IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
+    string serverA = Path.Combine(root, "samples/04-telemetry/server/sample-04-server/sample-04-server.csproj");
+    string serverB = Path.Combine
+    (
+      root,
+      "samples/00-state-action-handler/server/sample-00-server/sample-00-server.csproj"
+    );
+    builder.AddProject("frontend-a", serverA).WithTimeWarpStateDevTools(devtools);
+    builder.AddProject("frontend-b", serverB).WithTimeWarpStateDevTools(devtools);
+
+    Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    ReferenceExpression expression = variables[TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable]
+      .ShouldBeOfType<ReferenceExpression>();
+    List<string> names = [];
+    foreach (IValueProvider provider in expression.ValueProviders)
+    {
+      if (provider is EndpointReference endpoint)
+      {
+        names.Add(endpoint.Resource.Name);
+      }
+    }
+
+    names.ShouldContain("frontend-a");
+    names.ShouldContain("frontend-b");
+  }
+
+  public static async Task AnswerTheIngestPreflightWhenLaunchedLikeTheExecutable()
+  {
+    string appPath = StampedAppPath();
+    File.Exists(appPath).ShouldBeTrue();
+    IDistributedApplicationBuilder builder = CreateBuilder();
+    IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
+    Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    string environmentName = variables[TimeWarpStateDevToolsHosting.AspNetCoreEnvironmentVariable]
+      .ShouldBeOfType<string>();
+    environmentName.ShouldBe(TimeWarpStateDevToolsHosting.DevelopmentEnvironmentName);
+
+    const string origin = "http://localhost:5086";
+    int port = FreePort();
+    string? directory = Path.GetDirectoryName(appPath);
+    directory.ShouldNotBeNullOrWhiteSpace();
+    using CancellationTokenSource lifetime = new(TimeSpan.FromSeconds(45));
+    Task<CommandOutput> running = Shell.Builder(devtools.Resource.Command)
+      .WithArguments(appPath)
+      .WithWorkingDirectory(directory)
+      .WithEnvironmentVariable(TimeWarpStateDevToolsHosting.AspNetCoreEnvironmentVariable, environmentName)
+      .WithEnvironmentVariable(TimeWarpStateDevToolsHosting.HttpPortsEnvironmentVariable, port.ToString())
+      .WithEnvironmentVariable(DevToolsIngestCors.OriginsEnvironmentVariable, origin)
+      .WithNoValidation()
+      .CaptureAsync(lifetime.Token);
+    try
+    {
+      using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(2) };
+      HttpStatusCode? preflightStatus = null;
+      bool allowed = false;
+      bool pageAllows = true;
+      DateTime deadline = DateTime.UtcNow.AddSeconds(40);
+      while (DateTime.UtcNow < deadline)
+      {
+        if (running.IsCompleted)
+        {
+          CommandOutput exited = await running;
+          throw new InvalidOperationException($"Inspector exited {exited.ExitCode}. {exited.Stderr}");
+        }
+
+        try
+        {
+          using HttpRequestMessage preflight = new(HttpMethod.Options, $"http://127.0.0.1:{port}/ingest/spans");
+          preflight.Headers.TryAddWithoutValidation("Origin", origin);
+          preflight.Headers.TryAddWithoutValidation("Access-Control-Request-Method", "POST");
+          preflight.Headers.TryAddWithoutValidation("Access-Control-Request-Headers", "content-type");
+          using HttpResponseMessage preflightResponse = await client.SendAsync(preflight);
+          preflightStatus = preflightResponse.StatusCode;
+          allowed = preflightResponse.Headers.TryGetValues("Access-Control-Allow-Origin", out IEnumerable<string>? values)
+            && values.Contains(origin, StringComparer.Ordinal);
+          if (preflightStatus != HttpStatusCode.NoContent || !allowed)
+          {
+            await Task.Delay(250);
+            continue;
+          }
+
+          using HttpRequestMessage page = new(HttpMethod.Get, $"http://127.0.0.1:{port}/");
+          page.Headers.TryAddWithoutValidation("Origin", origin);
+          using HttpResponseMessage pageResponse = await client.SendAsync(page);
+          pageAllows = pageResponse.Headers.Contains("Access-Control-Allow-Origin");
+          break;
+        }
+        catch (HttpRequestException)
+        {
+          await Task.Delay(250);
+        }
+      }
+
+      preflightStatus.ShouldBe(HttpStatusCode.NoContent);
+      allowed.ShouldBeTrue();
+      pageAllows.ShouldBeFalse();
+    }
+    finally
+    {
+      await lifetime.CancelAsync();
+      try
+      {
+        await running;
+      }
+      catch (OperationCanceledException)
+      {
+      }
+    }
   }
 
   public static async Task PassTheAssemblyPathToDotnet()
@@ -119,6 +245,16 @@ public class AddTimeWarpStateDevTools_Should
 
     Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(server.Resource);
     variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeTrue();
+
+    bool clientPublishesAnOrigin = server.Resource.Annotations
+      .OfType<EndpointAnnotation>()
+      .Any(endpoint =>
+        string.Equals(endpoint.Name, "http", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(endpoint.Name, "https", StringComparison.OrdinalIgnoreCase));
+    Dictionary<string, object> devtoolsVariables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    devtoolsVariables
+      .ContainsKey(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable)
+      .ShouldBe(clientPublishesAnOrigin);
   }
 
   public static void ResolveTheDotNetHostInOrder()
@@ -161,12 +297,29 @@ public class AddTimeWarpStateDevTools_Should
 
     Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(server.Resource);
     variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeFalse();
+
+    Dictionary<string, object> devtoolsVariables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    devtoolsVariables.ContainsKey(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable).ShouldBeFalse();
+    devtoolsVariables.ContainsKey(TimeWarpStateDevToolsHosting.AspNetCoreEnvironmentVariable).ShouldBeFalse();
   }
 
   public static void ShareTheEndpointVariableNameWithTheExporter()
   {
     TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable
       .ShouldBe(TimeWarpStateDevToolsExport.EndpointEnvironmentVariable);
+  }
+
+  public static void ShareTheCorsVariableNameWithTheInspector()
+  {
+    TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable
+      .ShouldBe(DevToolsIngestCors.OriginsEnvironmentVariable);
+  }
+
+  private static int FreePort()
+  {
+    using Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+    return ((IPEndPoint)socket.LocalEndPoint!).Port;
   }
 
   private static string StampedAppPath()

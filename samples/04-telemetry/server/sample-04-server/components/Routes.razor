@@ -1,6 +1,6 @@
 ﻿@namespace Sample04Server.Components
 
-<Router AppAssembly="typeof(Program).Assembly">
+<Router AppAssembly="typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(Sample04Wasm.Program).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />

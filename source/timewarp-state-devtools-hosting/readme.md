@@ -18,9 +18,11 @@ The package targets stamp assembly metadata `timewarpstatedevtoolspath` on the A
 
 The dashboard shows the resource endpoint as **TimeWarp.State DevTools**.
 
-The resource declares an HTTP endpoint named `http`. Aspire injects the target port as `ASPNETCORE_HTTP_PORTS`. The resource is excluded from the publish manifest. `WithTimeWarpStateDevTools` does nothing in publish mode, so the inspected app's publish output does not reference the inspector.
+The resource declares an HTTP endpoint named `http`. Aspire injects the target port as `ASPNETCORE_HTTP_PORTS`. In run mode the executable also gets `ASPNETCORE_ENVIRONMENT=Development`. The published `tools/` folder has no launch profile, and ingest CORS is registered only in Development. Publish mode does not set that variable. The resource is excluded from the publish manifest. `WithTimeWarpStateDevTools` does nothing in publish mode, so the inspected app's publish output does not reference the inspector.
 
 `WithTimeWarpStateDevTools` sets `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` on the inspected resource and waits for the inspector when the AppHost is running. The app calls `AddTimeWarpStateDevToolsExporter()` from package `TimeWarp.State.DevTools.Export`. Aspire's own OTLP endpoint is unchanged, so the dashboard still receives traces.
+
+The same call adds the inspected app's `https` and `http` endpoints to `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector. A later `WithTimeWarpStateDevTools` on another app adds that app's origins to the same list. The inspector allows browser posts only from those origins, and only in Development, and only on `POST /ingest/spans`. Publish mode adds neither variable. The browser reads the origin from `GET {base}/_timewarp/state-devtools` on the inspected app (`MapTimeWarpStateDevToolsClientConfig`), including a path base, and posts with `TimeWarp.State.DevTools.Wasm`.
 
 ## Inner loop on the inspector
 
