@@ -8,8 +8,10 @@
 // The stamped path has to sit in that temp package folder, not in this repo. The test builds the
 // same executable resource AddTimeWarpStateDevTools adds, then starts the packaged dll with that
 // resource's command, the dll's directory as the working directory, and ASPNETCORE_HTTP_PORTS.
-// It requests the inspector page and /_framework/blazor.web.js. The package must not ship
-// appsettings.Development.json, tsconfig.json, web.config, or XML doc files.
+// It requests the inspector page, /_framework/blazor.web.js, and logo.png. The page head links
+// that PNG. The response is 200 image/png and matches assets/logo.png. The nupkg lists
+// tools/wwwroot/logo.png. The package must not ship appsettings.Development.json, tsconfig.json,
+// web.config, or XML doc files.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -193,8 +195,14 @@ public class PackagedDevToolsApp_Should
         }
 
         body.ShouldNotBeNullOrWhiteSpace();
-        body.ShouldContain("TimeWarp State DevTools");
+        body.ShouldContain("TimeWarp DevTools");
         scriptStatus.ShouldBe(HttpStatusCode.OK);
+        AssertIcon(body, repo);
+        using HttpResponseMessage icon = await client.GetAsync($"http://127.0.0.1:{port}/logo.png");
+        icon.StatusCode.ShouldBe(HttpStatusCode.OK);
+        icon.Content.Headers.ContentType?.MediaType.ShouldBe("image/png");
+        byte[] served = await icon.Content.ReadAsByteArrayAsync();
+        served.ShouldBe(File.ReadAllBytes(Path.Combine(repo, "assets", "logo.png")));
       }
       finally
       {
@@ -228,11 +236,37 @@ public class PackagedDevToolsApp_Should
       .Select(entry => entry.FullName.Replace('\\', '/'))
       .ToList();
     names.ShouldContain(name => name.EndsWith("tools/wwwroot/_framework/blazor.web.js", StringComparison.Ordinal));
+    names.ShouldContain(name => name.EndsWith("tools/wwwroot/logo.png", StringComparison.Ordinal));
+    names.ShouldNotContain(name => name.EndsWith("tools/wwwroot/logo.svg", StringComparison.OrdinalIgnoreCase));
     names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith("appsettings.Development.json", StringComparison.OrdinalIgnoreCase));
     names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith("tsconfig.json", StringComparison.OrdinalIgnoreCase));
     names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith("web.config", StringComparison.OrdinalIgnoreCase));
     names.ShouldNotContain(name => IsToolsPackageEntry(name) && name.EndsWith(".xml", StringComparison.OrdinalIgnoreCase));
     names.ShouldContain(name => IsToolsPackageEntry(name) && name.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase));
+
+    System.IO.Compression.ZipArchiveEntry icon = package.Entries.Single
+    (
+      entry => entry.FullName.Replace('\\', '/').EndsWith("tools/wwwroot/logo.png", StringComparison.Ordinal)
+    );
+    using Stream iconStream = icon.Open();
+    using MemoryStream copy = new();
+    iconStream.CopyTo(copy);
+    copy.ToArray().ShouldBe(File.ReadAllBytes(Path.Combine(RepoPaths.Root(), "assets", "logo.png")));
+  }
+
+  private static void AssertIcon(string body, string repo)
+  {
+    int headStart = body.IndexOf("<head", StringComparison.OrdinalIgnoreCase);
+    int headEnd = body.IndexOf("</head>", headStart < 0 ? 0 : headStart, StringComparison.OrdinalIgnoreCase);
+    headStart.ShouldBeGreaterThanOrEqualTo(0);
+    headEnd.ShouldBeGreaterThan(headStart);
+    string head = body[headStart..headEnd];
+    head.ShouldContain("rel=\"icon\"");
+    head.ShouldContain("type=\"image/png\"");
+    head.ShouldContain("href=\"logo.png\"");
+    head.ShouldNotContain("image/svg+xml");
+    head.ShouldNotContain("apple-touch-icon");
+    File.Exists(Path.Combine(repo, "source", "timewarp-state-devtools", "wwwroot", "logo.png")).ShouldBeFalse();
   }
 
   // Package paths are tools/file, not a tfm folder plus /tools/.

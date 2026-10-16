@@ -36,6 +36,9 @@ public class AddTimeWarpStateDevTools_Should
     devtools.Resource.Annotations.OfType<IProjectMetadata>().ShouldBeEmpty();
     devtools.Resource.IsExcludedFromPublish().ShouldBeTrue();
 
+    TimeWarpStateDevToolsHosting.DefaultResourceName.ShouldBe("timewarp-devtools");
+    TimeWarpStateDevToolsHosting.DashboardLinkText.ShouldBe("TimeWarp DevTools");
+
     EndpointAnnotation httpEndpoint = HttpEndpoint(devtools.Resource);
     httpEndpoint.UriScheme.ShouldBe("http");
     PropertyInfo? portVariable = typeof(EndpointAnnotation).GetProperty
@@ -212,6 +215,26 @@ public class AddTimeWarpStateDevTools_Should
     HttpEndpoint(devtools.Resource).UriScheme.ShouldBe("http");
     devtools.Resource.IsExcludedFromPublish().ShouldBeTrue();
     devtools.Resource.Name.ShouldBe(TimeWarpStateDevToolsHosting.DefaultResourceName);
+  }
+
+  public static void UseACallerSuppliedResourceName()
+  {
+    const string resourceName = "custom-devtools";
+    IDistributedApplicationBuilder builder = CreateBuilder();
+    IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools(resourceName);
+    devtools.Resource.Name.ShouldBe(resourceName);
+
+    string project = Path.Combine
+    (
+      RepoPaths.Root(),
+      "source",
+      "timewarp-state-devtools",
+      "timewarp-state-devtools.csproj"
+    );
+    const string projectResourceName = "custom-devtools-project";
+    IResourceBuilder<ProjectResource> projectResource =
+      builder.AddTimeWarpStateDevToolsProject(project, projectResourceName);
+    projectResource.Resource.Name.ShouldBe(projectResourceName);
   }
 
   public static void RejectAMissingExplicitProjectPath()
