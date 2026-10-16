@@ -143,8 +143,7 @@ Visual check: a static fixture of this grid and `tokens.css`, served over HTTP a
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4, M5
-- Round 2: M1–M5 fixed, no new findings — disposition clean (`review/disposition.md`)
-
+- Round 2: Done
 ## Notes
 
 Reported by Steve 2026-10-16 from a screenshot of the inspector.
