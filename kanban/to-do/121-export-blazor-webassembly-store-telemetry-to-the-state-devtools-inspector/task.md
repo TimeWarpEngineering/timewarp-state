@@ -94,7 +94,20 @@ exports server-side stores only).
 
 ## Goal (implementer restatement)
 
-A Development Blazor WebAssembly store, only when the app opts in and an inspector origin is available, posts its `TimeWarp.State` activities to the running inspector. Those rows show up beside server-side stores. An unset endpoint does no work. Production and a published bundle that did not opt in do not export, and the inspector does not accept cross-origin posts from arbitrary sites.
+A Development Blazor WebAssembly store posts its `TimeWarp.State` activities to the running inspector only when the app opts in and an inspector origin is available. Those rows show up beside server-side stores. An unset endpoint does no work. Production and a published bundle that did not opt in do not export. The inspector accepts cross-origin posts only from configured origins, and only on the ingest route.
+
+This fix pass makes that path work under Aspire. The packaged inspector has no launch profile, so run mode has to start it as Development or ingest CORS never registers and the browser preflight fails. CORS headers stay on `POST /ingest/spans`. Discovery keeps the app's base path. Every inspected app contributes origins. A down inspector does not fault the flush task. The release note names the ASP.NET Core shared framework the exporter needs. The solution keeps its Debug and Release configurations.
+
+Acceptance for this pass:
+
+- Run mode sets `ASPNETCORE_ENVIRONMENT=Development` on the packaged inspector. A launch that uses that environment answers the ingest preflight. Publish mode does not set the variable.
+- A non-ingest route returns no access-control allow header.
+- Discovery against a non-root base requests `{base}/_timewarp/state-devtools`.
+- Two `WithTimeWarpStateDevTools` calls keep both apps' origins.
+- The down-inspector test observes a throwing post and a flush task that completes successfully.
+- `release12.0.0-beta.15.md` names the shared framework requirement.
+- `timewarp-state.slnx` still lists Debug and Release.
+- The sample smoke records a **wasm** row, or Results say what blocked the browser run.
 
 Acceptance:
 
@@ -125,6 +138,7 @@ Decisions:
 - [x] Sample or test showing WASM store actions in the inspector
 - [x] Tests for CORS and Development-only gating
 - [x] Readme updates; `dev build` 0 warnings; `dev test` green
+- [x] Review round 1 fixes (M1–M9), including the sample serving `_framework/blazor.web.js`
 
 ## Session
 
@@ -132,6 +146,8 @@ Decisions:
 - Implemented: Grok (2026-10-16)
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T09:57:53Z
 - Review oracle round 1: Claude Opus 5.5 (claude-opus-5-5), effort 3, roster general, turn cap 200, session not exposed. 9 open findings (M1 bug). Fix pass requested. 2026-10-16
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-16T10:07:42Z
+- Fix pass (implement-fix-2): Grok (2026-10-16). Review round 1 findings M1–M9 are implemented on this branch.
 
 ## Results
 
@@ -143,17 +159,29 @@ Packages are `12.0.0-beta.15`. A published app keeps the assembly out with a Deb
 
 `./bin/dev build` exited 0 with 0 compiler errors. The log still prints pre-existing NuGet warnings (NU1510, NU1902) that this change did not add. `./bin/dev test` exited 0, including DevTools (89) and DevTools isolation (4). The telemetry sample server, which hosts the WASM client, builds with 0 warnings.
 
+Review round 1 is addressed on this branch. Run mode sets `ASPNETCORE_ENVIRONMENT=Development` on the packaged inspector, so ingest CORS is registered under Aspire. Allow headers are on `POST /ingest/spans` only, and the private-network header is added only after the policy has allowed the origin. Discovery joins a relative path onto the host base, so a path base is kept. Each `WithTimeWarpStateDevTools` adds origins to one callback. `FlushTask` is public because `InternalsVisibleTo` would also expose the internal copies of the ingest document and collide with the public exporter types. Dispose still does not wait on it. The release note names the `Microsoft.AspNetCore.App` shared framework. `timewarp-state.slnx` lists Debug and Release again.
+
+The sample server was only calling `UseStaticFiles`, which serves `wwwroot` and not the framework manifest. `/counter-wasm` then 404s `_framework/blazor.web.js` and the WASM counter never starts. The host now calls `UseStaticWebAssets` and `MapStaticAssets`, the same pair the inspector uses.
+
+`dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj` passed 94, failed 0. `./bin/dev test` exited 0. `./bin/dev build` exited 0 with 0 errors. Warnings in that log are pre-existing and outside the DevTools projects and sample 04 (nullable warnings in clone tests, TW0007, RS0030, plus NU1510 and NU1902).
+
 ### How to validate
 
-Smoke: `./bin/dev pack`, then `dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj`. Open the **TimeWarp.State DevTools** endpoint. Open the sample's `/counter-wasm` and click **Click me**. Also click the server `/counter`.
+Smoke: `dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj`. Open the sample at `http://localhost:5086/counter-wasm` (that origin is the one Aspire puts in `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS`). Click **Click me**. Open the inspector URL from `GET http://localhost:5086/_timewarp/state-devtools`.
 
-Expect: the inspector shows `WasmCounterState` with a **wasm** badge and `CounterState` with **srv**. Stop the inspector and click again: the WASM counter still increments. Run the sample with `ASPNETCORE_ENVIRONMENT=Production`: `GET /_timewarp/state-devtools` is 404 and the browser does not post.
+Expect: the count increases by 5. The inspector shows `WasmCounterState` with a **wasm** badge, including `IncrementCountActionSet.Action`. `OPTIONS /ingest/spans` from `http://localhost:5086` returns 204 with `Access-Control-Allow-Origin: http://localhost:5086`. `GET /` on the inspector does not send that header.
+
+Observed on 2026-10-16: the count went from 3 to 8. The inspector listed `live wasm init WasmCounterState` and `live wasm IncrementCountActionSet.Action WasmCounterState`. The preflight returned 204. `GET /` had no allow-origin header.
 
 ### Review
 
 - Round 1 (effort 3, general): 1 bug, 5 suggestions, and 3 nits, all open. Disposition is pending, so a fix pass is needed.
 - M1 (bug): under Aspire the packaged inspector runs as Production, so ingest CORS never registers and browser posts fail their preflight. Reproduced against the branch-built `tools/` dll: 405 with no environment set, 204 with Development.
 - Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md` (the live ledger). There is no `review/disposition.md` yet.
+
+## Review
+
+- Round 1: Blocked — open M1, M2, M3, M4, M5, M6, M7, M8, M9
 
 ## Notes
 

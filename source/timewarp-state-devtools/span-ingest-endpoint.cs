@@ -16,6 +16,9 @@ namespace TimeWarp.State.DevTools;
 /// </summary>
 public static class SpanIngestEndpoint
 {
+  /// <summary>Route that accepts span batches. CORS is required on this route only.</summary>
+  public const string Route = "/ingest/spans";
+
   /// <summary>Maximum spans accepted from one body.</summary>
   public const int MaxSpansPerRequest = 512;
 
@@ -26,12 +29,19 @@ public static class SpanIngestEndpoint
   public const int MaxSnapshotLength = 65_536;
 
   /// <summary>
-  /// Maps <c>POST /ingest/spans</c>.
+  /// Maps <c>POST /ingest/spans</c>. When <paramref name="requireCors"/> is true, the route
+  /// requires <see cref="DevToolsIngestCors.PolicyName"/>.
   /// </summary>
-  public static void Map(WebApplication app)
+  /// <param name="app">The inspector application.</param>
+  /// <param name="requireCors">True when <see cref="DevToolsIngestCors.Add"/> registered the policy.</param>
+  public static void Map(WebApplication app, bool requireCors = false)
   {
     ArgumentNullException.ThrowIfNull(app);
-    app.MapPost("/ingest/spans", IngestAsync).DisableAntiforgery();
+    RouteHandlerBuilder route = app.MapPost(Route, IngestAsync).DisableAntiforgery();
+    if (requireCors)
+    {
+      route.RequireCors(DevToolsIngestCors.PolicyName);
+    }
   }
 
   internal static async Task<IResult> IngestAsync

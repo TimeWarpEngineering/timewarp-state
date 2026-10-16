@@ -6,8 +6,10 @@
 // Opt-in is the call, and a missing origin is a no-op: no listener and no socket. Outside
 // Development the call returns without reading configuration or calling the discovery route.
 // Resolution order is configuration TimeWarp:State:DevTools:Endpoint, then
-// TIMEWARP_STATE_DEVTOOLS_ENDPOINT (empty in the browser), then GET /_timewarp/state-devtools
-// on the host base address. A value that is not an absolute http(s) URI is ignored. The server
+// TIMEWARP_STATE_DEVTOOLS_ENDPOINT (empty in the browser), then GET {base}/_timewarp/state-devtools.
+// The base address is given a trailing slash before the relative path is applied, so a path base
+// such as /app/ is kept. A rooted path would drop it. A value that is not an absolute http(s) URI
+// is ignored. The server
 // exporter throws on a bad URI because only the AppHost sets it. Here a bad value must not take
 // the browser app down. The ingest URI is {origin}/ingest/spans, the same shape as the server exporter.
 #endregion
@@ -123,7 +125,7 @@ public static class TimeWarpStateDevToolsWasm
   }
 
   /// <summary>
-  /// GETs <see cref="DiscoveryPath"/> under <paramref name="baseAddress"/>.
+  /// GETs <see cref="DiscoveryPath"/> under <paramref name="baseAddress"/>, keeping a path base.
   /// Returns the <c>endpoint</c> field, or null when the route is absent, empty, or fails.
   /// </summary>
   /// <param name="baseAddress">Absolute base address of the host.</param>
@@ -136,7 +138,7 @@ public static class TimeWarpStateDevToolsWasm
     CancellationToken cancellationToken = default
   )
   {
-    if (!Uri.TryCreate(baseAddress, UriKind.Absolute, out Uri? baseUri))
+    if (DiscoveryUri(baseAddress) is not Uri uri)
     {
       return null;
     }
@@ -147,7 +149,6 @@ public static class TimeWarpStateDevToolsWasm
         ? new HttpClient()
         : new HttpClient(handler, disposeHandler: false);
       httpClient.Timeout = TimeSpan.FromSeconds(2);
-      Uri uri = new(baseUri, DiscoveryPath);
       using HttpResponseMessage response = await httpClient.GetAsync(uri, cancellationToken)
         .ConfigureAwait(false);
       if (response.StatusCode == System.Net.HttpStatusCode.NoContent || !response.IsSuccessStatusCode)
@@ -189,6 +190,23 @@ public static class TimeWarpStateDevToolsWasm
     }
 
     return new Uri(new Uri(text, UriKind.Absolute), "ingest/spans");
+  }
+
+  private static Uri? DiscoveryUri(string baseAddress)
+  {
+    if (!Uri.TryCreate(baseAddress, UriKind.Absolute, out Uri? baseUri))
+    {
+      return null;
+    }
+
+    string rooted = baseUri.AbsoluteUri;
+    if (!rooted.EndsWith('/'))
+    {
+      rooted += "/";
+    }
+
+    string relative = DiscoveryPath.TrimStart('/');
+    return new Uri(new Uri(rooted, UriKind.Absolute), relative);
   }
 
   private static bool TryCreateIngestUri(string? endpoint, out Uri ingestUri)

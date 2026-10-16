@@ -10,7 +10,10 @@
 // window. A full queue drops the oldest span. Every network and HTTP failure is swallowed, including
 // cancellation, so a stopped inspector cannot throw into the app. The last queued batch can be lost
 // when the page goes away: there is no background thread to finish it, and sendBeacon is not used.
-// Each posted item is stamped timewarp.state.runtime=wasm.
+// Each posted item is stamped timewarp.state.runtime=wasm. FlushTask is public so tests can
+// assert the loop completed and did not fault. InternalsVisibleTo would also expose the internal
+// copies of the ingest document this package compiles, which collide with the public exporter
+// types. Dispose does not wait for FlushTask: on WebAssembly that wait deadlocks the single thread.
 #endregion
 
 namespace TimeWarp.State.DevTools.Wasm;
@@ -27,7 +30,11 @@ public sealed class DevToolsWasmExporter : IDisposable
   private readonly Channel<SpanIngestItem> Queue;
   private readonly ActivityListener Listener;
   private readonly CancellationTokenSource Stop = new();
-  private readonly Task FlushTask;
+  /// <summary>
+  /// Completes when the flush loop stops. A failed post does not fault it.
+  /// Waiting on it from the browser deadlocks the single thread. <see cref="Dispose"/> does not wait.
+  /// </summary>
+  public Task FlushTask { get; }
   private int Disposed;
 
   /// <summary>
@@ -102,7 +109,6 @@ public sealed class DevToolsWasmExporter : IDisposable
     Listener.Dispose();
     Stop.Cancel();
     Queue.Writer.TryComplete();
-    _ = FlushTask.IsCompleted;
     if (DisposeHandler)
     {
       HttpClient.Dispose();
@@ -176,8 +182,8 @@ public sealed class DevToolsWasmExporter : IDisposable
       {
         Content = new StringContent(json, Encoding.UTF8, "application/json")
       };
-      using HttpResponseMessage response = await HttpClient.SendAsync(request, Stop.Token).ConfigureAwait(false);
-      _ = response.StatusCode;
+      HttpResponseMessage response = await HttpClient.SendAsync(request, Stop.Token).ConfigureAwait(false);
+      response.Dispose();
     }
     catch (Exception exception) when (exception is not OutOfMemoryException)
     {

@@ -66,7 +66,7 @@
       DestinationFiles="$(IntermediateOutputPath)TimeWarp.State.DevTools.App.targets" />
     <ItemGroup>
       <_DevToolsPublishedFile Include="$(DevToolsToolsDir)**\*.*" />
-      <!-- The packaged inspector runs as Production. These files are not used. Pdbs stay. -->
+      <!-- Run mode sets ASPNETCORE_ENVIRONMENT=Development on the executable. These files are not that switch. Pdbs stay. -->
       <_DevToolsPublishedFile Remove="$(DevToolsToolsDir)**\appsettings.Development.json;$(DevToolsToolsDir)**\tsconfig.json;$(DevToolsToolsDir)**\web.config;$(DevToolsToolsDir)**\*.xml" />
     </ItemGroup>
     <ItemGroup>

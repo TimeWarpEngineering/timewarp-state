@@ -10,6 +10,7 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;
 global using OpenTelemetry.Trace;

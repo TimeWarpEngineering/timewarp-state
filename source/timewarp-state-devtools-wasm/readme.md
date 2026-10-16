@@ -18,7 +18,7 @@ That reads, in order:
 
 1. Configuration `TimeWarp:State:DevTools:Endpoint` when it is non-blank.
 2. `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` when the configuration value is blank. The browser process does not receive the variable Aspire sets on the server.
-3. `GET {base}/_timewarp/state-devtools` on the host. The server maps that route with `MapTimeWarpStateDevToolsClientConfig()` from `TimeWarp.State.DevTools.Export`, and only in Development. The body is `{ "endpoint": "<origin>" }`. An unset variable is 204.
+3. `GET {base}/_timewarp/state-devtools` on the host. `{base}` is the host base address, including a path base, with a trailing slash. The server maps that route with `MapTimeWarpStateDevToolsClientConfig()` from `TimeWarp.State.DevTools.Export`, and only in Development. The body is `{ "endpoint": "<origin>" }`. An unset variable is 204.
 
 A value that is not an absolute http(s) URI is ignored. Outside Development the call returns without reading configuration or calling the route.
 

@@ -7,9 +7,11 @@
 // A browser post is cross-origin. The policy is registered only in Development and only when at
 // least one absolute http(s) origin is configured. No origin means no CORS middleware, so the
 // inspector is not an open sink. Origins come from TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS (Aspire
-// sets that from the inspected app) and from TimeWarp:State:DevTools:CorsOrigins. Invalid entries
-// are skipped. When the preflight asks for private-network access, the response allows it. That
-// header is sent only while this policy is in use.
+// sets that from every inspected app) and from TimeWarp:State:DevTools:CorsOrigins. Invalid entries
+// are skipped. UseCors() enables the middleware without a global policy. SpanIngestEndpoint
+// calls RequireCors so only POST /ingest/spans receives allow headers. When that response already
+// carries Access-Control-Allow-Origin and the preflight asks for private-network access, the
+// response allows it. Other routes, including the Blazor circuit, do not.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -72,8 +74,10 @@ public static class DevToolsIngestCors
   }
 
   /// <summary>
-  /// Enables <see cref="PolicyName"/> and answers a private-network preflight.
-  /// Call only when <see cref="Add"/> returned true.
+  /// Enables CORS middleware without a global policy, and answers a private-network preflight
+  /// on <see cref="SpanIngestEndpoint.Route"/> after the policy has allowed the origin.
+  /// Call only when <see cref="Add"/> returned true. The ingest route calls
+  /// <c>RequireCors</c> with <see cref="PolicyName"/>.
   /// </summary>
   /// <param name="app">The inspector application.</param>
   /// <exception cref="ArgumentNullException"><paramref name="app"/> is null.</exception>
@@ -82,18 +86,26 @@ public static class DevToolsIngestCors
     ArgumentNullException.ThrowIfNull(app);
     app.Use(async (context, next) =>
     {
-      context.Response.OnStarting(() =>
+      if (context.Request.Path.StartsWithSegments(SpanIngestEndpoint.Route))
       {
-        if (context.Request.Headers.ContainsKey("Access-Control-Request-Private-Network"))
+        context.Response.OnStarting(() =>
         {
-          context.Response.Headers["Access-Control-Allow-Private-Network"] = "true";
-        }
+          if
+          (
+            context.Request.Headers.ContainsKey("Access-Control-Request-Private-Network")
+            && context.Response.Headers.ContainsKey(HeaderNames.AccessControlAllowOrigin)
+          )
+          {
+            context.Response.Headers["Access-Control-Allow-Private-Network"] = "true";
+          }
 
-        return Task.CompletedTask;
-      });
+          return Task.CompletedTask;
+        });
+      }
+
       await next(context);
     });
-    app.UseCors(PolicyName);
+    app.UseCors();
   }
 
   internal static string[] ParseOrigins

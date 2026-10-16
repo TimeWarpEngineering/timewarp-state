@@ -7,6 +7,7 @@
 // and clear TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS so the machine environment cannot widen the policy.
 // A browser preflight from an allowed origin receives Access-Control-Allow-Private-Network. Production
 // and an empty origin list register no policy, so a cross-origin browser post is not accepted.
+// Allow headers are on POST /ingest/spans only. A non-ingest route gets none.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -82,6 +83,27 @@ public class DevToolsIngestCors_Should
       HttpResponseMessage response = await factory.CreateClient().SendAsync(request);
       response.Headers.Contains("Access-Control-Allow-Private-Network").ShouldBeFalse();
       Allows(response, AllowedOrigin).ShouldBeFalse();
+    });
+  }
+
+  public static async Task LeaveAllowHeadersOffANonIngestRoute()
+  {
+    await WithOrigins(AllowedOrigin, null, async factory =>
+    {
+      using HttpRequestMessage page = new(HttpMethod.Get, "/");
+      page.Headers.TryAddWithoutValidation("Origin", AllowedOrigin);
+      HttpResponseMessage pageResponse = await factory.CreateClient().SendAsync(page);
+      pageResponse.Headers.Contains("Access-Control-Allow-Origin").ShouldBeFalse();
+      pageResponse.Headers.Contains("Access-Control-Allow-Private-Network").ShouldBeFalse();
+
+      using HttpRequestMessage negotiate = new(HttpMethod.Options, "/_blazor/negotiate");
+      negotiate.Headers.TryAddWithoutValidation("Origin", AllowedOrigin);
+      negotiate.Headers.TryAddWithoutValidation("Access-Control-Request-Method", "POST");
+      negotiate.Headers.TryAddWithoutValidation("Access-Control-Request-Headers", "content-type");
+      negotiate.Headers.TryAddWithoutValidation("Access-Control-Request-Private-Network", "true");
+      HttpResponseMessage negotiateResponse = await factory.CreateClient().SendAsync(negotiate);
+      negotiateResponse.Headers.Contains("Access-Control-Allow-Origin").ShouldBeFalse();
+      negotiateResponse.Headers.Contains("Access-Control-Allow-Private-Network").ShouldBeFalse();
     });
   }
 

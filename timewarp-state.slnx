@@ -1,4 +1,8 @@
 <Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+  </Configurations>
   <Folder Name="/Samples/" />
   <Folder Name="/Samples/00-StateActionSet/">
     <Project Path="samples\00-state-action-handler\auto\sample-00-auto\sample-00-auto-client\sample-00-auto-client.csproj" />

@@ -53,6 +53,6 @@ dotnet run --project samples/04-telemetry/server/sample-04-server/sample-04-serv
 
 In Development the client calls `GET /_timewarp/state-devtools` on this host. The route returns the `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` origin. The client then posts spans with `TimeWarp.State.DevTools.Wasm`. Rows are stamped `timewarp.state.runtime=wasm` and show a **wasm** badge. Server rows show **srv**. An absent inspector leaves the counter running and exports nothing.
 
-`WithTimeWarpStateDevTools` puts this app's http and https origins into `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector, so the browser post is allowed only from this app and only while the inspector is in Development.
+`WithTimeWarpStateDevTools` puts this app's http and https origins into `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector. `AddTimeWarpStateDevTools` runs the packaged inspector as Development, so that CORS policy is registered. The browser post is allowed only from this app and only on `POST /ingest/spans`.
 
 Aspire dashboard browser telemetry (the JS OpenTelemetry SDK and `DASHBOARD__OTLP__CORS__ALLOWEDORIGINS`) is a different channel. This sample does not use it for TimeWarp.State.

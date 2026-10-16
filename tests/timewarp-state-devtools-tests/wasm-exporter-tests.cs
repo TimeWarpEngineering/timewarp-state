@@ -5,7 +5,7 @@
 #region Design
 // The exporter listens on the calling thread and posts with SendAsync. The test passes the inspector
 // TestServer handler so no socket is opened. A missing origin registers nothing. Outside Development,
-// resolution does not call discovery. A down inspector is swallowed.
+// resolution does not call discovery. A down inspector is swallowed, and the flush task completes.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -47,10 +47,12 @@ public class DevToolsWasmExporter_Should
 
   public static async Task SwallowADownInspector()
   {
+    using ThrowingHandler handler = new();
     using DevToolsWasmExporter exporter = new
     (
-      new Uri($"http://127.0.0.1:{FreePort()}/ingest/spans"),
-      coalesceDelay: TimeSpan.FromMilliseconds(15)
+      new Uri("http://127.0.0.1:9/ingest/spans"),
+      handler,
+      TimeSpan.FromMilliseconds(15)
     );
     using ActivitySource source = new(InspectorCapture.ActivitySourceName);
     using Activity activity = source.StartActivity("CounterState.Go")!;
@@ -58,8 +60,16 @@ public class DevToolsWasmExporter_Should
     activity.SetTag(InspectorCapture.StateTypeTagName, "CounterState");
     activity.SetTag(InspectorCapture.ActionTagName, "Go");
     activity.Stop();
-    await Task.Delay(200);
-    exporter.ShouldNotBeNull();
+
+    for (int attempt = 0; attempt < 50 && handler.Calls == 0; attempt++)
+    {
+      await Task.Delay(20);
+    }
+
+    handler.Calls.ShouldBeGreaterThan(0);
+    exporter.Dispose();
+    await exporter.FlushTask.WaitAsync(TimeSpan.FromSeconds(2));
+    exporter.FlushTask.IsCompletedSuccessfully.ShouldBeTrue();
   }
 
   public static void RegisterNothingWhenTheEndpointIsBlankOrNotAnOrigin()
@@ -144,6 +154,28 @@ public class DevToolsWasmExporter_Should
       );
       endpoint.ShouldBe("http://127.0.0.1:5288");
       handler.Calls.ShouldBe(1);
+      handler.RequestUri.ShouldBe(new Uri("http://localhost:5086/_timewarp/state-devtools"));
+    });
+  }
+
+  public static async Task DiscoverUnderANonRootBaseAddress()
+  {
+    RecordingHandler handler = new()
+    {
+      Body = """{"endpoint":"http://127.0.0.1:5288/"}"""
+    };
+    await WithEndpoint(null, async () =>
+    {
+      string? endpoint = await TimeWarpStateDevToolsWasm.ResolveEndpointAsync
+      (
+        isDevelopment: true,
+        configuredEndpoint: "  ",
+        baseAddress: "http://localhost:5086/app",
+        handler: handler
+      );
+      endpoint.ShouldBe("http://127.0.0.1:5288");
+      handler.Calls.ShouldBe(1);
+      handler.RequestUri.ShouldBe(new Uri("http://localhost:5086/app/_timewarp/state-devtools"));
     });
   }
 
@@ -170,16 +202,11 @@ public class DevToolsWasmExporter_Should
     }
   }
 
-  private static int FreePort()
-  {
-    using Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-    socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
-    return ((IPEndPoint)socket.LocalEndPoint!).Port;
-  }
-
   private sealed class RecordingHandler : HttpMessageHandler
   {
     public int Calls { get; private set; }
+
+    public Uri? RequestUri { get; private set; }
 
     public string Body { get; set; } = """{"endpoint":"http://localhost:5288"}""";
 
@@ -190,11 +217,29 @@ public class DevToolsWasmExporter_Should
     )
     {
       Calls++;
+      RequestUri = request.RequestUri;
       HttpResponseMessage response = new(HttpStatusCode.OK)
       {
         Content = new StringContent(Body, Encoding.UTF8, "application/json")
       };
       return Task.FromResult(response);
+    }
+  }
+
+  private sealed class ThrowingHandler : HttpMessageHandler
+  {
+    private int calls;
+
+    public int Calls => Volatile.Read(ref calls);
+
+    protected override Task<HttpResponseMessage> SendAsync
+    (
+      HttpRequestMessage request,
+      CancellationToken cancellationToken
+    )
+    {
+      Interlocked.Increment(ref calls);
+      throw new HttpRequestException("inspector down");
     }
   }
 }

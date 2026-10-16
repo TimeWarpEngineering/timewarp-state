@@ -10,11 +10,15 @@
 // otherwise DOTNET_ROOT/dotnet (dotnet.exe on Windows), otherwise the name "dotnet".
 // An apphost or IDE launch does not put that muxer on PATH. Per-RID packages were rejected.
 // ASPNETCORE_HTTP_PORTS receives the http endpoint port. The endpoint name stays http.
+// The packaged tools/ folder has no launch profile, so the executable would otherwise start as
+// Production and ingest CORS would stay off. In run mode the executable gets
+// ASPNETCORE_ENVIRONMENT=Development. Publish mode does not set that variable.
 // WithTimeWarpStateDevTools sets TIMEWARP_STATE_DEVTOOLS_ENDPOINT and waits for the inspector
-// in run mode. It also sets TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS on the inspector from the
-// inspected resource's http and https endpoints, so a browser on that origin can post spans.
-// In publish mode it returns the inspected resource unchanged. ExcludeFromManifest
-// keeps the inspector resource itself out of the manifest, so publish output has no reference to it.
+// in run mode. It also adds the inspected resource's http and https endpoints to one
+// TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS callback, so a later inspected app does not replace
+// the first app's origins. In publish mode it returns the inspected resource unchanged.
+// ExcludeFromManifest keeps the inspector resource itself out of the manifest, so publish
+// output has no reference to it.
 // A missing inspector file is an error in run mode and is ignored in publish mode.
 // IResourceBuilder<T> is invariant, so WaitFor rewraps the inspector as IResource.
 // AddTimeWarpStateDevToolsProject is the inner-loop switch: the caller passes a csproj path.
@@ -62,6 +66,15 @@ public static class TimeWarpStateDevToolsHosting
 
   /// <summary>Environment variable that receives the inspector's HTTP target port.</summary>
   public const string HttpPortsEnvironmentVariable = "ASPNETCORE_HTTP_PORTS";
+
+  /// <summary>
+  /// Environment variable set to <see cref="DevelopmentEnvironmentName"/> on the packaged
+  /// inspector in run mode. The published tools folder has no launch profile.
+  /// </summary>
+  public const string AspNetCoreEnvironmentVariable = "ASPNETCORE_ENVIRONMENT";
+
+  /// <summary>Value of <see cref="AspNetCoreEnvironmentVariable"/> in run mode.</summary>
+  public const string DevelopmentEnvironmentName = "Development";
 
   /// <summary>
   /// Comma-separated browser origins allowed to call the inspector ingest route.
@@ -132,7 +145,10 @@ public static class TimeWarpStateDevToolsHostingExtensions
 {
   /// <summary>
   /// Adds the packaged DevTools inspector as an executable resource, declares its HTTP endpoint,
-  /// and labels that endpoint on the dashboard. The resource is omitted from publish output.
+  /// and labels that endpoint on the dashboard. In run mode the executable's
+  /// <see cref="TimeWarpStateDevToolsHosting.AspNetCoreEnvironmentVariable"/> is
+  /// <see cref="TimeWarpStateDevToolsHosting.DevelopmentEnvironmentName"/>. The resource is
+  /// omitted from publish output.
   /// </summary>
   /// <param name="builder">The distributed application builder.</param>
   /// <param name="name">Resource name. Defaults to <see cref="TimeWarpStateDevToolsHosting.DefaultResourceName"/>.</param>
@@ -169,7 +185,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
       throw new InvalidOperationException($"Inspector path has no directory: '{appPath}'.");
     }
 
-    return builder
+    IResourceBuilder<ExecutableResource> executable = builder
       .AddExecutable
       (
         name,
@@ -183,6 +199,17 @@ public static class TimeWarpStateDevToolsHostingExtensions
         env: TimeWarpStateDevToolsHosting.HttpPortsEnvironmentVariable
       )
       .LabelDevToolsUi();
+
+    if (!publishMode)
+    {
+      executable.WithEnvironment
+      (
+        TimeWarpStateDevToolsHosting.AspNetCoreEnvironmentVariable,
+        TimeWarpStateDevToolsHosting.DevelopmentEnvironmentName
+      );
+    }
+
+    return executable;
   }
 
   /// <summary>
@@ -222,8 +249,9 @@ public static class TimeWarpStateDevToolsHostingExtensions
   /// The inspected app reads <see cref="TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable"/>
   /// and calls <c>AddTimeWarpStateDevToolsExporter</c>. The inspector receives
   /// <see cref="TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable"/> from the inspected
-  /// resource's http and https endpoints. In publish mode the inspected resource is
-  /// returned unchanged, so publish output does not reference the inspector.
+  /// resource's http and https endpoints. Each call adds to the same origin list.
+  /// In publish mode the inspected resource is returned unchanged, so publish output
+  /// does not reference the inspector.
   /// </summary>
   /// <typeparam name="T">Inspected resource type.</typeparam>
   /// <typeparam name="TDevTools">DevTools resource type. The packaged app is an executable; the project switch is a project.</typeparam>
@@ -273,28 +301,64 @@ public static class TimeWarpStateDevToolsHostingExtensions
       return;
     }
 
+    List<EndpointReference> origins = [];
     EndpointReference https = new(client, "https");
     EndpointReference http = new(client, "http");
-    if (https.Exists && http.Exists)
-    {
-      devtools.WithEnvironment
-      (
-        TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable,
-        ReferenceExpression.Create($"{https},{http}")
-      );
-      return;
-    }
-
     if (https.Exists)
     {
-      devtools.WithEnvironment(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable, https);
-      return;
+      origins.Add(https);
     }
 
     if (http.Exists)
     {
-      devtools.WithEnvironment(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable, http);
+      origins.Add(http);
     }
+
+    if (origins.Count == 0)
+    {
+      return;
+    }
+
+    CorsOriginsAnnotation annotation = devtools.Resource.Annotations
+      .OfType<CorsOriginsAnnotation>()
+      .SingleOrDefault() ?? RegisterCorsOrigins(devtools);
+    annotation.Endpoints.AddRange(origins);
+  }
+
+  private static CorsOriginsAnnotation RegisterCorsOrigins<TDevTools>(IResourceBuilder<TDevTools> devtools)
+    where TDevTools : IResourceWithEnvironment
+  {
+    CorsOriginsAnnotation annotation = new();
+    devtools.WithAnnotation(annotation);
+    devtools.WithEnvironment(context =>
+    {
+      CorsOriginsAnnotation collected = context.Resource.Annotations
+        .OfType<CorsOriginsAnnotation>()
+        .Single();
+      if (collected.Endpoints.Count == 0)
+      {
+        return;
+      }
+
+      ReferenceExpressionBuilder expression = new();
+      for (int index = 0; index < collected.Endpoints.Count; index++)
+      {
+        if (index > 0)
+        {
+          expression.AppendLiteral(",");
+        }
+
+        expression.AppendValueProvider(collected.Endpoints[index]);
+      }
+
+      context.EnvironmentVariables[TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable] = expression.Build();
+    });
+    return annotation;
+  }
+
+  private sealed class CorsOriginsAnnotation : IResourceAnnotation
+  {
+    public List<EndpointReference> Endpoints { get; } = [];
   }
 
   private static IResourceBuilder<T> LabelDevToolsUi<T>(this IResourceBuilder<T> builder)
