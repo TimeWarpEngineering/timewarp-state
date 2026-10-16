@@ -130,6 +130,8 @@ Decisions:
 
 - Created: 3911642 (2026-10-16)
 - Implemented: Grok (2026-10-16)
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T09:57:53Z
+- Review oracle round 1: Claude Opus 5.5 (claude-opus-5-5), effort 3, roster general, turn cap 200, session not exposed. 9 open findings (M1 bug). Fix pass requested. 2026-10-16
 
 ## Results
 
@@ -146,6 +148,12 @@ Packages are `12.0.0-beta.15`. A published app keeps the assembly out with a Deb
 Smoke: `./bin/dev pack`, then `dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj`. Open the **TimeWarp.State DevTools** endpoint. Open the sample's `/counter-wasm` and click **Click me**. Also click the server `/counter`.
 
 Expect: the inspector shows `WasmCounterState` with a **wasm** badge and `CounterState` with **srv**. Stop the inspector and click again: the WASM counter still increments. Run the sample with `ASPNETCORE_ENVIRONMENT=Production`: `GET /_timewarp/state-devtools` is 404 and the browser does not post.
+
+### Review
+
+- Round 1 (effort 3, general): 1 bug, 5 suggestions, and 3 nits, all open. Disposition is pending, so a fix pass is needed.
+- M1 (bug): under Aspire the packaged inspector runs as Production, so ingest CORS never registers and browser posts fail their preflight. Reproduced against the branch-built `tools/` dll: 405 with no environment set, 204 with Development.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md` (the live ledger). There is no `review/disposition.md` yet.
 
 ## Notes
 
