@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 2005
-- Effort: 3
+- Lines changed: 506
+- Effort: 2
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 120 (--max-turns; cursor uncapped)
 
 ## Scope
 
@@ -17,6 +17,7 @@
 **Effort:** 3, general axis only
 **Reviewer roster:** general (review oracle, Claude Opus 5.5)
 **Session IDs:** review oracle session not exposed to the oracle
+**Round 2 scope:** fix delta `90de0a77..ea02ee4a` only. The Budget above was recomputed for round 2 (effort 2, general, turn cap 120).
 
 ## Ground rules
 

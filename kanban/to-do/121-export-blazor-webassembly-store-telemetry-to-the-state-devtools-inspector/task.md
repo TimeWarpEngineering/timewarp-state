@@ -148,6 +148,7 @@ Decisions:
 - Review oracle round 1: Claude Opus 5.5 (claude-opus-5-5), effort 3, roster general, turn cap 200, session not exposed. 9 open findings (M1 bug). Fix pass requested. 2026-10-16
 - Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-16T10:07:42Z
 - Fix pass (implement-fix-2): Grok (2026-10-16). Review round 1 findings M1–M9 are implemented on this branch.
+- Review oracle round 2: Claude Opus 5.5 (claude-opus-5-5), effort 2, roster general, turn cap 120, session not exposed. M1–M9 are fixed, 0 open, and the disposition is clean. 2026-10-16
 
 ## Results
 
@@ -175,13 +176,18 @@ Observed on 2026-10-16: the count went from 3 to 8. The inspector listed `live w
 
 ### Review
 
-- Round 1 (effort 3, general): 1 bug, 5 suggestions, and 3 nits, all open. Disposition is pending, so a fix pass is needed.
+- Round 1 (effort 3, general): 1 bug, 5 suggestions, and 3 nits, all open.
 - M1 (bug): under Aspire the packaged inspector runs as Production, so ingest CORS never registers and browser posts fail their preflight. Reproduced against the branch-built `tools/` dll: 405 with no environment set, 204 with Development.
-- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md` (the live ledger). There is no `review/disposition.md` yet.
+- Round 2 (effort 2, general, delta `90de0a77..ea02ee4a`): re-verified M1–M9, all fixed, no new findings. `dotnet fixie timewarp-state-devtools-tests` passed 94.
+- Final counts: bug 0 open / 1 fixed, suggestion 0 open / 5 fixed, nit 0 open / 3 fixed, 0 wontfix.
+- **Disposition: clean** (2 rounds, final open count 0).
+- Environment note: `dotnet test` (VSTest adapter) on the devtools test project hung in the round-2 reviewer's environment, and it hung the same way at the round-1 commit. `dev test` uses `dotnet fixie`, which passes.
+- Paths: `review/review-framework.md`, `review/round-1/merged.md`, `review/round-2/general.md`, `review/round-2/merged.md` (final ledger), `review/disposition.md`.
 
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4, M5, M6, M7, M8, M9
+- Round 2: Done — M1–M9 fixed, 0 open, disposition clean
 
 ## Notes
 
