@@ -280,16 +280,20 @@
     tab == current ? "tab active" : "tab";
 }
 
-<PageTitle>TimeWarp State DevTools</PageTitle>
+<PageTitle>TimeWarp DevTools</PageTitle>
 
 <div class="app">
   <header class="mast">
-    <div class="brand">
-      <p class="eyebrow">TimeWarp</p>
-      <h1>State DevTools</h1>
+    <div class="mast-top">
+      <h1 data-qa="brand">TimeWarp DevTools</h1>
+      <button type="button" class="theme" @onclick="CycleTheme" data-qa="theme">Theme: @ThemeLabel</button>
     </div>
-    <p class="lede">Current state, and the action that produced it.</p>
-    <button type="button" class="theme" @onclick="CycleTheme" data-qa="theme">Theme: @ThemeLabel</button>
+    <div class="plugin-row">
+      <nav class="plugins" aria-label="Plugins">
+        <span class="plugin" aria-current="page" data-qa="plugin">State</span>
+      </nav>
+      <p class="lede">Current state, and the action that produced it.</p>
+    </div>
   </header>
 
   @{

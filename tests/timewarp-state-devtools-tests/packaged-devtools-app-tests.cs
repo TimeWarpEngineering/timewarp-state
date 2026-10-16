@@ -195,7 +195,7 @@ public class PackagedDevToolsApp_Should
         }
 
         body.ShouldNotBeNullOrWhiteSpace();
-        body.ShouldContain("TimeWarp State DevTools");
+        body.ShouldContain("TimeWarp DevTools");
         scriptStatus.ShouldBe(HttpStatusCode.OK);
         AssertIcon(body, repo);
         using HttpResponseMessage icon = await client.GetAsync($"http://127.0.0.1:{port}/logo.png");

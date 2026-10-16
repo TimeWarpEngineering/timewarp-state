@@ -6,16 +6,8 @@
   padding: 0.9rem 1.25rem;
 }
 
-.eyebrow {
-  margin: 0;
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
 h1 {
-  margin: 0.1rem 0 0;
+  margin: 0;
   font-size: 1.35rem;
   font-weight: 600;
   font-family: var(--twe-font-sans);

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Title>TimeWarp.State.DevTools.App</Title>
-    <Description>Published TimeWarp.State DevTools inspector. Framework-dependent, no runtime identifier. Started by TimeWarp.State.DevTools.Hosting.</Description>
+    <Description>Published TimeWarp DevTools inspector. Framework-dependent, no runtime identifier. Started by TimeWarp.State.DevTools.Hosting.</Description>
     <PackageId>TimeWarp.State.DevTools.App</PackageId>
     <AssemblyName>TimeWarp.State.DevTools.App</AssemblyName>
     <RootNamespace>TimeWarp.State.DevTools.App</RootNamespace>

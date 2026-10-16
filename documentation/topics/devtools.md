@@ -1,11 +1,11 @@
 ---
 uid: TimeWarpState:DevTools.md
-title: TimeWarp.State DevTools
+title: TimeWarp DevTools
 ---
 
-# Companion DevTools app
+# TimeWarp DevTools
 
-`TimeWarp.State.DevTools` is a Blazor Server inspector for a running app's actions and state. An Aspire AppHost adds it with `AddTimeWarpStateDevTools()`. The dashboard endpoint is labeled **TimeWarp.State DevTools**.
+TimeWarp DevTools is the inspector. State is its first plugin: the action log and state snapshots on this page. `TimeWarp.State.DevTools` is the Blazor Server project for that plugin. An Aspire AppHost adds it with `AddTimeWarpStateDevTools()`. The default resource name is `timewarp-devtools`. The dashboard endpoint is labeled **TimeWarp DevTools**.
 
 The inspector uses TimeWarp.State for its own filter, selection, and pause. That store is a different process from the app. The action list is the app's `TimeWarp.State` activities, not the inspector's.
 

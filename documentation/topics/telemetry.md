@@ -37,4 +37,4 @@ WASM uses the JS OpenTelemetry SDK (Aspire dashboard browser telemetry: OTLP/HTT
 
 ## DevTools app
 
-[TimeWarp.State DevTools](xref:TimeWarpState:DevTools.md) is a Blazor inspector added to an Aspire AppHost with `AddTimeWarpStateDevTools()`. It reads these spans. The dashboard link is the DevTools resource. The browser-extension time-travel API was removed in 12.0.0-beta.11. Observation is this package plus that app.
+[TimeWarp DevTools](xref:TimeWarpState:DevTools.md) is a Blazor inspector added to an Aspire AppHost with `AddTimeWarpStateDevTools()`. It reads these spans. The dashboard link is the DevTools resource. The browser-extension time-travel API was removed in 12.0.0-beta.11. Observation is this package plus that app.
