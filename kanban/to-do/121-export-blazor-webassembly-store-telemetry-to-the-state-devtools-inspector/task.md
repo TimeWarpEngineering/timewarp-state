@@ -187,8 +187,7 @@ Observed on 2026-10-16: the count went from 3 to 8. The inspector listed `live w
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4, M5, M6, M7, M8, M9
-- Round 2: Done — M1–M9 fixed, 0 open, disposition clean
-
+- Round 2: Done
 ## Notes
 
 Context: task 118 (packaged inspector), timewarp-architecture 335-001 (PR #517).
