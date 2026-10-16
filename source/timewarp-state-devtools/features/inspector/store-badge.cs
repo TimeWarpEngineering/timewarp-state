@@ -7,8 +7,10 @@
 // four characters of the store id. Hue is a stable hash of the full id so two stores
 // that share a label usually look different; with eight buckets two stores share a colour about one
 // time in eight. Eight hues match the stylesheet data-hue rules and the --twe-store-hue-* tokens.
-// Matches is a prefix match on the id and on the badge word. A substring match over a Guid hits
-// nearly every row for any hex character or short word, so the filter would barely narrow the log.
+// Matches is a prefix match on the id, the badge word, and the runtime word (wasm or srv).
+// A substring match over a Guid hits nearly every row for any hex character or short word, so the
+// filter would barely narrow the log. Runtime text is separate from the store badge so interactive
+// server and interactive WebAssembly rows are not both only "live".
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -29,6 +31,12 @@ public static class StoreBadge
 
   /// <summary>Badge for an interactive store.</summary>
   public const string InteractiveLabel = "live";
+
+  /// <summary>Short label for <see cref="InspectorCapture.WasmRuntime"/>.</summary>
+  public const string WasmLabel = "wasm";
+
+  /// <summary>Short label for <see cref="InspectorCapture.ServerRuntime"/>.</summary>
+  public const string ServerLabel = "srv";
 
   /// <summary>
   /// Badge text. Empty when <paramref name="storeId"/> and <paramref name="render"/> are empty.
@@ -54,6 +62,24 @@ public static class StoreBadge
     return storeId[..length];
   }
 
+  /// <summary>
+  /// Short runtime label. Empty when <paramref name="runtime"/> is empty or unknown.
+  /// </summary>
+  public static string RuntimeLabel(string runtime)
+  {
+    if (string.Equals(runtime, InspectorCapture.WasmRuntime, StringComparison.OrdinalIgnoreCase))
+    {
+      return WasmLabel;
+    }
+
+    if (string.Equals(runtime, InspectorCapture.ServerRuntime, StringComparison.OrdinalIgnoreCase))
+    {
+      return ServerLabel;
+    }
+
+    return "";
+  }
+
   /// <summary>Colour bucket in <c>0 .. <see cref="HueCount"/> - 1</c>. Stable for a store id.</summary>
   public static int Hue(string storeId)
   {
@@ -75,9 +101,13 @@ public static class StoreBadge
   }
 
   /// <summary>
-  /// True when the store id or the badge text starts with <paramref name="filter"/>, ignoring case.
+  /// True when the store id, the store badge, or the runtime label starts with <paramref name="filter"/>, ignoring case.
   /// </summary>
-  public static bool Matches(string storeId, string render, string filter)
+  /// <param name="storeId">Store Guid text.</param>
+  /// <param name="render">Render tag.</param>
+  /// <param name="filter">Filter text. Empty matches every row.</param>
+  /// <param name="runtime">Runtime tag. Empty skips the runtime label.</param>
+  public static bool Matches(string storeId, string render, string filter, string runtime = "")
   {
     if (filter.Length == 0)
     {
@@ -90,6 +120,12 @@ public static class StoreBadge
     }
 
     string label = Label(storeId, render);
-    return label.Length > 0 && label.StartsWith(filter, StringComparison.OrdinalIgnoreCase);
+    if (label.Length > 0 && label.StartsWith(filter, StringComparison.OrdinalIgnoreCase))
+    {
+      return true;
+    }
+
+    string runtimeLabel = RuntimeLabel(runtime);
+    return runtimeLabel.Length > 0 && runtimeLabel.StartsWith(filter, StringComparison.OrdinalIgnoreCase);
   }
 }

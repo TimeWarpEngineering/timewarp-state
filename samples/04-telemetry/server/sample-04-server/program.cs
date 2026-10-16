@@ -7,6 +7,8 @@
 // ASP.NET Core. The OTLP exporter is added only when OTEL_EXPORTER_OTLP_ENDPOINT is set.
 // AddTimeWarpStateDevToolsExporter copies the same activities to DevTools when
 // TIMEWARP_STATE_DEVTOOLS_ENDPOINT is set, and turns snapshots on for that run.
+// The WebAssembly counter is a separate project. This host serves it and, in Development,
+// maps GET /_timewarp/state-devtools so the browser can learn the inspector origin.
 #endregion
 
 namespace Sample04Server;
@@ -18,7 +20,8 @@ public class Program
     WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
     builder.Services.AddRazorComponents()
-      .AddInteractiveServerComponents();
+      .AddInteractiveServerComponents()
+      .AddInteractiveWebAssemblyComponents();
 
     builder.Services.AddGeneratedMediator<ClientPipeline>();
     builder.Services.AddTimeWarpState();
@@ -71,7 +74,11 @@ public class Program
     app.UseAntiforgery();
 
     app.MapRazorComponents<App>()
-      .AddInteractiveServerRenderMode();
+      .AddInteractiveServerRenderMode()
+      .AddInteractiveWebAssemblyRenderMode()
+      .AddAdditionalAssemblies(typeof(Sample04Wasm.Program).Assembly);
+
+    app.MapTimeWarpStateDevToolsClientConfig();
 
     app.Run();
   }

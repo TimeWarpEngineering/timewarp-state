@@ -48,4 +48,24 @@ public class StoreBadge_Should
     StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "liv").ShouldBeTrue();
     StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "ive").ShouldBeFalse();
   }
+
+  public static void LabelWasmAndServerRuntimes()
+  {
+    StoreBadge.RuntimeLabel(InspectorCapture.WasmRuntime).ShouldBe(StoreBadge.WasmLabel);
+    StoreBadge.RuntimeLabel("WASM").ShouldBe(StoreBadge.WasmLabel);
+    StoreBadge.RuntimeLabel(InspectorCapture.ServerRuntime).ShouldBe(StoreBadge.ServerLabel);
+    StoreBadge.RuntimeLabel("").ShouldBe("");
+    StoreBadge.RuntimeLabel("other").ShouldBe("");
+  }
+
+  public static void MatchARuntimeLabelFromTheStart()
+  {
+    const string storeId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    StoreBadge.Matches(storeId, "", "wasm", InspectorCapture.WasmRuntime).ShouldBeTrue();
+    StoreBadge.Matches(storeId, "", "was", InspectorCapture.WasmRuntime).ShouldBeTrue();
+    StoreBadge.Matches(storeId, "", "srv", InspectorCapture.ServerRuntime).ShouldBeTrue();
+    StoreBadge.Matches(storeId, "", "rv", InspectorCapture.ServerRuntime).ShouldBeFalse();
+    StoreBadge.Matches(storeId, "", "wasm", InspectorCapture.ServerRuntime).ShouldBeFalse();
+    StoreBadge.Matches(storeId, InspectorCapture.InteractiveRender, "live", InspectorCapture.WasmRuntime).ShouldBeTrue();
+  }
 }

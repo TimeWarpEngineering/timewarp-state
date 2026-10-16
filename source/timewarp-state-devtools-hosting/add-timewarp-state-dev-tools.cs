@@ -11,7 +11,9 @@
 // An apphost or IDE launch does not put that muxer on PATH. Per-RID packages were rejected.
 // ASPNETCORE_HTTP_PORTS receives the http endpoint port. The endpoint name stays http.
 // WithTimeWarpStateDevTools sets TIMEWARP_STATE_DEVTOOLS_ENDPOINT and waits for the inspector
-// in run mode. In publish mode it returns the inspected resource unchanged. ExcludeFromManifest
+// in run mode. It also sets TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS on the inspector from the
+// inspected resource's http and https endpoints, so a browser on that origin can post spans.
+// In publish mode it returns the inspected resource unchanged. ExcludeFromManifest
 // keeps the inspector resource itself out of the manifest, so publish output has no reference to it.
 // A missing inspector file is an error in run mode and is ignored in publish mode.
 // IResourceBuilder<T> is invariant, so WaitFor rewraps the inspector as IResource.
@@ -60,6 +62,12 @@ public static class TimeWarpStateDevToolsHosting
 
   /// <summary>Environment variable that receives the inspector's HTTP target port.</summary>
   public const string HttpPortsEnvironmentVariable = "ASPNETCORE_HTTP_PORTS";
+
+  /// <summary>
+  /// Comma-separated browser origins allowed to call the inspector ingest route.
+  /// Must equal <c>DevToolsIngestCors.OriginsEnvironmentVariable</c>. A test asserts the match.
+  /// </summary>
+  public const string CorsOriginsEnvironmentVariable = "TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS";
 
   /// <summary>
   /// .NET host Aspire should execute. <see cref="AppLaunchCommand"/> is the last fallback.
@@ -212,7 +220,9 @@ public static class TimeWarpStateDevToolsHostingExtensions
   /// <summary>
   /// Publishes the DevTools origin to <paramref name="builder"/> and waits for DevTools to start.
   /// The inspected app reads <see cref="TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable"/>
-  /// and calls <c>AddTimeWarpStateDevToolsExporter</c>. In publish mode the inspected resource is
+  /// and calls <c>AddTimeWarpStateDevToolsExporter</c>. The inspector receives
+  /// <see cref="TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable"/> from the inspected
+  /// resource's http and https endpoints. In publish mode the inspected resource is
   /// returned unchanged, so publish output does not reference the inspector.
   /// </summary>
   /// <typeparam name="T">Inspected resource type.</typeparam>
@@ -226,7 +236,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
     IResourceBuilder<TDevTools> devtools
   )
     where T : IResourceWithEnvironment, IResourceWithWaitSupport
-    where TDevTools : IResourceWithEndpoints
+    where TDevTools : IResourceWithEndpoints, IResourceWithEnvironment
   {
     ArgumentNullException.ThrowIfNull(builder);
     ArgumentNullException.ThrowIfNull(devtools);
@@ -235,6 +245,8 @@ public static class TimeWarpStateDevToolsHostingExtensions
     {
       return builder;
     }
+
+    PublishClientOrigins(builder, devtools);
 
     IResource devtoolsResource = devtools.Resource;
     IResourceBuilder<IResource> dependency = builder.ApplicationBuilder.CreateResourceBuilder(devtoolsResource);
@@ -246,6 +258,43 @@ public static class TimeWarpStateDevToolsHostingExtensions
         devtools.GetEndpoint(TimeWarpStateDevToolsHosting.UiEndpointName)
       )
       .WaitFor(dependency);
+  }
+
+  private static void PublishClientOrigins<T, TDevTools>
+  (
+    IResourceBuilder<T> inspected,
+    IResourceBuilder<TDevTools> devtools
+  )
+    where T : IResource
+    where TDevTools : IResourceWithEnvironment
+  {
+    if (inspected.Resource is not IResourceWithEndpoints client)
+    {
+      return;
+    }
+
+    EndpointReference https = new(client, "https");
+    EndpointReference http = new(client, "http");
+    if (https.Exists && http.Exists)
+    {
+      devtools.WithEnvironment
+      (
+        TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable,
+        ReferenceExpression.Create($"{https},{http}")
+      );
+      return;
+    }
+
+    if (https.Exists)
+    {
+      devtools.WithEnvironment(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable, https);
+      return;
+    }
+
+    if (http.Exists)
+    {
+      devtools.WithEnvironment(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable, http);
+    }
   }
 
   private static IResourceBuilder<T> LabelDevToolsUi<T>(this IResourceBuilder<T> builder)

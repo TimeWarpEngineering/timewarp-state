@@ -119,6 +119,16 @@ public class AddTimeWarpStateDevTools_Should
 
     Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(server.Resource);
     variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeTrue();
+
+    bool clientPublishesAnOrigin = server.Resource.Annotations
+      .OfType<EndpointAnnotation>()
+      .Any(endpoint =>
+        string.Equals(endpoint.Name, "http", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(endpoint.Name, "https", StringComparison.OrdinalIgnoreCase));
+    Dictionary<string, object> devtoolsVariables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    devtoolsVariables
+      .ContainsKey(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable)
+      .ShouldBe(clientPublishesAnOrigin);
   }
 
   public static void ResolveTheDotNetHostInOrder()
@@ -161,12 +171,21 @@ public class AddTimeWarpStateDevTools_Should
 
     Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(server.Resource);
     variables.ContainsKey(TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable).ShouldBeFalse();
+
+    Dictionary<string, object> devtoolsVariables = await ApplyEnvironmentCallbacks(devtools.Resource);
+    devtoolsVariables.ContainsKey(TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable).ShouldBeFalse();
   }
 
   public static void ShareTheEndpointVariableNameWithTheExporter()
   {
     TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable
       .ShouldBe(TimeWarpStateDevToolsExport.EndpointEnvironmentVariable);
+  }
+
+  public static void ShareTheCorsVariableNameWithTheInspector()
+  {
+    TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable
+      .ShouldBe(DevToolsIngestCors.OriginsEnvironmentVariable);
   }
 
   private static string StampedAppPath()

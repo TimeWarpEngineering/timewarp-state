@@ -29,7 +29,7 @@ dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj
 
 The Aspire CLI writes `aspire.config.json` beside the AppHost; that file is gitignored.
 
-Open the dashboard URL printed by the AppHost. Start the `sample-04-server` resource if it is not already running. The `timewarp-state-devtools` resource is the inspector, started from the `TimeWarp.State.DevTools.App` package with the same `AddTimeWarpStateDevTools()` call any AppHost uses. Its HTTP endpoint is labeled **TimeWarp.State DevTools**. Open that link, then open the sample's `/counter`.
+Open the dashboard URL printed by the AppHost. Start the `sample-04-server` resource if it is not already running. The `timewarp-state-devtools` resource is the inspector, started from the `TimeWarp.State.DevTools.App` package with the same `AddTimeWarpStateDevTools()` call any AppHost uses. Its HTTP endpoint is labeled **TimeWarp.State DevTools**. Open that link, then open the sample's `/counter` or `/counter-wasm`.
 
 On connect, DevTools shows an `init` row and a **CounterState** node (snapshots are on because the AppHost set the DevTools endpoint). Click **Click me**. The **State** tab updates `Count` live (each click adds 5). Select an older row: **State** shows the count as of that row, and **Diff** shows the +5 change. **Action**, **State**, and **Diff** are the right-hand tabs; **Tree** and **Raw** switch the state format. Filter, pause, and clear in DevTools do not add rows. The same click is also a trace named `CounterState.IncrementCountActionSet.Action` on source `TimeWarp.State`.
 
@@ -47,6 +47,12 @@ export OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
 dotnet run --project samples/04-telemetry/server/sample-04-server/sample-04-server.csproj
 ```
 
-## WASM / browser telemetry
+## WebAssembly counter
 
-This sample is Blazor Server (the C# `ActivitySource` path). WASM uses the JS OpenTelemetry SDK and Aspire dashboard browser telemetry (OTLP/HTTP + CORS). When an AppHost launches both the app and the dashboard, CORS is configured automatically. A standalone dashboard needs `DASHBOARD__OTLP__CORS__ALLOWEDORIGINS` set to the WASM origin. See [Enable browser telemetry](https://aspire.dev/dashboard/enable-browser-telemetry/).
+`/counter-wasm` is `WasmCounterState` in the browser (`InteractiveWebAssembly`, prerender off). It is a different type from the server `CounterState`, so the two stores stay separate in the inspector.
+
+In Development the client calls `GET /_timewarp/state-devtools` on this host. The route returns the `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` origin. The client then posts spans with `TimeWarp.State.DevTools.Wasm`. Rows are stamped `timewarp.state.runtime=wasm` and show a **wasm** badge. Server rows show **srv**. An absent inspector leaves the counter running and exports nothing.
+
+`WithTimeWarpStateDevTools` puts this app's http and https origins into `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector, so the browser post is allowed only from this app and only while the inspector is in Development.
+
+Aspire dashboard browser telemetry (the JS OpenTelemetry SDK and `DASHBOARD__OTLP__CORS__ALLOWEDORIGINS`) is a different channel. This sample does not use it for TimeWarp.State.

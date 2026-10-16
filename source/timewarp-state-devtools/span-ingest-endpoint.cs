@@ -144,6 +144,7 @@ public static class SpanIngestEndpoint
       Kind = kind,
       StoreId = Attribute(item, InspectorCapture.StoreTagName),
       Render = Attribute(item, InspectorCapture.RenderTagName),
+      Runtime = Attribute(item, InspectorCapture.RuntimeTagName),
       Attributes = attributes
     };
     return true;

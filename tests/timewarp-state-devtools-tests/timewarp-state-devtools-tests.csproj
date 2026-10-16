@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\source\timewarp-state-devtools\timewarp-state-devtools.csproj" />
     <ProjectReference Include="..\..\source\timewarp-state-devtools-export\timewarp-state-devtools-export.csproj" />
     <ProjectReference Include="..\..\source\timewarp-state-devtools-hosting\timewarp-state-devtools-hosting.csproj" />
+    <ProjectReference Include="..\..\source\timewarp-state-devtools-wasm\timewarp-state-devtools-wasm.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

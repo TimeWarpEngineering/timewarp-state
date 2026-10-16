@@ -22,6 +22,8 @@ The resource declares an HTTP endpoint named `http`. Aspire injects the target p
 
 `WithTimeWarpStateDevTools` sets `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` on the inspected resource and waits for the inspector when the AppHost is running. The app calls `AddTimeWarpStateDevToolsExporter()` from package `TimeWarp.State.DevTools.Export`. Aspire's own OTLP endpoint is unchanged, so the dashboard still receives traces.
 
+The same call sets `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector from the inspected app's `https` and `http` endpoints. The inspector allows browser posts only from those origins, and only in Development. A second `WithTimeWarpStateDevTools` on another app replaces that list. Publish mode adds neither variable. The browser reads the origin from `GET /_timewarp/state-devtools` on the inspected app (`MapTimeWarpStateDevToolsClientConfig`) and posts with `TimeWarp.State.DevTools.Wasm`.
+
 ## Inner loop on the inspector
 
 `AddTimeWarpStateDevToolsProject(projectPath)` adds that csproj as a project resource. The path is an argument. The sample AppHost does not call it. Use it only while changing the inspector project itself.

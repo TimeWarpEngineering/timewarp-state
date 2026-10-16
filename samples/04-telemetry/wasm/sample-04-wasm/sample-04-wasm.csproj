@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <AssemblyName>Sample04Wasm</AssemblyName>
+    <RootNamespace>Sample04Wasm</RootNamespace>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="TimeWarp.State" />
+    <PackageReference Include="TimeWarp.State.Blazor" />
+    <PackageReference Include="TimeWarp.State.Telemetry" />
+    <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-devtools-wasm\timewarp-state-devtools-wasm.csproj" />
+  </ItemGroup>
+
+</Project>

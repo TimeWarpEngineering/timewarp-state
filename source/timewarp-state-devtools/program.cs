@@ -12,6 +12,8 @@
 // handler replaces the developer exception page. MapStaticAssets serves _framework/blazor.web.js. Outside
 // Development, dotnet run does not attach the static web asset file provider, and the asset endpoint then
 // looks for that script under wwwroot. UseStaticWebAssets attaches the manifest in every environment.
+// Ingest CORS is registered only in Development and only when an origin list is configured. The server
+// exporter does not send Origin, so it still posts when the policy is absent.
 #endregion
 
 namespace TimeWarp.State.DevTools;
@@ -35,6 +37,7 @@ public class Program
     builder.Services.AddGeneratedMediator<ClientPipeline>();
     builder.Services.AddTimeWarpState();
     builder.Services.AddTimeWarpStateBlazor();
+    bool ingestCors = DevToolsIngestCors.Add(builder);
 
     WebApplication app = builder.Build();
 
@@ -45,6 +48,11 @@ public class Program
 
     StaticWebAssetsLoader.UseStaticWebAssets(app.Environment, app.Configuration);
     app.MapStaticAssets();
+    if (ingestCors)
+    {
+      DevToolsIngestCors.Use(app);
+    }
+
     app.UseAntiforgery();
 
     SpanIngestEndpoint.Map(app);

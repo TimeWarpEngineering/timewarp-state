@@ -174,7 +174,7 @@
         entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)
         || entry.ActionName.Contains(filter, StringComparison.OrdinalIgnoreCase)
         || entry.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase)
-        || StoreBadge.Matches(entry.StoreId, entry.Render, filter))
+        || StoreBadge.Matches(entry.StoreId, entry.Render, filter, entry.Runtime))
       .ToArray();
   }
 
@@ -340,11 +340,16 @@
                 <span class="when">@entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</span>
                 @{
                   string badge = StoreBadge.Label(entry.StoreId, entry.Render);
+                  string runtimeLabel = StoreBadge.RuntimeLabel(entry.Runtime);
                 }
                 <span
                   class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
                   data-hue="@StoreBadge.Hue(entry.StoreId)"
                   title="@entry.StoreId">@badge</span>
+                @if (runtimeLabel.Length > 0)
+                {
+                  <span class="runtime-badge" data-qa="runtime" title="@entry.Runtime">@runtimeLabel</span>
+                }
                 <span class="action">@entry.ActionName</span>
                 <span class="state">@entry.StateTypeName</span>
                 <span class="duration">@entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</span>
@@ -389,6 +394,11 @@
             {
               <dt>Render</dt>
               <dd>@selected.Render</dd>
+            }
+            @if (selected.Runtime.Length > 0)
+            {
+              <dt>Runtime</dt>
+              <dd data-qa="runtime-detail">@selected.Runtime</dd>
             }
             <dt>Activity</dt>
             <dd>@selected.Name</dd>

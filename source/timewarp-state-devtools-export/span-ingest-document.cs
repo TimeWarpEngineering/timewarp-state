@@ -13,7 +13,11 @@ namespace TimeWarp.State.DevTools.Export;
 /// <summary>
 /// Body of <c>POST /ingest/spans</c>.
 /// </summary>
+#if DEVTOOLS_WASM
+internal sealed class SpanIngestDocument
+#else
 public sealed class SpanIngestDocument
+#endif
 {
   /// <summary>Spans from one export batch.</summary>
   public List<SpanIngestItem> Spans { get; set; } = [];
@@ -22,7 +26,11 @@ public sealed class SpanIngestDocument
 /// <summary>
 /// One completed TimeWarp.State activity.
 /// </summary>
+#if DEVTOOLS_WASM
+internal sealed class SpanIngestItem
+#else
 public sealed class SpanIngestItem
+#endif
 {
   /// <summary>Activity name.</summary>
   public string Name { get; set; } = "";
@@ -52,7 +60,11 @@ public sealed class SpanIngestItem
 /// <summary>
 /// One activity event.
 /// </summary>
+#if DEVTOOLS_WASM
+internal sealed class SpanIngestEvent
+#else
 public sealed class SpanIngestEvent
+#endif
 {
   /// <summary>Event name (<c>state.snapshot</c> or <c>state.diff</c>).</summary>
   public string Name { get; set; } = "";
@@ -65,4 +77,8 @@ public sealed class SpanIngestEvent
 /// Source-generated JSON contract for <see cref="SpanIngestDocument"/>.
 /// </summary>
 [JsonSerializable(typeof(SpanIngestDocument))]
+#if DEVTOOLS_WASM
+internal sealed partial class SpanIngestJsonContext : JsonSerializerContext;
+#else
 public sealed partial class SpanIngestJsonContext : JsonSerializerContext;
+#endif

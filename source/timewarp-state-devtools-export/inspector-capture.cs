@@ -6,6 +6,8 @@
 // Tag names match TimeWarp.State.Telemetry's span tags. InspectorState is the DevTools UI state
 // simple name (DeclaringType.Name). Dropping that name, and timewarp.state.inspector=true, stops a
 // miswired exporter from feeding the inspector's own actions back into the log it displays.
+// timewarp.state.runtime is stamped by the exporter (server or wasm), not by telemetry, so a store
+// that exists on both sides of one page stays distinguishable. The store Guid remains the instance id.
 #endregion
 
 namespace TimeWarp.State.DevTools.Export;
@@ -13,7 +15,11 @@ namespace TimeWarp.State.DevTools.Export;
 /// <summary>
 /// Capture rules for the DevTools observation channel.
 /// </summary>
+#if DEVTOOLS_WASM
+internal static class InspectorCapture
+#else
 public static class InspectorCapture
+#endif
 {
   /// <summary>ActivitySource name. Matches <c>TimeWarpStateTelemetry.ActivitySourceName</c>.</summary>
   public const string ActivitySourceName = "TimeWarp.State";
@@ -56,6 +62,15 @@ public static class InspectorCapture
 
   /// <summary>Value of <see cref="RenderTagName"/> for an interactive circuit or WebAssembly session.</summary>
   public const string InteractiveRender = "interactive";
+
+  /// <summary>Span tag: <see cref="ServerRuntime"/> or <see cref="WasmRuntime"/>.</summary>
+  public const string RuntimeTagName = "timewarp.state.runtime";
+
+  /// <summary>Value of <see cref="RuntimeTagName"/> for a span exported from the server process.</summary>
+  public const string ServerRuntime = "server";
+
+  /// <summary>Value of <see cref="RuntimeTagName"/> for a span exported from the browser.</summary>
+  public const string WasmRuntime = "wasm";
 
   /// <summary>Simple name of the DevTools UI state. Spans for this state are not captured.</summary>
   public const string InspectorStateTypeName = "InspectorState";

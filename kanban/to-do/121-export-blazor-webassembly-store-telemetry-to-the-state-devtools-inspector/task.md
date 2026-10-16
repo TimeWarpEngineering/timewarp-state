@@ -92,19 +92,60 @@ running inspector, and they appear alongside server-side stores. No effect on pr
 Once released, timewarp-architecture follows up to wire the WASM client (its template currently
 exports server-side stores only).
 
+## Goal (implementer restatement)
+
+A Development Blazor WebAssembly store, only when the app opts in and an inspector origin is available, posts its `TimeWarp.State` activities to the running inspector. Those rows show up beside server-side stores. An unset endpoint does no work. Production and a published bundle that did not opt in do not export, and the inspector does not accept cross-origin posts from arbitrary sites.
+
+Acceptance:
+
+- The browser export path does not use a blocking HTTP call or a background batch thread. Inspector downtime or a network error does not throw into the app.
+- The body stays the existing dev-only JSON document, so the ingest parser is unchanged.
+- CORS on `POST /ingest/spans` is Development-only and limited to configured origins.
+- The WASM client learns the origin from configuration or from a Development-only route on the host that reads `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`.
+- A row carries `timewarp.state.runtime` (`wasm` or `server`) so a feature that runs in both places stays distinguishable. `timewarp.state.store` still separates store instances.
+- Sample 04 hosts a WASM counter on this path. Tests cover CORS allow and deny, the Development and opt-in gates, and a WASM-exported action landing in the inspector log.
+- `dev build` is clean, `dev test` is green, and the touched package readmes describe the wiring.
+
+Decisions:
+
+- Wire format stays the dev-only JSON document. OTLP would be a second parser, and the released server exporter already posts this document.
+- The WASM exporter is a new package, `TimeWarp.State.DevTools.Wasm`. It uses an `ActivityListener` and does not reference OpenTelemetry. The batch processor's timer thread and synchronous `HttpClient.Send` cannot run on the browser's one thread. Shared document and mapping sources are compiled into that package with internal types so the browser bundle does not load the server exporter.
+- Transport is `HttpClient.SendAsync` (the browser fetch handler). There is no `sendBeacon`. A batch still in the queue can be lost when the page goes away. That is acceptable for a dev inspector, and it keeps the failure path inside the catch that already ignores a down inspector.
+- Flush is an async loop on the caller: wait for a span, coalesce for 200 ms, post. The queue drops the oldest item when it is full. Nothing in that loop is synchronous HTTP.
+- The client reads `TimeWarp:State:DevTools:Endpoint`, then the same environment variable the server uses (empty in the browser), then `GET /_timewarp/state-devtools` on its own origin. The server maps that route only in Development, from `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`. `WithTimeWarpStateDevTools` publishes the inspected app's http and https origins to the inspector as `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS`.
+- CORS is a named policy. No configured origin means no CORS middleware, so the endpoint is not an open sink. Same-process server posts do not need CORS. When the policy is on and the preflight asks for private-network access, the response includes `Access-Control-Allow-Private-Network`.
+- The server exporter stamps `timewarp.state.runtime=server` when the activity has no runtime tag. The WASM exporter stamps `wasm`. The log badge shows `srv` or `wasm` next to the existing pre/live store badge.
+
 ## Checklist
 
-- [ ] Decide and record answers to the open questions
-- [ ] WASM-capable exporter and flush strategy
-- [ ] CORS on the inspector ingest endpoint (Development / configured origins only)
-- [ ] Endpoint delivery to the WASM client
-- [ ] Sample or test showing WASM store actions in the inspector
-- [ ] Tests for CORS and Development-only gating
-- [ ] Readme updates; `dev build` 0 warnings; `dev test` green
+- [x] Decide and record answers to the open questions
+- [x] WASM-capable exporter and flush strategy
+- [x] CORS on the inspector ingest endpoint (Development / configured origins only)
+- [x] Endpoint delivery to the WASM client
+- [x] Sample or test showing WASM store actions in the inspector
+- [x] Tests for CORS and Development-only gating
+- [x] Readme updates; `dev build` 0 warnings; `dev test` green
 
 ## Session
 
 - Created: 3911642 (2026-10-16)
+- Implemented: Grok (2026-10-16)
+
+## Results
+
+`TimeWarp.State.DevTools.Wasm` posts `TimeWarp.State` activities from the browser to the existing ingest document. The server stamps `timewarp.state.runtime=server` when that tag is absent. The browser exporter stamps `wasm`. The inspector log copies that field onto the row and shows **srv** or **wasm**.
+
+The browser learns the origin from `TimeWarp:State:DevTools:Endpoint`, then `TIMEWARP_STATE_DEVTOOLS_ENDPOINT`, then `GET /_timewarp/state-devtools` (`MapTimeWarpStateDevToolsClientConfig`, Development only). `WithTimeWarpStateDevTools` sets `TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS` on the inspector from the inspected app's http and https endpoints. CORS is registered only in Development and only when that list has an absolute http(s) origin.
+
+Packages are `12.0.0-beta.15`. A published app keeps the assembly out with a Debug-only `PackageReference` and `#if DEBUG` around the call. The telemetry sample keeps the reference so `/counter-wasm` stays visible.
+
+`./bin/dev build` exited 0 with 0 compiler errors. The log still prints pre-existing NuGet warnings (NU1510, NU1902) that this change did not add. `./bin/dev test` exited 0, including DevTools (89) and DevTools isolation (4). The telemetry sample server, which hosts the WASM client, builds with 0 warnings.
+
+### How to validate
+
+Smoke: `./bin/dev pack`, then `dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj`. Open the **TimeWarp.State DevTools** endpoint. Open the sample's `/counter-wasm` and click **Click me**. Also click the server `/counter`.
+
+Expect: the inspector shows `WasmCounterState` with a **wasm** badge and `CounterState` with **srv**. Stop the inspector and click again: the WASM counter still increments. Run the sample with `ASPNETCORE_ENVIRONMENT=Production`: `GET /_timewarp/state-devtools` is 404 and the browser does not post.
 
 ## Notes
 

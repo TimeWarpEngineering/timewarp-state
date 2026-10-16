@@ -198,6 +198,17 @@ h1 {
 .store-badge.on[data-hue="6"] { background: var(--twe-store-hue-6); }
 .store-badge.on[data-hue="7"] { background: var(--twe-store-hue-7); }
 
+.runtime-badge {
+  display: inline-block;
+  border: 1px solid var(--twe-paper-2);
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--twe-muted);
+}
+
 .store-select {
   display: flex;
   align-items: center;
