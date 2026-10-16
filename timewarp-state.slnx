@@ -46,6 +46,7 @@
       <BuildDependency Project="source/timewarp-state-analyzer/timewarp-state-analyzer.csproj" />
     </Project>
     <Project Path="source/timewarp-state-blazor/timewarp-state-blazor.csproj" />
+    <Project Path="source/timewarp-state-devtools-app/timewarp-state-devtools-app.csproj" />
     <Project Path="source/timewarp-state-devtools-export/timewarp-state-devtools-export.csproj" />
     <Project Path="source/timewarp-state-devtools-hosting/timewarp-state-devtools-hosting.csproj" />
     <Project Path="source/timewarp-state-devtools/timewarp-state-devtools.csproj" />

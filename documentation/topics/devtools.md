@@ -44,14 +44,14 @@ The header theme control uses the TimeWarp palette. Dark is the default. Light f
 ## AppHost
 
 ```csharp
-IResourceBuilder<ProjectResource> devtools = builder.AddTimeWarpStateDevTools();
+IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
 builder.AddProject<Projects.MyApp>("my-app")
   .WithTimeWarpStateDevTools(devtools);
 ```
 
-`AddTimeWarpStateDevTools` finds `source/timewarp-state-devtools/timewarp-state-devtools.csproj` by walking up from the AppHost directory. Set `TIMEWARP_STATE_DEVTOOLS_PROJECT` when the AppHost is outside this repository. It declares an HTTP endpoint named `http`, so the resource has an endpoint even when Aspire does not find `Properties/launchSettings.json`. An external checkout still needs that `Properties/` folder (capital P) for the Development launch profile.
+`TimeWarp.State.DevTools.Hosting` depends on `TimeWarp.State.DevTools.App` at the same version. That package contains the published inspector (`tools/TimeWarp.State.DevTools.dll`). The publish is framework-dependent and has no runtime identifier. The AppHost starts it with the .NET host (`DOTNET_HOST_PATH`, the running `dotnet` muxer, `DOTNET_ROOT/dotnet`, then `dotnet`). Package targets stamp the dll path onto the AppHost. `AddTimeWarpStateDevTools` adds that executable and declares an HTTP endpoint named `http`. The resource is left out of the publish manifest, and `WithTimeWarpStateDevTools` does nothing in publish mode, so publish output does not reference the inspector.
 
-The DevTools app is not packed into this package. Outside this repository, set `TIMEWARP_STATE_DEVTOOLS_PROJECT` to the full path of a checkout's `source/timewarp-state-devtools/timewarp-state-devtools.csproj`; without it `AddTimeWarpStateDevTools` throws.
+`AddTimeWarpStateDevToolsProject(projectPath)` is the explicit project switch for inner-loop work on the inspector. The sample AppHost calls `AddTimeWarpStateDevTools()`.
 
 In the inspected app:
 
@@ -78,8 +78,9 @@ Spans whose `timewarp.state.state_type` is `InspectorState`, or whose `timewarp.
 | Package | Role |
 | --- | --- |
 | `TimeWarp.State.DevTools.Export` | Dev-only exporter. Safe for the inspected app to reference. |
-| `TimeWarp.State.DevTools.Hosting` | `AddTimeWarpStateDevTools()` and `WithTimeWarpStateDevTools()`. |
-| `TimeWarp.State.DevTools` | The Blazor app. Not a NuGet package. |
+| `TimeWarp.State.DevTools.Hosting` | `AddTimeWarpStateDevTools()` and `WithTimeWarpStateDevTools()`. Depends on the App package. |
+| `TimeWarp.State.DevTools.App` | Published inspector. Framework-dependent. Same version as Hosting. |
+| `TimeWarp.State.DevTools` | The Blazor app project. Not itself a NuGet package. Its publish output is the App package. |
 
 Production packages do not reference these.
 

@@ -1,15 +1,22 @@
 #region Purpose
-// Adds the DevTools Blazor app to an Aspire AppHost and points an inspected app at it.
+// Adds the packaged DevTools inspector to an Aspire AppHost and points an inspected app at it.
 #endregion
 
 #region Design
-// AddProject by path, so the AppHost does not need a compile-time Projects.* type for DevTools.
-// WithHttpEndpoint(name: "http") declares the UI endpoint. Aspire updates an endpoint of the same
-// name, so a launch profile that already added "http" is not duplicated. Without a profile, that
-// call is what gives the resource an endpoint and lets Aspire set ASPNETCORE_URLS. The dashboard
-// text is "TimeWarp.State DevTools". WithTimeWarpStateDevTools sets
-// TIMEWARP_STATE_DEVTOOLS_ENDPOINT from that endpoint and waits until DevTools is running.
-// The OTLP endpoint Aspire already injects is left alone; the dashboard still receives traces.
+// TimeWarp.State.DevTools.App is a framework-dependent package with no runtime identifier.
+// Its tools/ folder is the publish output. Package targets stamp AssemblyMetadata
+// timewarpstatedevtoolspath onto the AppHost. AddExecutable starts that dll with the .NET host:
+// DOTNET_HOST_PATH, otherwise the running muxer when this process is dotnet or dotnet.exe,
+// otherwise DOTNET_ROOT/dotnet (dotnet.exe on Windows), otherwise the name "dotnet".
+// An apphost or IDE launch does not put that muxer on PATH. Per-RID packages were rejected.
+// ASPNETCORE_HTTP_PORTS receives the http endpoint port. The endpoint name stays http.
+// WithTimeWarpStateDevTools sets TIMEWARP_STATE_DEVTOOLS_ENDPOINT and waits for the inspector
+// in run mode. In publish mode it returns the inspected resource unchanged. ExcludeFromManifest
+// keeps the inspector resource itself out of the manifest, so publish output has no reference to it.
+// A missing inspector file is an error in run mode and is ignored in publish mode.
+// IResourceBuilder<T> is invariant, so WaitFor rewraps the inspector as IResource.
+// AddTimeWarpStateDevToolsProject is the inner-loop switch: the caller passes a csproj path.
+// There is no parent-folder walk and no TIMEWARP_STATE_DEVTOOLS_PROJECT override.
 #endregion
 
 namespace TimeWarp.State.DevTools.Hosting;
@@ -30,12 +37,84 @@ public static class TimeWarpStateDevToolsHosting
 
   /// <summary>
   /// HTTP endpoint name. <see cref="TimeWarpStateDevToolsHostingExtensions.AddTimeWarpStateDevTools"/>
-  /// declares it with <c>WithHttpEndpoint</c>. The DevTools launch profile uses the same name.
+  /// declares it with <c>WithHttpEndpoint</c>.
   /// </summary>
   public const string UiEndpointName = "http";
 
   /// <summary>Dashboard link text for the DevTools UI.</summary>
   public const string DashboardLinkText = "TimeWarp.State DevTools";
+
+  /// <summary>
+  /// Assembly metadata key whose value is the full path of <c>TimeWarp.State.DevTools.dll</c>
+  /// inside the restored <c>TimeWarp.State.DevTools.App</c> package.
+  /// </summary>
+  public const string AppPathMetadataKey = "timewarpstatedevtoolspath";
+
+  /// <summary>File name of the published inspector assembly.</summary>
+  public const string AppAssemblyFileName = "TimeWarp.State.DevTools.dll";
+
+  /// <summary>
+  /// Fallback command name when <see cref="ResolveAppLaunchCommand()"/> finds no host path.
+  /// </summary>
+  public const string AppLaunchCommand = "dotnet";
+
+  /// <summary>Environment variable that receives the inspector's HTTP target port.</summary>
+  public const string HttpPortsEnvironmentVariable = "ASPNETCORE_HTTP_PORTS";
+
+  /// <summary>
+  /// .NET host Aspire should execute. <see cref="AppLaunchCommand"/> is the last fallback.
+  /// </summary>
+  internal static string ResolveAppLaunchCommand()
+  {
+    return ResolveAppLaunchCommand
+    (
+      Environment.GetEnvironmentVariable("DOTNET_HOST_PATH"),
+      Environment.ProcessPath,
+      Environment.GetEnvironmentVariable("DOTNET_ROOT")
+    );
+  }
+
+  /// <summary>
+  /// Resolves the host from an explicit <paramref name="dotnetHostPath"/>, then
+  /// <paramref name="processPath"/> when that file is the muxer, then <paramref name="dotnetRoot"/>.
+  /// </summary>
+  internal static string ResolveAppLaunchCommand
+  (
+    string? dotnetHostPath,
+    string? processPath,
+    string? dotnetRoot
+  )
+  {
+    if (!string.IsNullOrWhiteSpace(dotnetHostPath))
+    {
+      return dotnetHostPath.Trim();
+    }
+
+    if (IsDotNetMuxer(processPath))
+    {
+      return processPath!;
+    }
+
+    if (!string.IsNullOrWhiteSpace(dotnetRoot))
+    {
+      string hostFileName = OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet";
+      return Path.Combine(dotnetRoot.Trim(), hostFileName);
+    }
+
+    return AppLaunchCommand;
+  }
+
+  private static bool IsDotNetMuxer(string? processPath)
+  {
+    if (string.IsNullOrWhiteSpace(processPath))
+    {
+      return false;
+    }
+
+    string fileName = Path.GetFileName(processPath);
+    return fileName.Equals("dotnet", StringComparison.OrdinalIgnoreCase)
+      || fileName.Equals("dotnet.exe", StringComparison.OrdinalIgnoreCase);
+  }
 }
 
 /// <summary>
@@ -44,13 +123,15 @@ public static class TimeWarpStateDevToolsHosting
 public static class TimeWarpStateDevToolsHostingExtensions
 {
   /// <summary>
-  /// Adds the DevTools Blazor app as a project resource, declares its HTTP endpoint, and labels that
-  /// endpoint on the dashboard.
+  /// Adds the packaged DevTools inspector as an executable resource, declares its HTTP endpoint,
+  /// and labels that endpoint on the dashboard. The resource is omitted from publish output.
   /// </summary>
   /// <param name="builder">The distributed application builder.</param>
   /// <param name="name">Resource name. Defaults to <see cref="TimeWarpStateDevToolsHosting.DefaultResourceName"/>.</param>
-  /// <returns>The DevTools project resource.</returns>
-  public static IResourceBuilder<ProjectResource> AddTimeWarpStateDevTools
+  /// <returns>The DevTools executable resource.</returns>
+  /// <exception cref="InvalidOperationException">The package targets did not stamp the inspector path.</exception>
+  [MethodImpl(MethodImplOptions.NoInlining)]
+  public static IResourceBuilder<ExecutableResource> AddTimeWarpStateDevTools
   (
     this IDistributedApplicationBuilder builder,
     string name = TimeWarpStateDevToolsHosting.DefaultResourceName
@@ -59,35 +140,104 @@ public static class TimeWarpStateDevToolsHostingExtensions
     ArgumentNullException.ThrowIfNull(builder);
     ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-    string projectPath = DevToolsProjectLocator.Resolve(builder.AppHostDirectory);
-    return builder
-      .AddProject(name, projectPath)
-      .WithHttpEndpoint(name: TimeWarpStateDevToolsHosting.UiEndpointName)
-      .WithUrlForEndpoint
+    string? appPath = ReadAppPath(Assembly.GetEntryAssembly())
+      ?? ReadAppPath(Assembly.GetCallingAssembly());
+    bool publishMode = builder.ExecutionContext.IsPublishMode;
+    if (string.IsNullOrWhiteSpace(appPath) || (!publishMode && !File.Exists(appPath)))
+    {
+      throw new InvalidOperationException
       (
-        TimeWarpStateDevToolsHosting.UiEndpointName,
-        url => url.DisplayText = TimeWarpStateDevToolsHosting.DashboardLinkText
+        "TimeWarp.State DevTools inspector path is not set. Reference TimeWarp.State.DevTools.Hosting " +
+        "from an Aspire AppHost so TimeWarp.State.DevTools.App can stamp " +
+        $"{TimeWarpStateDevToolsHosting.AppPathMetadataKey}. For inner-loop work on the inspector, " +
+        "call AddTimeWarpStateDevToolsProject with the csproj path." +
+        (string.IsNullOrWhiteSpace(appPath) ? "" : $" Missing file: '{appPath}'.")
       );
+    }
+
+    string? appDirectory = Path.GetDirectoryName(appPath);
+    if (string.IsNullOrWhiteSpace(appDirectory))
+    {
+      throw new InvalidOperationException($"Inspector path has no directory: '{appPath}'.");
+    }
+
+    return builder
+      .AddExecutable
+      (
+        name,
+        TimeWarpStateDevToolsHosting.ResolveAppLaunchCommand(),
+        appDirectory,
+        appPath
+      )
+      .WithHttpEndpoint
+      (
+        name: TimeWarpStateDevToolsHosting.UiEndpointName,
+        env: TimeWarpStateDevToolsHosting.HttpPortsEnvironmentVariable
+      )
+      .LabelDevToolsUi();
+  }
+
+  /// <summary>
+  /// Adds the DevTools inspector project at <paramref name="projectPath"/>. Inner-loop switch for
+  /// work on the inspector. The path is explicit. Nothing walks parent folders.
+  /// </summary>
+  /// <param name="builder">The distributed application builder.</param>
+  /// <param name="projectPath">Full or relative path of the inspector csproj.</param>
+  /// <param name="name">Resource name. Defaults to <see cref="TimeWarpStateDevToolsHosting.DefaultResourceName"/>.</param>
+  /// <returns>The DevTools project resource.</returns>
+  /// <exception cref="InvalidOperationException"><paramref name="projectPath"/> is not a file.</exception>
+  public static IResourceBuilder<ProjectResource> AddTimeWarpStateDevToolsProject
+  (
+    this IDistributedApplicationBuilder builder,
+    string projectPath,
+    string name = TimeWarpStateDevToolsHosting.DefaultResourceName
+  )
+  {
+    ArgumentNullException.ThrowIfNull(builder);
+    ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    ArgumentException.ThrowIfNullOrWhiteSpace(projectPath);
+
+    string fullPath = Path.GetFullPath(projectPath);
+    if (!File.Exists(fullPath))
+    {
+      throw new InvalidOperationException($"DevTools project does not exist: '{fullPath}'.");
+    }
+
+    return builder
+      .AddProject(name, fullPath)
+      .WithHttpEndpoint(name: TimeWarpStateDevToolsHosting.UiEndpointName)
+      .LabelDevToolsUi();
   }
 
   /// <summary>
   /// Publishes the DevTools origin to <paramref name="builder"/> and waits for DevTools to start.
   /// The inspected app reads <see cref="TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable"/>
-  /// and calls <c>AddTimeWarpStateDevToolsExporter</c>.
+  /// and calls <c>AddTimeWarpStateDevToolsExporter</c>. In publish mode the inspected resource is
+  /// returned unchanged, so publish output does not reference the inspector.
   /// </summary>
   /// <typeparam name="T">Inspected resource type.</typeparam>
+  /// <typeparam name="TDevTools">DevTools resource type. The packaged app is an executable; the project switch is a project.</typeparam>
   /// <param name="builder">The inspected resource.</param>
-  /// <param name="devtools">The resource from <see cref="AddTimeWarpStateDevTools"/>.</param>
+  /// <param name="devtools">The resource from <see cref="AddTimeWarpStateDevTools"/> or <see cref="AddTimeWarpStateDevToolsProject"/>.</param>
   /// <returns>The inspected resource builder.</returns>
-  public static IResourceBuilder<T> WithTimeWarpStateDevTools<T>
+  public static IResourceBuilder<T> WithTimeWarpStateDevTools<T, TDevTools>
   (
     this IResourceBuilder<T> builder,
-    IResourceBuilder<ProjectResource> devtools
+    IResourceBuilder<TDevTools> devtools
   )
     where T : IResourceWithEnvironment, IResourceWithWaitSupport
+    where TDevTools : IResourceWithEndpoints
   {
     ArgumentNullException.ThrowIfNull(builder);
     ArgumentNullException.ThrowIfNull(devtools);
+
+    if (builder.ApplicationBuilder.ExecutionContext.IsPublishMode)
+    {
+      return builder;
+    }
+
+    IResource devtoolsResource = devtools.Resource;
+    IResourceBuilder<IResource> dependency = builder.ApplicationBuilder.CreateResourceBuilder(devtoolsResource);
 
     return builder
       .WithEnvironment
@@ -95,6 +245,37 @@ public static class TimeWarpStateDevToolsHostingExtensions
         TimeWarpStateDevToolsHosting.EndpointEnvironmentVariable,
         devtools.GetEndpoint(TimeWarpStateDevToolsHosting.UiEndpointName)
       )
-      .WaitFor(devtools);
+      .WaitFor(dependency);
+  }
+
+  private static IResourceBuilder<T> LabelDevToolsUi<T>(this IResourceBuilder<T> builder)
+    where T : IResource
+  {
+    return builder
+      .WithUrlForEndpoint
+      (
+        TimeWarpStateDevToolsHosting.UiEndpointName,
+        url => url.DisplayText = TimeWarpStateDevToolsHosting.DashboardLinkText
+      )
+      .ExcludeFromManifest();
+  }
+
+  private static string? ReadAppPath(Assembly? assembly)
+  {
+    if (assembly is null)
+    {
+      return null;
+    }
+
+    foreach (AssemblyMetadataAttribute attribute in assembly.GetCustomAttributes<AssemblyMetadataAttribute>())
+    {
+      if (string.Equals(attribute.Key, TimeWarpStateDevToolsHosting.AppPathMetadataKey, StringComparison.Ordinal)
+        && !string.IsNullOrWhiteSpace(attribute.Value))
+      {
+        return attribute.Value;
+      }
+    }
+
+    return null;
   }
 }

@@ -8,7 +8,7 @@
 #endregion
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
-IResourceBuilder<ProjectResource> devtools = builder.AddTimeWarpStateDevTools();
+IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
 builder.AddProject<Projects.sample_04_server>("sample-04-server")
   .WithTimeWarpStateDevTools(devtools);
 builder.Build().Run();

@@ -6,6 +6,8 @@
 // One list so individual files need no using directives.
 #endregion
 
+global using System.Reflection;
+global using System.Runtime.CompilerServices;
 global using Aspire.Hosting;
 global using Aspire.Hosting.ApplicationModel;
 global using TimeWarp.State.DevTools.Hosting;
