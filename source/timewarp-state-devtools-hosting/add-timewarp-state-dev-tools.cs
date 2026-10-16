@@ -39,7 +39,7 @@ public static class TimeWarpStateDevToolsHosting
   public const string EndpointEnvironmentVariable = "TIMEWARP_STATE_DEVTOOLS_ENDPOINT";
 
   /// <summary>Default Aspire resource name.</summary>
-  public const string DefaultResourceName = "timewarp-state-devtools";
+  public const string DefaultResourceName = "timewarp-devtools";
 
   /// <summary>
   /// HTTP endpoint name. <see cref="TimeWarpStateDevToolsHostingExtensions.AddTimeWarpStateDevTools"/>
@@ -48,7 +48,7 @@ public static class TimeWarpStateDevToolsHosting
   public const string UiEndpointName = "http";
 
   /// <summary>Dashboard link text for the DevTools UI.</summary>
-  public const string DashboardLinkText = "TimeWarp.State DevTools";
+  public const string DashboardLinkText = "TimeWarp DevTools";
 
   /// <summary>
   /// Assembly metadata key whose value is the full path of <c>TimeWarp.State.DevTools.dll</c>
@@ -139,7 +139,7 @@ public static class TimeWarpStateDevToolsHosting
 }
 
 /// <summary>
-/// Aspire registration for the TimeWarp.State DevTools app.
+/// Aspire registration for the TimeWarp DevTools app.
 /// </summary>
 public static class TimeWarpStateDevToolsHostingExtensions
 {
@@ -171,7 +171,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
     {
       throw new InvalidOperationException
       (
-        "TimeWarp.State DevTools inspector path is not set. Reference TimeWarp.State.DevTools.Hosting " +
+        "TimeWarp DevTools inspector path is not set. Reference TimeWarp.State.DevTools.Hosting " +
         "from an Aspire AppHost so TimeWarp.State.DevTools.App can stamp " +
         $"{TimeWarpStateDevToolsHosting.AppPathMetadataKey}. For inner-loop work on the inspector, " +
         "call AddTimeWarpStateDevToolsProject with the csproj path." +

@@ -1,6 +1,6 @@
 # TimeWarp.State.DevTools.Hosting
 
-Aspire integration that starts the TimeWarp.State DevTools inspector and links it from the dashboard.
+Aspire integration that starts the TimeWarp DevTools inspector and links it from the dashboard.
 
 Dev-only. Production app packages do not reference it. There is no time-travel channel.
 
@@ -16,7 +16,7 @@ Reference this package. It depends on `TimeWarp.State.DevTools.App` at the same 
 
 The package targets stamp assembly metadata `timewarpstatedevtoolspath` on the AppHost. `AddTimeWarpStateDevTools` reads that path and adds an executable resource. No source tree, no folder walk, and no environment variable is required.
 
-The dashboard shows the resource endpoint as **TimeWarp.State DevTools**.
+The default resource name is `timewarp-devtools`. The dashboard shows the resource endpoint as **TimeWarp DevTools**. A caller can pass a different name to `AddTimeWarpStateDevTools`.
 
 The resource declares an HTTP endpoint named `http`. Aspire injects the target port as `ASPNETCORE_HTTP_PORTS`. In run mode the executable also gets `ASPNETCORE_ENVIRONMENT=Development`. The published `tools/` folder has no launch profile, and ingest CORS is registered only in Development. Publish mode does not set that variable. The resource is excluded from the publish manifest. `WithTimeWarpStateDevTools` does nothing in publish mode, so the inspected app's publish output does not reference the inspector.
 

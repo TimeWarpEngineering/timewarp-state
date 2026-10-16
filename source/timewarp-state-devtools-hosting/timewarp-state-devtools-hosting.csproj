@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Title>TimeWarp.State.DevTools.Hosting</Title>
-    <Description>Aspire hosting integration that adds the TimeWarp.State DevTools app and links it from the dashboard.</Description>
+    <Description>Aspire hosting integration that adds the TimeWarp DevTools app and links it from the dashboard.</Description>
     <PackageId>TimeWarp.State.DevTools.Hosting</PackageId>
     <AssemblyName>TimeWarp.State.DevTools.Hosting</AssemblyName>
     <RootNamespace>TimeWarp.State.DevTools.Hosting</RootNamespace>

@@ -111,7 +111,7 @@ This JS is not the C# trimmer’s problem.
 
 ## DevTools
 
-Use this package with [TimeWarp.State DevTools](../../documentation/topics/devtools.md) for the action log, timing, and snapshots. `UseReduxDevTools()` was removed in 12.0.0-beta.11.
+Use this package with [TimeWarp DevTools](../../documentation/topics/devtools.md) for the action log, timing, and snapshots. `UseReduxDevTools()` was removed in 12.0.0-beta.11.
 
 ## Sample
 

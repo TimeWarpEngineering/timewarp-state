@@ -1,6 +1,6 @@
 # TimeWarp.State.DevTools.Wasm
 
-Dev-only browser exporter for the TimeWarp.State DevTools inspector. A Blazor WebAssembly host posts completed `TimeWarp.State` activities to `POST /ingest/spans`.
+Dev-only browser exporter for the TimeWarp DevTools inspector. A Blazor WebAssembly host posts completed `TimeWarp.State` activities to `POST /ingest/spans`.
 
 This package does not reference OpenTelemetry. The browser has one thread, so the server exporter's blocking `HttpClient.Send` cannot run here. `DevToolsWasmExporter` listens with `ActivityListener` and posts with `HttpClient.SendAsync`. A stopped inspector or a network error is swallowed. The last queued batch can be lost when the page goes away: there is no `sendBeacon` flush.
 

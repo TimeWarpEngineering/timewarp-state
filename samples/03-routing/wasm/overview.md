@@ -48,7 +48,7 @@ This is particularly useful for:
 
 Additional requirements:
 - Understanding of TimeWarp.State concepts (State, Actions, and Handlers)
-- [TimeWarp.State DevTools](xref:TimeWarpState:DevTools.md) when you want the action log while navigating
+- [TimeWarp DevTools](xref:TimeWarpState:DevTools.md) when you want the action log while navigating
 
 ## Implementation Steps
 
@@ -180,7 +180,7 @@ The `TwPageTitle` component:
 
 ### 3. DevTools
 
-Watch route actions in [TimeWarp.State DevTools](xref:TimeWarpState:DevTools.md) when the host exports telemetry. The sample itself does not start the inspector.
+Watch route actions in [TimeWarp DevTools](xref:TimeWarpState:DevTools.md) when the host exports telemetry. The sample itself does not start the inspector.
 
 ## Troubleshooting
 

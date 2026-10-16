@@ -61,18 +61,18 @@ Tasks 122 (header and layout work in `Inspector.razor` and its scoped CSS), 123 
 
 ## Checklist
 
-- [ ] Change the header brand and add the "State" section label with the tagline (`Inspector.razor` and scoped CSS)
-- [ ] Change `<PageTitle>` to "TimeWarp DevTools"
-- [ ] Change `DefaultResourceName` to `timewarp-devtools` and `DashboardLinkText` to `TimeWarp DevTools`; update the exception message and XML docs
-- [ ] Update package descriptions in the hosting and app csproj files
-- [ ] Update readmes, `documentation/topics/devtools.md`, `telemetry.md`, `features.md`, and the two sample overviews
-- [ ] Update tests: packaged-app test `ShouldContain("TimeWarp DevTools")`; hosting tests follow the constants
-- [ ] Add a check that the rendered `<title>` and the header brand both read "TimeWarp DevTools"
-- [ ] Add the breaking-change release note and toc entry
-- [ ] `dev check-version`, and bump if required
-- [ ] `dev build` is 0 warnings and 0 errors
-- [ ] `timewarp-state-devtools-tests` and `timewarp-state-devtools-isolation-tests` pass
-- [ ] `ganda repo audit` clean
+- [x] Change the header brand and add the "State" section label with the tagline (`Inspector.razor` and scoped CSS)
+- [x] Change `<PageTitle>` to "TimeWarp DevTools"
+- [x] Change `DefaultResourceName` to `timewarp-devtools` and `DashboardLinkText` to `TimeWarp DevTools`; update the exception message and XML docs
+- [x] Update package descriptions in the hosting and app csproj files
+- [x] Update readmes, `documentation/topics/devtools.md`, `telemetry.md`, `features.md`, and the two sample overviews
+- [x] Update tests: packaged-app test `ShouldContain("TimeWarp DevTools")`; hosting tests follow the constants
+- [x] Add a check that the rendered `<title>` and the header brand both read "TimeWarp DevTools"
+- [x] Add the breaking-change release note and toc entry
+- [x] `dev check-version`, and bump if required
+- [x] `dev build` is 0 warnings and 0 errors
+- [x] `timewarp-state-devtools-tests` and `timewarp-state-devtools-isolation-tests` pass
+- [x] `ganda repo audit` clean
 
 ## Proof Gates
 
@@ -83,10 +83,54 @@ Tasks 122 (header and layout work in `Inspector.razor` and its scoped CSS), 123 
 - Release note states the resource-name break and the downstream timewarp-architecture test updates.
 - `ganda repo audit` clean. Any AppHost run is done by the reviewer, not a headless worker (worktree AppHost user-secrets note).
 
+## Results
+
+The inspector product is TimeWarp DevTools. The header `h1` is that name. State is one label in a plugin row, with the tagline beside it. The browser `<title>` is TimeWarp DevTools. The error page uses the same product name.
+
+`TimeWarpStateDevToolsHosting.DefaultResourceName` is `timewarp-devtools`. `DashboardLinkText` is `TimeWarp DevTools`. `AddTimeWarpStateDevTools` and `AddTimeWarpStateDevToolsProject` still take a caller-supplied `name`.
+
+`12.0.0-beta.15` is already on NuGet, so `<Version>` and `TimeWarpStateVersion` are `12.0.0-beta.16`. `documentation/release-notes/release12.0.0-beta.16.md` records the resource-name break, the dashboard-text change, and the timewarp-architecture tests to update (IngressSmoke `StateDevTools`, `Publish_Should_HaveNoStateDevTools`, and any label match). Package ids, namespaces, and the `AddTimeWarpStateDevTools` API are unchanged.
+
+`./bin/dev build` exited 0 with 0 errors and 154 warnings. Those warnings are the pre-existing NuGet advisories, TW0007 hints, RS0030 `Console` bans, and nullable warnings. None are in the files this task edited. `ganda repo audit` exited 0. The kebab-path advisory is the existing Blazor module filenames, the DevTools targets file, and task 110's folder.
+
+### How to validate
+
+Smoke: From the repo root, `dotnet test tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj` and `dotnet test tests/timewarp-state-devtools-isolation-tests/timewarp-state-devtools-isolation-tests.csproj`. Then `./bin/dev check-version` and `grep -rn "State DevTools" source samples documentation --include='*'`.
+
+Expect: DevTools tests: 101 passed, 0 failed. Isolation tests: 4 passed. `check-version` prints source `12.0.0-beta.16`, one prerelease increment ahead of NuGet `12.0.0-beta.15`, and "Version in source is new — safe to release." `InspectorProductName_Should.RenderTheProductNameAndTheStatePlugin` reads `<title>` and the brand `h1` as `TimeWarp DevTools`, with a State plugin label and the tagline. On a tree without `obj/`, the grep hits only `documentation/release-notes/release12.0.0-beta.14.md`. A built nuspec joins the separate tags `TimeWarp.State` and `DevTools` with a space; those tags are not the product name.
+
+### Review disposition
+
+Disposition: **clean**. 1 round, effort 2, roster `general`. Final counts: bug 0, suggestion 0, nit 0 (0 open, 0 fixed, 0 wontfix). The reviewer re-ran both test projects (101 and 4 passed), the grep gate (only the beta.14 release note hits), and `dev check-version` (`12.0.0-beta.16`, safe to release). The reviewer also confirmed that no code depends on the old resource name: inspected apps find the inspector through `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` and `/_timewarp/state-devtools`. The AppHost and dashboard smoke was not run in this headless review. Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: 1393397 (2026-10-16)
+- Implementation: grok (2026-10-17)
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T17:52:15Z
+- Review oracle: claude (claude-opus-5-5), tw-implementation-review, effort 2, roster general, round 1, disposition clean, session not reported — 2026-10-17
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 120 — 2026-10-16T17:56:12Z
+
+## Goal (implementer restatement)
+
+The inspector is the product **TimeWarp DevTools**. State is a label on the view that already exists, not the product name. A person opening the page, the browser tab, the Aspire dashboard link, or the docs should read TimeWarp DevTools. The action-log tagline stays with the State label. Package ids, namespaces, folder names, env vars, and `AddTimeWarpStateDevTools` stay as they are.
+
+Done when:
+
+- The rendered page title and the header brand are exactly `TimeWarp DevTools`, and a State section label sits with the existing tagline. The header is one label in a row that can hold more labels later. There is no plugin registry, route, or second plugin.
+- The default Aspire resource name is `timewarp-devtools` and the dashboard link text is `TimeWarp DevTools`. A caller can still pass a different resource name.
+- Display copy in the listed readmes, package descriptions, topics, features page, and the two sample overviews uses TimeWarp DevTools. The telemetry sample names the resource `timewarp-devtools`. Past release notes stay unchanged.
+- A release note for the version this ships in records the resource-name and dashboard-text break, and names the timewarp-architecture tests that must change on the next bump (`IngressSmoke` `StateDevTools`, `Publish_Should_HaveNoStateDevTools`, and any label match).
+- `dev check-version` passes. `<Version>` and `TimeWarpStateVersion` move together only if that check requires a bump.
+- `dev build` is clean, the DevTools and isolation test projects pass, and `ganda repo audit` is clean.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
-Decision recorded from Steve, 2026-10-16. Resource name `timewarp-devtools` is the proposed kebab id; if the implementer finds a collision or a reason to differ, record the exact choice here and in the release note.
+Decision recorded from Steve, 2026-10-16. No in-repo collision with the proposed id.
+
+- `TimeWarpStateDevToolsHosting.DefaultResourceName` = `timewarp-devtools`
+- `TimeWarpStateDevToolsHosting.DashboardLinkText` = `TimeWarp DevTools`
