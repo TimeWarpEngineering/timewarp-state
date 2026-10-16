@@ -133,8 +133,12 @@ h1 {
 }
 
 .log {
-  /* One template for the header and every row, including an empty runtime cell. */
+  /* One template for the header and every row, including an empty runtime cell.
+     --log-min-width is the border-box floor: track minimums, the column gaps, and the
+     horizontal padding. The header and row backgrounds cover the tracks when the log scrolls sideways. */
+  position: relative;
   --log-columns: 6.4rem 3.2rem 3.6rem minmax(7rem, 2.6fr) minmax(5rem, 0.9fr) 4.2rem 3rem;
+  --log-min-width: 37.4rem;
 }
 
 .detail {
@@ -153,6 +157,20 @@ h1 {
   padding: 0;
 }
 
+.log-a11y {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .log-head,
 .row {
   display: grid;
@@ -160,6 +178,7 @@ h1 {
   column-gap: 0.6rem;
   align-items: center;
   width: 100%;
+  min-width: var(--log-min-width);
 }
 
 .log-head {

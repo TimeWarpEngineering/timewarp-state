@@ -12,7 +12,10 @@
 // filter would barely narrow the log. Runtime text is separate from the store badge so interactive
 // server and interactive WebAssembly rows are not both only "live".
 // Label and Description both switch on KindOf, so the badge word and its explanation cannot drift.
-// Tooltip is Description plus the store id. The log row and the Store picker both call Tooltip.
+// Tooltip is Description plus the store id when the badge has text. The log row and the Store picker
+// both call Tooltip. An empty label (no id and no known render) uses UntaggedDescription, not the
+// prefix sentence. DescriptionElementId names one shared element per explanation. The row button
+// points at it, so the store id stays in the tooltip and out of the accessible name.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
@@ -43,6 +46,21 @@ public static class StoreBadge
 
   /// <summary>Explanation when the badge is an id prefix because the render kind is unknown.</summary>
   public const string PrefixDescription = "Store id prefix: render kind unknown.";
+
+  /// <summary>Explanation when the row has no store id and no known render kind.</summary>
+  public const string UntaggedDescription = "Untagged: no store id.";
+
+  /// <summary>Element id for <see cref="PrerenderDescription"/>.</summary>
+  public const string PrerenderDescriptionId = "store-badge-pre";
+
+  /// <summary>Element id for <see cref="InteractiveDescription"/>.</summary>
+  public const string InteractiveDescriptionId = "store-badge-live";
+
+  /// <summary>Element id for <see cref="PrefixDescription"/>.</summary>
+  public const string PrefixDescriptionId = "store-badge-prefix";
+
+  /// <summary>Element id for <see cref="UntaggedDescription"/>.</summary>
+  public const string UntaggedDescriptionId = "store-badge-untagged";
 
   /// <summary>Short label for <see cref="InspectorCapture.WasmRuntime"/>.</summary>
   public const string WasmLabel = "wasm";
@@ -95,10 +113,16 @@ public static class StoreBadge
   }
 
   /// <summary>
-  /// Tooltip text: <see cref="Description"/> and, when present, the full store id.
+  /// Tooltip text. <see cref="UntaggedDescription"/> when <see cref="Label"/> is empty.
+  /// Otherwise <see cref="Description"/> and, when present, the full store id.
   /// </summary>
   public static string Tooltip(string storeId, string render)
   {
+    if (Label(storeId, render).Length == 0)
+    {
+      return UntaggedDescription;
+    }
+
     string description = Description(render);
     if (storeId.Length == 0)
     {
@@ -106,6 +130,30 @@ public static class StoreBadge
     }
 
     return description + "\n" + storeId;
+  }
+
+  /// <summary>
+  /// Id of the shared explanation element for the badge <see cref="Label"/> draws.
+  /// </summary>
+  public static string DescriptionElementId(string storeId, string render)
+  {
+    if (Label(storeId, render).Length == 0)
+    {
+      return UntaggedDescriptionId;
+    }
+
+    BadgeKind kind = KindOf(render);
+    if (kind == BadgeKind.Prerender)
+    {
+      return PrerenderDescriptionId;
+    }
+
+    if (kind == BadgeKind.Interactive)
+    {
+      return InteractiveDescriptionId;
+    }
+
+    return PrefixDescriptionId;
   }
 
   /// <summary>

@@ -322,6 +322,12 @@
 
   <div class="workspace">
     <section class="log" aria-label="Action log">
+      <div class="log-a11y">
+        <span id="@StoreBadge.PrerenderDescriptionId">@StoreBadge.PrerenderDescription</span>
+        <span id="@StoreBadge.InteractiveDescriptionId">@StoreBadge.InteractiveDescription</span>
+        <span id="@StoreBadge.PrefixDescriptionId">@StoreBadge.PrefixDescription</span>
+        <span id="@StoreBadge.UntaggedDescriptionId">@StoreBadge.UntaggedDescription</span>
+      </div>
       <div class="log-head" aria-hidden="true">
         <span class="cell" data-col="time">Time</span>
         <span class="cell" data-col="store">Store</span>
@@ -345,7 +351,8 @@
                 type="button"
                 class="@RowClass(entry, InspectorState.SelectedSequence)"
                 @onclick="() => Select(entry.Sequence)"
-                data-qa="row">
+                data-qa="row"
+                aria-describedby="@StoreBadge.DescriptionElementId(entry.StoreId, entry.Render)">
                 @{
                   string badge = StoreBadge.Label(entry.StoreId, entry.Render);
                   string runtimeLabel = StoreBadge.RuntimeLabel(entry.Runtime);
@@ -358,8 +365,7 @@
                   class="cell @(badge.Length == 0 ? "store-badge" : "store-badge on")"
                   data-col="store"
                   data-hue="@StoreBadge.Hue(entry.StoreId)"
-                  title="@badgeHelp"
-                  aria-label="@badgeHelp">@badge</span>
+                  title="@badgeHelp">@badge</span>
                 <span
                   class="@("cell runtime" + (runtimeLabel.Length == 0 ? "" : " runtime-badge"))"
                   data-col="runtime"
@@ -478,15 +484,16 @@
           string render = StoreSelection.RenderOf(stores, storeId);
           string badge = StoreBadge.Label(storeId, render);
           string badgeHelp = StoreBadge.Tooltip(storeId, render);
-          <label class="store-select">
-            <span>Store</span>
+          <div class="store-select">
+            <label id="store-picker-label" for="store-picker">Store</label>
             <span
               class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
               data-hue="@StoreBadge.Hue(storeId)"
-              title="@badgeHelp"
-              aria-label="@badgeHelp">@badge</span>
+              title="@badgeHelp">@badge</span>
             <select
+              id="store-picker"
               data-qa="store"
+              aria-labelledby="store-picker-label"
               title="@StoreSelection.PickerHelp"
               aria-describedby="store-picker-help"
               value="@StoreSelectValue(stores)"
@@ -498,7 +505,7 @@
               }
             </select>
             <span id="store-picker-help" class="store-help">@StoreSelection.FollowLiveHelp</span>
-          </label>
+          </div>
         }
         <div class="view-tabs" role="tablist" aria-label="State format">
           <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewTree, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewTree)" @onclick="() => SetView(InspectorState.JsonViewTree)" data-qa="view-tree">Tree</button>

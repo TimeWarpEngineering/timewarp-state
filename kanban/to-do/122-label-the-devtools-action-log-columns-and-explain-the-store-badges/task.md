@@ -12,6 +12,11 @@ Acceptance:
 - The Store picker and the Follow live option explain what they do.
 - The runtime chip does not take a wide flexible column. Action gets that width. State and duration do not collide. Result stays on the same line.
 - Build is clean, the existing DevTools tests pass, and a markup check plus a two-width layout check cover the columns and the badge text.
+- When the pane is narrower than the columns, the header and each row stay as wide as the tracks, the gaps, and the horizontal padding. Scrolling the log sideways and down still paints the header, the row line, and the selected highlight under Duration and Result. A long action name still ends in an ellipsis.
+- A row button's name is the cells on that row. `pre`, `live`, and a prefix each add one shared description. The store id stays on the tooltip and stays out of the name.
+- The Store control's name is the word Store. The badge tooltip and the Follow live sentence sit outside that name. Follow live remains the description.
+- A row or a Store option with no store id and no render kind does not use the prefix sentence.
+- The column markup check still passes when those files use Windows line endings.
 
 ## Description
 
@@ -74,8 +79,13 @@ Added proof item: a rendered-markup/CSS test (or bUnit/Playwright-style check) t
 - [x] Add a test or rendered-markup check covering the header and the badge tooltips
 - [x] Add a rendered-markup/CSS (or bUnit/Playwright-style) check: header labels exist for every column including runtime; header, row, and template column counts agree
 - [x] Visual check at a narrow and a wide inspector width, recorded in `## Session`
-- [x] `dev build` exits 0 with 0 errors. 14 pre-existing NuGet warnings remain; none are in files this task edited
+- [x] `dev build` exits 0 with 0 errors. 154 pre-existing warnings remain; none are in files this fix pass edited
 - [x] Existing inspector tests pass
+- [x] Give the header and each row a min-width floor so a sideways scroll keeps their backgrounds
+- [x] Point each row button at a shared badge description and keep the store id out of its name
+- [x] Name the Store select with the word Store; keep the badge tooltip and Follow live outside that name
+- [x] Use an untagged explanation when a badge has no label
+- [x] Normalise newlines in the column markup check
 
 ## Proof Gates
 
@@ -89,13 +99,15 @@ Added proof item: a rendered-markup/CSS test (or bUnit/Playwright-style check) t
 
 Runtime stays its own column. The chip is content-sized inside a fixed track, and an empty runtime still occupies that cell, so a wasm row and a row with no runtime share the same columns. The header and every row read one custom property, `--log-columns`, so the labels cannot drift from the cells. `StoreBadge.Description` is the only copy of the `pre`, `live`, and prefix explanations. `Tooltip` appends the store id. The log badge and the Store picker both call it. Follow live uses one sentence, and the select tooltip is that sentence plus a lead-in.
 
-`./bin/dev build` exited 0: 0 errors, 14 warnings. Every warning is a pre-existing NuGet advisory (NU1510, NU1902, NU1903) on projects this task did not edit. `dotnet fixie timewarp-state-devtools-tests` — 97 passed, including `ActionLogColumns_Should.NameEveryColumnOnceInTheHeaderTheRowAndTheTemplate`, `StoreBadge_Should.ExplainPrerenderLiveAndPrefixBadges`, and `StoreSelection_Should.ExplainFollowLiveFromOneSentence`.
+`./bin/dev build` exited 0: 0 errors, 154 warnings. None are in the files this fix pass edited. They are pre-existing NuGet advisories (NU1510, NU1902, NU1903), TW0007 global-using hints, RS0030 banned `Console` calls, and nullable warnings in the test app and client integration tests. `dotnet fixie timewarp-state-devtools-tests` — 98 passed, including `ActionLogColumns_Should.NameEveryColumnOnceInTheHeaderTheRowAndTheTemplate`, `StoreBadge_Should.ExplainPrerenderLiveAndPrefixBadges`, `StoreBadge_Should.ExplainAnEmptyBadgeAsUntagged`, and `StoreSelection_Should.ExplainFollowLiveFromOneSentence`.
+
+Review round 1 fixes: `--log-min-width` is the border-box floor of the track minimums, the six column gaps, and the horizontal padding (37.4rem). The header and every row use it, so a sideways scroll keeps the sticky header, the row line, and the selected highlight under Duration and Result. Each row button's name is its cells. `aria-describedby` points at one shared `pre`, `live`, prefix, or untagged sentence, and the store id stays on the `title`. The Store control's name is the word Store. The badge tooltip and the Follow live sentence sit outside that label. An empty badge says "Untagged: no store id." The column check normalises newlines before it looks for the shared rule.
 
 ### How to validate
 
-Smoke: From the repo root, `dotnet fixie timewarp-state-devtools-tests`. Then run the DevTools inspector against an app that dispatches actions, and open the action log at about 640px and about 980px, in Theme Dark and Theme Light. Hover a `pre` badge, a `live` badge, a four-character prefix badge, a long action name, and the Store select, including Follow live.
+Smoke: From the repo root, `dotnet fixie timewarp-state-devtools-tests`. Then open the DevTools action log at about 520px and about 980px, in Theme Dark and Theme Light. Scroll the narrow log to the right and down so a row sits under the header. Hover a `pre` badge, a `live` badge, a four-character prefix badge, a row with no store id, a long action name, and the Store select, including Follow live and `(untagged)`.
 
-Expect: The log shows Time, Store, Runtime, Action, State, Duration, and Result, aligned with the cells. Each row is one line. `wasm` / `srv` is a small chip. A row with no runtime does not shift the later columns. A long action or state name ends in an ellipsis and the tooltip is the full text. State does not run into the duration, and `Ok` stays in the Result column. Below about 640px the log scrolls sideways inside its pane and the columns stay put. The `pre` tooltip starts with "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request." The `live` tooltip starts with "Live: an interactive store." A prefix tooltip starts with "Store id prefix: render kind unknown." Each tooltip also contains the store id. Follow live says it follows the newest non-prerender store and switches when a newer one appears. The Fixie run is 97 passed.
+Expect: The log shows Time, Store, Runtime, Action, State, Duration, and Result, aligned with the cells. Each row is one line. `wasm` / `srv` is a small chip. A row with no runtime does not shift the later columns. A long action or state name ends in an ellipsis and the tooltip is the full text. State does not run into the duration, and `Ok` stays in the Result column. Below the column floor the log scrolls sideways, and the header background, the row line, and the selected highlight still cover Duration and Result. The `pre` tooltip starts with "Prerender: a short-lived server store created while rendering a page's HTML; discarded after the request." The `live` tooltip starts with "Live: an interactive store." A prefix tooltip starts with "Store id prefix: render kind unknown." Each of those tooltips also contains the store id. A badge with no store id and no render kind says "Untagged: no store id." A row's accessible name is the cells, and the badge sentence is a description. The Store control's accessible name is Store. Follow live says it follows the newest non-prerender store and switches when a newer one appears. The Fixie run is 98 passed.
 
 ### Review
 
@@ -122,6 +134,12 @@ Visual check: a static fixture of this grid and `tokens.css`, served over HTTP a
 - 980px pane, no scroll. Action 425px (the wide column). State track 147px: `AnalyticsState` fits, a longer state name ellipsizes. Duration and `Ok` stay on that line. Chip 41.1px.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-16T16:31:40Z
 - Review oracle round 1: claude (claude-opus-5-5), effort 2, roster general, 2026-10-16. 1 bug, 2 suggestions, 2 nits open; fix pass requested.
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 120 — 2026-10-16T16:37:21Z
+- Fix pass: grok 01a14593-463e-72e1-995e-b5db9038846f (2026-10-16). M1–M5. Chromium fixture of the real inspector stylesheet, 520px pane (client 503) scrolled to scrollLeft 95 and scrollTop 160: header and row 598px, both cover Result, the right-edge hit is the sticky header (`rgb(24, 16, 44)` dark, `rgb(255, 255, 255)` light), the visible row covers its right edge, action ellipsis at 112px, runtime chip 41px. 980px pane: no sideways scroll, action 414px. `dotnet fixie timewarp-state-devtools-tests`: 98 passed. `./bin/dev build`: 0 errors, 154 pre-existing warnings. `ganda repo audit`: exit 0, same kebab-path advisory as the implementation session.
+
+## Review
+
+- Round 1: Blocked — open M1, M2, M3, M4, M5
 
 ## Notes
 
