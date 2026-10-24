@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Thrown by StateTransactionBehavior when a state clone is unusable (its Guid is empty or equal to the original's).
 #endregion
 

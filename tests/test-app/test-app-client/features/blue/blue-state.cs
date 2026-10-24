@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // BlueState: a counter persisted to session storage, used by persistence, subscription and deserialization tests.
 #endregion
 

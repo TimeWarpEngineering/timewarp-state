@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Thrown when a JavaScript dispatch names a request type that cannot be dispatched or deserialized.
 #endregion
 

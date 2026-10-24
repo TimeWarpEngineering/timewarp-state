@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // CompleteProcessing action set: removes a finished action from ActionTrackingState's active list.
 #endregion
 

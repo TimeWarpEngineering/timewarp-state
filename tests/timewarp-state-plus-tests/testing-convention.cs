@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Fixie testing convention for the TimeWarp.State.Plus tests.
 #endregion
 

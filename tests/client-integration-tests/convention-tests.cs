@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Sample tests that exercise the TimeWarp.Fixie convention itself (pass, skip, tag, parameterized input).
 #endregion
 

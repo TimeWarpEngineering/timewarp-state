@@ -1,4 +1,4 @@
-﻿import { timeWarpState } from '/_content/TimeWarp.State/js/timewarp-state.js'
+import { timeWarpState } from '/_content/TimeWarp.State/js/timewarp-state.js'
 import { log, LogAction } from '/_content/TimeWarp.State/js/logger.js'
 
 const waitForJsonRequestHandler = async (timeoutMs = 10000) => {

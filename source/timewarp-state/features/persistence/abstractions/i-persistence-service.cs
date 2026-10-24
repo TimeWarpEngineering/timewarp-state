@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Abstraction for loading a persisted state by type and persistence method.
 #endregion
 

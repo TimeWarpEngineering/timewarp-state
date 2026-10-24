@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // PurpleState: a counter persisted to local storage, used by the persistence tests.
 #endregion
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <Title>TimeWarp.State.Plus</Title>
     <Description>TimeWarp.State.Plus extends TimeWarp.State and TimeWarp.State.Blazor with routing, persistence, and action tracking.</Description>

@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Central list of logging EventIds used across TimeWarp.State.
 #endregion
 

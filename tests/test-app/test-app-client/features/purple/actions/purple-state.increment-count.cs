@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Action that adds Amount to PurpleState.Count.
 #endregion
 
