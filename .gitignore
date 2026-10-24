@@ -356,3 +356,6 @@ aspire.config.json
 
 # Publish output staged into TimeWarp.State.DevTools.App before pack.
 source/timewarp-state-devtools-app/tools/
+
+# Mission heartbeat in the claim worktree (local; not product)
+mission.heartbeat
