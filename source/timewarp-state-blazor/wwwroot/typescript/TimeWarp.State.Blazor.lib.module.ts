@@ -1,4 +1,4 @@
-﻿// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
+// noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
 
 import {timeWarpState} from './timewarp-state.js';
 import {log, LogAction} from './logger.js'

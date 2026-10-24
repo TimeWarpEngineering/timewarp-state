@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // GoBack action set: pops routes off the stack and navigates to the remaining top entry.
 #endregion
 

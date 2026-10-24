@@ -1,4 +1,4 @@
-﻿import {JsonRequestHandlerMethodName} from './constants.js';
+import {JsonRequestHandlerMethodName} from './constants.js';
 import {DotNetReference} from './dot-net-reference';
 import {log} from './logger.js';
 

@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Opts an action class into action tracking ([TrackAction]).
 #endregion
 

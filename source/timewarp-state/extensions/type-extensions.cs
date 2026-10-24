@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Type helpers: find the IState type an action is nested in, and get a type's name without the generic arity suffix.
 #endregion
 

@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // TWS0001 (error): a non-abstract IAction class, record or struct must be nested inside a type that implements
 // IState.
 #endregion

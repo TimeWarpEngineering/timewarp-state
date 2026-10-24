@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Checks that BlueState serializes and deserializes with System.Text.Json, including its Guid.
 #endregion
 

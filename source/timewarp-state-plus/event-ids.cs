@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Logging EventIds for TimeWarp.State.Plus features.
 #endregion
 

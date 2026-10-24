@@ -1,4 +1,4 @@
-﻿# EditorConfig is awesome:http://EditorConfig.org
+# EditorConfig is awesome:http://EditorConfig.org
 # For dotnet and Csharp specific see below
 # https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference
 
@@ -15,6 +15,7 @@ generated_code = true
 generated_code = true
 
 [*]
+charset = utf-8
 # Indentation and spacing
 indent_size = 2
 indent_style = space
@@ -32,7 +33,6 @@ resharper_check_namespace_highlighting= none
 
 # Development files
 [*.{cs,csx,cshtml,csproj,razor,sln,props,targets,json,yml,gitignore}]
-charset = "utf-8"
 trim_trailing_whitespace = true
 
 #### .NET Coding Conventions ####

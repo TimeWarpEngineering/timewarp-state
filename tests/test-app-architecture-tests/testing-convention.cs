@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // Fixie testing convention for the test app architecture tests.
 #endregion
 

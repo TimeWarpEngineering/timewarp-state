@@ -1,4 +1,4 @@
-﻿#region Purpose
+#region Purpose
 // StartProcessing action set: adds an action to ActionTrackingState's active list.
 #endregion
 

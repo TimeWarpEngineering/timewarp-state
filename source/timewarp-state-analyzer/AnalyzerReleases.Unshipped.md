@@ -1,4 +1,4 @@
-﻿; Unshipped analyzer release
+; Unshipped analyzer release
 ; https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
 ; TWS0009-TWS0012 stay here until the 12.0 release. Move them to AnalyzerReleases.Shipped.md at that release.
 
