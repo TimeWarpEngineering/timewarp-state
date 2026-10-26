@@ -36,6 +36,7 @@ Acceptance:
 
 - Created: 259f62af-98bf-4133-8bba-2f8a32eb7caa (2026-10-26)
 - Implementation: 01a17887-3352-7152-a5d2-9f25b22f1402 (2026-10-26). Pinned SDK `11.0.100-rc.3.26522.148`, the ten `11.0.0-rc.2.26504.105` central package entries, and `Microsoft.NETCore.App.Ref` in the analyzer tests. `claude.md` states the same SDK pin. The RC3 note is a security release (Brotli CVE-2026-111497, Linux tarball CVE-2026-114148, and a re-release of the Blazor debugger fix). It names no API break for this repo. The Blazor packages it calls out are the pins above. `ASPDEPR011` on `UseWebAssemblyDebugging` is already in the RC2 assembly, so the sample and test host keep that call. `.github/workflows/workflow.yml` uses `global-json-file: global.json` and has no `dotnet-version`.
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T14:30:14Z
 
 ## Results
 
