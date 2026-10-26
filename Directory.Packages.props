@@ -14,8 +14,8 @@
     <PackageVersion Include="TimeWarp.Mediator.Contracts" Version="14.0.0-beta.5" />
     <PackageVersion Include="TimeWarp.Mediator.Generators" Version="14.0.0-beta.5" />
     <PackageVersion Include="TimeWarp.Mediator.Analyzers" Version="14.0.0-beta.5" />
-    <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.5" />
-    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.5" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.6" />
+    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.6" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.State.Blazor" Version="$(TimeWarpStateVersion)" />
