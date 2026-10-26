@@ -4,7 +4,7 @@ Runfiles under `scripts/` build, test, pack, and clean this repo. `dev test` and
 
 ## Local NuGet cache
 
-Root `nuget.config` does not list `artifacts/packages`. A missing folder does not fail restore. `dev pack` writes that folder. `verify-samples` passes `--source artifacts/packages` and nuget.org when it restores samples that `PackageReference` the in-tree packages.
+Root `nuget.config` does not list `artifacts/packages`. A missing folder does not fail restore. `dev pack` writes that folder and opens each `.nupkg` to check its layout. Sample 00 auto is the only `PackageReference` consumer of those packages. `verify-samples` builds the other samples as project references, packs, then restores sample 00 auto with a config file that maps `TimeWarp.State` and `TimeWarp.State.*` to that folder. The other samples do not use the feed.
 
 Restores in this repo use `artifacts/nuget-packages` and do not write the packed version into `~/.nuget/packages`:
 

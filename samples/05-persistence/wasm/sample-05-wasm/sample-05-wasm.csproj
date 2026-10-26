@@ -4,6 +4,8 @@
     <AssemblyName>Sample05Wasm</AssemblyName>
     <RootNamespace>Sample05Wasm</RootNamespace>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <!-- Set by verify-samples. A global PublishTrimmed would also mark the netstandard analyzer projects, which cannot trim. -->
+    <PublishTrimmed Condition="'$(VerifySamplesTrim)' == 'true'">true</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,10 +13,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
     <PackageReference Include="Blazored.LocalStorage" />
     <PackageReference Include="Blazored.SessionStorage" />
-    <PackageReference Include="TimeWarp.State" />
-    <PackageReference Include="TimeWarp.State.Blazor" />
-    <PackageReference Include="TimeWarp.State.Plus" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\source\timewarp-state\timewarp-state.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-blazor\timewarp-state-blazor.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-plus\timewarp-state-plus.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

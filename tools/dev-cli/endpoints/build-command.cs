@@ -2,18 +2,18 @@
 // Build TimeWarp.State source and tests in Release
 #endregion
 #region Design
-// Derives a solution filter from timewarp-state.slnx that omits samples/.
-// Samples PackageReference TimeWarp.State / Plus at TimeWarpStateVersion.
-// That version is not on nuget.org. verify-samples restores them with
-// --source artifacts/packages after pack. Root nuget.config does not list that
-// folder, so a missing feed is not NU1301 on this build. Filter JSON is written
+// Derives a solution filter from timewarp-state.slnx that omits sample 00 auto.
+// That sample PackageReferences TimeWarp.State at TimeWarpStateVersion, which is
+// not on nuget.org until release. verify-samples packs, then restores it with a
+// mapped config file. The other samples ProjectReference source and stay in this
+// filter. Root nuget.config does not list artifacts/packages. Filter JSON is written
 // by hand because PublishAot disables reflection JsonSerializer. Restores land in
 // artifacts/nuget-packages (dev.cs sets NUGET_PACKAGES; RestorePackagesPath agrees).
 #endregion
 
 namespace DevCli.Commands;
 
-[NuruRoute("build", Description = "Build source and test projects (samples restore after pack)")]
+[NuruRoute("build", Description = "Build source, tests, and project-referenced samples")]
 internal sealed class BuildCommand : ICommand<Unit>
 {
   [Option("clean", "c", Description = "Clean before building")]
@@ -99,7 +99,7 @@ internal sealed class BuildCommand : ICommand<Unit>
         return false;
       }
 
-      Terminal.WriteLine($"\nBuilding {filterPath} (samples omitted until pack)...");
+      Terminal.WriteLine($"\nBuilding {filterPath} (sample 00 auto omitted until pack)...");
       CommandResult command = DotNet.Build()
         .WithProject(filterPath)
         .WithConfiguration("Release")
@@ -129,7 +129,7 @@ internal sealed class BuildCommand : ICommand<Unit>
         }
 
         string normalized = path.Replace('\\', '/');
-        if (normalized.StartsWith("samples/", StringComparison.OrdinalIgnoreCase))
+        if (normalized.Contains("samples/00-state-action-handler/auto/", StringComparison.OrdinalIgnoreCase))
         {
           continue;
         }
@@ -146,7 +146,7 @@ internal sealed class BuildCommand : ICommand<Unit>
 
       if (projectPaths.Count == 0)
       {
-        Terminal.WriteErrorLine("Error: no non-sample projects found in timewarp-state.slnx.");
+        Terminal.WriteErrorLine("Error: no buildable projects found in timewarp-state.slnx.");
         Environment.ExitCode = 1;
         return null;
       }
@@ -164,7 +164,7 @@ internal sealed class BuildCommand : ICommand<Unit>
         "  }\n" +
         "}\n";
       File.WriteAllText(filterPath, json);
-      Terminal.WriteLine($"Build filter: {projectPaths.Count} project(s); samples omitted.");
+      Terminal.WriteLine($"Build filter: {projectPaths.Count} project(s); sample 00 auto omitted.");
       return filterPath;
     }
 

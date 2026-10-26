@@ -1,14 +1,18 @@
 #region Purpose
-// Verify sample projects compile, then publish the persistence sample trimmed.
+// Verify sample projects compile, pack, then restore the one packaged consumer.
 #endregion
 #region Design
-// Builds each samples/**/*.csproj so the required verify-samples capability is
-// a real gate, not a stub. Samples that PackageReference TimeWarp.State restore
-// with --source artifacts/packages (root nuget.config does not list that folder).
-// Workflow runs pack before this command so the in-tree version is in that feed.
-// Sample restores extract into artifacts/nuget-packages, not ~/.nuget/packages.
-// After the builds, publishes samples/05-persistence trimmed with TrimmerSingleWarn=false
-// so Blazor and Plus trim warnings fail this gate.
+// Nine samples ProjectReference source, so they build with no local feed.
+// Sample 00 auto (server host and WebAssembly client) is the packaged consumer:
+// this command packs, then restores that folder with a config file whose
+// packageSourceMapping sends TimeWarp.State and TimeWarp.State.* only to
+// artifacts/packages. Command-line --source is not combined with that file,
+// because those sources skip the mapping. dotnet build does not take the
+// config file, so the packaged projects restore with it and then build
+// --no-restore. The trimmed publish of samples/05-persistence stays on the
+// project-reference build and does not pass a feed. It sets VerifySamplesTrim
+// instead of a global PublishTrimmed, because that property would also mark
+// the netstandard analyzer projects.
 #endregion
 
 namespace DevCli.Commands;
@@ -16,13 +20,17 @@ namespace DevCli.Commands;
 [NuruRoute("verify-samples", Description = "Verify code samples compile")]
 internal sealed class VerifySamplesCommand : ICommand<Unit>
 {
+  private const string PackagedSampleMarker = "samples/00-state-action-handler/auto/";
+
   internal sealed class Handler : ICommandHandler<VerifySamplesCommand, Unit>
   {
     private readonly ITerminal Terminal;
+    private readonly IPackableProjectService PackableProjectService;
 
-    public Handler(ITerminal terminal)
+    public Handler(ITerminal terminal, IPackableProjectService packableProjectService)
     {
       Terminal = terminal;
+      PackableProjectService = packableProjectService;
     }
 
     public async Task<Unit> Handle(VerifySamplesCommand command, CancellationToken ct)
@@ -34,10 +42,6 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
         Environment.ExitCode = 1;
         return Value;
       }
-
-      string localFeed = Path.Combine(repoRoot, "artifacts", "packages");
-      // --source requires the folder. Pack creates it; this covers a verify-samples run after a partial pack.
-      Directory.CreateDirectory(localFeed);
 
       string samplesDirectory = Path.Combine(repoRoot, "samples");
       if (!Directory.Exists(samplesDirectory))
@@ -60,22 +64,74 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
         return Value;
       }
 
-      Terminal.WriteLine($"Verifying {projects.Length} sample project(s)...");
+      string[] packagedProjects = projects.Where(IsPackagedConsumer).ToArray();
+      string[] sourceProjects = projects.Where(project => !IsPackagedConsumer(project)).ToArray();
+      Terminal.WriteLine(
+        $"Verifying {sourceProjects.Length} project-referenced sample(s), then packing, then {packagedProjects.Length} packaged sample(s)...");
 
-      foreach (string project in projects)
+      foreach (string project in sourceProjects)
       {
-        string relativePath = Path.GetRelativePath(repoRoot, project);
-        Terminal.WriteLine($"\nBuilding {relativePath}...");
-        int exitCode = await BuildSampleAsync(project, repoRoot, localFeed, ct);
-
-        if (exitCode != 0)
+        if (!await BuildSourceSampleAsync(project, repoRoot, ct))
         {
-          Terminal.WriteErrorLine($"Sample failed: {relativePath}".Red());
-          Environment.ExitCode = exitCode;
           return Value;
         }
       }
 
+      if (!await PublishPersistenceTrimmedAsync(repoRoot, ct))
+      {
+        return Value;
+      }
+
+      Terminal.WriteLine("\nPacking so sample 00 auto can restore the local feed...");
+      await new PackCommand.Handler(Terminal, PackableProjectService).Handle(new PackCommand(), ct);
+      if (Environment.ExitCode != 0)
+      {
+        return Value;
+      }
+
+      if (packagedProjects.Length == 0)
+      {
+        Terminal.WriteLine("\nSamples verified successfully!".Green());
+        return Value;
+      }
+
+      string configPath = Path.Combine(repoRoot, "artifacts", "sample-00-auto.nuget.config");
+      WritePackagedConsumerConfig(repoRoot, configPath);
+
+      foreach (string project in packagedProjects)
+      {
+        if (!await BuildPackagedSampleAsync(project, repoRoot, configPath, ct))
+        {
+          return Value;
+        }
+      }
+
+      Terminal.WriteLine("\nSamples verified successfully!".Green());
+      return Value;
+    }
+
+    private async Task<bool> BuildSourceSampleAsync(string project, string repoRoot, CancellationToken ct)
+    {
+      string relativePath = Path.GetRelativePath(repoRoot, project);
+      Terminal.WriteLine($"\nBuilding {relativePath}...");
+      int exitCode = await Shell.Builder("dotnet")
+        .WithArguments("build", project, "--configuration", "Release")
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+
+      if (exitCode != 0)
+      {
+        Terminal.WriteErrorLine($"Sample failed: {relativePath}".Red());
+        Environment.ExitCode = exitCode;
+        return false;
+      }
+
+      return true;
+    }
+
+    private async Task<bool> PublishPersistenceTrimmedAsync(string repoRoot, CancellationToken ct)
+    {
       string persistenceProject = Path.Combine
       (
         repoRoot,
@@ -85,52 +141,119 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
         "sample-05-wasm",
         "sample-05-wasm.csproj"
       );
-      if (File.Exists(persistenceProject))
+      if (!File.Exists(persistenceProject))
       {
-        string publishOutput = Path.Combine(repoRoot, "artifacts", "publish", "sample-05-wasm-trimmed");
-        Terminal.WriteLine("\nPublishing samples/05-persistence trimmed...");
-        int publishExitCode = await Shell.Builder("dotnet")
-          .WithArguments
-          (
-            "publish",
-            persistenceProject,
-            "--configuration", "Release",
-            "--output", publishOutput,
-            "-p:PublishTrimmed=true",
-            "-p:TrimmerSingleWarn=false",
-            "--source", localFeed,
-            "--source", NuGetOrgSource
-          )
-          .WithWorkingDirectory(repoRoot)
-          .WithNoValidation()
-          .RunAsync(ct);
-
-        if (publishExitCode != 0)
-        {
-          Terminal.WriteErrorLine("Trimmed publish failed: samples/05-persistence".Red());
-          Environment.ExitCode = publishExitCode;
-          return Value;
-        }
+        return true;
       }
 
-      Terminal.WriteLine("\nSamples verified successfully!".Green());
-      return Value;
-    }
-
-    private static Task<int> BuildSampleAsync(string project, string repoRoot, string localFeed, CancellationToken ct) =>
-      Shell.Builder("dotnet")
+      string publishOutput = Path.Combine(repoRoot, "artifacts", "publish", "sample-05-wasm-trimmed");
+      Terminal.WriteLine("\nPublishing samples/05-persistence trimmed...");
+      int publishExitCode = await Shell.Builder("dotnet")
         .WithArguments
         (
-          "build",
-          project,
+          "publish",
+          persistenceProject,
           "--configuration", "Release",
-          "--source", localFeed,
-          "--source", NuGetOrgSource
+          "--output", publishOutput,
+          "-p:VerifySamplesTrim=true",
+          "-p:TrimmerSingleWarn=false"
         )
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
 
-    private const string NuGetOrgSource = "https://api.nuget.org/v3/index.json";
+      if (publishExitCode != 0)
+      {
+        Terminal.WriteErrorLine("Trimmed publish failed: samples/05-persistence".Red());
+        Environment.ExitCode = publishExitCode;
+        return false;
+      }
+
+      return true;
+    }
+
+    private async Task<bool> BuildPackagedSampleAsync(string project, string repoRoot, string configPath, CancellationToken ct)
+    {
+      string relativePath = Path.GetRelativePath(repoRoot, project);
+      Terminal.WriteLine($"\nRestoring {relativePath} from the local feed...");
+      int restoreExitCode = await Shell.Builder("dotnet")
+        .WithArguments("restore", project, "--configfile", configPath)
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+
+      if (restoreExitCode != 0)
+      {
+        Terminal.WriteErrorLine($"Sample restore failed: {relativePath}".Red());
+        Environment.ExitCode = restoreExitCode;
+        return false;
+      }
+
+      Terminal.WriteLine($"Building {relativePath}...");
+      int buildExitCode = await Shell.Builder("dotnet")
+        .WithArguments("build", project, "--configuration", "Release", "--no-restore")
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+
+      if (buildExitCode != 0)
+      {
+        Terminal.WriteErrorLine($"Sample failed: {relativePath}".Red());
+        Environment.ExitCode = buildExitCode;
+        return false;
+      }
+
+      return true;
+    }
+
+    private static void WritePackagedConsumerConfig(string repoRoot, string configPath)
+    {
+      string localFeed = Path.GetFullPath(Path.Combine(repoRoot, "artifacts", "packages"));
+      string packageCache = Path.GetFullPath(Path.Combine(repoRoot, "artifacts", "nuget-packages"));
+      Directory.CreateDirectory(localFeed);
+      Directory.CreateDirectory(packageCache);
+      Directory.CreateDirectory(Path.GetDirectoryName(configPath)!);
+
+      XDocument document = new(
+        new XElement(
+          "configuration",
+          new XElement(
+            "config",
+            new XElement(
+              "add",
+              new XAttribute("key", "globalPackagesFolder"),
+              new XAttribute("value", packageCache))),
+          new XElement(
+            "packageSources",
+            new XElement("clear"),
+            new XElement(
+              "add",
+              new XAttribute("key", "local"),
+              new XAttribute("value", localFeed)),
+            new XElement(
+              "add",
+              new XAttribute("key", "nuget.org"),
+              new XAttribute("value", "https://api.nuget.org/v3/index.json"),
+              new XAttribute("protocolVersion", "3"))),
+          new XElement(
+            "packageSourceMapping",
+            new XElement(
+              "packageSource",
+              new XAttribute("key", "local"),
+              new XElement("package", new XAttribute("pattern", "TimeWarp.State")),
+              new XElement("package", new XAttribute("pattern", "TimeWarp.State.*"))),
+            new XElement(
+              "packageSource",
+              new XAttribute("key", "nuget.org"),
+              new XElement("package", new XAttribute("pattern", "*"))))));
+
+      document.Save(configPath);
+    }
+
+    private static bool IsPackagedConsumer(string projectPath)
+    {
+      string normalized = projectPath.Replace('\\', '/');
+      return normalized.Contains(PackagedSampleMarker, StringComparison.OrdinalIgnoreCase);
+    }
   }
 }

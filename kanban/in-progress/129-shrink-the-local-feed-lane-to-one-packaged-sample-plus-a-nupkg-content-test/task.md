@@ -22,23 +22,51 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 
 ## Checklist
 
-- [ ] Fresh worktree restore works with no manual folder creation (claim a scratch worktree or delete `artifacts/` and restore)
-- [ ] nupkg content test added and green against `dev pack` output
-- [ ] sample 00 auto stays on the local feed and still builds and runs
-- [ ] nine other samples on `ProjectReference`; `./bin/dev build` and `./bin/dev verify-samples` green
-- [ ] CI pack ordering reduced to the one packaged consumer
-- [ ] `./bin/dev test` green
-- [ ] docs updated
+- [x] Fresh worktree restore works with no manual folder creation (claim a scratch worktree or delete `artifacts/` and restore)
+- [x] nupkg content test added and green against `dev pack` output
+- [x] sample 00 auto stays on the local feed and still builds and runs
+- [x] nine other samples on `ProjectReference`; `./bin/dev build` and `./bin/dev verify-samples` green
+- [x] CI pack ordering reduced to the one packaged consumer
+- [x] `./bin/dev test` green
+- [x] docs updated
 
 ## Session
 
 - Created: 259f62af-98bf-4133-8bba-2f8a32eb7caa (2026-10-26)
+- Implementation: grok 01a1781a-5751-74c1-b158-536134dfae2d (2026-10-26). Regression fix is `00f3102f` (root `nuget.config` no longer lists the feed). The sample move, nupkg content test, and docs are the next commit. `Directory.Packages.props` dropped `TimeWarp.State.Plus` and `TimeWarp.State.Telemetry` because nothing package-references them after that move (`cpm-consistency`).
+- Commands were `dotnet run --file tools/dev-cli/dev.cs`. `./bin/dev` is gitignored and was not the binary under test.
 
 ## Goal (implementer restatement)
 
-A fresh worktree has to restore and commit without anyone creating `artifacts/packages` by hand. Root `nuget.config` lists that folder as a package source, so every restore, including ones that never consume the local packages, fails with NU1301 when the folder is missing. The feed should stay off those restores. The one consumer that still proves the packed bits is sample 00 auto: `verify-samples` packs, then restores that sample with an explicit source. The other nine sample projects should compile against the source projects, the same way the test app does, and CI should not order them behind the feed.
+A fresh worktree has to restore and commit without anyone creating `artifacts/packages` by hand. Root `nuget.config` lists that folder as a package source, so every restore, including ones that never consume the local packages, fails with NU1301 when the folder is missing. The feed should stay off those restores. The one consumer that still proves the packed bits is sample 00 auto: `verify-samples` packs, then restores that host and WebAssembly client with a config file that maps `TimeWarp.State` and `TimeWarp.State.*` to `artifacts/packages`. The other nine sample projects should compile against the source projects, the same way the test app does, and CI should not order them behind the feed.
 
 The pack output needs a test that opens every `.nupkg` from `dev pack`. `TimeWarp.State.Blazor` has to contain its `_content` static web assets, including the `.lib.module.js`. The analyzer and source generator assemblies have to sit under `analyzers/dotnet/cs` in the package that carries them. A missing entry fails the test. The DevTools inspector test stays on its own pack lane. `samples/overview.md` and the contributing scripts section have to say which consumer proves packaging and why the rest use project references. The isolated package cache from task 125 stays as it is.
+
+## Results
+
+Root `nuget.config` no longer lists `artifacts/packages`. That is commit `00f3102f`, separate from the sample move. Nine samples that used to `PackageReference` TimeWarp.State packages now `ProjectReference` the source projects, plus the analyzer and source generator. Sample 04's AppHost was already a project reference. Sample 00 auto (host and WebAssembly client) stays on `PackageReference` and is out of `timewarp-state.slnx`, because `12.0.0-beta.16` is not on nuget.org. `verify-samples` builds the project-referenced samples, publishes sample 05 trimmed with `VerifySamplesTrim` (a global `PublishTrimmed` also marks the netstandard analyzer projects), packs, runs the nupkg content test, then restores sample 00 auto through `artifacts/sample-00-auto.nuget.config`.
+
+`tests/timewarp-state-packaging-tests` opens every `.nupkg` in `artifacts/packages`. `dev pack` runs it after the nuspec allow-list. `dev test` does not, because the workflow tests before the pack. `TimeWarp.State` must contain `analyzers/dotnet/cs/timewarp-state-analyzer.dll` and `timewarp-state-source-generator.dll`. `TimeWarp.State.Blazor` must contain a fingerprinted `.lib.module.js` whose asset base path is `_content/TimeWarp.State`. The DevTools inspector test still packs its own temp feed.
+
+`Directory.Packages.props` no longer versions `TimeWarp.State.Plus` or `TimeWarp.State.Telemetry`. Nothing in the repo package-references them after the sample move.
+
+### How to validate
+
+Smoke:
+
+- Move `artifacts/packages` aside and run `dotnet restore timewarp-state.slnx`, then put the folder back.
+- `dotnet run --file tools/dev-cli/dev.cs -- build`
+- `dotnet run --file tools/dev-cli/dev.cs -- verify-samples`
+- `dotnet run --project samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto/sample-00-auto.csproj --configuration Release --no-build --launch-profile http`, then `curl -sS -o /dev/null -w '%{http_code}' http://localhost:5249/`
+- `dotnet run --file tools/dev-cli/dev.cs -- test`
+
+Expect:
+
+- The solution restore exits 0 while `artifacts/packages` is missing. Sample 00 auto is not in the solution.
+- Build prints `Build filter: 37 project(s); sample 00 auto omitted.` and exits 0.
+- verify-samples builds 10 project-referenced samples, trimmed-publishes sample 05, packs 9 nupkgs, the content test passes (`1 passed`), then restores and builds both sample 00 auto projects. Last line: `Samples verified successfully!`
+- The host prints `Now listening on: http://localhost:5249` and `GET /` returns 200.
+- `dev test` exits 0. Suites: analyzer 44 passed; source generator 90 passed; state 126 passed, 1 skipped; plus 40 passed, 1 skipped; telemetry 21 passed; devtools 101 passed; devtools isolation 4 passed; client integration 64 passed, 1 skipped; architecture 7 passed, 1 skipped.
 
 ## Notes
 

@@ -2,9 +2,9 @@
 // Mode-aware CI/CD pipeline for TimeWarp.State
 #endregion
 #region Design
-// PR/merge: assert-version-ssot → clean → build → test → e2e → pack → verify-samples.
-// Build omits samples (they PackageReference TimeWarp.State at the in-tree version).
-// Pack fills artifacts/packages; verify-samples restores samples with --source.
+// PR/merge: assert-version-ssot → clean → build → test → e2e → verify-samples.
+// verify-samples packs, then restores sample 00 auto from artifacts/packages.
+// The other samples ProjectReference source and are part of the build filter.
 // Release: tag-gate → check-version → locate-run → download-artifact → verify → push.
 // Release promotes the CI Packages-* artifact (Nuru 458 / Ganda 209) — no rebuild.
 // TimeWarpStateVersion (CPM / samples) must equal source/ Directory.Build.props
@@ -78,7 +78,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
 
     private async Task RunPrAsync()
     {
-      Terminal.WriteLine("Pipeline: assert-version-ssot → clean → build → test → e2e → pack → verify-samples\n");
+      Terminal.WriteLine("Pipeline: assert-version-ssot → clean → build → test → e2e → verify-samples\n");
       Environment.ExitCode = 0;
 
       if (!AssertVersionSsot())
@@ -107,12 +107,9 @@ internal sealed class WorkflowCommand : ICommand<Unit>
         return;
       }
 
-      if (!await RunStepAsync("Pack", new PackCommand.Handler(Terminal, PackableProjectService).Handle(new PackCommand(), Ct)))
-      {
-        return;
-      }
-
-      if (!await RunStepAsync("Verify Samples", new VerifySamplesCommand.Handler(Terminal).Handle(new VerifySamplesCommand(), Ct)))
+      if (!await RunStepAsync(
+        "Verify Samples",
+        new VerifySamplesCommand.Handler(Terminal, PackableProjectService).Handle(new VerifySamplesCommand(), Ct)))
       {
         return;
       }
