@@ -4,7 +4,7 @@ Runfiles under `scripts/` build, test, pack, and clean this repo. `dev test` and
 
 ## Local NuGet cache
 
-`nuget.config` lists `artifacts/packages` as `LocalNuGetFeed`. Samples restore the in-tree `TimeWarp.State` packages from that folder.
+Root `nuget.config` does not list `artifacts/packages`. A missing folder does not fail restore. `dev pack` writes that folder. `verify-samples` passes `--source artifacts/packages` and nuget.org when it restores samples that `PackageReference` the in-tree packages.
 
 Restores in this repo use `artifacts/nuget-packages` and do not write the packed version into `~/.nuget/packages`:
 

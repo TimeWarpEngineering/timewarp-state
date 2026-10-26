@@ -3,12 +3,11 @@
 #endregion
 #region Design
 // Derives a solution filter from timewarp-state.slnx that omits samples/.
-// Samples PackageReference TimeWarp.State / Plus at TimeWarpStateVersion from
-// nuget.org + LocalNuGetFeed; that version is not on nuget.org and the feed is
-// empty until pack, so a full slnx restore fails NU1102. Workflow packs, then
-// verify-samples restores the omitted projects. Filter JSON is written by hand
-// because PublishAot disables reflection JsonSerializer. artifacts/packages
-// must exist (nuget.config lists it; missing folder is NU1301). Restores land in
+// Samples PackageReference TimeWarp.State / Plus at TimeWarpStateVersion.
+// That version is not on nuget.org. verify-samples restores them with
+// --source artifacts/packages after pack. Root nuget.config does not list that
+// folder, so a missing feed is not NU1301 on this build. Filter JSON is written
+// by hand because PublishAot disables reflection JsonSerializer. Restores land in
 // artifacts/nuget-packages (dev.cs sets NUGET_PACKAGES; RestorePackagesPath agrees).
 #endregion
 
@@ -44,8 +43,6 @@ internal sealed class BuildCommand : ICommand<Unit>
       {
         return Value;
       }
-
-      Directory.CreateDirectory(Path.Combine(RepoRoot, "artifacts", "packages"));
 
       if (!await CleanAsync())
       {

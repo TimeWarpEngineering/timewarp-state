@@ -103,8 +103,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           UseHttp: "true"
         run: |
-          # nuget.config lists artifacts/packages as a local source; missing folder fails runfile restore (NU1301).
-          mkdir -p artifacts/packages
           if [ "${{ github.event_name }}" == "release" ]; then
             dotnet run --file tools/dev-cli/dev.cs -- workflow --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
           elif [ "${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release' }}" == "true" ]; then

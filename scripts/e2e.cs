@@ -38,10 +38,6 @@ static class App
       DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
     WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
-    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
-    // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
-    Directory.CreateDirectory("./artifacts/packages");
-
     // Configuration variables
     var sutProjectDir = "./tests/test-app/test-app-server";
     var outputPath = "./tests/test-app/output";

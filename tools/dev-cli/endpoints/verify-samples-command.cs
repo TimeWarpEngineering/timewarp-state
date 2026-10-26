@@ -3,10 +3,10 @@
 #endregion
 #region Design
 // Builds each samples/**/*.csproj so the required verify-samples capability is
-// a real gate, not a stub. Samples PackageReference TimeWarp.State / Plus from
-// LocalNuGetFeed; workflow runs pack before this command so that restore can
-// succeed (nuget.org does not have the in-tree version). Sample restores extract
-// into artifacts/nuget-packages, not ~/.nuget/packages.
+// a real gate, not a stub. Samples that PackageReference TimeWarp.State restore
+// with --source artifacts/packages (root nuget.config does not list that folder).
+// Workflow runs pack before this command so the in-tree version is in that feed.
+// Sample restores extract into artifacts/nuget-packages, not ~/.nuget/packages.
 // After the builds, publishes samples/05-persistence trimmed with TrimmerSingleWarn=false
 // so Blazor and Plus trim warnings fail this gate.
 #endregion
@@ -35,7 +35,9 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
         return Value;
       }
 
-      Directory.CreateDirectory(Path.Combine(repoRoot, "artifacts", "packages"));
+      string localFeed = Path.Combine(repoRoot, "artifacts", "packages");
+      // --source requires the folder. Pack creates it; this covers a verify-samples run after a partial pack.
+      Directory.CreateDirectory(localFeed);
 
       string samplesDirectory = Path.Combine(repoRoot, "samples");
       if (!Directory.Exists(samplesDirectory))
@@ -64,11 +66,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       {
         string relativePath = Path.GetRelativePath(repoRoot, project);
         Terminal.WriteLine($"\nBuilding {relativePath}...");
-        int exitCode = await DotNet.Build()
-          .WithProject(project)
-          .WithConfiguration("Release")
-          .WithNoValidation()
-          .RunAsync(ct);
+        int exitCode = await BuildSampleAsync(project, repoRoot, localFeed, ct);
 
         if (exitCode != 0)
         {
@@ -91,12 +89,19 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       {
         string publishOutput = Path.Combine(repoRoot, "artifacts", "publish", "sample-05-wasm-trimmed");
         Terminal.WriteLine("\nPublishing samples/05-persistence trimmed...");
-        int publishExitCode = await DotNet.Publish()
-          .WithProject(persistenceProject)
-          .WithConfiguration("Release")
-          .WithOutput(publishOutput)
-          .WithTrimmed()
-          .WithProperty("TrimmerSingleWarn", "false")
+        int publishExitCode = await Shell.Builder("dotnet")
+          .WithArguments
+          (
+            "publish",
+            persistenceProject,
+            "--configuration", "Release",
+            "--output", publishOutput,
+            "-p:PublishTrimmed=true",
+            "-p:TrimmerSingleWarn=false",
+            "--source", localFeed,
+            "--source", NuGetOrgSource
+          )
+          .WithWorkingDirectory(repoRoot)
           .WithNoValidation()
           .RunAsync(ct);
 
@@ -111,5 +116,21 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       Terminal.WriteLine("\nSamples verified successfully!".Green());
       return Value;
     }
+
+    private static Task<int> BuildSampleAsync(string project, string repoRoot, string localFeed, CancellationToken ct) =>
+      Shell.Builder("dotnet")
+        .WithArguments
+        (
+          "build",
+          project,
+          "--configuration", "Release",
+          "--source", localFeed,
+          "--source", NuGetOrgSource
+        )
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+
+    private const string NuGetOrgSource = "https://api.nuget.org/v3/index.json";
   }
 }

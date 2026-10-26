@@ -21,10 +21,11 @@
 #region Design
 // Thin Nuru wrapper. Shared endpoints (clean, self-install, check-version) come
 // from TimeWarp.Nuru.DevCli. Local endpoints: build (source+tests; samples omitted),
-// test, e2e, pack, verify-samples (after pack), workflow (PR packs then verifies
-// samples; release promotes CI artifacts). Product under source/.
+// test, e2e, pack, verify-samples (after pack, samples pass --source), workflow
+// (PR packs then verifies samples; release promotes CI artifacts). Product under source/.
 // Apply points NUGET_PACKAGES at artifacts/nuget-packages before any command runs
-// so child dotnet restores do not fill ~/.nuget/packages.
+// so child dotnet restores do not fill ~/.nuget/packages. Root nuget.config does
+// not list artifacts/packages.
 #endregion
 
 string? repoRoot = Git.FindRoot();

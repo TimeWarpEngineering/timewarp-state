@@ -34,7 +34,7 @@ static class App
     WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
     // Leftover helper for humans. CI uses `dev pack` / `dev workflow` (promote on release).
-    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when missing.
+    // The directory is the pack output. Root nuget.config does not list it as a source.
     string packageOutputPath = "./artifacts/packages";
     Directory.CreateDirectory(packageOutputPath);
 

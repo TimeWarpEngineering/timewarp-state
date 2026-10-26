@@ -34,6 +34,12 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 
 - Created: 259f62af-98bf-4133-8bba-2f8a32eb7caa (2026-10-26)
 
+## Goal (implementer restatement)
+
+A fresh worktree has to restore and commit without anyone creating `artifacts/packages` by hand. Root `nuget.config` lists that folder as a package source, so every restore, including ones that never consume the local packages, fails with NU1301 when the folder is missing. The feed should stay off those restores. The one consumer that still proves the packed bits is sample 00 auto: `verify-samples` packs, then restores that sample with an explicit source. The other nine sample projects should compile against the source projects, the same way the test app does, and CI should not order them behind the feed.
+
+The pack output needs a test that opens every `.nupkg` from `dev pack`. `TimeWarp.State.Blazor` has to contain its `_content` static web assets, including the `.lib.module.js`. The analyzer and source generator assemblies have to sit under `analyzers/dotnet/cs` in the package that carries them. A missing entry fails the test. The DevTools inspector test stays on its own pack lane. `samples/overview.md` and the contributing scripts section have to say which consumer proves packaging and why the rest use project references. The isolated package cache from task 125 stays as it is.
+
 ## Notes
 
 Commit the regression fix (requirement 1) separately from the sample migration so it can be cherry-picked if the rest stalls. Task 125 chose an isolated cache over a local version suffix; do not revisit that choice here.

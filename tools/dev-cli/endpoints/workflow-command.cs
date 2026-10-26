@@ -3,8 +3,8 @@
 #endregion
 #region Design
 // PR/merge: assert-version-ssot → clean → build → test → e2e → pack → verify-samples.
-// Build omits samples (they PackageReference TimeWarp.State from LocalNuGetFeed).
-// Pack fills artifacts/packages; verify-samples is the sample restore/build gate.
+// Build omits samples (they PackageReference TimeWarp.State at the in-tree version).
+// Pack fills artifacts/packages; verify-samples restores samples with --source.
 // Release: tag-gate → check-version → locate-run → download-artifact → verify → push.
 // Release promotes the CI Packages-* artifact (Nuru 458 / Ganda 209) — no rebuild.
 // TimeWarpStateVersion (CPM / samples) must equal source/ Directory.Build.props
