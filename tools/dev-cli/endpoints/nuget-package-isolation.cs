@@ -10,6 +10,9 @@
 // The pack guard reads that shared cache (the default ~/.nuget/packages, plus a distinct
 // inherited NUGET_PACKAGES) and never the isolated folder: a local-feed extract there is expected.
 // A source that does not start with http:// or https:// is a local path.
+// DeleteVersionFolders removes <lowercase id>/<version> under a packages folder.
+// verify-samples calls it on the isolated folder before restoring sample 00 auto,
+// because NuGet keeps a same-version extract and does not read the nupkg just packed.
 #endregion
 
 namespace DevCli;
@@ -163,6 +166,41 @@ internal static class NuGetPackageIsolation
       + $"{Environment.NewLine}  {entry.MetadataPath}"
       + $"{Environment.NewLine}  source: {entry.Source}"
       + $"{Environment.NewLine}  Delete that version folder so other repos do not restore the local pack.";
+  }
+
+  internal static IReadOnlyList<string> DeleteVersionFolders(
+    string packagesFolder,
+    string version,
+    IEnumerable<string> packageIds)
+  {
+    if (string.IsNullOrWhiteSpace(version)
+      || string.IsNullOrWhiteSpace(packagesFolder)
+      || !Directory.Exists(packagesFolder))
+    {
+      return [];
+    }
+
+    List<string> deleted = [];
+    foreach (string packageId in packageIds.Distinct(StringComparer.OrdinalIgnoreCase))
+    {
+      if (string.IsNullOrWhiteSpace(packageId))
+      {
+        continue;
+      }
+
+      string? versionFolder = FindVersionFolder(
+        Path.Combine(packagesFolder, packageId.ToLowerInvariant()),
+        version);
+      if (versionFolder is null)
+      {
+        continue;
+      }
+
+      Directory.Delete(versionFolder, recursive: true);
+      deleted.Add(versionFolder);
+    }
+
+    return deleted;
   }
 
   internal static int ReportPoisonedEntries(

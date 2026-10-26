@@ -41,8 +41,6 @@ internal sealed class TestCommand : ICommand<Unit>
         return Value;
       }
 
-      Directory.CreateDirectory(Path.Combine(repoRoot, "artifacts", "packages"));
-
       Terminal.WriteLine("Restoring local tools (fixie.console)...");
       Terminal.WriteLine($"Working from: {repoRoot}");
 

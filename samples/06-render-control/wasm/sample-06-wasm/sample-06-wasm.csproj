@@ -9,9 +9,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" PrivateAssets="all" />
-    <PackageReference Include="TimeWarp.State" />
-    <PackageReference Include="TimeWarp.State.Blazor" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\source\timewarp-state\timewarp-state.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-blazor\timewarp-state-blazor.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

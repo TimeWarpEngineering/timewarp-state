@@ -132,7 +132,7 @@ public class UserService
 ### Package Management
 - **Central Management**: Uses Directory.Packages.props
 - **Lock Files**: Not enabled. There is no `packages.lock.json`.
-- **Local Feed**: `artifacts/packages` (`LocalNuGetFeed` maps to `PackagesDirectory`). Restores use `artifacts/nuget-packages` (`RestorePackagesPath` and `globalPackagesFolder`) so a local pack is not written to `~/.nuget/packages` under the release version. `dev pack` fails when that shared-cache `.nupkg.metadata` `source` is a local path.
+- **Local Feed**: `dev pack` writes `artifacts/packages` (`LocalNuGetFeed` maps to `PackagesDirectory`) and checks each `.nupkg` layout. Root `nuget.config` does not list that folder. Sample 00 auto is the only `PackageReference` consumer; `verify-samples` packs, deletes each packable id's same-version extract under `artifacts/nuget-packages`, then restores it with `--force` and package source mapping. The other samples `ProjectReference` source. Restores use `artifacts/nuget-packages` (`RestorePackagesPath` and `globalPackagesFolder`) so a local pack is not written to `~/.nuget/packages` under the release version. `dev pack` fails when that shared-cache `.nupkg.metadata` `source` is a local path.
 
 ### Build Process
 1. Analyzers and Source Generators built first

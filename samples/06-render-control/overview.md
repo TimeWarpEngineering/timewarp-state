@@ -11,7 +11,6 @@ Blazor WebAssembly page for `TimeWarpStateComponent` render decisions.
 How to run it, what each card skips, and when to leave `CaptureRenderCaller` off: [readme.md](readme.md).
 
 ```bash
-./bin/dev pack
 dotnet run --project samples/06-render-control/wasm/sample-06-wasm/sample-06-wasm.csproj --launch-profile http
 ```
 

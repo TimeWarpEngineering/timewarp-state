@@ -3,10 +3,10 @@
 #endregion
 #region Design
 // Wraps scripts/e2e.cs so SUT publish, Playwright install, and chrome.runsettings
-// stay in one place. Defaults UseHttp=true when unset (matches CI). Ensures
-// artifacts/packages exists first (NU1301). dev.cs sets NUGET_PACKAGES to
-// artifacts/nuget-packages before this command starts scripts/e2e.cs. Child
-// non-zero exit fails this process.
+// stay in one place. Defaults UseHttp=true when unset (matches CI). dev.cs sets
+// NUGET_PACKAGES to artifacts/nuget-packages before this command starts
+// scripts/e2e.cs. Child non-zero exit fails this process. Root nuget.config does
+// not list artifacts/packages, so this command does not create that folder.
 #endregion
 
 namespace DevCli.Commands;
@@ -40,8 +40,6 @@ internal sealed class E2eCommand : ICommand<Unit>
         Environment.ExitCode = 1;
         return Value;
       }
-
-      Directory.CreateDirectory(Path.Combine(repoRoot, "artifacts", "packages"));
 
       if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UseHttp")))
       {

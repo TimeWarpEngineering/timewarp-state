@@ -10,8 +10,8 @@
 
 #region Design
 // Sets NUGET_PACKAGES to artifacts/nuget-packages before clearing NuGet locals, so the global-packages
-// folder that clear removes is the isolated one. Skips that clear under CI. Recreates artifacts/packages
-// at the end because nuget.config lists it as a source.
+// folder that clear removes is the isolated one. Skips that clear under CI. Does not recreate
+// artifacts/packages: root nuget.config does not list that folder as a source.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -76,10 +76,6 @@ static class App
             WriteLine($"Removed: {dir}");
         }
     }
-
-    // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
-    // The guard protects later child `dotnet` invocations, not this runfile's own `#:package` restore.
-    Directory.CreateDirectory("./artifacts/packages");
 
     WriteLine("Solution cleaned successfully.");
   }

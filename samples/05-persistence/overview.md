@@ -11,7 +11,6 @@ Blazor WebAssembly sample with one state in session storage and one in local sto
 How to run it, when to pick each store, and how keys behave when a payload is older than the type: [readme.md](readme.md).
 
 ```bash
-./bin/dev pack
 dotnet run --project samples/05-persistence/wasm/sample-05-wasm/sample-05-wasm.csproj --launch-profile http
 ```
 

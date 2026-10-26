@@ -48,8 +48,6 @@ static class App
       DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
     WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
-    Directory.CreateDirectory(PackagesDirectory);
-
     WriteLine($"Script location: {context.ScriptDirectory}");
     WriteLine($"Working from: {Directory.GetCurrentDirectory()}");
     WriteLine($"Configuration: {configuration}");
@@ -132,8 +130,6 @@ static class App
       WriteLine("Removing artifacts directory...");
       Directory.Delete(ArtifactsDirectory, recursive: true);
     }
-
-    Directory.CreateDirectory(PackagesDirectory);
 
     if (Directory.Exists("./source/timewarp-state-blazor/wwwroot/js"))
     {

@@ -2,6 +2,8 @@
 
 This directory contains sample projects that demonstrate various features and capabilities of TimeWarp.State. Most samples are Blazor hosts. The console sample uses the core package only.
 
+Sample 00 auto (`samples/00-state-action-handler/auto`) is the only `PackageReference` consumer. `dev verify-samples` packs, drops each packable id's same-version extract from `artifacts/nuget-packages`, then restores that host and its WebAssembly client from `artifacts/packages`, so one consumer proves the packed server, WebAssembly, analyzer, and source-generator bits. It is not in `timewarp-state.slnx`, because that version is not on nuget.org until release. The other samples `ProjectReference` the source projects, the same way `tests/test-app/test-app-client` does, so inner-loop builds skip the feed. The DevTools inspector test stays on the pack lane: `tests/timewarp-state-devtools-tests/packaged-devtools-app-tests.cs` starts the inspector from the NuGet package. `dev pack` also opens each `.nupkg` and checks its layout.
+
 ## Available Samples
 
 ### [00-StateActionHandler](00-state-action-handler/overview.md)

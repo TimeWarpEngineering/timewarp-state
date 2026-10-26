@@ -6,8 +6,9 @@
 // Sets NUGET_PACKAGES to artifacts/nuget-packages and refuses to pack when the shared
 // global cache already holds that version from a local path. Clears artifacts/packages
 // first so leftovers cannot ship. Reads <Version> from source/Directory.Build.props,
-// verifies the nupkg set with CiRunPromotion, then rejects any nuspec dependency id
-// outside NuspecDependencyAllowList.
+// verifies the nupkg set with CiRunPromotion, rejects any nuspec dependency id
+// outside NuspecDependencyAllowList, then runs the nupkg content tests.
+// Those tests are not part of dev test: the workflow tests before this command packs.
 #endregion
 
 namespace DevCli.Commands;
@@ -131,6 +132,12 @@ internal sealed class PackCommand : ICommand<Unit>
         return Value;
       }
 
+      if (!await NupkgContentMatchesAsync(repoRoot, ct))
+      {
+        Environment.ExitCode = 1;
+        return Value;
+      }
+
       Terminal.WriteLine("\nPacked set verified.".Green());
       foreach (string fileName in actualFileNames.OrderBy(name => name, StringComparer.Ordinal))
       {
@@ -138,6 +145,50 @@ internal sealed class PackCommand : ICommand<Unit>
       }
 
       return Value;
+    }
+
+    private async Task<bool> NupkgContentMatchesAsync(string repoRoot, CancellationToken ct)
+    {
+      Terminal.WriteLine("Checking nupkg content...");
+      int toolRestore = await Shell.Builder("dotnet")
+        .WithArguments("tool", "restore")
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+      if (toolRestore != 0)
+      {
+        Terminal.WriteErrorLine("dotnet tool restore failed before the nupkg content tests.".Red());
+        return false;
+      }
+
+      string testProject = Path.Combine(
+        repoRoot,
+        "tests",
+        "timewarp-state-packaging-tests",
+        "timewarp-state-packaging-tests.csproj");
+      int buildExit = await Shell.Builder("dotnet")
+        .WithArguments("build", testProject, "--configuration", "Release")
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+      if (buildExit != 0)
+      {
+        Terminal.WriteErrorLine("nupkg content test project failed to build.".Red());
+        return false;
+      }
+
+      int testExit = await Shell.Builder("dotnet")
+        .WithArguments("fixie", "timewarp-state-packaging-tests")
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .RunAsync(ct);
+      if (testExit != 0)
+      {
+        Terminal.WriteErrorLine("nupkg content tests failed.".Red());
+        return false;
+      }
+
+      return true;
     }
 
     private bool NuspecDependenciesAllowed(IEnumerable<string> nupkgPaths, string version)

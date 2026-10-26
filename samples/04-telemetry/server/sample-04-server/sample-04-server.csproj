@@ -8,14 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\source\timewarp-state\timewarp-state.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-blazor\timewarp-state-blazor.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-telemetry\timewarp-state-telemetry.csproj" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-analyzer\timewarp-state-analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\..\..\..\source\timewarp-state-devtools-export\timewarp-state-devtools-export.csproj" />
     <ProjectReference Include="..\..\wasm\sample-04-wasm\sample-04-wasm.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TimeWarp.State" />
-    <PackageReference Include="TimeWarp.State.Blazor" />
-    <PackageReference Include="TimeWarp.State.Telemetry" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />

@@ -4,10 +4,6 @@
     <BuildType Name="Release" />
   </Configurations>
   <Folder Name="/Samples/" />
-  <Folder Name="/Samples/00-StateActionSet/">
-    <Project Path="samples\00-state-action-handler\auto\sample-00-auto\sample-00-auto-client\sample-00-auto-client.csproj" />
-    <Project Path="samples\00-state-action-handler\auto\sample-00-auto\sample-00-auto\sample-00-auto.csproj" />
-  </Folder>
   <Folder Name="/Samples/00-Server/">
     <Project Path="samples\00-state-action-handler\server\sample-00-server\sample-00-server.csproj" />
   </Folder>
@@ -62,6 +58,7 @@
     <Project Path="tests/timewarp-state-devtools-inspected-app/timewarp-state-devtools-inspected-app.csproj" />
     <Project Path="tests/timewarp-state-devtools-isolation-tests/timewarp-state-devtools-isolation-tests.csproj" />
     <Project Path="tests/timewarp-state-devtools-tests/timewarp-state-devtools-tests.csproj" />
+    <Project Path="tests/timewarp-state-packaging-tests/timewarp-state-packaging-tests.csproj" />
     <Project Path="tests/timewarp-state-source-generator-tests/timewarp-state-source-generator-tests.csproj" />
     <Project Path="tests/timewarp-state-telemetry-tests/timewarp-state-telemetry-tests.csproj" />
     <Project Path="tests\client-integration-tests\client-integration-tests.csproj" />

@@ -11,14 +11,13 @@ The attribute chooses the store. The host chooses the implementation by calling 
 
 ## Run
 
-Pack the in-tree packages first when `artifacts/packages` does not already contain this repo's `TimeWarp.State` version:
+This sample project-references the in-tree packages, so it does not need `dev pack` before it runs.
 
 ```bash
-./bin/dev pack
 dotnet run --project samples/05-persistence/wasm/sample-05-wasm/sample-05-wasm.csproj --launch-profile http
 ```
 
-NuGet keeps the first copy of `12.0.0-beta.4` it restores. A later pack of that same version does not replace `~/.nuget/packages/timewarp.state/12.0.0-beta.4` or `timewarp.state.plus`. Delete those two version folders and restore again so the sample binds the packed assemblies. The running app then writes `Type.FullName` keys and camelCase JSON.
+The running app writes `Type.FullName` keys and camelCase JSON.
 
 Open `http://localhost:5295`.
 

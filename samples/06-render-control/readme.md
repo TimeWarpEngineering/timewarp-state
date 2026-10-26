@@ -14,14 +14,11 @@ Blazor WebAssembly page for `TimeWarpStateComponent`: which pass paints, and two
 
 ## Run
 
-Pack the in-tree package first when `artifacts/packages` does not already contain this repo's `TimeWarp.State` version:
+This sample project-references `TimeWarp.State` and `TimeWarp.State.Blazor`, so it does not need `dev pack` before it runs.
 
 ```bash
-./bin/dev pack
 dotnet run --project samples/06-render-control/wasm/sample-06-wasm/sample-06-wasm.csproj --launch-profile http
 ```
-
-NuGet keeps the first copy of `12.0.0-beta.4` it restores. A later pack of that same version does not replace `~/.nuget/packages/timewarp.state/12.0.0-beta.4`. Delete that version folder and restore again so the sample binds the packed assembly.
 
 Open `http://localhost:5296`.
 

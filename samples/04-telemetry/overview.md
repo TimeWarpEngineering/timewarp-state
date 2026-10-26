@@ -20,10 +20,9 @@ Snapshots stay off unless `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is set. The AppHost
 
 ## Run with the Aspire dashboard (AppHost)
 
-Pack the in-tree packages first so the sample can restore `TimeWarp.State.Telemetry` from `artifacts/packages`:
+This sample project-references `TimeWarp.State`, `TimeWarp.State.Blazor`, and `TimeWarp.State.Telemetry`. It does not restore them from `artifacts/packages`.
 
 ```bash
-./bin/dev pack
 dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj
 ```
 

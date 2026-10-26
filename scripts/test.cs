@@ -12,7 +12,8 @@
 // Sets NUGET_PACKAGES to artifacts/nuget-packages, restores local tools, then for each suite
 // (analyzer, source generator, state, plus, telemetry, devtools, devtools isolation, client
 // integration, architecture) builds the project and runs dotnet fixie. RunStep names the failing
-// suite and exits 1, whether Amuru throws or returns a non-zero code.
+// suite and exits 1, whether Amuru throws or returns a non-zero code. Root nuget.config does
+// not list artifacts/packages, so this runfile does not create that folder.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -32,10 +33,6 @@ static class App
   DevCli.NuGetPackageIsolation.Isolation isolation =
     DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
   WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
-
-  // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
-  // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.
-  Directory.CreateDirectory("./artifacts/packages");
 
   await RunStep("Restore local tools", () => Shell.Builder("dotnet")
     .WithArguments("tool", "restore")
