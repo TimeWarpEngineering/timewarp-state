@@ -9,8 +9,9 @@
 #endregion
 
 #region Design
-// Skips the NuGet cache clear under CI so the restored cache is reused. Recreates artifacts/packages at the
-// end because nuget.config lists it as a source.
+// Sets NUGET_PACKAGES to artifacts/nuget-packages before clearing NuGet locals, so the global-packages
+// folder that clear removes is the isolated one. Skips that clear under CI. Recreates artifacts/packages
+// at the end because nuget.config lists it as a source.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -27,6 +28,9 @@ static class App
   public static async Task CleanSolution()
   {
     using var context = ScriptContext.FromRelativePath("..");
+    DevCli.NuGetPackageIsolation.Isolation isolation =
+      DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
+    WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
     WriteLine("Cleaning solution...");
 

@@ -9,9 +9,10 @@
 #endregion
 
 #region Design
-// Nuru routes: default and "build {config?}" build timewarp-state, -plus and -policies (Release unless a
-// configuration is given) after listing SDKs and restoring tools. "clean" kills dotnet processes, clears
-// NuGet caches (skipped under CI), runs dotnet clean and removes artifacts and generated JS.
+// Nuru routes: default and "build {config?}" build timewarp-state, -blazor, -plus and -policies (Release
+// unless a configuration is given) after listing SDKs and restoring tools. Both routes set NUGET_PACKAGES
+// to artifacts/nuget-packages before child dotnet processes. "clean" kills dotnet processes, clears the
+// isolated NuGet cache (skipped under CI), runs dotnet clean and removes artifacts and generated JS.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -43,6 +44,9 @@ static class App
   static async Task BuildProjects(string configuration)
   {
     using ScriptContext context = ScriptContext.FromRelativePath("..");
+    DevCli.NuGetPackageIsolation.Isolation isolation =
+      DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
+    WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
     Directory.CreateDirectory(PackagesDirectory);
 
@@ -90,6 +94,9 @@ static class App
   public static async Task CleanSolution()
   {
     using ScriptContext context = ScriptContext.FromRelativePath("..");
+    DevCli.NuGetPackageIsolation.Isolation isolation =
+      DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
+    WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
     WriteLine("Cleaning solution...");
 

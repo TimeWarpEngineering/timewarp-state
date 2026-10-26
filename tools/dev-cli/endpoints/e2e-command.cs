@@ -4,7 +4,9 @@
 #region Design
 // Wraps scripts/e2e.cs so SUT publish, Playwright install, and chrome.runsettings
 // stay in one place. Defaults UseHttp=true when unset (matches CI). Ensures
-// artifacts/packages exists first (NU1301). Child non-zero exit fails this process.
+// artifacts/packages exists first (NU1301). dev.cs sets NUGET_PACKAGES to
+// artifacts/nuget-packages before this command starts scripts/e2e.cs. Child
+// non-zero exit fails this process.
 #endregion
 
 namespace DevCli.Commands;

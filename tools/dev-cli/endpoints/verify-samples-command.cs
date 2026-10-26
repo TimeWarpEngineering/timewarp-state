@@ -5,7 +5,8 @@
 // Builds each samples/**/*.csproj so the required verify-samples capability is
 // a real gate, not a stub. Samples PackageReference TimeWarp.State / Plus from
 // LocalNuGetFeed; workflow runs pack before this command so that restore can
-// succeed (nuget.org does not have the in-tree version).
+// succeed (nuget.org does not have the in-tree version). Sample restores extract
+// into artifacts/nuget-packages, not ~/.nuget/packages.
 // After the builds, publishes samples/05-persistence trimmed with TrimmerSingleWarn=false
 // so Blazor and Plus trim warnings fail this gate.
 #endregion

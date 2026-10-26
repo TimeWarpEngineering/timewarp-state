@@ -12,5 +12,6 @@
 
   <ItemGroup>
     <Compile Include="global-usings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)../tools/dev-cli/endpoints/nuget-package-isolation.cs" />
   </ItemGroup>
 </Project>

@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="..\..\tools\dev-cli\endpoints\nuspec-dependency-allow-list.cs" Link="packaging\nuspec-dependency-allow-list.cs" />
+    <Compile Include="..\..\tools\dev-cli\endpoints\nuget-package-isolation.cs" Link="packaging\nuget-package-isolation.cs" />
   </ItemGroup>
 
   <ItemGroup>
