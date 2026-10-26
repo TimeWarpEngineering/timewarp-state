@@ -92,6 +92,7 @@ Done when:
 - Implementation approach (2026-10-26): **isolated packages folder**, not a local prerelease suffix. `nuget.config` `globalPackagesFolder` and `RestorePackagesPath` both point at `artifacts/nuget-packages`. The dev CLI and `scripts/package.cs`, `build.cs`, `test.cs`, `e2e.cs`, and `clean.cs` set `NUGET_PACKAGES` to that folder before child `dotnet` processes. A suffix would still write a new global-cache entry for the packed version, and it would split the version SSOT that samples and publish share. The release version string stays equal to the nuget.org version; only the restore location changes. `dev pack` fails when `~/.nuget/packages/<id>/<version>/.nupkg.metadata` `source` is not an http(s) URL.
 - Validation (2026-10-26): `scripts/build.cs`, `scripts/package.cs`, `scripts/test.cs`, `scripts/e2e.cs`, `scripts/clean.cs`, `dev pack`, and `dev verify-samples` exited 0. `ganda repo audit` exits 0 after `audit --fix` restored `bin/dev` (clean removes every `bin/` directory, including that shim). Two advisory warnings remain and are pre-existing: task 098 has no worktree, and seven framework paths are not kebab-case (`*.lib.module.*`, a `.targets` file, and backlog task 110).
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T09:29:51Z
+- Review oracle (2026-10-26): Claude Opus 5.5, headless `ganda task work`, session id not exposed. Body tw-implementation-review, effort 3 (by-diff, 870 lines), roster general, 1 round. Disposition `accepted-exceptions` (M1 nit wontfix).
 
 ## Notes
 
@@ -151,3 +152,15 @@ python3 -c "import json; print(json.load(open('artifacts/nuget-packages/timewarp
 ```
 
 Expect: `global-packages` is `<repo>/artifacts/nuget-packages`. Pack exits 0 when the shared cache has no local-sourced entry for `12.0.0-beta.16`, and exits 1 naming the package id when `.nupkg.metadata` `source` is a local path. The sample build restores. `find` prints nothing. The isolated metadata `source` is this worktree's `artifacts/packages`, and `~/.nuget/packages` has no new file for `12.0.0-beta.16`.
+
+### Review disposition
+
+- **Outcome:** `accepted-exceptions`. 1 round, effort 3, roster general (review oracle, Claude Opus 5.5).
+- **Final counts:** bug 0, suggestion 0, nit 1 wontfix. 0 open.
+- **Wontfix M1 (nit):** the docs do not say that `artifacts/nuget-packages` belongs to one worktree, starts cold, and is removed by `clean`. That cost is inherent to the isolation approach the task allows, and behaviour is correct, so it was not worth a fix pass.
+- **Re-verified in review:**
+  - `dotnet nuget locals global-packages -l` prints the worktree's `artifacts/nuget-packages`.
+  - The `NuGetPackageIsolation*` fixie tests ran 6 passed.
+  - A build and restore wrote nothing new under `~/.nuget/packages`.
+  - `12.0.0-beta.16` is absent from the shared cache.
+- **Artifacts:** `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
