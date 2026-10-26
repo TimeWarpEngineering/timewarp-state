@@ -29,6 +29,9 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 - [x] CI pack ordering reduced to the one packaged consumer
 - [x] `./bin/dev test` green
 - [x] docs updated
+- [x] M1: purge same-version extracts and `--force` the sample 00 auto restore
+- [x] M2: Plus content test requires both scripts
+- [x] M3: content test parses static web asset manifests only
 
 ## Session
 
@@ -36,12 +39,17 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 - Implementation: grok 01a1781a-5751-74c1-b158-536134dfae2d (2026-10-26). Regression fix is `00f3102f` (root `nuget.config` no longer lists the feed). The sample move, nupkg content test, and docs are the next commit. `Directory.Packages.props` dropped `TimeWarp.State.Plus` and `TimeWarp.State.Telemetry` because nothing package-references them after that move (`cpm-consistency`).
 - Commands were `dotnet run --file tools/dev-cli/dev.cs`. `./bin/dev` is gitignored and was not the binary under test.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T13:05:38Z
+- Review oracle round 1: claude-opus-5-5, effort 3, roster general. 3 findings open (M1 bug, M2 suggestion, M3 nit). A fix pass is needed — 2026-10-26
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-26T13:10:21Z
+- Fix pass (implement-fix-2): grok, session 01a17855-5a5a-77e2-a698-de85fddcf079 — 2026-10-26. Purged the isolated same-version extracts before the sample 00 restore. Plus asserts both scripts. Manifest JSON skips contentFiles tsconfig.
 
 ## Goal (implementer restatement)
 
-A fresh worktree has to restore and commit without anyone creating `artifacts/packages` by hand. Root `nuget.config` lists that folder as a package source, so every restore, including ones that never consume the local packages, fails with NU1301 when the folder is missing. The feed should stay off those restores. The one consumer that still proves the packed bits is sample 00 auto: `verify-samples` packs, then restores that host and WebAssembly client with a config file that maps `TimeWarp.State` and `TimeWarp.State.*` to `artifacts/packages`. The other nine sample projects should compile against the source projects, the same way the test app does, and CI should not order them behind the feed.
+A fresh worktree restores and commits with no hand-made `artifacts/packages` folder. Root `nuget.config` does not list that feed, so restores that never consume the local packages do not fail NU1301 when the folder is missing. Sample 00 auto (server host and WebAssembly client) is the one packaged consumer: `verify-samples` packs, then restores it through a config that maps `TimeWarp.State` and `TimeWarp.State.*` to `artifacts/packages`. The other nine samples compile against the source projects, the way the test app does, and CI does not order them behind the feed. The DevTools inspector test stays on its own pack lane. `samples/overview.md` and the contributing scripts section say which consumer proves packaging.
 
-The pack output needs a test that opens every `.nupkg` from `dev pack`. `TimeWarp.State.Blazor` has to contain its `_content` static web assets, including the `.lib.module.js`. The analyzer and source generator assemblies have to sit under `analyzers/dotnet/cs` in the package that carries them. A missing entry fails the test. The DevTools inspector test stays on its own pack lane. `samples/overview.md` and the contributing scripts section have to say which consumer proves packaging and why the rest use project references. The isolated package cache from task 125 stays as it is.
+`dev pack` opens every `.nupkg`. `TimeWarp.State.Blazor` must contain its `_content` static web assets, including `.lib.module.js`. `TimeWarp.State.Plus` must contain both `document-title.js` and `download-file.js`, each paired with BasePath `_content/TimeWarp.State.Plus`. The analyzer and source generator assemblies must sit under `analyzers/dotnet/cs`. A missing entry fails the test. That test reads static web asset manifests only, so a comment in `contentFiles/.../tsconfig.json` is not a parse error.
+
+Review round 1: before the sample 00 auto restore, delete `artifacts/nuget-packages/<id>/<version>` for each packable id and restore with `--force`. A same-version extract otherwise wins over the nupkg just packed, and the packaged-consumer gate can pass on stale bits. `RestorePackagesPath` names that isolated folder and wins over `NUGET_PACKAGES`, so a per-run env folder would not move the extract. Task 125's rule stays: the packed version is not written under `~/.nuget/packages`.
 
 ## Results
 
@@ -51,23 +59,35 @@ Root `nuget.config` no longer lists `artifacts/packages`. That is commit `00f310
 
 `Directory.Packages.props` no longer versions `TimeWarp.State.Plus` or `TimeWarp.State.Telemetry`. Nothing in the repo package-references them after the sample move.
 
+Review round 1 fix: `verify-samples` deletes `artifacts/nuget-packages/<lowercase id>/<version>` for each packable id after pack, then restores sample 00 auto with `--force`. Before this run the cached `TimeWarp.State` `contentHash` was `r4tHpL1d…` and the nupkg SHA-512 was `gFVoIVu2…`. After the run both were `sOKW/aPZWBV3TE2cpK03`. `TimeWarp.State.Blazor` matched the same way. The log printed both purged version folders, then `Samples verified successfully!`. `RestorePackagesPath` still names the isolated folder, so the extract does not move to `~/.nuget/packages`.
+
+`TimeWarp.State.Plus` asserts `document-title.js` and `download-file.js` on their own. A package that has only the first script fails. `HasAssetPair` reads `build/`, `buildTransitive/`, and `*.PackageAssets.json`. A comment in `contentFiles/.../tsconfig.json` returns a layout miss instead of `JsonException`.
+
 ### How to validate
 
 Smoke:
 
-- Move `artifacts/packages` aside and run `dotnet restore timewarp-state.slnx`, then put the folder back.
-- `dotnet run --file tools/dev-cli/dev.cs -- build`
-- `dotnet run --file tools/dev-cli/dev.cs -- verify-samples`
-- `dotnet run --project samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto/sample-00-auto.csproj --configuration Release --no-build --launch-profile http`, then `curl -sS -o /dev/null -w '%{http_code}' http://localhost:5249/`
-- `dotnet run --file tools/dev-cli/dev.cs -- test`
+- `dotnet fixie timewarp-state-tests --tests '*NuGetPackageIsolation*'`
+- `dotnet fixie timewarp-state-packaging-tests --tests '*NupkgContent*'`
+- Record `artifacts/nuget-packages/timewarp.state/12.0.0-beta.16/.nupkg.metadata` `contentHash`, then `dotnet run --file tools/dev-cli/dev.cs -- verify-samples`, then compare that hash to the SHA-512 of `artifacts/packages/TimeWarp.State.12.0.0-beta.16.nupkg` (and the Blazor pair).
 
 Expect:
 
-- The solution restore exits 0 while `artifacts/packages` is missing. Sample 00 auto is not in the solution.
-- Build prints `Build filter: 37 project(s); sample 00 auto omitted.` and exits 0.
-- verify-samples builds 10 project-referenced samples, trimmed-publishes sample 05, packs 9 nupkgs, the content test passes (`1 passed`), then restores and builds both sample 00 auto projects. Last line: `Samples verified successfully!`
-- The host prints `Now listening on: http://localhost:5249` and `GET /` returns 200.
-- `dev test` exits 0. Suites: analyzer 44 passed; source generator 90 passed; state 126 passed, 1 skipped; plus 40 passed, 1 skipped; telemetry 21 passed; devtools 101 passed; devtools isolation 4 passed; client integration 64 passed, 1 skipped; architecture 7 passed, 1 skipped.
+- Isolation tests: 8 passed, including `DeleteTheNamedVersionFolderAndLeaveOtherVersions` and `LeaveTheCacheUntouchedWhenTheVersionIsAbsent`.
+- Content tests: 4 passed. `FailPlusWhenDownloadFileIsMissing` fails the Plus layout when `download-file.js` is absent. `IgnoreACommentInContentFilesTsconfig` does not throw.
+- verify-samples prints a `Purged artifacts/nuget-packages/...` line for each extract that was present, the content test passes, both sample 00 auto projects restore and build, and the last line is `Samples verified successfully!`. The isolated `.nupkg.metadata` `contentHash` equals the nupkg SHA-512. Exit code 0.
+
+### Review
+
+- Round 1 of 1 so far. Effort 3, roster general.
+- Counts: bug 1, suggestion 1, nit 1. All 3 are open; 0 fixed, 0 wontfix.
+- Disposition: fix pass implemented M1, M2, and M3. Round 2 reviews that diff.
+- M1: locally, `verify-samples` restores sample 00 auto from a stale same-version extraction in `artifacts/nuget-packages`, not from the fresh pack.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+
+## Review
+
+- Round 1: M1, M2, and M3 implemented in the fix pass. Round 2 has not run.
 
 ## Notes
 
