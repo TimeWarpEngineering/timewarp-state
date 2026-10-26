@@ -36,6 +36,7 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 - Implementation: grok 01a1781a-5751-74c1-b158-536134dfae2d (2026-10-26). Regression fix is `00f3102f` (root `nuget.config` no longer lists the feed). The sample move, nupkg content test, and docs are the next commit. `Directory.Packages.props` dropped `TimeWarp.State.Plus` and `TimeWarp.State.Telemetry` because nothing package-references them after that move (`cpm-consistency`).
 - Commands were `dotnet run --file tools/dev-cli/dev.cs`. `./bin/dev` is gitignored and was not the binary under test.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T13:05:38Z
+- Review oracle round 1: claude-opus-5-5, effort 3, roster general. 3 findings open (M1 bug, M2 suggestion, M3 nit). A fix pass is needed — 2026-10-26
 
 ## Goal (implementer restatement)
 
@@ -68,6 +69,14 @@ Expect:
 - verify-samples builds 10 project-referenced samples, trimmed-publishes sample 05, packs 9 nupkgs, the content test passes (`1 passed`), then restores and builds both sample 00 auto projects. Last line: `Samples verified successfully!`
 - The host prints `Now listening on: http://localhost:5249` and `GET /` returns 200.
 - `dev test` exits 0. Suites: analyzer 44 passed; source generator 90 passed; state 126 passed, 1 skipped; plus 40 passed, 1 skipped; telemetry 21 passed; devtools 101 passed; devtools isolation 4 passed; client integration 64 passed, 1 skipped; architecture 7 passed, 1 skipped.
+
+### Review
+
+- Round 1 of 1 so far. Effort 3, roster general.
+- Counts: bug 1, suggestion 1, nit 1. All 3 are open; 0 fixed, 0 wontfix.
+- Disposition: pending. A fix pass is needed for M1, M2, and M3.
+- M1: locally, `verify-samples` restores sample 00 auto from a stale same-version extraction in `artifacts/nuget-packages`, not from the fresh pack.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
 
 ## Notes
 
