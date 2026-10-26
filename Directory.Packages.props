@@ -25,12 +25,12 @@
     <PackageVersion Include="timewarp-heroicons" Version="2.2.0" />
 
     <!-- Microsoft ASP.NET Core -->
-    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="11.0.0-rc.2.26504.105" />
 
     <!-- Microsoft Code Analysis -->
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0">
@@ -47,9 +47,9 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 
     <!-- Microsoft Extensions -->
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-rc.1.26425.128" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-rc.2.26504.105" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="11.0.0-rc.2.26504.105" />
 
     <!-- Microsoft Testing & Build Tools -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
@@ -82,6 +82,6 @@
 
     <!-- System & Utilities -->
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="11.0.0-rc.1.26425.128" />
+    <PackageVersion Include="System.Net.Http.Json" Version="11.0.0-rc.2.26504.105" />
   </ItemGroup>
 </Project>

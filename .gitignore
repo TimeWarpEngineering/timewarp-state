@@ -359,3 +359,6 @@ source/timewarp-state-devtools-app/tools/
 
 # Mission heartbeat in the claim worktree (local; not product)
 mission.heartbeat
+
+# Routine journals, mission briefs, and progress logs beside kitchens (local; not product)
+stacked-task-set*.resume.json
