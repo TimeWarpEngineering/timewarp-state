@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 945
-- Effort: 3
+- Lines changed: 307
+- Effort: 2
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 120 (--max-turns; cursor uncapped)
 
 ## Scope
 
@@ -17,6 +17,7 @@
 **Effort:** 3 (by-diff budget); roster axes: general
 **Reviewer roster:** general (review oracle, claude-opus-5-5, inline)
 **Session IDs:** review oracle under `ganda task work` (session id not exposed to the oracle)
+**Round 2 scope:** fix delta `d2014bcc..53b494a9` (product commit `6fa0f6b8`). Effort 2 by-diff (307 lines), roster general, claude-opus-5-5, inline.
 
 ## Ground rules
 
