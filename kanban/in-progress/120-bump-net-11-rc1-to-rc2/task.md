@@ -38,12 +38,20 @@ Acceptance:
 - `.gitignore` keeps the `stacked-task-set*.resume.json` line that was already in the worktree. `required-gitignore` and `kanban-porcelain` pass with it present.
 - `ganda repo audit` exits 0 (31 passed, 2 advisory warnings). Left in place: `kanban-landed` for task 098 (no worktree on this claim) and `kebab-path-names` for Blazor `*.lib.module.*` filenames, `TimeWarp.State.DevTools.App.targets`, and backlog folder 110. Renaming those on this id would break framework names or another kitchen.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T06:30:19Z
+- Review oracle: general reviewer (claude, model claude-opus-5-5), effort 1, session not reported, turn cap 80. Round 1 raised 0 findings. Disposition: clean (2026-10-26).
 
 ## Results
 
 SDK `11.0.100-rc.2.26504.105` is the `global.json` floor (`rollForward` latestMinor, `allowPrerelease` true). Every former RC1 central package pin and the analyzer `Microsoft.NETCore.App.Ref` pin are `11.0.0-rc.2.26504.105`. `dotnet --version` in this worktree prints that SDK. RC3 (`11.0.100-rc.3.26522.148`, 2026-10-25) is published and is not installed here, so this task stays on the RC2 versions in the requirements.
 
 RC2 review, no code fallout: QuickGrid experimental APIs, `IValidationMessageFormatter`, `BasePath` namespace move, device-bound sessions, `AddRazorRuntimeCompilation` obsoletion, iOS file locking, MemoryCache metric rename, and the SDK/MSBuild/C#/NuGet notes do not match any call site here.
+
+### Review
+
+- Rounds: 1. Roster: general (effort 1).
+- Final counts: 0 bug, 0 suggestion, 0 nit. 0 open, 0 fixed, 0 wontfix.
+- Disposition: **clean**. The reviewer re-ran `./bin/dev build` (exit 0) and `./bin/dev test` (exit 0) on SDK `11.0.100-rc.2.26504.105`, and confirmed that CI reads `global.json`.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
 ### How to validate
 
