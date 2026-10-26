@@ -43,6 +43,7 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 - Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-26T13:10:21Z
 - Fix pass (implement-fix-2): grok, session 01a17855-5a5a-77e2-a698-de85fddcf079 — 2026-10-26. Purged the isolated same-version extracts before the sample 00 restore. Plus asserts both scripts. Manifest JSON skips contentFiles tsconfig.
 - Audit: `ganda repo audit --fix --checks kanban-landed` landed kitchen 129. Two advisory warnings stay: task 098 has no worktree, and seven pre-existing non-kebab paths (Blazor `.lib.module` names, a `.targets` file, and backlog task 110). Those are not this change.
+- Review oracle round 2: claude-opus-5-5, effort 2, roster general, session not reported. Re-verified M1–M3 as fixed and found nothing new. Disposition is clean — 2026-10-26
 
 ## Goal (implementer restatement)
 
@@ -80,16 +81,17 @@ Expect:
 
 ### Review
 
-- Round 1 of 1 so far. Effort 3, roster general.
-- Counts: bug 1, suggestion 1, nit 1. All 3 are open; 0 fixed, 0 wontfix.
-- Disposition: fix pass implemented M1, M2, and M3. Round 2 reviews that diff.
-- M1: locally, `verify-samples` restores sample 00 auto from a stale same-version extraction in `artifacts/nuget-packages`, not from the fresh pack.
-- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+- Rounds: 2, roster general (claude-opus-5-5). Round 1 ran at effort 3, round 2 at effort 2.
+- Final counts: bug 1 fixed, suggestion 1 fixed, nit 1 fixed. 0 open, 0 wontfix.
+- Disposition: **clean**. Fix commit `6fa0f6b8` resolved all three findings, and round 2 found nothing new.
+- M1: before the fix, `verify-samples` restored sample 00 auto from a stale same-version extract in `artifacts/nuget-packages`. Round 2 checked on disk that the isolated `contentHash` equals the packed nupkg SHA-512.
+- Round 2 checks: packaging tests 4/4 passed. `timewarp-state-tests` passed 128, with 1 pre-existing skip.
+- Paths: `review/review-framework.md`, `review/round-1/merged.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Review
 
-- Round 1: M1, M2, and M3 implemented in the fix pass. Round 2 has not run.
-
+- Round 1: M1, M2, and M3 implemented in the fix pass.
+- Round 2: Done
 ## Notes
 
 Commit the regression fix (requirement 1) separately from the sample migration so it can be cherry-picked if the rest stalls. Task 125 chose an isolated cache over a local version suffix; do not revisit that choice here.
