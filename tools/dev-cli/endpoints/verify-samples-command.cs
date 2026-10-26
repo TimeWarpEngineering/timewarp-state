@@ -9,10 +9,14 @@
 // artifacts/packages. Command-line --source is not combined with that file,
 // because those sources skip the mapping. dotnet build does not take the
 // config file, so the packaged projects restore with it and then build
-// --no-restore. The trimmed publish of samples/05-persistence stays on the
-// project-reference build and does not pass a feed. It sets VerifySamplesTrim
-// instead of a global PublishTrimmed, because that property would also mark
-// the netstandard analyzer projects.
+// --no-restore. Before that restore, each packable id's version folder under
+// artifacts/nuget-packages is deleted and the restore passes --force. NuGet
+// otherwise reuses a same-version extract and never reads the nupkg just packed.
+// RestorePackagesPath names that folder and wins over NUGET_PACKAGES, so a
+// per-run env folder would not move the extract. The trimmed publish of
+// samples/05-persistence stays on the project-reference build and does not
+// pass a feed. It sets VerifySamplesTrim instead of a global PublishTrimmed,
+// because that property would also mark the netstandard analyzer projects.
 #endregion
 
 namespace DevCli.Commands;
@@ -92,6 +96,11 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       if (packagedProjects.Length == 0)
       {
         Terminal.WriteLine("\nSamples verified successfully!".Green());
+        return Value;
+      }
+
+      if (!await PurgePackedExtractsAsync(repoRoot, ct))
+      {
         return Value;
       }
 
@@ -177,7 +186,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       string relativePath = Path.GetRelativePath(repoRoot, project);
       Terminal.WriteLine($"\nRestoring {relativePath} from the local feed...");
       int restoreExitCode = await Shell.Builder("dotnet")
-        .WithArguments("restore", project, "--configfile", configPath)
+        .WithArguments("restore", project, "--configfile", configPath, "--force")
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
@@ -201,6 +210,57 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
         Terminal.WriteErrorLine($"Sample failed: {relativePath}".Red());
         Environment.ExitCode = buildExitCode;
         return false;
+      }
+
+      return true;
+    }
+
+    private async Task<bool> PurgePackedExtractsAsync(string repoRoot, CancellationToken ct)
+    {
+      string? version = NuGetPackageIsolation.ReadProductVersion(repoRoot);
+      if (string.IsNullOrWhiteSpace(version))
+      {
+        Terminal.WriteErrorLine("Error: could not read <Version> from source/Directory.Build.props.");
+        Environment.ExitCode = 1;
+        return false;
+      }
+
+      IReadOnlyList<PackableProject> packableProjects = await PackableProjectService
+        .GetPackableProjectsAsync(repoRoot, ct)
+        .ConfigureAwait(false);
+      if (packableProjects.Count == 0)
+      {
+        Terminal.WriteErrorLine(
+          "Error: no packable projects found; refusing to restore sample 00 auto against the existing cache.");
+        Environment.ExitCode = 1;
+        return false;
+      }
+
+      string packagesFolder = NuGetPackageIsolation.Apply(repoRoot).IsolatedPackagesFolder;
+      IReadOnlyList<string> deleted;
+      try
+      {
+        deleted = NuGetPackageIsolation.DeleteVersionFolders(
+          packagesFolder,
+          version,
+          packableProjects.Select(project => project.PackageId));
+      }
+      catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+      {
+        Terminal.WriteErrorLine($"Could not purge the isolated package cache: {exception.Message}");
+        Environment.ExitCode = 1;
+        return false;
+      }
+
+      if (deleted.Count == 0)
+      {
+        Terminal.WriteLine("No same-version extracts were present before the packaged sample restore.");
+        return true;
+      }
+
+      foreach (string path in deleted)
+      {
+        Terminal.WriteLine($"Purged {Path.GetRelativePath(repoRoot, path)}");
       }
 
       return true;

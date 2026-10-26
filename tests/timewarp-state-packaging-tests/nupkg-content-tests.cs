@@ -9,6 +9,10 @@
 // forward slashes. Static web assets must pair the script with its BasePath on one element or
 // JSON object. A file that merely mentions both strings is not that pair. TimeWarp.State.Blazor
 // keeps _content/TimeWarp.State (the SDK default would be _content/TimeWarp.State.Blazor).
+// TimeWarp.State.Plus must pair both document-title.js and download-file.js with
+// _content/TimeWarp.State.Plus. Either script alone is a failure.
+// JSON pairing reads static web asset manifests only: build/, buildTransitive/, and
+// names ending in .PackageAssets.json. contentFiles tsconfig is JSONC and is not parsed.
 // Analyzer and source-generator assemblies are packed inside TimeWarp.State under analyzers/dotnet/cs.
 // The Blazor module is fingerprinted in the nupkg (a hash sits before .lib.module.js), so the
 // assertion is that suffix plus BasePath _content/TimeWarp.State on the same asset object.
@@ -21,6 +25,8 @@ public class NupkgContent_Should_
   private const string BlazorModuleScript = ".lib.module.js";
   private const string BlazorContentBase = "_content/TimeWarp.State";
   private const string PlusContentBase = "_content/TimeWarp.State.Plus";
+  private const string PlusDocumentTitleScript = "document-title.js";
+  private const string PlusDownloadFileScript = "download-file.js";
 
   public static void MatchTheLayoutOfEveryPackedNupkg()
   {
@@ -49,6 +55,77 @@ public class NupkgContent_Should_
     }
   }
 
+  public static void IgnoreACommentInContentFilesTsconfig()
+  {
+    using ZipArchive archive = Archive(
+      ("contentFiles/any/net11.0/tsconfig.json", """{ /* comment */ "compilerOptions": {} }"""));
+
+    HasAssetPair(archive, PlusDocumentTitleScript, PlusContentBase).ShouldBeFalse();
+  }
+
+  public static void PairAManifestWhenThePackageAlsoContainsJsonc()
+  {
+    using ZipArchive archive = Archive(
+      ("contentFiles/any/net11.0/tsconfig.json", """{ /* comment */ "compilerOptions": {} }"""),
+      (
+        "build/TimeWarp.State.Plus.PackageAssets.json",
+        """
+        {
+          "Assets": {
+            "staticwebassets/js/document-title.js": {
+              "RelativePath": "js/document-title.js",
+              "BasePath": "_content/TimeWarp.State.Plus"
+            }
+          }
+        }
+        """));
+
+    HasAssetPair(archive, PlusDocumentTitleScript, PlusContentBase).ShouldBeTrue();
+  }
+
+  public static void FailPlusWhenDownloadFileIsMissing()
+  {
+    using ZipArchive archive = Archive(
+      ("staticwebassets/js/document-title.js", "script"),
+      ("lib/net11.0/timewarp-state-plus.dll", "dll"),
+      (
+        "build/TimeWarp.State.Plus.PackageAssets.json",
+        """
+        {
+          "Assets": {
+            "staticwebassets/js/document-title.js": {
+              "RelativePath": "js/document-title.js",
+              "BasePath": "_content/TimeWarp.State.Plus"
+            }
+          }
+        }
+        """));
+    string[] entries = archive.Entries
+      .Select(entry => Normalize(entry.FullName))
+      .Where(path => path.Length > 0 && !path.EndsWith('/'))
+      .ToArray();
+
+    Should.Throw<ShouldAssertException>(() => AssertLayout("TimeWarp.State.Plus", archive, entries));
+  }
+
+  private static ZipArchive Archive(params (string Path, string Text)[] files)
+  {
+    MemoryStream stream = new();
+    using (ZipArchive writing = new(stream, ZipArchiveMode.Create, leaveOpen: true))
+    {
+      foreach ((string path, string text) in files)
+      {
+        ZipArchiveEntry entry = writing.CreateEntry(path);
+        using Stream entryStream = entry.Open();
+        using StreamWriter writer = new(entryStream);
+        writer.Write(text);
+      }
+    }
+
+    stream.Position = 0;
+    return new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: false);
+  }
+
   private static void AssertLayout(string packageId, ZipArchive archive, string[] entries)
   {
     switch (packageId)
@@ -65,15 +142,8 @@ public class NupkgContent_Should_
         break;
 
       case "TimeWarp.State.Plus":
-        entries.Any(entry =>
-          entry.Contains("staticwebassets/", StringComparison.Ordinal)
-          && (entry.EndsWith("document-title.js", StringComparison.Ordinal)
-            || entry.EndsWith("download-file.js", StringComparison.Ordinal)))
-          .ShouldBeTrue($"{packageId} is missing a static web asset for document-title.js or download-file.js.");
-        (
-          HasAssetPair(archive, "document-title.js", PlusContentBase)
-          || HasAssetPair(archive, "download-file.js", PlusContentBase)
-        ).ShouldBeTrue(PairFailure(packageId, "document-title.js", PlusContentBase, archive));
+        AssertStaticWebAsset(packageId, archive, entries, PlusDocumentTitleScript, PlusContentBase);
+        AssertStaticWebAsset(packageId, archive, entries, PlusDownloadFileScript, PlusContentBase);
         entries.ShouldContain("lib/net11.0/timewarp-state-plus.dll");
         break;
 
@@ -131,7 +201,7 @@ public class NupkgContent_Should_
     foreach (ZipArchiveEntry entry in archive.Entries)
     {
       string name = Normalize(entry.FullName);
-      if (name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+      if (IsStaticWebAssetManifest(name))
       {
         using Stream stream = entry.Open();
         using JsonDocument document = JsonDocument.Parse(stream);
@@ -152,6 +222,26 @@ public class NupkgContent_Should_
     }
 
     return false;
+  }
+
+  private static bool IsStaticWebAssetManifest(string name)
+  {
+    if (!name.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+    {
+      return false;
+    }
+
+    if (name.EndsWith(".PackageAssets.json", StringComparison.OrdinalIgnoreCase))
+    {
+      return true;
+    }
+
+    int slash = name.LastIndexOf('/');
+    string directory = slash < 0 ? "" : name[..slash];
+    return directory.Equals("build", StringComparison.OrdinalIgnoreCase)
+      || directory.Equals("buildTransitive", StringComparison.OrdinalIgnoreCase)
+      || directory.EndsWith("/build", StringComparison.OrdinalIgnoreCase)
+      || directory.EndsWith("/buildTransitive", StringComparison.OrdinalIgnoreCase);
   }
 
   private static bool JsonHasPair(JsonElement element, string scriptName, string basePath)

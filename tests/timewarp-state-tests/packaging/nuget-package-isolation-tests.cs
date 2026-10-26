@@ -5,6 +5,8 @@
 #region Design
 // The checker is the same type dev pack runs. These tests build a fake global-packages
 // folder so a regression fails without writing ~/.nuget/packages.
+// DeleteVersionFolders is the same helper verify-samples uses to drop a same-version
+// extract before restoring the nupkg just packed.
 #endregion
 
 namespace TimeWarp.State.Packaging;
@@ -88,6 +90,47 @@ public class NuGetPackageIsolation_Should_
       ["TimeWarp.State"]);
 
     found.ShouldBeEmpty();
+  }
+
+  public static void DeleteTheNamedVersionFolderAndLeaveOtherVersions()
+  {
+    using CacheFixture fixture = CacheFixture.Create(
+      "timewarp.state",
+      "12.0.0-beta.16",
+      """{ "source": "/tmp/repo/artifacts/packages" }""");
+    string otherVersion = Path.Combine(fixture.Root, "timewarp.state", "12.0.0-beta.15");
+    string otherPackage = Path.Combine(fixture.Root, "timewarp.state.plus", "12.0.0-beta.16");
+    Directory.CreateDirectory(otherVersion);
+    Directory.CreateDirectory(otherPackage);
+    File.WriteAllText(Path.Combine(otherVersion, ".nupkg.metadata"), """{ "source": "https://api.nuget.org/v3/index.json" }""");
+    File.WriteAllText(Path.Combine(otherPackage, ".nupkg.metadata"), """{ "source": "/tmp/repo/artifacts/packages" }""");
+
+    IReadOnlyList<string> deleted = DevCli.NuGetPackageIsolation.DeleteVersionFolders(
+      fixture.Root,
+      "12.0.0-beta.16",
+      ["TimeWarp.State", "TimeWarp.State"]);
+
+    deleted.Count.ShouldBe(1);
+    deleted[0].ShouldBe(Path.Combine(fixture.Root, "timewarp.state", "12.0.0-beta.16"));
+    Directory.Exists(deleted[0]).ShouldBeFalse();
+    Directory.Exists(otherVersion).ShouldBeTrue();
+    Directory.Exists(otherPackage).ShouldBeTrue();
+  }
+
+  public static void LeaveTheCacheUntouchedWhenTheVersionIsAbsent()
+  {
+    using CacheFixture fixture = CacheFixture.Create(
+      "timewarp.state",
+      "12.0.0-beta.16",
+      """{ "source": "/tmp/repo/artifacts/packages" }""");
+
+    IReadOnlyList<string> deleted = DevCli.NuGetPackageIsolation.DeleteVersionFolders(
+      fixture.Root,
+      "9.0.0",
+      ["TimeWarp.State.Blazor"]);
+
+    deleted.ShouldBeEmpty();
+    Directory.Exists(Path.Combine(fixture.Root, "timewarp.state", "12.0.0-beta.16")).ShouldBeTrue();
   }
 
   public static void SharedCacheFolders_SkipsTheIsolatedFolderAndKeepsADistinctPreviousCache()
