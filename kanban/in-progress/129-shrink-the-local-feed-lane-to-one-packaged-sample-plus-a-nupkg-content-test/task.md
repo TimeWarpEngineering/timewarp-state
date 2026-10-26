@@ -35,6 +35,7 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 - Created: 259f62af-98bf-4133-8bba-2f8a32eb7caa (2026-10-26)
 - Implementation: grok 01a1781a-5751-74c1-b158-536134dfae2d (2026-10-26). Regression fix is `00f3102f` (root `nuget.config` no longer lists the feed). The sample move, nupkg content test, and docs are the next commit. `Directory.Packages.props` dropped `TimeWarp.State.Plus` and `TimeWarp.State.Telemetry` because nothing package-references them after that move (`cpm-consistency`).
 - Commands were `dotnet run --file tools/dev-cli/dev.cs`. `./bin/dev` is gitignored and was not the binary under test.
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T13:05:38Z
 
 ## Goal (implementer restatement)
 
