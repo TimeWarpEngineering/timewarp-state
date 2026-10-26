@@ -42,6 +42,7 @@ Since PR #657 merged, a fresh worktree cannot restore anything until `artifacts/
 - Review oracle round 1: claude-opus-5-5, effort 3, roster general. 3 findings open (M1 bug, M2 suggestion, M3 nit). A fix pass is needed — 2026-10-26
 - Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-26T13:10:21Z
 - Fix pass (implement-fix-2): grok, session 01a17855-5a5a-77e2-a698-de85fddcf079 — 2026-10-26. Purged the isolated same-version extracts before the sample 00 restore. Plus asserts both scripts. Manifest JSON skips contentFiles tsconfig.
+- Audit: `ganda repo audit --fix --checks kanban-landed` landed kitchen 129. Two advisory warnings stay: task 098 has no worktree, and seven pre-existing non-kebab paths (Blazor `.lib.module` names, a `.targets` file, and backlog task 110). Those are not this change.
 
 ## Goal (implementer restatement)
 
