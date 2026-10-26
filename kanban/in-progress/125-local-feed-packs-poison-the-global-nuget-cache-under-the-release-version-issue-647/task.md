@@ -91,6 +91,7 @@ Done when:
 - Filed 2026-10-23 at Steven's request from GitHub issue #647. Filed only; not implemented or launched.
 - Implementation approach (2026-10-26): **isolated packages folder**, not a local prerelease suffix. `nuget.config` `globalPackagesFolder` and `RestorePackagesPath` both point at `artifacts/nuget-packages`. The dev CLI and `scripts/package.cs`, `build.cs`, `test.cs`, `e2e.cs`, and `clean.cs` set `NUGET_PACKAGES` to that folder before child `dotnet` processes. A suffix would still write a new global-cache entry for the packed version, and it would split the version SSOT that samples and publish share. The release version string stays equal to the nuget.org version; only the restore location changes. `dev pack` fails when `~/.nuget/packages/<id>/<version>/.nupkg.metadata` `source` is not an http(s) URL.
 - Validation (2026-10-26): `scripts/build.cs`, `scripts/package.cs`, `scripts/test.cs`, `scripts/e2e.cs`, `scripts/clean.cs`, `dev pack`, and `dev verify-samples` exited 0. `ganda repo audit` exits 0 after `audit --fix` restored `bin/dev` (clean removes every `bin/` directory, including that shim). Two advisory warnings remain and are pre-existing: task 098 has no worktree, and seven framework paths are not kebab-case (`*.lib.module.*`, a `.targets` file, and backlog task 110).
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session not reported, max-turns 500, Done — 2026-10-26T09:29:51Z
 
 ## Notes
 
