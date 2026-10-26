@@ -91,8 +91,7 @@ Expect:
 ## Review
 
 - Round 1: M1, M2, and M3 implemented in the fix pass.
-- Round 2: all three verified fixed, no new findings. Disposition is clean (`review/disposition.md`).
-
+- Round 2: Done
 ## Notes
 
 Commit the regression fix (requirement 1) separately from the sample migration so it can be cherry-picked if the rest stalls. Task 125 chose an isolated cache over a local version suffix; do not revisit that choice here.
