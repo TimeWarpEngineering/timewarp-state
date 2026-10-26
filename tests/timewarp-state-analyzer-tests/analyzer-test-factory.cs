@@ -4,7 +4,7 @@
 
 #region Design
 // Microsoft.CodeAnalysis.Analyzer.Testing has no net11 ReferenceAssemblies yet, so Net110 pins the
-// Microsoft.NETCore.App.Ref 11.0.0-rc.2 pack, which must stay in step with Directory.Packages.props.
+// Microsoft.NETCore.App.Ref 11.0.0-rc.3 pack, which must stay in step with Directory.Packages.props.
 // AddLibraryReferences adds TimeWarp.State.dll and TimeWarp.Mediator.Contracts.dll from the test output folder.
 #endregion
 
@@ -20,7 +20,7 @@ internal static class AnalyzerTestFactory
   internal static readonly ReferenceAssemblies Net110 = new
   (
     targetFramework: "net11.0",
-    referenceAssemblyPackage: new PackageIdentity("Microsoft.NETCore.App.Ref", "11.0.0-rc.2.26504.105"),
+    referenceAssemblyPackage: new PackageIdentity("Microsoft.NETCore.App.Ref", "11.0.0-rc.3.26522.148"),
     referenceAssemblyPath: System.IO.Path.Combine("ref", "net11.0")
   );
 
