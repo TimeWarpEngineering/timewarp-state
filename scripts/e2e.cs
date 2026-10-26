@@ -9,10 +9,11 @@
 #endregion
 
 #region Design
-// Steps: restore tools and clean, optional dev-cert trust (skipped over http), build the analyzer and source
-// generator, set UseHttp in the client appsettings, publish the server to tests/test-app/output, build the
-// tests, install Chromium, start the SUT on port 7011, wait up to 30 tries, run dotnet test with
-// chrome.runsettings, then kill the SUT. runMode is fixed to Auto. Any test failure exits 1.
+// Sets NUGET_PACKAGES to artifacts/nuget-packages, then restores tools and cleans, skips dev-cert trust
+// over http, builds the analyzer and source generator, sets UseHttp in the client appsettings, publishes
+// the server to tests/test-app/output, builds the tests, installs Chromium, starts the SUT on port 7011,
+// waits up to 30 tries, runs dotnet test with chrome.runsettings, then kills the SUT. runMode is fixed
+// to Auto. Any test failure exits 1.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -33,6 +34,9 @@ static class App
   public static async Task Run()
   {
     using var context = ScriptContext.FromRelativePath("..");
+    DevCli.NuGetPackageIsolation.Isolation isolation =
+      DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
+    WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
     // nuget.config lists artifacts/packages as a local source; restore fails with NU1301 when that folder is missing.
     // The guard protects the child `dotnet` invocations below, not this runfile's own `#:package` restore.

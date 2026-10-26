@@ -6,6 +6,8 @@
   <!-- MSBuild and NuGet behavior configuration -->
   <PropertyGroup Label="MSBuild/NuGet Configuration">
     <PackageOutputPath>$(PackagesDirectory)</PackageOutputPath>
+    <!-- Wins over NUGET_PACKAGES. Local-feed extracts stay under artifacts/nuget-packages. -->
+    <RestorePackagesPath>$(IsolatedNuGetPackagesDirectory)</RestorePackagesPath>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 

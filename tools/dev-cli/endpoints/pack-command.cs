@@ -3,9 +3,11 @@
 #endregion
 #region Design
 // Discovers packable projects via IPackableProjectService (MSBuild IsPackable).
-// Clears artifacts/packages first so leftovers cannot ship. Reads <Version> from
-// source/Directory.Build.props, verifies the nupkg set with CiRunPromotion, then
-// rejects any nuspec dependency id outside NuspecDependencyAllowList.
+// Sets NUGET_PACKAGES to artifacts/nuget-packages and refuses to pack when the shared
+// global cache already holds that version from a local path. Clears artifacts/packages
+// first so leftovers cannot ship. Reads <Version> from source/Directory.Build.props,
+// verifies the nupkg set with CiRunPromotion, then rejects any nuspec dependency id
+// outside NuspecDependencyAllowList.
 #endregion
 
 namespace DevCli.Commands;
@@ -49,6 +51,19 @@ internal sealed class PackCommand : ICommand<Unit>
       if (string.IsNullOrWhiteSpace(version))
       {
         Terminal.WriteErrorLine("Pack failed: could not read <Version> from source/Directory.Build.props.");
+        Environment.ExitCode = 1;
+        return Value;
+      }
+
+      NuGetPackageIsolation.Isolation isolation = NuGetPackageIsolation.Apply(repoRoot);
+      Terminal.WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
+      IReadOnlyList<NuGetPackageIsolation.PoisonedCacheEntry> poisoned =
+        NuGetPackageIsolation.FindPoisonedEntries(
+          NuGetPackageIsolation.SharedCacheFolders(isolation),
+          version,
+          packableProjects.Select(project => project.PackageId));
+      if (NuGetPackageIsolation.ReportPoisonedEntries(poisoned, message => Terminal.WriteErrorLine(message)) != 0)
+      {
         Environment.ExitCode = 1;
         return Value;
       }

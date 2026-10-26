@@ -5,6 +5,7 @@
 // Restores local tools (fixie.console from .config/dotnet-tools.json) so
 // `dotnet fixie` is available on a clean CI checkout. Then delegates to
 // scripts/test.cs for analyzer/generator/state/plus/client/architecture suites.
+// dev.cs sets NUGET_PACKAGES to artifacts/nuget-packages before the child run.
 // E2E stays on scripts/e2e.cs (needs a running SUT).
 #endregion
 

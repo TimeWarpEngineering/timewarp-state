@@ -8,7 +8,8 @@
 // empty until pack, so a full slnx restore fails NU1102. Workflow packs, then
 // verify-samples restores the omitted projects. Filter JSON is written by hand
 // because PublishAot disables reflection JsonSerializer. artifacts/packages
-// must exist (nuget.config lists it; missing folder is NU1301).
+// must exist (nuget.config lists it; missing folder is NU1301). Restores land in
+// artifacts/nuget-packages (dev.cs sets NUGET_PACKAGES; RestorePackagesPath agrees).
 #endregion
 
 namespace DevCli.Commands;

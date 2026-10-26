@@ -17,3 +17,7 @@ DocFX builds `documentation/docfx.json`. Paths are case-sensitive. Folders and m
 | Sample article | Link to `overview.md` or `readme.md`, not a bare directory and not a renamed PascalCase folder |
 
 A relative link to a file that is not in the DocFX content or resource set is an invalid file link. A `topicUid` or `xref` that does not match a `uid` is an invalid cross-reference.
+
+## Local package feed
+
+Pack writes `artifacts/packages`. Restores in this repo use the isolated folder `artifacts/nuget-packages`, so a local pack is not stored under `~/.nuget/packages` at the release version. `dev pack` fails when that shared-cache entry's `.nupkg.metadata` `source` is a local path. `scripts/overview.md` records the folder layout and the guard.

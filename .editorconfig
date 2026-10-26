@@ -292,8 +292,9 @@ dotnet_diagnostic.TW0007.filename = global-usings.cs
 # TWA0022 found no hits (the test app's direct Sender.Send calls are deliberate) and TWA0023
 # (type-stem naming, off upstream by default) found 835 sites, so both stay off.
 # TWA0005 is retired upstream (reserved id, never reported), so it has no entry.
-# Files outside the repo (Fixie.Main.cs from the NuGet cache) get TWA0004 = none from
-# msbuild/external-sources.globalconfig, since this file cannot reach them.
+# Files outside the repo (a NuGet cache that is not under this worktree) get TWA0004 = none
+# from msbuild/external-sources.globalconfig, since this file cannot reach them. The isolated
+# cache artifacts/nuget-packages is inside the worktree and is excluded below.
 # TWA0004: every source file carries a #region Purpose block (task 099 backfilled all of them).
 # Design regions are not analyzer-enforced; reviewers enforce them.
 dotnet_diagnostic.TWA0004.severity = error
@@ -328,4 +329,10 @@ kebab-path-names.severity = warning
 # .githooks/*.cs are owned byte for byte by ganda's repo-baseline template (no #region blocks;
 # `ganda hooks install attest` overwrites any edit), so they can never carry a Purpose region.
 [.githooks/**.cs]
+dotnet_diagnostic.TWA0004.severity = none
+
+# Isolated restore cache. Package-injected sources such as Fixie.Main.cs live here, inside the
+# repo tree, so [*.cs] would otherwise require a Purpose region on files this repo does not own.
+[artifacts/nuget-packages/**.cs]
+generated_code = true
 dotnet_diagnostic.TWA0004.severity = none

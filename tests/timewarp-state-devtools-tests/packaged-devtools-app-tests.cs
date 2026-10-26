@@ -5,7 +5,9 @@
 #region Design
 // Packs TimeWarp.State.DevTools.App and TimeWarp.State.DevTools.Hosting into a temp feed, restores
 // a temp AppHost that PackageReferences Hosting only, and reads the stamped assembly metadata.
-// The stamped path has to sit in that temp package folder, not in this repo. The test builds the
+// The stamped path has to sit in that temp package folder, not in this repo. The consumer
+// build sets NUGET_PACKAGES to that folder: the variable beats nuget.config, and the repo
+// test runner points it at artifacts/nuget-packages. The test builds the
 // same executable resource AddTimeWarpStateDevTools adds, then starts the packaged dll with that
 // resource's command, the dll's directory as the working directory, and ASPNETCORE_HTTP_PORTS.
 // It requests the inspector page, /_framework/blazor.web.js, and logo.png. The page head links
@@ -117,7 +119,13 @@ public class PackagedDevToolsApp_Should
         .Single(path => Path.GetFileName(path).Contains("DevTools.App", StringComparison.OrdinalIgnoreCase));
       AssertPackagedTools(appPackage);
 
-      await RunAsync(consumer, "dotnet", ["build", "--configuration", "Debug"]);
+      await RunAsync
+      (
+        consumer,
+        "dotnet",
+        ["build", "--configuration", "Debug"],
+        new Dictionary<string, string> { ["NUGET_PACKAGES"] = packages }
+      );
 
       string consumerAssembly = Path.Combine(consumer, "bin", "Debug", "net11.0", "TwDevToolsConsumer.dll");
       File.Exists(consumerAssembly).ShouldBeTrue();
@@ -288,14 +296,28 @@ public class PackagedDevToolsApp_Should
     return props[start..end];
   }
 
-  private static async Task RunAsync(string workingDirectory, string fileName, IReadOnlyList<string> arguments)
+  private static async Task RunAsync
+  (
+    string workingDirectory,
+    string fileName,
+    IReadOnlyList<string> arguments,
+    IReadOnlyDictionary<string, string>? environment = null
+  )
   {
-    CommandOutput output = await Shell.Builder(fileName)
+    ShellBuilder builder = Shell.Builder(fileName)
       .WithArguments(arguments.ToArray())
       .WithWorkingDirectory(workingDirectory)
       .WithTimeout(TimeSpan.FromMinutes(20))
-      .WithNoValidation()
-      .CaptureAsync();
+      .WithNoValidation();
+    if (environment is not null)
+    {
+      foreach (KeyValuePair<string, string> variable in environment)
+      {
+        builder = builder.WithEnvironmentVariable(variable.Key, variable.Value);
+      }
+    }
+
+    CommandOutput output = await builder.CaptureAsync();
 
     if (output.TimedOut)
     {

@@ -23,7 +23,15 @@
 // from TimeWarp.Nuru.DevCli. Local endpoints: build (source+tests; samples omitted),
 // test, e2e, pack, verify-samples (after pack), workflow (PR packs then verifies
 // samples; release promotes CI artifacts). Product under source/.
+// Apply points NUGET_PACKAGES at artifacts/nuget-packages before any command runs
+// so child dotnet restores do not fill ~/.nuget/packages.
 #endregion
+
+string? repoRoot = Git.FindRoot();
+if (repoRoot is not null)
+{
+  NuGetPackageIsolation.Apply(repoRoot);
+}
 
 NuruApp app = NuruApp.CreateBuilder()
   .WithName("dev")
