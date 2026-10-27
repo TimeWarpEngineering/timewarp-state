@@ -12,7 +12,7 @@ This sample demonstrates TimeWarp.State.Plus's comprehensive routing feature tha
 2. **Core Actions**
    - `ChangeRoute`: Direct navigation with absolute URI handling
    - `GoBack`: Stack-based back navigation with configurable steps
-   - `PushRouteInfo`: Route stack management with title synchronization
+   - `PushRouteInfo`: Route stack management with title synchronization. `replaceCurrent` swaps the top entry. `belowUrl` records a parent under the current page.
 
 3. **Thread Safety**
    - Semaphore-based synchronization for route updates

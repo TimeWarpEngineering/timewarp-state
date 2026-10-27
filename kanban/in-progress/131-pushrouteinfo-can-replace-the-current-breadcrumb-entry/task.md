@@ -15,15 +15,17 @@ TimeWarp.Architecture task 423 needs that. Steve chose replace: Brand, then Colo
 
 ## Checklist
 
-- [ ] Replace drops only the top entry
-- [ ] Below URL sits under the current entry
-- [ ] Default push and truncate stay as they are
-- [ ] Plus routing tests pass
+- [x] Replace drops only the top entry
+- [x] Below URL sits under the current entry
+- [x] Default push and truncate stay as they are
+- [x] Plus routing tests pass
 
 ## Session
 
 - Created: 429324 (2026-10-27)
 - Implementation: 01a17e39-f9c4-7111-9688-894e68e3ca4c (2026-10-27) for architecture task 423
+- Plus routing tests: 47 passed, 1 skipped. Source-generator tests: 90 passed.
+- Audit: `ganda repo audit --fix --checks memsearch-scaffold` deployed `.githooks/pre-push.cs`. kanban-landed (claim 098 has no worktree) and kebab-path-names (Blazor `*.lib.module.*` names plus one backlog folder) stay advisory. Renaming those paths would break platform file names.
 
 ## Notes
 

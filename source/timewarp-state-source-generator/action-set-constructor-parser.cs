@@ -6,8 +6,10 @@
 #region Design
 // The first ConstructorDeclarationSyntax in the Action class defines the parameter list; no explicit
 // constructor means no parameters. Default values are the constructor's source text so the generated
-// State.Method keeps the author's defaults. JsonSchema covers primitives, string, Guid, date/time and
-// enums; complex types (for example a Command) return null and are recorded by CLR type name only (v1).
+// State.Method keeps the author's defaults. The method signature keeps nullable reference annotations
+// (string? stays string?). typeof() and the catalog CLR name strip that annotation. JsonSchema covers
+// primitives, string, Guid, date/time and enums; complex types (for example a Command) return null
+// and are recorded by CLR type name only (v1).
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -24,6 +26,10 @@ internal sealed record ActionParameterModel
 
 internal static class ActionSetConstructorParser
 {
+  private static readonly SymbolDisplayFormat ParameterTypeFormat =
+    SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(
+      SymbolDisplayFormat.FullyQualifiedFormat.MiscellaneousOptions
+      | SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier);
   public static List<ActionParameterModel> GetParameters
   (
     ClassDeclarationSyntax actionClass,
@@ -41,7 +47,7 @@ internal static class ActionSetConstructorParser
     {
       var parameterSymbol = semanticModel.GetDeclaredSymbol(p) as IParameterSymbol;
 
-      string fullTypeName = parameterSymbol?.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+      string fullTypeName = parameterSymbol?.Type.ToDisplayString(ParameterTypeFormat)
                             ?? "System.Object";
 
       string typeOfName = parameterSymbol?.Type
