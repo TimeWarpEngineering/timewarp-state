@@ -31,3 +31,10 @@ TimeWarp.Architecture task 423 needs that. Steve chose replace: Brand, then Colo
 
 - The next unreleased package version on master is already 12.0.0-beta.16. This change ships in that version.
 - Consumer: timewarp-architecture task 423.
+
+## Archived
+
+Archived 2026-10-28 without merging (PR #660 closed). An architecture task 423 worker opened this
+task from a spec line that should not have authorized work in this repo. Architecture is moving to
+a location-based breadcrumb built from its own page registry, so the replace/parent options on
+PushRouteInfo are not needed.
