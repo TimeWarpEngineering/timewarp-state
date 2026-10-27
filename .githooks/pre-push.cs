@@ -8,6 +8,11 @@
 // Allow other dests (feature/*, etc.) so origin-home can publish a missing --into ref.
 // Allow refs/tags/* (release tags) and refs/ganda/* (claims CAS) when every dest is one of those.
 // Mixed tag + branch batches stay refused while HEAD is home.
+// An empty dest list updates no branch. Git omits refs that are already up to date and
+// refs it has already rejected as non-fast-forward, and runs this hook on what remains.
+// Refusing that empty list hides the non-fast-forward error, so the shared claims push
+// (pr merge cleanup and worktree gc) cannot retry while HEAD is master.
+// A branch update lists its dest.
 // Refuse pushing a local task/* branch to a home branch from any HEAD (a task worktree that
 // still tracks origin/<home>). Raw-sha sources (kanban publish merge commit) stay allowed.
 // Commits on master stay blocked by pre-commit. Escape hatch: git push --no-verify
@@ -49,7 +54,14 @@ if (taskToHome.Count > 0)
   return 1;
 }
 
-if (remoteRefs.Count > 0 && remoteRefs.All(IsExemptDest))
+// Nothing in this push will update a ref. Allow it so git can report
+// "everything up-to-date" or the non-fast-forward rejection it already decided.
+if (remoteRefs.Count == 0)
+{
+  return 0;
+}
+
+if (remoteRefs.All(IsExemptDest))
 {
   return 0;
 }
@@ -63,8 +75,7 @@ CommandOutput revParse = await Shell.Builder("git")
 string branch = revParse.Stdout.Trim();
 if (branch is "master" or "main")
 {
-  bool updatesHome = remoteRefs.Count == 0
-    || remoteRefs.Any(IsHomeBranchDest);
+  bool updatesHome = remoteRefs.Any(IsHomeBranchDest);
   bool mixesTagAndBranch = remoteRefs.Any(IsTagDest) && remoteRefs.Any(IsBranchDest);
   if (updatesHome || mixesTagAndBranch)
   {
