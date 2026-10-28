@@ -20,6 +20,7 @@ global using PersistentStateAttribute = TimeWarp.Features.Persistence.Persistent
 global using TimeWarp.Features.Routing;
 global using Shouldly;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 // ReSharper disable once RedundantUsingDirective.Global
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

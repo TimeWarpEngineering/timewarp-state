@@ -20,10 +20,10 @@ public class Should_
     Unit result = await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ =>
+      (_, _) =>
       {
         nextCalled = true;
-        return Task.FromResult(Unit.Value);
+        return new ValueTask<Unit>(Unit.Value);
       },
       CancellationToken.None
     );
@@ -41,7 +41,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -74,7 +74,7 @@ public class Should_
     await telemetryBehavior.Handle
     (
       new TelemetryTestState.IncrementCountActionSet.Action(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -114,10 +114,10 @@ public class Should_
 
     InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>
     (
-      () => harness.ThrowBehavior.Handle
+      async () => await harness.ThrowBehavior.Handle
       (
         new TelemetryTestState.ThrowAction(),
-        _ => Task.FromException<Unit>(thrown),
+        (_, _) => new ValueTask<Unit>(Task.FromException<Unit>(thrown)),
         CancellationToken.None
       )
     );
@@ -143,7 +143,7 @@ public class Should_
       await harness.ThrowBehavior.Handle
       (
         new TelemetryTestState.ThrowAction(),
-        _ => Task.FromException<Unit>(thrown),
+        (_, _) => new ValueTask<Unit>(Task.FromException<Unit>(thrown)),
         CancellationToken.None
       );
     }
@@ -181,7 +181,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -197,7 +197,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -206,14 +206,14 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -254,7 +254,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -263,7 +263,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -288,7 +288,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -313,7 +313,7 @@ public class Should_
     await harness.IncrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 
@@ -335,7 +335,7 @@ public class Should_
     await telemetryBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
   }

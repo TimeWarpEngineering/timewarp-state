@@ -12,6 +12,8 @@
     <PackageReference Include="Shouldly" />
     <PackageReference Include="TimeWarp.Amuru" />
     <PackageReference Include="TimeWarp.Fixie" />
+    <!-- Direct compile reference. The inspector host's package reference does not have to flow for these tests to name ISender. -->
+    <PackageReference Include="TimeWarp.Mediator" />
   </ItemGroup>
 
   <ItemGroup>

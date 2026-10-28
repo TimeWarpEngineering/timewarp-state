@@ -41,7 +41,7 @@ public class Should_Not_Trigger_StateInheritanceRules
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -81,7 +81,7 @@ public class Should_Trigger_TWS0010
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -116,7 +116,7 @@ public class Should_Allow_Abstract_Self_Constrained_Intermediate
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -155,7 +155,7 @@ public class Should_Still_Trigger_TWS0010_For_Concrete_Generic
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -187,7 +187,7 @@ public class Should_Still_Trigger_TWS0010_For_Concrete_Generic
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();

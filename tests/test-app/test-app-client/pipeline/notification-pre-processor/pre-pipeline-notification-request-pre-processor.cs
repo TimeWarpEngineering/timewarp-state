@@ -24,7 +24,7 @@ internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResp
     Logger = logger;
   }
 
-  public async Task<TResponse> Handle(TMessage message, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+  public async ValueTask<TResponse> Handle(TMessage message, MessageHandlerDelegate<TMessage, TResponse> next, CancellationToken cancellationToken)
   {
     var notification = new PrePipelineNotification
     {
@@ -33,6 +33,6 @@ internal sealed class PrePipelineNotificationRequestPreProcessor<TMessage, TResp
 
     Logger.LogDebug(nameof(PrePipelineNotificationRequestPreProcessor<TMessage, TResponse>));
     await Publisher.Publish(notification, cancellationToken);
-    return await next(cancellationToken);
+    return await next(message, cancellationToken);
   }
 }

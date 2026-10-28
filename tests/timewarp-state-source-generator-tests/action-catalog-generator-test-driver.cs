@@ -4,7 +4,7 @@
 #endregion
 
 #region Design
-// References every trusted platform assembly plus TimeWarp.State and TimeWarp.Mediator.Contracts so generated code can
+// References every trusted platform assembly plus TimeWarp.State and TimeWarp.Mediator so generated code can
 // be compiled. The assembly name Catalog.Tests is fixed so expected output can name the generated namespace.
 #endregion
 

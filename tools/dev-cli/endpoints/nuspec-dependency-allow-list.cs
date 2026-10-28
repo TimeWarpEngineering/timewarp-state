@@ -18,7 +18,7 @@ internal static class NuspecDependencyAllowList
     {
       ["TimeWarp.State"] = new HashSet<string>(StringComparer.Ordinal)
       {
-        "TimeWarp.Mediator.Contracts",
+        "TimeWarp.Mediator",
       },
       ["TimeWarp.State.Blazor"] = new HashSet<string>(StringComparer.Ordinal)
       {
@@ -35,7 +35,7 @@ internal static class NuspecDependencyAllowList
       },
       ["TimeWarp.State.Telemetry"] = new HashSet<string>(StringComparer.Ordinal)
       {
-        "TimeWarp.Mediator.Contracts",
+        "TimeWarp.Mediator",
         "TimeWarp.State",
       },
       ["TimeWarp.State.Policies"] = new HashSet<string>(StringComparer.Ordinal)

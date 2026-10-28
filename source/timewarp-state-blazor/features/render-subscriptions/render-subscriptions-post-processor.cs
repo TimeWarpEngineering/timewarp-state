@@ -41,16 +41,16 @@ public sealed class RenderSubscriptionsPostProcessor<TRequest, TResponse> : IPip
     RenderSubscriptionContext = renderSubscriptionContext;
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
     try
     {
-      TResponse response = await next(cancellationToken);
+      TResponse response = await next(request, cancellationToken);
 
       Type requestType = typeof(TRequest);
       Type enclosingStateType = requestType.GetEnclosingStateType();

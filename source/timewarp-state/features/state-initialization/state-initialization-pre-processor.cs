@@ -28,10 +28,10 @@ public sealed class StateInitializationPreProcessor<TMessage, TResponse> : IPipe
     Logger = logger;
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TMessage message,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TMessage, TResponse> next,
     CancellationToken cancellationToken
   )
   {
@@ -68,6 +68,6 @@ public sealed class StateInitializationPreProcessor<TMessage, TResponse> : IPipe
       }
     }
 
-    return await next(cancellationToken);
+    return await next(message, cancellationToken);
   }
 }

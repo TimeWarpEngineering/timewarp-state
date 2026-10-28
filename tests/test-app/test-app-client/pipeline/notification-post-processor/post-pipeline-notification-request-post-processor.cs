@@ -19,9 +19,9 @@ internal class PostPipelineNotificationRequestPostProcessor<TRequest, TResponse>
 {
   private readonly ILogger Logger = logger;
 
-  public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+  public async ValueTask<TResponse> Handle(TRequest request, MessageHandlerDelegate<TRequest, TResponse> next, CancellationToken cancellationToken)
   {
-    TResponse response = await next(cancellationToken);
+    TResponse response = await next(request, cancellationToken);
 
     var notification = new PostPipelineNotification
     {

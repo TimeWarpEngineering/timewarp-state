@@ -6,9 +6,11 @@
     <PublishSingleFile>false</PublishSingleFile>
     <PublishTrimmed>false</PublishTrimmed>
     <UseHttp Condition="'$(UseHttp)' == ''">false</UseHttp>
-    <!-- Distinct namespace for generated Mediator/Sender/Publisher types. The DI extension stays
-         internal in Microsoft.Extensions.DependencyInjection (TimeWarp.Mediator 14.0.0-beta.4+),
-         so this host calls AddGeneratedMediator&lt;ServerPipeline&gt;() directly. -->
+    <!-- Distinct namespace for generated Mediator/Sender/Publisher types and for
+         AddGeneratedMediator. TimeWarp.Mediator 15 emits that extension into
+         TimeWarpMediatorNamespace (here Test.App.Server.Generated), not into
+         Microsoft.Extensions.DependencyInjection. This host imports that namespace
+         and calls AddGeneratedMediator&lt;ServerPipeline&gt;() directly. -->
     <TimeWarpMediatorNamespace>Test.App.Server.Generated</TimeWarpMediatorNamespace>
   </PropertyGroup>
 
@@ -16,6 +18,7 @@
     <ProjectReference Include="..\test-app-client\test-app-client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <!-- The server owns its own generated mediator for the ServerPipeline. -->
+    <PackageReference Include="TimeWarp.Mediator" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
   </ItemGroup>
 

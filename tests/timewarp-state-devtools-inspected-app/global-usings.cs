@@ -8,4 +8,5 @@
 
 global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 global using TimeWarp.State;

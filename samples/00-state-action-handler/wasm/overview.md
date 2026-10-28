@@ -50,15 +50,16 @@ dotnet run
 
 ### Install TimeWarp.State Package
 
-Add the TimeWarp.State and TimeWarp.Mediator.Generators NuGet packages:
+Add the TimeWarp.State, TimeWarp.Mediator, and TimeWarp.Mediator.Generators NuGet packages:
 
 ```bash
 dotnet add package TimeWarp.State --prerelease
 dotnet add package TimeWarp.State.Blazor --prerelease
+dotnet add package TimeWarp.Mediator
 dotnet add package TimeWarp.Mediator.Generators
 ```
 
-Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only).
+`TimeWarp.Mediator` 15.0.0-beta.2 is the contracts package and the bundled analyzer. Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only). There is no `TimeWarp.Mediator.Contracts` package and no `TimeWarp.Mediator.Analyzers` package.
 
 ### Configure Services
 

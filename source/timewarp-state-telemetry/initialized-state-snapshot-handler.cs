@@ -49,7 +49,7 @@ public sealed class InitializedStateSnapshotHandler : INotificationHandler<State
   }
 
   /// <inheritdoc />
-  public Task Handle(StateInitializedNotification notification, CancellationToken cancellationToken)
+  public ValueTask Handle(StateInitializedNotification notification, CancellationToken cancellationToken)
   {
     ArgumentNullException.ThrowIfNull(notification);
     try
@@ -67,7 +67,7 @@ public sealed class InitializedStateSnapshotHandler : INotificationHandler<State
       );
     }
 
-    return Task.CompletedTask;
+    return ValueTask.CompletedTask;
   }
 
   private void Record(Type stateType)

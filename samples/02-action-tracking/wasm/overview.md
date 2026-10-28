@@ -52,7 +52,7 @@ Follow all steps in the Sample00 tutorial until you have a working counter appli
 
 ### 2. Add TimeWarp.State.Plus Package
 
-Add the TimeWarp.State.Plus NuGet package to your project (TimeWarp.Mediator.Generators with `PrivateAssets="all"` should already be present from Sample00):
+Add the TimeWarp.State.Plus NuGet package to your project (`TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` with `PrivateAssets="all"` on the generator should already be present from Sample00):
 
 ```bash
 dotnet add package TimeWarp.State.Plus --prerelease

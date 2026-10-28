@@ -25,7 +25,7 @@ Any non-abstract type that implements `IAction` must be nested in a type that im
 
 A State is an isolated feature boundary. Handlers do their own work. If something elsewhere must react, publish a notification. Orchestration lives outside the state (pages and components sequence actions; notification handlers react).
 
-The analyzer flags a type whose base chain includes `StateActionHandler<>` / `TimeWarp.Mediator.ActionHandler<>` (and the legacy `TimeWarp.State.ActionHandler<>`), or that implements `IActionHandler<>`. App bases such as `BaseHandler<>` and `DefaultApiHandler<,,>` are included by symbol, not by name. Every method body in the handler is inspected, including `Handle` and app-defined hooks (`HandleSuccess`, `HandleError`, `HandleException`). Partial classes are walked as one type.
+The analyzer flags a type whose base chain includes `StateActionHandler<>` / `TimeWarp.Mediator.ActionHandler<>` (and the legacy `TimeWarp.State.ActionHandler<>`). Handlers implement `IRequestHandler<>` through `ActionHandler<>`. TimeWarp.Mediator 15 removed `IActionHandler<>`; the analyzer still looks that name up and treats a missing type as not a handler. App bases such as `BaseHandler<>` and `DefaultApiHandler<,,>` are included by symbol, not by name. Every method body in the handler is inspected, including `Handle` and app-defined hooks (`HandleSuccess`, `HandleError`, `HandleException`). Partial classes are walked as one type.
 
 ### Flagged
 

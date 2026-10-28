@@ -33,17 +33,15 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="all"/>
     <!--
-      The library references ONLY TimeWarp.Mediator.Contracts (the interfaces and membership
-      attributes) plus TimeWarp.Mediator.Analyzers (TWM001-TWM004 diagnostics). It must NOT
-      reference TimeWarp.Mediator.Generators: the generator emits a public
-      AddGeneratedMediator()/AddGeneratedMediator&lt;TScope&gt;()/Mediator into the host assembly,
-      which would be dead code here and collide with the consuming app's own generated mediator.
-      Each consuming application references TimeWarp.Mediator.Generators itself and owns the
-      AddGeneratedMediator&lt;ClientPipeline&gt;() (or unscoped) call; this assembly joins that
-      compile-time graph through [assembly: MediatorAssembly] and MediatorScope(ClientPipeline).
+      The library references TimeWarp.Mediator (contracts plus the bundled TWM analyzer).
+      It must NOT reference TimeWarp.Mediator.Generators: the generator emits a mediator into
+      this assembly, which would collide with the consuming app's own generated mediator.
+      TimeWarpMediatorAssembly=false does not stop that emission. Each host references
+      TimeWarp.Mediator and TimeWarp.Mediator.Generators and calls
+      AddGeneratedMediator&lt;ClientPipeline&gt;(). This assembly joins that graph through
+      [assembly: MediatorAssembly] and MediatorScope(ClientPipeline).
     -->
-    <PackageReference Include="TimeWarp.Mediator.Contracts"/>
-    <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all"/>
+    <PackageReference Include="TimeWarp.Mediator"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
   </ItemGroup>
 

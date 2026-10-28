@@ -13,7 +13,7 @@ namespace TimeWarp.State;
 /// Base handler for a nested ActionSet <c>Handler</c> that needs the <see cref="IStore"/>.
 /// </summary>
 /// <remarks>
-/// Derives from <see cref="TimeWarp.Mediator.ActionHandler{TAction}"/> (TimeWarp.Mediator.Contracts) so the
+/// Derives from <see cref="TimeWarp.Mediator.ActionHandler{TAction}"/> (TimeWarp.Mediator) so the
 /// TimeWarp.Mediator source generator discovers it as the <see cref="IRequestHandler{TRequest}"/> for
 /// <typeparamref name="TAction"/>. The name differs from the contracts base type on purpose: both
 /// <c>TimeWarp.State</c> and <c>TimeWarp.Mediator</c> are normally imported together, and a second

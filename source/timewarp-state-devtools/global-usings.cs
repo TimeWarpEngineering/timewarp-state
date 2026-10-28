@@ -20,6 +20,7 @@ global using Microsoft.AspNetCore.Http.Features;
 global using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 global using Microsoft.Extensions.DependencyInjection;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 global using TimeWarp.State;
 global using TimeWarp.State.DevTools;
 global using TimeWarp.State.DevTools.Export;

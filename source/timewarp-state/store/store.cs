@@ -176,6 +176,7 @@ internal partial class Store : IStore
         }
 
         Task initializationTask = Publisher.Publish(new StateInitializedNotification(stateType))
+          .AsTask()
           .ContinueWith
           (
             t =>

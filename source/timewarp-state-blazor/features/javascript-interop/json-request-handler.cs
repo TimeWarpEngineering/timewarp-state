@@ -110,7 +110,9 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
 
     object instance = CreateRequest(requestTypeAssemblyQualifiedName, requestType, requestAsJson);
 
-    Task<object?> result = Sender.Send(instance);
+    // Send returns ValueTask and throws before that for a null request or a missing handler.
+    // AsTask keeps this JSInvokable method on Task, which is what the interop caller awaits.
+    Task<object?> result = Sender.Send(instance).AsTask();
     Logger.LogDebug(EventIds.JsonRequestHandled, "Request Handled");
     return result;
   }

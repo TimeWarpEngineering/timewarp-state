@@ -92,7 +92,7 @@ public class Should_
 
   public sealed class ContainerProbeHandler : IRequestHandler<ContainerProbeAction>
   {
-    public Task Handle(ContainerProbeAction request, CancellationToken cancellationToken) => Task.CompletedTask;
+    public ValueTask Handle(ContainerProbeAction request, CancellationToken cancellationToken) => ValueTask.CompletedTask;
   }
 
   private static int Count<T>(ServiceCollection services) =>

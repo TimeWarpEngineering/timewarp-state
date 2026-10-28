@@ -60,7 +60,7 @@ public class TimerElapsed_Should
 
     public bool ThrowOnPublish { get; init; }
 
-    public Task Publish(object notification, CancellationToken cancellationToken = default)
+    public ValueTask Publish(object notification, CancellationToken cancellationToken = default)
     {
       if (ThrowOnPublish)
       {
@@ -68,10 +68,10 @@ public class TimerElapsed_Should
       }
 
       Notifications.Add(notification);
-      return Task.CompletedTask;
+      return ValueTask.CompletedTask;
     }
 
-    public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+    public ValueTask Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
       where TNotification : INotification =>
       Publish((object)notification!, cancellationToken);
   }

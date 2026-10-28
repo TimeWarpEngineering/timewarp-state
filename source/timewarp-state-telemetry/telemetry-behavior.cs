@@ -92,16 +92,16 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
   }
 
   /// <inheritdoc />
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
     if (!TimeWarpStateTelemetry.ActivitySource.HasListeners())
     {
-      return await next(cancellationToken);
+      return await next(request, cancellationToken);
     }
 
     using Activity? activity = TimeWarpStateTelemetry.ActivitySource.StartActivity
@@ -112,7 +112,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
 
     if (activity is null)
     {
-      return await next(cancellationToken);
+      return await next(request, cancellationToken);
     }
 
     activity.SetTag(ActionTagName, ActionTypeName);
@@ -125,7 +125,7 @@ public sealed class TelemetryBehavior<TRequest, TResponse> : IPipelineBehavior<T
 
     try
     {
-      TResponse response = await next(cancellationToken);
+      TResponse response = await next(request, cancellationToken);
       activity.SetStatus(ActivityStatusCode.Ok);
       TryRecordSnapshot(activity);
       return response;

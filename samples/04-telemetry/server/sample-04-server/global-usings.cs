@@ -17,6 +17,7 @@ global using OpenTelemetry.Trace;
 global using Sample04Server.Components;
 global using Sample04Server.Features.Counter;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 global using TimeWarp.State;
 global using TimeWarp.State.DevTools.Export;
 global using TimeWarp.State.Telemetry;

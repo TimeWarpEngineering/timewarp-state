@@ -36,7 +36,7 @@ public class Should_Not_Trigger_TWS0009
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -74,7 +74,7 @@ public class Should_Trigger_TWS0009
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -106,7 +106,7 @@ public class Should_Not_Trigger_TWS0009_For_AccessibleCtor_Or_Abstract
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();
@@ -133,7 +133,7 @@ public class Should_Not_Trigger_TWS0009_For_AccessibleCtor_Or_Abstract
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
 
     await analyzerTest.RunAsync();

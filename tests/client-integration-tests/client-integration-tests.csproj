@@ -18,7 +18,7 @@
     <ProjectReference Include="..\..\source\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <!-- Both hosts InternalsVisibleTo this assembly, so both internal AddGeneratedMediator
          extensions are visible (CS0121). The alias keeps the server extension out of scope.
-         TimeWarp.Mediator 14.0.0-beta.4 release notes: a friend of two hosts still sees duplicates. -->
+         TimeWarp.Mediator 15 still emits an internal AddGeneratedMediator per host, so a friend of two hosts sees both. -->
     <ProjectReference Include="..\test-app\test-app-server\test-app-server.csproj" Aliases="TestAppServer" />
   </ItemGroup>
 
