@@ -3,8 +3,10 @@
 #endregion
 
 #region Design
-// Adds AddTimeWarpStateBlazor(), AddTimeWarpStateTelemetry() and OpenTelemetry tracing for the TimeWarp.State ActivitySource and
-// ASP.NET Core. The OTLP exporter is added only when OTEL_EXPORTER_OTLP_ENDPOINT is set.
+// Adds AddTimeWarpStateBlazor(), AddTimeWarpStateTelemetry() and OpenTelemetry tracing for the TimeWarp.State ActivitySource.
+// Framework HTTP, Blazor, circuit, and SignalR spans come from the .NET 11 sources in NativeTraceSources. The sample
+// subscribes with AddSource and does not reference OpenTelemetry.Instrumentation.AspNetCore. The OTLP exporter is added
+// only when OTEL_EXPORTER_OTLP_ENDPOINT is set.
 // AddTimeWarpStateDevToolsExporter copies the same activities to DevTools when
 // TIMEWARP_STATE_DEVTOOLS_ENDPOINT is set, and turns snapshots on for that run.
 // The WebAssembly counter is a separate project. UseStaticFiles only serves wwwroot, so the host
@@ -53,7 +55,10 @@ public class Program
         tracing =>
         {
           tracing.AddSource(TimeWarpStateTelemetry.ActivitySourceName);
-          tracing.AddAspNetCoreInstrumentation();
+          tracing.AddSource(NativeTraceSources.AspNetCore);
+          tracing.AddSource(NativeTraceSources.Components);
+          tracing.AddSource(NativeTraceSources.Circuits);
+          tracing.AddSource(NativeTraceSources.SignalRServer);
           if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_ENDPOINT")))
           {
             tracing.AddOtlpExporter();

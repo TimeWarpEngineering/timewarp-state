@@ -67,6 +67,29 @@ public class DevToolsSpanExporter_Should
     DevToolsSpanExporter.ShouldExport(activity).ShouldBeFalse();
   }
 
+  public static void IgnoreNativeFrameworkActivitySources()
+  {
+    string[] sourceNames =
+    [
+      "Microsoft.AspNetCore",
+      "Microsoft.AspNetCore.Components",
+      "Microsoft.AspNetCore.Components.Server.Circuits",
+      "Microsoft.AspNetCore.SignalR.Server"
+    ];
+
+    foreach (string sourceName in sourceNames)
+    {
+      using ActivityListener listener = Listen(sourceName);
+      using ActivitySource source = new(sourceName);
+      using Activity? activity = source.StartActivity("Framework");
+      activity.ShouldNotBeNull();
+      activity.SetTag(InspectorCapture.StateTypeTagName, "CounterState");
+      activity.SetTag(InspectorCapture.ActionTagName, "IncrementCount");
+      DevToolsSpanExporter.ShouldExport(activity).ShouldBeFalse();
+      DevToolsSpanExporter.BuildItem(activity).ShouldBeNull();
+    }
+  }
+
   public static void PostOnlyCapturedSpans()
   {
     using HttpListener listener = new();

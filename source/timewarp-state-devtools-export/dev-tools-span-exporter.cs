@@ -5,7 +5,10 @@
 #region Design
 // BaseExporter.Export is synchronous; the batch processor calls it off the request thread.
 // HttpClient.Send stays on that thread. Failures return Failure and do not throw, so a stopped
-// inspector cannot fail the inspected app. Only ActivitySource TimeWarp.State is copied, and
+// inspector cannot fail the inspected app. Only ActivitySource TimeWarp.State is copied.
+// Framework sources (Microsoft.AspNetCore, Microsoft.AspNetCore.Components,
+// Microsoft.AspNetCore.Components.Server.Circuits, Microsoft.AspNetCore.SignalR.Server) are not
+// copied, so a host that subscribes to them for the Aspire dashboard does not fill the inspector.
 // InspectorCapture drops the inspector's own spans before the POST. This path is the server
 // exporter. The browser uses TimeWarp.State.DevTools.Wasm because this Send cannot run there.
 // A copied span with no timewarp.state.runtime tag is stamped server.
