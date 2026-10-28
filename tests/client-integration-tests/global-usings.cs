@@ -10,6 +10,7 @@ global using TimeWarp.Features.Cloning;
 global using TimeWarp.State;
 global using Shouldly;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Linq;

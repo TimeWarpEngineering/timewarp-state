@@ -70,14 +70,14 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
     );
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
-    if (!Enabled) return await next(cancellationToken);
+    if (!Enabled) return await next(request, cancellationToken);
 
     // Analyzer will ensure the following.  If IAction it has to be nested in a IState implementation.
     Type enclosingStateType = typeof(TRequest).GetEnclosingStateType();
@@ -112,7 +112,7 @@ public sealed class StateTransactionBehavior<TRequest, TResponse> : IPipelineBeh
 
     try
     {
-      TResponse response = await next(cancellationToken);
+      TResponse response = await next(request, cancellationToken);
       return response;
     }
     catch (Exception exception)

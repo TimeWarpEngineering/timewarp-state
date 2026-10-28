@@ -8,6 +8,7 @@
 
 global using Shouldly;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 global using System.Collections.Concurrent;
 global using System.Linq.Expressions;
 global using System.Reflection;

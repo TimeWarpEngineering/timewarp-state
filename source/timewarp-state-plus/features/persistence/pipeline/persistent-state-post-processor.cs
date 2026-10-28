@@ -68,14 +68,14 @@ public sealed class PersistentStatePostProcessor<TRequest, TResponse> : IPipelin
     Logger = logger;
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
-    TResponse response = await next(cancellationToken);
+    TResponse response = await next(request, cancellationToken);
 
     if (CachedPersistentStateAttribute is null || EnclosingStateType is null)
     {

@@ -41,9 +41,9 @@ or move the GetState functionality into your component
 
 ### Pipeline
 
-**TimeWarp.State** uses **TimeWarp.Mediator 14.0.0-beta.1** with compile-time generated registration and named pipelines — not MediatR, and not reflection-based `AddMediator()`.
+**TimeWarp.State** uses **TimeWarp.Mediator 15.0.0-beta.1** with compile-time generated registration and named pipelines — not MediatR, and not reflection-based `AddMediator()`.
 
-Hosts reference `TimeWarp.Mediator.Generators` and call `AddGeneratedMediator<ClientPipeline>()` for the Blazor/WASM client store pipeline. Separate server API hosts that handle requests in their own compilation unit call `AddGeneratedMediator<ServerPipeline>()` and send with `ISender<ServerPipeline>`.
+Hosts reference `TimeWarp.Mediator` (contracts and the bundled analyzer) and `TimeWarp.Mediator.Generators`, then call `AddGeneratedMediator<ClientPipeline>()` for the Blazor/WASM client store pipeline. The generated extension is `internal` in `TimeWarp.Mediator.Generated` (or in `TimeWarpMediatorNamespace` when that property is set). Import that namespace; implicit usings do not include it. Separate server API hosts that handle requests in their own compilation unit call `AddGeneratedMediator<ServerPipeline>()` and send with `ISender<ServerPipeline>`. A library that must not emit a mediator references `TimeWarp.Mediator` only. `TimeWarpMediatorAssembly=false` does not stop the generator from emitting.
 
 Library membership is declared with assembly attributes:
 
@@ -55,7 +55,7 @@ Hosts add their own behaviors with `[assembly: MediatorBehavior(typeof(MyBehavio
 
 `AddTimeWarpState` configures options and applies the generated state registrations for `TimeWarpStateOptions.Assemblies`. It does **not** register mediator pipeline behaviors. Blazor hosts also call `AddTimeWarpStateBlazor`.
 
-Extend the pipeline by implementing `IPipelineBehavior<TRequest, TResponse>` (TimeWarp.Mediator).
+Extend the pipeline by implementing `IPipelineBehavior<TRequest, TResponse>` (TimeWarp.Mediator). `Handle` returns `ValueTask<TResponse>` and takes `MessageHandlerDelegate<TRequest, TResponse>`. Call `next(request, cancellationToken)`. 15.0 does not register `IPipelineBehavior<,>` in the container. `LogTimeWarpStateMiddleware` reads the host's `MediatorManifest.Json` (version 2: kind, scope, behaviors in pipeline order). The generated manifest type is internal to the emitting assembly, so a library takes the JSON string.
 See [`tests/test-app/test-app-client/features/event-stream/pipeline/event-stream-behavior.cs`](https://github.com/TimeWarpEngineering/timewarp-state/blob/master/tests/test-app/test-app-client/features/event-stream/pipeline/event-stream-behavior.cs) for an example.
 
 ### Behaviors/Middleware

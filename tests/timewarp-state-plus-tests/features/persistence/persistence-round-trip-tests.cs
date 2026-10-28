@@ -22,7 +22,7 @@ public class PersistenceRoundTrip_Should
     PersistentStatePostProcessor<LocalWidgetState.SaveAction, object> processor =
       CreateLocalProcessor(storageHarness, localWidgetState);
 
-    await processor.Handle(new LocalWidgetState.SaveAction(), _ => Task.FromResult(new object()), CancellationToken.None);
+    await processor.Handle(new LocalWidgetState.SaveAction(), (_, _) => new ValueTask<object>(new object()), CancellationToken.None);
 
     string expectedKey = typeof(LocalWidgetState).FullName!;
     storageHarness.Items.Keys.ShouldBe([expectedKey]);
@@ -119,7 +119,7 @@ public class PersistenceRoundTrip_Should
     object response = await processor.Handle
     (
       new LocalWidgetState.SaveAction(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -141,7 +141,7 @@ public class PersistenceRoundTrip_Should
       storageHarness.SessionStorageService
     );
 
-    await processor.Handle(new SessionWidgetState.SaveAction(), _ => Task.FromResult(new object()), CancellationToken.None);
+    await processor.Handle(new SessionWidgetState.SaveAction(), (_, _) => new ValueTask<object>(new object()), CancellationToken.None);
 
     string expectedKey = typeof(SessionWidgetState).FullName!;
     storageHarness.Items.Keys.ShouldBe([expectedKey]);

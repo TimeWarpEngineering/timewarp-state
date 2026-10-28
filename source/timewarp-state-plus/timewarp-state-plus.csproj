@@ -24,8 +24,8 @@
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="all"/>
     <PackageReference Include="Blazored.SessionStorage"/>
     <PackageReference Include="Blazored.LocalStorage"/>
-    <!-- Contracts flow transitively from TimeWarp.State; the analyzer package is build-only. -->
-    <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all"/>
+    <!-- Contracts flow from TimeWarp.State. The direct reference runs the bundled TWM analyzer. -->
+    <PackageReference Include="TimeWarp.Mediator" PrivateAssets="all"/>
   </ItemGroup>
 
   <ItemGroup>

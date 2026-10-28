@@ -32,7 +32,7 @@ public class InitializedStateSnapshotHandler_Should
     await incrementBehavior.Handle
     (
       new TelemetryTestState.IncrementAction(),
-      _ => Task.FromResult(Unit.Value),
+      (_, _) => new ValueTask<Unit>(Unit.Value),
       CancellationToken.None
     );
 

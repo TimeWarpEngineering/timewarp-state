@@ -31,8 +31,9 @@ internal class Program
 
     // Server-scoped pipeline: only handlers/behaviors marked ServerPipeline. The client store
     // pipeline was already registered above by Client.Program.ConfigureServices as ISender<ClientPipeline>.
-    // AddGeneratedMediator is internal to this assembly (TimeWarp.Mediator 14.0.0-beta.4+), so the
-    // client's copy is not visible and the call is not ambiguous.
+    // AddGeneratedMediator is internal to this assembly (TimeWarp.Mediator 15), so the
+    // client's copy is not visible and the call is not ambiguous. The client's MediatorManifest
+    // is internal too, so this log lists the server pipeline only.
     builder.Services.AddGeneratedMediator<ServerPipeline>();
 
     builder.Logging.AddConsole().AddDebug().SetMinimumLevel(LogLevel.Debug);
@@ -40,7 +41,7 @@ internal class Program
     WebApplication app = builder.Build();
 
     ILogger<Program> logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
-    builder.Services.LogTimeWarpStateMiddleware(logger);
+    builder.Services.LogTimeWarpStateMiddleware(logger, MediatorManifest.Json);
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Trusted platform assemblies plus TimeWarp.State and TimeWarp.Mediator.Contracts let the generator see State<T>
+// Trusted platform assemblies plus TimeWarp.State and TimeWarp.Mediator let the generator see State<T>
 // and let the test compile the emitted cloners. Diagnostics and generated text are both asserted.
 #endregion
 

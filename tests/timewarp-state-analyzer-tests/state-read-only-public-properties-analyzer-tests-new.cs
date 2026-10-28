@@ -197,6 +197,6 @@ file static class AnalyzerReference
   public static void AddReferences(CSharpAnalyzerTest<StateReadOnlyPublicPropertiesAnalyzer, FixieVerifier> analyzerTest)
   {
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(@"TimeWarp.State.dll"));
-    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(@"TimeWarp.Mediator.Contracts.dll"));
+    analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(@"TimeWarp.Mediator.dll"));
   }
 }

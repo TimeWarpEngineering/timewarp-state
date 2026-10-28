@@ -76,7 +76,7 @@ dotnet build --project <ProjectPath> --configuration Release
 
 ### Key Patterns
 - **CQRS/Flux**: Unidirectional data flow with Actions/StateActionHandlers
-- **TimeWarp.Mediator 14.0.0-beta**: Generated `AddGeneratedMediator<TScope>()`, `ISender<ClientPipeline>` / `ISender<ServerPipeline>` (not reflection `AddMediator()`)
+- **TimeWarp.Mediator 15.0.0-beta.1**: One package (`TimeWarp.Mediator`, contracts plus the bundled analyzer) and `TimeWarp.Mediator.Generators` on hosts. Generated `AddGeneratedMediator<TScope>()` lives in `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`); import that namespace. `ISender<ClientPipeline>` / `ISender<ServerPipeline>`. Handler and behavior methods return `ValueTask`.
 - **Async-First**: All operations are async by design
 - **TypeScript Integration**: Strong typing for JavaScript interop
 
@@ -166,7 +166,7 @@ Follow structured task workflow using Kanban approach:
 ## Essential Dependencies
 
 - **Blazor**: UI framework (Server/WebAssembly)
-- **TimeWarp.Mediator 14.0.0-beta**: CQRS/mediator via generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`); not `AddMediator()`
+- **TimeWarp.Mediator 15.0.0-beta.1**: CQRS/mediator via `TimeWarp.Mediator` plus generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`). There is no Contracts package and no Analyzers package.
 - **Microsoft.JSInterop**: JavaScript interop for browser features
 - **Fixie**: Testing framework
 - **NetArchTest**: Architecture testing

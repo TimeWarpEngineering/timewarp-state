@@ -11,7 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
-    <PackageReference Include="TimeWarp.Mediator.Analyzers" PrivateAssets="all" />
+    <!-- Publish must copy this assembly. TimeWarp.State loads it, and PrivateAssets would leave it out of the tools folder. -->
+    <PackageReference Include="TimeWarp.Mediator" />
   </ItemGroup>
 
   <ItemGroup>

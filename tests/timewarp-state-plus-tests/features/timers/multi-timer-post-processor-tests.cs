@@ -23,7 +23,7 @@ public class MultiTimerPostProcessor_Should
     await processorHarness.UserProcessor.Handle
     (
       new UserRequest(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -33,7 +33,7 @@ public class MultiTimerPostProcessor_Should
     await processorHarness.ResetProcessor.Handle
     (
       (TimerState.ResetTimersOnActivityActionSet.Action)processorHarness.Sender.Sent[0],
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -48,14 +48,14 @@ public class MultiTimerPostProcessor_Should
     await processorHarness.StartProcessor.Handle
     (
       new ActionTrackingState.StartProcessingActionSet.Action(userRequest),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
     await processorHarness.CompleteProcessor.Handle
     (
       new ActionTrackingState.CompleteProcessingActionSet.Action(userRequest),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -72,7 +72,7 @@ public class MultiTimerPostProcessor_Should
         await processorHarness.ResetProcessor.Handle
         (
           resetAction,
-          _ => Task.FromResult(new object()),
+          (_, _) => new ValueTask<object>(new object()),
           cancellationToken
         );
       }
@@ -82,7 +82,7 @@ public class MultiTimerPostProcessor_Should
     await processorHarness.UserProcessor.Handle
     (
       new UserRequest(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       timeout.Token
     );
 
@@ -127,39 +127,23 @@ public class MultiTimerPostProcessor_Should
     public List<object> Sent { get; } = [];
     public Func<object, CancellationToken, Task>? OnSend { get; set; }
 
-    public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
+    public ValueTask<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
-      return RecordAndReturn<TResponse>(request, cancellationToken);
+      return new ValueTask<TResponse>(RecordAndReturn<TResponse>(request, cancellationToken));
     }
 
-    public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest
+    public ValueTask Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest
     {
-      return Record(request, cancellationToken);
+      return new ValueTask(Record(request, cancellationToken));
     }
 
-    public async Task<object?> Send(object request, CancellationToken cancellationToken = default)
+    public async ValueTask<object?> Send(object request, CancellationToken cancellationToken = default)
     {
       await Record(request, cancellationToken);
       return null;
     }
 
-    public IAsyncEnumerable<TResponse> CreateStream<TResponse>
-    (
-      IStreamRequest<TResponse> request,
-      CancellationToken cancellationToken = default
-    )
-    {
-      throw new NotSupportedException();
-    }
 
-    public IAsyncEnumerable<object?> CreateStream
-    (
-      object request,
-      CancellationToken cancellationToken = default
-    )
-    {
-      throw new NotSupportedException();
-    }
 
     private async Task Record(object request, CancellationToken cancellationToken)
     {

@@ -11,6 +11,7 @@ global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
 global using Sample04Wasm.Features.Counter;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;
 global using TimeWarp.State;
 global using TimeWarp.State.DevTools.Wasm;
 global using TimeWarp.State.Telemetry;

@@ -27,11 +27,11 @@ public class Should_
     using CancellationTokenSource cancellationTokenSource = new();
     cancellationTokenSource.Cancel();
 
-    RequestHandlerDelegate<Unit> next = _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> next = (_, _) =>
     {
       var current = (TransactionTestState)harness.Store.CurrentState;
       current.Value = 99;
-      return Task.FromException<Unit>(new InvalidOperationException("handler failed"));
+      return new ValueTask<Unit>(Task.FromException<Unit>(new InvalidOperationException("handler failed")));
     };
 
     await harness.Behavior.Handle
@@ -54,16 +54,16 @@ public class Should_
   {
     Harness harness = CreateHarness();
 
-    RequestHandlerDelegate<Unit> next = _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> next = (_, _) =>
     {
       var current = (TransactionTestState)harness.Store.CurrentState;
       current.Value = 99;
-      return Task.FromException<Unit>(new OperationCanceledException());
+      return new ValueTask<Unit>(Task.FromException<Unit>(new OperationCanceledException()));
     };
 
     await Should.ThrowAsync<OperationCanceledException>
     (
-      () => harness.Behavior.Handle
+      async () => await harness.Behavior.Handle
       (
         new TransactionTestState.ThrowAction(),
         next,
@@ -82,16 +82,16 @@ public class Should_
     using CancellationTokenSource cancellationTokenSource = new();
     cancellationTokenSource.Cancel();
 
-    RequestHandlerDelegate<Unit> next = cancellationToken =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> next = (_, cancellationToken) =>
     {
       var current = (TransactionTestState)harness.Store.CurrentState;
       current.Value = 99;
-      return Task.FromException<Unit>(new OperationCanceledException(cancellationToken));
+      return new ValueTask<Unit>(Task.FromException<Unit>(new OperationCanceledException(cancellationToken)));
     };
 
     await Should.ThrowAsync<OperationCanceledException>
     (
-      () => harness.Behavior.Handle
+      async () => await harness.Behavior.Handle
       (
         new TransactionTestState.ThrowAction(),
         next,
@@ -122,16 +122,16 @@ public class Should_
       options
     );
 
-    RequestHandlerDelegate<Unit> next = _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> next = (_, _) =>
     {
       var current = (TransactionTestState)recordingStore.CurrentState;
       current.Value = 99;
-      return Task.FromException<Unit>(new InvalidOperationException("handler failed"));
+      return new ValueTask<Unit>(Task.FromException<Unit>(new InvalidOperationException("handler failed")));
     };
 
     InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>
     (
-      () => behavior.Handle(new TransactionTestState.ThrowAction(), next, CancellationToken.None)
+      async () => await behavior.Handle(new TransactionTestState.ThrowAction(), next, CancellationToken.None)
     );
 
     exception.Message.ShouldBe("handler failed");
@@ -149,10 +149,10 @@ public class Should_
 
     InvalidCloneException exception = await Should.ThrowAsync<InvalidCloneException>
     (
-      () => behavior.Handle
+      async () => await behavior.Handle
       (
         new EqualGuidState.ThrowAction(),
-        _ => Task.FromResult(Unit.Value),
+        (_, _) => new ValueTask<Unit>(Unit.Value),
         CancellationToken.None
       )
     );
@@ -170,10 +170,10 @@ public class Should_
 
     InvalidCloneException exception = await Should.ThrowAsync<InvalidCloneException>
     (
-      () => behavior.Handle
+      async () => await behavior.Handle
       (
         new EmptyGuidState.ThrowAction(),
-        _ => Task.FromResult(Unit.Value),
+        (_, _) => new ValueTask<Unit>(Unit.Value),
         CancellationToken.None
       )
     );
@@ -194,10 +194,10 @@ public class Should_
 
     InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>
     (
-      () => behavior.Handle
+      async () => await behavior.Handle
       (
         new ThrowingConstructorState.ThrowAction(),
-        _ => Task.FromResult(Unit.Value),
+        (_, _) => new ValueTask<Unit>(Unit.Value),
         CancellationToken.None
       )
     );
@@ -218,18 +218,18 @@ public class Should_
     TaskCompletionSource<Unit> laterCommitted = new();
     TransactionTestState laterState = null!;
 
-    RequestHandlerDelegate<Unit> earlierNext = async _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> earlierNext = async (_, _) =>
     {
       await laterCommitted.Task;
       throw new InvalidOperationException("earlier action failed");
     };
 
-    RequestHandlerDelegate<Unit> laterNext = _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> laterNext = (_, _) =>
     {
       laterState = (TransactionTestState)store.CurrentState;
       laterState.Value = 42;
       laterCommitted.SetResult(Unit.Value);
-      return Task.FromResult(Unit.Value);
+      return new ValueTask<Unit>(Unit.Value);
     };
 
     Task earlier = behavior.Handle
@@ -237,13 +237,13 @@ public class Should_
       new TransactionTestState.ThrowAction(),
       earlierNext,
       CancellationToken.None
-    );
+    ).AsTask();
     Task later = behavior.Handle
     (
       new TransactionTestState.ThrowAction(),
       laterNext,
       CancellationToken.None
-    );
+    ).AsTask();
     await Task.WhenAll(earlier, later);
 
     store.CurrentState.ShouldBeSameAs(laterState);
@@ -278,17 +278,17 @@ public class Should_
     bool overlappingSawEarlierInFlight = false;
     TransactionTestState successorState = null!;
 
-    RequestHandlerDelegate<Unit> earlierNext = async _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> earlierNext = async (_, _) =>
     {
       await overlappingEntered.Task;
       await behavior.Handle
       (
         new TransactionTestState.ThrowAction(),
-        _ =>
+        (_, _) =>
         {
           successorState = (TransactionTestState)store.CurrentState;
           successorState.Value = 77;
-          return Task.FromResult(Unit.Value);
+          return new ValueTask<Unit>(Unit.Value);
         },
         CancellationToken.None
       );
@@ -299,7 +299,7 @@ public class Should_
       return Unit.Value;
     };
 
-    RequestHandlerDelegate<Unit> overlappingNext = async _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> overlappingNext = async (_, _) =>
     {
       overlappingEntered.SetResult(Unit.Value);
       await successorCommitted.Task;
@@ -312,13 +312,13 @@ public class Should_
       new TransactionTestState.ThrowAction(),
       earlierNext,
       CancellationToken.None
-    );
+    ).AsTask();
     Task overlapping = behavior.Handle
     (
       new TransactionTestState.ThrowAction(),
       overlappingNext,
       CancellationToken.None
-    );
+    ).AsTask();
     await overlapping;
     releaseEarlier.SetResult(Unit.Value);
     await earlier;
@@ -352,7 +352,7 @@ public class Should_
     bool overlappingSawEarlierInFlight = false;
     TransactionTestState earlierClone = null!;
 
-    RequestHandlerDelegate<Unit> earlierNext = async _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> earlierNext = async (_, _) =>
     {
       earlierClone = (TransactionTestState)store.CurrentState;
       earlierClone.Value = 3;
@@ -364,12 +364,12 @@ public class Should_
       return Unit.Value;
     };
 
-    RequestHandlerDelegate<Unit> overlappingNext = _ =>
+    MessageHandlerDelegate<TransactionTestState.ThrowAction, Unit> overlappingNext = (_, _) =>
     {
       TransactionTestState current = (TransactionTestState)store.CurrentState;
       current.Value = 9;
       overlappingSawEarlierInFlight = earlierInFlight;
-      return Task.FromException<Unit>(new InvalidOperationException("overlapping action failed"));
+      return new ValueTask<Unit>(Task.FromException<Unit>(new InvalidOperationException("overlapping action failed")));
     };
 
     Task earlier = behavior.Handle
@@ -377,13 +377,13 @@ public class Should_
       new TransactionTestState.ThrowAction(),
       earlierNext,
       CancellationToken.None
-    );
+    ).AsTask();
     Task overlapping = behavior.Handle
     (
       new TransactionTestState.ThrowAction(),
       overlappingNext,
       CancellationToken.None
-    );
+    ).AsTask();
     await overlapping;
 
     overlappingSawEarlierInFlight.ShouldBeTrue();
@@ -425,14 +425,14 @@ public class Should_
       new TimeWarpStateOptions(new ServiceCollection())
     );
 
-    RequestHandlerDelegate<Unit> next = _ =>
+    MessageHandlerDelegate<ServiceState.TickAction, Unit> next = (_, _) =>
     {
       ServiceState current = (ServiceState)store.GetState(typeof(ServiceState));
       current.Logger.LogInformation("tick {Count}", current.Count);
       current.NavigationManager.BaseUri.ShouldBe("https://example.test/");
       current.HttpClient.ShouldBeSameAs(httpClient);
       current.Count++;
-      return Task.FromResult(Unit.Value);
+      return new ValueTask<Unit>(Unit.Value);
     };
 
     await behavior.Handle(new ServiceState.TickAction(), next, CancellationToken.None);
@@ -667,14 +667,14 @@ public class Should_
   {
     public List<(object Notification, CancellationToken CancellationToken)> Publications { get; } = [];
 
-    public Task Publish(object notification, CancellationToken cancellationToken = default)
+    public ValueTask Publish(object notification, CancellationToken cancellationToken = default)
     {
       cancellationToken.ThrowIfCancellationRequested();
       Publications.Add((notification, cancellationToken));
-      return Task.CompletedTask;
+      return ValueTask.CompletedTask;
     }
 
-    public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
+    public ValueTask Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
       where TNotification : INotification
     {
       return Publish((object)notification, cancellationToken);

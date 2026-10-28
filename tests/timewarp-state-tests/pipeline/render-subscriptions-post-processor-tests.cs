@@ -19,7 +19,7 @@ public class Should_
     await harness.SilentProcessor.Handle
     (
       new RenderTestState.SilentAction(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -33,7 +33,7 @@ public class Should_
     await harness.UserProcessor.Handle
     (
       new RenderTestState.UserAction(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -47,7 +47,7 @@ public class Should_
     await harness.InternalProcessor.Handle
     (
       new RenderTestState.InternalAction(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -65,7 +65,7 @@ public class Should_
     await harness.UserProcessor.Handle
     (
       firstAction,
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -74,7 +74,7 @@ public class Should_
     await harness.UserProcessor.Handle
     (
       new RenderTestState.UserAction(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -92,7 +92,7 @@ public class Should_
     await harness.OtherProcessor.Handle
     (
       new RenderTestState.OtherAction(),
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -101,7 +101,7 @@ public class Should_
     await harness.UserProcessor.Handle
     (
       userAction,
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -120,7 +120,7 @@ public class Should_
     await harness.UserProcessor.Handle
     (
       liveAction,
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 
@@ -141,7 +141,7 @@ public class Should_
       await harness.UserProcessor.Handle
       (
         action,
-        _ => throw new InvalidOperationException("handler failed"),
+        (_, _) => throw new InvalidOperationException("handler failed"),
         CancellationToken.None
       );
     }
@@ -166,7 +166,7 @@ public class Should_
     await harness.UserProcessor.Handle
     (
       action,
-      _ => Task.FromResult(new object()),
+      (_, _) => new ValueTask<object>(new object()),
       CancellationToken.None
     );
 

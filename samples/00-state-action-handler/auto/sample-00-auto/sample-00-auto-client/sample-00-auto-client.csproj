@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="TimeWarp.State" />
     <PackageReference Include="TimeWarp.State.Blazor" />
+    <PackageReference Include="TimeWarp.Mediator" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
   </ItemGroup>
 

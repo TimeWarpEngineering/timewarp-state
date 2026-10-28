@@ -35,14 +35,14 @@ public sealed class MultiTimerPostProcessor<TRequest, TResponse> : IPipelineBeha
     Sender = sender;
   }
 
-  public async Task<TResponse> Handle
+  public async ValueTask<TResponse> Handle
   (
     TRequest request,
-    RequestHandlerDelegate<TResponse> next,
+    MessageHandlerDelegate<TRequest, TResponse> next,
     CancellationToken cancellationToken
   )
   {
-    TResponse response = await next(cancellationToken);
+    TResponse response = await next(request, cancellationToken);
     if (IsInternal)
     {
       return response;

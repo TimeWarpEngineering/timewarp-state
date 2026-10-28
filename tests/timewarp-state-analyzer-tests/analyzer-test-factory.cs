@@ -5,7 +5,7 @@
 #region Design
 // Microsoft.CodeAnalysis.Analyzer.Testing has no net11 ReferenceAssemblies yet, so Net110 pins the
 // Microsoft.NETCore.App.Ref 11.0.0-rc.3 pack, which must stay in step with Directory.Packages.props.
-// AddLibraryReferences adds TimeWarp.State.dll and TimeWarp.Mediator.Contracts.dll from the test output folder.
+// AddLibraryReferences adds TimeWarp.State.dll and TimeWarp.Mediator.dll from the test output folder.
 #endregion
 
 namespace TimeWarp.State.Analyzer.Tests;
@@ -47,7 +47,7 @@ internal static class AnalyzerTestFactory
     const string TimeWarpStateAssemblyPath = @"TimeWarp.State.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(TimeWarpStateAssemblyPath));
 
-    const string MediatorAssemblyPath = @"TimeWarp.Mediator.Contracts.dll";
+    const string MediatorAssemblyPath = @"TimeWarp.Mediator.dll";
     analyzerTest.TestState.AdditionalReferences.Add(MetadataReference.CreateFromFile(MediatorAssemblyPath));
   }
 }

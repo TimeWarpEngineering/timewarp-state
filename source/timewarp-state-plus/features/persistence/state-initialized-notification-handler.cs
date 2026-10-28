@@ -28,7 +28,7 @@ public class StateInitializedNotificationHandler : INotificationHandler<StateIni
 
   [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "PersistentStateAttribute is on state types the clone generator roots. The attribute type is referenced by this assembly.")]
   [System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "PersistentStateAttribute is on state types the clone generator roots. The attribute type is referenced by this assembly.")]
-  public async Task Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
+  public async ValueTask Handle(StateInitializedNotification stateInitializedNotification, CancellationToken cancellationToken)
   {
     // Only persistent states auto-load; skip the dispatch entirely for the common (non-persistent) case.
     if (stateInitializedNotification.StateType.GetCustomAttribute<PersistentStateAttribute>() is null) return;

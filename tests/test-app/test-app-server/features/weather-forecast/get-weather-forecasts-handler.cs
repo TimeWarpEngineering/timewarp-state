@@ -17,7 +17,7 @@ using TimeWarp.State;
 [MediatorScope(typeof(ServerPipeline))]
 public sealed class GetWeatherForecastsHandler : IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecasts.Response>
 {
-  public Task<GetWeatherForecasts.Response> Handle(GetWeatherForecastsRequest request, CancellationToken cancellationToken)
+  public ValueTask<GetWeatherForecasts.Response> Handle(GetWeatherForecastsRequest request, CancellationToken cancellationToken)
   {
     Console.WriteLine("Weather API endpoint called at: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 
@@ -40,6 +40,6 @@ public sealed class GetWeatherForecastsHandler : IRequestHandler<GetWeatherForec
 
     GetWeatherForecasts.Response response = new();
     response.AddRange(forecasts);
-    return Task.FromResult(response);
+    return new ValueTask<GetWeatherForecasts.Response>(response);
   }
 }

@@ -47,5 +47,5 @@ public abstract class BaseComponent : TimeWarpStateComponent
   internal CacheableWeatherState CacheableWeatherState => GetState<CacheableWeatherState>();
 
   // ReSharper disable once UnusedMember.Global - Can be used by inheriting classes not in this library.
-  protected Task Send(IRequest request) => Sender.Send(request);
+  protected Task Send(IRequest request) => Sender.Send(request).AsTask();
 }

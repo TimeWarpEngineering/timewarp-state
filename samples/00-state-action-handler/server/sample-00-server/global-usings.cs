@@ -13,3 +13,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Sample00Server.Components;
 global using TimeWarp.State;
 global using TimeWarp.Mediator;
+global using TimeWarp.Mediator.Generated;

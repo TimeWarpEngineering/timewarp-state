@@ -24,7 +24,7 @@ public class Program
     WebAssemblyHost webAssemblyHost = builder.Build();
     ILogger<Program> logger = webAssemblyHost.Services.GetRequiredService<ILoggerFactory>().CreateLogger<Program>();
     logger.LogInformation("Starting up Client...");
-    builder.Services.LogTimeWarpStateMiddleware(logger);
+    builder.Services.LogTimeWarpStateMiddleware(logger, TimeWarp.Mediator.Generated.MediatorManifest.Json);
 
     await webAssemblyHost.RunAsync();
   }

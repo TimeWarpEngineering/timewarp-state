@@ -22,7 +22,7 @@ public partial class ApplicationState
       {
         Store = store;
       }
-      public async Task Handle(Action action, CancellationToken cancellationToken)
+      public async ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
         Store.Reset();
         await Store.GetState<RouteState>().ChangeRoute(newRoute: "/", cancellationToken);

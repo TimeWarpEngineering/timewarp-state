@@ -55,7 +55,7 @@ public class NuspecDependencyAllowList_Should_
         <metadata>
           <dependencies>
             <group targetFramework="net11.0">
-              <dependency id="TimeWarp.Mediator.Contracts" version="14.0.0-beta.5" exclude="Build,Analyzers" />
+              <dependency id="TimeWarp.Mediator" version="15.0.0-beta.1" exclude="Build,Analyzers" />
               <dependency id="Microsoft.CodeAnalysis.CSharp" version="4.14.0" exclude="Build,Analyzers" />
             </group>
           </dependencies>

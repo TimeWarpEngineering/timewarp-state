@@ -40,14 +40,15 @@ This tutorial will walk you through the steps to create a Blazor application wit
 
 ### Install TimeWarp.State Package
 
-1. Add the TimeWarp.State and TimeWarp.Mediator.Generators packages to the Client project:
+1. Add the TimeWarp.State, TimeWarp.Mediator, and TimeWarp.Mediator.Generators packages to the Client project:
 
 ```bash
 dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.State
+dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.Mediator
 dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.Mediator.Generators
 ```
 
-Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only).
+`TimeWarp.Mediator` 15.0.0-beta.1 is the contracts package and the bundled analyzer. Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only). There is no `TimeWarp.Mediator.Contracts` package and no `TimeWarp.Mediator.Analyzers` package.
 
 Note: The Server project doesn't need the packages directly as it takes a dependency on the Client project.
 

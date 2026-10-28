@@ -56,14 +56,14 @@ is `documentation/release-notes/15.0.0.md`.
 ## Checklist
 
 ### Implementation
-- [ ] Package pins and csproj references updated to 15.0.0-beta.1
-- [ ] `ActionHandler<T>` and the seven behaviors on `ValueTask` / `MessageHandlerDelegate`
-- [ ] Middleware and registry read `MediatorManifest` v2
-- [ ] `ISender` fakes and sync-throw tests updated
+- [x] Package pins and csproj references updated to 15.0.0-beta.1
+- [x] `ActionHandler<T>` and the seven behaviors on `ValueTask` / `MessageHandlerDelegate`
+- [x] Middleware and registry read `MediatorManifest` v2
+- [x] `ISender` fakes and sync-throw tests updated
 - [ ] `dev workflow` (or the repo's equivalent full pipeline) green
 ### Documentation
-- [ ] State docs and agent.md mention `TimeWarp.Mediator` 15.0 (no Contracts/Analyzers ids)
-- [ ] `## Results` lists migration-page feedback for timewarp-mediator
+- [x] State docs and agent.md mention `TimeWarp.Mediator` 15.0 (no Contracts/Analyzers ids)
+- [x] `## Results` lists migration-page feedback for timewarp-mediator
 ### Review
 - [ ] Code Review
 - [ ] PR with merge commit
@@ -77,11 +77,71 @@ is `documentation/release-notes/15.0.0.md`.
   interface path (was 213 ns / 272 B on 14.0); if State has its own dispatch benchmark,
   re-record it.
 
+## Goal (implementer restatement)
+
+TimeWarp.State moves off TimeWarp.Mediator 14.0.0-beta.5 (three packages: Contracts, Generators, Analyzers) onto 15.0.0-beta.1. Contracts and the analyzer now ship as `TimeWarp.Mediator`. Only a host that emits a mediator references `TimeWarp.Mediator.Generators`. Handler and behavior signatures return `ValueTask` and call `next(request, cancellationToken)`. The pipeline log reads generated `MediatorManifest` version 2 instead of scanning the container for `IPipelineBehavior<,>`.
+
+Acceptance:
+
+- `Directory.Packages.props` pins `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` at `15.0.0-beta.1`. Every project that referenced Contracts or Analyzers references `TimeWarp.Mediator`. A library that must not emit a mediator does not reference Generators.
+- `StateActionHandler<T>` still derives from `ActionHandler<T>`, whose `Handle` returns `ValueTask`. The seven named behaviors use `ValueTask<TResponse>` and `MessageHandlerDelegate<TRequest, TResponse>`.
+- `LogTimeWarpStateMiddleware` and `PipelineBehaviorRegistry` read manifest version 2 (kind, scope, behaviors in pipeline order). They do not treat an `IPipelineBehavior<,>` service scan as the pipeline.
+- Hand-written `ISender` fakes have no `CreateStream` methods, and `Send` returns `ValueTask`. Tests that expected a synchronous send failure to arrive as a faulted task match the synchronous throw.
+- Living docs name TimeWarp.Mediator 15.0 and do not tell a reader to install Contracts or Analyzers.
+- Build, tests, samples, and `dev workflow` are green with no warnings. Results name any TWM diagnostic that fires, and they list migration-page gaps for the mediator repo.
+
 ## Implementation Notes
 
 - 
+
+## Results
+
+The 15.0.0-beta.1 pin, `ValueTask` handlers and behaviors, manifest v2 reader, and `ISender` fakes are in the tree. `./bin/dev workflow --mode pr` is green through the Fixie suites (including DevTools 101 and client-integration 64 passed, 1 skipped) and red at E2E. verify-samples did not run.
+
+WebAssembly interactive mode throws on the first `Send`:
+
+```
+System.TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1
+   at TimeWarp.Features.Routing.RouteState.PushRouteInfo(...)
+   at TimeWarp.Features.Routing.TwPageTitle.OnAfterRenderAsync(Boolean firstRender)
+```
+
+The same exception is thrown from `Counter.ButtonClick` (`await Sender.Send(...)`). The counter stays at 3, persistence shows a new guid, and route changes do not stick. Interactive Server on CoreCLR increments 3 → 8. No TWM001–TWM011 diagnostics fired.
+
+`TimeWarp.Mediator.Unit` is a struct whose static auto-property is `ValueTask<Unit> ValueTask { get; } = new(Instance)`. That emits a static field of type `ValueTask<Unit>` on `Unit`, and `ValueTask<T>` stores a `T`. Mono's WASM type loader treats that cycle as a recursive type. CoreCLR does not. State cannot move that field; every generated `Send` of an action constructs `ValueTask<Unit>`.
+
+There is no State dispatch benchmark to re-record.
+
+Pre-existing warnings the workflow does not fail on: NU1510, NU1902, NU1903, TW0007, CS8600, CS8602, RS0030, BL0010, BL0016, ASPDEPR011.
+
+### Migration-page feedback for timewarp-mediator
+
+- `Unit.ValueTask` as a static auto-property on the `Unit` struct breaks Blazor WebAssembly (`TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1`). A getter with no backing field, `public static ValueTask<Unit> ValueTask => new(Instance)`, or a field on a separate static class, keeps the name and removes the cycle. This blocks the State dogfood. https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
+- `AddGeneratedMediator` is emitted into `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`), and that namespace is not an implicit using. The State section says the call stays and does not say to import the namespace. That missing using was the compile break.
+- `MediatorManifest` is internal. A library cannot read the type. State's public log takes the JSON string the host passes. A server host that references a client host cannot read the client's manifest, so one log call cannot list both pipelines.
+- The manifest has no `profile` key. The reader rejects a version other than 2 and a present `profile` key.
+- Analyzers do not flow transitively. `PrivateAssets=all` on the combined `TimeWarp.Mediator` package keeps it out of a packed nuspec and also drops the runtime DLL from `dotnet publish`. A published host (DevTools) must reference `TimeWarp.Mediator` without `PrivateAssets`. Replacing the old Analyzers package and keeping `PrivateAssets=all` hid the runtime assembly that used to flow from TimeWarp.State's public Contracts dependency.
+- `IActionHandler` is gone. Easy to miss because the State analyzer still names that role.
+- `ValueTask<T>` has no implicit conversion from `Task<T>`. `ContinueWith` is not on `ValueTask`. `Task.WhenAll` needs `.AsTask()`. The migration page mentions `Select`/`WhenAll` for `Send`, not behavior tests or `ContinueWith`.
+- `TimeWarpMediatorAssembly=false` is analyzer membership only. The generator does not treat it as an emission opt-out.
+- Dev-cli uses Nuru and `using static TimeWarp.Mediator.Unit`. Nuru was not on the migration's State list. State did not retarget Nuru.
+
+### How to validate
+
+Smoke: `./bin/dev workflow --mode pr`
+
+Expect: exit 0, Fixie suites and Playwright e2e pass, verify-samples runs, no TWM diagnostic. Today the Fixie suites pass and E2E fails in WebAssembly with the `ValueTask<Unit>` type-load above. After a mediator build whose `Unit.ValueTask` has no static field of type `ValueTask<Unit>` on the `Unit` struct, re-pin and this smoke should go green.
+
+## Blocked
+
+- Date: 2026-10-28
+- Reason: Blazor WebAssembly throws `TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1` on the first `ISender.Send`. `TimeWarp.Mediator.Unit.ValueTask` is a static auto-property, so the struct carries a `ValueTask<Unit>` field. Mono's WASM loader rejects that cycle. Interactive Server and the Fixie suites pass. State cannot change `Unit`.
+- Unblocks: a TimeWarp.Mediator build where `Unit.ValueTask` does not store a `ValueTask<Unit>` field on the `Unit` struct (expression-bodied getter, or a field on another static class), then re-pin State and re-run `./bin/dev workflow --mode pr`.
+- Link: https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
 
 ## Session
 
 - Created: 04be23b7-afaf-4196-b07d-39320558a224 (2026-10-26)
 - Created: cockpit session 04be23b7 (2026-10-26) from the timewarp-mediator 15.0 train (task 021)
+- 2026-10-28: implementer. Package, ValueTask, and manifest v2 landed. DevTools publish needed a direct `TimeWarp.Mediator` reference without `PrivateAssets` or the tools folder omitted the DLL. E2E is blocked on the WASM `ValueTask<Unit>` type load described above.
+- 2026-10-28: `ganda repo audit --fix` scaffolded `glossary.md`, refreshed `.githooks/pre-push.cs`, and pinned TimeWarp.Nuru to 4.0.0-beta.7 (dev-cli still compiles). Advisory leftovers: task 098 has no worktree (not this id); kebab-path warnings are Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder.

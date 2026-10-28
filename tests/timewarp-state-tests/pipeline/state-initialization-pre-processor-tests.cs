@@ -19,10 +19,10 @@ public class Should_
     int result = await processor.Handle
     (
       new ProbeState.TickAction(),
-      _ =>
+      (_, _) =>
       {
         nextCalls++;
-        return Task.FromResult(7);
+        return new ValueTask<int>(7);
       },
       CancellationToken.None
     );
@@ -39,13 +39,13 @@ public class Should_
     StateInitializationPreProcessor<ProbeState.TickAction, int> processor = Create(store);
     int nextCalls = 0;
 
-    Task<int> pending = processor.Handle
+    ValueTask<int> pending = processor.Handle
     (
       new ProbeState.TickAction(),
-      _ =>
+      (_, _) =>
       {
         nextCalls++;
-        return Task.FromResult(3);
+        return new ValueTask<int>(3);
       },
       CancellationToken.None
     );
@@ -70,13 +70,13 @@ public class Should_
 
     InvalidOperationException exception = await Should.ThrowAsync<InvalidOperationException>
     (
-      () => processor.Handle
+      async () => await processor.Handle
       (
         new ProbeState.TickAction(),
-        _ =>
+        (_, _) =>
         {
           nextCalls++;
-          return Task.FromResult(0);
+          return new ValueTask<int>(0);
         },
         CancellationToken.None
       )

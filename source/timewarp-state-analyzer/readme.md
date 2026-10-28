@@ -35,7 +35,7 @@ dotnet_diagnostic.TWS0002.severity = error
 
 TimeWarp.SourceGenerators ships an unrelated **TW0002** (`XmlDocsToMarkdownAnalyzer`) under the bare `TW` prefix. This rule used to share that same bare `TW0002` id, so an `.editorconfig` that set `dotnet_diagnostic.TW0002.severity = none` for that rule also silenced HandlerMustNotSendAction; the `TWS` prefix removes that collision.
 
-Scope is symbol-based: any type whose base chain includes `TimeWarp.State.StateActionHandler<>`, `TimeWarp.Mediator.ActionHandler<>`, or the legacy `TimeWarp.State.ActionHandler<>`, or that implements `IActionHandler<>`. App-derived bases (`BaseHandler<>`, `DefaultApiHandler<,,>`) are included without name matching. Every method body counts (`Handle`, `HandleSuccess`, `HandleError`, `HandleException`; partials as a group).
+Scope is symbol-based: any type whose base chain includes `TimeWarp.State.StateActionHandler<>`, `TimeWarp.Mediator.ActionHandler<>`, or the legacy `TimeWarp.State.ActionHandler<>`. Handlers implement `IRequestHandler<>` through `ActionHandler<>`. TimeWarp.Mediator 15 removed `IActionHandler<>`; the analyzer still looks that name up and treats a missing type as not a handler. App-derived bases (`BaseHandler<>`, `DefaultApiHandler<,,>`) are included without name matching. Every method body counts (`Handle`, `HandleSuccess`, `HandleError`, `HandleException`; partials as a group).
 
 **Flagged**
 

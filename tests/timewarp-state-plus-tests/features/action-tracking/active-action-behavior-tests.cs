@@ -29,10 +29,10 @@ public class ActiveActionBehavior_Should
     object result = await behavior.Handle
     (
       new TimerState.ResetTimersOnActivityActionSet.Action(),
-      _ =>
+      (_, _) =>
       {
         nextCalls++;
-        return Task.FromResult(new object());
+        return new ValueTask<object>(new object());
       },
       CancellationToken.None
     );
@@ -55,10 +55,10 @@ public class ActiveActionBehavior_Should
     await behavior.Handle
     (
       new TrackedInternalAction(),
-      _ =>
+      (_, _) =>
       {
         nextCalls++;
-        return Task.FromResult(new object());
+        return new ValueTask<object>(new object());
       },
       CancellationToken.None
     );
@@ -80,12 +80,12 @@ public class ActiveActionBehavior_Should
     await behavior.Handle
     (
       new TrackedUserAction(),
-      _ =>
+      (_, _) =>
       {
         nextCalls++;
         recordingSender.Sent.Count.ShouldBe(1);
         recordingSender.Sent[0].ShouldBeOfType<ActionTrackingState.StartProcessingActionSet.Action>();
-        return Task.FromResult(new object());
+        return new ValueTask<object>(new object());
       },
       CancellationToken.None
     );
@@ -107,10 +107,10 @@ public class ActiveActionBehavior_Should
     using CancellationTokenSource cancellationTokenSource = new();
     await Should.ThrowAsync<OperationCanceledException>
     (
-      () => behavior.Handle
+      async () => await behavior.Handle
       (
         new TrackedUserAction(),
-        _ =>
+        (_, _) =>
         {
           cancellationTokenSource.Cancel();
           throw new OperationCanceledException(cancellationTokenSource.Token);
@@ -136,43 +136,27 @@ public class ActiveActionBehavior_Should
     public List<object> Sent { get; } = [];
     public List<CancellationToken> Tokens { get; } = [];
 
-    public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
+    public ValueTask<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
       Sent.Add(request);
       Tokens.Add(cancellationToken);
-      return Task.FromResult(default(TResponse)!);
+      return ValueTask.FromResult(default(TResponse)!);
     }
 
-    public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest
+    public ValueTask Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest
     {
       Sent.Add(request!);
       Tokens.Add(cancellationToken);
-      return Task.CompletedTask;
+      return ValueTask.CompletedTask;
     }
 
-    public Task<object?> Send(object request, CancellationToken cancellationToken = default)
+    public ValueTask<object?> Send(object request, CancellationToken cancellationToken = default)
     {
       Sent.Add(request);
       Tokens.Add(cancellationToken);
-      return Task.FromResult<object?>(null);
+      return ValueTask.FromResult<object?>(null);
     }
 
-    public IAsyncEnumerable<TResponse> CreateStream<TResponse>
-    (
-      IStreamRequest<TResponse> request,
-      CancellationToken cancellationToken = default
-    )
-    {
-      throw new NotSupportedException();
-    }
 
-    public IAsyncEnumerable<object?> CreateStream
-    (
-      object request,
-      CancellationToken cancellationToken = default
-    )
-    {
-      throw new NotSupportedException();
-    }
   }
 }
