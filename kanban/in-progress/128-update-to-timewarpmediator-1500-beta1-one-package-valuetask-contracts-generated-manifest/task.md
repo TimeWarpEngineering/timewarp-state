@@ -57,11 +57,11 @@ is `documentation/release-notes/15.0.0.md`.
 
 ### Implementation
 - [x] Package pins and csproj references updated to 15.0.0-beta.1
-- [ ] Re-pin `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` to 15.0.0-beta.2 (WASM fix); E2E lane and verify-samples green
+- [x] Re-pin `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` to 15.0.0-beta.2 (WASM fix); E2E lane and verify-samples green
 - [x] `ActionHandler<T>` and the seven behaviors on `ValueTask` / `MessageHandlerDelegate`
 - [x] Middleware and registry read `MediatorManifest` v2
 - [x] `ISender` fakes and sync-throw tests updated
-- [ ] `dev workflow` (or the repo's equivalent full pipeline) green
+- [x] `dev workflow` (or the repo's equivalent full pipeline) green
 ### Documentation
 - [x] State docs and agent.md mention `TimeWarp.Mediator` 15.0 (no Contracts/Analyzers ids)
 - [x] `## Results` lists migration-page feedback for timewarp-mediator
@@ -80,11 +80,11 @@ is `documentation/release-notes/15.0.0.md`.
 
 ## Goal (implementer restatement)
 
-TimeWarp.State moves off TimeWarp.Mediator 14.0.0-beta.5 (three packages: Contracts, Generators, Analyzers) onto 15.0.0-beta.1. Contracts and the analyzer now ship as `TimeWarp.Mediator`. Only a host that emits a mediator references `TimeWarp.Mediator.Generators`. Handler and behavior signatures return `ValueTask` and call `next(request, cancellationToken)`. The pipeline log reads generated `MediatorManifest` version 2 instead of scanning the container for `IPipelineBehavior<,>`.
+TimeWarp.State moves off TimeWarp.Mediator 14.0.0-beta.5 (three packages: Contracts, Generators, Analyzers) onto 15.0.0-beta.2. The break was specified against 15.0.0-beta.1. Beta.2 keeps that contract and ships `Unit.ValueTask` as an expression-bodied getter, so Mono WebAssembly can load `ValueTask<Unit>`. Contracts and the analyzer now ship as `TimeWarp.Mediator`. Only a host that emits a mediator references `TimeWarp.Mediator.Generators`. Handler and behavior signatures return `ValueTask` and call `next(request, cancellationToken)`. The pipeline log reads generated `MediatorManifest` version 2 instead of scanning the container for `IPipelineBehavior<,>`.
 
 Acceptance:
 
-- `Directory.Packages.props` pins `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` at `15.0.0-beta.1`. Every project that referenced Contracts or Analyzers references `TimeWarp.Mediator`. A library that must not emit a mediator does not reference Generators.
+- `Directory.Packages.props` pins `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` at `15.0.0-beta.2`. Every project that referenced Contracts or Analyzers references `TimeWarp.Mediator`. A library that must not emit a mediator does not reference Generators.
 - `StateActionHandler<T>` still derives from `ActionHandler<T>`, whose `Handle` returns `ValueTask`. The seven named behaviors use `ValueTask<TResponse>` and `MessageHandlerDelegate<TRequest, TResponse>`.
 - `LogTimeWarpStateMiddleware` and `PipelineBehaviorRegistry` read manifest version 2 (kind, scope, behaviors in pipeline order). They do not treat an `IPipelineBehavior<,>` service scan as the pipeline.
 - Hand-written `ISender` fakes have no `CreateStream` methods, and `Send` returns `ValueTask`. Tests that expected a synchronous send failure to arrive as a faulted task match the synchronous throw.
@@ -97,27 +97,15 @@ Acceptance:
 
 ## Results
 
-The 15.0.0-beta.1 pin, `ValueTask` handlers and behaviors, manifest v2 reader, and `ISender` fakes are in the tree. `./bin/dev workflow --mode pr` is green through the Fixie suites (including DevTools 101 and client-integration 64 passed, 1 skipped) and red at E2E. verify-samples did not run.
+`Directory.Packages.props` pins `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` at `15.0.0-beta.2`. Handlers, behaviors, the manifest v2 reader, and the `ISender` fakes stay as they landed for beta.1. Living docs name 15.0.0-beta.2. Decompiled `lib/net11.0` `Unit.ValueTask` is `public static ValueTask<Unit> ValueTask => new(Instance)` with no `ValueTask<Unit>` field on the struct. There is no State dispatch benchmark to re-record.
 
-WebAssembly interactive mode throws on the first `Send`:
+`./bin/dev workflow --mode pr` exited 0 (`Pipeline SUCCEEDED`): assert-version-ssot, clean, build, test, e2e, verify-samples. Fixie: analyzer 44, source generator 86, state 131 (1 skipped), plus 40 (1 skipped), telemetry 21, DevTools 101, isolation 4, client-integration 64 (1 skipped), architecture 7 (1 skipped). Playwright e2e: Passed 12, Failed 0, Skipped 0. verify-samples packed the nine nupkgs, the packaging layout tests passed (4), and sample 00 auto restored from the local feed. No TWM001–TWM011 diagnostics fired.
 
-```
-System.TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1
-   at TimeWarp.Features.Routing.RouteState.PushRouteInfo(...)
-   at TimeWarp.Features.Routing.TwPageTitle.OnAfterRenderAsync(Boolean firstRender)
-```
-
-The same exception is thrown from `Counter.ButtonClick` (`await Sender.Send(...)`). The counter stays at 3, persistence shows a new guid, and route changes do not stick. Interactive Server on CoreCLR increments 3 → 8. No TWM001–TWM011 diagnostics fired.
-
-`TimeWarp.Mediator.Unit` is a struct whose static auto-property is `ValueTask<Unit> ValueTask { get; } = new(Instance)`. That emits a static field of type `ValueTask<Unit>` on `Unit`, and `ValueTask<T>` stores a `T`. Mono's WASM type loader treats that cycle as a recursive type. CoreCLR does not. State cannot move that field; every generated `Send` of an action constructs `ValueTask<Unit>`.
-
-There is no State dispatch benchmark to re-record.
-
-Pre-existing warnings the workflow does not fail on: NU1510, NU1902, NU1903, TW0007, CS8600, CS8602, RS0030, BL0010, BL0016, ASPDEPR011.
+`TreatWarningsAsErrors` is false. The same pre-existing warning ids still print and do not fail the pipeline: NU1510, NU1902, NU1903, TW0007, CS8600, CS8602, RS0030, BL0010, BL0016, ASPDEPR011. Playwright's browser install tried `sudo` and exited 1; Chromium was already present and the 12 tests passed.
 
 ### Migration-page feedback for timewarp-mediator
 
-- `Unit.ValueTask` as a static auto-property on the `Unit` struct breaks Blazor WebAssembly (`TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1`). A getter with no backing field, `public static ValueTask<Unit> ValueTask => new(Instance)`, or a field on a separate static class, keeps the name and removes the cycle. This blocks the State dogfood. https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
+- Beta.1 `Unit.ValueTask` was a static auto-property, so the `Unit` struct held a `ValueTask<Unit>` field and Mono WebAssembly threw `TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1` on the first `Send`. Beta.2's expression-bodied getter removes that field. State pins beta.2 and the Playwright lane is green, including WebAssembly. https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
 - `AddGeneratedMediator` is emitted into `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`), and that namespace is not an implicit using. The State section says the call stays and does not say to import the namespace. That missing using was the compile break.
 - `MediatorManifest` is internal. A library cannot read the type. State's public log takes the JSON string the host passes. A server host that references a client host cannot read the client's manifest, so one log call cannot list both pipelines.
 - The manifest has no `profile` key. The reader rejects a version other than 2 and a present `profile` key.
@@ -131,19 +119,11 @@ Pre-existing warnings the workflow does not fail on: NU1510, NU1902, NU1903, TW0
 
 Smoke: `./bin/dev workflow --mode pr`
 
-Expect: exit 0, Fixie suites and Playwright e2e pass, verify-samples runs, no TWM diagnostic. Today the Fixie suites pass and E2E fails in WebAssembly with the `ValueTask<Unit>` type-load above. After a mediator build whose `Unit.ValueTask` has no static field of type `ValueTask<Unit>` on the `Unit` struct, re-pin and this smoke should go green.
+Expect: exit 0, `Pipeline SUCCEEDED`, Fixie suites pass, Playwright e2e passes (WebAssembly included), verify-samples runs, no TWM diagnostic. Observed 2026-10-28 on the 15.0.0-beta.2 pin: exit 0, Fixie counts above, e2e 12 passed / 0 failed / 0 skipped, verify-samples succeeded, no TWM diagnostic.
 
 ## Blocked
 
-Resolved 2026-10-28. The earlier block (Mono WASM `TypeLoadException: Recursive type definition detected
-System.Threading.Tasks.ValueTask`1` from `Unit.ValueTask` being a static auto-property on the `Unit`
-struct) is fixed upstream. timewarp-mediator task 024 merged as PR #117 and shipped as
-`v15.0.0-beta.2`; `Unit.ValueTask` is now `public static ValueTask<Unit> ValueTask => new(Instance);`
-with no backing field. `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` 15.0.0-beta.2 are on
-nuget.org (verified via the v3 flat container). Nothing blocks this task now.
-
-Remaining work: re-pin both packages to 15.0.0-beta.2 in `Directory.Packages.props`, rebuild, run the
-E2E lane and verify-samples, update `## Results`, commit and push.
+Resolved 2026-10-28. The Mono WASM `TypeLoadException` came from beta.1 `Unit.ValueTask` storing a `ValueTask<Unit>` field. timewarp-mediator task 024 (PR #117) shipped `v15.0.0-beta.2` with an expression-bodied getter. State is pinned to that build, and `./bin/dev workflow --mode pr` is green, including Playwright e2e and verify-samples. Nothing blocks this task.
 
 ## Session
 
@@ -154,3 +134,4 @@ E2E lane and verify-samples, update `## Results`, commit and push.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a18176-fe3a-71e1-b97e-beb2de02ad39, max-turns 500, Blocked — 2026-10-28T08:56:32Z
 - 2026-10-28: cockpit. Unblocked. timewarp-mediator task 024 merged (PR #117) and `TimeWarp.Mediator` / `TimeWarp.Mediator.Generators` 15.0.0-beta.2 are on nuget.org: `Unit.ValueTask` is now an expression-bodied getter with no backing field, so the Mono WASM `TypeLoadException` is gone. Re-pin both packages to 15.0.0-beta.2, re-run the e2e lane and verify-samples, then finish the task.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a18281-fdd1-7862-86f9-75ae6d394856, max-turns 500, Blocked — 2026-10-28T12:35:46Z
+- 2026-10-28: implementer. Re-pinned both packages to 15.0.0-beta.2. `./bin/dev workflow --mode pr` exited 0, including Playwright e2e 12 passed and verify-samples. No TWM diagnostic.

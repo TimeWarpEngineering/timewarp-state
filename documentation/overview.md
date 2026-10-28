@@ -41,7 +41,7 @@ or move the GetState functionality into your component
 
 ### Pipeline
 
-**TimeWarp.State** uses **TimeWarp.Mediator 15.0.0-beta.1** with compile-time generated registration and named pipelines — not MediatR, and not reflection-based `AddMediator()`.
+**TimeWarp.State** uses **TimeWarp.Mediator 15.0.0-beta.2** with compile-time generated registration and named pipelines — not MediatR, and not reflection-based `AddMediator()`.
 
 Hosts reference `TimeWarp.Mediator` (contracts and the bundled analyzer) and `TimeWarp.Mediator.Generators`, then call `AddGeneratedMediator<ClientPipeline>()` for the Blazor/WASM client store pipeline. The generated extension is `internal` in `TimeWarp.Mediator.Generated` (or in `TimeWarpMediatorNamespace` when that property is set). Import that namespace; implicit usings do not include it. Separate server API hosts that handle requests in their own compilation unit call `AddGeneratedMediator<ServerPipeline>()` and send with `ISender<ServerPipeline>`. A library that must not emit a mediator references `TimeWarp.Mediator` only. `TimeWarpMediatorAssembly=false` does not stop the generator from emitting.
 

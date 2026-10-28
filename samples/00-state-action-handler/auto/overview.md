@@ -48,7 +48,7 @@ dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp
 dotnet add ./sample-00-auto-client/sample-00-auto-client.csproj package TimeWarp.Mediator.Generators
 ```
 
-`TimeWarp.Mediator` 15.0.0-beta.1 is the contracts package and the bundled analyzer. Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only). There is no `TimeWarp.Mediator.Contracts` package and no `TimeWarp.Mediator.Analyzers` package.
+`TimeWarp.Mediator` 15.0.0-beta.2 is the contracts package and the bundled analyzer. Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only). There is no `TimeWarp.Mediator.Contracts` package and no `TimeWarp.Mediator.Analyzers` package.
 
 Note: The Server project doesn't need the packages directly as it takes a dependency on the Client project.
 

@@ -59,7 +59,7 @@ dotnet add package TimeWarp.Mediator
 dotnet add package TimeWarp.Mediator.Generators
 ```
 
-`TimeWarp.Mediator` 15.0.0-beta.1 is the contracts package and the bundled analyzer. Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only). There is no `TimeWarp.Mediator.Contracts` package and no `TimeWarp.Mediator.Analyzers` package.
+`TimeWarp.Mediator` 15.0.0-beta.2 is the contracts package and the bundled analyzer. Set `PrivateAssets="all"` on the `TimeWarp.Mediator.Generators` package reference (generators are build-time only). There is no `TimeWarp.Mediator.Contracts` package and no `TimeWarp.Mediator.Analyzers` package.
 
 ### Configure Services
 
