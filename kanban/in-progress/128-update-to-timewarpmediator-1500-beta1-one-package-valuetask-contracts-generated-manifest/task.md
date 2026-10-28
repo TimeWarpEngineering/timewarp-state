@@ -134,10 +134,9 @@ Expect: exit 0, Fixie suites and Playwright e2e pass, verify-samples runs, no TW
 
 ## Blocked
 
-- Date: 2026-10-28
-- Reason: Blazor WebAssembly throws `TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1` on the first `ISender.Send`. `TimeWarp.Mediator.Unit.ValueTask` is a static auto-property, so the struct carries a `ValueTask<Unit>` field. Mono's WASM loader rejects that cycle. Interactive Server and the Fixie suites pass. State cannot change `Unit`.
-- Unblocks: a TimeWarp.Mediator build where `Unit.ValueTask` does not store a `ValueTask<Unit>` field on the `Unit` struct (expression-bodied getter, or a field on another static class), then re-pin State and re-run `./bin/dev workflow --mode pr`.
-- Link: https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
+2026-10-28: Blazor WebAssembly throws TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1 on the first ISender.Send. TimeWarp.Mediator 15.0.0-beta.1 Unit.ValueTask is a static auto-property, so the Unit struct holds a ValueTask<Unit> field and Mono's WASM loader rejects that cycle. Interactive Server and the Fixie suites pass. Unblocks when Unit.ValueTask has no ValueTask<Unit> field on the Unit struct (expression-bodied getter, or a field on another static class) and State re-pins that build. https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
+
+- https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
 
 ## Session
 
@@ -145,3 +144,4 @@ Expect: exit 0, Fixie suites and Playwright e2e pass, verify-samples runs, no TW
 - Created: cockpit session 04be23b7 (2026-10-26) from the timewarp-mediator 15.0 train (task 021)
 - 2026-10-28: implementer. Package, ValueTask, and manifest v2 landed. DevTools publish needed a direct `TimeWarp.Mediator` reference without `PrivateAssets` or the tools folder omitted the DLL. E2E is blocked on the WASM `ValueTask<Unit>` type load described above.
 - 2026-10-28: `ganda repo audit --fix` scaffolded `glossary.md`, refreshed `.githooks/pre-push.cs`, and pinned TimeWarp.Nuru to 4.0.0-beta.7 (dev-cli still compiles). Advisory leftovers: task 098 has no worktree (not this id); kebab-path warnings are Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder.
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a18176-fe3a-71e1-b97e-beb2de02ad39, max-turns 500, Blocked — 2026-10-28T08:56:32Z
