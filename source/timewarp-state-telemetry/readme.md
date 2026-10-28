@@ -23,7 +23,11 @@ builder.Services.AddOpenTelemetry()
   .WithTracing(tracing =>
   {
     tracing.AddSource(TimeWarpStateTelemetry.ActivitySourceName);
-    tracing.AddAspNetCoreInstrumentation();
+    // .NET 11 shared framework. OpenTelemetry.Instrumentation.AspNetCore listens to these same sources.
+    tracing.AddSource("Microsoft.AspNetCore");
+    tracing.AddSource("Microsoft.AspNetCore.Components");
+    tracing.AddSource("Microsoft.AspNetCore.Components.Server.Circuits");
+    tracing.AddSource("Microsoft.AspNetCore.SignalR.Server");
     tracing.AddOtlpExporter(); // reads OTEL_EXPORTER_OTLP_* (Aspire sets these)
   });
 ```

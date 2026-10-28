@@ -1,6 +1,6 @@
 # TimeWarp.State.DevTools.Export
 
-Dev-only exporter for the TimeWarp DevTools inspector. It copies completed activities from ActivitySource `TimeWarp.State` to `POST /ingest/spans` on the DevTools app.
+Dev-only exporter for the TimeWarp DevTools inspector. It copies completed activities from ActivitySource `TimeWarp.State` to `POST /ingest/spans` on the DevTools app. Other sources, including the .NET 11 framework sources `Microsoft.AspNetCore`, `Microsoft.AspNetCore.Components`, `Microsoft.AspNetCore.Components.Server.Circuits`, and `Microsoft.AspNetCore.SignalR.Server`, stay on the host's OTLP pipeline.
 
 This package has no `IState` types. Referencing it does not register inspector states in `StateCloneRegistry`. Activity tags, including `timewarp.state.store` and `timewarp.state.render`, are copied onto the ingest item.
 

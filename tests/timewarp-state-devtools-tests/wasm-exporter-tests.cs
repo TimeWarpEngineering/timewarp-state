@@ -6,6 +6,7 @@
 // The exporter listens on the calling thread and posts with SendAsync. The test passes the inspector
 // TestServer handler so no socket is opened. A missing origin registers nothing. Outside Development,
 // resolution does not call discovery. A down inspector is swallowed, and the flush task completes.
+// A Microsoft.AspNetCore.Components activity is not posted, including one that carries State tags.
 #endregion
 
 namespace TimeWarp.State.DevTools.Tests;
@@ -43,6 +44,59 @@ public class DevToolsWasmExporter_Should
     entry.ShouldNotBeNull();
     entry.ActionName.ShouldBe("IncrementCount");
     entry.Runtime.ShouldBe(InspectorCapture.WasmRuntime);
+  }
+
+  public static async Task IgnoreAFrameworkComponentActivity()
+  {
+    await using WebApplicationFactory<Program> factory = new();
+    using DevToolsWasmExporter exporter = new
+    (
+      new Uri(factory.Server.BaseAddress, "ingest/spans"),
+      factory.Server.CreateHandler(),
+      TimeSpan.FromMilliseconds(15)
+    );
+
+    using ActivityListener listener = new()
+    {
+      ShouldListenTo = static source => string.Equals
+      (
+        source.Name,
+        "Microsoft.AspNetCore.Components",
+        StringComparison.Ordinal
+      ),
+      Sample = static (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData
+    };
+    ActivitySource.AddActivityListener(listener);
+
+    using ActivitySource frameworkSource = new("Microsoft.AspNetCore.Components");
+    using Activity? framework = frameworkSource.StartActivity("Microsoft.AspNetCore.Components.HandleEvent");
+    framework.ShouldNotBeNull();
+    framework.SetTag(InspectorCapture.StateTypeTagName, "FrameworkComponents");
+    framework.SetTag(InspectorCapture.ActionTagName, "HandleEvent");
+    framework.Stop();
+
+    using ActivitySource stateSource = new(InspectorCapture.ActivitySourceName);
+    using Activity? state = stateSource.StartActivity("WasmCounterState.IncrementCount");
+    state.ShouldNotBeNull();
+    state.SetTag(InspectorCapture.StateTypeTagName, "WasmCounterState");
+    state.SetTag(InspectorCapture.ActionTagName, "IncrementCount");
+    state.Stop();
+
+    InspectorLog log = factory.Services.GetRequiredService<InspectorLog>();
+    ActionLogEntry? entry = null;
+    for (int attempt = 0; attempt < 50 && entry is null; attempt++)
+    {
+      entry = log.Snapshot().FirstOrDefault(candidate => candidate.StateTypeName == "WasmCounterState");
+      if (entry is null)
+      {
+        await Task.Delay(20);
+      }
+    }
+
+    entry.ShouldNotBeNull();
+    entry.ActionName.ShouldBe("IncrementCount");
+    log.Snapshot().ShouldNotContain(candidate => candidate.StateTypeName == "FrameworkComponents");
+    log.Snapshot().ShouldNotContain(candidate => candidate.ActionName == "HandleEvent");
   }
 
   public static async Task SwallowADownInspector()

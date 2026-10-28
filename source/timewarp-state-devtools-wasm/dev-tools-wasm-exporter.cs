@@ -10,6 +10,8 @@
 // window. A full queue drops the oldest span. Every network and HTTP failure is swallowed, including
 // cancellation, so a stopped inspector cannot throw into the app. The last queued batch can be lost
 // when the page goes away: there is no background thread to finish it, and sendBeacon is not used.
+// The listener accepts only TimeWarp.State. Framework component spans on
+// Microsoft.AspNetCore.Components stay in the browser activity tree and are not posted.
 // Each posted item is stamped timewarp.state.runtime=wasm. FlushTask is public so tests can
 // assert the loop completed and did not fault. InternalsVisibleTo would also expose the internal
 // copies of the ingest document this package compiles, which collide with the public exporter

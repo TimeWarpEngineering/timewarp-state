@@ -32,6 +32,7 @@ Demonstrates TimeWarp.State.Plus's comprehensive routing features:
 ### [04-Telemetry](04-telemetry/overview.md)
 Observes TimeWarp.State actions in the Aspire dashboard via OpenTelemetry:
 - One span per dispatched action (type names, duration, success/failure)
+- .NET 11 framework ActivitySources for HTTP, Blazor, circuits, and SignalR, with the action span under `HandleEvent`
 - Blazor Server `ActivitySource` path
 - OTLP export when the AppHost (or `OTEL_EXPORTER_OTLP_ENDPOINT`) is set
 - Snapshots remain opt-in and off in the sample
