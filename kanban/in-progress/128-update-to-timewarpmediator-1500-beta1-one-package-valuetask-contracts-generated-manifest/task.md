@@ -65,9 +65,15 @@ is `documentation/release-notes/15.0.0.md`.
 ### Documentation
 - [x] State docs and agent.md mention `TimeWarp.Mediator` 15.0 (no Contracts/Analyzers ids)
 - [x] `## Results` lists migration-page feedback for timewarp-mediator
+- [x] Breaking section on unpublished `release12.0.0-beta.16.md` (review M1). Version stays `12.0.0-beta.16` because that beta is not on NuGet
 ### Review
-- [ ] Code Review
+- [x] Round 1 M2: extra blank lines removed from the three `ISender` fakes
+- [ ] Code Review (round 2 is the host's next node)
 - [ ] PR with merge commit
+
+## Review
+
+- Round 1: Blocked — open M1, M2
 
 ## Notes
 
@@ -90,6 +96,14 @@ Acceptance:
 - Hand-written `ISender` fakes have no `CreateStream` methods, and `Send` returns `ValueTask`. Tests that expected a synchronous send failure to arrive as a faulted task match the synchronous throw.
 - Living docs name TimeWarp.Mediator 15.0 and do not tell a reader to install Contracts or Analyzers.
 - Build, tests, samples, and `dev workflow` are green with no warnings. Results name any TWM diagnostic that fires, and they list migration-page gaps for the mediator repo.
+
+Fix pass for review round 1. Consumers of this unpublished beta need a written list of the Mediator 15 breaks, and the three test fakes should not keep a double blank line where `CreateStream` was removed.
+
+Acceptance for this pass:
+
+- `documentation/release-notes/release12.0.0-beta.16.md` gains a **Breaking** section that names the `ValueTask` handler and behavior signatures, the package ids `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` at `15.0.0-beta.2`, the `TimeWarp.Mediator.Generated` import, the required `mediatorManifestJson` argument on `LogTimeWarpStateMiddleware`, the removal of `PipelineBehaviorRegistry.Register` and the registry generator, and the manifest-based meaning of `GetComponentOrder`. The section links the TimeWarp.Mediator migration page.
+- The package version stays `12.0.0-beta.16`. GitHub's latest release is `v12.0.0-beta.15`, and nuget.org has no `12.0.0-beta.16` package, so the note extends the unpublished beta instead of opening `beta.17`. `<Version>` and `<TimeWarpStateVersion>` stay equal. `documentation/release-notes/toc.yml` already lists beta.16.
+- `RecordingSender`, `UnusedSender`, and `ThrowingSender` have a single blank-line gap, matching the other fakes in those files.
 
 ## Implementation Notes
 
@@ -117,11 +131,25 @@ Acceptance:
 - `TimeWarpMediatorAssembly=false` is analyzer membership only. The generator does not treat it as an emission opt-out.
 - Dev-cli uses Nuru and `using static TimeWarp.Mediator.Unit`. Nuru was not on the migration's State list. State did not retarget Nuru.
 
+### Review
+
+Round 1 ran at effort 3 with roster general. It found 0 bugs, 1 suggestion, and 1 nit. This fix pass addresses both. Files: `review/review-framework.md`, `review/round-1/merged.md`. Round 2 is the host's next node.
+
+### Review fix pass
+
+M1. `documentation/release-notes/release12.0.0-beta.16.md` lists the Mediator 15 breaks and links the [v15.0.0-beta.2 migration page](https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.2/documentation/migration.md). The package version stays `12.0.0-beta.16`. `./bin/dev check-version` exited 0: source `12.0.0-beta.16`, latest NuGet `12.0.0-beta.15`, one prerelease increment ahead, "Version in source is new — safe to release." nuget.org returns 404 for `timewarp.state` `12.0.0-beta.16` and 200 for `12.0.0-beta.15`. `<Version>` and `<TimeWarpStateVersion>` stay equal. `documentation/release-notes/toc.yml` already lists beta.16, so no new toc entry.
+
+M2. The extra blank lines are gone from `RecordingSender`, `UnusedSender`, and `ThrowingSender`. `dotnet build tests/timewarp-state-tests/timewarp-state-tests.csproj` succeeded with 0 errors. The warnings are the same pre-existing ids (NU1510, CS8600, CS8602, TW0007, BL0016).
+
+`ganda repo audit` exits 0. The same two advisories remain: task 098 has no worktree, and seven paths are not kebab-case (Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder).
+
 ### How to validate
 
-Smoke: `./bin/dev workflow --mode pr`
+Smoke: `./bin/dev check-version`; `dotnet build tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo -v q`; `ganda repo audit`. Read the **Breaking** section in `documentation/release-notes/release12.0.0-beta.16.md`.
 
-Expect: exit 0, `Pipeline SUCCEEDED`, Fixie suites pass, Playwright e2e passes (WebAssembly included), verify-samples runs, no TWM diagnostic. Observed 2026-10-28 on the 15.0.0-beta.2 pin: exit 0, Fixie counts above, e2e 12 passed / 0 failed / 0 skipped, verify-samples succeeded, no TWM diagnostic.
+Expect: check-version exits 0 with source `12.0.0-beta.16`, latest NuGet `12.0.0-beta.15`, and "safe to release". The test project build exits 0. Audit exits 0 with the two advisories above. The note names `ValueTask` handlers and behaviors, the `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` pins at `15.0.0-beta.2`, the `TimeWarp.Mediator.Generated` import, the required `mediatorManifestJson` argument, removal of `PipelineBehaviorRegistry.Register` and the registry generator, the manifest-based `GetComponentOrder`, and the migration link. Each of the three fakes has a single newline between its last member and the closing brace.
+
+The earlier `./bin/dev workflow --mode pr` result (exit 0, e2e 12 passed, verify-samples succeeded, no TWM diagnostic) still describes the beta.2 pin. This pass did not re-run that pipeline.
 
 ## Blocked
 
@@ -138,3 +166,6 @@ Resolved 2026-10-28. The Mono WASM `TypeLoadException` came from beta.1 `Unit.Va
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a18281-fdd1-7862-86f9-75ae6d394856, max-turns 500, Blocked — 2026-10-28T12:35:46Z
 - 2026-10-28: implementer. Re-pinned both packages to 15.0.0-beta.2. `./bin/dev workflow --mode pr` exited 0, including Playwright e2e 12 passed and verify-samples. No TWM diagnostic. `ganda repo audit` exits 0 with the same two advisories (task 098, kebab paths).
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a1829e-e117-7961-8109-d6c0b06b8660, max-turns 500, Done — 2026-10-28T13:32:34Z
+- 2026-10-28: review oracle, claude (claude-opus-5-5), effort 3, roster general. Round 1 is in `review/round-1/` (`general.md`, `merged.md`). Open: M1, a suggestion (no release note or version bump for the consumer-breaking change), and M2, a nit (double blank lines in three test fakes). A fix pass is needed. The goal restatement matches the task, so there is no misread. The beta.1→beta.2 retarget was a cockpit decision.
+- Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-28T13:36:07Z
+- 2026-10-28: implement-fix. Round 1 M1 is a Breaking section on unpublished `12.0.0-beta.16` (check-version is one prerelease ahead of NuGet `12.0.0-beta.15`, so the version stays). M2 removes the extra blank lines in the three `ISender` fakes. Test project build succeeded. `ganda repo audit` exits 0 with the same two advisories.
