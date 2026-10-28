@@ -63,7 +63,5 @@ public class Should_
 
     public ValueTask<object?> Send(object request, CancellationToken cancellationToken = default) =>
       throw new NotSupportedException();
-
-
   }
 }

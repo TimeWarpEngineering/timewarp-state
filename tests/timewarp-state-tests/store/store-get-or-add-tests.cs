@@ -173,8 +173,6 @@ public class Should_
     {
       throw new NotSupportedException();
     }
-
-
   }
 
   private sealed class RecordingPublisher : IPublisher<ClientPipeline>

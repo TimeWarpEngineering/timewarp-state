@@ -186,8 +186,6 @@ public class Should_
 
     public ValueTask Send<TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest =>
       throw new NotSupportedException();
-
-
   }
 
   private sealed class NullJsRuntime : IJSRuntime
