@@ -61,6 +61,8 @@ Source: item **E** of the 2026-10-20 eval of Daniel Roth's .NET 11 ASP.NET Core 
   Two bugs, one suggestion, and one nit are open. A fix pass was requested. See `review/round-1/merged.md`.
 - Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session 76212403-ca61-4af0-a107-8fc0f0c68654, max-turns 80 — 2026-10-28T19:11:08Z
 - Fix pass (implement-fix-2): addressed M1–M4. Committed the product diff, added the WASM framework-source test, reworded the package comment, and confirmed the inspector through `http://localhost:5086`.
+- Review oracle round 2: claude-opus-5-5 (ganda task work, headless), effort 2, roster general, turn cap 120 — 2026-10-29.
+  M1–M4 were re-verified as fixed, and no new findings were raised. Disposition: clean.
 
 ## Results
 
@@ -74,6 +76,14 @@ The same proxy origin is the DevTools CORS origin. `/counter-wasm` discovered `h
 
 `./bin/dev test` exited 0: analyzer 44 passed, source generator 86 passed, state 131 passed and 1 skipped, plus 40 passed and 1 skipped, telemetry 21 passed, devtools 103 passed, devtools isolation 4 passed, client integration 64 passed and 1 skipped, architecture 7 passed and 1 skipped.
 
+### Review disposition
+
+- **Outcome:** clean. Two rounds ran with the general reviewer: round 1 at effort 1, round 2 at effort 2.
+- **Final counts:** bug 0 open / 2 fixed, suggestion 0 open / 1 fixed, nit 0 open / 1 fixed, and 0 wontfix.
+- Round 2 re-ran `./bin/dev test` (exit 0, with the same suite counts). M2 was accepted on the AppHost evidence
+  recorded above.
+- Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
 ### How to validate
 
 Smoke: `./bin/dev test`, then `aspire run --detach --non-interactive --apphost samples/04-telemetry/apphost/sample-04-apphost.csproj`. Open the sample endpoint the dashboard lists (the launch-profile proxy, `http://localhost:5086` on this run). Click **Click me** once on `/counter` and once on `/counter-wasm`. Open the **TimeWarp DevTools** endpoint from the dashboard.
@@ -83,8 +93,8 @@ Expect: `./bin/dev test` exits 0, including `DevToolsWasmExporter_Should.IgnoreA
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3, M4
-- Fix pass: M1, M2, M3, and M4 are implemented on this branch. Round 2 has not reviewed them.
-
+- Fix pass: M1, M2, M3, and M4 are implemented on this branch.
+- Round 2: Done
 ## Notes
 
 - Related: task 120 (bump .NET 11 RC1 -> RC2). Doing 120 first gives the RC2 framework spans; not a
