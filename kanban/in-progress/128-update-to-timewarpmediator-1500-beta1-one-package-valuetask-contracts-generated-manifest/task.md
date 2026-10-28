@@ -103,6 +103,8 @@ Acceptance:
 
 `TreatWarningsAsErrors` is false. The same pre-existing warning ids still print and do not fail the pipeline: NU1510, NU1902, NU1903, TW0007, CS8600, CS8602, RS0030, BL0010, BL0016, ASPDEPR011. Playwright's browser install tried `sudo` and exited 1; Chromium was already present and the 12 tests passed.
 
+`ganda repo audit` exits 0. Two advisories remain and are not this change: task 098 has no worktree, and seven paths are not kebab-case (Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder).
+
 ### Migration-page feedback for timewarp-mediator
 
 - Beta.1 `Unit.ValueTask` was a static auto-property, so the `Unit` struct held a `ValueTask<Unit>` field and Mono WebAssembly threw `TypeLoadException: Recursive type definition detected System.Threading.Tasks.ValueTask`1` on the first `Send`. Beta.2's expression-bodied getter removes that field. State pins beta.2 and the Playwright lane is green, including WebAssembly. https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
@@ -134,4 +136,4 @@ Resolved 2026-10-28. The Mono WASM `TypeLoadException` came from beta.1 `Unit.Va
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a18176-fe3a-71e1-b97e-beb2de02ad39, max-turns 500, Blocked — 2026-10-28T08:56:32Z
 - 2026-10-28: cockpit. Unblocked. timewarp-mediator task 024 merged (PR #117) and `TimeWarp.Mediator` / `TimeWarp.Mediator.Generators` 15.0.0-beta.2 are on nuget.org: `Unit.ValueTask` is now an expression-bodied getter with no backing field, so the Mono WASM `TypeLoadException` is gone. Re-pin both packages to 15.0.0-beta.2, re-run the e2e lane and verify-samples, then finish the task.
 - Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a18281-fdd1-7862-86f9-75ae6d394856, max-turns 500, Blocked — 2026-10-28T12:35:46Z
-- 2026-10-28: implementer. Re-pinned both packages to 15.0.0-beta.2. `./bin/dev workflow --mode pr` exited 0, including Playwright e2e 12 passed and verify-samples. No TWM diagnostic.
+- 2026-10-28: implementer. Re-pinned both packages to 15.0.0-beta.2. `./bin/dev workflow --mode pr` exited 0, including Playwright e2e 12 passed and verify-samples. No TWM diagnostic. `ganda repo audit` exits 0 with the same two advisories (task 098, kebab paths).
