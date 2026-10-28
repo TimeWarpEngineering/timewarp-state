@@ -1,5 +1,19 @@
 # Add native .NET 11 OpenTelemetry tracing to State samples and devtools
 
+## Goal (implementer restatement)
+
+.NET 11 already emits HTTP, Blazor component, Blazor Server circuit, and SignalR spans on framework
+ActivitySources, with the OpenTelemetry semantic tags on the HTTP span. The telemetry sample should
+subscribe to those sources and stop calling `AddAspNetCoreInstrumentation()`, because that package
+listens to the same sources and is redundant on this runtime. One click must produce a single
+component event span, with the TimeWarp.State action span as its child. DevTools keeps ingesting
+only `TimeWarp.State` spans, on the server and in WebAssembly, so the new framework spans do not
+show up as inspector rows. The sample overview names the sources and the subscription.
+
+Done when the server sample no longer references `OpenTelemetry.Instrumentation.AspNetCore`, the
+overview describes the native sources, DevTools tests reject those source names, and the AppHost
+trace for one counter click has one HandleEvent span with the State action nested under it.
+
 ## Description
 
 .NET 11 ASP.NET Core and Blazor (including Blazor WebAssembly) emit OpenTelemetry traces with the
@@ -42,6 +56,7 @@ Source: item **E** of the 2026-10-20 eval of Daniel Roth's .NET 11 ASP.NET Core 
 ## Session
 
 - Created: 212639 (2026-10-24)
+- Implement oracle: implemented by implementer-grok (grok, model grok-4.7), session 01a183d6-7b24-75a3-a0e0-0c049af2e049, max-turns 500, Done — 2026-10-28T19:06:55Z
 
 ## Notes
 
