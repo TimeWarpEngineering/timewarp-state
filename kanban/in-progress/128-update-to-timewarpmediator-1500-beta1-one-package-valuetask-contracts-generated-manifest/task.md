@@ -68,13 +68,13 @@ is `documentation/release-notes/15.0.0.md`.
 - [x] Breaking section on unpublished `release12.0.0-beta.16.md` (review M1). Version stays `12.0.0-beta.16` because that beta is not on NuGet
 ### Review
 - [x] Round 1 M2: extra blank lines removed from the three `ISender` fakes
-- [ ] Code Review (round 2 is the host's next node)
+- [x] Code Review (round 2 clean; `review/disposition.md`)
 - [ ] PR with merge commit
 
 ## Review
 
 - Round 1: Blocked — open M1, M2
-
+- Round 2: Done
 ## Notes
 
 - Source of truth for the break: timewarp-mediator task 021 and children 021-001..021-007
@@ -143,6 +143,10 @@ M2. The extra blank lines are gone from `RecordingSender`, `UnusedSender`, and `
 
 `ganda repo audit` exits 0. The same two advisories remain: task 098 has no worktree, and seven paths are not kebab-case (Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder).
 
+### Review disposition
+
+**Outcome: clean.** There were 2 rounds. Round 1 ran at effort 3 and round 2 at effort 1, both with roster general. Final counts: bug 0, suggestion 1 fixed (M1), nit 1 fixed (M2), 0 open, 0 wontfix. Round 2 re-checked the fix delta `ae31fb0b..96912260` against the source and found nothing new. Files: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
 ### How to validate
 
 Smoke: `./bin/dev check-version`; `dotnet build tests/timewarp-state-tests/timewarp-state-tests.csproj --nologo -v q`; `ganda repo audit`. Read the **Breaking** section in `documentation/release-notes/release12.0.0-beta.16.md`.
@@ -169,3 +173,4 @@ Resolved 2026-10-28. The Mono WASM `TypeLoadException` came from beta.1 `Unit.Va
 - 2026-10-28: review oracle, claude (claude-opus-5-5), effort 3, roster general. Round 1 is in `review/round-1/` (`general.md`, `merged.md`). Open: M1, a suggestion (no release note or version bump for the consumer-breaking change), and M2, a nit (double blank lines in three test fakes). A fix pass is needed. The goal restatement matches the task, so there is no misread. The beta.1→beta.2 retarget was a cockpit decision.
 - Review oracle: review by reviewer-claude (claude, model claude-opus-5-5), session not reported, max-turns 200 — 2026-10-28T13:36:07Z
 - 2026-10-28: implement-fix. Round 1 M1 is a Breaking section on unpublished `12.0.0-beta.16` (check-version is one prerelease ahead of NuGet `12.0.0-beta.15`, so the version stays). M2 removes the extra blank lines in the three `ISender` fakes. Test project build succeeded. `ganda repo audit` exits 0 with the same two advisories.
+- 2026-10-28: review oracle round 2, claude (claude-opus-5-5), effort 1, roster general. The fix delta `ae31fb0b..96912260` fixes M1 and M2, with no new findings. The disposition is clean (`review/disposition.md`). The fix-pass goal restatement matches the round-1 findings, so there is no misread.

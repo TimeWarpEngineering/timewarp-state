@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 1927
-- Effort: 3
+- Lines changed: 141
+- Effort: 1
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 80 (--max-turns; cursor uncapped)
 
 ## Scope — task 128
 
@@ -17,6 +17,10 @@
 **Effort:** 3 (by-diff budget), roster axis general only
 **Reviewer roster:** general
 **Session IDs:** review oracle, claude (claude-opus-5-5), ganda task work headless
+
+## Round 2 scope
+
+Fix-pass delta `ae31fb0b..96912260` (round-1 base to HEAD). Effort 1, roster general. The budget above is the round-2 by-diff ladder: 141 lines.
 
 ## Ground rules
 
