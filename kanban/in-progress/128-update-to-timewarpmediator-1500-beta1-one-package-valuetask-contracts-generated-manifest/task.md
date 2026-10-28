@@ -57,6 +57,7 @@ is `documentation/release-notes/15.0.0.md`.
 
 ### Implementation
 - [x] Package pins and csproj references updated to 15.0.0-beta.1
+- [ ] Re-pin `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` to 15.0.0-beta.2 (WASM fix); E2E lane and verify-samples green
 - [x] `ActionHandler<T>` and the seven behaviors on `ValueTask` / `MessageHandlerDelegate`
 - [x] Middleware and registry read `MediatorManifest` v2
 - [x] `ISender` fakes and sync-throw tests updated
@@ -134,9 +135,15 @@ Expect: exit 0, Fixie suites and Playwright e2e pass, verify-samples runs, no TW
 
 ## Blocked
 
-2026-10-28: Blazor WebAssembly still throws TypeLoadException on the first ISender.Send because TimeWarp.Mediator 15.0.0-beta.1 Unit.ValueTask is a static auto-property, so the Unit struct holds a ValueTask<Unit> field and Mono rejects that cycle. No newer TimeWarp.Mediator build is on NuGet and unit.cs at master still has the auto-property. Unblocks when Unit.ValueTask has no ValueTask<Unit> field on the Unit struct and State re-pins that build. https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
+Resolved 2026-10-28. The earlier block (Mono WASM `TypeLoadException: Recursive type definition detected
+System.Threading.Tasks.ValueTask`1` from `Unit.ValueTask` being a static auto-property on the `Unit`
+struct) is fixed upstream. timewarp-mediator task 024 merged as PR #117 and shipped as
+`v15.0.0-beta.2`; `Unit.ValueTask` is now `public static ValueTask<Unit> ValueTask => new(Instance);`
+with no backing field. `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` 15.0.0-beta.2 are on
+nuget.org (verified via the v3 flat container). Nothing blocks this task now.
 
-- https://github.com/TimeWarpEngineering/timewarp-mediator/blob/v15.0.0-beta.1/source/timewarp-mediator/unit.cs
+Remaining work: re-pin both packages to 15.0.0-beta.2 in `Directory.Packages.props`, rebuild, run the
+E2E lane and verify-samples, update `## Results`, commit and push.
 
 ## Session
 
