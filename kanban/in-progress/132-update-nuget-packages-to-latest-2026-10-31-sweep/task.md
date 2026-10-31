@@ -97,7 +97,7 @@ TimeWarp.Nuru.DevCli `4.0.0-beta.10` content calls `Task.FromResult`. `global us
 
 ### Dev CLI
 
-`./bin/dev self-install` succeeded after the Unit import change. `./bin/dev --help` lists build, test, e2e, pack, verify-samples, workflow, check-version, clean, release, and self-install. `./bin/dev release --dry-run` authenticates `gh`, then refuses while the tree is dirty. The command's next guard requires master, so a clean task branch stops there and does not tag.
+`./bin/dev self-install` succeeded after the Unit import change. `./bin/dev --help` lists build, test, e2e, pack, verify-samples, workflow, check-version, clean, release, and self-install. On a dirty tree, `./bin/dev release --dry-run` authenticates `gh` and refuses until the tree is clean. After the sweep commit, the same command on this branch prints `gh authenticated` and `working tree clean`, then exits 1 with `release must be cut from master — current branch is task/132-update-nuget-packages-to-latest-2026-10-31-sweep`. It does not tag.
 
 ### Gates
 
@@ -137,6 +137,7 @@ ganda repo audit
 
 - Created: cockpit (2026-10-31)
 - Implementation: implementer oracle (2026-10-31)
+- Clean-tree `dev release --dry-run` confirmed the master guard; the task branch is pushed (2026-10-31)
 
 ## Goal (implementer restatement)
 
