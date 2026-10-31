@@ -11,15 +11,18 @@ is_global = true
 
 dotnet_diagnostic.TWA0004.severity = none
 
-# Razor files are additional files. The [*.razor] editorconfig section does not reach that
-# compilation, so TWA0036 still warns there (task 132). These rules stay off for the same
-# reason as in .editorconfig: only TWA0004 applies to this library. .editorconfig still wins
-# for in-repo .cs files, including TWA0004 = error.
+# Razor C# is a source-generator tree, and that tree does not carry EditorConfig diagnostic
+# severities. A [*.razor] or [*.cs] entry does not silence TWA0036 there; these global entries
+# do (task 132). .editorconfig has no [*.razor] block for that reason. These rules stay off
+# for the same reason as in .editorconfig: only TWA0004 applies to this library.
+# .editorconfig still wins for in-repo .cs files, including TWA0004 = error.
+dotnet_diagnostic.TWA0025.severity = none
 dotnet_diagnostic.TWA0026.severity = none
 dotnet_diagnostic.TWA0027.severity = none
 dotnet_diagnostic.TWA0028.severity = none
 dotnet_diagnostic.TWA0032.severity = none
 dotnet_diagnostic.TWA0033.severity = none
 dotnet_diagnostic.TWA0034.severity = none
+dotnet_diagnostic.TWA0035.severity = none
 dotnet_diagnostic.TWA0036.severity = none
 dotnet_diagnostic.TWA0037.severity = none

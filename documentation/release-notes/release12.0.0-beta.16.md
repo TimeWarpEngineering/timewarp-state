@@ -36,6 +36,6 @@ Migration: [TimeWarp.Mediator 15 migration](https://github.com/TimeWarpEngineeri
 - Microsoft.NET.Test.Sdk `18.10.1` → `18.11.0`.
 - Microsoft.Playwright.MSTest.v4 `1.63.0` → `1.64.1`. This stays the MSTest 4 adapter.
 - TimeWarp.Nuru and TimeWarp.Nuru.DevCli `4.0.0-beta.7` → `4.0.0-beta.10`. The dev CLI drops `using static Unit`, because `Unit.Task` collides with `System.Threading.Tasks.Task` in the DevCli content. Handlers return `Unit.Value`.
-- TimeWarp.Architecture.Analyzers `2.0.0-beta.19` → `2.0.0-beta.29`. New rules TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0036, and TWA0037 stay off. Only TWA0004 applies to this library.
+- TimeWarp.Architecture.Analyzers `2.0.0-beta.19` → `2.0.0-beta.29`. New rules TWA0025, TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0035, TWA0036, and TWA0037 stay off. Only TWA0004 applies to this library.
 
 `Microsoft.CodeAnalysis.CSharp` stays `4.14.0`. `5.9.0` would raise the consumer compiler floor for the shipped analyzer and generator. Blazored.LocalStorage `4.5.0` and Blazored.SessionStorage `2.4.0` are still the newest published versions.

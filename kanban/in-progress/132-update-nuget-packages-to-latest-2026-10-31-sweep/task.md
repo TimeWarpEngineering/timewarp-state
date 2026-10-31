@@ -55,6 +55,7 @@ Filed by Claude (cockpit) at Steven's request, 2026-10-31.
 - [x] Version / release notes per `dev check-version`
 - [x] build, test, verify-samples, e2e, audit all green
 - [x] Results written
+- [x] Review round 1: TWA0025 and TWA0035 are off with the other eight, and the dead `[*.razor]` block is gone
 
 ## Results
 
@@ -87,7 +88,7 @@ Every other central pin was already current, including TimeWarp.Mediator and Tim
 
 Blazored.LocalStorage `4.5.0` and Blazored.SessionStorage `2.4.0` stay. The outdated tool says both are not found on nuget.org. The flat container still lists those versions as the newest published releases (the packages are unlisted, which is why the tool cannot see them).
 
-TimeWarp.Architecture.Analyzers `2.0.0-beta.29` adds TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0036, and TWA0037. They stay off. Only TWA0004 applies to this library (task 099-001). TWA0036 (ISO 8601 dates) warns on sample and test-app weather dates and one DevTools timestamp. `[*.cs]` covers the C# hits. Razor files are additional files, so the same severities are also in `msbuild/external-sources.globalconfig`. A probe file without a Purpose region still fails TWA0004. The date displays are unchanged.
+TimeWarp.Architecture.Analyzers `2.0.0-beta.29` adds ten rules over beta.19: TWA0025, TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0035, TWA0036, and TWA0037. All ten stay off. Only TWA0004 applies to this library (task 099-001). TWA0036 (ISO 8601 dates) warns on sample and test-app weather dates and one DevTools timestamp. `[*.cs]` covers those C# hits. Razor C# is a source-generator tree and does not carry EditorConfig severities. With TWA0036 set to none under `[*.cs]` and `[*.razor]`, and removed from `msbuild/external-sources.globalconfig`, sample 00 `Weather.razor` still warned TWA0036 (`ToShortDateString()`). Restoring that globalconfig entry and deleting the `[*.razor]` block silenced it (Release, `--no-dependencies`). The same ten severities live in the globalconfig. A probe file without a Purpose region still fails TWA0004. The date displays are unchanged.
 
 TimeWarp.Nuru.DevCli `4.0.0-beta.10` content calls `Task.FromResult`. `global using static TimeWarp.Mediator.Unit` makes `Unit.Task` collide with `System.Threading.Tasks.Task` (CS0229), so `./bin/dev self-install` failed on that pin. The dev CLI drops the static import and returns `Unit.Value`. The pin stays at beta.10.
 
@@ -103,13 +104,24 @@ TimeWarp.Nuru.DevCli `4.0.0-beta.10` content calls `Task.FromResult`. `global us
 
 `./bin/dev build` (Release filter, samples except 00-auto): 0 errors. After the TWA0036 severity change the printed warnings are the pre-existing set (NU1510, NU1902, NU1903, TW0007, CS8600, CS8602, RS0030, BL0016). No TWA0036. `verify-samples` also printed no TWA0036.
 
+The fix-pass `./bin/dev build` (same filter) exited 0: 0 errors, 158 warnings, no `TWA` id. Warning codes: ASPDEPR011, BL0010, BL0016, CS8600, CS8602, NU1510, NU1902, NU1903, RS0030, TW0007. Test, verify-samples, and e2e were not re-run; the counts above are from the sweep.
+
 `./bin/dev test` exited 0: analyzer 44 passed; source generator 86 passed; state 131 passed and 1 skipped; plus 40 passed and 1 skipped; telemetry 21 passed; devtools 103 passed; devtools isolation 4 passed; client integration 64 passed and 1 skipped; architecture 7 passed and 1 skipped.
 
 `./bin/dev verify-samples` printed `Packed set verified` and `Samples verified successfully!` (10 project-referenced samples, then 2 packaged).
 
 `./bin/dev e2e`: Playwright's browser install tried `sudo` and exited 1. Chromium was already present. Failed 0, Passed 12, Total 12.
 
-`ganda repo audit` exits 0. `ganda repo audit --fix` changed nothing. Two advisories, both pre-existing: `kanban-landed` (task 098 has no usable worktree) and `kebab-path-names` (7 paths: Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder).
+`ganda repo audit` exits 0. `ganda repo audit --fix` changed nothing. Two advisories, both pre-existing: `kanban-landed` (task 098 has no usable worktree) and `kebab-path-names` (7 paths: Blazor `*.lib.module.js` names, a `.targets` file, and backlog task 110's folder). The fix pass saw the same two advisories, and `--fix` again changed nothing.
+
+### Review
+
+Round 1 (effort 2, roster: general) found 0 bugs, 1 suggestion, and 1 nit. This pass fixes both.
+
+- M1 (suggestion, fixed): TWA0025 and TWA0035 are `none` in the `[*.cs]` block and in `msbuild/external-sources.globalconfig`. The ten-id list is in the `.editorconfig` comment, `documentation/release-notes/release12.0.0-beta.16.md`, and Exceptions above.
+- M2 (nit, fixed): the `[*.razor]` block is removed. Both comments say the globalconfig entries silence Razor TWA0036. The sample 00 probe above is that check.
+
+Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
 
 ### How to validate
 
@@ -126,7 +138,7 @@ ganda repo audit
 
 **Expect:**
 
-- `build` exits 0 with 0 errors and no `TWA0036`.
+- `build` exits 0 with 0 errors and no `TWA` diagnostic id.
 - `test` exits 0 with the counts in Gates.
 - `verify-samples` prints `Packed set verified` and `Samples verified successfully!`.
 - `e2e` exits 0: Failed 0, Passed 12, Total 12. The Playwright `sudo` install may exit 1 when Chromium is already installed; the test run still discovers 12 tests.
@@ -139,12 +151,23 @@ ganda repo audit
 - Implementation: implementer oracle (2026-10-31)
 - Clean-tree `dev release --dry-run` confirmed the master guard; the task branch is pushed (2026-10-31)
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a190fe-d9f7-7bb0-b62f-588a19c0fa55, max-turns 500, Done — 2026-10-31T08:47:31Z
+- Review oracle round 1: reviewer (Claude Opus 5.5, headless `ganda task work`), effort 2, roster general, turn cap 120. Raised M1 (suggestion) and M2 (nit), both open; a fix pass is requested (2026-10-31)
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 59b7d6de-1c4e-4c9e-a288-ae77da44ac3e, max-turns 120 — 2026-10-31T08:51:20Z
+- Fix pass (implement-fix-2): TWA0025 and TWA0035 set to none; `[*.razor]` block removed after the sample 00 probe showed it does not silence TWA0036 (2026-10-31)
 
 ## Goal (implementer restatement)
 
-Bring every central package pin in `Directory.Packages.props` up to the latest version that still builds and tests, then record what moved and what stayed. The live `ganda nuget outdated` report is the list to act on; the table in Description is only the starting snapshot. TimeWarp packages are checked on nuget.org and on the TimeWarp GitHub package source. `Microsoft.CodeAnalysis.CSharp` stays at `4.14.0` because that pin is the compiler floor for the shipped analyzer and generator (`PinRoslynAtTheConsumerCompilerFloor`). Any other pin that cannot move is written down here with the reason. Blazored.LocalStorage and Blazored.SessionStorage stay put if 4.5.0 and 2.4.0 are still the newest published releases.
+Take every central pin in `Directory.Packages.props` to the latest version the live `ganda nuget outdated` report names, except where a bump breaks the build or tests. The table in Description is the snapshot from filing, not the list to trust. Check TimeWarp packages on nuget.org and on `https://nuget.pkg.github.com/TimeWarpEngineering/index.json`. Leave `Microsoft.CodeAnalysis.CSharp` at `4.14.0`: that pin is the compiler floor for the analyzer and generator that ship inside the packages (`PinRoslynAtTheConsumerCompilerFloor`). Leave Blazored.LocalStorage and Blazored.SessionStorage where they are when 4.5.0 and 2.4.0 are still the newest published releases. Write every other hold here with the reason.
 
-After the Nuru and Nuru.DevCli bump, rebuild the dev CLI with `./bin/dev self-install` and confirm `dev --help`, `dev check-version`, and `dev release --dry-run` still run. Keep `Microsoft.Playwright.MSTest.v4` on the MSTest 4 adapter and confirm the end-to-end run still discovers 12 tests. `./bin/dev check-version` decides the package version: if `12.0.0-beta.16` is already released, move `<Version>` and `TimeWarpStateVersion` to the next prerelease and add a release-notes page plus a `toc.yml` entry; if it is still unreleased, add the dependency changes to the existing beta.16 notes. Whatever `ganda repo audit --fix` changes is kept. Done means a warning-free build of the touched projects, green `./bin/dev test`, green `./bin/dev verify-samples`, green e2e, and a clean `ganda repo audit`, with a before/after table in Results.
+After TimeWarp.Nuru and TimeWarp.Nuru.DevCli move, run `./bin/dev self-install` and confirm `dev --help`, `dev check-version`, and `dev release --dry-run` still run. Keep `Microsoft.Playwright.MSTest.v4` on the MSTest 4 adapter and confirm e2e still discovers 12 tests. `./bin/dev check-version` chooses the package version: if `12.0.0-beta.16` is already on NuGet, bump `<Version>` and `TimeWarpStateVersion` and add a release-notes page plus a `toc.yml` entry; if it is still unreleased, add the dependency list to the existing beta.16 notes. Keep whatever `ganda repo audit --fix` changes.
+
+This fix pass closes review round 1. Beta.29 adds ten rules over beta.19 (TWA0025, TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0035, TWA0036, TWA0037). All ten stay `none`, including TWA0025 and TWA0035, in the `[*.cs]` block and in `msbuild/external-sources.globalconfig`. The same ten ids are named in the `.editorconfig` comment, the beta.16 release notes, and Results. Razor TWA0036 is silenced by that globalconfig. A `[*.razor]` section does not, so that block is gone and both comments say so. `./bin/dev build` shows no new TWA warnings.
+
+Done means a warning-free build of the touched projects, green `./bin/dev test`, green `./bin/dev verify-samples`, green e2e, a clean `ganda repo audit`, and a before/after table in Results.
+
+## Review
+
+- Round 1: M1 and M2 fixed in the implement-fix-2 pass. Round 2 is the host review.
 
 ## Notes
 

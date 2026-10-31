@@ -292,9 +292,13 @@ dotnet_diagnostic.TW0007.filename = global-usings.cs
 # TWA0022 found no hits (the test app's direct Sender.Send calls are deliberate) and TWA0023
 # (type-stem naming, off upstream by default) found 835 sites, so both stay off.
 # TWA0005 is retired upstream (reserved id, never reported), so it has no entry.
-# 2.0.0-beta.29 adds TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0036, and
-# TWA0037. They stay off for the same reason. TWA0036 (ISO 8601 dates) warns on sample and
-# test-app weather dates and one DevTools timestamp; those displays are unchanged (task 132).
+# 2.0.0-beta.29 adds TWA0025, TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0035,
+# TWA0036, and TWA0037. They stay off for the same reason. TWA0036 (ISO 8601 dates) warns on
+# sample and test-app weather dates and one DevTools timestamp; those displays are unchanged
+# (task 132). Razor C# is a source-generator tree, and that tree does not carry EditorConfig
+# diagnostic severities: sample 00 Weather.razor still reported TWA0036 while this file set
+# it to none under [*.cs] and [*.razor]. The global entries in
+# msbuild/external-sources.globalconfig are what silence it. There is no [*.razor] block.
 # Files outside the repo (a NuGet cache that is not under this worktree) get TWA0004 = none
 # from msbuild/external-sources.globalconfig, since this file cannot reach them. The isolated
 # cache artifacts/nuget-packages is inside the worktree and is excluded below.
@@ -319,25 +323,14 @@ dotnet_diagnostic.TWA0021.severity = none
 dotnet_diagnostic.TWA0022.severity = none
 dotnet_diagnostic.TWA0023.severity = none
 dotnet_diagnostic.TWA0024.severity = none
+dotnet_diagnostic.TWA0025.severity = none
 dotnet_diagnostic.TWA0026.severity = none
 dotnet_diagnostic.TWA0027.severity = none
 dotnet_diagnostic.TWA0028.severity = none
 dotnet_diagnostic.TWA0032.severity = none
 dotnet_diagnostic.TWA0033.severity = none
 dotnet_diagnostic.TWA0034.severity = none
-dotnet_diagnostic.TWA0036.severity = none
-dotnet_diagnostic.TWA0037.severity = none
-
-# The block above is under [*.cs]. Razor files are outside that section, and TWA0036 reports
-# against the .razor path (task 132). These rules stay off here too. TWA0004 stays unset so
-# razor files are not required to carry a Purpose region.
-[*.razor]
-dotnet_diagnostic.TWA0026.severity = none
-dotnet_diagnostic.TWA0027.severity = none
-dotnet_diagnostic.TWA0028.severity = none
-dotnet_diagnostic.TWA0032.severity = none
-dotnet_diagnostic.TWA0033.severity = none
-dotnet_diagnostic.TWA0034.severity = none
+dotnet_diagnostic.TWA0035.severity = none
 dotnet_diagnostic.TWA0036.severity = none
 dotnet_diagnostic.TWA0037.severity = none
 
