@@ -41,21 +41,21 @@ internal sealed class BuildCommand : ICommand<Unit>
 
       if (!FindRepoRoot())
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await CleanAsync())
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (!await BuildAsync())
       {
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("\nBuild completed successfully!".Green());
-      return Value;
+      return Unit.Value;
     }
 
     private bool FindRepoRoot()

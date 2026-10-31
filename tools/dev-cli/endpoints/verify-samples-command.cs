@@ -44,14 +44,14 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Error: could not find repository root.");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       string samplesDirectory = Path.Combine(repoRoot, "samples");
       if (!Directory.Exists(samplesDirectory))
       {
         Terminal.WriteLine("No samples/ directory — nothing to verify.");
-        return Value;
+        return Unit.Value;
       }
 
       string[] projects = Directory
@@ -65,7 +65,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       if (projects.Length == 0)
       {
         Terminal.WriteLine("No sample projects found.");
-        return Value;
+        return Unit.Value;
       }
 
       string[] packagedProjects = projects.Where(IsPackagedConsumer).ToArray();
@@ -77,31 +77,31 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       {
         if (!await BuildSourceSampleAsync(project, repoRoot, ct))
         {
-          return Value;
+          return Unit.Value;
         }
       }
 
       if (!await PublishPersistenceTrimmedAsync(repoRoot, ct))
       {
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("\nPacking so sample 00 auto can restore the local feed...");
       await new PackCommand.Handler(Terminal, PackableProjectService).Handle(new PackCommand(), ct);
       if (Environment.ExitCode != 0)
       {
-        return Value;
+        return Unit.Value;
       }
 
       if (packagedProjects.Length == 0)
       {
         Terminal.WriteLine("\nSamples verified successfully!".Green());
-        return Value;
+        return Unit.Value;
       }
 
       if (!await PurgePackedExtractsAsync(repoRoot, ct))
       {
-        return Value;
+        return Unit.Value;
       }
 
       string configPath = Path.Combine(repoRoot, "artifacts", "sample-00-auto.nuget.config");
@@ -111,12 +111,12 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       {
         if (!await BuildPackagedSampleAsync(project, repoRoot, configPath, ct))
         {
-          return Value;
+          return Unit.Value;
         }
       }
 
       Terminal.WriteLine("\nSamples verified successfully!".Green());
-      return Value;
+      return Unit.Value;
     }
 
     private async Task<bool> BuildSourceSampleAsync(string project, string repoRoot, CancellationToken ct)

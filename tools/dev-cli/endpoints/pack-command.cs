@@ -34,7 +34,7 @@ internal sealed class PackCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Error: could not find repository root.");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       IReadOnlyList<PackableProject> packableProjects = await PackableProjectService
@@ -45,7 +45,7 @@ internal sealed class PackCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Pack failed: no packable projects found under source/.");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       string? version = ReadPropsVersion(repoRoot);
@@ -53,7 +53,7 @@ internal sealed class PackCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Pack failed: could not read <Version> from source/Directory.Build.props.");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       NuGetPackageIsolation.Isolation isolation = NuGetPackageIsolation.Apply(repoRoot);
@@ -66,7 +66,7 @@ internal sealed class PackCommand : ICommand<Unit>
       if (NuGetPackageIsolation.ReportPoisonedEntries(poisoned, message => Terminal.WriteErrorLine(message)) != 0)
       {
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       string artifactsDir = Path.Combine(repoRoot, "artifacts", "packages");
@@ -102,7 +102,7 @@ internal sealed class PackCommand : ICommand<Unit>
         {
           Terminal.WriteErrorLine($"dotnet pack failed for {project.PackageId}.".Red());
           Environment.ExitCode = packExit;
-          return Value;
+          return Unit.Value;
         }
       }
 
@@ -123,19 +123,19 @@ internal sealed class PackCommand : ICommand<Unit>
         }
 
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       if (!NuspecDependenciesAllowed(actualNupkgPaths, version))
       {
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       if (!await NupkgContentMatchesAsync(repoRoot, ct))
       {
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("\nPacked set verified.".Green());
@@ -144,7 +144,7 @@ internal sealed class PackCommand : ICommand<Unit>
         Terminal.WriteLine($"  {fileName}");
       }
 
-      return Value;
+      return Unit.Value;
     }
 
     private async Task<bool> NupkgContentMatchesAsync(string repoRoot, CancellationToken ct)

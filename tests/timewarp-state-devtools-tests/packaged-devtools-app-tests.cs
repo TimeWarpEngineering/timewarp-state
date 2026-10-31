@@ -85,7 +85,7 @@ public class PackagedDevToolsApp_Should
         Path.Combine(consumer, "tw-devtools-consumer.csproj"),
         $"""
         <Project Sdk="Microsoft.NET.Sdk">
-          <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.1" />
+          <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.4" />
           <PropertyGroup>
             <OutputType>Exe</OutputType>
             <TargetFramework>net11.0</TargetFramework>
@@ -96,7 +96,7 @@ public class PackagedDevToolsApp_Should
             <AssemblyName>TwDevToolsConsumer</AssemblyName>
           </PropertyGroup>
           <ItemGroup>
-            <PackageReference Include="Aspire.Hosting.AppHost" Version="13.6.1" />
+            <PackageReference Include="Aspire.Hosting.AppHost" Version="13.6.4" />
             <PackageReference Include="TimeWarp.State.DevTools.Hosting" Version="{version}" />
           </ItemGroup>
         </Project>

@@ -73,7 +73,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
         await RunPrAsync();
       }
 
-      return Value;
+      return Unit.Value;
     }
 
     private async Task RunPrAsync()
