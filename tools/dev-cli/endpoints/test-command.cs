@@ -30,7 +30,7 @@ internal sealed class TestCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Error: could not find repository root.");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       string testRunner = Path.Combine(repoRoot, "scripts", "test.cs");
@@ -38,7 +38,7 @@ internal sealed class TestCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine($"Test runner not found: {testRunner}");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("Restoring local tools (fixie.console)...");
@@ -54,7 +54,7 @@ internal sealed class TestCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("dotnet tool restore failed!".Red());
         Environment.ExitCode = restoreExitCode;
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("Running test suite...");
@@ -69,11 +69,11 @@ internal sealed class TestCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Tests failed!".Red());
         Environment.ExitCode = exitCode;
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("\nTests completed successfully!".Green());
-      return Value;
+      return Unit.Value;
     }
   }
 }

@@ -30,7 +30,7 @@ internal sealed class E2eCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("Error: could not find repository root.");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       string e2eRunner = Path.Combine(repoRoot, "scripts", "e2e.cs");
@@ -38,7 +38,7 @@ internal sealed class E2eCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine($"E2E runner not found: {e2eRunner}");
         Environment.ExitCode = 1;
-        return Value;
+        return Unit.Value;
       }
 
       if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("UseHttp")))
@@ -59,11 +59,11 @@ internal sealed class E2eCommand : ICommand<Unit>
       {
         Terminal.WriteErrorLine("E2E tests failed!".Red());
         Environment.ExitCode = exitCode;
-        return Value;
+        return Unit.Value;
       }
 
       Terminal.WriteLine("\nE2E tests completed successfully!".Green());
-      return Value;
+      return Unit.Value;
     }
   }
 }

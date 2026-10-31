@@ -8,13 +8,13 @@
     <!-- 2.0.0-beta.2 is the newest Amuru. `ganda nuget outdated` stays in the stable band and reports 1.1.1 up to date. -->
     <PackageVersion Include="TimeWarp.Amuru" Version="2.0.0" />
     <PackageVersion Include="TimeWarp.Amuru.Tools" Version="2.0.0" />
-    <PackageVersion Include="TimeWarp.Architecture.Analyzers" Version="2.0.0-beta.19" />
+    <PackageVersion Include="TimeWarp.Architecture.Analyzers" Version="2.0.0-beta.29" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
     <PackageVersion Include="TimeWarp.Mediator" Version="15.0.0-beta.2" />
     <PackageVersion Include="TimeWarp.Mediator.Generators" Version="15.0.0-beta.2" />
-    <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.7" />
-    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.7" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.10" />
+    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.10" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.State.Blazor" Version="$(TimeWarpStateVersion)" />
@@ -49,17 +49,17 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="11.0.0-rc.3.26522.148" />
 
     <!-- Microsoft Testing & Build Tools -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <!-- v4 is the MSTest 4 build of Playwright. Microsoft.Playwright.MSTest 1.63.0 still binds the MSTest 3 assembly. -->
-    <PackageVersion Include="Microsoft.Playwright.MSTest.v4" Version="1.63.0" />
+    <PackageVersion Include="Microsoft.Playwright.MSTest.v4" Version="1.64.1" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="7.0.1" />
 
     <!-- Testing Frameworks -->
     <PackageVersion Include="FakeItEasy" Version="9.0.1" />
     <PackageVersion Include="Fixie.TestAdapter" Version="4.2.0" />
     <!-- Paired with Microsoft.Playwright.MSTest.v4. The non-v4 Playwright.MSTest package binds the MSTest 3 assembly identity. -->
-    <PackageVersion Include="MSTest.TestAdapter" Version="4.5.1" />
-    <PackageVersion Include="MSTest.TestFramework" Version="4.5.1" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.5.2" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.5.2" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.5" />
     <!-- 4.3.0 is the latest stable. 5.0.0-preview.2 drops params overloads such as ShouldBeOneOf; the stable-band outdated tool does not select it. -->
     <PackageVersion Include="Shouldly" Version="4.3.0" />
@@ -70,11 +70,11 @@
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
 
     <!-- OpenTelemetry / Aspire (telemetry sample) -->
-    <PackageVersion Include="OpenTelemetry" Version="1.19.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.19.1" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.19.1" />
-    <PackageVersion Include="Aspire.Hosting" Version="13.6.1" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.6.1" />
+    <PackageVersion Include="OpenTelemetry" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.1" />
+    <PackageVersion Include="Aspire.Hosting" Version="13.6.4" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.6.4" />
 
     <!-- System & Utilities -->
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
