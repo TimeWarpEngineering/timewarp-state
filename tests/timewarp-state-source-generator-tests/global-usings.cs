@@ -8,6 +8,8 @@
 
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp;
+global using System.Reflection;
+global using System.Runtime.Loader;
 global using Shouldly;
 global using TimeWarp.Fixie;
 global using TimeWarp.State.SourceGenerator;

@@ -5,16 +5,16 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- TimeWarp Packages -->
-    <!-- 2.0.0-beta.2 is the newest Amuru. `ganda nuget outdated` stays in the stable band and reports 1.1.1 up to date. -->
-    <PackageVersion Include="TimeWarp.Amuru" Version="2.0.0" />
-    <PackageVersion Include="TimeWarp.Amuru.Tools" Version="2.0.0" />
+    <!-- 3.0.0-beta.1 is the Amuru pin ganda repo audit wrote with the Nuru 4.0.0-beta.11 bump. why: task 134, 2026-11-04 -->
+    <PackageVersion Include="TimeWarp.Amuru" Version="3.0.0-beta.1" />
+    <PackageVersion Include="TimeWarp.Amuru.Tools" Version="3.0.0-beta.1" />
     <PackageVersion Include="TimeWarp.Architecture.Analyzers" Version="2.0.0-beta.29" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="1.0.0" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
     <PackageVersion Include="TimeWarp.Mediator" Version="15.0.0-beta.2" />
     <PackageVersion Include="TimeWarp.Mediator.Generators" Version="15.0.0-beta.2" />
-    <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.10" />
-    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.10" />
+    <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.11" />
+    <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.11" />
     <PackageVersion Include="TimeWarp.State" Version="$(TimeWarpStateVersion)" />
     <PackageVersion Include="TimeWarp.State.Blazor" Version="$(TimeWarpStateVersion)" />

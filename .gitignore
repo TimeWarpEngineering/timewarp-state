@@ -362,3 +362,10 @@ mission.heartbeat
 
 # Routine journals, mission briefs, and progress logs beside kitchens (local; not product)
 stacked-task-set*.resume.json
+
+# AOT dev CLI (self-install output; local; not product)
+bin/dev
+# AOT dev CLI debug companion (self-install output; local; not product)
+bin/dev.dbg
+# AOT dev CLI on Windows (self-install output; local; not product)
+bin/dev.exe
