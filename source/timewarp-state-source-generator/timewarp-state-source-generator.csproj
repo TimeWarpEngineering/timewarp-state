@@ -13,4 +13,8 @@
     <!-- Compile against the Roslyn floor. PrivateAssets stops this from flowing through ProjectReference into TimeWarp.State. -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="timewarp-state-source-generator-tests" />
+  </ItemGroup>
 </Project>

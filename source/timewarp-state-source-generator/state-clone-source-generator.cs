@@ -9,7 +9,8 @@
 // One compilation produces one source file. TWSG002 is an error: there is no reflection fallback.
 // The plan needs the whole compilation (states, their member graphs, and the implementations a dispatch switches on),
 // so the only input is CompilationProvider. The generator reruns on every compilation change. The closed-generic
-// syntax scan covers [GenerateClone] definitions and open-generic ICloneable states.
+// syntax scan covers [GenerateClone] definitions and open-generic ICloneable states. Execute passes the generator
+// CancellationToken into the planner, and the planner stops when that token is cancelled.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -46,7 +47,7 @@ public sealed class StateCloneSourceGenerator : IIncrementalGenerator
     }
 
     StateClonePlanner planner = new(compilation);
-    string? source = planner.Plan(sourceContext);
+    string? source = planner.Plan(sourceContext, sourceContext.CancellationToken);
     if (source is not { Length: > 0 })
     {
       return;
