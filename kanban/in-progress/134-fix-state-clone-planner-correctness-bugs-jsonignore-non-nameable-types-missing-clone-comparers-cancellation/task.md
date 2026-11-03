@@ -95,15 +95,17 @@ The new cases live in `tests/timewarp-state-source-generator-tests/state-clone-c
 
 ### Review
 
-- Round 1 (effort 3, roster: general): M1 (bug) and M2 (suggestion) fixed on this branch. 0 open on the round-1 ledger. Disposition waits for review round 2.
+- **Disposition: clean.** 2 rounds. Final counts: bug 1 fixed, suggestion 1 fixed, nit 0. 0 open, 0 wontfix.
+- Round 1 (effort 3, roster: general): raised M1 (bug) and M2 (suggestion). Both were fixed in `a8d0839a`.
+- Round 2 (effort 2, roster: general): reviewed the delta `b154d5f3..a8d0839a`. It re-verified M1 and M2 as fixed and found no new issues. `dotnet fixie timewarp-state-source-generator-tests` passed 100 of 100.
 - M1: `CanName` treats `ProtectedAndInternal` as unnameable. Regressions cover a `private protected` ICloneable state and a `[GenerateClone]` member of a `private protected` nested type.
 - M2: `source.Count` is passed only for an `int` whose name contains `capacity`. Other `int` constructors are skipped.
-- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Review
 
-- Round 1 findings M1 and M2 are fixed on this branch. Round 2 has not run. Disposition is still pending.
-
+- Disposition: clean after 2 rounds, with 0 open. Round 2 re-verified M1 and M2 as fixed and found no new issues. See `review/disposition.md`.
+- Round 2: Done
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC. See sibling tasks for the decomposition and performance work on the same file; land this one first.
@@ -133,3 +135,4 @@ Fix pass for review round 1. Two holes remain in that contract.
 - Review oracle round 1: claude-opus-5-5 (Claude Code headless, tw-implementation-review), effort 3, roster general, turn cap 200 — 2026-11-04. Ran `dotnet fixie timewarp-state-source-generator-tests` (97 passed). Result: Blocked. Fix pass needed for open findings M1 and M2. The restatement matches the task, so no misread was found.
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 108315c7-a053-42c4-a6df-02d75cba02ae, max-turns 200, artifacts general.md, merged.md — 2026-11-03T20:02:23Z
 - Fix pass (implement-fix-2): grok task-work (2026-11-04). M1 and M2 fixed. `dotnet fixie timewarp-state-source-generator-tests` 100 passed. `./bin/dev test` exit 0. `ganda repo audit` exit 0 with the same two advisory warnings.
+- Review oracle round 2: claude-opus-5-5 (Claude Code headless, tw-implementation-review), effort 2, roster general, turn cap 120 — 2026-11-04. Reviewed the delta `b154d5f3..a8d0839a`. Ran `dotnet fixie timewarp-state-source-generator-tests` (100 passed). M1 and M2 are verified fixed, with no new findings. Disposition: clean. The fix-pass restatement matches the round-1 findings, so no misread was found.
