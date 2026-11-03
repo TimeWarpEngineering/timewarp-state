@@ -22,15 +22,17 @@ Review of `source/timewarp-state-source-generator/state-clone-planner.cs` (3416 
 - [x] CancellationToken threaded through planner
 - [x] EqualityContract record case verified
 - [x] All existing tests green
+- [x] private protected types are unnameable, with tests
+- [x] comparer Count is passed only for a capacity-named int, with test
 
 ## Results
 
 The clone planner no longer drops members or emits signatures the compiler cannot name.
 
 - `[JsonIgnore]` skips a member only when `Condition` is `Always` or omitted. `WhenWritingNull`, `WhenWritingDefault`, and `Never` are still copied. The `Always` value is read from `System.Text.Json.Serialization.JsonIgnoreCondition` when that enum is in the compilation, otherwise the integer 1. Newtonsoft `JsonIgnore`, `IgnoreDataMember`, and `NonSerialized` still always skip.
-- A type is nameable from generated code only when the type, its containers, and every type argument are nameable. File-local types, private and protected types, and internals from another assembly are excluded. ICloneable trim roots and DI service registration use that same check. `IsPubliclyVisible` walks type arguments, so `Wrapper<InternalType>` gets an `internal` extension and `Wrapper<PublicType>` stays `public`.
+- A type is nameable from generated code only when the type, its containers, and every type argument are nameable. File-local types, private, protected, and private protected types, and internals from another assembly are excluded. `protected internal` stays nameable in this assembly. ICloneable trim roots and DI service registration use that same check. `IsPubliclyVisible` walks type arguments, so `Wrapper<InternalType>` gets an `internal` extension and `Wrapper<PublicType>` stays `public`.
 - A `[GenerateClone]` value type that classifies as Share (unmanaged, or no copied fields) is promoted to an identity clone (`return source;`). Reference types that are Share are unchanged. Non-root unmanaged fields stay Share.
-- A subclass of `Dictionary`, `HashSet`, `SortedSet`, `SortedDictionary`, `SortedList`, or `ConcurrentDictionary` is constructed with `source.Comparer` when one of its constructors accepts that comparer (and, when the chosen constructor also takes an `int`, `source.Count`). A subclass that only has a parameterless constructor still uses that constructor. C# does not inherit constructors, so comparer cannot be preserved in that shape. The existing parameterless `CollectionSubclass` tests stay green.
+- A subclass of `Dictionary`, `HashSet`, `SortedSet`, `SortedDictionary`, `SortedList`, or `ConcurrentDictionary` is constructed with `source.Comparer` when one of its constructors accepts that comparer. `source.Count` is passed only for an `int` parameter whose name contains `capacity` (for example `capacity` or `initialCapacity`). A constructor whose `int` is named something else, such as `maxEntries` or `version`, is skipped, so a comparer-only constructor is used when one exists. A subclass that only has a parameterless constructor still uses that constructor. C# does not inherit constructors, so comparer cannot be preserved in that shape. The existing parameterless `CollectionSubclass` tests stay green.
 - `Execute` passes `sourceContext.CancellationToken` into `Plan`. The planner checks it at the start of planning, in both syntax scans, between phases, and inside report and emit loops. A cancelled token throws `OperationCanceledException` before the source-production context is touched.
 - A record `EqualityContract` property (get-only `System.Type`, protected or private, implicit or compiler-generated getter) is not treated as an auto-property and is not rejected as a reference-assembly non-auto-property. Positional record properties still copy through their backing fields. The regression compiles an unsealed record as a reference assembly and runs the generated clone against the implementation image.
 
@@ -39,6 +41,8 @@ The clone planner no longer drops members or emits signatures the compiler canno
 - Share-classified `[GenerateClone]` structs emit an identity method. They do not get a diagnostic.
 - Other-assembly internals stay unnameable even when `InternalsVisibleTo` would let user code name them.
 - A hand-written `protected Type EqualityContract { get; }` on a record is skipped by the same predicate. That shape is rare.
+- `private protected` is unnameable from generated code in every assembly. `protected internal` stays nameable in this assembly.
+- `source.Count` is a capacity argument only. Other `int` parameters do not select a comparer constructor.
 
 ### Files
 
@@ -51,8 +55,9 @@ The clone planner no longer drops members or emits signatures the compiler canno
 
 ### Tests
 
-- `dotnet fixie timewarp-state-source-generator-tests`: 97 passed (2026-11-04).
-- `./bin/dev test`: exit 0 (analyzer, source generator, state, plus, telemetry, devtools, devtools isolation, client integration, architecture 7 passed / 1 skipped).
+- `dotnet fixie timewarp-state-source-generator-tests`: 100 passed (2026-11-04), including the three review-round-1 regressions.
+- `./bin/dev test`: exit 0 (analyzer, source generator, state, plus, telemetry, devtools, devtools isolation, client integration, architecture 7 passed / 1 skipped). `Tests completed successfully!`
+- `ganda repo audit`: exit 0. Two advisory warnings, same as the first implement pass: task 098 has no usable worktree, and seven kebab-path names are Blazor `*.lib.module.*` filenames, a `.targets` file, and backlog task 110's folder.
 
 ### How to validate
 
@@ -80,12 +85,24 @@ The new cases live in `tests/timewarp-state-source-generator-tests/state-clone-c
 - JsonIgnore: generated source has no backing field for a bare `[JsonIgnore]` or `Condition = Always`, and it does copy `WhenWritingNull`, `WhenWritingDefault`, and `Never`.
 - Naming: file-local `ICloneable` emits no source and no `TWSG002`. `GenerateClone` closed over a private nested type argument reports `TWSG002` and does not emit that type name. `Wrapper<Secret>` (internal `Secret`) emits `internal static`, and `Wrapper<Visible>` emits `public static`.
 - Share struct: both the unmanaged struct and the string auto-property struct emit `Clone` with `return source;`.
-- Comparer: generated construction is `new(source.Count, source.Comparer)` or `new(source.Comparer)` for the subclasses that declare those constructors.
+- Comparer: generated construction is `new(source.Count, source.Comparer)` or `new(source.Comparer)` for the subclasses that declare those constructors. `BoundedMap(int maxEntries, comparer)` beside a comparer-only constructor emits `new(source.Comparer)`. `VersionedSet(int version, comparer)` falls back to `new()`. `SizedSet(int initialCapacity, comparer)` emits `new(source.Count, source.Comparer)`.
+- Private protected: a `private protected` ICloneable state emits no source and no `TWSG002`. A `[GenerateClone]` holder with a private member of a `private protected` nested type reports `TWSG002`, does not emit that type name, and adds no compiler error in the generated file.
 - Cancellation: `Plan(default, new CancellationToken(true))` throws `OperationCanceledException`.
 - Record: the loaded clone of `Foreign.Dto("ada", 3)` is a different instance with `Name == "ada"` and `Count == 3`. Generated source contains `<Name>k__BackingField` and `<Count>k__BackingField` and does not contain `EqualityContract`.
 - `./bin/dev test` prints `Tests completed successfully!`.
 
 **Not in scope:** a collection subclass whose only constructor is parameterless cannot receive `source.Comparer`. Sibling tasks own decomposition and performance of the same planner file.
+
+### Review
+
+- Round 1 (effort 3, roster: general): M1 (bug) and M2 (suggestion) fixed on this branch. 0 open on the round-1 ledger. Disposition waits for review round 2.
+- M1: `CanName` treats `ProtectedAndInternal` as unnameable. Regressions cover a `private protected` ICloneable state and a `[GenerateClone]` member of a `private protected` nested type.
+- M2: `source.Count` is passed only for an `int` whose name contains `capacity`. Other `int` constructors are skipped.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+
+## Review
+
+- Round 1 findings M1 and M2 are fixed on this branch. Round 2 has not run. Disposition is still pending.
 
 ## Notes
 
@@ -102,9 +119,17 @@ The clone planner must not drop data or emit code that fails to compile. Each ca
 - Planning, both syntax scans, diagnostics, and emit observe the generator `CancellationToken` passed from `Execute`.
 - A record seen through a reference assembly is not cloned through an `EqualityContract` backing field that does not exist. A test compiles that shape and runs the clone.
 
+Fix pass for review round 1. Two holes remain in that contract.
+
+- `private protected` is not nameable from the generated file. That accessibility is only for the container and its derived types in this assembly, and the generated class is neither. `CanName` rejects `ProtectedAndInternal` the same way it rejects private and protected, in every assembly. `protected internal` stays nameable in this assembly. A `private protected` ICloneable state is not a trim root and is not registered. A `[GenerateClone]` member whose type is a `private protected` nested type does not emit that type's name. Both cases leave the generated file free of compiler errors.
+- A collection subclass gets `source.Count` only for an `int` parameter whose name contains `capacity`. Any other `int`, such as `maxEntries` or `version`, makes that constructor ineligible, so a comparer-only constructor is chosen when one exists. A regression covers that shape.
+
 ## Session
 
 - Created: claude code review session (2026-11-04)
 - Implementation: grok task-work (2026-11-04)
 - Audit: `ganda repo audit --fix` pinned TimeWarp.Nuru and TimeWarp.Nuru.DevCli to 4.0.0-beta.11, bumped TimeWarp.Amuru and TimeWarp.Amuru.Tools from 2.0.0 to 3.0.0-beta.1, and added `bin/dev`, `bin/dev.dbg`, and `bin/dev.exe` to `.gitignore`. Advisory warnings left in place: task 098 has no usable worktree, and seven kebab-path names are Blazor `*.lib.module.*` filenames, a `.targets` file, and backlog task 110's folder.
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1a2d6-7f64-7062-8cb4-5ababff8da4a, max-turns 500, Done — 2026-11-03T19:57:36Z
+- Review oracle round 1: claude-opus-5-5 (Claude Code headless, tw-implementation-review), effort 3, roster general, turn cap 200 — 2026-11-04. Ran `dotnet fixie timewarp-state-source-generator-tests` (97 passed). Result: Blocked. Fix pass needed for open findings M1 and M2. The restatement matches the task, so no misread was found.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 108315c7-a053-42c4-a6df-02d75cba02ae, max-turns 200, artifacts general.md, merged.md — 2026-11-03T20:02:23Z
+- Fix pass (implement-fix-2): grok task-work (2026-11-04). M1 and M2 fixed. `dotnet fixie timewarp-state-source-generator-tests` 100 passed. `./bin/dev test` exit 0. `ganda repo audit` exit 0 with the same two advisory warnings.
