@@ -11,7 +11,7 @@
 // A non-sealed class dispatches on the runtime type: known derived types first, the exact cloner when the runtime
 // type matches, then ICloneable, else a throw. Known derived types come from this compilation and, for a base declared
 // in a non-framework referenced assembly, from that assembly and the referenced assemblies that reference it. A known
-// subtype generated code cannot name (private, protected, file-local, another assembly's internal) is TWSG002 unless it
+// subtype generated code cannot name (private, protected, private protected, file-local, another assembly's internal) is TWSG002 unless it
 // implements ICloneable, so the throw is left for subtypes the generator never saw. A generic subtype is closed over the
 // member type's arguments by unifying its base chain and interfaces with the member type (GD<T> : GB<T> for GB<int>
 // dispatches to GD<int>); one whose type parameters are not determined, or whose constraints fail, is TWSG002 too.
@@ -30,9 +30,10 @@
 // injected service stays the same instance. IgnoreDataMember, NonSerialized and JsonIgnore(Always) leave the
 // constructor value. JsonIgnore with any other condition still clones. CloneShared wins when a member has both.
 // A [GenerateClone] value type with nothing to copy still gets an identity Clone. A collection subclass passes
-// source.Comparer when one of its constructors accepts that comparer. Planning, both syntax scans, diagnostics
-// and emit observe the generator CancellationToken. Record EqualityContract is not an auto-property. Trim roots
-// and extension visibility walk type arguments, file-local types and internals from other assemblies.
+// source.Comparer when one of its constructors accepts that comparer, and source.Count only for an int parameter
+// whose name contains "capacity". Planning, both syntax scans, diagnostics and emit observe the generator
+// CancellationToken. Record EqualityContract is not an auto-property. Trim roots and extension visibility walk
+// type arguments, file-local types, private protected types, and internals from other assemblies.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -1377,8 +1378,9 @@ internal sealed class StateClonePlanner
   #region Construction
 
   // A subclass does not inherit the base collection constructors. When it declares one that accepts the comparer,
-  // pass source.Comparer (and source.Count when that constructor also takes a capacity). Otherwise the ordinary
-  // constructor path runs, which is what a subclass with only the implicit parameterless constructor can call.
+  // pass source.Comparer. Pass source.Count only for an int whose name contains "capacity". A constructor whose
+  // int means something else (maxEntries, version) is skipped, so a comparer-only constructor wins. Otherwise the
+  // ordinary constructor path runs, which is what a subclass with only the implicit parameterless constructor can call.
   private bool TryEmitSubclassConstruction(INamedTypeSymbol type, CollectionKind kind, List<string> lines, out string? problem)
   {
     if (TryEmitComparerConstruction(type, kind, lines, out problem))
@@ -1418,7 +1420,7 @@ internal sealed class StateClonePlanner
       }
 
       int score = (IsAccessible(constructor) ? 100 : 0)
-        + constructor.Parameters.Count(parameter => parameter.Type.SpecialType == SpecialType.System_Int32) * 10
+        + constructor.Parameters.Count(IsCapacityParameter) * 10
         - constructor.Parameters.Length;
       if (score > chosenScore)
       {
@@ -1435,7 +1437,7 @@ internal sealed class StateClonePlanner
     List<string> arguments = [];
     foreach (IParameterSymbol parameter in chosen.Parameters)
     {
-      arguments.Add(parameter.Type.SpecialType == SpecialType.System_Int32 ? "source.Count" : "source.Comparer");
+      arguments.Add(IsCapacityParameter(parameter) ? "source.Count" : "source.Comparer");
     }
 
     return EmitConstructedClone(type, chosen, arguments, lines, out problem);
@@ -1455,7 +1457,8 @@ internal sealed class StateClonePlanner
     {
       if (parameter.Type.SpecialType == SpecialType.System_Int32)
       {
-        if (kind == CollectionKind.ConcurrentDictionary)
+        // ConcurrentDictionary has no count-and-comparer constructor. Any other int is not a capacity.
+        if (kind == CollectionKind.ConcurrentDictionary || !IsCapacityParameter(parameter))
         {
           return false;
         }
@@ -1480,6 +1483,11 @@ internal sealed class StateClonePlanner
 
     return sawComparer;
   }
+
+  // BCL collection constructors name this parameter capacity. initialCapacity counts. maxEntries and version do not.
+  private static bool IsCapacityParameter(IParameterSymbol parameter) =>
+    parameter.Type.SpecialType == SpecialType.System_Int32
+    && parameter.Name.Contains("capacity", StringComparison.OrdinalIgnoreCase);
 
   private static bool HasSourceComparer(CollectionKind kind) =>
     kind is CollectionKind.Dictionary
@@ -2075,12 +2083,14 @@ internal sealed class StateClonePlanner
         return false;
       }
 
-      if (current.DeclaredAccessibility is Accessibility.Private or Accessibility.Protected)
+      // private protected is visible only to the container and its derived types. The generated file is neither.
+      // protected internal is visible to the rest of this assembly, so it stays in the assembly check below.
+      if (current.DeclaredAccessibility is Accessibility.Private or Accessibility.Protected or Accessibility.ProtectedAndInternal)
       {
         return false;
       }
 
-      if (current.DeclaredAccessibility is Accessibility.Internal or Accessibility.ProtectedAndInternal or Accessibility.ProtectedOrInternal
+      if (current.DeclaredAccessibility is Accessibility.Internal or Accessibility.ProtectedOrInternal
           && !SymbolEqualityComparer.Default.Equals(current.ContainingAssembly, Compilation.Assembly))
       {
         return false;
@@ -3547,8 +3557,8 @@ internal sealed class StateClonePlanner
       .OrderBy(type => type.ToDisplayString(Format), StringComparer.Ordinal)
       .ToList();
 
-  // File-local types, private and protected types, internals from another assembly, and type arguments of those
-  // shapes cannot appear in the generated file. CanNameDeep is the same check the field cloner uses.
+  // File-local types, private, protected, and private protected types, internals from another assembly, and type
+  // arguments of those shapes cannot appear in the generated file. CanNameDeep is the same check the field cloner uses.
   private bool CanNameFromGeneratedCode(ITypeSymbol type) => CanNameDeep(type);
 
   private string UniqueName(string prefix, string identity)

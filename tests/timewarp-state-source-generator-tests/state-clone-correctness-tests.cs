@@ -1,5 +1,6 @@
 #region Purpose
-// Regression tests for clone-planner correctness: JsonIgnore conditions, nameability, share roots, comparers, cancellation, and record EqualityContract.
+// Regression tests for clone-planner correctness: JsonIgnore conditions, nameability (including private protected),
+// share roots, comparer construction, cancellation, and record EqualityContract.
 #endregion
 
 #region Design
@@ -199,6 +200,60 @@ public class Should_Not_Name_Unnameable_Types
     source?.ShouldNotContain("Secret");
     CorrectnessDiagnostics.GeneratedErrors(outputCompilation).ShouldBeEmpty();
   }
+
+  public static void Given_Private_Protected_ICloneable_State()
+  {
+    const string Source =
+      """
+      using System;
+      using TimeWarp.State;
+
+      public class Outer
+      {
+        private protected sealed class HiddenState : State<HiddenState>, ICloneable
+        {
+          public int Value { get; set; }
+          public override void Initialize() { }
+          public object Clone() => new HiddenState { Value = Value };
+        }
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
+    runResult.Diagnostics.ShouldBeEmpty();
+    StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldBeNull();
+    CorrectnessDiagnostics.CompilerErrors(outputCompilation).ShouldBeEmpty();
+    CorrectnessDiagnostics.GeneratedErrors(outputCompilation).ShouldBeEmpty();
+  }
+
+  public static void Given_GenerateClone_Member_Of_Private_Protected_Type()
+  {
+    const string Source =
+      """
+      using TimeWarp.State;
+
+      public class Outer
+      {
+        private protected sealed class Hidden
+        {
+          public int Value { get; set; }
+        }
+
+        [GenerateClone]
+        public sealed class Holder
+        {
+          private Hidden? Item { get; set; }
+        }
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldContain(StateCloneSourceGenerator.DiagnosticId);
+    string? source = StateCloneGeneratorTestDriver.CloneSource(runResult);
+    source?.ShouldNotContain("Hidden");
+    CorrectnessDiagnostics.CompilerErrors(outputCompilation).ShouldBeEmpty();
+    CorrectnessDiagnostics.GeneratedErrors(outputCompilation).ShouldBeEmpty();
+  }
 }
 
 public class Should_Keep_Internal_Extension_For_Internal_Type_Argument
@@ -334,6 +389,53 @@ public class Should_Pass_Comparer_To_Collection_Subclass
     source.ShouldContain("global::TaggedList clone = new(source.Count, source.Comparer);");
     CorrectnessDiagnostics.GeneratedErrors(outputCompilation).ShouldBeEmpty();
   }
+
+  public static void Given_Non_Capacity_Int_Is_Not_Passed_As_Count()
+  {
+    const string Source =
+      """
+      using System.Collections.Generic;
+      using TimeWarp.State;
+
+      public sealed class BoundedMap : Dictionary<string, int>
+      {
+        public BoundedMap() { }
+        public BoundedMap(IEqualityComparer<string>? comparer) : base(comparer) { }
+        public BoundedMap(int maxEntries, IEqualityComparer<string>? comparer) : base(comparer) { }
+      }
+
+      public sealed class VersionedSet : HashSet<string>
+      {
+        public VersionedSet() { }
+        public VersionedSet(int version, IEqualityComparer<string>? comparer) : base(comparer) { }
+      }
+
+      public sealed class SizedSet : HashSet<string>
+      {
+        public SizedSet() { }
+        public SizedSet(IEqualityComparer<string>? comparer) : base(comparer) { }
+        public SizedSet(int initialCapacity, IEqualityComparer<string>? comparer) : base(initialCapacity, comparer) { }
+      }
+
+      [GenerateClone]
+      public sealed class Holder
+      {
+        public BoundedMap Map { get; set; } = new();
+        public VersionedSet Versions { get; set; } = new();
+        public SizedSet Sizes { get; set; } = new();
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
+    runResult.Diagnostics.ShouldBeEmpty();
+    string source = StateCloneGeneratorTestDriver.CloneSource(runResult).ShouldNotBeNull();
+    source.ShouldContain("global::BoundedMap clone = new(source.Comparer);");
+    source.ShouldNotContain("global::BoundedMap clone = new(source.Count, source.Comparer);");
+    source.ShouldContain("global::VersionedSet clone = new();");
+    source.ShouldNotContain("global::VersionedSet clone = new(source.Count");
+    source.ShouldContain("global::SizedSet clone = new(source.Count, source.Comparer);");
+    CorrectnessDiagnostics.GeneratedErrors(outputCompilation).ShouldBeEmpty();
+  }
 }
 
 public class Should_Stop_When_Planning_Is_Cancelled
@@ -412,5 +514,10 @@ file static class CorrectnessDiagnostics
   public static IEnumerable<string> GeneratedErrors(Compilation compilation) =>
     compilation.GetDiagnostics()
       .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && diagnostic.Location.SourceTree?.FilePath.EndsWith(".g.cs", StringComparison.Ordinal) == true)
+      .Select(diagnostic => diagnostic.ToString());
+
+  public static IEnumerable<string> CompilerErrors(Compilation compilation) =>
+    compilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && diagnostic.Id.StartsWith("CS", StringComparison.Ordinal))
       .Select(diagnostic => diagnostic.ToString());
 }
