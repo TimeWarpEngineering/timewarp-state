@@ -67,6 +67,7 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. The generator ru
 - Created: claude code review session (2026-11-04)
 - Implementation: implementer oracle (2026-11-04)
 - Boy scout: split the pre-existing files over the 500-line audit cap (analyzer, generator, state tests, and workflow-command). `scripts/e2e.cs` is a file-based app whose compile list does not include a sibling, so it was shortened to 500 lines in place. The named-element `IsTupleType` path stays: dropping it made `(string Name, Item It)` look like a hidden reference-assembly field and stopped emitting `ValueShapes.Clone`. `ganda repo audit --fix --checks kanban-landed` landed this kitchen on origin-home (`1dc7b6dc`). Re-audit has no errors. Advisory only: claim 098 has no worktree, and seven pre-existing paths are not kebab-case.
+- Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1a4c3-ad13-7253-8850-51702ca6d0fb, max-turns 500, Done — 2026-11-04T04:42:45Z
 
 ## Results
 
