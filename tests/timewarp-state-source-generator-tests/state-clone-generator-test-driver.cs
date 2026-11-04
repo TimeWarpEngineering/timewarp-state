@@ -5,6 +5,8 @@
 #region Design
 // Trusted platform assemblies plus TimeWarp.State and TimeWarp.Mediator let the generator see State<T>
 // and let the test compile the emitted cloners. Diagnostics and generated text are both asserted.
+// RunAgainstReferencePack uses the Microsoft.NETCore.App.Ref targeting pack. Implementation assemblies
+// put System.Threading types in one module, so they hide a namespace-identity bug.
 // LoadReferenceClone runs the clone: the generator reads a reference assembly and the loaded image is the
 // implementation, so private backing fields exist at run time.
 #endregion
@@ -33,6 +35,24 @@ internal static class StateCloneGeneratorTestDriver
         OutputKind.DynamicallyLinkedLibrary,
         nullableContextOptions: NullableContextOptions.Enable,
         allowUnsafe: allowUnsafe
+      )
+    );
+
+    return Run(compilation, new StateCloneSourceGenerator());
+  }
+
+  public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) RunAgainstReferencePack(string source)
+  {
+    SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
+    CSharpCompilation compilation = CSharpCompilation.Create
+    (
+      assemblyName: "CloneGeneratorRefPackTests",
+      syntaxTrees: [syntaxTree],
+      references: ReferencePackReferences(),
+      options: new CSharpCompilationOptions
+      (
+        OutputKind.DynamicallyLinkedLibrary,
+        nullableContextOptions: NullableContextOptions.Enable
       )
     );
 
@@ -172,6 +192,42 @@ internal static class StateCloneGeneratorTestDriver
     ReferenceCloneLoadContext loadContext = new(baseAssemblyName, implementation);
     Assembly loaded = loadContext.LoadFromStream(new MemoryStream(generated));
     return (driver.GetRunResult(), outputCompilation, loaded);
+  }
+
+  private static IEnumerable<MetadataReference> ReferencePackReferences()
+  {
+    string runtimeDirectory = Path.GetDirectoryName(typeof(object).Assembly.Location)
+      ?? throw new InvalidOperationException("The runtime assembly has no directory.");
+    string runtimeVersion = Path.GetFileName(runtimeDirectory);
+    string? dotnetRoot = new DirectoryInfo(runtimeDirectory).Parent?.Parent?.Parent?.FullName
+      ?? Environment.GetEnvironmentVariable("DOTNET_ROOT");
+    if (string.IsNullOrEmpty(dotnetRoot))
+    {
+      throw new InvalidOperationException("The dotnet root could not be found.");
+    }
+
+    string packRoot = Path.Combine(dotnetRoot, "packs", "Microsoft.NETCore.App.Ref");
+    string refDirectory = Path.Combine(packRoot, runtimeVersion, "ref", "net11.0");
+    if (!Directory.Exists(refDirectory))
+    {
+      refDirectory = Directory.Exists(packRoot)
+        ? Directory.GetDirectories(packRoot)
+          .Select(path => Path.Combine(path, "ref", "net11.0"))
+          .Where(Directory.Exists)
+          .OrderByDescending(path => path, StringComparer.Ordinal)
+          .FirstOrDefault() ?? string.Empty
+        : string.Empty;
+    }
+
+    if (!Directory.Exists(refDirectory))
+    {
+      throw new InvalidOperationException($"No net11.0 reference pack under {packRoot}.");
+    }
+
+    return Directory.GetFiles(refDirectory, "*.dll")
+      .Select(path => MetadataReference.CreateFromFile(path))
+      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.State.State<>).Assembly.Location))
+      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
   }
 
   private static IEnumerable<MetadataReference> PlatformReferences() =>
