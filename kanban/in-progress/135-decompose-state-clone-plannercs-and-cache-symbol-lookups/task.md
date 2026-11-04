@@ -65,7 +65,7 @@ Acceptance: `dotnet fixie timewarp-state-source-generator-tests` passes, includi
 ## Review
 
 - Round 1: M1–M6 implemented on this id; round 2 re-reviews
-
+- Round 2: Done
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC. The generator runs on `CompilationProvider` alone, so every keystroke replans; the caching items are what make that tolerable.
@@ -79,6 +79,7 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. The generator ru
 - Review oracle round 1: reviewer-claude (claude, model claude-opus-5-5), headless, effort 3, roster general (three scope passes as in-process subagents), turn cap 200. 6 findings open (2 bug, 3 suggestion, 1 nit), so a fix pass is needed — 2026-11-04
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session da172837-78bf-4ebc-a82f-36efeeb439b6, max-turns 200, artifacts general.md, merged.md — 2026-11-04T04:51:30Z
 - Fix pass (implement-fix-2): namespace checks walk name and containing namespace, `Report` reaches only roots that already failed, `Emit` is five writers, and `scripts/e2e.cs` includes its step files instead of dropping comments. Task 136 still owns the dead `runMode`, Amuru exit codes, process lifetime, indentation, and `SutHost`. — 2026-11-04
+- Review oracle round 2: reviewer-claude (claude, vendor anthropic, model claude-opus-5-5), headless. Effort 3, roster general (one in-session pass over the fix delta `1ac6afb4..8eadac32`), turn cap 200. M1–M6 were verified fixed with no new findings, and the disposition is clean. Artifacts: `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`. — 2026-11-04
 
 ## Learnings
 
@@ -119,13 +120,18 @@ Expect: exit 0. The repository passes with two pre-existing advisory warnings: `
 
 - Round 1 (2026-11-04). Effort 3, roster general (three scope passes), reviewer-claude.
 - Counts at review: bug 2, suggestion 3, nit 1.
-- Disposition: M1, M2, M3, M4, M5, and M6 fixed on this id. Round 2 re-reviews; this node did not run a review.
+- Fix pass: M1, M2, M3, M4, M5, and M6 fixed on this id in `8eadac32`.
+- Round 2 (2026-11-04). Effort 3, roster general, reviewer-claude, scope: the fix delta `1ac6afb4..8eadac32`. All six findings were re-verified as fixed, and there were no new findings.
+- Final counts: bug 0 open / 2 fixed, suggestion 0 open / 3 fixed, nit 0 open / 1 fixed, wontfix 0.
+- **Disposition: clean** (`review/disposition.md`). There were no exceptions and no escalations.
+- Round-2 notes, recorded as observations rather than findings: namespace checks deliberately walk name structure instead of comparing symbols, because symbol comparison was the M1 bug. The reference-pack test hard-codes `net11.0`, the same TFM as `Directory.Build.props`.
+- Round-2 gates: generator tests 101 passed, analyzer tests 44 passed, state tests 131 passed and 1 skipped, `dotnet build scripts/e2e.cs` OK, and `ganda repo audit` passed with the two pre-existing advisory warnings.
 - M1: threading and tasks match by namespace structure. The reference-pack test covers `CancellationTokenSource` and `SemaphoreSlim`.
 - M2: e2e comments and Design text are restored. The steps moved into included files. Deeper e2e bugs stay on task 136.
 - M3: `ICloneable`, `ReferenceAssemblyAttribute`, the shared BCL names, and `ValueTuple` use the same structural match.
 - M4: `Emit` is `EmitHeader`, `EmitExtensionMethods`, `EmitCloneMethods`, `EmitInitializers`, and `EmitHolders`.
 - M5: reachability is computed only for roots that already produced a diagnostic, and skipped when that set is empty.
 - M6: unused catalog members removed, empty metadata names guarded, stale comments updated, `CorrectnessDiagnostics` moved.
-- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 - Gates run by review: generator tests 100 passed, analyzer tests 44/44, state tests 131 passed and 1 skipped, `dotnet build tools/dev-cli/dev.cs` OK.
 - Gates run by this fix: generator tests 101 passed, `dotnet build scripts/e2e.cs` succeeded, `ganda repo audit` passed with the two advisory warnings above.
