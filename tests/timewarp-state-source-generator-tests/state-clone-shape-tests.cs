@@ -6,7 +6,8 @@
 #region Design
 // Each [Input] names one entry in a shape table, so a failure reports the shape. Supported shapes compile the
 // generated file together with the source (CS0121, CS9035, CS1061, CS0266, CS8121, CS0111 all surface here).
-// Runtime behavior of the same shapes is covered in timewarp-state-tests/cloning/generated-clone-shape-tests.cs.
+// Runtime behavior of the same shapes is covered in timewarp-state-tests/cloning/generated-clone-shape-tests.cs
+// and generated-clone-shape-more-tests.cs.
 #endregion
 
 namespace StateCloneSourceGenerator_;

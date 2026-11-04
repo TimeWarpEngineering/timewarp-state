@@ -3,15 +3,34 @@
 #endregion
 
 #region Design
-// GetTypeByMetadataName walks referenced assemblies. MatchConcrete and IsShared used to call it dozens of times
-// per type. The catalog resolves each name when it is constructed and answers later questions by symbol equality.
-// Namespace checks compare INamespaceSymbol values from the same compilation, not display strings.
+// GetTypeByMetadataName walks referenced assemblies. Collection and assignable-type tables resolve each name
+// at construction and compare those symbols. Cross-assembly checks walk Name and ContainingNamespace instead.
+// Namespace symbols belong to one module, so equality against Thread's namespace misses CancellationTokenSource
+// in the reference pack. A null or polyfill result from GetTypeByMetadataName would also miss ICloneable,
+// ReferenceAssemblyAttribute, and the shared BCL names. An empty metadata name does not call GetTypeByMetadataName.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
 
 internal sealed class StateCloneTypeCatalog
 {
+  private static readonly string[] SharedMetadataNames =
+  [
+    "System.DateTimeOffset",
+    "System.TimeSpan",
+    "System.DateOnly",
+    "System.TimeOnly",
+    "System.Guid",
+    "System.Half",
+    "System.Int128",
+    "System.UInt128",
+    "System.Uri",
+    "System.Version",
+    "System.DBNull",
+    "System.TimeZoneInfo",
+    "System.Numerics.BigInteger"
+  ];
+
   private readonly Dictionary<string, INamedTypeSymbol?> ByMetadataName = new(StringComparer.Ordinal);
   private readonly Compilation Compilation;
 
@@ -19,32 +38,9 @@ internal sealed class StateCloneTypeCatalog
   {
     Compilation = compilation;
     StateType = Resolve("TimeWarp.State.State`1");
-    ICloneable = Resolve("System.ICloneable");
-    SystemNamespace = compilation.GetTypeByMetadataName("System.Object")?.ContainingNamespace;
-    ValueTuple = Resolve("System.ValueTuple");
-    ThreadingNamespace = compilation.GetTypeByMetadataName("System.Threading.Thread")?.ContainingNamespace;
-    TasksNamespace = compilation.GetTypeByMetadataName("System.Threading.Tasks.Task")?.ContainingNamespace;
     JsonIgnoreCondition = Resolve("System.Text.Json.Serialization.JsonIgnoreCondition");
-    ReferenceAssemblyAttribute = Resolve("System.Runtime.CompilerServices.ReferenceAssemblyAttribute");
     NotTest = Resolve("TimeWarp.Fixie.NotTest");
     NotTestAttribute = Resolve("TimeWarp.Fixie.NotTestAttribute");
-
-    NamedTypes = new Dictionary<string, INamedTypeSymbol?>(StringComparer.Ordinal)
-    {
-      ["System.DateTimeOffset"] = Resolve("System.DateTimeOffset"),
-      ["System.TimeSpan"] = Resolve("System.TimeSpan"),
-      ["System.DateOnly"] = Resolve("System.DateOnly"),
-      ["System.TimeOnly"] = Resolve("System.TimeOnly"),
-      ["System.Guid"] = Resolve("System.Guid"),
-      ["System.Half"] = Resolve("System.Half"),
-      ["System.Int128"] = Resolve("System.Int128"),
-      ["System.UInt128"] = Resolve("System.UInt128"),
-      ["System.Uri"] = Resolve("System.Uri"),
-      ["System.Version"] = Resolve("System.Version"),
-      ["System.DBNull"] = Resolve("System.DBNull"),
-      ["System.TimeZoneInfo"] = Resolve("System.TimeZoneInfo"),
-      ["System.Numerics.BigInteger"] = Resolve("System.Numerics.BigInteger")
-    };
 
     AssignableTypes =
     [
@@ -72,13 +68,7 @@ internal sealed class StateCloneTypeCatalog
   }
 
   public INamedTypeSymbol? StateType { get; }
-  public INamedTypeSymbol? ICloneable { get; }
-  public INamespaceSymbol? SystemNamespace { get; }
-  public INamedTypeSymbol? ValueTuple { get; }
-  public INamespaceSymbol? ThreadingNamespace { get; }
-  public INamespaceSymbol? TasksNamespace { get; }
   public INamedTypeSymbol? JsonIgnoreCondition { get; }
-  public INamedTypeSymbol? ReferenceAssemblyAttribute { get; }
   public INamedTypeSymbol? NotTest { get; }
   public INamedTypeSymbol? NotTestAttribute { get; }
   public INamedTypeSymbol? NonGenericEqualityComparer { get; }
@@ -88,13 +78,17 @@ internal sealed class StateCloneTypeCatalog
   public INamedTypeSymbol? Enumerable { get; }
   public INamedTypeSymbol? Dictionary { get; }
   public INamedTypeSymbol? ReadOnlyDictionary { get; }
-  public Dictionary<string, INamedTypeSymbol?> NamedTypes { get; }
   public INamedTypeSymbol?[] AssignableTypes { get; }
   public (INamedTypeSymbol? Definition, CollectionKind Kind)[] InterfaceKinds { get; }
   public (INamedTypeSymbol? Definition, CollectionKind Kind, string MetadataName)[] ConcreteKinds { get; }
 
   public INamedTypeSymbol? Resolve(string metadataName)
   {
+    if (string.IsNullOrEmpty(metadataName))
+    {
+      return null;
+    }
+
     if (ByMetadataName.TryGetValue(metadataName, out INamedTypeSymbol? cached))
     {
       return cached;
@@ -107,27 +101,48 @@ internal sealed class StateCloneTypeCatalog
 
   public bool SymbolEquals(INamedTypeSymbol type, string metadataName)
   {
-    INamedTypeSymbol? definition = Resolve(metadataName);
-    return definition is not null && SymbolEqualityComparer.Default.Equals(type, definition);
-  }
-
-  public bool Named(ITypeSymbol type, string metadataName)
-  {
-    INamedTypeSymbol? definition = Resolve(metadataName);
-    return definition is not null && SymbolEqualityComparer.Default.Equals(type, definition);
-  }
-
-  public bool ImplementsICloneable(ITypeSymbol type)
-  {
-    if (ICloneable is null)
+    if (string.IsNullOrEmpty(metadataName))
     {
       return false;
     }
 
+    INamedTypeSymbol? definition = Resolve(metadataName);
+    return definition is not null && SymbolEqualityComparer.Default.Equals(type, definition);
+  }
+
+  public bool IsSharedNamedType(ITypeSymbol type)
+  {
+    foreach (string metadataName in SharedMetadataNames)
+    {
+      if (HasMetadataName(type, metadataName))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public static bool HasReferenceAssemblyAttribute(IAssemblySymbol assembly)
+  {
+    foreach (AttributeData attribute in assembly.GetAttributes())
+    {
+      if (attribute.AttributeClass is { } attributeClass
+          && HasMetadataName(attributeClass, "System.Runtime.CompilerServices.ReferenceAssemblyAttribute"))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  public bool ImplementsICloneable(ITypeSymbol type)
+  {
     foreach (INamedTypeSymbol implemented in type.AllInterfaces)
     {
-      if (SymbolEqualityComparer.Default.Equals(implemented, ICloneable)
-          || SymbolEqualityComparer.Default.Equals(implemented.OriginalDefinition, ICloneable))
+      if (HasMetadataName(implemented, "System.ICloneable")
+          || HasMetadataName(implemented.OriginalDefinition, "System.ICloneable"))
       {
         return true;
       }
@@ -148,12 +163,66 @@ internal sealed class StateCloneTypeCatalog
     return type.IsValueType
       && type.Arity > 0
       && type.Name == "ValueTuple"
-      && SymbolEqualityComparer.Default.Equals(type.ContainingNamespace, SystemNamespace);
+      && InNamespace(type.ContainingNamespace, "System");
   }
 
   public bool InThreadingNamespace(ITypeSymbol type) =>
-    SymbolEqualityComparer.Default.Equals(type.ContainingNamespace, ThreadingNamespace)
-    || SymbolEqualityComparer.Default.Equals(type.ContainingNamespace, TasksNamespace);
+    InNamespace(type.ContainingNamespace, "System.Threading")
+    || InNamespace(type.ContainingNamespace, "System.Threading.Tasks");
+
+  // Non-generic metadata names only. Generic definitions carry an arity the plain name does not.
+  public static bool HasMetadataName(ITypeSymbol type, string metadataName)
+  {
+    if (string.IsNullOrEmpty(metadataName))
+    {
+      return false;
+    }
+
+    int dot = metadataName.LastIndexOf('.');
+    string name = dot < 0 ? metadataName : metadataName.Substring(dot + 1);
+    if (type.Name != name || type is INamedTypeSymbol { Arity: > 0 })
+    {
+      return false;
+    }
+
+    string dottedNamespace = dot < 0 ? string.Empty : metadataName.Substring(0, dot);
+    return InNamespace(type.ContainingNamespace, dottedNamespace);
+  }
+
+  public static bool InNamespace(INamespaceSymbol? namespaceSymbol, string dottedNamespace)
+  {
+    if (namespaceSymbol is null)
+    {
+      return false;
+    }
+
+    if (dottedNamespace.Length == 0)
+    {
+      return namespaceSymbol.IsGlobalNamespace;
+    }
+
+    int end = dottedNamespace.Length;
+    INamespaceSymbol current = namespaceSymbol;
+    while (end > 0)
+    {
+      if (current.IsGlobalNamespace)
+      {
+        return false;
+      }
+
+      int start = dottedNamespace.LastIndexOf('.', end - 1);
+      int segmentStart = start + 1;
+      if (!current.Name.AsSpan().Equals(dottedNamespace.AsSpan(segmentStart, end - segmentStart), StringComparison.Ordinal))
+      {
+        return false;
+      }
+
+      end = start;
+      current = current.ContainingNamespace;
+    }
+
+    return current.IsGlobalNamespace;
+  }
 
   private (INamedTypeSymbol? Definition, CollectionKind Kind)[] BuildInterfaceKinds() =>
   [

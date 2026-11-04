@@ -1,6 +1,7 @@
 #region Purpose
 // Tests for HandlerMustNotSendActionAnalyzer: TWS0002 when a handler sends an action (directly or through a generated
-// state method), TWS0003 (info) when a handler opts out with [AllowActionSend], and the cases that must not report.
+// state method). The TWS0003 opt-out and the cases that must not report live in
+// handler-must-not-send-action-analyzer-negative-tests.cs.
 #endregion
 
 #region Design

@@ -3,7 +3,8 @@
 #endregion
 
 #region Design
-// Partial of Should_ in the same test project. The fixtures stay in generated-clone-shape-tests.cs so the generator sees them.
+// Partial of Should_ in the same test project. The fixtures live in generated-clone-shape-tests.cs.
+// The generator sees every syntax tree in that compilation.
 #endregion
 
 namespace GeneratedCloneShapeTests;

@@ -4,7 +4,7 @@
 
 #region Design
 // Metadata names go through StateCloneTypeCatalog, which resolves each name once per compilation.
-// Namespace checks compare INamespaceSymbol values from that catalog. Collection kind matching lives in its own partial.
+// Shared BCL names and the threading namespaces match by name and namespace structure. Collection kind matching lives in its own partial.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -244,12 +244,9 @@ internal sealed partial class StateClonePlanner
       return true;
     }
 
-    foreach (KeyValuePair<string, INamedTypeSymbol?> named in Catalog.NamedTypes)
+    if (Catalog.IsSharedNamedType(type))
     {
-      if (named.Value is not null && SymbolEqualityComparer.Default.Equals(type, named.Value))
-      {
-        return true;
-      }
+      return true;
     }
 
     foreach (INamedTypeSymbol? assignable in Catalog.AssignableTypes)

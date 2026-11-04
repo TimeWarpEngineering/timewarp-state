@@ -40,9 +40,7 @@ internal sealed partial class StateClonePlanner
       return null;
     }
 
-    if (assembly.GetAttributes().Any(attribute =>
-          Catalog.ReferenceAssemblyAttribute is { } referenceAttribute
-          && SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, referenceAttribute)))
+    if (StateCloneTypeCatalog.HasReferenceAssemblyAttribute(assembly))
     {
       return ReferenceAssemblyProblem(definition, assembly);
     }

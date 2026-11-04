@@ -3,7 +3,8 @@
 #endregion
 
 #region Design
-// A type-level failure is reported through the source member that reaches it, unless the type is a root. Report walks each root's dependency graph once instead of testing every root pair.
+// A type-level failure is reported through the source member that reaches it, unless the type is a root.
+// Reachability is computed only for roots that already produced a diagnostic, and skipped when that set is empty.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -79,11 +80,6 @@ internal sealed partial class StateClonePlanner
 
     HashSet<string> reported = new(StringComparer.Ordinal);
     HashSet<Slot> reportedRoots = [];
-    Dictionary<Slot, HashSet<Slot>> reachableFromRoot = [];
-    foreach (Slot root in Roots)
-    {
-      reachableFromRoot[root] = Reachable(root);
-    }
 
     foreach (KeyValuePair<Slot, Slot> pair in rootOf)
     {
@@ -115,10 +111,30 @@ internal sealed partial class StateClonePlanner
         RootSuffix(slot, pair.Value)));
     }
 
+    if (reportedRoots.Count == 0)
+    {
+      ReportUncoveredRoots(sourceContext, rootOf, reportedRoots, reachableFromRoot: null);
+      return;
+    }
+
+    ReportUncoveredRoots(sourceContext, rootOf, reportedRoots, []);
+  }
+
+  private void ReportUncoveredRoots(
+    SourceProductionContext sourceContext,
+    Dictionary<Slot, Slot> rootOf,
+    HashSet<Slot> reportedRoots,
+    Dictionary<Slot, HashSet<Slot>>? reachableFromRoot)
+  {
     foreach (Slot root in Roots)
     {
       PlanningCancellation.ThrowIfCancellationRequested();
-      if (root.Kind != SlotKind.Error || reportedRoots.Contains(root) || ReachedByReportedRoot(root, reachableFromRoot, reportedRoots))
+      if (root.Kind != SlotKind.Error || reportedRoots.Contains(root))
+      {
+        continue;
+      }
+
+      if (reachableFromRoot is not null && ReachedByReportedRoot(root, reachableFromRoot, reportedRoots))
       {
         continue;
       }
@@ -151,6 +167,11 @@ internal sealed partial class StateClonePlanner
 
   private static bool AnyReportedBelow(Slot root, Dictionary<Slot, Slot> rootOf, HashSet<Slot> reportedRoots)
   {
+    if (reportedRoots.Count == 0)
+    {
+      return false;
+    }
+
     HashSet<Slot> seen = [];
     Stack<Slot> pending = new();
     pending.Push(root);
@@ -181,7 +202,18 @@ internal sealed partial class StateClonePlanner
   {
     foreach (Slot reported in reportedRoots)
     {
-      if (reported != root && reachableFromRoot.TryGetValue(reported, out HashSet<Slot>? reachable) && reachable.Contains(root))
+      if (reported == root)
+      {
+        continue;
+      }
+
+      if (!reachableFromRoot.TryGetValue(reported, out HashSet<Slot>? reachable))
+      {
+        reachable = Reachable(reported);
+        reachableFromRoot.Add(reported, reachable);
+      }
+
+      if (reachable.Contains(root))
       {
         return true;
       }

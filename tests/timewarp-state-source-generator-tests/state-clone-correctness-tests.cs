@@ -438,3 +438,16 @@ public class Should_Pass_Comparer_To_Collection_Subclass
   }
 }
 
+internal static class CorrectnessDiagnostics
+{
+  public static IEnumerable<string> GeneratedErrors(Compilation compilation) =>
+    compilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && diagnostic.Location.SourceTree?.FilePath.EndsWith(".g.cs", StringComparison.Ordinal) == true)
+      .Select(diagnostic => diagnostic.ToString());
+
+  public static IEnumerable<string> CompilerErrors(Compilation compilation) =>
+    compilation.GetDiagnostics()
+      .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && diagnostic.Id.StartsWith("CS", StringComparison.Ordinal))
+      .Select(diagnostic => diagnostic.ToString());
+}
+
