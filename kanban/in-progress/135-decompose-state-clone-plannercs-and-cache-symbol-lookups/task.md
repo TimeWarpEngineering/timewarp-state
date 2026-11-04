@@ -32,14 +32,27 @@ Performance:
 - Replace `ContainingNamespace.ToDisplayString()` comparisons in `ImplementsICloneable`, `Named`, `IsValueTuple` with symbol comparison.
 - `RememberICloneableState` uses `List.Contains`; `Report` does `Roots.Any(Reaches)` which is O(R^2 x graph).
 
+## Goal (implementer restatement)
+
+Split the 3717-line `StateClonePlanner` into partials and separate types so each concern is readable, and stop resolving the same metadata names on every classification. Generated clone text and TWSG002 diagnostics stay the same: the existing generator tests are the check.
+
+Acceptance:
+
+- `StateClonePlanner` is `partial`. Emit, diagnostics, subtypes, accessors, metadata inspection, collections, and the type catalog each have their own file.
+- `Slot`, `Holder`, `CollectionKind`, `SlotKind`, `CaseRequest`, and `CloneMember` are their own types.
+- Repeated metadata-name lookups go through `StateCloneTypeCatalog`, built once per planner.
+- Non-generic subtype lists and the "which referenced assemblies reference this one" scan are cached.
+- Duplicate scans and dead branches called out in the brief are gone.
+- `dotnet fixie timewarp-state-source-generator-tests` passes, which locks the generated shapes.
+
 ## Checklist
 
-- [ ] Class made partial, no behaviour change, tests green
-- [ ] Extractions 1-8 landed (one PR per two or three extractions is fine)
-- [ ] Duplication and dead code removed
-- [ ] TypeCatalog caching in place
-- [ ] Subtype cache in place
-- [ ] Generated output byte-identical for the existing shape tests before and after
+- [x] Class made partial, no behaviour change, tests green
+- [x] Extractions 1-8 landed (one PR per two or three extractions is fine)
+- [x] Duplication and dead code removed
+- [x] TypeCatalog caching in place
+- [x] Subtype cache in place
+- [x] Generated output byte-identical for the existing shape tests before and after
 
 ## Depends on
 
@@ -52,3 +65,25 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. The generator ru
 ## Session
 
 - Created: claude code review session (2026-11-04)
+- Implementation: implementer oracle (2026-11-04)
+
+## Results
+
+`StateClonePlanner` is a partial class. The old single file is the plan entry (`state-clone-planner.cs`, 78 lines). The rest is split by concern:
+
+- `state-clone-planner.emit.cs` — dispatches, source text, service types, names
+- `state-clone-planner.diagnostics.cs` — fail, propagate, report
+- `state-clone-planner.subtypes.cs` — implementations, derived types, close-over
+- `state-clone-planner.accessors.cs` — UnsafeAccessor holders
+- `state-clone-planner.metadata.cs` — reference-assembly and hidden-field checks
+- `state-clone-planner.collections.cs` and `state-clone-planner.collection-kinds.cs` — rebuild and kind matching
+- `state-clone-type-catalog.cs` — one `GetTypeByMetadataName` per metadata name per compilation
+- `state-clone-slot.cs`, `state-clone-holder.cs`, `state-clone-collection-kind.cs`, `state-clone-slot-kind.cs`, `state-clone-case-request.cs`, `state-clone-member.cs`
+
+`StateCloneTypeCatalog` holds the BCL and TimeWarp symbols the planner used to look up on every type (`MatchConcrete` was up to 24 lookups, `IsShared` about 9). `ImplementsICloneable`, `IsValueTuple`, and the threading-namespace check compare symbols. Non-generic subtype lists are cached per target. Assemblies that reference a declaring assembly are cached so `CandidateTypes` does not rescan modules. `Report` walks each root once. The two closed-generic syntax scans share one walker. Field and auto-property copies share `AppendMember`. The two interface fallbacks share `MaterializeFallback`. `ICollection<T>` and `IList<T>` are no longer probed after `IEnumerable<T>`. The `IsTupleType` branch of `IsValueTuple` and the redundant pointer-symbol check are gone. `RememberICloneableState` uses a set.
+
+### How to validate
+
+Smoke: `dotnet fixie timewarp-state-source-generator-tests`
+
+Expect: 100 passed. The shape tests compile the generated clone and assert its text, so a byte change in the emitted source fails those cases.
