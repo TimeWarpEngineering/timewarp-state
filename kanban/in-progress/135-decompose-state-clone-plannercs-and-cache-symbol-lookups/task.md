@@ -66,6 +66,7 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. The generator ru
 
 - Created: claude code review session (2026-11-04)
 - Implementation: implementer oracle (2026-11-04)
+- Boy scout: split the pre-existing files over the 500-line audit cap (analyzer, generator, state tests, and workflow-command). `scripts/e2e.cs` is a file-based app whose compile list does not include a sibling, so it was shortened to 500 lines in place. The named-element `IsTupleType` path stays: dropping it made `(string Name, Item It)` look like a hidden reference-assembly field and stopped emitting `ValueShapes.Clone`. `ganda repo audit --fix --checks kanban-landed` landed this kitchen on origin-home (`1dc7b6dc`). Re-audit has no errors. Advisory only: claim 098 has no worktree, and seven pre-existing paths are not kebab-case.
 
 ## Results
 
@@ -80,10 +81,10 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. The generator ru
 - `state-clone-type-catalog.cs` — one `GetTypeByMetadataName` per metadata name per compilation
 - `state-clone-slot.cs`, `state-clone-holder.cs`, `state-clone-collection-kind.cs`, `state-clone-slot-kind.cs`, `state-clone-case-request.cs`, `state-clone-member.cs`
 
-`StateCloneTypeCatalog` holds the BCL and TimeWarp symbols the planner used to look up on every type (`MatchConcrete` was up to 24 lookups, `IsShared` about 9). `ImplementsICloneable`, `IsValueTuple`, and the threading-namespace check compare symbols. Non-generic subtype lists are cached per target. Assemblies that reference a declaring assembly are cached so `CandidateTypes` does not rescan modules. `Report` walks each root once. The two closed-generic syntax scans share one walker. Field and auto-property copies share `AppendMember`. The two interface fallbacks share `MaterializeFallback`. `ICollection<T>` and `IList<T>` are no longer probed after `IEnumerable<T>`. The `IsTupleType` branch of `IsValueTuple` and the redundant pointer-symbol check are gone. `RememberICloneableState` uses a set.
+`StateCloneTypeCatalog` holds the BCL and TimeWarp symbols the planner used to look up on every type (`MatchConcrete` was up to 24 lookups, `IsShared` about 9). `ImplementsICloneable`, `IsValueTuple`, and the threading-namespace check compare symbols. Non-generic subtype lists are cached per target. Assemblies that reference a declaring assembly are cached so `CandidateTypes` does not rescan modules. `Report` walks each root once. The two closed-generic syntax scans share one walker. Field and auto-property copies share `AppendMember`. The two interface fallbacks share `MaterializeFallback`. `ICollection<T>` and `IList<T>` are no longer probed after `IEnumerable<T>`. The redundant pointer-symbol check is gone. `IsValueTuple` still accepts `IsTupleType` (a named tuple such as `(string Name, Item It)`); that path is the public element form, and the namespace check covers `System.ValueTuple`N` after `TupleUnderlyingType` is unwrapped. `RememberICloneableState` uses a set.
 
 ### How to validate
 
 Smoke: `dotnet fixie timewarp-state-source-generator-tests`
 
-Expect: 100 passed. The shape tests compile the generated clone and assert its text, so a byte change in the emitted source fails those cases.
+Expect: 100 passed. The shape tests compile the generated clone and assert its text, so a byte change in the emitted source fails those cases. `dotnet fixie timewarp-state-analyzer-tests` passes the split handler cases (44). `dotnet build scripts/e2e.cs` and `dotnet build tools/dev-cli/dev.cs` succeed. `dotnet fixie timewarp-state-tests` runs the split clone-shape and transaction-behavior cases.

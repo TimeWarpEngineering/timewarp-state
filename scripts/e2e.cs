@@ -9,11 +9,7 @@
 #endregion
 
 #region Design
-// Sets NUGET_PACKAGES to artifacts/nuget-packages, then restores tools and cleans, skips dev-cert trust
-// over http, builds the analyzer and source generator, sets UseHttp in the client appsettings, publishes
-// the server to tests/test-app/output, builds the tests, installs Chromium, starts the SUT on port 7011,
-// waits up to 30 tries, runs dotnet test with chrome.runsettings, then kills the SUT. runMode is fixed
-// to Auto. Any test failure exits 1.
+// Restores tools, builds the analyzer, generator, and published server, installs Chromium, runs chrome.runsettings, then stops the SUT. UseHttp defaults to true. A failed test exits 1.
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
@@ -38,7 +34,6 @@ static class App
       DevCli.NuGetPackageIsolation.Apply(Directory.GetCurrentDirectory());
     WriteLine($"NUGET_PACKAGES={isolation.IsolatedPackagesFolder}");
 
-    // Configuration variables
     var sutProjectDir = "./tests/test-app/test-app-server";
     var outputPath = "./tests/test-app/output";
     // workflow.yml sets UseHttp; default to http when the variable is unset or unparseable.
@@ -126,7 +121,6 @@ static class App
         if (runMode is "Development" or "Release")
         {
             WriteLine($"Tests completed. SUT is still running in {runMode} mode. Press Ctrl+C to stop.");
-            // In a real implementation, you'd handle cancellation tokens here
         }
     }
     catch (Exception ex)
@@ -159,8 +153,7 @@ static class App
         WriteLine("E2E tests failed.");
         Environment.Exit(1);
     }
-}
-
+  }
   static async Task WriteStepHeader(string stepName)
 {
     WriteLine($"\n========== Starting: {stepName} ==========");
@@ -202,15 +195,12 @@ static class App
 
   static async Task RestoreToolsAndCleanup()
 {
-    // Restore .NET tools
     var exitCode = await DotNet.Tool().Restore().Build().RunAsync();
     if (exitCode != 0) Environment.Exit(1);
 
-    // Clean the solution
     exitCode = await DotNet.Clean().Build().RunAsync();
     if (exitCode != 0) Environment.Exit(1);
 
-    // Clean the Output directory
     if (Directory.Exists("./tests/test-app/output"))
     {
         Directory.Delete("./tests/test-app/output", true);
@@ -253,14 +243,12 @@ static class App
 
   static async Task BuildAndPublishSut(string sutProjectDir, string outputPath)
 {
-    // Restore dependencies
     var exitCode = await DotNet.Restore()
         .WithProject($"{sutProjectDir}/test-app-server.csproj")
         .Build()
         .RunAsync();
     if (exitCode != 0) Environment.Exit(1);
 
-    // Build the solution
     exitCode = await DotNet.Build()
         .WithProject($"{sutProjectDir}/test-app-server.csproj")
         .WithConfiguration("Release")
@@ -269,7 +257,6 @@ static class App
         .RunAsync();
     if (exitCode != 0) Environment.Exit(1);
 
-    // Publish the SUT
     exitCode = await DotNet.Publish()
         .WithProject($"{sutProjectDir}/test-app-server.csproj")
         .WithConfiguration("Release")
@@ -281,14 +268,12 @@ static class App
 
   static async Task BuildTest(string testProjectDir)
 {
-    // Restore dependencies
     var exitCode = await DotNet.Restore()
         .WithProject($"{testProjectDir}/test-app-end-to-end-tests.csproj")
         .Build()
         .RunAsync();
     if (exitCode != 0) Environment.Exit(1);
 
-    // Build the test project
     exitCode = await DotNet.Build()
         .WithProject($"{testProjectDir}/test-app-end-to-end-tests.csproj")
         .WithConfiguration("Debug")
@@ -327,7 +312,6 @@ static class App
             return null;
 
         default:
-            // Auto mode
             WriteLine("Starting SUT in Auto mode...");
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
             var executableName = OperatingSystem.IsWindows() ? "Test.App.Server.exe" : "Test.App.Server";
@@ -475,7 +459,6 @@ static class App
         WriteLine("SUT process terminated.");
     }
 
-    // Wait on both paths: the OutputDataReceived handlers may still be draining into the writers below.
     sutProcess.WaitForExit();
 
     SutOutputWriter?.Dispose();
@@ -489,7 +472,6 @@ static class App
     if (OperatingSystem.IsLinux())
     {
         WriteLine("Installing Linux development certificates...");
-        // Best effort: a partially trusted cert must not fail the run.
         // `dotnet dev-certs https --trust` exits 4 on Linux when OpenSSL trust needs SSL_CERT_DIR (GitHub runners),
         // and this Amuru line throws on a non-zero exit instead of returning it.
         try

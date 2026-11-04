@@ -136,11 +136,13 @@ internal sealed class StateCloneTypeCatalog
     return false;
   }
 
+  // IsTupleType is the named-element form, such as (string Name, Item It). TupleUnderlyingType
+  // is the System.ValueTuple`N the planner already normalizes away before classification.
   public bool IsValueTuple(INamedTypeSymbol type)
   {
     if (type.IsTupleType)
     {
-      return false;
+      return true;
     }
 
     return type.IsValueType
