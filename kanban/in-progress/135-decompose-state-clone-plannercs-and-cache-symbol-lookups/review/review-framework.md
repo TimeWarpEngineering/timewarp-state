@@ -2,7 +2,7 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 10408
+- Lines changed: 1410
 - Effort: 3
 - TCB hits: none
 - Roster axes: general
@@ -17,6 +17,13 @@
 - **Effort:** 3. Three `general` passes split by scope: (a) catalog/symbols/subtypes/roots/collections; (b) emit/diagnostics/metadata/accessors/construction/objects/shapes/slots/small types; (c) boy-scout test/script/dev-cli splits
 - **Reviewer roster:** general
 - **Session IDs:** reviewer-claude (claude-opus-5-5) headless review oracle; three in-process general-purpose subagents
+
+## Scope (round 2)
+
+- **Date:** 2026-11-04
+- **Diff scope:** fix delta `1ac6afb4..8eadac32` (fix commit `8eadac32`), excluding `kanban/`. Round-1 M1–M6 were re-checked against the post-fix tree.
+- **Effort:** 3, roster general (the delta was small, so there was one pass, run in-session)
+- **Session IDs:** reviewer-claude (claude-opus-5-5), headless review-2 oracle
 
 ## Ground rules
 
