@@ -90,6 +90,7 @@ each finding has a disposition note, pushed.
   effort 2, roster general, turn cap 120, no helper agents). It reviewed the fix delta `75b10bdd..138a9298` and ran
   the analyzer, DevTools and generator suites. All are green. Artifacts: `review/round-2/general.md`,
   `review/round-2/merged.md` and `review/disposition.md` (clean).
+- 2026-11-06 CI pack failure on PR #672 (DevTools.Export nuspec dependency TimeWarp.State outside the allow-list); allow-list updated to permit TimeWarp.State for DevTools.Export. Local `dev pack` green (packed set verified, 9 nupkgs).
 
 ## Depends on
 
