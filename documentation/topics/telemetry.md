@@ -46,7 +46,7 @@ builder.Services.AddTimeWarpState(options =>
 builder.Services.AddTimeWarpStateTelemetry(options => options.IncludeSnapshots = true);
 ```
 
-In a project that references `TimeWarp.State.Telemetry`, analyzer **TWS0013** warns on each state no context lists. Its code fix adds the `[JsonSerializable]` line, or creates `StateJsonContext` when the project has no context. See [Analyzers](xref:TimeWarpState:Analyzers.md).
+In a project that references `TimeWarp.State.Telemetry`, analyzer **TWS0013** warns on each state no context lists. Its code fix adds the `[JsonSerializable]` line, or creates `StateJsonContext` when the project has no context. The analyzer cannot see `IncludeSnapshots`, so it warns even with snapshots off. A spans-only project sets `dotnet_diagnostic.TWS0013.severity = none` in `.editorconfig`. See [Analyzers](xref:TimeWarpState:Analyzers.md).
 
 ## Sample
 

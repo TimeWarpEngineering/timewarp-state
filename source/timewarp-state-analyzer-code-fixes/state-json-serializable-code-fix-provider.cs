@@ -175,7 +175,11 @@ public sealed class StateJsonSerializableCodeFixProvider : CodeFixProvider
     text.Append(indent).Append("/// <c>AddTimeWarpState(options => options.JsonSerializerOptions.TypeInfoResolver = ").Append(NewContextName).Append(".Default)</c>.").Append(newLine);
     text.Append(indent).Append("/// </summary>").Append(newLine);
     text.Append(indent).Append("[JsonSerializable(typeof(").Append(stateTypeName).Append("))]").Append(newLine);
-    text.Append(indent).Append("internal sealed partial class ").Append(NewContextName).Append(" : JsonSerializerContext").Append(newLine);
+    // A public state gets a public context so a host project (hosted WASM server, Auto/prerender server) can wire it as
+    // TypeInfoResolver. A non-public state keeps the context internal: a public context exposing JsonTypeInfo for an
+    // internal type would not compile.
+    string accessibility = IsEffectivelyPublic(state) ? "public" : "internal";
+    text.Append(indent).Append(accessibility).Append(" sealed partial class ").Append(NewContextName).Append(" : JsonSerializerContext").Append(newLine);
     text.Append(indent).Append('{').Append(newLine);
     text.Append(indent).Append('}').Append(newLine);
     if (namespaceName is not null && !fileScopedNamespace)
@@ -199,6 +203,17 @@ public sealed class StateJsonSerializableCodeFixProvider : CodeFixProvider
       (_, typeOf) => typeOf.WithType(typeOf.Type.WithAdditionalAnnotations(Simplifier.Annotation))
     );
     return newDocument.WithSyntaxRoot(annotatedRoot).Project.Solution;
+  }
+
+  private static bool IsEffectivelyPublic(INamedTypeSymbol state)
+  {
+    for (INamedTypeSymbol? type = state; type is not null; type = type.ContainingType)
+    {
+      if (type.DeclaredAccessibility != Accessibility.Public)
+        return false;
+    }
+
+    return true;
   }
 
   private static string UniqueFileName(Project project, IReadOnlyList<string> folders)

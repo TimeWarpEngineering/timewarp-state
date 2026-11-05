@@ -56,7 +56,9 @@ Scope is symbol-based: any type whose base chain includes `TimeWarp.State.StateA
 
 A concrete `State<T>` needs source-generated `JsonTypeInfo` when it has `[PersistentState]` (and the project declares a `JsonSerializerContext`) or when the project references `TimeWarp.State.Telemetry` (snapshots skip a state with no type info). The rule fires when no context in the project lists it.
 
-The code fix lives in `timewarp-state-analyzer-code-fixes.dll`, packed beside this assembly. It is a separate assembly so this one keeps compiler-only references (RS1038). The fix appends `[JsonSerializable(typeof(X))]` to a chosen context, or creates `state-json-context.cs` with `StateJsonContext` when there is none. The developer still wires the context once: `options.JsonSerializerOptions.TypeInfoResolver = AppJsonContext.Default` in `AddTimeWarpState`.
+The telemetry reason cannot see `IncludeSnapshots` (off by default) or a resolver set on the telemetry options, because both are runtime settings. A spans-only project turns the rule off with `dotnet_diagnostic.TWS0013.severity = none` (or `suggestion`) in `.editorconfig`.
+
+The code fix lives in `timewarp-state-analyzer-code-fixes.dll`, packed beside this assembly. It is a separate assembly so this one keeps compiler-only references (RS1038). The fix appends `[JsonSerializable(typeof(X))]` to a chosen context, or creates `state-json-context.cs` with `StateJsonContext` when there is none. The new context is `public` for a public state and `internal` otherwise. The developer still wires the context once: `options.JsonSerializerOptions.TypeInfoResolver = AppJsonContext.Default` in `AddTimeWarpState`.
 
 ## Generator / analyzer ordering
 

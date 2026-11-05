@@ -116,7 +116,14 @@ System.Text.Json's source generator reads only user source, so TimeWarp.State ca
 - **persistence:** the state has `[PersistentState]` and the project declares at least one `JsonSerializerContext`. With no context, persistence uses the reflection resolver and the rule stays quiet.
 - **telemetry snapshots:** the project references `TimeWarp.State.Telemetry`. Snapshots have no reflection fallback. A state whose `TypeInfoResolver` returns no type info is skipped with only a debug log, so this reason is reported whether or not a context exists.
 
-The code fix offers one action per context in the project: **Add [JsonSerializable(typeof(X))] to AppJsonContext**. With no context it offers **Create StateJsonContext**, which adds `state-json-context.cs` beside the state. Then make the context the resolver, once:
+The telemetry reason cannot see `IncludeSnapshots` (off by default) or a resolver set on the telemetry options. Both are runtime settings, and an analyzer reads only source. A project that uses telemetry for spans only, with snapshots off, gets one warning per state, and `TreatWarningsAsErrors` fails its build. Turn the rule off or down for that project in `.editorconfig`:
+
+```ini
+[*.cs]
+dotnet_diagnostic.TWS0013.severity = none   # or suggestion
+```
+
+The code fix offers one action per context in the project: **Add [JsonSerializable(typeof(X))] to AppJsonContext**. With no context it offers **Create StateJsonContext**, which adds `state-json-context.cs` beside the state. The new context is `public` when the state is public, so a host project (a hosted WASM server, or an Auto/prerender server) can wire it. For a non-public state it is `internal`. Then make the context the resolver, once:
 
 ```csharp
 builder.Services.AddTimeWarpState(options =>

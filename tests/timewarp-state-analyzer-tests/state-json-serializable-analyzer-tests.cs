@@ -407,7 +407,7 @@ public class Should_Fix_TWS0013
       /// <c>AddTimeWarpState(options => options.JsonSerializerOptions.TypeInfoResolver = StateJsonContext.Default)</c>.
       /// </summary>
       [JsonSerializable(typeof(CounterState))]
-      internal sealed partial class StateJsonContext : JsonSerializerContext
+      public sealed partial class StateJsonContext : JsonSerializerContext
       {
       }
 
@@ -420,6 +420,47 @@ public class Should_Fix_TWS0013
     codeFixTest.FixedState.Sources.Add(("/0/telemetry.cs", Tws0013.TelemetryStandIn));
     codeFixTest.FixedState.Sources.Add(("/0/state-json-context.cs", NewContext));
     codeFixTest.ExpectedDiagnostics.Add(Tws0013.Expected(5, 29, "CounterState", "telemetry snapshots", "/0/counter-state.cs"));
+    await codeFixTest.RunAsync();
+  }
+
+  public static async Task Given_No_Context_And_Internal_State_Creates_Internal_One()
+  {
+    const string Source =
+      """
+      using TimeWarp.State;
+
+      namespace App.Features;
+
+      internal sealed partial class CounterState : State<CounterState>
+      {
+        public override void Initialize() { }
+      }
+      """;
+
+    const string NewContext =
+      """
+      using System.Text.Json.Serialization;
+
+      namespace App.Features;
+
+      /// <summary>
+      /// Source-generated JSON type info for TimeWarp.State persistence and telemetry snapshots. Wire it with
+      /// <c>AddTimeWarpState(options => options.JsonSerializerOptions.TypeInfoResolver = StateJsonContext.Default)</c>.
+      /// </summary>
+      [JsonSerializable(typeof(CounterState))]
+      internal sealed partial class StateJsonContext : JsonSerializerContext
+      {
+      }
+
+      """;
+
+    CSharpCodeFixTest<StateJsonSerializableAnalyzer, StateJsonSerializableCodeFixProvider, FixieVerifier> codeFixTest = Tws0013.CodeFix();
+    codeFixTest.TestState.Sources.Add(("/0/counter-state.cs", Source));
+    codeFixTest.TestState.Sources.Add(("/0/telemetry.cs", Tws0013.TelemetryStandIn));
+    codeFixTest.FixedState.Sources.Add(("/0/counter-state.cs", Source));
+    codeFixTest.FixedState.Sources.Add(("/0/telemetry.cs", Tws0013.TelemetryStandIn));
+    codeFixTest.FixedState.Sources.Add(("/0/state-json-context.cs", NewContext));
+    codeFixTest.ExpectedDiagnostics.Add(Tws0013.Expected(5, 31, "CounterState", "telemetry snapshots", "/0/counter-state.cs"));
     await codeFixTest.RunAsync();
   }
 }
