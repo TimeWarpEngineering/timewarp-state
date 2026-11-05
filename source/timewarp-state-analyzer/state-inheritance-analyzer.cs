@@ -13,8 +13,6 @@
 
 namespace TimeWarp.State.Analyzer;
 
-using Microsoft.CodeAnalysis.CSharp;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class StateInheritanceAnalyzer : DiagnosticAnalyzer
 {

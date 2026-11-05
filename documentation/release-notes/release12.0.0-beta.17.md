@@ -5,6 +5,13 @@ title: Release 12.0.0-beta.17
 
 ## Release 12.0.0-beta.17
 
+### TWS0013: states need a `[JsonSerializable]` entry (task 143)
+
+- New analyzer **TWS0013** (Warning) reports a concrete state that persistence or telemetry snapshots serialize but no `JsonSerializerContext` in the project lists. Persistence counts once the project declares a context. Telemetry counts whenever the project references `TimeWarp.State.Telemetry`, because a snapshot with no type info is skipped silently.
+- The analyzer cannot see `IncludeSnapshots` (off by default) or a resolver set on the telemetry options, because both are runtime settings. A project that uses telemetry for spans only gets one warning per state on upgrade, which fails a `TreatWarningsAsErrors` build. Add `dotnet_diagnostic.TWS0013.severity = none` (or `suggestion`) to that project's `.editorconfig`.
+- A code fix adds `[JsonSerializable(typeof(X))]` to the context you pick, or creates `StateJsonContext` in `state-json-context.cs` (`public` for a public state, so a host project can wire it). It ships in the package as `analyzers/dotnet/cs/timewarp-state-analyzer-code-fixes.dll`.
+- Wire the context once: `AddTimeWarpState(options => options.JsonSerializerOptions.TypeInfoResolver = AppStateJsonContext.Default)`. See [Analyzers](xref:TimeWarpState:Analyzers.md).
+
 ### Source generators fixed in place (task 141)
 
 Nothing that compiled before changes meaning. Some code that failed to compile now compiles, and some generated code that failed to compile is now a clear **TWSG003** error instead.

@@ -132,6 +132,7 @@ public class NupkgContent_Should_
     {
       case "TimeWarp.State":
         entries.ShouldContain("analyzers/dotnet/cs/timewarp-state-analyzer.dll");
+        entries.ShouldContain("analyzers/dotnet/cs/timewarp-state-analyzer-code-fixes.dll");
         entries.ShouldContain("analyzers/dotnet/cs/timewarp-state-source-generator.dll");
         entries.ShouldContain("lib/net11.0/TimeWarp.State.dll");
         break;
