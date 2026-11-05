@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 5608
-- Effort: 3
+- Lines changed: 593
+- Effort: 2
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 120 (--max-turns; cursor uncapped)
 
 ## Scope (review oracle, round 1)
 
@@ -29,3 +29,12 @@ that session.
 - Do not invent issues to fill space. Zero issues is a valid outcome.
 - Address the diff and the call sites around it. Re-verify falsifiable claims against the repo.
 - Prior rounds are immutable. New work goes in `round-(N+1)/`.
+
+## Scope (review oracle, round 2)
+
+**Date:** 2026-11-06
+**Diff scope:** the round-1 fix delta, `75b10bdd..138a9298` (21 product files, kanban excluded). M1 to M12 were
+re-verified, and the delta was scanned for new defects.
+**Effort:** 2 (the budget above). The roster is general: one general reviewer, the review oracle, with no helper
+agents.
+**Session IDs:** review oracle claude-opus-5-5 (ganda task work review-2 node).

@@ -86,6 +86,10 @@ each finding has a disposition note, pushed.
 - 2026-11-06 implementer fix pass (claude-opus-5-5, ganda task work implement-fix-2 node): fixed M1 to M12 from
   round 1. Each disposition note is in `review/round-1/merged.md`. `./bin/dev build` and `./bin/dev test` are green.
   `ganda repo audit` passes with the same 2 pre-existing advisory warnings, so there was nothing new to fix.
+- 2026-11-06 review oracle round 2 (claude-opus-5-5, ganda task work review-2 node, tw-implementation-review,
+  effort 2, roster general, turn cap 120, no helper agents). It reviewed the fix delta `75b10bdd..138a9298` and ran
+  the analyzer, DevTools and generator suites. All are green. Artifacts: `review/round-2/general.md`,
+  `review/round-2/merged.md` and `review/disposition.md` (clean).
 
 ## Depends on
 
@@ -95,7 +99,9 @@ each finding has a disposition note, pushed.
 
 - Round 1: Blocked — open M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12
 - Fix pass 2026-11-06: M1 to M12 fixed. Awaiting round 2.
-
+- Round 2 (2026-11-06): M1 to M12 verified as fixed. The new nit M13 (a stale Results line) was fixed in the
+  kitchen. 0 open. Disposition: clean (`review/disposition.md`).
+- Round 2: Done
 ## Notes
 
 Steve 2026-11-06 decision; order 0 → 1.
@@ -128,6 +134,15 @@ Steve 2026-11-06 decision; order 0 → 1.
   that placement a build error, so no clean build changes. The beta.17 release notes record it.
 - Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
 - Gates the reviewer ran: DevTools tests 122/122. Helper runs: generator tests 162/162 and analyzer tests 51/51.
+- Round 2 (2026-11-06): effort 2, roster general. Scope: the fix delta `75b10bdd..138a9298`.
+  - All of M1 to M12 were verified as fixed in the code.
+  - One new nit, M13: this Results section still described the analyzer's fact-file links as a `facts\*.cs`
+    wildcard. The reviewer fixed it in the kitchen.
+  - Gates the reviewer ran: analyzer tests 53/53, DevTools tests 124/124 and generator tests 164/164.
+- **Final counts:** bug 1 fixed, suggestion 4 fixed and nit 8 fixed. Nothing is open or wontfix.
+- **Disposition: clean.** All 13 findings are fixed.
+- Review paths: `review/review-framework.md`, `review/round-2/general.md`, `review/round-2/merged.md` (the final
+  ledger) and `review/disposition.md`.
 
 ### What changed
 
@@ -150,7 +165,8 @@ Steve 2026-11-06 decision; order 0 → 1.
     Release tracking notes name `TimeWarpStateGenerator`.
 - **Analyzers share the extractors' rules.** `facts/state-symbol-facts.cs` (`State<T>` and `IState` checks, metadata
   names) and `facts/catalog-action-facts.cs` (catalog placement, visibility, default name, attribute reading) are
-  compiled into `timewarp-state-analyzer` as linked source (`<Compile Include=...facts\*.cs Link=...>`).
+  compiled into `timewarp-state-analyzer` as linked source: one `<Compile Include=... Link=...>` per file, named
+  explicitly rather than by a `facts\*.cs` wildcard.
   - `CatalogActionAnalyzer` lost its own placement, visibility and default-name copies.
   - `StateSymbolHelpers` is deleted, and the analyzers use `StateSymbolFacts`.
   - There is still one graph builder. Analyzers share per-symbol rules, not a graph.
