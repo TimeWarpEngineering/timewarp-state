@@ -1,30 +1,22 @@
 #region Purpose
 // Tests for HandlerMustNotSendActionAnalyzer: TWS0002 when a handler sends an action (directly or through a generated
-// state method). The TWS0003 opt-out and the cases that must not report live in
-// handler-must-not-send-action-analyzer-negative-tests.cs.
+// state method). Negatives, TWS0003, and multi-file/generated-file cases live in sibling files.
 #endregion
 
 #region Design
-// Inline source compiled with AnalyzerTestFactory. RunSendDiagnosticAsync builds the expected TWS0002 warning from
-// handler name, called member and span, so each case only states where the send is.
+// Inline source compiled with AnalyzerTestFactory. The expected span is marked {|#0:...|} in the source and the
+// result (handler name, called member) comes from HandlerSendSources, so each case only marks where the send is.
 #endregion
 
 // ReSharper disable InconsistentNaming
 namespace HandlerMustNotSendActionAnalyzer_;
 
-using TimeWarp.State.Analyzer.Tests;
-
 public class Should_Trigger_TWS0002
 {
   public static async Task Given_SameState_GeneratedEntry()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
       public sealed class CounterState : State<CounterState>
       {
         public override void Initialize() { }
@@ -39,7 +31,7 @@ public class Should_Trigger_TWS0002
 
             public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
             {
-              await Store.GetState<CounterState>().Fetch();
+              await Store.GetState<CounterState>().{|#0:Fetch|}();
             }
           }
         }
@@ -56,33 +48,13 @@ public class Should_Trigger_TWS0002
       }
       """;
 
-    await RunSendDiagnosticAsync(TestCode, "Handler", "Fetch", 20, 46, 20, 51);
+    await HandlerSendSources.RunSendAsync(TestCode, "Handler", "Fetch");
   }
 
   public static async Task Given_CrossState_GeneratedEntry()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings + HandlerSendSources.ToastState +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
-      public sealed class ToastState : State<ToastState>
-      {
-        public override void Initialize() { }
-
-        public static class AddProblemDetailsActionSet
-        {
-          public sealed class Action : IAction { }
-        }
-
-        public async Task AddProblemDetails(CancellationToken? externalCancellationToken = null)
-        {
-          await Sender.Send(new AddProblemDetailsActionSet.Action());
-        }
-      }
-
       public sealed class WeatherState : State<WeatherState>
       {
         public override void Initialize() { }
@@ -97,25 +69,20 @@ public class Should_Trigger_TWS0002
 
             public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
             {
-              await Store.GetState<ToastState>().AddProblemDetails();
+              await Store.GetState<ToastState>().{|#0:AddProblemDetails|}();
             }
           }
         }
       }
       """;
 
-    await RunSendDiagnosticAsync(TestCode, "Handler", "AddProblemDetails", 35, 44, 35, 61);
+    await HandlerSendSources.RunSendAsync(TestCode, "Handler", "AddProblemDetails");
   }
 
   public static async Task Given_SenderSend_OfIBaseAction()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
       public interface IBaseAction : IAction { }
 
       public sealed class CounterState : State<CounterState>
@@ -137,25 +104,20 @@ public class Should_Trigger_TWS0002
 
             public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
             {
-              await Sender.Send(new Action());
+              await Sender.{|#0:Send|}(new Action());
             }
           }
         }
       }
       """;
 
-    await RunSendDiagnosticAsync(TestCode, "Handler", "CounterState.IncrementActionSet.Action", 27, 22, 27, 26);
+    await HandlerSendSources.RunSendAsync(TestCode, "Handler", "CounterState.IncrementActionSet.Action");
   }
 
   public static async Task Given_HandleError_OnAppBase()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
       internal abstract class BaseHandler<TAction> : StateActionHandler<TAction>
         where TAction : IAction
       {
@@ -164,21 +126,8 @@ public class Should_Trigger_TWS0002
         protected virtual Task HandleError(CancellationToken cancellationToken) => Task.CompletedTask;
       }
 
-      public sealed class ToastState : State<ToastState>
-      {
-        public override void Initialize() { }
-
-        public static class AddProblemDetailsActionSet
-        {
-          public sealed class Action : IAction { }
-        }
-
-        public async Task AddProblemDetails(CancellationToken? externalCancellationToken = null)
-        {
-          await Sender.Send(new AddProblemDetailsActionSet.Action());
-        }
-      }
-
+      """ + HandlerSendSources.ToastState +
+      """
       public sealed class WeatherState : State<WeatherState>
       {
         public override void Initialize() { }
@@ -198,168 +147,13 @@ public class Should_Trigger_TWS0002
 
             protected override async Task HandleError(CancellationToken cancellationToken)
             {
-              await Store.GetState<ToastState>().AddProblemDetails();
+              await Store.GetState<ToastState>().{|#0:AddProblemDetails|}();
             }
           }
         }
       }
       """;
 
-    await RunSendDiagnosticAsync(TestCode, "Handler", "AddProblemDetails", 48, 44, 48, 61);
-  }
-
-  public static async Task Given_PartialClass_SplitAcrossFiles()
-  {
-    const string StateSource =
-      """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
-      public sealed partial class CounterState : State<CounterState>
-      {
-        public override void Initialize() { }
-
-        public static class FetchActionSet
-        {
-          public sealed class Action : IAction { }
-        }
-
-        public async Task Fetch(CancellationToken? externalCancellationToken = null)
-        {
-          await Sender.Send(new FetchActionSet.Action());
-        }
-
-        public static partial class IncrementActionSet
-        {
-          public sealed class Action : IAction { }
-
-          internal sealed partial class Handler : StateActionHandler<Action>
-          {
-            public Handler(IStore store) : base(store) { }
-          }
-        }
-      }
-      """;
-
-    const string HandlerSource =
-      """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.State;
-
-      public sealed partial class CounterState
-      {
-        public static partial class IncrementActionSet
-        {
-          internal sealed partial class Handler
-          {
-            public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
-            {
-              await Store.GetState<CounterState>().Fetch();
-            }
-          }
-        }
-      }
-      """;
-
-    CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest = new()
-    {
-      ReferenceAssemblies = AnalyzerTestFactory.Net110
-    };
-    AnalyzerTestFactory.AddLibraryReferences(analyzerTest);
-    analyzerTest.TestState.Sources.Add(StateSource);
-    analyzerTest.TestState.Sources.Add(HandlerSource);
-    analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TWS0002", DiagnosticSeverity.Warning)
-        .WithSpan("/0/Test1.cs", 13, 46, 13, 51)
-        .WithArguments("Handler", "Fetch"));
-
-    await analyzerTest.RunAsync();
-  }
-
-  public static async Task Given_GeneratedEntry_InGeneratedFile()
-  {
-    const string UserSource =
-      """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
-      public sealed partial class CounterState : State<CounterState>
-      {
-        public override void Initialize() { }
-
-        public static class FetchActionSet
-        {
-          public sealed class Action : IAction { }
-
-          internal sealed class Handler : StateActionHandler<Action>
-          {
-            public Handler(IStore store) : base(store) { }
-
-            public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
-            {
-              await Store.GetState<CounterState>().Fetch();
-            }
-          }
-        }
-      }
-      """;
-
-    const string GeneratedSource =
-      """
-      #nullable enable
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-
-      public partial class CounterState
-      {
-        public async Task Fetch(CancellationToken? externalCancellationToken = null)
-        {
-          await Sender.Send(new FetchActionSet.Action());
-        }
-      }
-      """;
-
-    CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest = new()
-    {
-      ReferenceAssemblies = AnalyzerTestFactory.Net110
-    };
-    AnalyzerTestFactory.AddLibraryReferences(analyzerTest);
-    analyzerTest.TestState.Sources.Add(UserSource);
-    analyzerTest.TestState.Sources.Add(("CounterState.FetchActionSet_Method.g.cs", GeneratedSource));
-    analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TWS0002", DiagnosticSeverity.Warning)
-        .WithSpan(20, 46, 20, 51)
-        .WithArguments("Handler", "Fetch"));
-
-    await analyzerTest.RunAsync();
-  }
-
-  private static async Task RunSendDiagnosticAsync
-  (
-    string testCode,
-    string handlerName,
-    string actionName,
-    int startLine,
-    int startColumn,
-    int endLine,
-    int endColumn
-  )
-  {
-    CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest =
-      AnalyzerTestFactory.Create<HandlerMustNotSendActionAnalyzer>(testCode);
-
-    analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TWS0002", DiagnosticSeverity.Warning)
-        .WithSpan(startLine, startColumn, endLine, endColumn)
-        .WithArguments(handlerName, actionName));
-
-    await analyzerTest.RunAsync();
+    await HandlerSendSources.RunSendAsync(TestCode, "Handler", "AddProblemDetails");
   }
 }
-

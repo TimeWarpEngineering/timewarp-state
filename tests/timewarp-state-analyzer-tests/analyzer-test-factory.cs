@@ -10,8 +10,6 @@
 
 namespace TimeWarp.State.Analyzer.Tests;
 
-using Microsoft.CodeAnalysis.Diagnostics;
-
 internal static class AnalyzerTestFactory
 {
   // Microsoft.CodeAnalysis.Analyzer.Testing 1.1.4 has no ReferenceAssemblies.Net.Net110 yet, so pin the
@@ -32,6 +30,24 @@ internal static class AnalyzerTestFactory
       TestCode = testCode,
       ReferenceAssemblies = Net110
     };
+
+    AddLibraryReferences(analyzerTest);
+    return analyzerTest;
+  }
+
+  // Multi-source overload: each tuple becomes one named file in the compilation (a ".g.cs" name makes it generated code).
+  public static CSharpAnalyzerTest<TAnalyzer, FixieVerifier> Create<TAnalyzer>(params (string FileName, string Source)[] sources)
+    where TAnalyzer : DiagnosticAnalyzer, new()
+  {
+    CSharpAnalyzerTest<TAnalyzer, FixieVerifier> analyzerTest = new()
+    {
+      ReferenceAssemblies = Net110
+    };
+
+    foreach ((string fileName, string source) in sources)
+    {
+      analyzerTest.TestState.Sources.Add((fileName, source));
+    }
 
     AddLibraryReferences(analyzerTest);
     return analyzerTest;

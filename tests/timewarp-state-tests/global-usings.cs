@@ -25,3 +25,5 @@ global using System.Runtime.CompilerServices;
 global using Microsoft.Extensions.Logging;
 global using TimeWarp.Features.Cloning;
 global using System.Collections.Immutable;
+global using System.Collections.Frozen;
+global using SharedTestFixtures;

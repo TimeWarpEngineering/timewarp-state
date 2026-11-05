@@ -15,3 +15,4 @@ global using Microsoft.CodeAnalysis.Testing;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Threading.Tasks;
 global using TimeWarp.Fixie;
+global using Microsoft.CodeAnalysis.Diagnostics;

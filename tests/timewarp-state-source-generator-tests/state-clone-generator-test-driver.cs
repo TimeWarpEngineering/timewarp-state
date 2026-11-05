@@ -7,6 +7,7 @@
 // and let the test compile the emitted cloners. Diagnostics and generated text are both asserted.
 // RunAgainstReferencePack uses the Microsoft.NETCore.App.Ref targeting pack. Implementation assemblies
 // put System.Threading types in one module, so they hide a namespace-identity bug.
+// Platform references are built once and shared: a MetadataReference is immutable.
 // LoadReferenceClone runs the clone: the generator reads a reference assembly and the loaded image is the
 // implementation, so private backing fields exist at run time.
 #endregion
@@ -18,12 +19,7 @@ internal static class StateCloneGeneratorTestDriver
   public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) Run(string source, bool allowUnsafe = false)
   {
     SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
-    IEnumerable<MetadataReference> references =
-      ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
-      .Split(Path.PathSeparator)
-      .Select(path => MetadataReference.CreateFromFile(path))
-      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.State.State<>).Assembly.Location))
-      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
+    IEnumerable<MetadataReference> references = PlatformReferences();
 
     CSharpCompilation compilation = CSharpCompilation.Create
     (
@@ -85,12 +81,7 @@ internal static class StateCloneGeneratorTestDriver
   private static CSharpCompilation CompilationFor(string? source, SyntaxTree? syntaxTree, bool allowUnsafe)
   {
     SyntaxTree tree = syntaxTree ?? CSharpSyntaxTree.ParseText(source!, new CSharpParseOptions(LanguageVersion.Latest));
-    IEnumerable<MetadataReference> references =
-      ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
-      .Split(Path.PathSeparator)
-      .Select(path => MetadataReference.CreateFromFile(path))
-      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.State.State<>).Assembly.Location))
-      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
+    IEnumerable<MetadataReference> references = PlatformReferences();
 
     return CSharpCompilation.Create
     (
@@ -119,12 +110,7 @@ internal static class StateCloneGeneratorTestDriver
     string baseAssemblyName = "CloneGeneratorBase")
   {
     CSharpParseOptions parseOptions = new(LanguageVersion.Latest);
-    IEnumerable<MetadataReference> platform =
-      ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
-      .Split(Path.PathSeparator)
-      .Select(path => MetadataReference.CreateFromFile(path))
-      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.State.State<>).Assembly.Location))
-      .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
+    IEnumerable<MetadataReference> platform = PlatformReferences();
 
     CSharpCompilation baseCompilation = CSharpCompilation.Create
     (
@@ -230,12 +216,16 @@ internal static class StateCloneGeneratorTestDriver
       .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
   }
 
-  private static IEnumerable<MetadataReference> PlatformReferences() =>
+  // Metadata references are immutable and safe to share across compilations; building them re-reads every TPA assembly.
+  private static readonly Lazy<MetadataReference[]> CachedPlatformReferences = new(() =>
     ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
     .Split(Path.PathSeparator)
     .Select(path => MetadataReference.CreateFromFile(path))
     .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.State.State<>).Assembly.Location))
-    .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location));
+    .Append(MetadataReference.CreateFromFile(typeof(TimeWarp.Mediator.IAction).Assembly.Location))
+    .ToArray());
+
+  private static IEnumerable<MetadataReference> PlatformReferences() => CachedPlatformReferences.Value;
 
   private static byte[] EmitImage(Compilation compilation, bool metadataOnly)
   {
