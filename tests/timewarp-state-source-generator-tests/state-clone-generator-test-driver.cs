@@ -1,5 +1,5 @@
 #region Purpose
-// Runs StateCloneSourceGenerator against in-memory source that references TimeWarp.State.
+// Runs TimeWarpStateGenerator against in-memory source that references TimeWarp.State, for the clone stage tests.
 #endregion
 
 #region Design
@@ -8,6 +8,7 @@
 // RunAgainstReferencePack uses the Microsoft.NETCore.App.Ref targeting pack. Implementation assemblies
 // put System.Threading types in one module, so they hide a namespace-identity bug.
 // Platform references are built once and shared: a MetadataReference is immutable.
+// CloneSource reads the clone file by hint name: the one generator also emits dispatch methods and the manifest.
 // LoadReferenceClone runs the clone: the generator reads a reference assembly and the loaded image is the
 // implementation, so private backing fields exist at run time.
 #endregion
@@ -34,7 +35,7 @@ internal static class StateCloneGeneratorTestDriver
       )
     );
 
-    return Run(compilation, new StateCloneSourceGenerator());
+    return Run(compilation, new TimeWarpStateGenerator());
   }
 
   public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) RunAgainstReferencePack(string source)
@@ -52,7 +53,7 @@ internal static class StateCloneGeneratorTestDriver
       )
     );
 
-    return Run(compilation, new StateCloneSourceGenerator());
+    return Run(compilation, new TimeWarpStateGenerator());
   }
 
   public static (GeneratorDriverRunResult RunResult, Compilation OutputCompilation) Run
@@ -100,6 +101,7 @@ internal static class StateCloneGeneratorTestDriver
   public static string? CloneSource(GeneratorDriverRunResult runResult) =>
     runResult.Results
       .SelectMany(result => result.GeneratedSources)
+      .Where(generated => generated.HintName == CloneEmitter.HintName)
       .Select(generated => generated.SourceText.ToString())
       .SingleOrDefault();
 
@@ -140,7 +142,7 @@ internal static class StateCloneGeneratorTestDriver
       options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable)
     );
 
-    GeneratorDriver driver = CSharpGeneratorDriver.Create(new StateCloneSourceGenerator().AsSourceGenerator());
+    GeneratorDriver driver = CSharpGeneratorDriver.Create(new TimeWarpStateGenerator().AsSourceGenerator());
     driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out _);
     return (driver.GetRunResult(), outputCompilation);
   }
@@ -172,7 +174,7 @@ internal static class StateCloneGeneratorTestDriver
       options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable)
     );
 
-    GeneratorDriver driver = CSharpGeneratorDriver.Create(new StateCloneSourceGenerator().AsSourceGenerator());
+    GeneratorDriver driver = CSharpGeneratorDriver.Create(new TimeWarpStateGenerator().AsSourceGenerator());
     driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out _);
     byte[] generated = EmitImage(outputCompilation, metadataOnly: false);
     ReferenceCloneLoadContext loadContext = new(baseAssemblyName, implementation);

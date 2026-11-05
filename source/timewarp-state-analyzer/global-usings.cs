@@ -12,3 +12,4 @@ global using Microsoft.CodeAnalysis.Diagnostics;
 global using System.Collections.Immutable;
 global using System.Linq;
 global using System.Collections.Concurrent;
+global using TimeWarp.State.Facts;

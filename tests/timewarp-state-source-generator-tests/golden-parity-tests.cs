@@ -22,7 +22,7 @@ internal static class Golden
 {
   public const string UpdateVariable = "TIMEWARP_STATE_UPDATE_GOLDEN";
 
-  public static IIncrementalGenerator[] Generators() => [new ActionSetMethodSourceGenerator(), new ActionCatalogSourceGenerator(), new PersistenceStateSourceGenerator(), new StateCloneSourceGenerator()];
+  public static IIncrementalGenerator[] Generators() => [new TimeWarpStateGenerator()];
 
   public static string Render(GeneratorDriver driver)
   {
@@ -30,7 +30,7 @@ internal static class Golden
     StringBuilder builder = new();
     foreach (GeneratedSourceResult source in run.Results
       .SelectMany(result => result.GeneratedSources)
-      .Where(source => source.HintName != "TimeWarp.State.StateManifest.g.cs")
+      .Where(source => source.HintName != ManifestEmitter.HintName)
       .OrderBy(source => source.HintName, StringComparer.Ordinal))
     {
       builder.Append("// ==== ").Append(source.HintName).Append(" ====\n");

@@ -14,4 +14,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Shared fact extractors: the State generator's per-symbol rules compiled into the analyzer as linked source,
+         so the analyzer and the generator cannot drift (task 142). -->
+    <Compile Include="..\timewarp-state-source-generator\facts\*.cs" Link="facts\%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>
