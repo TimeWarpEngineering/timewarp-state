@@ -82,6 +82,9 @@ Acceptance criteria:
   - M2: corrected the citations and file counts after re-checking each one against the source.
   - M3: reworded the executive summary to "a class that is not a partial state".
   - Only report/analysis.md, review/round-1/merged.md (dispositions) and this file changed. No product code.
+- 2026-11-06 review oracle, round 2 (ganda task work, claude, model claude-opus-5-5, effort 1, roster general, turn cap 80):
+  - Re-checked M1-M3 on the fix delta against the source. All three are fixed.
+  - No new findings. Disposition: clean.
 
 ## Results
 
@@ -134,15 +137,21 @@ The spike must run outside the repository: inside it, Central Package Management
   - **M1:** Option 0 says record actions would start producing catalog executors. They would not: the catalog predicate is `ClassDeclarationSyntax`-only.
   - **M2:** some citation line ranges and file counts are off.
   - **M3:** the executive summary overstates the non-state `*ActionSet` case.
+- **Round 2 (general, effort 1):** I re-checked M1-M3 against the source and all three are fixed. No new findings.
+- **Final counts:** 0 bugs. 1 suggestion fixed and 2 nits fixed. 0 open, 0 wontfix.
+- **Disposition: clean**, after 2 rounds. See `review/disposition.md`.
 - **Paths:**
   - `review/review-framework.md`
   - `review/round-1/general.md`
   - `review/round-1/merged.md`
+  - `review/round-2/general.md`
+  - `review/round-2/merged.md`
+  - `review/disposition.md`
 
 ## Review
 
 - Round 1: Blocked — open M1, M2, M3
-
+- Round 2: Done
 ## Notes
 
 Steve 2026-11-06: "Action set was a source generator that I wrote by hand, which were really hard
