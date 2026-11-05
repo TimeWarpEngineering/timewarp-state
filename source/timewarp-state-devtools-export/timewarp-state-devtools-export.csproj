@@ -15,6 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- StateManifestAttribute is read by type, which stays AOT safe. The package gains a TimeWarp.State dependency. -->
+    <ProjectReference Include="..\timewarp-state\timewarp-state.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <InternalsVisibleTo Include="TimeWarp.State.DevTools.Tests" />
   </ItemGroup>
 

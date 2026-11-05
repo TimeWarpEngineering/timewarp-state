@@ -1,0 +1,52 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public IReadOnlyList<StateManifest> Manifests { get; set; } = [];
+
+  private static string Parameters(StateManifestAction action) =>
+    action.Parameters.Count == 0
+      ? "()"
+      : "(" + string.Join(", ", action.Parameters.Select(parameter => parameter.Type + " " + parameter.Name)) + ")";
+}
+
+<h2>Declared states</h2>
+@if (Manifests.Count == 0)
+{
+  <p class="empty" data-qa="manifest-empty">No manifest yet. Call AddTimeWarpStateDevToolsManifest in the inspected app.</p>
+}
+else
+{
+  @foreach (StateManifest manifest in Manifests)
+  {
+    <section class="assembly" data-qa="manifest-assembly">
+      <h3>@manifest.AssemblyName</h3>
+      @foreach (StateManifestState state in manifest.States)
+      {
+        <h4 data-qa="manifest-state">@state.Name</h4>
+        @if (state.Actions.Count == 0)
+        {
+          <p class="empty">No actions.</p>
+        }
+        else
+        {
+          <ul class="actions">
+            @foreach (StateManifestAction action in state.Actions)
+            {
+              <li data-qa="manifest-action">
+                <span class="method">@(action.Method ?? action.Name)@Parameters(action)</span>
+                @if (action.CatalogName is not null)
+                {
+                  <span class="catalog">@action.CatalogName</span>
+                }
+                @if (action.Tracked)
+                {
+                  <span class="tracked">tracked</span>
+                }
+              </li>
+            }
+          </ul>
+        }
+      }
+    </section>
+  }
+}

@@ -5,7 +5,7 @@ title: Cloning
 
 # Cloning
 
-`StateTransactionBehavior` snapshots a state before every action. The snapshot is a deep clone. Hand-written `ICloneable.Clone` wins. Every other concrete `State<T>` is cloned by code that `StateCloneSourceGenerator` emits into the assembly that declares the state. The generator ships inside the `TimeWarp.State` package (`analyzers/dotnet/cs`), in the project `timewarp-state-source-generator`. There is no reflection cloner.
+`StateTransactionBehavior` snapshots a state before every action. The snapshot is a deep clone. Hand-written `ICloneable.Clone` wins. Every other concrete `State<T>` is cloned by code that the clone stage of `TimeWarpStateGenerator` emits into the assembly that declares the state. The generator ships inside the `TimeWarp.State` package (`analyzers/dotnet/cs`), in the project `timewarp-state-source-generator`. There is no reflection cloner.
 
 ## Transaction rollback
 

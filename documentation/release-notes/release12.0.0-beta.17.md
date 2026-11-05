@@ -36,3 +36,28 @@ Nothing that compiled before changes meaning. Some code that failed to compile n
 
 - Every generator step is named, and a test pins it. After an unrelated edit, every named step is `Cached` or `Unchanged` and no source is added again. The ActionSet method model is now an equatable record. Before, an unrelated edit re-emitted every method.
 - The clone generator still plans from `CompilationProvider`, so planning reruns on every edit. Its result is now an equatable value, so an equal plan leaves the output `Cached`.
+
+### One State generator and the State manifest (task 142)
+
+The four generators are now one `TimeWarpStateGenerator`. It builds one graph of states, actions, catalog entries, persistence and clone facts, and runs one emitter for each kind of output. Generated code is unchanged: every existing hint name, generated file and diagnostic is the same as before. Golden files captured from the old generators pin this, and so does a byte-for-byte comparison on the test app and three samples.
+
+**New: the State manifest**
+
+- Every assembly that declares a state gets `TimeWarp.State.StateManifest.g.cs`. It holds `[assembly: StateManifestAttribute(version, json)]` with a JSON list of the assembly's states and their actions: method, parameters, catalog name, persistence, clone kind, and whether `[TrackAction]` is on the action.
+- `StateManifest.FromAssembly(assembly)` and `StateManifest.Parse(json)` in `TimeWarp.State` read it. They use no member reflection, so they are safe under trimming and AOT.
+- An analyzer in another project can read the attribute from the referenced assembly's metadata. See [State manifest](xref:TimeWarpState:StateManifest.md).
+
+**DevTools**
+
+- `services.AddTimeWarpStateDevToolsManifest(assemblies)` in `TimeWarp.State.DevTools.Export` posts the manifests to `POST /ingest/manifest` once at startup. It does nothing when `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is unset, and it never fails the app.
+- The inspector has a new **Manifest** tab. It lists every state and its actions (method, parameters, catalog name, tracked) before any span arrives.
+- `TimeWarp.State.DevTools.Export` now references `TimeWarp.State`, so it can read the manifest attribute.
+- Dispatch from DevTools is not built yet. The manifest carries what it will need.
+
+**Analyzers**
+
+- The analyzers and the generator now share the `[CatalogAction]` placement rule, the default catalog name and the `State<T>` checks as linked source, so the two cannot drift. TWS0004 to TWS0008 report the same cases as before.
+
+**Incrementality**
+
+- Every step is named. A test pins that an unrelated edit leaves the graph and every output `Cached`. Adding a state property re-plans only the clone file. The dispatch methods stay `Cached`.

@@ -5,6 +5,7 @@
 
 @code {
   [Inject] private InspectorLog InspectorLog { get; set; } = null!;
+  [Inject] private InspectorManifest InspectorManifest { get; set; } = null!;
   [Inject] private ILogger<Inspector> Logger { get; set; } = null!;
 
   // Set once by Dispose; the log's Changed event can fire on an ingest thread after that.
@@ -15,6 +16,7 @@
   protected override void OnInitialized()
   {
     InspectorLog.Changed += OnLogChanged;
+    InspectorManifest.Changed += OnLogChanged;
   }
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -71,6 +73,7 @@
     }
 
     InspectorLog.Changed -= OnLogChanged;
+    InspectorManifest.Changed -= OnLogChanged;
     base.Dispose();
   }
 }
@@ -109,6 +112,10 @@
       else if (InspectorState.DetailTab == InspectorState.DetailTabDiff)
       {
         <DiffPanel InspectorState="InspectorState" SelectedDiff="view.SelectedDiff" />
+      }
+      else if (InspectorState.DetailTab == InspectorState.DetailTabManifest)
+      {
+        <ManifestPanel Manifests="InspectorManifest.Snapshot()" />
       }
       else
       {

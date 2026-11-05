@@ -18,3 +18,13 @@ The page is an action log on the left and **Action**, **State**, and **Diff** ta
 - `init` rows (`timewarp.state.kind` = `init`) are state initialization and fold like any snapshot. A prerender and an interactive circuit each produce their own init row. Both stay visible.
 - Expanded tree paths stay expanded as new rows arrive.
 - The header switches dark, light, and system theme. Dark is the default. Colours come from `wwwroot/tokens.css` (`--twe-*`).
+
+## Manifest tab
+
+The **Manifest** tab lists the states and actions the inspected app declares, before any span arrives. For each state it shows the action method, its parameters, the catalog name, and the tracked flag.
+
+- The inspected app posts its State manifests to `POST /ingest/manifest`. The body is `{ "Manifests": [ "<manifest json>", ... ] }`. Each entry is the JSON text of one assembly's `StateManifestAttribute`. The route takes JSON only (415), caps the body at 1 MiB (413), and answers 400 for bad JSON. An entry that is not a valid manifest is skipped. It uses the same CORS rule as `/ingest/spans`.
+- The newest manifest for an assembly name replaces the older one. At most 64 assemblies are kept.
+- A state `Name` matches the `timewarp.state.state_type` span tag. An action `Name` matches `timewarp.state.action`.
+- The tab is read-only. Dispatching an action from DevTools is not implemented yet. The manifest carries the catalog names and parameters that a later dispatch channel will use.
+

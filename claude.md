@@ -64,7 +64,7 @@ dotnet build --project <ProjectPath> --configuration Release
 - **TimeWarp.State.Blazor**: Components, JavaScript interop, render subscriptions, wwwroot assets. Static web assets stay under `_content/TimeWarp.State/`
 - **TimeWarp.State.Plus**: ActionTracking, Routing, persistence. Package id unchanged. Depends on TimeWarp.State.Blazor
 - **TimeWarp.State.Analyzer**: Roslyn analyzers (embedded in main package)
-- **TimeWarp.State.SourceGenerator**: Code generation (embedded in main package)
+- **TimeWarp.State.SourceGenerator**: Code generation (embedded in main package). One `TimeWarpStateGenerator`: fact extractors, one `StateGraph`, emitters for dispatch methods, catalog, persistence `Load`, clones and registration, and the State manifest. `facts/` is shared with the analyzer as linked source
 - **TimeWarp.State.Policies**: NetArchTest rules for architecture validation
 
 ### Testing Strategy
@@ -125,7 +125,7 @@ public class UserService
 ### Framework
 - **Target**: .NET 11 (`net11.0`)
 - **SDK**: 11.0.100-rc.3.26522.148 from `global.json` (rollForward latestMinor, allowPrerelease true until .NET 11 GA on 2026-11-10; re-pin to 11.0.100 then)
-- **Cloning**: `StateCloneSourceGenerator` emits the clone for each concrete `State<T>` (and for `[GenerateClone]` types). `StateTransactionBehavior` calls `ICloneable` first, then `StateCloneRegistry`. There is no reflection cloner. `TWSG002` is an error when a reachable member cannot be cloned. Never use blocking waits (`SemaphoreSlim.Wait`, `Task.Wait`, `.Result`) in library code: .NET 11 throws on single-threaded browser WASM. Library projects declare `<SupportedPlatform Include="browser" />` so CA1416 flags them.
+- **Cloning**: the clone stage of `TimeWarpStateGenerator` emits the clone for each concrete `State<T>` (and for `[GenerateClone]` types). `StateTransactionBehavior` calls `ICloneable` first, then `StateCloneRegistry`. There is no reflection cloner. `TWSG002` is an error when a reachable member cannot be cloned. Never use blocking waits (`SemaphoreSlim.Wait`, `Task.Wait`, `.Result`) in library code: .NET 11 throws on single-threaded browser WASM. Library projects declare `<SupportedPlatform Include="browser" />` so CA1416 flags them.
 - **Nullable**: Enabled in `Directory.Build.props`
 - **ImplicitUsings**: Enabled
 

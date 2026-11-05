@@ -16,8 +16,6 @@
 // ReSharper disable InconsistentNaming
 namespace StateManifest_;
 
-using TimeWarp.State;
-
 internal static class ManifestSources
 {
   public const string Counter =

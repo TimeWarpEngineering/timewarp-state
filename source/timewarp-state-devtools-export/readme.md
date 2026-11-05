@@ -35,3 +35,16 @@ app.MapTimeWarpStateDevToolsClientConfig();
 ```
 
 In Development that maps `GET /_timewarp/state-devtools`. A set variable returns `{ "endpoint": "<origin>" }`. An unset variable returns 204. Other environments do not map the route. `TimeWarp.State.DevTools.Wasm` calls it. This package references the shared ASP.NET Core framework for that one route. It does not add a package dependency.
+
+## Manifest
+
+The State source generator adds a manifest of each assembly's states and actions. Send it to DevTools once, at host start, so the inspector knows them before any span arrives:
+
+```csharp
+builder.Services.AddTimeWarpStateDevToolsManifest(typeof(CounterState).Assembly);
+```
+
+It registers a hosted service that posts to `POST /ingest/manifest`. The body is `{ "Manifests": [ "<manifest json>", ... ] }`. An assembly with no states adds nothing. When `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is unset or blank, the call does nothing. If DevTools is down, the post fails quietly and the app starts as usual.
+
+This package now references `TimeWarp.State` to read `StateManifestAttribute`. Dispatching actions from DevTools is not implemented yet. The manifest carries the catalog names and parameters that a later dispatch channel will use.
+

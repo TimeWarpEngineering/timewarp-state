@@ -9,7 +9,7 @@
 // inspector is not an open sink. Origins come from TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS (Aspire
 // sets that from every inspected app) and from TimeWarp:State:DevTools:CorsOrigins. Invalid entries
 // are skipped. UseCors() enables the middleware without a global policy. SpanIngestEndpoint
-// calls RequireCors so only POST /ingest/spans receives allow headers. When that response already
+// and ManifestIngestEndpoint call RequireCors so only POST /ingest/spans and POST /ingest/manifest receive allow headers. When that response already
 // carries Access-Control-Allow-Origin and the preflight asks for private-network access, the
 // response allows it. Other routes, including the Blazor circuit, do not.
 #endregion
@@ -86,7 +86,11 @@ public static class DevToolsIngestCors
     ArgumentNullException.ThrowIfNull(app);
     app.Use(async (context, next) =>
     {
-      if (context.Request.Path.StartsWithSegments(SpanIngestEndpoint.Route))
+      if
+      (
+        context.Request.Path.StartsWithSegments(SpanIngestEndpoint.Route)
+        || context.Request.Path.StartsWithSegments(ManifestIngestEndpoint.Route)
+      )
       {
         context.Response.OnStarting(() =>
         {

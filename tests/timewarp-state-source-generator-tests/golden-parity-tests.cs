@@ -15,9 +15,6 @@
 // ReSharper disable InconsistentNaming
 namespace GoldenParity_;
 
-using System.Runtime.CompilerServices;
-using System.Text;
-
 internal static class Golden
 {
   public const string UpdateVariable = "TIMEWARP_STATE_UPDATE_GOLDEN";
