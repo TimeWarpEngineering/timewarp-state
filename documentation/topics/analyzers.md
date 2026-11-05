@@ -5,7 +5,7 @@ title: Analyzers
 
 # Analyzers
 
-TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class. The clone source generator reports **TWSG002** when it cannot emit a clone for a reachable member.
+TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class. The clone source generator reports **TWSG002** when it cannot emit a clone for a reachable member. The ActionSet method generator and the persistence generator report **TWSG003** instead of emitting a member that would not compile.
 
 > **Breaking change:** analyzer diagnostic IDs were renamed to the `TWS` prefix: `TW0001` → `TWS0001`, `TW0002` → `TWS0002`, `TW0003` → `TWS0003`. This stops colliding with TimeWarp.SourceGenerators, which owns the bare `TW0001`–`TW0006` range (its `TW0002` is the unrelated XML-docs-to-markdown rule). Update `.editorconfig` `dotnet_diagnostic.*.severity` entries to the new ids.
 
@@ -111,3 +111,21 @@ A public property needs no setter, or an `init` setter, or a setter that is priv
 - **Message:** Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', mark the member [CloneShared] to copy it by reference, or change the unsupported member.
 
 Reported by `StateCloneSourceGenerator` once, at the source member that reaches something it cannot clone: `object`, an interface or abstract class with no implementation, an inaccessible type, an open generic, a pointer, a ref struct, or a type from another assembly whose fields it cannot all see. `{2}` names the state or `[GenerateClone]` root the member was reached from. The build fails. There is no reflection fallback. Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it by reference, or change the member. `[CloneShared]` is how an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`) stays on the clone. See [Cloning](xref:TimeWarpState:Cloning.md).
+
+## TWSG003 — State member cannot be generated
+
+- **Severity:** Error
+- **Category:** Generation
+- **Message:** Cannot generate '{0}' for '{1}' because {2}
+
+Reported by `ActionSetMethodSourceGenerator` (the `State.Method(...)` for each nested `*ActionSet`) and by `PersistenceStateSourceGenerator` (`Load()`), at the Action or the state. Each case used to emit generated code that failed to compile. For ActionSet methods that means a plain class Action in a class state, the only shape the generator served before 12.0.0-beta.17. A record or struct Action, or an ActionSet in a record or struct state, got no generated code before. When one of those cannot get a method, the generator emits nothing and reports nothing, so a build that passed still passes. The message names the reason:
+
+- The state, or a type that contains it, is not `partial`.
+- The `[PersistentState]` type does not derive from `State<T>`.
+- The ActionSet is named just `ActionSet`, or the Action or its ActionSet has its own type parameters.
+- The Action is abstract, or the Action or its chosen constructor is private or protected.
+- A parameter would be named `externalCancellationToken`, or a `required` member and a constructor parameter would get the same parameter name.
+- The state already has a field, property, event or nested type with the method's name.
+- A parameter type is private or protected.
+
+The ActionSet method generator reads the constructor like this. For a record or struct Action, it uses the positional record or primary constructor, else the first explicit constructor. For a plain class Action, it uses the first explicit constructor, else the primary constructor, so a class with both keeps the signature it had before. `required` members become parameters too. A state that already declares the method by hand keeps it, and nothing is generated. An `*ActionSet` whose parent does not implement `IState` is ignored without a diagnostic.

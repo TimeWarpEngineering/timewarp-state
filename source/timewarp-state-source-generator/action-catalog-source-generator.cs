@@ -10,6 +10,28 @@
 // one call per legal argument count so the generated method's own defaults apply.
 // DisplayName is copied verbatim from the attribute literal (null when absent); TWS0008 rejects blank values.
 // Misplaced attributes (not a nested *ActionSet.Action) are skipped here; TWS0004 reports them.
+// The predicate is TypeDeclarationSyntax, so a record Action is cataloged too. An entry is also skipped when
+// ActionSetShape says the generated State.Method cannot exist (not an IState parent, or a TWSG003 failure, which the
+// ActionSet method generator reports); an executor would otherwise call a method that is not there (CS1061).
+// When the state declares the method by hand, the entry is kept only if that method takes the generated parameters
+// plus a trailing externalCancellationToken and returns Task (ActionSetAnalysis.UserMethodCallable). Otherwise it is
+// skipped, as master did for record Actions; an executor would not bind (CS1739, CS1501).
+//
+// Pipeline (named in TrackingNames, pinned by action-catalog-incrementality-tests): Entries (ForAttributeWithMetadataName,
+// equatable CatalogEntryModel), AssemblyName (CompilationProvider.Select), Collected (Entries.Collect + AssemblyName).
+//
+// Analyzer contract:
+// | Assumption                                                        | Guard                                        |
+// |-------------------------------------------------------------------|----------------------------------------------|
+// | [CatalogAction] is on a nested *ActionSet.Action, none generic,   | TWS0004 (analyzer); generator skips          |
+// | all at least internal                                             |                                              |
+// | Description is present and one plain sentence                    | TWS0005, TWS0007                             |
+// | DisplayName, when given, is not blank                             | TWS0008                                      |
+// | catalog names are unique in the assembly                          | TWS0006                                      |
+// | the Action may be a record or have a primary constructor          | generator: TypeDeclarationSyntax + parser    |
+// | the generated State.Method exists with the parser's parameters    | generator: shares ActionSetShape and parser  |
+// | a hand-written State.Method takes the executor's arguments        | generator: skips unless UserMethodCallable   |
+// | the parent implements IState (store.GetState<T> constraint)       | generator: skips (ActionSetShape)            |
 // Output: one internal GeneratedActionCatalog (All) plus an internal assembly attribute deriving from
 // ActionCatalogProviderAttribute so AddActionCatalog(assembly) can aggregate without scanning.
 // Nothing is emitted for an assembly without cataloged actions.
@@ -30,23 +52,31 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
       .ForAttributeWithMetadataName
       (
         CatalogActionAttributeMetadataName,
-        predicate: static (node, _) => node is ClassDeclarationSyntax,
-        transform: static (ctx, _) => GetEntry(ctx)
+        predicate: static (node, _) => node is TypeDeclarationSyntax and not InterfaceDeclarationSyntax,
+        transform: static (ctx, cancellationToken) => GetEntry(ctx, cancellationToken)
       )
       .Where(static entry => entry is not null)
-      .Select(static (entry, _) => entry!);
+      .Select(static (entry, _) => entry!)
+      .WithTrackingName(TrackingNames.CatalogEntries);
 
     IncrementalValueProvider<string?> assemblyName =
-      context.CompilationProvider.Select(static (compilation, _) => compilation.AssemblyName);
+      context.CompilationProvider
+        .Select(static (compilation, _) => compilation.AssemblyName)
+        .WithTrackingName(TrackingNames.CatalogAssemblyName);
+
+    IncrementalValueProvider<(ImmutableArray<CatalogEntryModel> Left, string? Right)> collected = entries
+      .Collect()
+      .Combine(assemblyName)
+      .WithTrackingName(TrackingNames.CatalogCollected);
 
     context.RegisterSourceOutput
     (
-      entries.Collect().Combine(assemblyName),
+      collected,
       static (spc, source) => Execute(spc, source.Left, source.Right)
     );
   }
 
-  private static CatalogEntryModel? GetEntry(GeneratorAttributeSyntaxContext context)
+  private static CatalogEntryModel? GetEntry(GeneratorAttributeSyntaxContext context, CancellationToken cancellationToken)
   {
     if (context.TargetSymbol is not INamedTypeSymbol actionSymbol) return null;
     if (actionSymbol.Name != "Action") return null;
@@ -58,6 +88,10 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
     if (stateSymbol is null) return null;
     if (stateSymbol.IsGenericType || actionSetSymbol.IsGenericType || actionSymbol.IsGenericType) return null;
     if (!IsVisibleInAssembly(actionSymbol)) return null;
+
+    ActionSetAnalysis? analysis = ActionSetShape.Analyze(actionSymbol, context.SemanticModel.Compilation, cancellationToken);
+    if (analysis is null || analysis.Failure is not null) return null;
+    if (analysis.MethodDeclaredByUser && !analysis.UserMethodCallable) return null;
 
     AttributeData attribute = context.Attributes[0];
     string description = string.Empty;
@@ -89,10 +123,8 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
       }
     }
 
-    string methodName = actionSetSymbol.Name.Replace(oldValue: "ActionSet", newValue: "");
-
-    List<ActionParameterModel> parameters =
-      ActionSetConstructorParser.GetParameters((ClassDeclarationSyntax)context.TargetNode, context.SemanticModel);
+    string methodName = analysis.MethodName;
+    List<ActionParameterModel> parameters = analysis.Construction.Parameters;
 
     return new CatalogEntryModel
     (
