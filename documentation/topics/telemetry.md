@@ -33,6 +33,21 @@ On .NET 11 the shared framework emits those four sources and stamps HTTP semanti
 
 Default spans have **no payload**. Snapshots are opt-in, sampled, and serialized only through caller `JsonSerializerOptions` / `JsonTypeInfo` (the same options as `TimeWarpStateOptions` after task 065). With snapshots on, state initialization emits `{StateTypeName}.Initialized` (`timewarp.state.kind` = `init` and a `state.snapshot`) before the first action. Every span, init and action, is tagged `timewarp.state.store` with that scope's `Store.Guid`. When the host registered `IStateRenderKind` and a component has observed the renderer, the span also carries `timewarp.state.render` (`prerender` or `interactive`). `AddTimeWarpStateBlazor` registers that service. A non-Blazor host omits the tag. See the [package README](../../source/timewarp-state-telemetry/readme.md) for AOT, security, and performance notes.
 
+### Snapshot type info
+
+A snapshot needs `JsonTypeInfo` for the state type. Without it the state is skipped with only a debug log. List each state on a `JsonSerializerContext` and set it as the resolver, either on `TimeWarpStateOptions` (shared with persistence) or on the telemetry options:
+
+```csharp
+[JsonSerializable(typeof(CounterState))]
+internal sealed partial class AppStateJsonContext : JsonSerializerContext;
+
+builder.Services.AddTimeWarpState(options =>
+  options.JsonSerializerOptions.TypeInfoResolver = AppStateJsonContext.Default);
+builder.Services.AddTimeWarpStateTelemetry(options => options.IncludeSnapshots = true);
+```
+
+In a project that references `TimeWarp.State.Telemetry`, analyzer **TWS0013** warns on each state no context lists. Its code fix adds the `[JsonSerializable]` line, or creates `StateJsonContext` when the project has no context. See [Analyzers](xref:TimeWarpState:Analyzers.md).
+
 ## Sample
 
 [04-Telemetry](../../samples/04-telemetry/overview.md) is a Blazor Server counter wired to the Aspire dashboard.

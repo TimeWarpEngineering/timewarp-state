@@ -23,6 +23,7 @@ Roslyn analyzers packed into `TimeWarp.State` at `analyzers/dotnet/cs`. Consumer
 | TWS0010 | Error | Design | `StateInheritanceAnalyzer` |
 | TWS0011 | Warning | Design | `StateInheritanceAnalyzer` |
 | TWS0012 | Error | Design | `StateReadOnlyPublicPropertiesAnalyzer` |
+| TWS0013 | Warning | Design | `StateJsonSerializableAnalyzer` — a state that persistence or telemetry snapshots serialize is not listed by any `JsonSerializerContext` in the project; code fix `StateJsonSerializableCodeFixProvider` adds the `[JsonSerializable]` line or creates a context |
 
 ## TWS0002 — Handler must not send an action
 
@@ -50,6 +51,12 @@ Scope is symbol-based: any type whose base chain includes `TimeWarp.State.StateA
 - `NavigationManager`
 
 **Escape hatch:** `[AllowActionSend("reason")]` on the handler type or method. TWS0002 is suppressed; **TWS0003** (Info) reports the exemption.
+
+## TWS0013 — State needs a [JsonSerializable] entry
+
+A concrete `State<T>` needs source-generated `JsonTypeInfo` when it has `[PersistentState]` (and the project declares a `JsonSerializerContext`) or when the project references `TimeWarp.State.Telemetry` (snapshots skip a state with no type info). The rule fires when no context in the project lists it.
+
+The code fix lives in `timewarp-state-analyzer-code-fixes.dll`, packed beside this assembly. It is a separate assembly so this one keeps compiler-only references (RS1038). The fix appends `[JsonSerializable(typeof(X))]` to a chosen context, or creates `state-json-context.cs` with `StateJsonContext` when there is none. The developer still wires the context once: `options.JsonSerializerOptions.TypeInfoResolver = AppJsonContext.Default` in `AddTimeWarpState`.
 
 ## Generator / analyzer ordering
 

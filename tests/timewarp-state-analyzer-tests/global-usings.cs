@@ -8,6 +8,7 @@
 
 global using TimeWarp.State.Analyzer;
 global using TimeWarp.State.Analyzer.Tests;
+global using TimeWarp.State.Analyzer.CodeFixes;
 global using Shouldly;
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp.Testing;

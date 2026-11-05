@@ -104,6 +104,33 @@ A non-abstract class that derives from `State<T>` should be sealed.
 
 A public property needs no setter, or an `init` setter, or a setter that is private, internal, private protected, or protected internal. A protected setter is allowed on an abstract state. Positional record properties are `init` and are not flagged. The rule reads symbols, so it sees members the compiler generates for a record.
 
+## TWS0013 — State needs a [JsonSerializable] entry
+
+- **Severity:** Warning
+- **Category:** Design
+- **Message:** The state '{0}' is serialized by {1} but no JsonSerializerContext in this project lists it; add [JsonSerializable(typeof({0}))]
+- **Code fix:** yes
+
+System.Text.Json's source generator reads only user source, so TimeWarp.State cannot generate the `[JsonSerializable]` line for you. This rule reports each concrete state that needs source-generated `JsonTypeInfo` and that no `JsonSerializerContext` in the same project lists. `{1}` names the reason:
+
+- **persistence:** the state has `[PersistentState]` and the project declares at least one `JsonSerializerContext`. With no context, persistence uses the reflection resolver and the rule stays quiet.
+- **telemetry snapshots:** the project references `TimeWarp.State.Telemetry`. Snapshots have no reflection fallback. A state whose `TypeInfoResolver` returns no type info is skipped with only a debug log, so this reason is reported whether or not a context exists.
+
+The code fix offers one action per context in the project: **Add [JsonSerializable(typeof(X))] to AppJsonContext**. With no context it offers **Create StateJsonContext**, which adds `state-json-context.cs` beside the state. Then make the context the resolver, once:
+
+```csharp
+builder.Services.AddTimeWarpState(options =>
+  options.JsonSerializerOptions.TypeInfoResolver = AppJsonContext.Default);
+```
+
+A context in another project is not seen. If yours lives there, suppress the rule for this project:
+
+```ini
+dotnet_diagnostic.TWS0013.severity = none
+```
+
+Abstract and open generic states are skipped. See [Persistence](xref:TimeWarpState:Persistence.md) and [Telemetry](xref:TimeWarpState:Telemetry.md).
+
 ## TWSG002 — State clone cannot be generated
 
 - **Severity:** Error
