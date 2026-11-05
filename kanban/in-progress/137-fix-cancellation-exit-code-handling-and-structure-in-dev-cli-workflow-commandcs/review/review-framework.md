@@ -6,15 +6,19 @@
 **Plan / brief:** Make `dev workflow` honest about failure and cancellation, and split the workflow handler into `ReleasePipeline`, `ReleaseGitGate`, `CiArtifactService`, `NuGetPushService`, and `RepoVersionService`.
 **Effort:** 3 (by-diff, 1619 lines)
 **Reviewer roster:** general
-**Session IDs:** not exposed (cursor, model grok-4.7, turn cap 200)
+**Session IDs:** not exposed (cursor, model grok-4.7). Round 1 turn cap 200. Round 2 turn cap 80.
+
+## Round 2 scope
+
+Delta since round-1 base `180e7f46` (`review/round-1/base.sha`): commit `57714f8a` — `workflow-command.cs`, `workflow/pipeline-console.cs`, `workflow/release-pipeline.cs`. Re-verify M1 and M2. New findings only on that delta.
 
 ## Budget (by-diff)
 
-- Lines changed: 1619
-- Effort: 3
+- Lines changed: 181
+- Effort: 1
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 80 (--max-turns; cursor uncapped)
 
 ## Ground rules
 

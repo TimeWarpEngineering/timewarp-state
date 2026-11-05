@@ -57,8 +57,8 @@ Acceptance criteria:
 ## Review
 
 - Round 1: Blocked — open M1, M2
-- Fix pass for round 1 findings (2026-11-05): M1 and M2 fixed; awaiting review round 2
-
+- Fix pass for round 1 findings (2026-11-05): M1 and M2 fixed
+- Round 2: Done
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC.
@@ -73,6 +73,7 @@ Found by a code review on 2026-11-04 of all files over 500 LOC.
 - Review oracle round 1: reviewer-cursor (cursor, vendor xai, model grok-4.7), body tw-implementation-review, effort 3, roster general, turn cap 200, session id not exposed. M1 and M2 are open, so a fix pass was requested (2026-11-05).
 - Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-05T07:55:55Z
 - 2026-11-05 implement-fix-2 (implementer-claude, claude-opus-5-5): fixed round-1 M1 and M2. See Results › Fix pass.
+- Review oracle round 2: reviewer-cursor (cursor, vendor xai, model grok-4.7), body tw-implementation-review, effort 1, roster general, turn cap 80, session id not exposed, max-turns uncapped (no --max-turns flag; bound 80). Disposition clean — 2026-11-05. Artifacts: `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Results
 
@@ -168,6 +169,20 @@ s=$(mktemp -d); mkdir -p $s/source $s/msbuild; (cd $s && git init -q -b master .
 Expect: Step 2 prints `Error: no packable projects found …`, then `Pipeline FAILED — Check Version failed`, then
 `Pipeline ABORTED — check-version failed (see the error above)` (not `version already released`), and exits 1.
 This run showed exactly that.
+
+### Review round 2 (2026-11-05)
+
+reviewer-cursor (cursor, vendor xai, model grok-4.7), `tw-implementation-review`, effort 1, roster general, turn cap 80, session id not exposed. Scope: the fix delta since `180e7f46` (commit `57714f8a`). Artifacts: `review/review-framework.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
+Disposition: **clean**. Final open count: 0.
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 0 | 2 | 0 |
+| suggestion | 0 | 0 | 0 |
+| nit | 0 | 0 | 0 |
+
+M1: `RunStepAsync` returns `StepOutcome`. A cancelled or thrown check-version aborts with that reason. A finished non-zero exit aborts with `CheckVersionAbort.FormatAbortReason` (TimeWarp.Nuru.DevCli 4.0.0-beta.11), so only `AlreadyReleased` says "version already released". M2: `CurrentStep = "Packable Set"` is set before `GetPackableProjectsAsync`. No new findings on the delta.
 
 ## Learnings
 
