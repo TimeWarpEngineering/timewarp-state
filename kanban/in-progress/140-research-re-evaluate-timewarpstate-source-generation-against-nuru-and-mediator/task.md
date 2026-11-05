@@ -67,7 +67,7 @@ Acceptance criteria:
 - [x] Nuru and Mediator generator inventory (§4.2, §4.3)
 - [x] Comparison (§4.4, §4.5)
 - [x] Options as code, with costs and what each unblocks (§5, Options 0-5)
-- [ ] Steve's decision recorded (pending: Steve decides; the proposal stops here)
+- [x] Steve's decision recorded (pending: Steve decides; the proposal stops here)
 
 ## Session
 
@@ -158,6 +158,18 @@ The spike must run outside the repository: inside it, Central Package Management
 
 - Round 1: Blocked — open M1, M2, M3
 - Round 2: Done
+## Decision
+
+Steve, 2026-11-06: all of 0, 1, 2, 3b, 4, 5. Order set by the cockpit: 0 → 1 (2 in parallel) → 3b
+(Mediator first, then State emitters) → 5 → 4 (architecture; 464 resumes there).
+
+Two gaps found after review, folded into the Option 0 implement task rather than an addendum
+here: (a) the report never maps generator assumptions to the TWS analyzer rules that guard them,
+so each gap must be fixed on the right side, analyzer or generator (no TWS rule covers action
+constructors today, so a primary-constructor Action reaches the generator and emits CS7036);
+(b) TimeWarp.Ramani (`timewarp-taratibu/source/timewarp-ramani-generators/`) was named as a
+third reference mid-run and is not in the inventory.
+
 ## Notes
 
 Steve 2026-11-06: "Action set was a source generator that I wrote by hand, which were really hard
