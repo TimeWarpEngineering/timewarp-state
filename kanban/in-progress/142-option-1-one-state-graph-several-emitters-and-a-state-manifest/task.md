@@ -50,14 +50,26 @@ Acceptance criteria, in my words:
 
 ## Checklist
 
-- [ ] Graph and builder
-- [ ] Emitters with golden parity
-- [ ] Manifest and DevTools consumption
-- [ ] Incrementality test; build 0/0
+- [x] Graph and builder
+- [x] Emitters with golden parity
+- [x] Manifest and DevTools consumption (dispatch from DevTools is a follow-up; the manifest carries what it needs)
+- [x] Incrementality test; build 0 errors and no new warnings in changed files (pre-existing NU1510, NU190x, BL0010, TW0007 remain)
 
 ## Session
 
 - Created: 66368815-cdd5-46be-bde8-a09d94e1cdc8 (2026-11-06)
+- 2026-11-06 implementer (claude-opus-5-5, ganda task work implement node): goal restatement. Golden output was
+  captured from the four old generators first, in commit 40ea8d00, before any generator change. Then the
+  single-graph rewrite, the runtime manifest reader, the analyzer's linked facts, docs and release notes.
+  - A helper agent (sonnet) did the DevTools slice: the export publisher, the `/ingest/manifest` endpoint, the
+    registry and the Manifest tab. I gave it a written brief and reviewed its diff.
+  - Parity on real projects: I extracted the pre-rewrite and post-rewrite trees with `git archive` into /tmp and built
+    test-app-client, sample-05-wasm, sample-02-wasm and timewarp-state-devtools with `EmitCompilerGeneratedFiles`.
+    All 72 generated files are byte-identical. The only new file is `TimeWarp.State.StateManifest.g.cs`.
+  - Audit: `kanban-landed` was an Error because this kitchen differed from origin-home. Fixed with
+    `ganda repo audit --fix --checks kanban-landed`. What remains is advisory and pre-existing, the same as task
+    141: 098 has no usable worktree, and `kebab-path-names` flags Blazor JS module and MSBuild targets names that
+    must match assembly names, plus backlog 110's double hyphen.
 
 ## Depends on
 
@@ -66,3 +78,115 @@ Acceptance criteria, in my words:
 ## Notes
 
 Steve 2026-11-06 decision; order 0 → 1.
+
+## Results
+
+### What changed
+
+- **One generator.** `TimeWarpStateGenerator` (`source/timewarp-state-source-generator/timewarp-state-generator.cs`)
+  replaces `ActionSetMethodSourceGenerator`, `ActionCatalogSourceGenerator`, `PersistenceStateSourceGenerator` and
+  `StateCloneSourceGenerator`.
+  - **Fact extractors** (`extractors/`):
+    - `ActionFactExtractor` analyzes each `*ActionSet.Action` once. It produces the dispatch method model or TWSG003,
+      the catalog entry and the manifest row.
+    - `PersistenceFactExtractor` handles `[PersistentState]`: Load, TWSG001 or TWSG003, plus the persistence method.
+    - `StateFactExtractor` finds concrete `IState` types for the manifest.
+    - `ActionSetShape` and `ActionSetConstructorParser` moved here unchanged.
+  - **Graph** (`graph/`): `StateGraph` is equatable and holds no symbols, syntax or locations. `StateGraphBuilder` is
+    the one builder. The clone planner stays a semantic stage (`CloneEmitter.Plan` on `CompilationProvider`), and its
+    equatable result feeds the graph.
+  - **Emitters** (`emitters/`): `DispatchMethodEmitter`, `CatalogEmitter`, `PersistenceEmitter` and `CloneEmitter`
+    produce the old text byte for byte. `ManifestEmitter` is new. Dispatch and Persistence are `SelectMany`
+    projections of the graph, so each method or Load is compared and emitted on its own.
+  - **Diagnostics:** TWSG001, TWSG002 and TWSG003 descriptors now live together in `generator-diagnostic-info.cs`.
+    Release tracking notes name `TimeWarpStateGenerator`.
+- **Analyzers share the extractors' rules.** `facts/state-symbol-facts.cs` (`State<T>` and `IState` checks, metadata
+  names) and `facts/catalog-action-facts.cs` (catalog placement, visibility, default name, attribute reading) are
+  compiled into `timewarp-state-analyzer` as linked source (`<Compile Include=...facts\*.cs Link=...>`).
+  - `CatalogActionAnalyzer` lost its own placement, visibility and default-name copies.
+  - `StateSymbolHelpers` is deleted, and the analyzers use `StateSymbolFacts`.
+  - There is still one graph builder. Analyzers share per-symbol rules, not a graph.
+- **State manifest.**
+  - `TimeWarp.State.StateManifest.g.cs` holds `[assembly: StateManifestAttribute(Version, Json)]` and an internal
+    `TimeWarpStateManifest`. It is emitted only when the assembly declares a state and the referenced TimeWarp.State
+    has the attribute.
+  - Runtime: `StateManifestAttribute`, `StateManifest` (`FromAssembly`, `Parse`), `StateManifestState`,
+    `StateManifestAction` and `StateManifestParameter` (`source/timewarp-state/features/state-manifest/`). Parsing
+    uses `JsonDocument`, so it is AOT and trim safe and tolerates unknown fields.
+- **DevTools.**
+  - Export: `AddTimeWarpStateDevToolsManifest(params Assembly[])` registers `DevToolsManifestPublisher`, a hosted
+    service that posts once at start. It is a no-op without `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` and never throws.
+    `ManifestIngestUri` is new. The export package now references `TimeWarp.State`.
+  - DevTools: `POST /ingest/manifest` (415, 413 and 400 like spans, the same CORS rule, capped counts) feeds
+    `InspectorManifest`, a singleton that keeps the newest manifest per assembly and raises `Changed`. A new
+    **Manifest** tab (`ManifestPanel.razor`) lists states and actions.
+  - Dispatch from DevTools is not built. It needs a channel back into the inspected app, which is a follow-up. The
+    manifest already carries the method, parameters and catalog name it would use.
+- **Tests.**
+  - Generator suite, 150 to 162:
+    - `golden-parity-tests.cs` has 5 cases plus a coverage check. The `golden/*.verified.txt` files were written by
+      the old generators.
+    - `generator-incrementality-tests.cs` was rewritten with 5 cases for the graph.
+    - `state-manifest-tests.cs` has 10 cases: exact JSON, no-emit cases, Parse, a newer version with unknown fields,
+      a loaded-assembly round trip, and the analyzer reading metadata.
+    - Existing tests now point at the one generator, and drivers filter by hint name.
+  - DevTools suite: +14 (`manifest-ingest-tests.cs`).
+- **Docs:** a new `documentation/topics/state-manifest.md` with its toc entry, a DevTools Manifest tab section,
+  updated generator names in `analyzers.md`, `cloning.md`, the analyzer readme and `claude.md`, both DevTools
+  readmes, and a task 142 section in `release12.0.0-beta.17.md`.
+- **Version:** `12.0.0-beta.17` is not on NuGet (beta.16 is the latest), so the repo rule keeps beta.17 and adds
+  these notes to it.
+
+### Measured incrementality (Roslyn 4.14.0)
+
+- **Unrelated file added:** `State.Actions`, `State.Persistence` and `State.States` are `Cached` or `Unchanged`.
+  `State.Assembly` and `State.ClonePlan` are `Unchanged`. `State.Graph` is `Cached`, every `State.Emit.*` step is
+  `Cached`, and every output is `Cached` with identical text.
+- **Edit a method above the action in the same file:** the same as above, with no output re-added.
+- **Change an action parameter:** Actions, Graph, Emit.Dispatch, Emit.Catalog and Emit.Manifest are `Modified`.
+  Emit.Persistence stays `Cached` or `Unchanged`.
+- **Add a state property:** ClonePlan, Graph and Emit.Clone are `Modified`. Dispatch, persistence, catalog and
+  manifest stay `Cached` or `Unchanged`. Exactly one output is `Modified`.
+
+### Gates run
+
+- `./bin/dev build`: success.
+- `./bin/dev test`: all suites green. Analyzer 51, generator 162, state 146 (1 skipped), plus 40 (1 skipped),
+  telemetry 21, devtools 122, devtools isolation 4, client integration 64 (1 skipped), architecture 7 (1 skipped).
+- Solution build: 0 errors, and no warnings from any file this task changed.
+- `ganda repo audit`: passes, with 2 pre-existing advisory warnings.
+- Real-project parity: all 72 pre-existing generated files are byte-identical across 4 projects.
+
+### How to validate
+
+Smoke:
+
+```bash
+dotnet build tests/timewarp-state-source-generator-tests -v q -nologo
+dotnet fixie timewarp-state-source-generator-tests --tests "*GoldenParity*"
+dotnet fixie timewarp-state-source-generator-tests --tests "*GeneratorIncrementality*"
+dotnet fixie timewarp-state-source-generator-tests --tests "*StateManifest_*"
+# touch forces CoreCompile; --no-incremental trips an unrelated static-web-asset check in the Blazor project
+touch tests/test-app/test-app-client/features/counter/actions/counter-state.increment-counter.cs
+dotnet build tests/test-app/test-app-client -p:EmitCompilerGeneratedFiles=true \
+  -p:CompilerGeneratedFilesOutputPath=/tmp/tw142-gen
+ls /tmp/tw142-gen/timewarp-state-source-generator/TimeWarp.State.SourceGenerator.TimeWarpStateGenerator/
+./bin/dev test
+```
+
+Expect:
+
+- GoldenParity: 6 passed. Generated text and diagnostics match the files the old generators wrote.
+- GeneratorIncrementality: 5 passed.
+- StateManifest_: 10 passed.
+- The test-app folder lists `*_Method.g.cs`, `TimeWarp.State.ActionCatalog.g.cs`, `TimeWarpStateClones.g.cs` and
+  `TimeWarp.State.StateManifest.g.cs`. Its `Json` constant lists `CounterState` with `IncrementCountActionSet.Action`.
+- `./bin/dev test` ends with "Tests completed successfully!".
+
+### Follow-ups
+
+- Dispatch from DevTools: a channel from the inspector into the inspected app. The catalog executors and the
+  manifest already supply the call.
+- Wiring `AddTimeWarpStateDevToolsManifest` into the samples or test-app AppHost wiring is left to the consumer. It
+  is opt-in, like `AddActionCatalog`.
+
