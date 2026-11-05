@@ -8,7 +8,7 @@ State adds `ReducerAttribute : GeneratedHandlerAttribute` (HandlerTypeName "Hand
 
 ## Requirements
 
-- Depends on the Mediator release that ships `GeneratedHandlerAttribute`; bump the Mediator pin in the same commit.
+- Depends on the Mediator release that ships `GeneratedHandlerAttribute`: **TimeWarp.Mediator 15.0.0-beta.5**, released 2026-11-06 (Mediator task 029). Bump the pin to it in the same commit.
 - Emitters on the Option 1 graph; no second scan.
 - Analyzer for the missing-handler case with release tracking.
 - Tests: generated handler dispatches end to end in the test app.
