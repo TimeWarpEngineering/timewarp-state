@@ -2,21 +2,21 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 2433
-- Effort: 3
+- Lines changed: 749
+- Effort: 2
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 200 (--max-turns; cursor uncapped)
+- Turn cap: 120 (--max-turns; cursor uncapped)
 
-# Review framework — task 141
+## Round 2 — task 141
 
 **Date:** 2026-11-06
 **Host task:** kanban/in-progress/141-option-0-fix-the-state-generators-in-place-equatable-model-records-and-primary-constructors-analyzer-contract-tests/
-**Diff scope:** branch `task/141-option-0-fix-the-state-generators-in-place-equatab` vs merge-base with `master` (commits 8722115e..6ab9405d; 26 files, +2100/-333)
-**Plan / brief:** task.md `## Requirements` and `## Goal (implementer restatement)`: fix the four State generators in place (equatable models, records and primary constructors, TWSG003, incrementality tests), analyzer-contract table, Ramani inventory, non-breaking, version bump.
-**Effort:** 3 (by-diff budget), roster axes: general
-**Reviewer roster:** general (review oracle, claude-opus-5-5)
-**Session IDs:** review oracle session for the ganda task work review node (2026-11-06)
+**Diff scope:** the fix delta `6ab9405d..8c4f08d9` (fix pass 1 for round-1 M1, M2, M3). Prior IDs are re-verified on
+the post-fix tree.
+**Plan / brief:** `review/round-1/merged.md`, plus task.md `## Requirements` and `## Goal (implementer restatement)`.
+**Effort:** 2 (by-diff, 749 lines). **Reviewer roster:** general (review-2 oracle, claude-opus-5-5).
+**Session IDs:** review-2 oracle for the ganda task work review node (2026-11-06).
 
 ## Ground rules
 
