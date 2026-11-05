@@ -1,27 +1,20 @@
 #region Purpose
-// Cases that must not report TWS0002, and the TWS0003 opt-out.
+// Cases that must not report TWS0002.
 #endregion
 
 #region Design
-// Same AnalyzerTestFactory harness as the TWS0002 cases. Split out so each file stays under the line cap.
+// Same HandlerSendSources harness as the TWS0002 cases. Each test compiles clean and expects zero diagnostics.
 #endregion
 
 // ReSharper disable InconsistentNaming
 namespace HandlerMustNotSendActionAnalyzer_;
 
-using TimeWarp.State.Analyzer.Tests;
-
 public class Should_Not_Trigger_TWS0002
 {
   public static async Task Given_Publish_OfINotification()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
       public sealed class Happened : INotification { }
 
       public sealed class CounterState : State<CounterState>
@@ -50,21 +43,13 @@ public class Should_Not_Trigger_TWS0002
       }
       """;
 
-    CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest =
-      AnalyzerTestFactory.Create<HandlerMustNotSendActionAnalyzer>(TestCode);
-
-    await analyzerTest.RunAsync();
+    await HandlerSendSources.RunNoDiagnosticAsync(TestCode);
   }
 
   public static async Task Given_OwnStateMutation()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
       public sealed class CounterState : State<CounterState>
       {
         public int Count { get; private set; }
@@ -93,69 +78,110 @@ public class Should_Not_Trigger_TWS0002
       }
       """;
 
-    CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest =
-      AnalyzerTestFactory.Create<HandlerMustNotSendActionAnalyzer>(TestCode);
-
-    await analyzerTest.RunAsync();
+    await HandlerSendSources.RunNoDiagnosticAsync(TestCode);
   }
-}
 
-public class Should_Trigger_TWS0003
-{
-  public static async Task Given_AllowActionSend_OnHandlerType()
+  public static async Task Given_SenderSend_OfNonActionRequest()
   {
-    const string TestCode =
+    const string TestCode = HandlerSendSources.Usings +
       """
-      using System.Threading;
-      using System.Threading.Tasks;
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
+      public sealed class CountQuery : IRequest<int> { }
 
-      public sealed class ToastState : State<ToastState>
+      public sealed class CounterState : State<CounterState>
       {
         public override void Initialize() { }
 
-        public static class AddProblemDetailsActionSet
-        {
-          public sealed class Action : IAction { }
-        }
-
-        public async Task AddProblemDetails(CancellationToken? externalCancellationToken = null)
-        {
-          await Sender.Send(new AddProblemDetailsActionSet.Action());
-        }
-      }
-
-      public sealed class WeatherState : State<WeatherState>
-      {
-        public override void Initialize() { }
-
-        public static class FetchActionSet
+        public static class IncrementActionSet
         {
           public sealed class Action : IAction { }
 
-          [AllowActionSend("grandfather HandleError toast")]
           internal sealed class Handler : StateActionHandler<Action>
           {
-            public Handler(IStore store) : base(store) { }
+            private readonly ISender Sender;
+
+            public Handler(IStore store, ISender sender) : base(store)
+            {
+              Sender = sender;
+            }
 
             public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
             {
-              await Store.GetState<ToastState>().AddProblemDetails();
+              int count = await Sender.Send(new CountQuery());
             }
           }
         }
       }
       """;
 
-    CSharpAnalyzerTest<HandlerMustNotSendActionAnalyzer, FixieVerifier> analyzerTest =
-      AnalyzerTestFactory.Create<HandlerMustNotSendActionAnalyzer>(TestCode);
+    await HandlerSendSources.RunNoDiagnosticAsync(TestCode);
+  }
 
-    analyzerTest.ExpectedDiagnostics.Add(
-      new DiagnosticResult("TWS0003", DiagnosticSeverity.Info)
-        .WithSpan(29, 6, 29, 54)
-        .WithArguments("Handler", "grandfather HandleError toast"));
+  public static async Task Given_ActionSend_OutsideAnyHandler()
+  {
+    const string TestCode = HandlerSendSources.Usings +
+      """
+      public sealed class CounterState : State<CounterState>
+      {
+        public override void Initialize() { }
 
-    await analyzerTest.RunAsync();
+        public static class IncrementActionSet
+        {
+          public sealed class Action : IAction { }
+        }
+      }
+
+      public sealed class CounterService
+      {
+        private readonly ISender Sender;
+        private readonly IStore Store;
+
+        public CounterService(ISender sender, IStore store)
+        {
+          Sender = sender;
+          Store = store;
+        }
+
+        public async Task Run()
+        {
+          await Sender.Send(new CounterState.IncrementActionSet.Action());
+        }
+      }
+      """;
+
+    await HandlerSendSources.RunNoDiagnosticAsync(TestCode);
+  }
+
+  public static async Task Given_HandlerCalls_OrdinaryStateMethod()
+  {
+    const string TestCode = HandlerSendSources.Usings +
+      """
+      public sealed class CounterState : State<CounterState>
+      {
+        public int Count { get; private set; }
+
+        public override void Initialize() { }
+
+        // Hand-written: no nested ResetActionSet, so it is not an ActionSet entry method.
+        public void Reset() => Count = 0;
+
+        public static class IncrementActionSet
+        {
+          public sealed class Action : IAction { }
+
+          internal sealed class Handler : StateActionHandler<Action>
+          {
+            public Handler(IStore store) : base(store) { }
+
+            public override ValueTask Handle(Action action, CancellationToken cancellationToken)
+            {
+              Store.GetState<CounterState>().Reset();
+              return default;
+            }
+          }
+        }
+      }
+      """;
+
+    await HandlerSendSources.RunNoDiagnosticAsync(TestCode);
   }
 }
