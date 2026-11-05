@@ -49,6 +49,10 @@ Dedupe: badge/tooltip locals (~361-363 and ~489-490); copy-pasted tab buttons (~
 - [x] Five child components with their own CSS isolation
 - [x] Devtools sample app renders and behaves identically
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC. Subscription/Dispose handling is already correct; keep it.
@@ -61,6 +65,8 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. Subscription/Dis
   (`kebab-path-names` is deliberately `warning` in `.editorconfig`; `kanban-landed` is task 098's
   claim, not this task), so no audit fix was needed.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 9182a14a-434e-48ae-9f76-e5f327df015a, max-turns 500, Done — 2026-11-05T07:34:30Z
+- Review oracle: reviewed by general (grok, model grok-4.7), effort 3, roster general, max-turns 200 (cursor uncapped), disposition clean — 2026-11-05
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-05T07:43:50Z
 
 ## Results
 
@@ -122,4 +128,11 @@ printf '{"Spans":[{"Name":"CounterState.IncrementCount","Status":"Ok","DurationM
 with a `live` store badge and an empty runtime cell, the State tab shows the CounterState tree, and
 clicking the row, the Action / Diff tabs, the Theme button, the store picker, Pause, and Clear all
 behave as they did before the split.
+
+### Review
+
+- Round 1. Roster: general. Effort: 3. Turn cap: 200 (cursor uncapped).
+- Counts: bug 0 open / 0 fixed / 0 wontfix; suggestion 0; nit 0.
+- Disposition: clean. No wontfix and no escalation. The implementer restatement matches the original task; no misread.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
