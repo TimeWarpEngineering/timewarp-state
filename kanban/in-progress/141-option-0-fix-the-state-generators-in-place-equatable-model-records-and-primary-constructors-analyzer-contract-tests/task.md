@@ -177,6 +177,11 @@ pipeline. A helper agent did the read-only inventory. I spot-checked `ramani-gen
 
 - 2026-11-06 implementer fix pass 1 (claude-opus-5-5, implement-fix-2 node): M1, M2 and M3 from
   `review/round-1/merged.md` fixed with 10 new tests. Generator suite 140 to 150. Full build and test rerun.
+- Review oracle round 2 (2026-11-06): general reviewer (claude, model claude-opus-5-5). Effort 2 by diff (749
+  lines), turn cap 120.
+  - It re-verified that M1, M2 and M3 are fixed.
+  - It raised one new nit, M4, and the oracle marked it wontfix.
+  - Disposition: accepted-exceptions, 0 open. See `review/disposition.md`.
 
 ## Results
 
@@ -316,7 +321,19 @@ rm -rf tests/test-app/test-app-client/generated   # gitignored; not cleaned betw
     - **M3:** a cataloged record Action with a hand-written method breaks the generated catalog.
 - Gates the reviewer ran: generator suite `dotnet fixie`, 140 passed. The reviewer did not rerun the full
   `./bin/dev build` or `./bin/dev test`.
-- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+- **Round 2** (2026-11-06), effort 2 (749 lines changed), roster: general. Scope: the fix delta
+  `6ab9405d..8c4f08d9`.
+  - M1, M2 and M3 were re-verified as **fixed**:
+    - the generator suite: 150 passed, 0 failed;
+    - `dotnet build tests/test-app/test-app-server`: 0 errors;
+    - a scratch consumer outside the repo, where every round-1 repro now compiles.
+  - **New M4** (nit): `IsCallableByCatalog` ignores `RefKind`. A `[CatalogAction]` record whose hand-written method
+    copies the generated signature but adds `ref` gets CS1620 in the catalog. It is marked **wontfix**: the shape is
+    contrived and is a one-line follow-up if it is ever hit.
+- **Final counts:** bug 0 open, 3 fixed, 0 wontfix. Suggestion 0. Nit 0 open, 0 fixed, 1 wontfix.
+- **Disposition: accepted-exceptions** (0 open, M4 wontfix with rationale). No escalations.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`,
+  `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Learnings
 
@@ -331,7 +348,9 @@ rm -rf tests/test-app/test-app-client/generated   # gitignored; not cleaned betw
 
 - Round 1: Blocked — open M1, M2, M3
 - Fix pass 1 (2026-11-06): M1, M2 and M3 implemented on this id. Dispositions are for review round 2.
-
+- Round 2 (2026-11-06): Done. M1, M2 and M3 are fixed, and M4 (nit) is wontfix. Disposition: accepted-exceptions, 0
+  open.
+- Round 2: Done
 ## Notes
 
 Steve 2026-11-06: all of 0, 1, 2, 3b, 4, 5; cockpit set the order. First of the family.
