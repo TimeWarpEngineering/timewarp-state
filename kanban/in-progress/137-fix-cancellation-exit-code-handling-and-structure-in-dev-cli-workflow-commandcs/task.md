@@ -23,15 +23,36 @@ Split (leaves ~130 lines in the endpoint):
 
 Dedupe the 79-char banner/step header repeated 7 times and the three identical `default:` abort cases.
 
+## Goal (implementer restatement)
+
+Make `dev workflow` honest about failure and cancellation, and break the workflow handler
+(`workflow-command.cs` + its `workflow-command.release.cs` partial, 750 lines together) into small services.
+
+Acceptance criteria:
+
+- Every git, gh and dotnet process the workflow starts receives the handler's `CancellationToken`.
+- Process exit codes are read explicitly (`WithNoValidation()` on every call whose code is checked), so the
+  "Failed to push X" / "Failed to download" branches are reachable under the Amuru 3.0.0-beta.1 pin.
+- The PR and release pipelines return a `PipelineResult`; the handler sets `Environment.ExitCode` once.
+  A step that throws (or is cancelled) still prints "Pipeline FAILED/ABORTED".
+- Malformed `source/Directory.Build.props` or `msbuild/repository.props` gives a clear error, not a raw `XmlException`.
+- The release pipeline aborts when the source version cannot be read (no `propsVersion!`).
+- The NuGet API key can come from `NUGET_API_KEY` so CI no longer puts it on the `dev` command line; the
+  remaining `dotnet nuget push --api-key` exposure is documented (dotnet nuget push has no env/stdin option).
+- `Handler.ApiKey` field removed.
+- Split into `ReleasePipeline`, `ReleaseGitGate`, `CiArtifactService`, `NuGetPushService`, `RepoVersionService`;
+  `ReadPropsVersion` folds into `TryReadMsBuildProperty`. Banner and unhandled-status `default:` cases deduped.
+- The dev CLI builds and `dev workflow` (PR mode) still runs end to end.
+
 ## Checklist
 
-- [ ] CancellationToken threaded to every process call
-- [ ] Exit-code handling consistent with Amuru throw semantics
-- [ ] Pipeline result returned, not Environment.ExitCode
-- [ ] XML loads guarded with a clear error
-- [ ] API key not on command line, or exposure documented
-- [ ] Split into the five services above
-- [ ] `dev workflow` still runs end to end
+- [x] CancellationToken threaded to every process call
+- [x] Exit-code handling consistent with Amuru throw semantics
+- [x] Pipeline result returned, not Environment.ExitCode
+- [x] XML loads guarded with a clear error
+- [x] API key not on command line, or exposure documented
+- [x] Split into the five services above
+- [x] `dev workflow` still runs end to end
 
 ## Notes
 
@@ -40,3 +61,63 @@ Found by a code review on 2026-11-04 of all files over 500 LOC.
 ## Session
 
 - Created: claude code review session (2026-11-04)
+- 2026-11-05 implementer (claude, ganda task work): split and fixes landed; see Results.
+  Note: the review's line numbers refer to the 734-line file before task 134 cut it into
+  `workflow-command.cs` + `workflow-command.release.cs`; both partials are replaced here.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 8293cea8-5b7f-4b4d-a88a-3e3a23c1cca2, max-turns 500, Done — 2026-11-05T07:41:07Z
+
+## Results
+
+Split `tools/dev-cli/endpoints/workflow-command.cs` (443 lines) and its `workflow-command.release.cs`
+partial (307 lines) into:
+
+| File | Content |
+|------|---------|
+| `endpoints/workflow-command.cs` (124) | Command, handler, mode detection, PR pipeline as a step table |
+| `endpoints/workflow/pipeline-console.cs` | `PipelineResult`, the one banner, `Abort`, `AbortUnhandled`, `RunStepAsync` |
+| `endpoints/workflow/release-pipeline.cs` | `ReleasePipeline` (6 release steps) |
+| `endpoints/workflow/release-git-gate.cs` | `ReleaseGitGate` + `TagPin*` / `AncestorCheck*` types |
+| `endpoints/workflow/ci-artifact-service.cs` | `CiArtifactService` + `LocateRun*` / `DownloadArtifact*` types |
+| `endpoints/workflow/nuget-push-service.cs` | `NuGetPushService` |
+| `endpoints/workflow/repo-version-service.cs` | `RepoVersionService` (`ReadPropsVersion` folded into `TryReadMsBuildProperty`) |
+
+Bug fixes:
+
+- Every git / gh / dotnet process call now gets the handler `CancellationToken` (no `CancellationToken.None` left).
+- `gh run download` and `dotnet nuget push` use `WithNoValidation()` + `RunAsync(ct)` and check the code. Under the
+  current Amuru 3.0.0-beta.1 pin `RunAsync` already returns codes, so the explicit opt-out documents intent and keeps
+  the "Failed to push X" branch reachable if the default ever flips back to throwing.
+- Pipelines return `PipelineResult`; the handler sets `Environment.ExitCode` once. `RunStepAsync` resets the
+  exit code before each step, reads it after, and turns a throwing or cancelled step into "Pipeline FAILED — X threw/cancelled".
+  `ReleasePipeline` catches service exceptions and aborts with the running step's name. The step endpoints
+  (clean, build, test, e2e, verify-samples, check-version) still report via `Environment.ExitCode`; that is
+  their contract and out of scope here.
+- Malformed props XML prints `Error: <path> is not well-formed XML (line N): …` and fails the SSOT assert.
+- The version is read once (from `AssertVersionSsot`) and passed to tag gate, verify and push; no `propsVersion!`.
+- API key: `--api-key` still works; `NUGET_API_KEY` env is the fallback and `.github/workflows/workflow.yml` now
+  uses it, so the key is off the `dev` argv. `dotnet nuget push` has no env/stdin option (NuGet.Config apikeys need
+  DPAPI), so the child argv exposure remains and is documented in `nuget-push-service.cs` Design.
+- `Handler.ApiKey` and `Handler.Ct` fields removed. Banner (7 copies) and the three `default:` aborts deduped.
+
+### How to validate
+
+Smoke:
+
+```bash
+dotnet build tools/dev-cli/dev.cs
+UseHttp=true dotnet run --file tools/dev-cli/dev.cs -- workflow --mode pr; echo "exit=$?"
+# failure path: scratch repo with malformed source/Directory.Build.props
+s=$(mktemp -d); mkdir -p $s/source $s/msbuild; (cd $s && git init -q . \
+  && printf '<Project><PropertyGroup><Version>1.0.0</Version>' > source/Directory.Build.props \
+  && printf '<Project><PropertyGroup><TimeWarpStateVersion>1.0.0</TimeWarpStateVersion></PropertyGroup></Project>' > msbuild/repository.props \
+  && dotnet run --file <worktree>/tools/dev-cli/dev.cs -- workflow --mode release; echo "exit=$?")
+```
+
+Expect:
+
+- The build has no errors or warnings from `tools/dev-cli/endpoints`.
+- PR mode prints `Version SSOT aligned`, runs Clean → Build → Test → E2E → Verify Samples, ends with
+  `Pipeline SUCCEEDED`, and exits 0.
+- The scratch release run prints `… is not well-formed XML (line 1) …`, then the SSOT mismatch, then the
+  `Pipeline ABORTED — Assert Version SSOT failed` banner, and exits 1 (no raw `XmlException`).
+- With valid props but no master ref, release aborts with `Pipeline ABORTED — master ref unresolvable` and exits 1.
