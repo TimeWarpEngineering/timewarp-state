@@ -80,7 +80,7 @@ Acceptance:
 ## Review
 
 - Round 1: Blocked — open M1, M2
-
+- Round 2: Done
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC. `StateCloneGeneratorTestDriver` re-reads every TPA assembly on each run (~45x per file); caching the references is an optional extra here.
@@ -97,6 +97,7 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. `StateCloneGener
 - Review: cursor, general, effort 3, turn cap 200, round 1 open (2026-11-05). No separate vendor session id.
 - Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-05T11:24:00Z
 - Fix pass (implement-fix-2, implementer-claude, claude-opus-5-5) for round 1, 2026-11-05: fixed M1 and M2. State tests 146 passed (1 skipped), source generator 109 passed. `ganda repo audit` shows only the two warnings already noted above (098 claim, `.lib.module` names).
+- Review oracle round 2: review by reviewer-cursor (cursor, vendor xai, model grok-4.7), session not reported, max-turns uncapped (no --max-turns flag; bound 120), effort 2, roster general, artifacts `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md` — 2026-11-05T11:30:42Z
 
 ## Results
 
@@ -160,6 +161,12 @@ Round 1 review (effort 3, roster general) found 1 bug and 1 nit. Both are fixed 
   `generated-clone-collections-tests.cs` and `generated-clone-constructors-tests.cs`.
 
 The goal restatement matches the original task; there is no misread.
+
+### Review disposition
+
+Round 2 (effort 2, roster general) re-reviewed the fix delta `e760fb79..e0fed5e6`, not the whole branch. M1 and M2 stay fixed. No new findings. Outcome: **clean**. Final open count: 0. Counts: bug 0 open / 1 fixed, suggestion 0, nit 0 open / 1 fixed. No wontfix and no escalation.
+
+Artifacts: `review/review-framework.md`, `review/round-1/merged.md` (frozen), `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ### How to validate
 
