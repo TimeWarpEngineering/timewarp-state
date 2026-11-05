@@ -1,0 +1,24 @@
+.store-badge {
+  display: inline-block;
+  min-width: 2.6rem;
+  text-align: center;
+  border-radius: 999px;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: transparent;
+}
+
+.store-badge.on {
+  color: var(--twe-store-ink);
+}
+
+.store-badge.on[data-hue="0"] { background: var(--twe-store-hue-0); }
+.store-badge.on[data-hue="1"] { background: var(--twe-store-hue-1); }
+.store-badge.on[data-hue="2"] { background: var(--twe-store-hue-2); }
+.store-badge.on[data-hue="3"] { background: var(--twe-store-hue-3); }
+.store-badge.on[data-hue="4"] { background: var(--twe-store-hue-4); }
+.store-badge.on[data-hue="5"] { background: var(--twe-store-hue-5); }
+.store-badge.on[data-hue="6"] { background: var(--twe-store-hue-6); }
+.store-badge.on[data-hue="7"] { background: var(--twe-store-hue-7); }

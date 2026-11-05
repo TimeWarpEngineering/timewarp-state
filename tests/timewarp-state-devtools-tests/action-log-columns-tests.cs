@@ -3,9 +3,11 @@
 #endregion
 
 #region Design
-// Reads Inspector.razor and its isolated stylesheet. The page needs a circuit and a log to render,
+// Reads ActionLogList.razor and its isolated stylesheet. The page needs a circuit and a log to render,
 // so the check is the markup and the CSS text: header labels, one cell per column on every row,
-// and one --log-columns template shared by the header and .row. Newlines are normalised before
+// and one --log-columns template shared by the header and .row. The store cell is a StoreBadgeChip
+// that passes data-col through, so the row markup still names it. The badge and store picker checks
+// read the chip and StoreSelect, where that markup lives after the Inspector split. Newlines are normalised before
 // the shared-rule check. --log-min-width is the border-box floor of the track minimums, the gaps,
 // and the horizontal padding.
 #endregion
@@ -38,8 +40,10 @@ public class ActionLogColumns_Should
 
   public static void NameEveryColumnOnceInTheHeaderTheRowAndTheTemplate()
   {
-    string razor = NormalizeNewlines(File.ReadAllText(Path.Combine(RepoPaths.Root(), "source", "timewarp-state-devtools", "components", "pages", "Inspector.razor")));
-    string css = NormalizeNewlines(File.ReadAllText(Path.Combine(RepoPaths.Root(), "source", "timewarp-state-devtools", "components", "pages", "Inspector.razor.css")));
+    string razor = ReadComponent("ActionLogList.razor");
+    string css = ReadComponent("ActionLogList.razor.css");
+    string chip = ReadComponent("StoreBadgeChip.razor");
+    string storeSelect = ReadComponent("StoreSelect.razor");
 
     string template = CustomProperty(css, "--log-columns");
     CountTracks(template).ShouldBe(Columns.Length);
@@ -77,7 +81,7 @@ public class ActionLogColumns_Should
     row.ShouldNotContain("@if");
     ColumnNames(row).ShouldBe(Columns);
     row.ShouldContain("data-qa=\"runtime\"");
-    row.ShouldContain("StoreBadge.Tooltip(entry.StoreId, entry.Render)");
+    row.ShouldContain("<StoreBadgeChip StoreId=\"@entry.StoreId\" Render=\"@entry.Render\" Class=\"cell\" data-col=\"store\" />");
     row.ShouldContain("aria-describedby=\"@StoreBadge.DescriptionElementId(entry.StoreId, entry.Render)\"");
     row.ShouldNotContain("aria-label");
     row.ShouldContain("title=\"@entry.ActionName\"");
@@ -87,16 +91,21 @@ public class ActionLogColumns_Should
     razor.ShouldContain("id=\"@StoreBadge.InteractiveDescriptionId\"");
     razor.ShouldContain("id=\"@StoreBadge.PrefixDescriptionId\"");
     razor.ShouldContain("id=\"@StoreBadge.UntaggedDescriptionId\"");
-    razor.ShouldNotContain("aria-label=\"@badgeHelp\"");
-    razor.ShouldContain("StoreBadge.Tooltip(storeId, render)");
-    razor.ShouldContain("<label id=\"store-picker-label\" for=\"store-picker\">Store</label>");
-    razor.ShouldContain("aria-labelledby=\"store-picker-label\"");
-    razor.ShouldContain("title=\"@StoreSelection.PickerHelp\"");
-    razor.ShouldContain("aria-describedby=\"store-picker-help\"");
-    razor.ShouldContain("title=\"@StoreSelection.FollowLiveHelp\"");
-    razor.ShouldContain("@StoreSelection.FollowLiveHelp");
-    razor.ShouldContain("StoreBadge.Tooltip(store.StoreId, store.Render)");
+    chip.ShouldNotContain("aria-label");
+    chip.ShouldContain("title=\"@StoreBadge.Tooltip(StoreId, Render)\"");
+    chip.ShouldContain("@attributes=\"AdditionalAttributes\"");
+    storeSelect.ShouldContain("<StoreBadgeChip StoreId=\"@StoreId\"");
+    storeSelect.ShouldContain("<label id=\"store-picker-label\" for=\"store-picker\">Store</label>");
+    storeSelect.ShouldContain("aria-labelledby=\"store-picker-label\"");
+    storeSelect.ShouldContain("title=\"@StoreSelection.PickerHelp\"");
+    storeSelect.ShouldContain("aria-describedby=\"store-picker-help\"");
+    storeSelect.ShouldContain("title=\"@StoreSelection.FollowLiveHelp\"");
+    storeSelect.ShouldContain("@StoreSelection.FollowLiveHelp");
+    storeSelect.ShouldContain("StoreBadge.Tooltip(store.StoreId, store.Render)");
   }
+
+  private static string ReadComponent(string fileName) =>
+    NormalizeNewlines(File.ReadAllText(Path.Combine(RepoPaths.Root(), "source", "timewarp-state-devtools", "components", "inspector", fileName)));
 
   private static string CustomProperty(string css, string name)
   {

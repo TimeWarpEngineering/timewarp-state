@@ -1,0 +1,51 @@
+h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-family: var(--twe-font-sans);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: minmax(7rem, max-content) minmax(0, 1fr);
+  gap: 0.28rem 0.75rem;
+  margin: 0;
+  min-width: 0;
+  font-size: 0.84rem;
+}
+
+.facts dt {
+  margin: 0;
+  /* A bare max-content track grows to the longest key and collapses the value track. */
+  min-width: 0;
+  max-width: 16rem;
+  overflow-wrap: anywhere;
+  color: var(--twe-muted);
+}
+
+.facts dt.key {
+  font-family: var(--twe-font-mono);
+}
+
+.facts dd {
+  margin: 0;
+  min-width: 0;
+  font-family: var(--twe-font-mono);
+  overflow-wrap: anywhere;
+}
+
+.status {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status.ok { color: var(--twe-status-ok); }
+.status.error { color: var(--twe-status-error); }
+.status.unset { color: var(--twe-muted); }
+
+.empty {
+  margin: 0.4rem 0;
+  color: var(--twe-muted);
+}

@@ -1,0 +1,49 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter, EditorRequired] public InspectorView.ActionDiff? SelectedDiff { get; set; }
+
+  private Task ToggleDiffNode(string path) => InspectorState.ToggleDiffNode(path);
+}
+
+@if (SelectedDiff is null)
+{
+  <p class="empty">Select an action to diff its state against the previous snapshot.</p>
+}
+else
+{
+  StateDiff.Result diff = SelectedDiff.Result;
+  <h2>@SelectedDiff.Entry.ActionName</h2>
+  @if (diff.Status == StateDiff.Status.NoSnapshot)
+  {
+    <p class="empty">No snapshot on this span. Enable IncludeSnapshots on the inspected app.</p>
+  }
+  else if (diff.Status == StateDiff.Status.Truncated)
+  {
+    <p class="hint">@InspectorViewHelper.TruncatedHint(diff) Raise MaxSnapshotChars on the inspected app. Showing raw text of the selected snapshot.</p>
+    <pre data-qa="snapshot">@diff.Raw</pre>
+  }
+  else if (diff.Status == StateDiff.Status.Unparsed)
+  {
+    <p class="hint">This snapshot is not valid JSON.</p>
+    <pre data-qa="snapshot">@diff.Raw</pre>
+  }
+  else if (diff.Status == StateDiff.Status.NoChange)
+  {
+    <p class="empty" data-qa="diff-none">No change.</p>
+  }
+  else
+  {
+    @if (diff.Initial)
+    {
+      <p class="hint">No earlier snapshot of this state.</p>
+    }
+    <div data-qa="diff">
+      @foreach (StateDiff.Node node in diff.Nodes)
+      {
+        <StateDiffView Node="node" InspectorState="InspectorState" OnToggle="ToggleDiffNode" />
+      }
+    </div>
+  }
+}

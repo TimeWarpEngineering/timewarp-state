@@ -1,0 +1,22 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public IReadOnlyList<InspectorViewHelper.Tab> Tabs { get; set; } = [];
+  [Parameter, EditorRequired] public string Current { get; set; } = "";
+  [Parameter, EditorRequired] public EventCallback<string> OnSelect { get; set; }
+  [Parameter] public string Class { get; set; } = "tabs";
+  [Parameter] public string? AriaLabel { get; set; }
+}
+
+<div class="@Class" role="tablist" aria-label="@AriaLabel">
+  @foreach (InspectorViewHelper.Tab tab in Tabs)
+  {
+    <button
+      type="button"
+      role="tab"
+      class="@InspectorViewHelper.TabClass(tab.Value, Current)"
+      aria-selected="@(Current == tab.Value)"
+      @onclick="() => OnSelect.InvokeAsync(tab.Value)"
+      data-qa="@tab.Qa">@tab.Label</button>
+  }
+</div>

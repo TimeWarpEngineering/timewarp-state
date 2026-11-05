@@ -1,0 +1,17 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public string StoreId { get; set; } = "";
+  [Parameter, EditorRequired] public string Render { get; set; } = "";
+  [Parameter] public string? Class { get; set; }
+  [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+  private string Label => StoreBadge.Label(StoreId, Render);
+}
+
+@* The tooltip is the title. The row names the badge through aria-describedby on a shared description. *@
+<span
+  @attributes="AdditionalAttributes"
+  class="@InspectorViewHelper.BadgeClass(Class, Label)"
+  data-hue="@StoreBadge.Hue(StoreId)"
+  title="@StoreBadge.Tooltip(StoreId, Render)">@Label</span>
