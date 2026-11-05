@@ -18,6 +18,12 @@ differently or better. Treat the whole approach as open: structure, discovery, w
 what consumers (apps built on State, the TimeWarp.Architecture template, DevTools) could get that
 they cannot get today. Do not assume the current generator set or its boundaries are the answer.
 
+Third reference, added by Steve 2026-11-06 while this task was running: **TimeWarp.Ramani** is
+also DSL-to-source-gen. It lives in `timewarp-taratibu/source/timewarp-ramani-generators/`
+(locators, interpreter, emitters, models, diagnostics; entry `ramani-generator.cs`), with the
+runtime in `timewarp-ramani` and hosts in `timewarp-ramani-blazor`, `timewarp-ramani-pele`,
+`timewarp-ramani-taratibu`. Inventory and compare it the same way as Nuru and Mediator.
+
 ## Requirements
 
 - Inventory State's generators: what each discovers, how (syntax, attribute, semantic model,
