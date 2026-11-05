@@ -57,6 +57,8 @@ Acceptance:
 
 - 2026-11-06 fix pass (review round 1, implement-fix-2): fixed M1 (docs) and M2 (the code-fix context accessibility follows the
   state). Analyzer tests 64/64, `./bin/dev build` 0 errors, `./bin/dev test` green.
+- Review oracle round 2 (ganda task work, tw-implementation-review, effort 2, roster general, turn cap 120): claude-opus-5-5,
+  2026-11-06. Reviewed the fix delta `862e06d5..58632bd6`. M1 and M2 verified fixed, no new findings. Disposition: clean.
 
 ## Results
 
@@ -142,9 +144,11 @@ Expect:
 
 ### Review
 
-- **Status:** round 1 findings fixed in the fix pass (M1, M2 both `fixed`). Round 2 is pending.
-- **Rounds:** 1, effort 3, roster `general`.
-- **Counts (round 1):**
+- **Disposition:** `clean`. 0 open. Every raised finding is `fixed`, and there are no wontfix items or escalations.
+- **Rounds:** 2, roster `general` in both.
+  - Round 1: effort 3, full branch diff.
+  - Round 2: effort 2, fix delta `862e06d5..58632bd6`. M1 and M2 re-verified, no new findings. Analyzer tests re-ran 64/64.
+- **Counts (final, round 2):**
   - bug: 0
   - suggestion: 1 fixed (M1)
   - nit: 1 fixed (M2)
@@ -159,12 +163,15 @@ Expect:
 - **Artifacts:**
   - `review/review-framework.md`
   - `review/round-1/general.md`
-  - `review/round-1/merged.md` (live ledger)
+  - `review/round-1/merged.md`
+  - `review/round-2/general.md`
+  - `review/round-2/merged.md` (final ledger)
+  - `review/disposition.md`
 
 ## Review
 
 - Round 1: Blocked — open M1, M2
-
+- Round 2: Done
 ## Notes
 
 Steve 2026-11-06 decision; can run alongside Option 1.
