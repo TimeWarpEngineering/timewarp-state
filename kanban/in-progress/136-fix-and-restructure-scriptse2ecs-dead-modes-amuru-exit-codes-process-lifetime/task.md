@@ -56,6 +56,10 @@ Acceptance:
 - [x] File split as above
 - [x] E2E run still passes (or fails for the same pre-existing reasons as origin/dev)
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC. The E2E suite has a known failing baseline; compare before/after rather than requiring green.
@@ -104,8 +108,23 @@ Expect:
 - Exit code 0, and `pgrep -f Test.App.Server` finds nothing afterwards.
 - Removing `"UseHttp"` from `tests/test-app/test-app-client/wwwroot/appsettings.json` makes the run exit 1 at Update-ClientAppSettings with a named error.
 
+### Review
+
+1 round at effort 3 with the `general` reviewer (one pass; the diff is the e2e runfile). Final counts: bug 0, suggestion 0, nit 0 (all statuses 0). Disposition: **clean**, with no wontfix and no escalations. The goal restatement matches the original task. The original "Amuru throws on non-zero" line is stale: `TimeWarp.Amuru` 3.0.0-beta.1 defaults to no validation, and the exit-code checks are live. That correction is not a misread.
+
+The reviewer confirmed, against the package and the call sites:
+
+- Required steps throw `E2eStepFailedException`. `Run` sets `Environment.ExitCode` and returns, so `ScriptContext` disposes. There is no `Environment.Exit` in `scripts/e2e*.cs`.
+- `SutHost` cancellation reaches CliWrap's process-tree kill. Disposal waits at most 15 seconds and does not throw.
+- `WaitUntilReadyAsync` disposes responses, logs failed attempts, and stops when the pump has finished.
+- No `System.Diagnostics.Process` remains in the e2e scripts. The `UseHttp` edit is whitespace-tolerant and fails when the file or setting is missing. The Playwright path comes from `TargetPath`.
+
+Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: claude code review session (2026-11-04)
 - implement (claude, 2026-11-05): rewrote the e2e runfile parts for Amuru 3 exit codes and added SutHost. Baseline and after are both 12/12 green, and the failure path exits 1. Audit passes.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session a6973f7a-f938-435f-8b46-f58d9290e049, max-turns 500, Done — 2026-11-05T04:01:09Z
+- Review oracle: cursor (grok 4.7), effort 3, roster general, 1 round, disposition clean, session not reported — 2026-11-05
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-05T04:13:36Z
