@@ -1,0 +1,51 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter, EditorRequired] public InspectorView View { get; set; } = null!;
+
+  private Task SetView(string view) => InspectorState.SetJsonView(view);
+
+  private Task ToggleNode(string path) => InspectorState.ToggleNode(path);
+}
+
+@if (View.Stores.Any(store => store.StoreId.Length > 0))
+{
+  <StoreSelect InspectorState="InspectorState" Stores="View.Stores" StoreId="@View.StoreId" />
+}
+<TabStrip
+  Tabs="InspectorViewHelper.JsonViewTabs"
+  Current="@InspectorState.JsonView"
+  OnSelect="SetView"
+  Class="view-tabs"
+  AriaLabel="State format" />
+<h2>@(View.StateAfterAction ? "State after action" : "Current state")</h2>
+@if (View.States.Count == 0 && View.Folded.Count > 0)
+{
+  <p class="empty" data-qa="state-filtered">No state matches the filter.</p>
+}
+else if (View.States.Count == 0)
+{
+  <p class="empty">No state snapshots yet. Enable IncludeSnapshots on the inspected app.</p>
+}
+else if (InspectorState.JsonView == InspectorState.JsonViewRaw)
+{
+  @foreach (FoldedState state in View.States)
+  {
+    <h3>@state.StateTypeName</h3>
+    @if (state.Truncated)
+    {
+      <p class="hint">Snapshot truncated. Raise MaxSnapshotChars on the inspected app.</p>
+    }
+    <pre data-qa="snapshot">@state.Json</pre>
+  }
+}
+else
+{
+  <div data-qa="state-tree">
+    @foreach (FoldedState state in View.States)
+    {
+      <FoldedStateNode State="state" InspectorState="InspectorState" OnToggle="ToggleNode" />
+    }
+  </div>
+}

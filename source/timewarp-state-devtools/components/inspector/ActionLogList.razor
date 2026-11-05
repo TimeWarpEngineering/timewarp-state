@@ -1,0 +1,63 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter, EditorRequired] public IReadOnlyList<ActionLogEntry> Entries { get; set; } = [];
+
+  private Task Select(long sequence) => InspectorState.SelectEntry(sequence);
+}
+
+<section class="log" aria-label="Action log">
+  <div class="log-a11y">
+    <span id="@StoreBadge.PrerenderDescriptionId">@StoreBadge.PrerenderDescription</span>
+    <span id="@StoreBadge.InteractiveDescriptionId">@StoreBadge.InteractiveDescription</span>
+    <span id="@StoreBadge.PrefixDescriptionId">@StoreBadge.PrefixDescription</span>
+    <span id="@StoreBadge.UntaggedDescriptionId">@StoreBadge.UntaggedDescription</span>
+  </div>
+  <div class="log-head" aria-hidden="true">
+    <span class="cell" data-col="time">Time</span>
+    <span class="cell" data-col="store">Store</span>
+    <span class="cell" data-col="runtime">Runtime</span>
+    <span class="cell" data-col="action">Action</span>
+    <span class="cell" data-col="state">State</span>
+    <span class="cell" data-col="duration">Duration</span>
+    <span class="cell" data-col="result">Result</span>
+  </div>
+  @if (Entries.Count == 0)
+  {
+    <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
+  }
+  else
+  {
+    <ul>
+      @foreach (ActionLogEntry entry in Entries)
+      {
+        <li>
+          <button
+            type="button"
+            class="@InspectorViewHelper.RowClass(entry, InspectorState.SelectedSequence)"
+            @onclick="() => Select(entry.Sequence)"
+            data-qa="row"
+            aria-describedby="@StoreBadge.DescriptionElementId(entry.StoreId, entry.Render)">
+            @{
+              string runtimeLabel = StoreBadge.RuntimeLabel(entry.Runtime);
+              string when = InspectorViewHelper.RowTime(entry.StartTimeUtc);
+              string duration = InspectorViewHelper.Duration(entry.DurationMilliseconds);
+            }
+            <span class="cell when" data-col="time" title="@when">@when</span>
+            <StoreBadgeChip StoreId="@entry.StoreId" Render="@entry.Render" Class="cell" data-col="store" />
+            <span
+              class="@("cell runtime" + (runtimeLabel.Length == 0 ? "" : " runtime-badge"))"
+              data-col="runtime"
+              data-qa="runtime"
+              title="@(runtimeLabel.Length == 0 ? null : entry.Runtime)">@runtimeLabel</span>
+            <span class="cell action" data-col="action" title="@entry.ActionName">@entry.ActionName</span>
+            <span class="cell state" data-col="state" title="@entry.StateTypeName">@entry.StateTypeName</span>
+            <span class="cell duration" data-col="duration" title="@duration">@duration</span>
+            <span class="cell status @entry.Status.ToLowerInvariant()" data-col="result" title="@entry.Status">@entry.Status</span>
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</section>

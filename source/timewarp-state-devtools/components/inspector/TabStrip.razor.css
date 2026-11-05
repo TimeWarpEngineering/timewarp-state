@@ -1,0 +1,28 @@
+.tabs,
+.view-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.tab {
+  border-radius: var(--twe-radius-sm);
+  padding: 0.4rem 0.75rem;
+  font-family: var(--twe-font-sans);
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--twe-ink);
+  border: 1px solid var(--twe-purple);
+  background: var(--twe-paper);
+}
+
+.tab:hover,
+.tab.active {
+  background: var(--twe-purple);
+  color: var(--twe-header-ink);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--twe-blue-bright);
+  outline-offset: 2px;
+}

@@ -1,0 +1,31 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter, EditorRequired] public bool Paused { get; set; }
+  [Parameter, EditorRequired] public int Count { get; set; }
+
+  private Task OnFilter(ChangeEventArgs changeEventArgs) =>
+    InspectorState.SetFilter(changeEventArgs.Value?.ToString() ?? "");
+
+  private Task TogglePause() => InspectorState.TogglePause();
+
+  private Task ClearLog() => InspectorState.ClearLog();
+}
+
+<div class="toolbar">
+  <label class="filter">
+    <span>Filter</span>
+    <input
+      type="search"
+      value="@InspectorState.Filter"
+      @oninput="OnFilter"
+      placeholder="Action, state, or store"
+      data-qa="filter" />
+  </label>
+  <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
+    @(Paused ? "Resume" : "Pause")
+  </button>
+  <button type="button" class="toolbar-button" @onclick="ClearLog" data-qa="clear">Clear</button>
+  <p class="count" data-qa="count">@Count</p>
+</div>

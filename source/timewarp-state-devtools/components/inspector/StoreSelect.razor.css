@@ -1,0 +1,28 @@
+.store-select {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
+  color: var(--twe-muted);
+  font-size: 0.75rem;
+}
+
+.store-help {
+  flex: 1 0 100%;
+  color: var(--twe-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.store-select select {
+  flex: 1;
+  min-width: 0;
+  background: var(--twe-paper);
+  color: var(--twe-ink);
+  border: 1px solid var(--twe-border);
+  border-radius: var(--twe-radius-sm);
+  padding: 0.35rem 0.45rem;
+  font-family: var(--twe-font-mono);
+  font-size: 0.75rem;
+}

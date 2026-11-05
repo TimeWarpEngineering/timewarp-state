@@ -1,0 +1,30 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public InspectorState InspectorState { get; set; } = null!;
+  [Parameter, EditorRequired] public IReadOnlyList<StoreSummary> Stores { get; set; } = [];
+  [Parameter, EditorRequired] public string StoreId { get; set; } = "";
+
+  private Task OnStore(ChangeEventArgs changeEventArgs) =>
+    InspectorState.SelectStoreOption(changeEventArgs.Value?.ToString() ?? "");
+}
+
+<div class="store-select">
+  <label id="store-picker-label" for="store-picker">Store</label>
+  <StoreBadgeChip StoreId="@StoreId" Render="@StoreSelection.RenderOf(Stores, StoreId)" />
+  <select
+    id="store-picker"
+    data-qa="store"
+    aria-labelledby="store-picker-label"
+    title="@StoreSelection.PickerHelp"
+    aria-describedby="store-picker-help"
+    value="@InspectorViewHelper.StoreSelectValue(Stores, InspectorState.SelectedStoreId)"
+    @onchange="OnStore">
+    <option value="@InspectorState.StoreOptionFollow" title="@StoreSelection.FollowLiveHelp">Follow live</option>
+    @foreach (StoreSummary store in Stores)
+    {
+      <option value="@InspectorViewHelper.StoreOptionValue(store)" title="@StoreBadge.Tooltip(store.StoreId, store.Render)">@InspectorViewHelper.StoreOptionText(store)</option>
+    }
+  </select>
+  <span id="store-picker-help" class="store-help">@StoreSelection.FollowLiveHelp</span>
+</div>

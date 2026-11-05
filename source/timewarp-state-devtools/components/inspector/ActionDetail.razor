@@ -1,0 +1,45 @@
+@namespace TimeWarp.State.DevTools.Components.Inspector
+
+@code {
+  [Parameter, EditorRequired] public ActionLogEntry? Selected { get; set; }
+}
+
+@if (Selected is null)
+{
+  <p class="empty">Select an action to see its name, status, and tags.</p>
+}
+else
+{
+  <h2>@Selected.ActionName</h2>
+  <dl class="facts">
+    <dt>State</dt>
+    <dd>@(Selected.StateTypeName.Length == 0 ? "—" : Selected.StateTypeName)</dd>
+    <dt>Status</dt>
+    <dd class="status @Selected.Status.ToLowerInvariant()">@Selected.Status</dd>
+    <dt>Duration</dt>
+    <dd>@InspectorViewHelper.Duration(Selected.DurationMilliseconds)</dd>
+    <dt>Started</dt>
+    <dd>@Selected.StartTimeUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture)</dd>
+    <dt>Span</dt>
+    <dd>@(Selected.SpanId.Length == 0 ? "—" : Selected.SpanId)</dd>
+    <dt>Store</dt>
+    <dd data-qa="store-id">@(Selected.StoreId.Length == 0 ? "—" : Selected.StoreId)</dd>
+    @if (Selected.Render.Length > 0)
+    {
+      <dt>Render</dt>
+      <dd>@Selected.Render</dd>
+    }
+    @if (Selected.Runtime.Length > 0)
+    {
+      <dt>Runtime</dt>
+      <dd data-qa="runtime-detail">@Selected.Runtime</dd>
+    }
+    <dt>Activity</dt>
+    <dd>@Selected.Name</dd>
+    @foreach (KeyValuePair<string, string> tag in Selected.Attributes.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+    {
+      <dt class="key">@tag.Key</dt>
+      <dd>@tag.Value</dd>
+    }
+  </dl>
+}

@@ -2,14 +2,13 @@
 @page "/"
 @rendermode InteractiveServer
 @inherits TimeWarpStateComponent
-@implements IDisposable
 
 @code {
   [Inject] private InspectorLog InspectorLog { get; set; } = null!;
+  [Inject] private ILogger<Inspector> Logger { get; set; } = null!;
 
+  // Set once by Dispose; the log's Changed event can fire on an ingest thread after that.
   private int Disposed;
-
-  [Inject] private IJSRuntime JsRuntime { get; set; } = null!;
 
   private InspectorState InspectorState => GetState<InspectorState>();
 
@@ -27,14 +26,7 @@
     }
 
     // A reconnected circuit starts from default state while <html data-theme> keeps the old value.
-    try
-    {
-      await JsRuntime.InvokeVoidAsync("timeWarpDevToolsTheme.apply", InspectorState.Theme);
-    }
-    catch (Exception exception) when (exception is JSException or JSDisconnectedException or InvalidOperationException or ObjectDisposedException)
-    {
-      // The circuit ended or script is not loaded. The CSS already paints the system theme.
-    }
+    await InspectorState.SetTheme(InspectorState.Theme);
   }
 
   private void OnLogChanged()
@@ -57,90 +49,19 @@
     {
       // The circuit ended between the event and the dispatch. Nothing left to refresh.
     }
-  }
-
-  private async Task SyncLogAsync()
-  {
-    await InspectorState.NoteLogChanged();
-  }
-
-  private async Task OnFilter(ChangeEventArgs changeEventArgs)
-  {
-    await InspectorState.SetFilter(changeEventArgs.Value?.ToString() ?? "");
-  }
-
-  private async Task Select(long sequence)
-  {
-    await InspectorState.SelectEntry(sequence);
-    if (InspectorLog.TryGetEntry(sequence, out ActionLogEntry? entry) && entry is not null)
+    catch (Exception exception)
     {
-      await InspectorState.SelectStore(entry.StoreId);
+      // Fire-and-forget: observe the fault here so it is never an unobserved task exception.
+      // The next Changed event retries, so the page stays up.
+      Logger.LogError(exception, "Refreshing the inspector after an action log change failed.");
     }
   }
 
-  // Store selector option values. Store ids are Guids, so neither collides with a real id.
-  private const string FollowOption = "follow:";
-  private const string UntaggedOption = "untagged:";
+  private Task SyncLogAsync() => InspectorState.NoteLogChanged();
 
-  private async Task OnStore(ChangeEventArgs changeEventArgs)
-  {
-    string value = changeEventArgs.Value?.ToString() ?? FollowOption;
-    if (value == FollowOption)
-    {
-      await InspectorState.FollowDefaultStore();
-    }
-    else
-    {
-      await InspectorState.SelectStore(value == UntaggedOption ? "" : value);
-    }
-
-    await InspectorState.SelectEntry(0);
-  }
-
-  private async Task TogglePause()
-  {
-    await InspectorState.TogglePause();
-  }
-
-  private async Task ClearLog()
-  {
-    await InspectorState.ClearLog();
-  }
+  private Task CycleTheme() => InspectorState.CycleTheme();
 
   private Task SetTab(string tab) => InspectorState.SetDetailTab(tab);
-
-  private Task SetView(string view) => InspectorState.SetJsonView(view);
-
-  private async Task CycleTheme()
-  {
-    string next = InspectorState.Theme switch
-    {
-      InspectorState.ThemeDark => InspectorState.ThemeLight,
-      InspectorState.ThemeLight => InspectorState.ThemeSystem,
-      _ => InspectorState.ThemeDark
-    };
-    await InspectorState.SetTheme(next);
-  }
-
-  private async Task ToggleNode(string path)
-  {
-    bool expanded = InspectorState.IsNodeExpanded(path);
-    await InspectorState.SetNodeExpanded(path, !expanded);
-  }
-
-  private async Task ToggleDiffNode(string path)
-  {
-    bool expanded = InspectorState.IsDiffNodeExpanded(path);
-    await InspectorState.SetNodeExpanded(InspectorState.DiffKey(path), !expanded);
-  }
-
-  private static string TruncatedHint(StateDiff.Result diff) =>
-    (diff.BeforeTruncated, diff.AfterTruncated) switch
-    {
-      (true, true) => "The previous and selected snapshots are truncated.",
-      (true, false) => "The previous snapshot is truncated.",
-      _ => "The selected snapshot is truncated."
-    };
 
   public override void Dispose()
   {
@@ -152,132 +73,6 @@
     InspectorLog.Changed -= OnLogChanged;
     base.Dispose();
   }
-
-  private string ThemeLabel => InspectorState.Theme switch
-  {
-    InspectorState.ThemeDark => "Dark",
-    InspectorState.ThemeLight => "Light",
-    _ => "System"
-  };
-
-  private IReadOnlyList<ActionLogEntry> VisibleEntries()
-  {
-    IReadOnlyList<ActionLogEntry> entries = InspectorLog.Snapshot();
-    string filter = InspectorState.Filter.Trim();
-    if (filter.Length == 0)
-    {
-      return entries;
-    }
-
-    return entries
-      .Where(entry =>
-        entry.Name.Contains(filter, StringComparison.OrdinalIgnoreCase)
-        || entry.ActionName.Contains(filter, StringComparison.OrdinalIgnoreCase)
-        || entry.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase)
-        || StoreBadge.Matches(entry.StoreId, entry.Render, filter, entry.Runtime))
-      .ToArray();
-  }
-
-  private ActionLogEntry? SelectedEntry()
-  {
-    long sequence = InspectorState.SelectedSequence;
-    if (sequence == 0)
-    {
-      return null;
-    }
-
-    return InspectorLog.TryGetEntry(sequence, out ActionLogEntry? entry) ? entry : null;
-  }
-
-  private IReadOnlyList<FoldedState> FoldedStates(string storeId, ActionLogEntry? selected)
-  {
-    bool selectedStore = selected is not null
-      && string.Equals(selected.StoreId, storeId, StringComparison.Ordinal);
-    return selectedStore
-      ? InspectorLog.FoldThrough(selected!.Sequence)
-      : InspectorLog.FoldStore(storeId);
-  }
-
-  private IReadOnlyList<FoldedState> VisibleStates
-  (
-    IReadOnlyList<FoldedState> folded,
-    IReadOnlyList<StoreSummary> stores,
-    string storeId
-  )
-  {
-    string filter = InspectorState.Filter.Trim();
-    if (filter.Length == 0 || StoreBadge.Matches(storeId, StoreSelection.RenderOf(stores, storeId), filter))
-    {
-      return folded;
-    }
-
-    return folded
-      .Where(state => state.StateTypeName.Contains(filter, StringComparison.OrdinalIgnoreCase))
-      .ToArray();
-  }
-
-  private string StoreSelectValue(IReadOnlyList<StoreSummary> stores)
-  {
-    string? pinned = InspectorState.SelectedStoreId;
-    if (!StoreSelection.IsListed(stores, pinned))
-    {
-      return FollowOption;
-    }
-
-    return pinned!.Length == 0 ? UntaggedOption : pinned;
-  }
-
-  private static string StoreOptionValue(StoreSummary store) =>
-    store.StoreId.Length == 0 ? UntaggedOption : store.StoreId;
-
-  private static string StoreOption(StoreSummary store)
-  {
-    if (store.StoreId.Length == 0)
-    {
-      return "(untagged)";
-    }
-
-    string label = StoreBadge.Label(store.StoreId, store.Render);
-    if (label.Length == 0)
-    {
-      return store.StoreId;
-    }
-
-    return label + " " + store.StoreId;
-  }
-
-  private StateDiff.Result DiffFor(ActionLogEntry entry)
-  {
-    string rootName = entry.StateTypeName.Length == 0 ? entry.Name : entry.StateTypeName;
-    InspectorLog.TryGetPreviousSnapshot(entry.StateTypeName, entry.Sequence, out FoldedState? previous);
-    return StateDiff.Compare
-    (
-      previous?.Json,
-      previous?.Truncated ?? false,
-      entry.SnapshotJson,
-      entry.SnapshotTruncated,
-      rootName.Length == 0 ? "state" : rootName
-    );
-  }
-
-  private static string RowClass(ActionLogEntry entry, long selectedSequence)
-  {
-    string css = "row";
-    if (entry.Sequence == selectedSequence)
-    {
-      css += " selected";
-    }
-
-    if (string.Equals(entry.Kind, InspectorCapture.InitKind, StringComparison.Ordinal))
-    {
-      css += " init";
-    }
-
-    return css;
-  }
-
-  private static string TabClass(string tab, string current) =>
-    tab == current ? "tab active" : "tab";
 }
 
 <PageTitle>TimeWarp DevTools</PageTitle>
@@ -286,7 +81,7 @@
   <header class="mast">
     <div class="mast-top">
       <h1 data-qa="brand">TimeWarp DevTools</h1>
-      <button type="button" class="theme" @onclick="CycleTheme" data-qa="theme">Theme: @ThemeLabel</button>
+      <button type="button" class="theme" @onclick="CycleTheme" data-qa="theme">Theme: @InspectorViewHelper.ThemeLabel(InspectorState.Theme)</button>
     </div>
     <div class="plugin-row">
       <nav class="plugins" aria-label="Plugins">
@@ -297,254 +92,27 @@
   </header>
 
   @{
-    IReadOnlyList<ActionLogEntry> visible = VisibleEntries();
-    ActionLogEntry? selected = SelectedEntry();
-    IReadOnlyList<StoreSummary> stores = InspectorLog.ListStores();
-    string storeId = StoreSelection.Effective(stores, InspectorState.SelectedStoreId);
-    IReadOnlyList<FoldedState> folded = FoldedStates(storeId, selected);
-    IReadOnlyList<FoldedState> states = VisibleStates(folded, stores, storeId);
-    bool stateAfterAction = selected is not null
-      && string.Equals(selected.StoreId, storeId, StringComparison.Ordinal);
-    StateDiff.Result? diff = selected is null ? null : DiffFor(selected);
+    InspectorView view = InspectorView.Create(InspectorLog, InspectorState);
   }
-  <div class="toolbar">
-    <label class="filter">
-      <span>Filter</span>
-      <input
-        type="search"
-        value="@InspectorState.Filter"
-        @oninput="OnFilter"
-        placeholder="Action, state, or store"
-        data-qa="filter" />
-    </label>
-    <button type="button" class="toolbar-button" @onclick="TogglePause" data-qa="pause">
-      @(InspectorLog.IsPaused ? "Resume" : "Pause")
-    </button>
-    <button type="button" class="toolbar-button" @onclick="ClearLog" data-qa="clear">Clear</button>
-    <p class="count" data-qa="count">@visible.Count</p>
-  </div>
+  <InspectorToolbar InspectorState="InspectorState" Paused="InspectorLog.IsPaused" Count="view.Entries.Count" />
 
   <div class="workspace">
-    <section class="log" aria-label="Action log">
-      <div class="log-a11y">
-        <span id="@StoreBadge.PrerenderDescriptionId">@StoreBadge.PrerenderDescription</span>
-        <span id="@StoreBadge.InteractiveDescriptionId">@StoreBadge.InteractiveDescription</span>
-        <span id="@StoreBadge.PrefixDescriptionId">@StoreBadge.PrefixDescription</span>
-        <span id="@StoreBadge.UntaggedDescriptionId">@StoreBadge.UntaggedDescription</span>
-      </div>
-      <div class="log-head" aria-hidden="true">
-        <span class="cell" data-col="time">Time</span>
-        <span class="cell" data-col="store">Store</span>
-        <span class="cell" data-col="runtime">Runtime</span>
-        <span class="cell" data-col="action">Action</span>
-        <span class="cell" data-col="state">State</span>
-        <span class="cell" data-col="duration">Duration</span>
-        <span class="cell" data-col="result">Result</span>
-      </div>
-      @if (visible.Count == 0)
-      {
-        <p class="empty" data-qa="empty">No actions yet. Dispatch an action in the inspected app.</p>
-      }
-      else
-      {
-        <ul>
-          @foreach (ActionLogEntry entry in visible)
-          {
-            <li>
-              <button
-                type="button"
-                class="@RowClass(entry, InspectorState.SelectedSequence)"
-                @onclick="() => Select(entry.Sequence)"
-                data-qa="row"
-                aria-describedby="@StoreBadge.DescriptionElementId(entry.StoreId, entry.Render)">
-                @{
-                  string badge = StoreBadge.Label(entry.StoreId, entry.Render);
-                  string runtimeLabel = StoreBadge.RuntimeLabel(entry.Runtime);
-                  string badgeHelp = StoreBadge.Tooltip(entry.StoreId, entry.Render);
-                  string when = entry.StartTimeUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                  string duration = entry.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) + " ms";
-                }
-                <span class="cell when" data-col="time" title="@when">@when</span>
-                <span
-                  class="cell @(badge.Length == 0 ? "store-badge" : "store-badge on")"
-                  data-col="store"
-                  data-hue="@StoreBadge.Hue(entry.StoreId)"
-                  title="@badgeHelp">@badge</span>
-                <span
-                  class="@("cell runtime" + (runtimeLabel.Length == 0 ? "" : " runtime-badge"))"
-                  data-col="runtime"
-                  data-qa="runtime"
-                  title="@(runtimeLabel.Length == 0 ? null : entry.Runtime)">@runtimeLabel</span>
-                <span class="cell action" data-col="action" title="@entry.ActionName">@entry.ActionName</span>
-                <span class="cell state" data-col="state" title="@entry.StateTypeName">@entry.StateTypeName</span>
-                <span class="cell duration" data-col="duration" title="@duration">@duration</span>
-                <span class="cell status @entry.Status.ToLowerInvariant()" data-col="result" title="@entry.Status">@entry.Status</span>
-              </button>
-            </li>
-          }
-        </ul>
-      }
-    </section>
+    <ActionLogList InspectorState="InspectorState" Entries="view.Entries" />
 
     <section class="detail" aria-label="State" data-qa="detail">
-      <div class="tabs" role="tablist">
-        <button type="button" role="tab" class="@TabClass(InspectorState.DetailTabAction, InspectorState.DetailTab)" aria-selected="@(InspectorState.DetailTab == InspectorState.DetailTabAction)" @onclick="() => SetTab(InspectorState.DetailTabAction)" data-qa="tab-action">Action</button>
-        <button type="button" role="tab" class="@TabClass(InspectorState.DetailTabState, InspectorState.DetailTab)" aria-selected="@(InspectorState.DetailTab == InspectorState.DetailTabState)" @onclick="() => SetTab(InspectorState.DetailTabState)" data-qa="tab-state">State</button>
-        <button type="button" role="tab" class="@TabClass(InspectorState.DetailTabDiff, InspectorState.DetailTab)" aria-selected="@(InspectorState.DetailTab == InspectorState.DetailTabDiff)" @onclick="() => SetTab(InspectorState.DetailTabDiff)" data-qa="tab-diff">Diff</button>
-      </div>
+      <TabStrip Tabs="InspectorViewHelper.DetailTabs" Current="@InspectorState.DetailTab" OnSelect="SetTab" />
 
       @if (InspectorState.DetailTab == InspectorState.DetailTabAction)
       {
-        @if (selected is null)
-        {
-          <p class="empty">Select an action to see its name, status, and tags.</p>
-        }
-        else
-        {
-          <h2>@selected.ActionName</h2>
-          <dl class="facts">
-            <dt>State</dt>
-            <dd>@(selected.StateTypeName.Length == 0 ? "—" : selected.StateTypeName)</dd>
-            <dt>Status</dt>
-            <dd class="status @selected.Status.ToLowerInvariant()">@selected.Status</dd>
-            <dt>Duration</dt>
-            <dd>@selected.DurationMilliseconds.ToString("0.0", CultureInfo.InvariantCulture) ms</dd>
-            <dt>Started</dt>
-            <dd>@selected.StartTimeUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture)</dd>
-            <dt>Span</dt>
-            <dd>@(selected.SpanId.Length == 0 ? "—" : selected.SpanId)</dd>
-            <dt>Store</dt>
-            <dd data-qa="store-id">@(selected.StoreId.Length == 0 ? "—" : selected.StoreId)</dd>
-            @if (selected.Render.Length > 0)
-            {
-              <dt>Render</dt>
-              <dd>@selected.Render</dd>
-            }
-            @if (selected.Runtime.Length > 0)
-            {
-              <dt>Runtime</dt>
-              <dd data-qa="runtime-detail">@selected.Runtime</dd>
-            }
-            <dt>Activity</dt>
-            <dd>@selected.Name</dd>
-            @foreach (KeyValuePair<string, string> attribute in selected.Attributes.OrderBy(pair => pair.Key, StringComparer.Ordinal))
-            {
-              <dt class="key">@(attribute.Key)</dt>
-              <dd>@(attribute.Value)</dd>
-            }
-          </dl>
-        }
+        <ActionDetail Selected="view.Selected" />
       }
       else if (InspectorState.DetailTab == InspectorState.DetailTabDiff)
       {
-        @if (selected is null)
-        {
-          <p class="empty">Select an action to diff its state against the previous snapshot.</p>
-        }
-        else
-        {
-          <h2>@selected.ActionName</h2>
-          @if (diff is null)
-          {
-            <p class="empty">Select an action to diff its state against the previous snapshot.</p>
-          }
-          else if (diff.Status == StateDiff.Status.NoSnapshot)
-          {
-            <p class="empty">No snapshot on this span. Enable IncludeSnapshots on the inspected app.</p>
-          }
-          else if (diff.Status == StateDiff.Status.Truncated)
-          {
-            <p class="hint">@TruncatedHint(diff) Raise MaxSnapshotChars on the inspected app. Showing raw text of the selected snapshot.</p>
-            <pre data-qa="snapshot">@diff.Raw</pre>
-          }
-          else if (diff.Status == StateDiff.Status.Unparsed)
-          {
-            <p class="hint">This snapshot is not valid JSON.</p>
-            <pre data-qa="snapshot">@diff.Raw</pre>
-          }
-          else if (diff.Status == StateDiff.Status.NoChange)
-          {
-            <p class="empty" data-qa="diff-none">No change.</p>
-          }
-          else
-          {
-            @if (diff.Initial)
-            {
-              <p class="hint">No earlier snapshot of this state.</p>
-            }
-            <div data-qa="diff">
-              @foreach (StateDiff.Node node in diff.Nodes)
-              {
-                <StateDiffView Node="node" InspectorState="InspectorState" OnToggle="ToggleDiffNode" />
-              }
-            </div>
-          }
-        }
+        <DiffPanel InspectorState="InspectorState" SelectedDiff="view.SelectedDiff" />
       }
       else
       {
-        @if (stores.Any(store => store.StoreId.Length > 0))
-        {
-          string render = StoreSelection.RenderOf(stores, storeId);
-          string badge = StoreBadge.Label(storeId, render);
-          string badgeHelp = StoreBadge.Tooltip(storeId, render);
-          <div class="store-select">
-            <label id="store-picker-label" for="store-picker">Store</label>
-            <span
-              class="@(badge.Length == 0 ? "store-badge" : "store-badge on")"
-              data-hue="@StoreBadge.Hue(storeId)"
-              title="@badgeHelp">@badge</span>
-            <select
-              id="store-picker"
-              data-qa="store"
-              aria-labelledby="store-picker-label"
-              title="@StoreSelection.PickerHelp"
-              aria-describedby="store-picker-help"
-              value="@StoreSelectValue(stores)"
-              @onchange="OnStore">
-              <option value="@FollowOption" title="@StoreSelection.FollowLiveHelp">Follow live</option>
-              @foreach (StoreSummary store in stores)
-              {
-                <option value="@StoreOptionValue(store)" title="@StoreBadge.Tooltip(store.StoreId, store.Render)">@StoreOption(store)</option>
-              }
-            </select>
-            <span id="store-picker-help" class="store-help">@StoreSelection.FollowLiveHelp</span>
-          </div>
-        }
-        <div class="view-tabs" role="tablist" aria-label="State format">
-          <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewTree, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewTree)" @onclick="() => SetView(InspectorState.JsonViewTree)" data-qa="view-tree">Tree</button>
-          <button type="button" role="tab" class="@TabClass(InspectorState.JsonViewRaw, InspectorState.JsonView)" aria-selected="@(InspectorState.JsonView == InspectorState.JsonViewRaw)" @onclick="() => SetView(InspectorState.JsonViewRaw)" data-qa="view-raw">Raw</button>
-        </div>
-        <h2>@(stateAfterAction ? "State after action" : "Current state")</h2>
-        @if (states.Count == 0 && folded.Count > 0)
-        {
-          <p class="empty" data-qa="state-filtered">No state matches the filter.</p>
-        }
-        else if (states.Count == 0)
-        {
-          <p class="empty">No state snapshots yet. Enable IncludeSnapshots on the inspected app.</p>
-        }
-        else if (InspectorState.JsonView == InspectorState.JsonViewRaw)
-        {
-          @foreach (FoldedState state in states)
-          {
-            <h3>@state.StateTypeName</h3>
-            @if (state.Truncated)
-            {
-              <p class="hint">Snapshot truncated. Raise MaxSnapshotChars on the inspected app.</p>
-            }
-            <pre data-qa="snapshot">@state.Json</pre>
-          }
-        }
-        else
-        {
-          <div data-qa="state-tree">
-            @foreach (FoldedState state in states)
-            {
-              <FoldedStateNode State="state" InspectorState="InspectorState" OnToggle="ToggleNode" />
-            }
-          </div>
-        }
+        <StatePanel InspectorState="InspectorState" View="view" />
       }
     </section>
   </div>
