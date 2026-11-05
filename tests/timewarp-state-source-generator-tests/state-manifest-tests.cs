@@ -202,6 +202,27 @@ public class Should_Read_Manifest
     Should.Throw<FormatException>(() => StateManifest.Parse("""{"states":[]}"""));
   }
 
+  public static void Given_Non_Object_Array_Items_Skips_Them()
+  {
+    StateManifest manifest = StateManifest.Parse
+    (
+      """{"version":1,"assembly":"App","states":[1,"x",null,[],{"type":"App.S","name":"S","clone":"generated","actions":[true,{"type":"App.S+A","name":"A","parameters":[2,{"name":"p","type":"int","required":true}]}]}]}"""
+    );
+
+    manifest.States.Count.ShouldBe(1);
+    manifest.States[0].Name.ShouldBe("S");
+    manifest.States[0].Actions.Count.ShouldBe(1);
+    manifest.States[0].Actions[0].Parameters.Count.ShouldBe(1);
+    manifest.States[0].Actions[0].Parameters[0].Required.ShouldBeTrue();
+  }
+
+  public static void Given_Non_Array_Collections_Reads_Them_As_Empty()
+  {
+    StateManifest manifest = StateManifest.Parse("""{"version":1,"states":{"type":"App.S"}}""");
+    manifest.States.ShouldBeEmpty();
+    manifest.AssemblyName.ShouldBe("");
+  }
+
   public static void Given_Loaded_Assembly()
   {
     (_, Compilation output) = ManifestSources.Run(ManifestSources.Counter);

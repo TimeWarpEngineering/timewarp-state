@@ -152,6 +152,7 @@ public class Should_Re_Emit_Only_What_Changed
     GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitCatalog).ShouldContain(IncrementalStepRunReason.Modified);
     GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitManifest).ShouldContain(IncrementalStepRunReason.Modified);
     GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitPersistence).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitClone).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
     GeneratorTestHost.OutputReasons(result).ShouldContain(IncrementalStepRunReason.Modified);
 
     string[] texts = GeneratorTestHost.GeneratedTexts(driver);

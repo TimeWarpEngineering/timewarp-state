@@ -177,6 +177,65 @@ public class Should_Report_TWS0004
         .WithArguments("CounterState.IncrementActionSet.Action")
     );
   }
+
+  public static async Task Given_Bare_ActionSet_Container()
+  {
+    // The ActionSet name must be longer than "ActionSet": a bare ActionSet container is not a catalog placement, and
+    // since task 142 the generator skips it too (one shared rule in CatalogActionFacts).
+    const string TestCode =
+      """
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class CounterState : State<CounterState>
+      {
+        public override void Initialize() { }
+
+        public static class ActionSet
+        {
+          [{|#0:CatalogAction(Description = "Increment the counter.")|}]
+          public sealed class Action : IAction { }
+        }
+      }
+      """;
+
+    await RunAsync
+    (
+      TestCode,
+      new DiagnosticResult(CatalogActionAnalyzer.PlacementDiagnosticId, DiagnosticSeverity.Error)
+        .WithLocation(0)
+        .WithArguments("CounterState.ActionSet.Action")
+    );
+  }
+
+  public static async Task Given_Struct_Action()
+  {
+    const string TestCode =
+      """
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class CounterState : State<CounterState>
+      {
+        public override void Initialize() { }
+
+        public static class IncrementActionSet
+        {
+          [{|#0:{|#1:CatalogAction|}(Description = "Increment the counter.")|}]
+          public struct Action : IAction { }
+        }
+      }
+      """;
+
+    await RunAsync
+    (
+      TestCode,
+      DiagnosticResult.CompilerError("CS0592").WithLocation(1).WithArguments("CatalogAction", "class"),
+      new DiagnosticResult(CatalogActionAnalyzer.PlacementDiagnosticId, DiagnosticSeverity.Error)
+        .WithLocation(0)
+        .WithArguments("CounterState.IncrementActionSet.Action")
+    );
+  }
 }
 
 public class Should_Report_TWS0005

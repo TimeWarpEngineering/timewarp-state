@@ -34,7 +34,7 @@ public class InspectorLoop_Should
     ISender<ClientPipeline> sender = scope.ServiceProvider.GetRequiredService<ISender<ClientPipeline>>();
     await sender.Send(new InspectorState.SetFilterActionSet.Action("count"));
     await sender.Send(new InspectorState.SelectEntryActionSet.Action(1));
-    await sender.Send(new InspectorState.NoteLogChangedActionSet.Action());
+    await sender.Send(new InspectorState.NoteDataChangedActionSet.Action());
     await sender.Send(new InspectorState.TogglePauseActionSet.Action());
 
     IStore store = scope.ServiceProvider.GetRequiredService<IStore>();

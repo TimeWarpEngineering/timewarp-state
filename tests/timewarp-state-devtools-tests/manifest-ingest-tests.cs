@@ -125,6 +125,27 @@ public class InspectorManifest_Should
     stored[0].States.Count.ShouldBe(0);
   }
 
+  public static void StoreABatchAndRaiseChangedOnce()
+  {
+    InspectorManifest registry = new();
+    int changes = 0;
+    registry.Changed += () => changes++;
+
+    registry.SetAll
+    (
+      [
+        StateManifest.Parse(ManifestIngestEndpoint_Should.CounterManifest("A")),
+        StateManifest.Parse(ManifestIngestEndpoint_Should.CounterManifest("B")),
+        StateManifest.Parse(ManifestIngestEndpoint_Should.CounterManifest("A"))
+      ]
+    ).ShouldBe(3);
+
+    changes.ShouldBe(1);
+    registry.Snapshot().Select(manifest => manifest.AssemblyName).ShouldBe(["A", "B"]);
+    registry.SetAll([]).ShouldBe(0);
+    changes.ShouldBe(1);
+  }
+
   public static void RefuseANewAssemblyPastTheCap()
   {
     InspectorManifest registry = new();
@@ -174,9 +195,15 @@ public class DevToolsManifestPublisher_Should
     DevToolsManifestPublisher.CollectManifests([typeof(string).Assembly]).ShouldBeEmpty();
   }
 
+  public static void CollectTheManifestOfAnAssemblyWithStates()
+  {
+    DevToolsManifestPublisher.CollectManifests([typeof(InspectorManifest).Assembly]).Count.ShouldBe(1);
+  }
+
   public static async Task NotThrowWhenDevToolsIsDown()
   {
-    using DevToolsManifestPublisher publisher = new(new Uri("http://127.0.0.1:1/ingest/manifest"), [typeof(string).Assembly]);
+    // The DevTools assembly declares InspectorState, so it has a manifest and PublishAsync really sends a request.
+    using DevToolsManifestPublisher publisher = new(new Uri("http://127.0.0.1:1/ingest/manifest"), [typeof(InspectorManifest).Assembly]);
     await publisher.StartAsync(CancellationToken.None);
     (await publisher.PublishAsync(CancellationToken.None)).ShouldBeFalse();
   }

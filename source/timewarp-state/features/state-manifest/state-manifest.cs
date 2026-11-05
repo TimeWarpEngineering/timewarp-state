@@ -8,7 +8,8 @@
 // serializer, so it needs no reflection and no JsonSerializerContext and stays AOT and trim safe.
 // FromAssembly reads the StateManifestAttribute instance. An assembly without states has none and returns null.
 // Version handling: a document with a higher version than CurrentVersion still parses the fields this reader knows.
-// Unknown fields are ignored, so the generator can add facts without breaking older readers.
+// Unknown fields are ignored, so the generator can add facts without breaking older readers. Array items that are
+// not objects are skipped.
 // Type names are runtime Type.FullName strings (nested types joined with '+'). Name is Type.Name, the value
 // TimeWarp.State.Telemetry puts in timewarp.state.state_type. An action's Name is the timewarp.state.action value.
 #endregion
@@ -117,9 +118,11 @@ public sealed class StateManifest
     return new StateManifest(version.GetInt32(), String(root, "assembly") ?? "", states, json);
   }
 
+  // Items that are not JSON objects are skipped, so String and Boolean only ever read object properties and Parse
+  // throws nothing beyond its documented JsonException and FormatException.
   private static IEnumerable<JsonElement> Array(JsonElement element, string name) =>
     element.ValueKind == JsonValueKind.Object && element.TryGetProperty(name, out JsonElement value) && value.ValueKind == JsonValueKind.Array
-      ? value.EnumerateArray().ToArray()
+      ? value.EnumerateArray().Where(item => item.ValueKind == JsonValueKind.Object).ToArray()
       : [];
 
   private static string? String(JsonElement element, string name) =>

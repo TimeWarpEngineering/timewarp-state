@@ -49,7 +49,7 @@ The four generators are now one `TimeWarpStateGenerator`. It builds one graph of
 
 **DevTools**
 
-- `services.AddTimeWarpStateDevToolsManifest(assemblies)` in `TimeWarp.State.DevTools.Export` posts the manifests to `POST /ingest/manifest` once at startup. It does nothing when `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is unset, and it never fails the app.
+- `services.AddTimeWarpStateDevToolsManifest(assemblies)` in `TimeWarp.State.DevTools.Export` posts the manifests to `POST /ingest/manifest` once at startup. It does nothing when `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is unset or not an absolute URI, and it never fails the app. The post is not retried, so after a DevTools restart the Manifest tab stays empty until the app restarts.
 - The inspector has a new **Manifest** tab. It lists every state and its actions (method, parameters, catalog name, tracked) before any span arrives.
 - `TimeWarp.State.DevTools.Export` now references `TimeWarp.State`, so it can read the manifest attribute.
 - Dispatch from DevTools is not built yet. The manifest carries what it will need.
@@ -57,6 +57,8 @@ The four generators are now one `TimeWarpStateGenerator`. It builds one graph of
 **Analyzers**
 
 - The analyzers and the generator now share the `[CatalogAction]` placement rule, the default catalog name and the `State<T>` checks as linked source, so the two cannot drift. TWS0004 to TWS0008 report the same cases as before.
+- One generator change follows from the shared rule. A `[CatalogAction]` action nested directly in a class named `ActionSet` (no prefix) no longer gets a catalog entry. TWS0004 already reported that placement as an error, so a project that built cleanly is not affected.
+- `StateManifest.Parse` skips array items that are not JSON objects. It throws only `JsonException` and `FormatException`.
 
 **Incrementality**
 

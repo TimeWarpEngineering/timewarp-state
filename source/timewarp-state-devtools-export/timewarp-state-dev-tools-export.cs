@@ -94,7 +94,9 @@ public static class TimeWarpStateDevToolsExport
 
   /// <summary>
   /// Posts the State manifest of each assembly in <paramref name="assemblies"/> to DevTools once, when the host starts.
-  /// Does nothing when <see cref="EndpointEnvironmentVariable"/> is unset or blank. A down inspector never fails the app.
+  /// Does nothing when <see cref="EndpointEnvironmentVariable"/> is unset or blank, or when its value is not an absolute
+  /// URI (no error is raised). A down inspector never fails the app. The post is not retried: when DevTools starts or
+  /// restarts after the app, its Manifest tab stays empty until the app restarts.
   /// </summary>
   /// <param name="services">The service collection.</param>
   /// <param name="assemblies">Assemblies compiled with the State source generator. One without states contributes nothing.</param>
@@ -111,8 +113,10 @@ public static class TimeWarpStateDevToolsExport
       return services;
     }
 
-    DevToolsManifestPublisher publisher = new(ManifestIngestUri(baseUri), assemblies);
-    services.AddSingleton<IHostedService>(publisher);
+    // A factory, not an instance, so the container owns the publisher and disposes it and its HttpClient.
+    Uri ingestUri = ManifestIngestUri(baseUri);
+    Assembly[] manifestAssemblies = [.. assemblies];
+    services.AddSingleton<IHostedService>(_ => new DevToolsManifestPublisher(ingestUri, manifestAssemblies));
     return services;
   }
 }

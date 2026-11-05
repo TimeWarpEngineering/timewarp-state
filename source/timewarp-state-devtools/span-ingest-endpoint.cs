@@ -3,7 +3,7 @@
 #endregion
 
 #region Design
-// Does not dispatch. The circuit hears InspectorLog.Changed and dispatches NoteLogChanged on its
+// Does not dispatch. The circuit hears InspectorLog.Changed and dispatches NoteDataChanged on its
 // own store. InspectorCapture drops InspectorState here as well as in the exporter. The body is
 // untrusted: JSON content type only (415), 1 MiB cap including chunked bodies (413), null-safe
 // mapping, and snapshots capped at MaxSnapshotLength.

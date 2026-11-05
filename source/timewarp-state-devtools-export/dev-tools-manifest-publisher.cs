@@ -7,6 +7,8 @@
 // StartAsync never throws and never waits on DevTools longer than the 2 second client timeout: a stopped
 // inspector must not fail or slow the inspected app. Assemblies without a StateManifestAttribute contribute nothing,
 // and with nothing to send no request is made. The attribute is read by type, not by name, which stays AOT safe.
+// The post happens once and is not retried. A DevTools instance started after the app shows no manifest until the app
+// restarts. Re-posting would need a retry loop or a DevTools pull, which this channel does not have yet.
 #endregion
 
 namespace TimeWarp.State.DevTools.Export;

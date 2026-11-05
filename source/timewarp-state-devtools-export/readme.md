@@ -44,7 +44,7 @@ The State source generator adds a manifest of each assembly's states and actions
 builder.Services.AddTimeWarpStateDevToolsManifest(typeof(CounterState).Assembly);
 ```
 
-It registers a hosted service that posts to `POST /ingest/manifest`. The body is `{ "Manifests": [ "<manifest json>", ... ] }`. An assembly with no states adds nothing. When `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is unset or blank, the call does nothing. If DevTools is down, the post fails quietly and the app starts as usual.
+It registers a hosted service that posts to `POST /ingest/manifest`. The body is `{ "Manifests": [ "<manifest json>", ... ] }`. An assembly with no states adds nothing. When `TIMEWARP_STATE_DEVTOOLS_ENDPOINT` is unset, blank, or not an absolute URI, the call does nothing and raises no error. If DevTools is down, the post fails quietly and the app starts as usual. The post happens once and is not retried. If DevTools starts or restarts after the app, the Manifest tab stays empty until the app restarts.
 
 This package now references `TimeWarp.State` to read `StateManifestAttribute`. Dispatching actions from DevTools is not implemented yet. The manifest carries the catalog names and parameters that a later dispatch channel will use.
 

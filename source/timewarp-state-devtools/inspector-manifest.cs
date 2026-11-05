@@ -6,7 +6,8 @@
 // A singleton like InspectorLog, so the ingest request and every circuit see the same list. The latest manifest
 // for an assembly name replaces the earlier one, so a restarted app does not pile up duplicates. The count is
 // capped because the input is untrusted: past MaxAssemblies a new assembly name is refused, while an assembly
-// already known can still be replaced. Changed is raised outside the lock, and only when something changed.
+// already known can still be replaced. Changed is raised outside the lock, and only when something changed. SetAll
+// stores a whole ingest request under one lock and raises Changed once, so a request does not re-render N times.
 // The manifests are read-only data: nothing here dispatches an action in the inspected app.
 #endregion
 
@@ -48,6 +49,38 @@ public sealed class InspectorManifest
 
     changed?.Invoke();
     return true;
+  }
+
+  /// <summary>
+  /// Stores each manifest in <paramref name="manifests"/> as <see cref="Set"/> does, and raises
+  /// <see cref="Changed"/> at most once for the whole batch.
+  /// </summary>
+  /// <param name="manifests">Parsed manifests, applied in order.</param>
+  /// <returns>How many were stored. A new assembly past <see cref="MaxAssemblies"/> is not.</returns>
+  public int SetAll(IEnumerable<StateManifest> manifests)
+  {
+    ArgumentNullException.ThrowIfNull(manifests);
+    int stored = 0;
+    Action? changed;
+    lock (Sync)
+    {
+      foreach (StateManifest manifest in manifests)
+      {
+        ArgumentNullException.ThrowIfNull(manifest, nameof(manifests));
+        if (!ByAssembly.ContainsKey(manifest.AssemblyName) && ByAssembly.Count >= MaxAssemblies)
+        {
+          continue;
+        }
+
+        ByAssembly[manifest.AssemblyName] = manifest;
+        stored++;
+      }
+
+      changed = stored > 0 ? Changed : null;
+    }
+
+    changed?.Invoke();
+    return stored;
   }
 
   /// <summary>

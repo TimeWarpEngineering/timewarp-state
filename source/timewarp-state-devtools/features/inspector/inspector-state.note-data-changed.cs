@@ -1,19 +1,20 @@
 #region Purpose
-// Bumps InspectorState.Revision after InspectorLog changes.
+// Bumps InspectorState.Revision after InspectorLog or InspectorManifest changes.
 #endregion
 
 #region Design
-// The circuit dispatches this. It does not read or write InspectorLog, so it cannot append a span.
+// The circuit dispatches this. It does not read or write InspectorLog or InspectorManifest, so it cannot append a
+// span or store a manifest.
 #endregion
 
 namespace TimeWarp.State.DevTools.Features.Inspector;
 
 partial class InspectorState
 {
-  /// <summary>Notifies subscribers that <see cref="InspectorLog"/> changed.</summary>
-  public static class NoteLogChangedActionSet
+  /// <summary>Notifies subscribers that <see cref="InspectorLog"/> or <see cref="InspectorManifest"/> changed.</summary>
+  public static class NoteDataChangedActionSet
   {
-    /// <summary>The note-log-changed action.</summary>
+    /// <summary>The note-data-changed action.</summary>
     public sealed class Action : IAction;
 
     /// <summary>Increments <see cref="InspectorState.Revision"/>.</summary>

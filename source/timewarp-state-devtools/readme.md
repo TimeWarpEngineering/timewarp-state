@@ -25,6 +25,7 @@ The **Manifest** tab lists the states and actions the inspected app declares, be
 
 - The inspected app posts its State manifests to `POST /ingest/manifest`. The body is `{ "Manifests": [ "<manifest json>", ... ] }`. Each entry is the JSON text of one assembly's `StateManifestAttribute`. The route takes JSON only (415), caps the body at 1 MiB (413), and answers 400 for bad JSON. An entry that is not a valid manifest is skipped. It uses the same CORS rule as `/ingest/spans`.
 - The newest manifest for an assembly name replaces the older one. At most 64 assemblies are kept.
+- The inspected app posts once, at host start. Manifests live in memory only, so after a DevTools restart the tab stays empty until the inspected app restarts.
 - A state `Name` matches the `timewarp.state.state_type` span tag. An action `Name` matches `timewarp.state.action`.
 - The tab is read-only. Dispatching an action from DevTools is not implemented yet. The manifest carries the catalog names and parameters that a later dispatch channel will use.
 

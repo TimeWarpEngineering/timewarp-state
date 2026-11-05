@@ -7,7 +7,8 @@
 #region Design
 // Before task 142 the generator and the analyzer each had their own copy of the placement rule, the visibility walk
 // and the default-name rule. They now share this one file. The analyzer project compiles it via
-// <Compile Include ... Link>, so it uses only Roslyn and BCL types and explicit usings.
+// <Compile Include ... Link>, so it must build in both assemblies: only Roslyn and BCL types, only the global usings
+// both projects share, no generator-only types, internal visibility.
 // Placement: the Action is named Action, nested in a type whose name ends in ActionSet and is longer than
 // "ActionSet", nested in a type; none of the three is generic; every one is at least internal. The analyzer adds one
 // rule of its own (the Action must be a class, TWS0004). The generator also asks ActionSetShape whether the

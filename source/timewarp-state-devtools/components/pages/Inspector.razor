@@ -8,15 +8,15 @@
   [Inject] private InspectorManifest InspectorManifest { get; set; } = null!;
   [Inject] private ILogger<Inspector> Logger { get; set; } = null!;
 
-  // Set once by Dispose; the log's Changed event can fire on an ingest thread after that.
+  // Set once by Dispose; the log's or manifest's Changed event can fire on an ingest thread after that.
   private int Disposed;
 
   private InspectorState InspectorState => GetState<InspectorState>();
 
   protected override void OnInitialized()
   {
-    InspectorLog.Changed += OnLogChanged;
-    InspectorManifest.Changed += OnLogChanged;
+    InspectorLog.Changed += OnInspectorDataChanged;
+    InspectorManifest.Changed += OnInspectorDataChanged;
   }
 
   protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -31,21 +31,21 @@
     await InspectorState.SetTheme(InspectorState.Theme);
   }
 
-  private void OnLogChanged()
+  private void OnInspectorDataChanged()
   {
     if (Volatile.Read(ref Disposed) != 0)
     {
       return;
     }
 
-    _ = SyncLogSafeAsync();
+    _ = RefreshSafeAsync();
   }
 
-  private async Task SyncLogSafeAsync()
+  private async Task RefreshSafeAsync()
   {
     try
     {
-      await InvokeAsync(SyncLogAsync);
+      await InvokeAsync(RefreshAsync);
     }
     catch (Exception exception) when (exception is ObjectDisposedException or InvalidOperationException)
     {
@@ -55,11 +55,11 @@
     {
       // Fire-and-forget: observe the fault here so it is never an unobserved task exception.
       // The next Changed event retries, so the page stays up.
-      Logger.LogError(exception, "Refreshing the inspector after an action log change failed.");
+      Logger.LogError(exception, "Refreshing the inspector after an action log or manifest change failed.");
     }
   }
 
-  private Task SyncLogAsync() => InspectorState.NoteLogChanged();
+  private Task RefreshAsync() => InspectorState.NoteDataChanged();
 
   private Task CycleTheme() => InspectorState.CycleTheme();
 
@@ -72,8 +72,8 @@
       return;
     }
 
-    InspectorLog.Changed -= OnLogChanged;
-    InspectorManifest.Changed -= OnLogChanged;
+    InspectorLog.Changed -= OnInspectorDataChanged;
+    InspectorManifest.Changed -= OnInspectorDataChanged;
     base.Dispose();
   }
 }

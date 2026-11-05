@@ -92,6 +92,10 @@ public class Should_Match_Pre_142_Output
   public static void Given_Persistence_Without_TimeWarp_State() =>
     Golden.Verify("persistence-bare", Golden.RunBare(GoldenSources.BareCases["persistence-bare"]));
 
-  public static void Given_Every_Case_Has_A_Test() =>
-    GoldenSources.Cases.Keys.Concat(GoldenSources.BareCases.Keys).Count().ShouldBe(5);
+  // Names every case key, so adding, renaming or dropping a case fails here until a Given_ test above covers it.
+  public static void Given_Every_Case_Has_A_Test()
+  {
+    GoldenSources.Cases.Keys.Order(StringComparer.Ordinal).ShouldBe(["clone", "counter", "failures", "shapes"]);
+    GoldenSources.BareCases.Keys.Order(StringComparer.Ordinal).ShouldBe(["persistence-bare"]);
+  }
 }

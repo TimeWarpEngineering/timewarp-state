@@ -93,17 +93,18 @@ public static class ManifestIngestEndpoint
       return Results.BadRequest();
     }
 
-    int accepted = 0;
+    List<StateManifest> parsed = [];
     int limit = Math.Min(manifests.Count, MaxManifestsPerRequest);
     for (int index = 0; index < limit; index++)
     {
-      if (TryParse(manifests[index], out StateManifest? manifest) && inspectorManifest.Set(manifest))
+      if (TryParse(manifests[index], out StateManifest? manifest))
       {
-        accepted++;
+        parsed.Add(manifest);
       }
     }
 
-    return Results.Ok(accepted);
+    // One store call per request, so the inspector raises Changed once rather than once per manifest.
+    return Results.Ok(inspectorManifest.SetAll(parsed));
   }
 
   internal static bool TryParse(string? json, [NotNullWhen(true)] out StateManifest? manifest)
