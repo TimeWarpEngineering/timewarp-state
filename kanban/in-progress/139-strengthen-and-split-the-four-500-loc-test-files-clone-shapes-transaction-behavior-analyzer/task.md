@@ -77,6 +77,10 @@ Acceptance:
 - [x] All four files split; no file over 400 lines
 - [x] All tests green
 
+## Review
+
+- Round 1: Blocked — open M1, M2
+
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC. `StateCloneGeneratorTestDriver` re-reads every TPA assembly on each run (~45x per file); caching the references is an optional extra here.
@@ -90,6 +94,9 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. `StateCloneGener
   The audit passes. Its two advisory warnings were already there and are out of scope: kanban-landed for a stale
   claim on task 098, and kebab-path-names for Blazor `.lib.module` asset names that must keep that form.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-sonnet-5-5), session 25d17f88-40fa-48cc-a678-746fa84e6269, max-turns 500, Done — 2026-11-05T11:16:28Z
+- Review: cursor, general, effort 3, turn cap 200, round 1 open (2026-11-05). No separate vendor session id.
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-05T11:24:00Z
+- Fix pass (implement-fix-2, implementer-claude, claude-opus-5-5) for round 1, 2026-11-05: fixed M1 and M2. State tests 146 passed (1 skipped), source generator 109 passed. `ganda repo audit` shows only the two warnings already noted above (098 claim, `.lib.module` names).
 
 ## Results
 
@@ -143,6 +150,17 @@ All four areas are split by concern. No file in them is over 273 lines, and the 
 - Test counts: analyzer 44 to 51, source generator 101 to 109, state 131 to 146 (1 skipped, unchanged). No product
   bugs were found, and `source/` is untouched.
 
+Round 1 review (effort 3, roster general) found 1 bug and 1 nit. Both are fixed in the fix pass (see `review/round-1/merged.md`):
+
+- M1: `Share_Injected_Services_By_Reference` now gives the clone a `RecordingLogger<ServiceState>`. It asserts that the clone's
+  `LogInformation` call wrote exactly one Information entry with the message "clone kept the logger". The reference-equality
+  checks stay. `RecordingLogger` and `LogEntry` moved from the transaction fakes to `tests/timewarp-state-tests/shared/
+  recording-logger.cs` (namespace `SharedTestFixtures`), so the pipeline and cloning tests share one copy.
+- M2: the Design region in `state-clone-shape-emitted-text-tests.cs` now points at `generated-clone-generics-tests.cs`,
+  `generated-clone-collections-tests.cs` and `generated-clone-constructors-tests.cs`.
+
+The goal restatement matches the original task; there is no misread.
+
 ### How to validate
 
 Smoke:
@@ -154,7 +172,9 @@ dotnet fixie timewarp-state-tests -c Release --no-build
 wc -l tests/timewarp-state-tests/pipeline/state-transaction-behavior-*.cs tests/timewarp-state-tests/cloning/*.cs \
   tests/timewarp-state-source-generator-tests/state-clone-*.cs tests/timewarp-state-analyzer-tests/handler-must-*.cs
 grep -rn "WithSpan" tests/timewarp-state-analyzer-tests/handler-must-*.cs
+grep -n "ShouldHaveSingleItem\|RecordingLogger" tests/timewarp-state-tests/cloning/generated-clone-constructors-tests.cs
 ```
 
 Expect: the build succeeds. The suites report 51 passed, 109 passed, and 146 passed with 1 skipped. No file in the
-`wc -l` list is over 400 lines. The `WithSpan` grep finds nothing.
+`wc -l` list is over 400 lines. The `WithSpan` grep finds nothing. The last grep shows the
+`RecordingLogger<ServiceState>` and the `ShouldHaveSingleItem` log assertion in `Share_Injected_Services_By_Reference`.

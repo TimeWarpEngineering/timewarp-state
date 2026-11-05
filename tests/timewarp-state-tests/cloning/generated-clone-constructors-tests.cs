@@ -5,7 +5,7 @@
 
 #region Design
 // Fixtures are in generated-clone-shape-fixtures.cs and generated-clone-extra-fixtures.cs. ServiceState and TestNavigationManager are
-// shared with the pipeline tests (shared/service-state-fixtures.cs); ServiceState is a State<T>, so the generator still emits
+// shared with the pipeline tests (shared/service-state-fixtures.cs), as is RecordingLogger (shared/recording-logger.cs); ServiceState is a State<T>, so the generator still emits
 // its clone and the module initializer registers it.
 #endregion
 
@@ -54,7 +54,7 @@ public partial class Should_
 
   public void Share_Injected_Services_By_Reference()
   {
-    ILogger<ServiceState> logger = NullLogger<ServiceState>.Instance;
+    RecordingLogger<ServiceState> logger = new();
     using HttpClient httpClient = new();
     NavigationManager navigationManager = new TestNavigationManager();
     var original = new ServiceState(logger, httpClient, navigationManager) { Count = 4 };
@@ -67,10 +67,14 @@ public partial class Should_
     clone.HttpClient.ShouldBeSameAs(httpClient);
     clone.NavigationManager.ShouldBeSameAs(navigationManager);
     clone.Guid.ShouldNotBe(original.Guid);
-    clone.Logger.LogInformation("clone kept the logger");
     clone.NavigationManager.BaseUri.ShouldBe("https://example.test/");
-  }
 
+    clone.Logger.LogInformation("clone kept the logger");
+
+    LogEntry entry = logger.Entries.ShouldHaveSingleItem();
+    entry.Level.ShouldBe(LogLevel.Information);
+    entry.Message.ShouldBe("clone kept the logger");
+  }
 
   public void Clone_Record_Class_And_Record_Struct_Members()
   {

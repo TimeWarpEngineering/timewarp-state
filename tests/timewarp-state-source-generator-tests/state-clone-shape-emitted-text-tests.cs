@@ -6,8 +6,8 @@
 // Compilation of every supported shape is covered by the per-group Should_Compile_* tests. These cases pin the
 // generated text where a shape has a distinctive output contract: generic dispatch, typed defaults, the ICloneable
 // cast, no LINQ in immutable rebuilds, and [CloneShared] assignment.
-// Runtime behavior of the same shapes is covered in timewarp-state-tests/cloning/generated-clone-shape-tests.cs
-// and generated-clone-shape-more-tests.cs.
+// Runtime behavior of the same shapes is covered in timewarp-state-tests/cloning/generated-clone-generics-tests.cs,
+// generated-clone-collections-tests.cs, and generated-clone-constructors-tests.cs.
 #endregion
 
 namespace StateCloneSourceGenerator_;
