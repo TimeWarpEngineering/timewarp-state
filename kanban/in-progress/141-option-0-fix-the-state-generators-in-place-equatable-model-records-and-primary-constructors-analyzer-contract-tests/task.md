@@ -42,7 +42,11 @@ Acceptance criteria, in my words:
 6. **Ramani inventory:** `timewarp-taratibu/source/timewarp-ramani-generators/` inventoried like 140 did Nuru and
    Mediator, and anything that should change this task's shape recorded here.
 7. **Not breaking:** code that failed before may now compile; nothing that compiled changes meaning (no signature
-   change for any action shape that already produced a compiling method).
+   change for any action shape that already produced a compiling method). *Fix pass 1 (review round 1):* this also
+   covers code that compiled **because the old generators ignored it**. "Served before" means a plain class Action
+   in a class state (method generator) and a class Action (catalog). Only those shapes may get TWSG003. Newly served
+   shapes that cannot get a method are skipped silently. A plain class Action keeps "first explicit constructor"
+   ahead of the primary constructor. A hand-written method is cataloged only when the executor's call binds to it.
 8. Version bumped per the repo rule (`12.0.0-beta.16` is published, so `12.0.0-beta.17` with release notes), build
    0 warnings / 0 errors, tests green, `ganda repo audit` clean, committed and pushed on the task branch.
 
@@ -65,12 +69,13 @@ guarded before. The same table, per generator, is in that generator's `#region D
 |---|---|---|
 | The parent of `*ActionSet` is a state | none (docs class got broken `partial class Docs`) | generator: semantic check, parent implements `IState`; otherwise skip silently |
 | An `IAction` is nested in an `IState` | TWS0001 | unchanged |
+| (every TWSG003 row below) | | only for shapes served before: a plain class Action in a class state (`ActionSetShape.WasServedBefore`). A record or struct Action, or an ActionSet in a record or struct state, compiled before because it got no code, so a failure there is skipped silently (review M1) |
 | The state and every containing type are `partial` | none (CS0260) | generator: TWSG003 |
 | The ActionSet has a prefix (not just `ActionSet`) | none (empty method name) | generator: TWSG003 |
 | Action and ActionSet have no own type parameters | none | generator: TWSG003 (a generic state is fine now) |
 | Action is not abstract | none (CS0144) | generator: TWSG003 |
 | Action and its chosen constructor are reachable from the state | none (CS0122) | generator: TWSG003 |
-| Constructor shape: primary, positional record, explicit, none | none (records ignored, primary ctor CS7036) | generator: reads all four |
+| Constructor shape: primary, positional record, explicit, none | none (records ignored, primary ctor CS7036) | generator: reads all four. Record/struct: primary first. Plain class: first explicit first, then primary, which keeps the old signature (review M2) |
 | `required` members are set | none (CS9035) | generator: parameters + object initializer; skipped with `[SetsRequiredMembers]` |
 | Plain `init` properties | n/a | none, by design: adding them would change a compiling signature |
 | Parameter names unique and not `externalCancellationToken` | none (CS0100) | generator: TWSG003 |
@@ -91,6 +96,7 @@ guarded before. The same table, per generator, is in that generator's `#region D
 | Description present, one plain sentence; DisplayName not blank; names unique | TWS0005, TWS0007, TWS0008, TWS0006 | unchanged |
 | The Action may be a record or have a primary constructor | none (record invisible, primary ctor had no parameters) | generator: `TypeDeclarationSyntax` predicate + the shared parser |
 | The generated `State.Method` exists with the parser's parameters | none (follow-on CS1061) | generator: shares `ActionSetShape`; skips the entry when the method cannot be generated |
+| A hand-written `State.Method` takes the executor's call | none (CS1739, CS1501) | generator: entry kept only when the method takes the generated parameter types plus a trailing `externalCancellationToken`, returns `Task`, and has defaults where the generated one does (`UserMethodCallable`); else skipped (review M3) |
 | The parent implements `IState` (`GetState<T>` constraint) | none | generator: skip |
 
 ### Persistence generator
@@ -165,6 +171,12 @@ pipeline. A helper agent did the read-only inventory. I spot-checked `ramani-gen
   `kanban-landed` (task 098's claim has no worktree) and `kebab-path-names` (Blazor JS module and MSBuild targets
   files whose names must match assembly names, plus backlog 110's double hyphen).
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session b97408ce-cef4-49ba-a641-6515790832be, max-turns 500, Done — 2026-11-05T19:06:35Z
+- Review oracle round 1 (2026-11-06): general reviewer (claude, model claude-opus-5-5). Effort 3 by diff (2433
+  lines), turn cap 200. Three open bugs, so a fix pass is needed. See `review/round-1/merged.md`.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 3fdb9824-f269-433f-8a52-0ae599a7950e, max-turns 200, artifacts general.md, merged.md — 2026-11-05T19:12:06Z
+
+- 2026-11-06 implementer fix pass 1 (claude-opus-5-5, implement-fix-2 node): M1, M2 and M3 from
+  `review/round-1/merged.md` fixed with 10 new tests. Generator suite 140 to 150. Full build and test rerun.
 
 ## Results
 
@@ -192,10 +204,30 @@ pipeline. A helper agent did the read-only inventory. I spot-checked `ramani-gen
 - **Shared:** `tracking-names.cs`, and `generator-diagnostic-info.cs` (`LocationInfo`, `GeneratorDiagnosticInfo`,
   TWSG003). TWSG003 is in `AnalyzerReleases.Unshipped.md`.
 - **Tests (new):**
-  - `action-set-method-generator-tests.cs`, 22 cases: the spike shapes, required members, state shapes, the
-    hand-written-method cases, and TWSG003 cases.
+  - `action-set-method-generator-tests.cs` and `action-set-method-generator-failure-tests.cs`, 30 cases after fix
+    pass 1: the spike shapes, required members, state shapes, the hand-written-method cases, the TWSG003 cases, and
+    the shapes skipped silently.
   - `generator-incrementality-tests.cs`, 9 cases across all four generators.
   - `generator-test-host.cs`.
+- **Fix pass 1 (review round 1):**
+  - **M1:** `ActionSetAnalysis.ServedBefore` (`ActionSetShape.WasServedBefore`) is true only for a plain class Action
+    in a plain class state, the old predicate's shape. The method generator reports TWSG003 only when it is true. A
+    failing record or struct Action, or an ActionSet in a record or struct state, is skipped with no diagnostic. That
+    also applies to the "any same-name method" rule. Seven tests are in `Should_Skip_Silently_Shapes_Not_Served_Before`:
+    a non-partial state, a property clash, the `externalCancellationToken` name, an abstract record, a private
+    record, a private parameter type, and a class Action in a record state. The TWSG003 token test now uses a class
+    primary constructor, which was CS7036 before.
+  - **M2:** `ActionSetConstructorParser.SelectConstructor` takes the first explicit constructor before the primary
+    one for a plain class Action. Records and structs keep primary first. The test is flipped to
+    `Given_Class_With_Primary_And_Explicit_Constructors_Keeps_The_Explicit_Signature`, which expects `Set(string name, …)`.
+    `Given_Record_With_Primary_And_Explicit_Constructors_Prefers_Primary` is new.
+  - **M3:** `ActionSetAnalysis.UserMethodCallable` is computed in `ActionSetShape.IsCallableByCatalog`. The catalog
+    skips a user-declared method unless that method is an instance method reachable from the assembly that takes the
+    generated parameter types, ends in `externalCancellationToken`, returns `Task`, and has defaults where the
+    generated method does. There are two new catalog tests. With another signature, no catalog is emitted and the
+    code compiles. With the generated signature, the executor calls the user's method and the code compiles.
+  - Docs: `analyzers.md`, `action-catalog.md`, the analyzer readme and the beta.17 release notes now describe the
+    served-before scope of TWSG003, the constructor order and the catalog rule.
 - **Tests (changed):** two persistence tests now assert `partial class` without `public`. The clone cancellation
   test passes a list.
 - **Docs:** `documentation/topics/analyzers.md` (TWSG003), `documentation/topics/action-catalog.md` (records,
@@ -223,6 +255,16 @@ Option 1.
 - `./bin/dev verify-samples`: passed.
 - `./bin/dev check-version`: `12.0.0-beta.17` is new and safe to release.
 - `ganda repo audit`: passes, with two pre-existing advisory warnings (see Session).
+- **Fix pass 1 rerun (2026-11-06):**
+  - `./bin/dev build` from a clean `generated/` folder: 0 errors and 156 warnings. That count is a full rebuild
+    where MSBuild prints most warnings twice. None is in a file this task changed. They are the same families as
+    above: RS0030 in E2E, CS8600 and CS8602 in the clone tests, TW0007, BL0016 and NU1510.
+  - `./bin/dev test`: exit 0, with no failures. The generator suite has 150 passed.
+  - `ganda repo audit`: passes, with the same two advisories. During the pass it flagged `source-file-line-cap`
+    because `action-set-method-generator-tests.cs` reached 614 lines. I fixed that by moving the TWSG003 and
+    skip-silently classes to `action-set-method-generator-failure-tests.cs`.
+  - In the test app, `FiveSecondTaskActionSet_Method.g.cs` is still not generated, and the class Actions still get
+    their methods.
 
 ### Decisions worth a reviewer's eye
 
@@ -231,7 +273,10 @@ Option 1.
 - A record or struct Action defers to **any** same-name method on the state, not only an identical signature,
   because those shapes never had a generated method and a near overload could make existing calls ambiguous.
 - No new TWS analyzer rule. TWSG003 lives in the generator. See the Analyzer contract section for the reasoning.
-- TWSG003 is an Error, because every case it reports used to be a compiler error in generated code.
+- TWSG003 is an Error, because every case it reports used to be a compiler error in generated code. After fix pass 1,
+  that holds because it is reported only for shapes served before. A newly served shape that fails is silent, not an
+  Info diagnostic. That keeps the change free of a new rule id, at the cost of discoverability; Option 1 can add an
+  Info.
 
 ### How to validate
 
@@ -248,14 +293,44 @@ rm -rf tests/test-app/test-app-client/generated   # gitignored; not cleaned betw
 
 **Expect**
 
-- The generator suite prints `140 passed`, including `GeneratorIncrementality_.*` (9) and
-  `ActionSetMethodSourceGenerator_.*` (22).
+- The generator suite prints `150 passed`, including `GeneratorIncrementality_.*` (9),
+  `ActionSetMethodSourceGenerator_.*` (30, with `Should_Skip_Silently_Shapes_Not_Served_Before` at 7) and
+  `ActionCatalogSourceGenerator_.Should_Respect_A_Hand_Written_Method` (2).
 - `./bin/dev build` ends with `0 Error(s)`. The test app compiles, which includes the hand-written
   `ApplicationState.FiveSecondTask` beside its record Action.
 - `./bin/dev test` exits 0.
 - In `tests/test-app/test-app-client/generated/timewarp-state-source-generator/`, generated
   `*_Method.g.cs` files exist for class actions, with no `FiveSecondTaskActionSet_Method.g.cs` and no SG002 in
   the build log.
+
+### Review
+
+- **Round 1** (2026-11-06), effort 3, roster: general.
+  - Final counts so far: bug 3 open, 0 fixed, 0 wontfix. Suggestion 0. Nit 0.
+  - **Disposition: pending.** Fix pass 1 implemented M1, M2 and M3 (see "Fix pass 1" under What changed). Round 2
+    decides the dispositions.
+  - All three findings break the "Not breaking" requirement. Each was confirmed with a scratch consumer project
+    outside the repo:
+    - **M1:** TWSG003 errors on record and struct Actions the old generator ignored.
+    - **M2:** a class Action with a primary constructor and an explicit one changes signature.
+    - **M3:** a cataloged record Action with a hand-written method breaks the generated catalog.
+- Gates the reviewer ran: generator suite `dotnet fixie`, 140 passed. The reviewer did not rerun the full
+  `./bin/dev build` or `./bin/dev test`.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+
+## Learnings
+
+- Misread (review round 1). The task says "Not breaking: code that failed before now compiles; nothing that compiled
+  changes meaning." The restatement narrowed that to criterion 7: "no signature change for any action shape that
+  already produced a compiling method". That wording leaves out code that compiled *because the generator ignored
+  it*, which covers record and struct Actions and records that were never cataloged. Those shapes now fail with
+  TWSG003 or CS1739 (M1, M3). The restatement also missed that the task's "primary constructor before explicit"
+  ordering conflicts with "not breaking" for a class that has both constructors (M2).
+
+## Review
+
+- Round 1: Blocked — open M1, M2, M3
+- Fix pass 1 (2026-11-06): M1, M2 and M3 implemented on this id. Dispositions are for review round 2.
 
 ## Notes
 

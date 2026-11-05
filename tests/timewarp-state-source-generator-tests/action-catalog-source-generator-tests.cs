@@ -144,6 +144,78 @@ public class Should_Emit_Nothing
   }
 }
 
+public class Should_Respect_A_Hand_Written_Method
+{
+  // Review round 1, M3: on master a record Action was never cataloged, so a hand-written method of any signature
+  // compiled. An executor that calls it with the generated arguments would not bind (CS1739), so the entry is skipped.
+  public static void Given_Record_Action_With_A_Method_Of_Another_Signature_Skips_The_Entry()
+  {
+    const string Source =
+      """
+      namespace App;
+
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class TimerState : State<TimerState>
+      {
+        public override void Initialize() { }
+
+        public static class WaitActionSet
+        {
+          [CatalogAction(Description = "Waits five seconds.")]
+          public sealed record Action : IAction;
+        }
+
+        public System.Threading.Tasks.Task Wait(System.Threading.CancellationToken cancellationToken = default) =>
+          Sender.Send(new WaitActionSet.Action(), cancellationToken).AsTask();
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = ActionCatalogGeneratorTestDriver.Run(Source);
+
+    runResult.Results
+      .SelectMany(result => result.GeneratedSources)
+      .ShouldNotContain(generated => generated.HintName == ActionCatalogSourceGenerator.HintName);
+    ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
+  }
+
+  public static void Given_Record_Action_With_A_Method_Of_The_Generated_Signature_Calls_It()
+  {
+    const string Source =
+      """
+      namespace App;
+
+      using TimeWarp.Mediator;
+      using TimeWarp.State;
+
+      public sealed partial class TimerState : State<TimerState>
+      {
+        public override void Initialize() { }
+
+        public static class WaitActionSet
+        {
+          [CatalogAction(Description = "Waits a while.")]
+          public sealed record Action(int Seconds = 5) : IAction;
+        }
+
+        public async System.Threading.Tasks.Task Wait(int seconds = 5, System.Threading.CancellationToken? externalCancellationToken = null) =>
+          await Sender.Send(new WaitActionSet.Action(seconds), externalCancellationToken ?? CancellationToken);
+      }
+      """;
+
+    (GeneratorDriverRunResult runResult, Compilation outputCompilation) = ActionCatalogGeneratorTestDriver.Run(Source);
+
+    string generated = ActionCatalogGeneratorTestDriver.CatalogSource(runResult);
+    generated.ShouldContain("return state.Wait(global::TimeWarp.State.ActionCatalogArguments.Get<int>(");
+    generated.ShouldContain("if (arguments.Length == 0) return state.Wait(externalCancellationToken: cancellationToken);");
+    runResult.Results
+      .SelectMany(result => result.GeneratedSources)
+      .ShouldNotContain(source => source.HintName.EndsWith("WaitActionSet_Method.g.cs", StringComparison.Ordinal));
+    ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
+  }
+}
+
 public class Should_Emit_Multiple_Entries
 {
   public static void Given_Several_Cataloged_Actions_Only_Opted_In_Are_Listed_In_Name_Order()

@@ -12,17 +12,22 @@
 //               equal and the output Cached.
 //   Diagnostics the failures, re-joined to the current compilation's tree when reported.
 // Only the first declaration of a partial Action is a candidate, so a partial Action yields one method.
-// Parameters come from ActionSetConstructorParser: primary constructor or positional record first, then the first
-// explicit constructor, then `required` members (set by object initializer). The method takes an optional
+// Parameters come from ActionSetConstructorParser: for a record or struct Action the primary constructor or
+// positional record first, then the first explicit constructor; for a plain class Action the first explicit
+// constructor first, then the primary one (its old signature). Then `required` members (set by object initializer). The method takes an optional
 // CancellationToken linked with the state's own token. The containing-type chain, type parameters and namespace come
 // from symbols, so nested, generic and global-namespace states get a partial that merges.
-// SG002 (an Info diagnostic per hint name, never release-tracked) is gone. TWSG003 replaces emitting broken code.
+// SG002 (an Info diagnostic per hint name, never release-tracked) is gone. TWSG003 replaces emitting broken code, but
+// only for shapes served before (ActionSetShape.WasServedBefore: a plain class Action in a class state). A failing
+// record or struct Action, or an ActionSet in a record or struct state, got no code before and compiled, so it is
+// skipped silently.
 //
 // Analyzer contract: every assumption this generator makes about its input, and what guards it.
 // | Assumption                                                        | Guard                                       |
 // |-------------------------------------------------------------------|---------------------------------------------|
 // | the parent of *ActionSet implements IState                        | generator: skip silently (not an action set)|
 // | an IAction is nested in an IState                                  | TWS0001 (analyzer)                          |
+// | (every TWSG003 row: only for shapes served before; else skipped)  | ActionSetShape.WasServedBefore              |
 // | the state and every containing type are partial                   | generator: TWSG003                          |
 // | *ActionSet has a prefix (not just "ActionSet")                    | generator: TWSG003                          |
 // | Action and ActionSet are not generic                              | generator: TWSG003                          |
@@ -92,6 +97,9 @@ public class ActionSetMethodSourceGenerator : IIncrementalGenerator
     string memberName = $"{analysis.State.Name}.{analysis.MethodName}";
     if (analysis.Failure is not null)
     {
+      // A shape the pre-141 generator ignored compiled before; an Error would break that build (review M1).
+      if (!analysis.ServedBefore) return null;
+
       return new ActionSetMethodResult
       (
         Model: null,

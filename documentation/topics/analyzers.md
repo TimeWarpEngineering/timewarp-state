@@ -118,7 +118,7 @@ Reported by `StateCloneSourceGenerator` once, at the source member that reaches 
 - **Category:** Generation
 - **Message:** Cannot generate '{0}' for '{1}' because {2}
 
-Reported by `ActionSetMethodSourceGenerator` (the `State.Method(...)` for each nested `*ActionSet`) and by `PersistenceStateSourceGenerator` (`Load()`), at the Action or the state. Each case used to emit generated code that failed to compile. The message names the reason:
+Reported by `ActionSetMethodSourceGenerator` (the `State.Method(...)` for each nested `*ActionSet`) and by `PersistenceStateSourceGenerator` (`Load()`), at the Action or the state. Each case used to emit generated code that failed to compile. For ActionSet methods that means a plain class Action in a class state, the only shape the generator served before 12.0.0-beta.17. A record or struct Action, or an ActionSet in a record or struct state, got no generated code before. When one of those cannot get a method, the generator emits nothing and reports nothing, so a build that passed still passes. The message names the reason:
 
 - The state, or a type that contains it, is not `partial`.
 - The `[PersistentState]` type does not derive from `State<T>`.
@@ -128,4 +128,4 @@ Reported by `ActionSetMethodSourceGenerator` (the `State.Method(...)` for each n
 - The state already has a field, property, event or nested type with the method's name.
 - A parameter type is private or protected.
 
-The ActionSet method generator reads a positional record, a primary constructor, or the first explicit constructor. `required` members become parameters too. A state that already declares the method by hand keeps it, and nothing is generated. An `*ActionSet` whose parent does not implement `IState` is ignored without a diagnostic.
+The ActionSet method generator reads the constructor like this. For a record or struct Action, it uses the positional record or primary constructor, else the first explicit constructor. For a plain class Action, it uses the first explicit constructor, else the primary constructor, so a class with both keeps the signature it had before. `required` members become parameters too. A state that already declares the method by hand keeps it, and nothing is generated. An `*ActionSet` whose parent does not implement `IState` is ignored without a diagnostic.

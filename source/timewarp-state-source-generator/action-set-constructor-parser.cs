@@ -5,10 +5,14 @@
 
 #region Design
 // Works on the Action symbol, so a partial Action, a record and a primary constructor all read the same way.
-// Constructor choice, in order:
-//   1. the primary constructor (class or struct primary constructor, or a positional record);
+// Constructor choice, in order, for a record or struct Action:
+//   1. the primary constructor (struct primary constructor, or a positional record);
 //   2. the first explicit instance constructor in source order;
 //   3. none, which means no constructor arguments.
+// A plain (non-record) class Action swaps 1 and 2: the first explicit instance constructor, then the primary
+// constructor. The pre-141 parser always took the first explicit constructor, so a class with both kept that
+// signature and must keep it (review round 1, M2). A class with only a primary constructor used to be CS7036, so
+// reading it there changes nothing that compiled.
 // Static constructors and implicit ones (the default constructor, a record's copy constructor) are never chosen.
 // `required` members of the Action and its bases become parameters too, unless the chosen constructor has
 // [SetsRequiredMembers]. They are set with an object initializer. Before this change such an Action produced
@@ -84,9 +88,15 @@ internal static class ActionSetConstructorParser
   {
     IMethodSymbol? primary = action.InstanceConstructors
       .FirstOrDefault(constructor => IsPrimaryConstructor(constructor, cancellationToken));
-    if (primary is not null)
+    bool explicitFirst = action is { TypeKind: TypeKind.Class, IsRecord: false };
+    if (primary is not null && !explicitFirst)
       return primary;
 
+    return FirstExplicitConstructor(action, cancellationToken) ?? primary;
+  }
+
+  private static IMethodSymbol? FirstExplicitConstructor(INamedTypeSymbol action, CancellationToken cancellationToken)
+  {
     return action.InstanceConstructors
       .Where(constructor => !constructor.IsImplicitlyDeclared)
       .Select(constructor => (Constructor: constructor, Syntax: constructor.DeclaringSyntaxReferences.FirstOrDefault()))

@@ -1,6 +1,7 @@
 #region Purpose
 // ActionSetMethodSourceGenerator: every Action shape from the task 140 spike, required members, state shapes
-// (nested, generic, global namespace, internal), TWSG003 cases, and that SG002 is gone.
+// (nested, generic, global namespace, internal), and that SG002 is gone. Failure shapes (TWSG003, or skipped
+// silently) are in action-set-method-generator-failure-tests.cs.
 #endregion
 
 #region Design
@@ -150,8 +151,9 @@ public class Should_Read_Primary_Constructors
     GeneratorTestHost.ShouldCompile(output);
   }
 
-  public static void Given_Primary_And_Explicit_Constructors_Prefers_Primary()
+  public static void Given_Class_With_Primary_And_Explicit_Constructors_Keeps_The_Explicit_Signature()
   {
+    // Review round 1, M2: before task 141 the first explicit constructor defined the method, and it compiled.
     (string text, _, Compilation output) = ActionSetSources.Run(ActionSetSources.State(
       """
         public static class SetActionSet
@@ -165,7 +167,25 @@ public class Should_Read_Primary_Constructors
         }
       """));
 
-    text.ShouldContain("public async Task Set(string name, int count, CancellationToken? externalCancellationToken = null)");
+    text.ShouldContain("public async Task Set(string name, CancellationToken? externalCancellationToken = null)");
+    GeneratorTestHost.ShouldCompile(output);
+  }
+
+  public static void Given_Record_With_Primary_And_Explicit_Constructors_Prefers_Primary()
+  {
+    // A record Action got no method before task 141, so the positional parameter list is the natural signature.
+    (string text, _, Compilation output) = ActionSetSources.Run(ActionSetSources.State(
+      """
+        public static class SetActionSet
+        {
+          public sealed record Action(string Name, int Count) : IAction
+          {
+            public Action(string name) : this(name, 0) { }
+          }
+        }
+      """));
+
+    text.ShouldContain("public async Task Set(string Name, int Count, CancellationToken? externalCancellationToken = null)");
     GeneratorTestHost.ShouldCompile(output);
   }
 
@@ -398,89 +418,5 @@ public class Should_Stay_Silent_Outside_States
     text.ShouldBeEmpty();
     diagnostics.ShouldBeEmpty();
     GeneratorTestHost.ShouldCompile(output);
-  }
-}
-
-public class Should_Report_TWSG003_Instead_Of_Broken_Code
-{
-  public static void Given_State_That_Is_Not_Partial()
-  {
-    const string Source =
-      """
-      namespace App;
-
-      using TimeWarp.Mediator;
-      using TimeWarp.State;
-
-      public sealed class PlainState : State<PlainState>
-      {
-        public override void Initialize() { }
-        public static class PingActionSet { public sealed class Action : IAction; }
-      }
-      """;
-
-    AssertSingleFailure(Source, "is not partial");
-  }
-
-  public static void Given_Parameter_Named_Like_The_Generated_Token()
-  {
-    AssertSingleFailure(ActionSetSources.State(
-      """
-        public static class WaitActionSet
-        {
-          public sealed record Action(System.Threading.CancellationToken externalCancellationToken) : IAction;
-        }
-      """), "externalCancellationToken");
-  }
-
-  public static void Given_Abstract_Action()
-  {
-    AssertSingleFailure(ActionSetSources.State(
-      """
-        public static class PingActionSet
-        {
-          public abstract class Action : IAction;
-        }
-      """), "abstract");
-  }
-
-  public static void Given_Private_Constructor()
-  {
-    AssertSingleFailure(ActionSetSources.State(
-      """
-        public static class PingActionSet
-        {
-          public sealed class Action : IAction
-          {
-            private Action(int value) { }
-          }
-        }
-      """), "constructor is private or protected");
-  }
-
-  public static void Given_Required_Member_That_Collides_With_A_Constructor_Parameter()
-  {
-    AssertSingleFailure(ActionSetSources.State(
-      """
-        public static class TagActionSet
-        {
-          public sealed class Action(string name) : IAction
-          {
-            public required string Name { get; init; }
-          }
-        }
-      """), "'name'");
-  }
-
-  private static void AssertSingleFailure(string source, string reason)
-  {
-    (string text, ImmutableArray<Diagnostic> diagnostics, _) = ActionSetSources.Run(source);
-
-    Diagnostic diagnostic = diagnostics.ShouldHaveSingleItem();
-    diagnostic.Id.ShouldBe(StateGeneratorDiagnostics.CannotGenerateMemberId);
-    diagnostic.Severity.ShouldBe(DiagnosticSeverity.Error);
-    diagnostic.GetMessage().ShouldContain(reason);
-    diagnostic.Location.SourceTree.ShouldNotBeNull();
-    text.ShouldBeEmpty();
   }
 }

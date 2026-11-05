@@ -46,7 +46,7 @@ The source generator emits one internal `GeneratedActionCatalog` per assembly, i
 
 - `Name`, `DisplayName` (or `null`), `Description`, `Permissions`, `Visibility`
 - `StateType` and `ActionType`
-- `Parameters`: name, CLR type, required flag, default value text and a JSON schema fragment — taken from the action's primary constructor or positional record parameters, else its first explicit constructor, plus any `required` members — the same parse that generates `State.AddPasskey(label, makeDefault, ct)`. A record Action can be cataloged.
+- `Parameters`: name, CLR type, required flag, default value text and a JSON schema fragment — taken from a record or struct action's positional or primary parameters, else its first explicit constructor (a plain class action uses its first explicit constructor, else its primary constructor), plus any `required` members — the same parse that generates `State.AddPasskey(label, makeDefault, ct)`. A record Action can be cataloged.
 - `InputSchema`: a JSON schema object for the parameters
 - `Execute(IStore store, object?[]? arguments, CancellationToken ct)`: resolves the state from the store and calls the generated `State.Method(...)`. Arguments are positional in the generated method's order (constructor parameters without a default, then `required` members, then optional parameters); trailing optional arguments may be omitted. No reflection is involved, so it is AOT and trim safe.
 

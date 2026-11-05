@@ -13,6 +13,9 @@
 // The predicate is TypeDeclarationSyntax, so a record Action is cataloged too. An entry is also skipped when
 // ActionSetShape says the generated State.Method cannot exist (not an IState parent, or a TWSG003 failure, which the
 // ActionSet method generator reports); an executor would otherwise call a method that is not there (CS1061).
+// When the state declares the method by hand, the entry is kept only if that method takes the generated parameters
+// plus a trailing externalCancellationToken and returns Task (ActionSetAnalysis.UserMethodCallable). Otherwise it is
+// skipped, as master did for record Actions; an executor would not bind (CS1739, CS1501).
 //
 // Pipeline (named in TrackingNames, pinned by action-catalog-incrementality-tests): Entries (ForAttributeWithMetadataName,
 // equatable CatalogEntryModel), AssemblyName (CompilationProvider.Select), Collected (Entries.Collect + AssemblyName).
@@ -27,6 +30,7 @@
 // | catalog names are unique in the assembly                          | TWS0006                                      |
 // | the Action may be a record or have a primary constructor          | generator: TypeDeclarationSyntax + parser    |
 // | the generated State.Method exists with the parser's parameters    | generator: shares ActionSetShape and parser  |
+// | a hand-written State.Method takes the executor's arguments        | generator: skips unless UserMethodCallable   |
 // | the parent implements IState (store.GetState<T> constraint)       | generator: skips (ActionSetShape)            |
 // Output: one internal GeneratedActionCatalog (All) plus an internal assembly attribute deriving from
 // ActionCatalogProviderAttribute so AddActionCatalog(assembly) can aggregate without scanning.
@@ -87,6 +91,7 @@ public class ActionCatalogSourceGenerator : IIncrementalGenerator
 
     ActionSetAnalysis? analysis = ActionSetShape.Analyze(actionSymbol, context.SemanticModel.Compilation, cancellationToken);
     if (analysis is null || analysis.Failure is not null) return null;
+    if (analysis.MethodDeclaredByUser && !analysis.UserMethodCallable) return null;
 
     AttributeData attribute = context.Attributes[0];
     string description = string.Empty;

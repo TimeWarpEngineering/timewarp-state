@@ -10,9 +10,18 @@
 // Anything else is not an action set: Analyze returns null and the generators stay silent. That covers a nested
 // *ActionSet in a static docs class, which used to receive a `partial class Docs` that did not compile.
 //
-// When it is an action set but the generated method could not compile, Failure names the reason and the method
-// generator reports TWSG003. The catalog generator skips the entry, so the user sees one error, not a TWSG003 plus a
-// follow-on CS1061 in the catalog. Every Failure below used to surface as a compiler error in generated code.
+// When it is an action set but the generated method could not compile, Failure names the reason. What happens next
+// depends on ServedBefore, the shapes the pre-141 generator emitted a method for: a non-record class Action in a
+// non-record class state. For those, every Failure below used to surface as a compiler error in generated code, so
+// the method generator reports TWSG003 instead. Every other shape (a record or struct Action, or an ActionSet in a
+// record or struct state) got no generated code before and compiled; a Failure there is skipped silently, because an
+// Error would break a build that passes today (review round 1, M1). The catalog generator skips the entry on any
+// Failure, so the user never sees a follow-on CS1061 in the catalog.
+//
+// MethodDeclaredByUser: the state already has the method, so the generator emits nothing. UserMethodCallable says
+// whether that method also takes exactly the generated parameters with a trailing `externalCancellationToken` and
+// returns Task, so the catalog executor's call binds. When it does not, the catalog skips the entry (M3): on master a
+// record Action was never cataloged, so a hand-written method of another signature compiled.
 //
 // Generated method accessibility is public, except when the state is effectively public and a parameter type is only
 // internal. That used to be CS0051, so internal is the only form that compiles and nothing that compiled changes.
@@ -29,7 +38,9 @@ internal sealed record ActionSetAnalysis
   string MethodAccessibility,
   ActionConstruction Construction,
   string? Failure,
-  bool MethodDeclaredByUser
+  bool MethodDeclaredByUser,
+  bool UserMethodCallable,
+  bool ServedBefore
 );
 
 internal static class ActionSetShape
@@ -54,36 +65,70 @@ internal static class ActionSetShape
     if (stateInterface is null || !state.AllInterfaces.Contains(stateInterface, SymbolEqualityComparer.Default)) return null;
 
     string methodName = actionSet.Name.Replace(oldValue: "ActionSet", newValue: "");
+    bool servedBefore = WasServedBefore(action, state);
     ActionConstruction construction = methodName.Length == 0 || IsGeneric(action, actionSet)
       ? new ActionConstruction(null, [], [])
       : ActionSetConstructorParser.Parse(action, cancellationToken);
 
-    bool declaredByUser = methodName.Length > 0 && IsDeclaredByUser(action, state, methodName, construction, compilation);
+    List<IMethodSymbol> sameSignature = methodName.Length == 0 ? [] : FindSameSignature(state, methodName, construction, compilation);
+    bool declaredByUser = methodName.Length > 0
+      && (sameSignature.Count > 0 || (!servedBefore && state.GetMembers(methodName).OfType<IMethodSymbol>().Any()));
+    bool userMethodCallable = declaredByUser && sameSignature.Any(method => IsCallableByCatalog(method, construction, compilation));
     string accessibility = "public";
     string? failure = declaredByUser ? null : FindFailure(state, actionSet, action, methodName, construction, ref accessibility);
-    return new ActionSetAnalysis(state, actionSet, action, methodName, accessibility, construction, failure, declaredByUser);
+    return new ActionSetAnalysis
+    (
+      state, actionSet, action, methodName, accessibility, construction, failure, declaredByUser, userMethodCallable, servedBefore
+    );
   }
 
+  // The shapes the pre-141 generator emitted a method for: its predicate matched a ClassDeclarationSyntax `Action`
+  // inside a ClassDeclarationSyntax `*ActionSet` whose parent was a ClassDeclarationSyntax. A record is a
+  // RecordDeclarationSyntax and a struct a StructDeclarationSyntax, so neither the Action nor the state may be one.
+  internal static bool WasServedBefore(INamedTypeSymbol action, INamedTypeSymbol state) =>
+    action is { TypeKind: TypeKind.Class, IsRecord: false } && state is { TypeKind: TypeKind.Class, IsRecord: false };
+
   // The state already declares the method by hand, so the generator emits nothing and the catalog calls the user's.
-  // - A record or struct Action got no generated method before task 141, so apps wrote their own (the test app's
+  // - A shape that was not served before got no generated method, so apps wrote their own (the test app's
   //   ApplicationState.FiveSecondTask). Any user method with the name counts: adding a generated overload beside it
   //   could make an existing call ambiguous (CS0121), which would break code that compiles today.
-  // - A plain class Action always had a generated method, so only an identical signature counts (that was CS0111).
-  private static bool IsDeclaredByUser(INamedTypeSymbol action, INamedTypeSymbol state, string methodName, ActionConstruction construction, Compilation compilation)
+  // - A plain class Action in a class state always had a generated method, so only an identical parameter list
+  //   counts (that was CS0111).
+  private static List<IMethodSymbol> FindSameSignature(INamedTypeSymbol state, string methodName, ActionConstruction construction, Compilation compilation)
   {
-    bool servedBefore = action is { TypeKind: TypeKind.Class, IsRecord: false };
-    if (!servedBefore && state.GetMembers(methodName).OfType<IMethodSymbol>().Any())
-      return true;
-
     INamedTypeSymbol? nullable = compilation.GetSpecialType(SpecialType.System_Nullable_T) as INamedTypeSymbol;
     INamedTypeSymbol? token = compilation.GetTypeByMetadataName("System.Threading.CancellationToken");
-    if (nullable is null || token is null) return false;
+    if (nullable is null || token is null) return [];
 
     List<ITypeSymbol> generated = [.. construction.ParameterTypes, nullable.Construct(token)];
     return state.GetMembers(methodName)
       .OfType<IMethodSymbol>()
-      .Any(method => method.Parameters.Length == generated.Count
-        && method.Parameters.Select(parameter => parameter.Type).SequenceEqual(generated, SymbolEqualityComparer.Default));
+      .Where(method => method.Parameters.Length == generated.Count
+        && method.Parameters.Select(parameter => parameter.Type).SequenceEqual(generated, SymbolEqualityComparer.Default))
+      .ToList();
+  }
+
+  // The catalog executor calls `state.Method(arg0, ..., argN, externalCancellationToken: ct)` and returns the result
+  // as a Task, omitting trailing parameters that have a default. A user method binds only when it is an instance
+  // method reachable from the assembly, returns Task, names its last parameter externalCancellationToken, and has a
+  // default wherever the generated method does.
+  private static bool IsCallableByCatalog(IMethodSymbol method, ActionConstruction construction, Compilation compilation)
+  {
+    if (method.IsStatic || !IsAccessibleFromState(method.DeclaredAccessibility))
+      return false;
+
+    INamedTypeSymbol? task = compilation.GetTypeByMetadataName("System.Threading.Tasks.Task");
+    if (task is null || !SymbolEqualityComparer.Default.Equals(method.ReturnType, task)) return false;
+
+    if (method.Parameters[method.Parameters.Length - 1].Name != ExternalCancellationTokenName) return false;
+
+    for (int index = 0; index < construction.Parameters.Count; index++)
+    {
+      if (construction.Parameters[index].DefaultValue is not null && !method.Parameters[index].HasExplicitDefaultValue)
+        return false;
+    }
+
+    return true;
   }
 
   private static string? FindFailure
