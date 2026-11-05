@@ -3,49 +3,35 @@
 #endregion
 
 #region Design
-// scripts/e2e.cs names this file with #:include. A non-zero dotnet test exit is an exception on this Amuru line, so the catch records the failure.
+// scripts/e2e.cs names this file with #:include. Amuru 3 returns the dotnet test exit code, so a failed run is a
+// false return, not an exception. UseHttp is set only on the dotnet test child; the test host inherits it.
 #endregion
 
 static partial class App
 {
   static async Task<bool> RunTests(string testProjectDir, bool useHttp)
-{
-    var settings = new[] { "chrome.runsettings" };
-    var testsFailed = false;
+  {
+    string[] arguments =
+    [
+      "test",
+      "--no-build",
+      "--settings:playwright-settings/chrome.runsettings",
+      "./test-app-end-to-end-tests.csproj"
+    ];
+    string useHttpValue = useHttp ? "true" : "false";
 
-    WriteLine("Running E2E tests");
-    Environment.SetEnvironmentVariable("UseHttp", useHttp.ToString().ToLower());
+    WriteLine($"Executing: UseHttp={useHttpValue} dotnet {string.Join(" ", arguments)}");
+    int exitCode = await Shell.Builder("dotnet")
+      .WithArguments(arguments)
+      .WithWorkingDirectory(testProjectDir)
+      .WithEnvironmentVariable("UseHttp", useHttpValue)
+      .RunAsync();
 
-    foreach (var setting in settings)
+    if (exitCode != 0)
     {
-        var targetArguments = new[] {
-            "test",
-            "--no-build",
-            $"--settings:playwright-settings/{setting}",
-            "-e", $"UseHttp={useHttp.ToString().ToLower()}",
-            "./test-app-end-to-end-tests.csproj"
-        };
-
-        WriteLine($"Executing: dotnet {string.Join(" ", targetArguments)}");
-
-        try
-        {
-            var exitCode = await Shell.Builder("dotnet")
-                .WithArguments(targetArguments)
-                .WithWorkingDirectory(testProjectDir)
-                .RunAsync();
-            if (exitCode != 0) testsFailed = true;
-        }
-        catch (Exception ex)
-        {
-            // Non-zero dotnet test exit surfaces as an exception on this Amuru line.
-            WriteLine($"dotnet test failed: {ex.Message.Split('\n')[0]}");
-            testsFailed = true;
-        }
-
-        if (testsFailed) break;
+      WriteLine($"dotnet test exited with {exitCode}.");
     }
 
-    return testsFailed;
-}
+    return exitCode == 0;
+  }
 }
