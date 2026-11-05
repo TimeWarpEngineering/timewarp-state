@@ -89,6 +89,7 @@ Found by a code review on 2026-11-04 of all files over 500 LOC. `StateCloneGener
   project. I checked the combined result with a full `./bin/dev build`, the three Fixie suites, and `ganda repo audit`.
   The audit passes. Its two advisory warnings were already there and are out of scope: kanban-landed for a stale
   claim on task 098, and kebab-path-names for Blazor `.lib.module` asset names that must keep that form.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-sonnet-5-5), session 25d17f88-40fa-48cc-a678-746fa84e6269, max-turns 500, Done — 2026-11-05T11:16:28Z
 
 ## Results
 
