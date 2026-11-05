@@ -7,6 +7,9 @@
 // touches Environment.ExitCode itself (check-version still reports through it; PipelineConsole.RunStepAsync
 // reads it). Any exception from a service, including cancellation, aborts with the step that was running.
 // The version comes from AssertVersionSsot once and is passed to verify and push.
+// A check-version that finishes non-zero aborts with CheckVersionAbort.FormatAbortReason (from the handler's
+// Outcome), so only AlreadyReleased says "version already released"; cancel and throw name themselves.
+// The packable-set lookup sets CurrentStep before it runs so its failures are not blamed on check-version.
 #endregion
 
 namespace DevCli.Commands;
@@ -73,11 +76,14 @@ internal sealed class ReleasePipeline
     }
 
     BeginStep(2, "Check Version");
-    if (!await Output.RunStepAsync("Check Version", () => CheckVersionHandler.Handle(new CheckVersionCommand(), ct), ct))
+    StepOutcome checkVersionOutcome = await Output.RunStepAsync("Check Version", () => CheckVersionHandler.Handle(new CheckVersionCommand(), ct), ct);
+    PipelineResult? checkVersionFailure = CheckVersionFailure(checkVersionOutcome);
+    if (checkVersionFailure is not null)
     {
-      return Output.Abort("version already released");
+      return checkVersionFailure;
     }
 
+    CurrentStep = "Packable Set";
     IReadOnlyList<PackableProject> packableProjects = await PackableProjectService.GetPackableProjectsAsync(repoRoot, ct);
     if (packableProjects.Count == 0)
     {
@@ -175,6 +181,23 @@ internal sealed class ReleasePipeline
         return Output.Abort("ancestor check could not run");
       default:
         return Output.AbortUnhandled("ancestor check", ancestor.Status);
+    }
+  }
+
+  private PipelineResult? CheckVersionFailure(StepOutcome outcome)
+  {
+    switch (outcome)
+    {
+      case StepOutcome.Succeeded:
+        return null;
+      case StepOutcome.Failed:
+        return Output.Abort(CheckVersionAbort.FormatAbortReason(CheckVersionHandler.Outcome, CheckVersionHandler.GitHubPackagesFailure));
+      case StepOutcome.Cancelled:
+        return Output.Abort("Check Version cancelled");
+      case StepOutcome.Threw:
+        return Output.Abort("Check Version threw");
+      default:
+        return Output.AbortUnhandled("check-version step", outcome);
     }
   }
 

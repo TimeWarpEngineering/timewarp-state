@@ -111,7 +111,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
 
       foreach ((string name, Func<Task> run) in steps)
       {
-        if (!await Output.RunStepAsync(name, run, ct))
+        if (await Output.RunStepAsync(name, run, ct) != StepOutcome.Succeeded)
         {
           return PipelineResult.Failed($"{name} failed");
         }

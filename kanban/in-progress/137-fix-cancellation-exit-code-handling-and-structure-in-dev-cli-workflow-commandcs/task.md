@@ -54,6 +54,11 @@ Acceptance criteria:
 - [x] Split into the five services above
 - [x] `dev workflow` still runs end to end
 
+## Review
+
+- Round 1: Blocked — open M1, M2
+- Fix pass for round 1 findings (2026-11-05): M1 and M2 fixed; awaiting review round 2
+
 ## Notes
 
 Found by a code review on 2026-11-04 of all files over 500 LOC.
@@ -65,6 +70,9 @@ Found by a code review on 2026-11-04 of all files over 500 LOC.
   Note: the review's line numbers refer to the 734-line file before task 134 cut it into
   `workflow-command.cs` + `workflow-command.release.cs`; both partials are replaced here.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 8293cea8-5b7f-4b4d-a88a-3e3a23c1cca2, max-turns 500, Done — 2026-11-05T07:41:07Z
+- Review oracle round 1: reviewer-cursor (cursor, vendor xai, model grok-4.7), body tw-implementation-review, effort 3, roster general, turn cap 200, session id not exposed. M1 and M2 are open, so a fix pass was requested (2026-11-05).
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 200), artifacts general.md, merged.md — 2026-11-05T07:55:55Z
+- 2026-11-05 implement-fix-2 (implementer-claude, claude-opus-5-5): fixed round-1 M1 and M2. See Results › Fix pass.
 
 ## Results
 
@@ -121,3 +129,50 @@ Expect:
 - The scratch release run prints `… is not well-formed XML (line 1) …`, then the SSOT mismatch, then the
   `Pipeline ABORTED — Assert Version SSOT failed` banner, and exits 1 (no raw `XmlException`).
 - With valid props but no master ref, release aborts with `Pipeline ABORTED — master ref unresolvable` and exits 1.
+
+### Review round 1 (2026-11-05)
+
+reviewer-cursor (cursor, vendor xai, model grok-4.7), `tw-implementation-review`, effort 3, roster general, turn cap 200, session id not exposed. Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`. No disposition: M1 and M2 are open bugs.
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 2 | 0 | 0 |
+| suggestion | 0 | 0 | 0 |
+| nit | 0 | 0 | 0 |
+
+Re-checked on this run: `dotnet build tools/dev-cli/dev.cs` succeeded with no warnings from `tools/dev-cli/endpoints` (CS8669 warnings are in the TimeWarp.Nuru.DevCli content). A scratch release with malformed `source/Directory.Build.props` printed the line-1 XML error, the SSOT mismatch, and `Pipeline ABORTED — Assert Version SSOT failed`, and exited 1. A scratch release with valid props and no master ref aborted with `master ref unresolvable` and exited 1. The full PR pipeline (clean through verify-samples) was not re-run.
+
+### Fix pass for review round 1 (2026-11-05)
+
+- M1: `PipelineConsole.RunStepAsync` returns `StepOutcome` (`Succeeded`, `Failed`, `Cancelled`, `Threw`) instead of
+  `bool`. The PR pipeline fails on anything other than `Succeeded`. The release pipeline's `CheckVersionFailure`
+  aborts with `Check Version cancelled`, with `Check Version threw`, or, for a finished non-zero exit, with
+  `CheckVersionAbort.FormatAbortReason(handler.Outcome, handler.GitHubPackagesFailure)` from TimeWarp.Nuru.DevCli
+  4.0.0-beta.11. Only `AlreadyReleased` says "version already released" now.
+- M2: `ReleasePipeline` sets `CurrentStep = "Packable Set"` before `GetPackableProjectsAsync`. A throw or cancel
+  there now aborts as `Packable Set failed` / `Packable Set cancelled`, not as Check Version.
+- Gates: `dotnet build tools/dev-cli/dev.cs --no-incremental` had no warnings outside CS8669 in the package content.
+  `ganda repo audit` exits 0, with two warnings that were already there: kanban-landed (claim 098) and
+  kebab-path-names (Blazor `*.lib.module.*` / MSBuild `.targets` names).
+
+Smoke (M1):
+
+```bash
+s=$(mktemp -d); mkdir -p $s/source $s/msbuild; (cd $s && git init -q -b master . \
+  && printf '<Project><PropertyGroup><Version>1.0.0</Version></PropertyGroup></Project>' > source/Directory.Build.props \
+  && printf '<Project><PropertyGroup><TimeWarpStateVersion>1.0.0</TimeWarpStateVersion></PropertyGroup></Project>' > msbuild/repository.props \
+  && git add . && git -c user.name=t -c user.email=t@t commit -qm init \
+  && dotnet run --file <worktree>/tools/dev-cli/dev.cs -- workflow --mode release; echo "exit=$?")
+```
+
+Expect: Step 2 prints `Error: no packable projects found …`, then `Pipeline FAILED — Check Version failed`, then
+`Pipeline ABORTED — check-version failed (see the error above)` (not `version already released`), and exits 1.
+This run showed exactly that.
+
+## Learnings
+
+The restatement treats the step commands' `Environment.ExitCode` channel as out of scope. The task asked `RunStepAsync` to return a result instead of using that global state, and the checklist says "Pipeline result returned, not Environment.ExitCode."
+
+What landed matches the pipeline half of that sentence: both pipelines return `PipelineResult`, and the handler sets `Environment.ExitCode` once. `RunStepAsync` still resets, reads, and clears `Environment.ExitCode`. `Clean` and `check-version` come from TimeWarp.Nuru.DevCli and report that way, and the local step handlers do the same. The throw and cancel banners sit on that channel. That is a narrower reading of the global-state sentence. It is not a finding: those package handlers have no other result channel.
+
+The task's Amuru sentence (throw on non-zero) does not match the 3.0.0-beta.1 pin, whose default is no validation. The restatement records that pin, and `WithNoValidation()` is still the call the task asked for.

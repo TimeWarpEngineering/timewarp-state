@@ -7,6 +7,8 @@
 // The step endpoints (clean, build, test, e2e, verify-samples, check-version) still report failure through
 // Environment.ExitCode, so RunStepAsync resets it before the step and reads it straight after. A step that
 // throws or is cancelled also fails the pipeline with its reason instead of escaping past the banner.
+// RunStepAsync returns a StepOutcome so a caller can tell a finished non-zero step from a cancel or a throw
+// (the release pipeline names a different abort reason for each; review round 1 M1).
 #endregion
 
 namespace DevCli.Commands;
@@ -16,6 +18,14 @@ internal sealed record PipelineResult(bool Succeeded, string? FailureReason)
   public static PipelineResult Success { get; } = new(true, null);
 
   public static PipelineResult Failed(string reason) => new(false, reason);
+}
+
+internal enum StepOutcome
+{
+  Succeeded,
+  Failed,
+  Cancelled,
+  Threw
 }
 
 internal sealed class PipelineConsole
@@ -49,7 +59,7 @@ internal sealed class PipelineConsole
     return Abort($"unhandled {checkName} status");
   }
 
-  public async Task<bool> RunStepAsync(string stepName, Func<Task> step, CancellationToken ct)
+  public async Task<StepOutcome> RunStepAsync(string stepName, Func<Task> step, CancellationToken ct)
   {
     Environment.ExitCode = 0;
 
@@ -60,12 +70,12 @@ internal sealed class PipelineConsole
     catch (OperationCanceledException) when (ct.IsCancellationRequested)
     {
       Terminal.WriteErrorLine($"\nPipeline FAILED — {stepName} cancelled".Red());
-      return false;
+      return StepOutcome.Cancelled;
     }
     catch (Exception exception)
     {
       Terminal.WriteErrorLine($"\nPipeline FAILED — {stepName} threw: {exception.Message}".Red());
-      return false;
+      return StepOutcome.Threw;
     }
 
     int stepExitCode = Environment.ExitCode;
@@ -74,9 +84,9 @@ internal sealed class PipelineConsole
     if (stepExitCode != 0)
     {
       Terminal.WriteErrorLine($"\nPipeline FAILED — {stepName} failed".Red());
-      return false;
+      return StepOutcome.Failed;
     }
 
-    return true;
+    return StepOutcome.Succeeded;
   }
 }
