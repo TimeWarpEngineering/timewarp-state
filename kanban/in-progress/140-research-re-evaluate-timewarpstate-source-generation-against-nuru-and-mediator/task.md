@@ -72,6 +72,16 @@ Acceptance criteria:
   - Ran a CSharpGeneratorDriver spike against the ActionSet method generator.
   - Wrote report/analysis.md. No product code changed.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 9c9a2828-f076-4f53-95c0-196d1e13b61e, max-turns 500, Done — 2026-11-05T17:22:02Z
+- 2026-11-06 review oracle, round 1 (ganda task work, claude, model claude-opus-5-5, effort 2, roster general, turn cap 120):
+  - Re-ran the spike; its output matches.
+  - Verified the State, Mediator, Nuru and 464 citations.
+  - Findings: M1 (suggestion), M2 and M3 (nits), all open. A fix pass was requested.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 4ee61aa0-ddbd-44e7-b1aa-b02b04719c95, max-turns 120, artifacts general.md, merged.md — 2026-11-05T17:26:30Z
+- 2026-11-06 implement-fix-2 oracle (ganda task work, claude), fixing review round 1:
+  - M1: the Option 0 "What changes" list now has the catalog predicate and parser change. The §4.1 catalog row notes the record gap and the first-descendant-constructor rule.
+  - M2: corrected the citations and file counts after re-checking each one against the source.
+  - M3: reworded the executive summary to "a class that is not a partial state".
+  - Only report/analysis.md, review/round-1/merged.md (dispositions) and this file changed. No product code.
 
 ## Results
 
@@ -117,6 +127,21 @@ Expect: output matching `report/spike/action-set-generator-spike.output.txt`:
 - `name match in non-state class` reports CS0260, CS0708 and CS0119.
 
 The spike must run outside the repository: inside it, Central Package Management rejects the runfile's `#:package` version (NU1008).
+
+### Review
+
+- **Round 1 (general, effort 2):** 0 bugs, 1 suggestion and 2 nits. All three were fixed in the implement-fix-2 pass. Dispositions are in `review/round-1/merged.md`.
+  - **M1:** Option 0 says record actions would start producing catalog executors. They would not: the catalog predicate is `ClassDeclarationSyntax`-only.
+  - **M2:** some citation line ranges and file counts are off.
+  - **M3:** the executive summary overstates the non-state `*ActionSet` case.
+- **Paths:**
+  - `review/review-framework.md`
+  - `review/round-1/general.md`
+  - `review/round-1/merged.md`
+
+## Review
+
+- Round 1: Blocked — open M1, M2, M3
 
 ## Notes
 

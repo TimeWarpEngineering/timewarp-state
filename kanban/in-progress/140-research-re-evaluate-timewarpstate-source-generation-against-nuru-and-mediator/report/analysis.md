@@ -24,7 +24,7 @@ The ActionSet method generator also has correctness gaps, confirmed by the spike
 - A positional `record Action(...)` gets no method.
 - A primary-constructor `Action` gets a method that does not compile (CS7036).
 - Init-only properties are ignored.
-- Any nested `*ActionSet` class in any class produces broken code.
+- A nested `*ActionSet` class inside a class that is not a partial state (for example a static docs class) produces broken code.
 
 It has no tests of its own.
 
@@ -38,7 +38,7 @@ TimeWarp owns Mediator, so that constraint can be moved, but only by a Mediator 
 
 The analysis covered:
 
-- **State:** every file in `SG/` (5,037 LOC, 31 files), the analyzers in `source/timewarp-state-analyzer/`, the generator tests, and the runtime registries the generated code feeds.
+- **State:** every file in `SG/` (5,037 LOC, 29 files), the analyzers in `source/timewarp-state-analyzer/`, the generator tests, and the runtime registries the generated code feeds.
 - **Mediator:** the generator, the analyzer it links in, its design docs and its kanban history.
 - **Nuru:** the analyzers project, which holds the generator, plus its `.agent/workspace/` notes and kanban history.
 - **Architecture task 464:** `proposal.md` and `task.md` as one consumer input. There is no `question.md`; the question is §7 of the proposal.
@@ -56,7 +56,7 @@ The analysis covered:
 | Generator | Discovers | How | Emits | Model and caching | Tests |
 |---|---|---|---|---|---|
 | `ActionSetMethodSourceGenerator` (`SG/action-set-method-generator.cs`) | a class whose name ends in `ActionSet` and whose parent is a class (`:29-35`), containing a nested `ClassDeclarationSyntax` named `Action` (`:46-48`) | `CreateSyntaxProvider`: a name match on syntax, then the semantic model for constructor parameter types (`SG/action-set-constructor-parser.cs:33-55`) | `partial class <Parent> { public async Task <Name>(ctorParams…, CancellationToken? externalCancellationToken = null) }`, which sends `new XActionSet.Action(args)` (`:107-132`) | `ClassModel` is a plain class holding a `List<>` (`:158-179`), so there is no equality. The spike showed an unrelated edit gives output reason **Modified**. No tracking names. | None direct. It is only a co-generator in `tests/timewarp-state-source-generator-tests/action-catalog-generator-test-driver.cs:36-40`. |
-| `ActionCatalogSourceGenerator` (`SG/action-catalog-source-generator.cs`) | `[CatalogAction]` on a nested `*ActionSet.Action` (`:49-60`) | `ForAttributeWithMetadataName` (`:29-37`), combined with `CompilationProvider.Select(AssemblyName)` (`:39-46`). Parameters come from the same constructor parser. | `GeneratedActionCatalog.All`, with descriptors, a JSON input schema, and executors that call the generated `State.Method` (`:235-255`). Also an assembly attribute deriving from `ActionCatalogProviderAttribute`, so `AddActionCatalog(assembly)` needs no scan (`:180-200`). | `sealed record CatalogEntryModel` with `EquatableArray` (`:277-288`). Equatable. No tracking names. | `action-catalog-source-generator-tests.cs` |
+| `ActionCatalogSourceGenerator` (`SG/action-catalog-source-generator.cs`) | `[CatalogAction]` on a nested `*ActionSet.Action` (`:49-60`) | `ForAttributeWithMetadataName` (`:29-37`), combined with `CompilationProvider.Select(AssemblyName)` (`:39-46`). Parameters come from the same constructor parser. The predicate is `node is ClassDeclarationSyntax` (`:33`) and the parser takes a `ClassDeclarationSyntax` and reads its first descendant constructor (`SG/action-set-constructor-parser.cs:27-38`), so a record action is invisible to the catalog, and a primary-constructor class action is found but gets no parameters. | `GeneratedActionCatalog.All`, with descriptors, a JSON input schema, and executors that call the generated `State.Method` (`:235-255`). Also an assembly attribute deriving from `ActionCatalogProviderAttribute`, so `AddActionCatalog(assembly)` needs no scan (`:180-200`). | `sealed record CatalogEntryModel` with `EquatableArray` (`:277-288`). Equatable. No tracking names. | `action-catalog-source-generator-tests.cs` |
 | `PersistenceStateSourceGenerator` (`SG/persistence-state-source-generator.cs`) | a class with an attribute whose text is `PersistentState` or ends in `.PersistentState` (`:44-52`) | `CreateSyntaxProvider`, a text match only. `[PersistentStateAttribute]` written out in full would not match. | `Load(CancellationToken?)`, which sends the hand-written `LoadPersistentStateRequest` (`:79-110`). TWSG001 is reported for nested states (`:20-30`). | `sealed record ClassModel` with an equatable location (`:143-175`). Equatable. | `persistence-state-source-generator-tests.cs` |
 | `StateCloneSourceGenerator` and `StateClonePlanner` (`SG/state-clone-source-generator.cs`, `SG/state-clone-planner*.cs`, about 4,000 LOC) | every `State<T>` and `[GenerateClone]` type in the compilation, their member graphs, and implementations of interfaces they use, including in referenced assemblies (`SG/state-clone-planner.subtypes.cs:335-357`). Implementation assemblies are re-imported with `MetadataImportOptions.All` (`SG/state-clone-planner.metadata.cs:167`). | The **only** input is `CompilationProvider` (`SG/state-clone-source-generator.cs:37-39`). The design note says it "reruns on every compilation change" (`:11`). A full symbol walk (`SG/state-clone-planner.cs:53-77`). | `TimeWarpStateClones.g.cs`, containing clone methods with `UnsafeAccessor`, a `[ModuleInitializer]` that registers clones, trimming roots for ICloneable states, and the DI registration of every state through `StateRegistrationRegistry` (`SG/state-clone-planner.emit.cs:227-293`). TWSG002 is reported. | No model. It emits a string from the compilation each time. | 20 test files (shape, correctness, metadata, guard and more). Fixie and Shouldly, using `CSharpGeneratorDriver`. |
 
@@ -90,20 +90,20 @@ Analyzers (TWS0001-TWS0012) live in a separate `DiagnosticAnalyzer` project (`so
 
 - **One generator** (`MG/mediator-generator.cs:22-93`) with named steps:
   - `Options` (`AnalyzerConfigOptionsProvider`).
-  - `HostCandidates`: three narrow `CreateSyntaxProvider`s. These are `TypeDeclarationSyntax { BaseList: not null }` (`MG/candidate-extractor.cs:29-32`), assembly attributes, and runtime declarations. Each extracts equatable `TypeFact` and `BehaviorFact` values (`MG/candidate-facts.cs:18-60`).
+  - `HostCandidates`: three narrow `CreateSyntaxProvider`s. These are `TypeDeclarationSyntax { BaseList: not null }` (`MG/candidate-extractor.cs:29-32`), assembly attributes, and runtime declarations. Each extracts equatable `TypeFact` and `BehaviorFact` values (`MG/candidate-facts.cs:19-65`).
   - `ReferencedAssemblies`: `MetadataReferencesProvider.Collect()` plus a `HostIdentity` selected from `CompilationProvider`. It walks only assemblies marked `[assembly: MediatorAssembly]` (`MG/referenced-assembly-candidates.cs:41-101,167-178`).
   - `Model` (`CandidateGraph.Create`), then `Sources` and `Diagnostics`.
 - **`ForAttributeWithMetadataName` is avoided on purpose.** The design note says it "combines CompilationProvider, which re-runs the transform on every edit (Unchanged, not Cached)" (`MG/mediator-generator.cs:11-13`).
 - **One graph, several emitters.** `CandidateGraph.Create` builds a symbol-free `EmissionGraph` once (`MG/candidate-graph.cs:324`, `MG/emission-graph.cs:5-37`). `MediatorEmitter` and `ManifestEmitter` both read it (`MG/candidate-graph.cs:332-333`).
 - **The analyzer holds a second graph builder,** `MessageGraphBuilder` (`MA/message-graph-builder.cs`, 922 LOC). The generator links the analyzer sources in (CS8784). So there are two graph builders to keep in step (`MG/candidate-graph.cs:6-12`). That is a maintenance cost worth not copying.
-- **Diagnostics** are carried as equatable `DiagnosticInfo` and `LocationInfo` (`MG/mediator-model.cs:208-275`). They are re-joined to `Compilation` only to place each span (`MG/mediator-generator.cs:87-93`). When the generator is present, the analyzer skips TWM001-TWM003 so each is reported once (`MG/mediator-generator.cs:16-17`).
+- **Diagnostics** are carried as equatable `DiagnosticInfo` and `LocationInfo` (`MG/mediator-model.cs:21-89`). They are re-joined to `Compilation` only to place each span (`MG/mediator-generator.cs:87-93`). When the generator is present, the analyzer skips TWM001-TWM003 so each is reported once (`MG/mediator-generator.cs:16-17`).
 - **Output** is `Mediator.g.cs` (a type switch with `Dispatch_*` and per-request `Chain_*`), scoped `Sender_*` and `Publisher_*`, `AddGeneratedMediator<TScope>()`, and `MediatorManifest` (`Version = 2`, a JSON const) for tooling. State already consumes that manifest (`source/timewarp-state/features/pipeline/pipeline-behavior-registry.cs:1-47`).
 - **Tests:**
   - `tests/timewarp-mediator-generators-compilation-tests/incremental-generator-tests.cs:16-55` asserts that an unrelated edit leaves every named step `Cached`, and that a new handler modifies only `HostCandidates`, `Model` and `Sources`.
   - Compile-and-assert shape tests, end-to-end generated tests, and a packed-nupkg smoke test.
   - No snapshot tests.
-- **History:** the first design was `CompilationProvider.Combine(options).Select(...)`, which rebuilt the graph on every keystroke (`documentation/design/2026-10-13-15.0-breaking-redesign-review.md:285-300`, F9). Tasks 013-011 and 021-006 fixed it. This is exactly where State's clone generator is today.
-- **Size:** 17 files and 3,866 LOC, plus 1,702 LOC of linked analyzer sources.
+- **History:** the first design was `CompilationProvider.Combine(options).Select(...)`, which rebuilt the graph on every keystroke (`documentation/design/2026-10-13-15.0-breaking-redesign-review.md:287-301`, F9). Tasks 013-011 and 021-006 fixed it. This is exactly where State's clone generator is today.
+- **Size:** 16 files and 3,866 LOC, plus 1,702 LOC of linked analyzer sources.
 
 ### 4.3 Nuru generator inventory
 
@@ -179,6 +179,7 @@ The options are not exclusive. Option 0 is cheap whatever else is picked. Option
   - Drop SG002.
   - Report a TWS diagnostic instead of emitting broken code.
   - Add direct tests.
+- **Catalog generator:** widen the `ForAttributeWithMetadataName` predicate from `ClassDeclarationSyntax` to `TypeDeclarationSyntax` (records included). Change `ActionSetConstructorParser.GetParameters` to take a `TypeDeclarationSyntax` and read the primary-constructor or positional-record parameter list before falling back to an explicit constructor (it reads the first descendant constructor today). Both generators share the parser, so this one change fixes both.
 - **Persistence generator:** match `[PersistentStateAttribute]` too, or use `ForAttributeWithMetadataName`.
 - **Every generator:** add `WithTrackingName` to every step, plus one incrementality test in the Mediator style.
 
@@ -205,7 +206,7 @@ partial class CounterState
 }
 ```
 
-- **Cost:** changes stay inside `SG/` and the generator tests. Not breaking, except that code which used to fail now compiles, and `[CatalogAction]` on a record action starts producing executors.
+- **Cost:** changes stay inside `SG/` and the generator tests. Not breaking, except that code which used to fail now compiles, and `[CatalogAction]` on a record action starts producing executors (this needs the catalog predicate and parser change listed above).
 - **Unblocks:** records and primary constructors as actions everywhere, including the template's `DefaultApiHandler` actions. A caching baseline for later options.
 - **Does not unblock:** any new consumer capability.
 
@@ -420,7 +421,7 @@ partial class CounterState
   - `kanban/done/075-…md`, `kanban/done/097-proposal-source-generator-for-state-cloning-aot-friendly/`, `kanban/done/134-…`, `kanban/done/135-…`.
 - Mediator:
   - `MG/mediator-generator.cs`, `MG/candidate-graph.cs`, `MG/emission-graph.cs`, `MG/referenced-assembly-candidates.cs`, `MA/message-graph-builder.cs`.
-  - `documentation/architecture.md`, `documentation/design/2026-06-17-source-gen-aot-rewrite-spec.md:42`, `documentation/design/2026-10-13-15.0-breaking-redesign-review.md:285-300`.
+  - `documentation/architecture.md`, `documentation/design/2026-06-17-source-gen-aot-rewrite-spec.md:42`, `documentation/design/2026-10-13-15.0-breaking-redesign-review.md:287-301`.
   - `tests/timewarp-mediator-generators-compilation-tests/incremental-generator-tests.cs`.
 - Nuru:
   - `NA/generators/nuru-generator.cs`, `NA/generators/extractors/generated-mediator-detector.cs:6-15`, `NA/generators/interpreter/dsl-interpreter.cs`.
