@@ -46,9 +46,9 @@ The source generator emits one internal `GeneratedActionCatalog` per assembly, i
 
 - `Name`, `DisplayName` (or `null`), `Description`, `Permissions`, `Visibility`
 - `StateType` and `ActionType`
-- `Parameters`: name, CLR type, required flag, default value text and a JSON schema fragment — taken from the action's first explicit constructor, the same parse that generates `State.AddPasskey(label, makeDefault, ct)`
+- `Parameters`: name, CLR type, required flag, default value text and a JSON schema fragment — taken from the action's primary constructor or positional record parameters, else its first explicit constructor, plus any `required` members — the same parse that generates `State.AddPasskey(label, makeDefault, ct)`. A record Action can be cataloged.
 - `InputSchema`: a JSON schema object for the parameters
-- `Execute(IStore store, object?[]? arguments, CancellationToken ct)`: resolves the state from the store and calls the generated `State.Method(...)`. Arguments are positional in constructor order; trailing optional arguments may be omitted. No reflection is involved, so it is AOT and trim safe.
+- `Execute(IStore store, object?[]? arguments, CancellationToken ct)`: resolves the state from the store and calls the generated `State.Method(...)`. Arguments are positional in the generated method's order (constructor parameters without a default, then `required` members, then optional parameters); trailing optional arguments may be omitted. No reflection is involved, so it is AOT and trim safe.
 
 Arguments already of the parameter type are passed through; otherwise the values the schema advertises are converted with the invariant culture (enum from name or integer, `Guid`/date/time types from string, numbers and `bool` via `IConvertible`, for example `"5"` or `5L` for an `int`). A failed conversion throws `ArgumentException`.
 

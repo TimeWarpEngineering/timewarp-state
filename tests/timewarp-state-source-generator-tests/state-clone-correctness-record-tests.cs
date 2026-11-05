@@ -14,7 +14,7 @@ public class Should_Stop_When_Planning_Is_Cancelled
   {
     CSharpCompilation compilation = CSharpCompilation.Create("Cancelled");
     StateClonePlanner planner = new(compilation);
-    Should.Throw<OperationCanceledException>(() => planner.Plan(default, new CancellationToken(true)));
+    Should.Throw<OperationCanceledException>(() => planner.Plan([], new CancellationToken(true)));
   }
 }
 

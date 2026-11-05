@@ -69,7 +69,7 @@ internal sealed partial class StateClonePlanner
   // One diagnostic per primary failure that has a source location: the member (or type) the author can change.
   // Failures inside BCL or referenced types surface through the source member that reaches them. A failed root with
   // no reported cause still gets one diagnostic at its declaration.
-  private void Report(SourceProductionContext sourceContext)
+  private void Report(List<Diagnostic> diagnostics)
   {
     PlanningCancellation.ThrowIfCancellationRequested();
     Dictionary<Slot, Slot> rootOf = [];
@@ -103,7 +103,7 @@ internal sealed partial class StateClonePlanner
       }
 
       reportedRoots.Add(pair.Value);
-      sourceContext.ReportDiagnostic(Diagnostic.Create(
+      diagnostics.Add(Diagnostic.Create(
         StateCloneSourceGenerator.UnsupportedRule,
         location,
         slot.Type.ToDisplayString(),
@@ -113,15 +113,15 @@ internal sealed partial class StateClonePlanner
 
     if (reportedRoots.Count == 0)
     {
-      ReportUncoveredRoots(sourceContext, rootOf, reportedRoots, reachableFromRoot: null);
+      ReportUncoveredRoots(diagnostics, rootOf, reportedRoots, reachableFromRoot: null);
       return;
     }
 
-    ReportUncoveredRoots(sourceContext, rootOf, reportedRoots, []);
+    ReportUncoveredRoots(diagnostics, rootOf, reportedRoots, []);
   }
 
   private void ReportUncoveredRoots(
-    SourceProductionContext sourceContext,
+    List<Diagnostic> diagnostics,
     Dictionary<Slot, Slot> rootOf,
     HashSet<Slot> reportedRoots,
     Dictionary<Slot, HashSet<Slot>>? reachableFromRoot)
@@ -141,7 +141,7 @@ internal sealed partial class StateClonePlanner
 
       if (!AnyReportedBelow(root, rootOf, reportedRoots))
       {
-        sourceContext.ReportDiagnostic(Diagnostic.Create(
+        diagnostics.Add(Diagnostic.Create(
           StateCloneSourceGenerator.UnsupportedRule,
           SourceLocation(root.Type) ?? Location.None,
           root.Type.ToDisplayString(),

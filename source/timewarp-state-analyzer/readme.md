@@ -19,6 +19,7 @@ Roslyn analyzers packed into `TimeWarp.State` at `analyzers/dotnet/cs`. Consumer
 | TWS0009 | Error | Design | `StateImplementationAnalyzer` — concrete `State<T>` must implement `ICloneable` or have an accessible constructor (parameterless is not required; abstract states are exempt) |
 | TWSG001 | Error | Persistence | `PersistenceStateSourceGenerator` — `[PersistentState]` is not supported on nested classes |
 | TWSG002 | Error | Cloning | `StateCloneSourceGenerator` — a reachable member cannot be cloned (reported at that member, naming the root state); implement `ICloneable`, mark the member `[CloneShared]` to copy it by reference, or change the member |
+| TWSG003 | Error | Generation | `ActionSetMethodSourceGenerator`, `PersistenceStateSourceGenerator` — the generated `State.Method` or `Load()` would not compile (state not partial, abstract or inaccessible Action, parameter name clash, and so on); nothing is emitted |
 | TWS0010 | Error | Design | `StateInheritanceAnalyzer` |
 | TWS0011 | Warning | Design | `StateInheritanceAnalyzer` |
 | TWS0012 | Error | Design | `StateReadOnlyPublicPropertiesAnalyzer` |

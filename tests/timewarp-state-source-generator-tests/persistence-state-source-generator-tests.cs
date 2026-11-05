@@ -90,7 +90,7 @@ public class Should_Emit_Load_For_Top_Level_PersistentState
     runResult.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "SG001");
     GeneratedSourceResult generatedSource = runResult.Results[0].GeneratedSources.ShouldHaveSingleItem();
     generatedSource.HintName.ShouldBe("App.WidgetState_Persistence.g.cs");
-    generatedSource.SourceText.ToString().ShouldContain("public partial class WidgetState");
+    generatedSource.SourceText.ToString().ShouldContain("\npartial class WidgetState");
     generatedSource.SourceText.ToString().ShouldContain("LoadPersistentStateRequest");
   }
 }
@@ -122,6 +122,6 @@ public class Should_Use_Containing_Types_In_Hint_Names
     runResult.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(PersistenceStateSourceGenerator.NestedPersistentStateDiagnosticId);
     GeneratedSourceResult generatedSource = runResult.Results[0].GeneratedSources.ShouldHaveSingleItem();
     generatedSource.HintName.ShouldBe("App.WidgetState_Persistence.g.cs");
-    generatedSource.SourceText.ToString().ShouldContain("public partial class WidgetState");
+    generatedSource.SourceText.ToString().ShouldContain("\npartial class WidgetState");
   }
 }

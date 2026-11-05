@@ -47,10 +47,7 @@ internal sealed partial class StateClonePlanner
     StateType = Catalog.StateType;
   }
 
-  public string? Plan(SourceProductionContext sourceContext) =>
-    Plan(sourceContext, sourceContext.CancellationToken);
-
-  internal string? Plan(SourceProductionContext sourceContext, CancellationToken cancellationToken)
+  internal string? Plan(List<Diagnostic> diagnostics, CancellationToken cancellationToken)
   {
     PlanningCancellation = cancellationToken;
     PlanningCancellation.ThrowIfCancellationRequested();
@@ -70,7 +67,7 @@ internal sealed partial class StateClonePlanner
     CollectClosedICloneableStates();
     PlanningCancellation.ThrowIfCancellationRequested();
     PropagateErrors();
-    Report(sourceContext);
+    Report(diagnostics);
     PlanningCancellation.ThrowIfCancellationRequested();
     MaterializeDispatches();
     return Emit();
