@@ -1,0 +1,14 @@
+== ctor class: generated=1 errors=0
+   gen: public async Task Add(int amount = 1, CancellationToken? externalCancellationToken = null)
+   after unrelated edit, output step reasons: Modified
+== init-only props, no ctor: generated=1 errors=0
+   gen: public async Task IncrementCount(CancellationToken? externalCancellationToken = null)
+== positional record: generated=0 errors=0
+== primary ctor class: generated=1 errors=1
+   CS7036 There is no argument given that corresponds to the required parameter 'amount' of 'CounterState.AddActionSet.Action.Action(int)'
+   gen: public async Task Add(CancellationToken? externalCancellationToken = null)
+== name match in non-state class: generated=1 errors=4
+   CS0260 Missing partial modifier on declaration of type 'Docs'; another partial declaration of this type exists
+   CS0708 'Sample': cannot declare instance members in a static class
+   CS0119 'CancellationToken' is a type, which is not valid in the given context
+   gen: public async Task Sample(CancellationToken? externalCancellationToken = null)
