@@ -51,6 +51,12 @@ Acceptance:
 - 2026-11-06 implement (ganda task work): analyzer, code fix, tests, docs. `ganda repo audit` initially failed only on
   `kanban-landed` (this kitchen was in-progress on the branch and to-do on origin-home), fixed with `ganda kanban reconcile`.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 9ce89c26-a711-4b1f-a78e-1e760cb71745, max-turns 500, Done — 2026-11-05T21:31:02Z
+- Review oracle round 1 (ganda task work, tw-implementation-review, effort 3, roster general): claude-opus-5-5, 2026-11-06.
+  Two open findings (M1 suggestion, M2 nit). Fix pass requested.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session d83d5a56-7156-434b-b706-415fbfb6a01b, max-turns 200, artifacts general.md, merged.md — 2026-11-05T21:36:17Z
+
+- 2026-11-06 fix pass (review round 1, implement-fix-2): fixed M1 (docs) and M2 (the code-fix context accessibility follows the
+  state). Analyzer tests 64/64, `./bin/dev build` 0 errors, `./bin/dev test` green.
 
 ## Results
 
@@ -72,7 +78,8 @@ generic states are skipped. A context in another project is not seen; the docs g
 netstandard2.0 project. It is a separate assembly so `timewarp-state-analyzer.dll` keeps compiler-only references (RS1038).
 The fix offers one action per context in the project ("Add [JsonSerializable(typeof(X))] to Ctx"). The line goes after the
 context's last attribute list, and the type name is simplified against the file's usings. With no context, the fix offers
-"Create StateJsonContext", which adds `state-json-context.cs` beside the state. There is no FixAll provider: per-state edits
+"Create StateJsonContext", which adds `state-json-context.cs` beside the state. The context is `public` when the state is
+effectively public, so a host project can wire it, and `internal` otherwise. There is no FixAll provider: per-state edits
 to one context declaration would race. The dll is packed into `TimeWarp.State` at
 `analyzers/dotnet/cs/timewarp-state-analyzer-code-fixes.dll`, and the packaging test now asserts it. Workspaces is
 `PrivateAssets=all`, and the nuspec still lists only TimeWarp.Mediator.
@@ -84,13 +91,13 @@ to one context declaration would race. The dll is packed into `TimeWarp.State` a
   `Microsoft.CodeAnalysis.CSharp.CodeFix.Testing` 1.1.4 to `Directory.Packages.props`.
 - No generator changed.
 
-**Tests:** `tests/timewarp-state-analyzer-tests/state-json-serializable-analyzer-tests.cs`, 12 cases:
+**Tests:** `tests/timewarp-state-analyzer-tests/state-json-serializable-analyzer-tests.cs`, 13 cases:
 
 - Trigger: persistence, telemetry with no context, both reasons, intermediate base.
 - No trigger: listed in a nested context in another namespace, persistence with no context, no telemetry, abstract,
   generic, or foreign `State<T>`.
 - Fix: append after existing attributes, add to an attribute-less context in another file and namespace (doc comment kept),
-  pick the second of two contexts, create a new context file.
+  pick the second of two contexts, create a new context file (`public` for a public state, `internal` for an internal one).
 
 **Docs:**
 
@@ -126,12 +133,37 @@ Smoke:
 Expect:
 
 - The build has 0 errors.
-- The `StateJsonSerializableAnalyzer_` tests pass (12 cases), and the whole analyzer suite reports `63 passed`.
+- The `StateJsonSerializableAnalyzer_` tests pass (13 cases), and the whole analyzer suite reports `64 passed`.
 - The nupkg lists `analyzers/dotnet/cs/timewarp-state-analyzer.dll`, `timewarp-state-analyzer-code-fixes.dll`, and
   `timewarp-state-source-generator.dll`.
 - Manual check in an IDE: remove `[JsonSerializable(typeof(WasmCounterState))]` from
   `samples/04-telemetry/wasm/sample-04-wasm/sample-04-wasm-json-context.cs`. `WasmCounterState` then shows TWS0013
   ("…serialized by telemetry snapshots…"), and the light bulb offers "Add [JsonSerializable(typeof(WasmCounterState))] to Sample04WasmJsonContext".
+
+### Review
+
+- **Status:** round 1 findings fixed in the fix pass (M1, M2 both `fixed`). Round 2 is pending.
+- **Rounds:** 1, effort 3, roster `general`.
+- **Counts (round 1):**
+  - bug: 0
+  - suggestion: 1 fixed (M1)
+  - nit: 1 fixed (M2)
+- **M1 (fixed):** the telemetry reason ignores the opt-in `IncludeSnapshots`. The spans-only limit and the `.editorconfig` opt-out are now
+  in analyzers.md, the analyzer readme, the release note, and telemetry.md.
+- **M2 (fixed):** "Create StateJsonContext" emitted `internal`. It now emits `public` for an effectively public state and `internal`
+  otherwise, with a test for each case.
+- **Reviewer re-ran:**
+  - `./bin/dev build`: 0 errors, 151 pre-existing warnings, no TWS0013 hits.
+  - Analyzer tests: 63/63.
+  - `ganda repo audit`: exit 0. The 2 Warning-severity failures are older than this branch.
+- **Artifacts:**
+  - `review/review-framework.md`
+  - `review/round-1/general.md`
+  - `review/round-1/merged.md` (live ledger)
+
+## Review
+
+- Round 1: Blocked — open M1, M2
 
 ## Notes
 
