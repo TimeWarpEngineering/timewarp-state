@@ -70,6 +70,7 @@ Acceptance criteria, in my words:
     `ganda repo audit --fix --checks kanban-landed`. What remains is advisory and pre-existing, the same as task
     141: 098 has no usable worktree, and `kebab-path-names` flags Blazor JS module and MSBuild targets names that
     must match assembly names, plus backlog 110's double hyphen.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 578c5d26-d85d-4c1c-9681-7a6c7a7154bf, max-turns 500, Done — 2026-11-05T20:38:54Z
 
 ## Depends on
 
