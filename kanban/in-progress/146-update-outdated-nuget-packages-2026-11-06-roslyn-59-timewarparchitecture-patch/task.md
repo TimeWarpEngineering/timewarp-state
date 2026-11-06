@@ -35,6 +35,9 @@ Test results (with Roslyn 4.14.0 and Analyzers beta.31): build 0 errors, 151 war
 (90, 174, 146+1 skipped, 40+1 skipped, 21, 124, 4, 67+1 skipped, 7+1 skipped).
 `ganda repo audit --fix` changed nothing; two pre-existing advisories (kanban-landed 098, kebab-path-names).
 
+## Review
+
+skip
 ## Session
 
 - Created: ffba6066-c22c-42a7-95c8-de75506a6687 (2026-11-06)
