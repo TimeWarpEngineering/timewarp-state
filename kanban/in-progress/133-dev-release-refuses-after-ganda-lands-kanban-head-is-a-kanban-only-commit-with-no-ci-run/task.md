@@ -71,6 +71,12 @@ Acceptance criteria:
   task 543). Added the same walk to the repo-local locate-run, with tests. Wrote the releasing guide.
   Ran a live dry run on origin-home master.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session a37b4184-9519-4560-85a4-015fc2ec9150, max-turns 500, Done — 2026-11-06T13:14:06Z
+- Review oracle: general, effort 2, roster general, turn cap 120 (this cursor session uncapped). Round 1 disposition clean, 0 findings. 2026-11-06. No separate vendor session id.
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-06T13:20:51Z
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
@@ -138,6 +144,10 @@ Acceptance criteria:
   A gh/git replay of the walk over that history matches: six no-run commits with no shipping path, then
   green `640ea951`. The original `e05df145` now has the operator's dispatch run, so a replay there stops
   at HEAD.
+- Review: round 1, roster general, effort 2. Disposition `clean`. Counts: bug 0 open / 0 fixed / 0
+  wontfix, suggestion 0 / 0 / 0, nit 0 / 0 / 0. Final open count 0. No wontfix and no escalation.
+  Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`,
+  `review/disposition.md`. Reviewer re-ran `ArtifactSourceWalkTests*`: 7 passed.
 
 ### How to validate
 
@@ -157,4 +167,16 @@ Expect:
   `Target commit: <sha>`, and it ends with `All guards passed.` It needs no `gh workflow run` dispatch.
   (If `<Version>` is already tagged or published, the dry run refuses earlier at the tag or
   publish-state guard. That is expected.)
+
+## Learnings
+
+- Misread: `## Goal (implementer restatement)` does not match the original requirements on three
+  clauses. The task says the tag still goes on HEAD, that the artifact commit is recorded in the
+  Release notes body as well as the dry-run output, and that the rule lives at
+  `documentation/developer/guides/releasing.md`. The restatement keeps the dry-run naming and "a
+  releasing guide", and it never mentions the tag or the notes body. Notes later record the tag and
+  the guide path as deliberate deviations. Pinned TimeWarp.Nuru.DevCli 4.0.0-beta.11 tags the green
+  commit, `gh release create --generate-notes` attaches the release to that tag, and
+  `documentation/developer/` does not exist here. The guide documents that behavior. Round 1 did not
+  open a finding for it.
 
