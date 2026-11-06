@@ -5,18 +5,21 @@
 #endregion
 
 #region Design
+// [Reducer] handlers (task 144, Option 3b) are one more emitter on the same graph. TimeWarp.Mediator dispatches to them
+// through GeneratedHandlerAttribute; ReducerAnalyzer (TWS0014) reports a [Reducer] this emitter does not serve.
 // Replaces the four pre-142 generators (ActionSet method, action catalog, persistence, clone). Each of those found
 // its own inputs. Task 140 Option 1, decided by Steve 2026-11-06.
 // Pipeline (every step named in TrackingNames, pinned by generator-incrementality-tests):
-//   State.Actions       CreateSyntaxProvider: ActionFactExtractor. One ActionFact per *ActionSet.Action.
+//   State.Actions       CreateSyntaxProvider: ActionFactExtractor. One ActionFact per *ActionSet.Action, including
+//                       the [Reducer] handler (task 144) from the shared ReducerFacts rule.
 //   State.Persistence   CreateSyntaxProvider: PersistenceFactExtractor. One PersistenceFact per [PersistentState].
 //   State.States        CreateSyntaxProvider: StateFactExtractor. One StateFact per concrete IState type.
 //   State.Assembly      CompilationProvider.Select: assembly name and whether the manifest attribute exists.
 //   State.ClonePlan     CompilationProvider.Select: the clone planner, a semantic stage that reruns on every
 //                       compilation change. Its equatable result keeps the graph Cached when the plan is equal.
 //   State.Graph         the facts collected and combined, then StateGraphBuilder.Build, once.
-//   State.Emit.*        projections of the graph, one per emitter. Dispatch and Persistence are SelectMany, so each
-//                       method or Load is compared and emitted on its own. Catalog, Manifest and Clone are one value
+//   State.Emit.*        projections of the graph, one per emitter. Dispatch, Reducer and Persistence are SelectMany,
+//                       so each method, handler or Load is compared and emitted on its own. Catalog, Manifest and Clone are one value
 //                       each. Diagnostics are re-joined to the current compilation's trees when reported.
 // ForAttributeWithMetadataName is not used. Task 141 measured that it does not defeat caching here. The catalog is
 // now one more part of the action fact, so one transform analyzes each action once.
@@ -93,6 +96,10 @@ public sealed class TimeWarpStateGenerator : IIncrementalGenerator
       .SelectMany(static (value, _) => value.DispatchMethods)
       .WithTrackingName(TrackingNames.EmitDispatch);
 
+    IncrementalValuesProvider<ReducerHandlerModel> reducers = graph
+      .SelectMany(static (value, _) => value.ReducerHandlers)
+      .WithTrackingName(TrackingNames.EmitReducer);
+
     IncrementalValuesProvider<PersistenceModel> loads = graph
       .SelectMany(static (value, _) => value.PersistenceLoads)
       .WithTrackingName(TrackingNames.EmitPersistence);
@@ -114,6 +121,7 @@ public sealed class TimeWarpStateGenerator : IIncrementalGenerator
       .WithTrackingName(TrackingNames.EmitDiagnostics);
 
     context.RegisterSourceOutput(dispatch, static (sourceContext, model) => DispatchMethodEmitter.Emit(model, sourceContext));
+    context.RegisterSourceOutput(reducers, static (sourceContext, model) => ReducerHandlerEmitter.Emit(model, sourceContext));
     context.RegisterSourceOutput(loads, static (sourceContext, model) => PersistenceEmitter.Emit(model, sourceContext));
     context.RegisterSourceOutput(catalog, static (sourceContext, model) => CatalogEmitter.Emit(model, sourceContext));
     context.RegisterSourceOutput(manifest, static (sourceContext, model) => ManifestEmitter.Emit(model, sourceContext));

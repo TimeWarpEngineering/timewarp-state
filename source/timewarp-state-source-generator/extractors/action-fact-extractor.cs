@@ -1,6 +1,7 @@
 #region Purpose
 // Turns one nested `*ActionSet.Action` declaration into an equatable ActionFact: the dispatch method model or its
-// TWSG003 failure, the [CatalogAction] entry, and the manifest entry. ActionSetShape is analyzed once per action.
+// TWSG003 failure, the [CatalogAction] entry, the manifest entry, and the [Reducer] handler. ActionSetShape is analyzed
+// once per action.
 #endregion
 
 #region Design
@@ -17,6 +18,8 @@
 //   skipped silently (task 141, review M1).
 // - Catalog: only with [CatalogAction] (CatalogActionFacts.FindAttribute), the shared placement rule, an analysis
 //   without failure, and a user-declared method only when the executor's call binds (UserMethodCallable).
+// - Reducer handler: only with [Reducer] and a plan from ReducerFacts, the rule ReducerAnalyzer (TWS0014) shares. A
+//   [Reducer] the rule rejects emits nothing here; the analyzer reports the reason.
 // The manifest row exists for every action set whose parent implements IState. Method is the method name when the
 // method exists, generated or hand-written. Parameters are the generated method's parameters. Catalog is the catalog
 // name when there is an entry. Tracked means [TrackAction] is on the Action.
@@ -62,7 +65,8 @@ internal static class ActionFactExtractor
       method,
       diagnostic,
       catalog,
-      GetManifest(analysis, catalog, compilation)
+      GetManifest(analysis, catalog, compilation),
+      GetReducerHandler(action, compilation)
     );
   }
 
@@ -88,6 +92,37 @@ internal static class ActionFactExtractor
         LocationInfo.From(declaration.Identifier.GetLocation()),
         new EquatableArray<string>([$"{analysis.State.Name}.{analysis.MethodName}", analysis.Action.ToDisplayString(), analysis.Failure])
       )
+    );
+  }
+
+  private static ReducerHandlerModel? GetReducerHandler(INamedTypeSymbol action, Compilation compilation)
+  {
+    if (compilation.GetTypeByMetadataName(ReducerFacts.AttributeMetadataName) is not { } reducerAttribute) return null;
+    if (ReducerFacts.FindAttribute(action, reducerAttribute) is not { } attribute) return null;
+    if (ReducerFacts.Analyze(action, attribute, compilation, out _) is not { } plan) return null;
+
+    List<string> typeHeaders = [];
+    List<string> hintPath = [];
+    for (INamedTypeSymbol? current = plan.ActionSet; current is not null; current = current.ContainingType)
+    {
+      typeHeaders.Insert(0, $"{(current.IsStatic ? "static " : "")}partial {Keyword(current)} {Declaration(current)}");
+      hintPath.Insert(0, current.MetadataName);
+    }
+
+    string? namespaceName = plan.State.ContainingNamespace is { IsGlobalNamespace: false } containing
+      ? containing.ToDisplayString()
+      : null;
+
+    return new ReducerHandlerModel
+    (
+      namespaceName,
+      new EquatableArray<string>(typeHeaders),
+      plan.HandlerName,
+      plan.Accessibility,
+      StateType: plan.State.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+      ActionSetType: plan.ActionSet.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+      ActionType: plan.Action.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+      HintName: $"{namespaceName ?? "Global"}.{string.Join("+", hintPath)}.{plan.HandlerName}_Reducer.g.cs"
     );
   }
 

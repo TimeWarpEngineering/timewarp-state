@@ -5,6 +5,13 @@ title: Release 12.0.0-beta.17
 
 ## Release 12.0.0-beta.17
 
+### `[Reducer]`: generated action handlers (task 144)
+
+- New `[Reducer]` attribute in `TimeWarp.State`. Put it on an action set's `Action` and declare `static void Reduce(TState state, Action action)` in the same `partial` action set. The generator emits `XActionSet.Handler : StateActionHandler<Action>`, which calls `Reduce` with the state from the store. The hand-written `Handler` shape is unchanged.
+- `ReducerAttribute` derives from TimeWarp.Mediator's `GeneratedHandlerAttribute`, so the generated mediator dispatches the Action to the generated `Handler`. It takes the handler name as a constructor parameter named `handlerTypeName` (default `Handler`), which is how Mediator reads it through a reference assembly.
+- New analyzer **TWS0014** (Error) reports a `[Reducer]` the generator cannot serve and says why: wrong placement, not `partial`, no `Reduce`, a hand-written `Handler`, and so on. Without it, the only errors would be TWM012 and CS0246 inside `Mediator.g.cs`. See [Analyzers](xref:TimeWarpState:Analyzers.md).
+- **Dependency:** `TimeWarp.Mediator` and `TimeWarp.Mediator.Generators` move to **15.0.0-beta.5**, the release that ships `GeneratedHandlerAttribute`. A host must use the generators at 15.0.0-beta.5 or later for `[Reducer]` actions to dispatch.
+
 ### TWS0013: states need a `[JsonSerializable]` entry (task 143)
 
 - New analyzer **TWS0013** (Warning) reports a concrete state that persistence or telemetry snapshots serialize but no `JsonSerializerContext` in the project lists. Persistence counts once the project declares a context. Telemetry counts whenever the project references `TimeWarp.State.Telemetry`, because a snapshot with no type info is skipped silently.

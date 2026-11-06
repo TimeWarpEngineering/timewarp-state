@@ -6,7 +6,7 @@
 // The only builder (task 140 lesson: do not copy Mediator's two graph builders). Analyzers do not build a graph.
 // They share the per-symbol rules instead (facts/, linked as source).
 // Build is pure and deterministic:
-// - Dispatch methods and persistence loads keep fact order (syntax tree, then node order). Each one is emitted per item.
+// - Dispatch methods, [Reducer] handlers and persistence loads keep fact order (syntax tree, then node order). Each one is emitted per item.
 // - Catalog entries keep fact order. CatalogEmitter sorts them by name, as the old generator did.
 // - Diagnostics: action failures, then persistence failures, in fact order. Clone diagnostics stay in the clone plan.
 // - Manifest: states from StateFacts plus any state an action names (an abstract state's action sets still show).
@@ -39,6 +39,7 @@ internal static class StateGraphBuilder
     return new StateGraph
     (
       DispatchMethods: new EquatableArray<ActionSetMethodModel>(actions.Where(fact => fact.Method is not null).Select(fact => fact.Method!)),
+      ReducerHandlers: new EquatableArray<ReducerHandlerModel>(actions.Where(fact => fact.Handler is not null).Select(fact => fact.Handler!)),
       PersistenceLoads: new EquatableArray<PersistenceModel>(persistence.Where(fact => fact.Model is not null).Select(fact => fact.Model!)),
       Catalog: new CatalogModel(namespaceName, new EquatableArray<CatalogEntryModel>(actions.Where(fact => fact.Catalog is not null).Select(fact => fact.Catalog!))),
       Manifest: assembly.ManifestAvailable ? BuildManifest(namespaceName, assembly.AssemblyName ?? string.Empty, actions, persistence, states) : null,

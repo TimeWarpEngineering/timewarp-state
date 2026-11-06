@@ -24,6 +24,7 @@ Roslyn analyzers packed into `TimeWarp.State` at `analyzers/dotnet/cs`. Consumer
 | TWS0011 | Warning | Design | `StateInheritanceAnalyzer` |
 | TWS0012 | Error | Design | `StateReadOnlyPublicPropertiesAnalyzer` |
 | TWS0013 | Warning | Design | `StateJsonSerializableAnalyzer` — a state that persistence or telemetry snapshots serialize is not listed by any `JsonSerializerContext` in the project; code fix `StateJsonSerializableCodeFixProvider` adds the `[JsonSerializable]` line or creates a context |
+| TWS0014 | Error | Design | `ReducerAnalyzer` — a `[Reducer]` Action gets no generated `Handler` (wrong placement, not partial, no `static void Reduce(TState, Action)`, a hand-written handler of that name, and so on); the message names the reason |
 
 ## TWS0002 — Handler must not send an action
 

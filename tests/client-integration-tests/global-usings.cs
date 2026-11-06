@@ -13,6 +13,7 @@ global using TimeWarp.Mediator;
 global using TimeWarp.Mediator.Generated;
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.Extensions.DependencyInjection;
+global using System.CodeDom.Compiler;
 global using System.Linq;
 global using System.Net;
 global using System.Net.Http;
