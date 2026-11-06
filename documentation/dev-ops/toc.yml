@@ -1,2 +1,4 @@
 - name: Dev Ops
   href: dev-ops.md
+- name: Releasing
+  href: releasing.md

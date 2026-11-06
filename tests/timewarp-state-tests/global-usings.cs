@@ -27,3 +27,5 @@ global using TimeWarp.Features.Cloning;
 global using System.Collections.Immutable;
 global using System.Collections.Frozen;
 global using SharedTestFixtures;
+global using DevCli;
+global using DevCli.Commands;

@@ -10,6 +10,9 @@
 // A check-version that finishes non-zero aborts with CheckVersionAbort.FormatAbortReason (from the handler's
 // Outcome), so only AlreadyReleased says "version already released"; cancel and throw name themselves.
 // The packable-set lookup sets CurrentStep before it runs so its failures are not blamed on check-version.
+// Locate-run may promote the artifact of a green commit HEAD is only kanban-only commits past (task 133);
+// it then prints that commit, and the download and verify messages name it instead of HEAD. The tag pin
+// still compares the tag with HEAD: a resume runs from the tag's ref, where the walk is empty.
 #endregion
 
 namespace DevCli.Commands;
@@ -101,7 +104,12 @@ internal sealed class ReleasePipeline
       return locateFailure;
     }
 
-    Terminal.WriteLine($"Found {locateOutcome.CandidateRuns.Count} candidate CI run(s) for commit {ShortSha(locateOutcome.HeadSha)}.");
+    if (locateOutcome.SkippedCommitCount > 0)
+    {
+      Terminal.WriteLine($"HEAD {ShortSha(locateOutcome.HeadSha)} is {locateOutcome.SkippedCommitCount} kanban-only commit(s) past {ShortSha(locateOutcome.TargetSha)}; promoting the artifact built at {locateOutcome.TargetSha}.");
+    }
+
+    Terminal.WriteLine($"Found {locateOutcome.CandidateRuns.Count} candidate CI run(s) for commit {ShortSha(locateOutcome.TargetSha)}.");
 
     BeginStep(4, "Download Artifact");
     DownloadArtifactOutcome downloadOutcome = await new CiArtifactService(Terminal)
@@ -114,7 +122,7 @@ internal sealed class ReleasePipeline
     Terminal.WriteLine($"Downloaded '{downloadOutcome.ArtifactName}' from run {downloadOutcome.Run!.DatabaseId} ({downloadOutcome.Run.Event}).");
 
     BeginStep(5, "Verify Package Set");
-    PipelineResult? verifyFailure = VerifyPackageSet(repoRoot, packableProjects, version, locateOutcome.HeadSha);
+    PipelineResult? verifyFailure = VerifyPackageSet(repoRoot, packableProjects, version, locateOutcome.TargetSha);
     if (verifyFailure is not null)
     {
       return verifyFailure;
@@ -214,7 +222,8 @@ internal sealed class ReleasePipeline
         Terminal.WriteErrorLine($"Release gate failed: gh run list failed — {outcome.Detail}. If this is transient (network/rate limit), retry; for auth issues run 'gh auth login'.");
         return Output.Abort("gh run list failed");
       case LocateRunStatus.NoMatchingRun:
-        Terminal.WriteErrorLine($"Release gate failed: no successful CI run of workflow.yml exists for commit {outcome.HeadSha}. Only tested CI artifacts are published — this commit must pass CI first. If a run failed, fix and re-run it (gh run rerun <run-id>).");
+        string walkDetail = outcome.Detail is null ? "" : $" {outcome.Detail}";
+        Terminal.WriteErrorLine($"Release gate failed: no successful CI run of workflow.yml exists for commit {outcome.HeadSha}, or for a commit it is only kanban-only commits past.{walkDetail} Only tested CI artifacts are published — this commit must pass CI first. If a run failed, fix and re-run it (gh run rerun <run-id>).");
         return Output.Abort("no successful CI run found");
       default:
         return Output.AbortUnhandled("locate-run", outcome.Status);
@@ -230,13 +239,13 @@ internal sealed class ReleasePipeline
     }
     else
     {
-      Terminal.WriteErrorLine($"Release gate failed: no candidate CI run for commit {locate.HeadSha} uploaded a Packages-* artifact. Re-run CI to produce one (gh run rerun {locate.CandidateRuns[0].DatabaseId}).");
+      Terminal.WriteErrorLine($"Release gate failed: no candidate CI run for commit {locate.TargetSha} uploaded a Packages-* artifact. Re-run CI to produce one (gh run rerun {locate.CandidateRuns[0].DatabaseId}).");
     }
 
     return Output.Abort("no usable CI artifact found");
   }
 
-  private PipelineResult? VerifyPackageSet(string repoRoot, IReadOnlyList<PackableProject> packableProjects, string version, string headSha)
+  private PipelineResult? VerifyPackageSet(string repoRoot, IReadOnlyList<PackableProject> packableProjects, string version, string artifactSha)
   {
     string artifactsDir = Path.Combine(repoRoot, "artifacts", "packages");
     string[] actualNupkgPaths = Directory.Exists(artifactsDir) ? Directory.GetFiles(artifactsDir, "*.nupkg") : [];
@@ -259,7 +268,7 @@ internal sealed class ReleasePipeline
       Terminal.WriteErrorLine($"Release gate failed: downloaded artifact has unexpected package(s): {string.Join(", ", verification.Unexpected)}.");
     }
 
-    Terminal.WriteErrorLine($"CI run likely predates the version bump — re-run CI on commit {headSha} and retry.");
+    Terminal.WriteErrorLine($"CI run likely predates the version bump — re-run CI on commit {artifactSha} and retry.");
     return Output.Abort("downloaded package set does not match derived packable set");
   }
 

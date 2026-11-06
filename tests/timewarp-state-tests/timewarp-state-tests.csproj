@@ -6,11 +6,22 @@
     <PackageReference Include="TimeWarp.Fixie" />
     <PackageReference Include="TimeWarp.Mediator" />
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
+    <!-- Source-only package: no assets flow in; the path property links the pure release-guard files below. -->
+    <PackageReference Include="TimeWarp.Nuru.DevCli" GeneratePathProperty="true" ExcludeAssets="all" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\..\tools\dev-cli\endpoints\nuspec-dependency-allow-list.cs" Link="packaging\nuspec-dependency-allow-list.cs" />
     <Compile Include="..\..\tools\dev-cli\endpoints\nuget-package-isolation.cs" Link="packaging\nuget-package-isolation.cs" />
+    <Compile Include="..\..\tools\dev-cli\endpoints\workflow\artifact-source-walk.cs" Link="release-pipeline\artifact-source-walk.cs" />
+  </ItemGroup>
+
+  <!-- The walk's decision rules come from TimeWarp.Nuru.DevCli (Nuru task 543). These files are pure. -->
+  <ItemGroup>
+    <Compile Include="$(PkgTimeWarp_Nuru_DevCli)/content/any/services/release-guard.cs" Link="release-pipeline/devcli/release-guard.cs" Visible="false" />
+    <Compile Include="$(PkgTimeWarp_Nuru_DevCli)/content/any/services/ci-run-promotion.cs" Link="release-pipeline/devcli/ci-run-promotion.cs" Visible="false" />
+    <Compile Include="$(PkgTimeWarp_Nuru_DevCli)/content/any/services/publish-state.cs" Link="release-pipeline/devcli/publish-state.cs" Visible="false" />
+    <Compile Include="$(PkgTimeWarp_Nuru_DevCli)/content/any/services/ipackable-project-service.cs" Link="release-pipeline/devcli/ipackable-project-service.cs" Visible="false" />
   </ItemGroup>
 
   <ItemGroup>
