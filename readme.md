@@ -57,6 +57,34 @@ Check out the latest NuGet packages on the [TimeWarp Enterprises NuGet page](htt
 * [TimeWarp.State.Plus](https://www.nuget.org/packages/TimeWarp.State.Plus/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Plus?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Plus/)
 * [TimeWarp.State.Telemetry](https://www.nuget.org/packages/TimeWarp.State.Telemetry/) [![nuget](https://img.shields.io/nuget/v/TimeWarp.State.Telemetry?logo=nuget)](https://www.nuget.org/packages/TimeWarp.State.Telemetry/)
 
+## Writing an action
+
+An action lives in a nested `*ActionSet` inside the state it changes. The recommended shape marks the `Action` with `[Reducer]` and declares one static `Reduce` method. The source generator writes the handler:
+
+```csharp
+public sealed partial class CounterState : State<CounterState>
+{
+  public int Count { get; private set; }
+
+  public override void Initialize() => Count = 0;
+
+  public static partial class IncrementCountActionSet
+  {
+    [Reducer]
+    public sealed class Action(int amount) : IAction
+    {
+      public int Amount { get; } = amount;
+    }
+
+    private static void Reduce(CounterState state, Action action) => state.Count += action.Amount;
+  }
+}
+
+await CounterState.IncrementCount(amount: 5); // generated dispatch method
+```
+
+Write the `Handler : StateActionHandler<Action>` yourself instead when the action does async work, needs injected services, or does more than change the state synchronously. That long shape keeps working, and one state can mix both. See [Actions](documentation/topics/actions.md).
+
 ## JavaScript dispatch
 
 JavaScript can dispatch actions with `timeWarpState.DispatchRequest(name, request)`. It is opt-in: allow each action explicitly, everything else is rejected.
