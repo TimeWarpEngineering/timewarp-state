@@ -47,6 +47,10 @@ Acceptance criteria, in my words:
 7. **Release.** `12.0.0-beta.17` is not on NuGet yet (beta.16 is the latest), so the repo rule keeps the version
    and adds this work to the beta.17 release notes. Build 0 errors with no new warnings, tests green,
    `ganda repo audit` clean, committed and pushed on the task branch.
+8. **CI against the PR base.** `feature/state-graph` gained TWS0013 (`state-json-serializable-analyzer`) after this
+   branch removed `StateSymbolHelpers`. The combined tree must compile. Those two call sites use `StateSymbolFacts`
+   (`GetTimeWarpStateType`, `InheritsFromTimeWarpState`), the same methods the other analyzers use. The analyzer
+   stays. Proof is a green analyzer build and the TWS0013 tests, then a push that leaves PR #672 open.
 
 Fix pass (round 1 findings), in my words: close all 12 open findings in `review/round-1/merged.md` on this id.
 `StateManifest.Parse` must throw only its documented exceptions. The publisher test must really send a request. The
@@ -61,6 +65,7 @@ each finding has a disposition note, pushed.
 - [x] Emitters with golden parity
 - [x] Manifest and DevTools consumption (dispatch from DevTools is a follow-up; the manifest carries what it needs)
 - [x] Incrementality test; build 0 errors and no new warnings in changed files (pre-existing NU1510, NU190x, BL0010, TW0007 remain)
+- [x] CI merge with `feature/state-graph` compiles (TWS0013 calls `StateSymbolFacts`)
 
 ## Session
 
@@ -91,6 +96,7 @@ each finding has a disposition note, pushed.
   the analyzer, DevTools and generator suites. All are green. Artifacts: `review/round-2/general.md`,
   `review/round-2/merged.md` and `review/disposition.md` (clean).
 - 2026-11-06 CI pack failure on PR #672 (DevTools.Export nuspec dependency TimeWarp.State outside the allow-list); allow-list updated to permit TimeWarp.State for DevTools.Export. Local `dev pack` green (packed set verified, 9 nupkgs).
+- 2026-11-06 implementer (grok-4.7, ganda task work implement node): PR #672 CI run 42119659172 failed at build. GitHub merges this branch with `feature/state-graph`, which added TWS0013 in `state-json-serializable-analyzer.cs` after this branch deleted `StateSymbolHelpers`. Merged `origin/feature/state-graph` (no conflicts) and pointed the two call sites at `StateSymbolFacts.GetTimeWarpStateType` and `InheritsFromTimeWarpState`. The analyzer stays. PR left open. CI is green on run 42145324392 (head 35ef4803). https://github.com/TimeWarpEngineering/timewarp-state/actions/runs/42145324392
 
 ## Depends on
 
@@ -170,6 +176,8 @@ Steve 2026-11-06 decision; order 0 → 1.
   explicitly rather than by a `facts\*.cs` wildcard.
   - `CatalogActionAnalyzer` lost its own placement, visibility and default-name copies.
   - `StateSymbolHelpers` is deleted, and the analyzers use `StateSymbolFacts`.
+  - TWS0013, which arrived on `feature/state-graph` after that deletion, calls `StateSymbolFacts` too
+    (`GetTimeWarpStateType`, `InheritsFromTimeWarpState`). Same methods, same arguments.
   - There is still one graph builder. Analyzers share per-symbol rules, not a graph.
 - **State manifest.**
   - `TimeWarp.State.StateManifest.g.cs` holds `[assembly: StateManifestAttribute(Version, Json)]` and an internal
@@ -222,6 +230,7 @@ Steve 2026-11-06 decision; order 0 → 1.
 - Solution build: 0 errors, and no warnings from any file this task changed.
 - `ganda repo audit`: passes, with 2 pre-existing advisory warnings.
 - Real-project parity: all 72 pre-existing generated files are byte-identical across 4 projects.
+- 2026-11-06 CI compile fix (merge of `feature/state-graph` plus the TWS0013 call-site change): `./bin/dev build` success, 0 errors, and no warning on `state-json-serializable-analyzer.cs`. `./bin/dev test` green: analyzer 66, generator 164, state 146 (1 skipped), plus 40 (1 skipped), telemetry 21, devtools 124, devtools isolation 4, client integration 64 (1 skipped), architecture 7 (1 skipped). `ganda repo audit` still passes with the same 2 advisory warnings (task 098 has no usable worktree; kebab names that must match assembly names, plus backlog 110). GitHub CI run 42145324392 is green on head 35ef4803.
 
 ### How to validate
 
@@ -239,6 +248,8 @@ dotnet build tests/test-app/test-app-client -p:EmitCompilerGeneratedFiles=true \
 ls /tmp/tw142-gen/timewarp-state-source-generator/TimeWarp.State.SourceGenerator.TimeWarpStateGenerator/
 dotnet fixie timewarp-state-source-generator-tests --tests "*Should_Read_Manifest*"
 dotnet fixie timewarp-state-analyzer-tests --tests "*Should_Report_TWS0004*"
+dotnet build source/timewarp-state-analyzer/timewarp-state-analyzer.csproj -v q -nologo
+dotnet fixie timewarp-state-analyzer-tests --tests "*TWS0013*"
 dotnet fixie timewarp-state-devtools-tests --tests "*Manifest*"
 ./bin/dev test
 ```
@@ -253,6 +264,7 @@ Expect:
 - Should_Read_Manifest includes `Given_Non_Object_Array_Items_Skips_Them` and
   `Given_Non_Array_Collections_Reads_Them_As_Empty`, and both pass.
 - Should_Report_TWS0004 includes `Given_Bare_ActionSet_Container` and `Given_Struct_Action`, and both pass.
+- The analyzer project builds with 0 errors. TWS0013: 13 passed (`Should_Trigger` 4, `Should_Not_Trigger` 4, `Should_Fix` 5).
 - The DevTools manifest tests include `StoreABatchAndRaiseChangedOnce` and
   `CollectTheManifestOfAnAssemblyWithStates`, and both pass.
 - `./bin/dev test` ends with "Tests completed successfully!".
