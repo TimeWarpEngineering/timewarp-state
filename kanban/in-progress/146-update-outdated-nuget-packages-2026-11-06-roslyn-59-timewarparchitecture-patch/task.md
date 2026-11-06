@@ -87,3 +87,4 @@ skip
 - Implementation: claude code session (2026-11-06)
 - Implement node (ganda task work, 2026-11-06): no new product changes; re-ran audit, build, and test (green);
   added Goal restatement and How to validate; fixed a stale global dotnet tool resolver cache (environment only).
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 40d566d8-b396-4a7e-b700-9a6c3eeed7aa, max-turns 500, Done — 2026-11-06T13:46:24Z
