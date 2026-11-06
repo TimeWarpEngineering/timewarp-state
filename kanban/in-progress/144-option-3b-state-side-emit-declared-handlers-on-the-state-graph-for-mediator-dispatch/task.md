@@ -51,6 +51,9 @@ Acceptance criteria:
   (kebab names that Blazor requires, and task 098's claim with no worktree) were there before this task and belong
   to other work.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session bf79c77b-615e-4401-ba18-b9d341443293, max-turns 500, Done — 2026-11-06T02:44:19Z
+- Review oracle: tw-implementation-review at effort 3 (roster: general), by claude-opus-5-5, session
+  f0bc6949-86e9-491b-b3c0-f2827586af95, turn cap 200. Round 1 → accepted-exceptions, 2026-11-06.
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session f0bc6949-86e9-491b-b3c0-f2827586af95, max-turns 200, artifacts general.md, merged.md, disposition.md — 2026-11-06T02:48:12Z
 
 ## Results
 
@@ -108,6 +111,19 @@ public static partial class DecrementCountActionSet
   state-instance `Reduce` is also not covered.
 - The State manifest does not yet mark which actions use a generated handler.
 
+### Review disposition
+
+- **Rounds:** 1. **Effort:** 3 (budget by diff, 1288 lines). **Roster:** general.
+- **Final counts:** bug 0, suggestion 0, nit 1. Nothing is open or fixed; the nit is wontfix.
+- **Disposition:** `accepted-exceptions`. M1 (nit, wontfix): TWS0014 checks only the Action's declared accessibility.
+  A public Action inside a private or protected action set fails in Mediator.g.cs with CS0122, not with TWS0014. A
+  hand-written handler fails the same way, so this is no regression, and the fix belongs with the next TWS0014 change.
+- **Reviewer gates:** `./bin/dev build` exits 0 with 0 errors. These test projects pass: client-integration-tests (67
+  passed, 1 skipped), timewarp-state-analyzer-tests (77) and timewarp-state-source-generator-tests (174). The generated
+  `Handler_Reducer.g.cs` exists in the test app. NuGet's latest is 12.0.0-beta.16, which confirms beta.17 is unreleased.
+- **Paths:** `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`,
+  `review/disposition.md`.
+
 ### How to validate
 
 Smoke:
@@ -131,6 +147,10 @@ global::TimeWarp.State.StateActionHandler<...DecrementCountActionSet.Action>(sto
 ## Depends on
 
 - Option 1 task; timewarp-mediator Option 3b task
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
