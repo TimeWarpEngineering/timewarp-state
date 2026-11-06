@@ -96,7 +96,7 @@ each finding has a disposition note, pushed.
   the analyzer, DevTools and generator suites. All are green. Artifacts: `review/round-2/general.md`,
   `review/round-2/merged.md` and `review/disposition.md` (clean).
 - 2026-11-06 CI pack failure on PR #672 (DevTools.Export nuspec dependency TimeWarp.State outside the allow-list); allow-list updated to permit TimeWarp.State for DevTools.Export. Local `dev pack` green (packed set verified, 9 nupkgs).
-- 2026-11-06 implementer (grok-4.7, ganda task work implement node): PR #672 CI run 42119659172 failed at build. GitHub merges this branch with `feature/state-graph`, which added TWS0013 in `state-json-serializable-analyzer.cs` after this branch deleted `StateSymbolHelpers`. Merged `origin/feature/state-graph` (no conflicts) and pointed the two call sites at `StateSymbolFacts.GetTimeWarpStateType` and `InheritsFromTimeWarpState`. The analyzer stays. PR left open.
+- 2026-11-06 implementer (grok-4.7, ganda task work implement node): PR #672 CI run 42119659172 failed at build. GitHub merges this branch with `feature/state-graph`, which added TWS0013 in `state-json-serializable-analyzer.cs` after this branch deleted `StateSymbolHelpers`. Merged `origin/feature/state-graph` (no conflicts) and pointed the two call sites at `StateSymbolFacts.GetTimeWarpStateType` and `InheritsFromTimeWarpState`. The analyzer stays. PR left open. CI is green on run 42145324392 (head 35ef4803). https://github.com/TimeWarpEngineering/timewarp-state/actions/runs/42145324392
 
 ## Depends on
 
@@ -230,7 +230,7 @@ Steve 2026-11-06 decision; order 0 → 1.
 - Solution build: 0 errors, and no warnings from any file this task changed.
 - `ganda repo audit`: passes, with 2 pre-existing advisory warnings.
 - Real-project parity: all 72 pre-existing generated files are byte-identical across 4 projects.
-- 2026-11-06 CI compile fix (merge of `feature/state-graph` plus the TWS0013 call-site change): `./bin/dev build` success, 0 errors, and no warning on `state-json-serializable-analyzer.cs`. `./bin/dev test` green: analyzer 66, generator 164, state 146 (1 skipped), plus 40 (1 skipped), telemetry 21, devtools 124, devtools isolation 4, client integration 64 (1 skipped), architecture 7 (1 skipped). `ganda repo audit` still passes with the same 2 advisory warnings (task 098 has no usable worktree; kebab names that must match assembly names, plus backlog 110).
+- 2026-11-06 CI compile fix (merge of `feature/state-graph` plus the TWS0013 call-site change): `./bin/dev build` success, 0 errors, and no warning on `state-json-serializable-analyzer.cs`. `./bin/dev test` green: analyzer 66, generator 164, state 146 (1 skipped), plus 40 (1 skipped), telemetry 21, devtools 124, devtools isolation 4, client integration 64 (1 skipped), architecture 7 (1 skipped). `ganda repo audit` still passes with the same 2 advisory warnings (task 098 has no usable worktree; kebab names that must match assembly names, plus backlog 110). GitHub CI run 42145324392 is green on head 35ef4803.
 
 ### How to validate
 
