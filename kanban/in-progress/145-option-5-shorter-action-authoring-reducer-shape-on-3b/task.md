@@ -64,6 +64,9 @@ Acceptance criteria:
   advisories as task 144: kebab-path-names is set to warning on purpose in `.editorconfig` (Blazor `lib.module.js`
   names), and kanban-landed is task 098's claim. Neither belongs to this task.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 8cb3ca8e-d72c-4713-923f-c7fb9a8856af, max-turns 500, Done — 2026-11-06T04:13:45Z
+- Review oracle: ganda task work, tw-implementation-review, claude-opus-5-5, effort 3 (by-diff), roster general,
+  turn cap 200 — round 1, disposition clean — 2026-11-06
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 7dc006e6-00d5-4978-953a-4a1801af4c30, max-turns 200, artifacts general.md, merged.md, disposition.md — 2026-11-06T04:18:14Z
 
 ## Results
 
@@ -112,6 +115,17 @@ uses it. No generator, analyzer or attribute code changed.
 - `./bin/dev verify-samples`: exit 0.
 - `ganda repo audit`: passes, with the 2 advisories noted under Session.
 
+**Review**
+
+- 1 round at effort 3 (by-diff budget, 800 lines), with a general reviewer.
+- Final counts: bug 0, suggestion 0, nit 0, with none open, fixed or wontfix.
+- Disposition: **clean**. The implementer restatement matches the task, so no misread was recorded.
+- The reviewer re-ran the analyzer suite (90 passed, 0 failed) and built sample 05 (0 errors, no warnings in sample
+  files, both `Handler_Reducer.g.cs` files emitted). The reviewer also checked the topic's claims about the generated
+  `Handler`, the dispatch signature, `GeneratedHandlerAttribute` and persistence against the source.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`,
+  `review/disposition.md`.
+
 **Not done**
 
 - Nobody ran sample 05 in a browser. Task 144's client integration tests already prove that a generated `Handler`
@@ -139,6 +153,10 @@ table of what each generates. If you add a hand-written `Handler` to
 ## Depends on
 
 - Task 144 (done, PR #675)
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
