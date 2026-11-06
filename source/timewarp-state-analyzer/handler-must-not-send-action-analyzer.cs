@@ -19,9 +19,6 @@
 
 namespace TimeWarp.State.Analyzer;
 
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Operations;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class HandlerMustNotSendActionAnalyzer : DiagnosticAnalyzer
 {

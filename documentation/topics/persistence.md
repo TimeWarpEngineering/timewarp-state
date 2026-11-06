@@ -47,6 +47,24 @@ The load replaces the store entry. It is not an action, so it does not go throug
 
 Save and load use `TimeWarpStateOptions.JsonSerializerOptions`. Put converters there. Load deserializes with a case-insensitive copy of those options.
 
+### Trimming and AOT
+
+With no resolver, `System.Text.Json` uses reflection, which trimming and Native AOT do not support. List each persisted state on a `JsonSerializerContext` and make that context the resolver in `AddTimeWarpState`:
+
+```csharp
+[JsonSerializable(typeof(DisplayPreferencesState))]
+[JsonSerializable(typeof(DraftNoteState))]
+internal sealed partial class AppStateJsonContext : JsonSerializerContext;
+
+builder.Services.AddTimeWarpState(options =>
+{
+  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+  options.JsonSerializerOptions.TypeInfoResolver = AppStateJsonContext.Default;
+});
+```
+
+Persistence copies these options, resolver included. Once the project declares a context, analyzer **TWS0013** warns on each `[PersistentState]` state the context does not list, and its code fix adds the line. See [Analyzers](xref:TimeWarpState:Analyzers.md).
+
 The write key is `Type.FullName`. Load tries the full name, then the simple name. There is no migration framework: a new constructor parameter needs a CLR default if older payloads omit it, and a payload that does not bind throws `JsonException`.
 
 Neither store is a secret store. Any script on the origin can read it. Each action rewrites the whole state, so keep the persisted type small.

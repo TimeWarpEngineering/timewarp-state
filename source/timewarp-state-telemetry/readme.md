@@ -68,7 +68,7 @@ builder.Services.AddTimeWarpStateTelemetry(options =>
 });
 ```
 
-Or set `TypeInfoResolver` on `TimeWarpStateOptions.JsonSerializerOptions` (the same options Store and persistence use). This package never calls `new JsonSerializerOptions()` and never `JsonSerializer.Serialize(object)` on an open `TState`.
+Or set `TypeInfoResolver` on `TimeWarpStateOptions.JsonSerializerOptions` (the same options Store and persistence use): `AddTimeWarpState(options => options.JsonSerializerOptions.TypeInfoResolver = AppStateJsonContext.Default)`. Analyzer **TWS0013** warns on each state in a project that references this package when no `JsonSerializerContext` in the project lists it, and its code fix writes the `[JsonSerializable]` line. This package never calls `new JsonSerializerOptions()` and never `JsonSerializer.Serialize(object)` on an open `TState`.
 
 Events (not span attributes):
 
