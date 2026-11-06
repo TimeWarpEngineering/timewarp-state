@@ -15,6 +15,7 @@
 // symbol diagnostic (editor squiggle and light bulb) rather than a compilation-end one. Only contexts declared in this
 // project count; a context in another project cannot be seen and is out of scope.
 // Abstract and open generic states are skipped: neither can be listed with typeof(X).
+// The State<T> check goes through StateSymbolFacts, the same linked source the other analyzers use.
 #endregion
 
 namespace TimeWarp.State.Analyzer;
@@ -64,7 +65,7 @@ public sealed class StateJsonSerializableAnalyzer : DiagnosticAnalyzer
     context.RegisterCompilationStartAction(static compilationStartContext =>
     {
       Compilation compilation = compilationStartContext.Compilation;
-      INamedTypeSymbol? timeWarpState = StateSymbolHelpers.GetTimeWarpStateType(compilation);
+      INamedTypeSymbol? timeWarpState = StateSymbolFacts.GetTimeWarpStateType(compilation);
       INamedTypeSymbol? jsonSerializerContext = compilation.GetTypeByMetadataName(JsonSerializerContextMetadataName);
       INamedTypeSymbol? jsonSerializableAttribute = compilation.GetTypeByMetadataName(JsonSerializableAttributeMetadataName);
       if (timeWarpState is null || jsonSerializerContext is null || jsonSerializableAttribute is null)
@@ -101,7 +102,7 @@ public sealed class StateJsonSerializableAnalyzer : DiagnosticAnalyzer
     if (state.TypeKind != TypeKind.Class || state.IsAbstract || state.IsUnboundGenericType || state.TypeParameters.Length > 0)
       return;
 
-    if (!StateSymbolHelpers.InheritsFromTimeWarpState(state.BaseType, timeWarpState))
+    if (!StateSymbolFacts.InheritsFromTimeWarpState(state.BaseType, timeWarpState))
       return;
 
     bool persistent = persistentStateAttribute is not null && HasAttribute(state, persistentStateAttribute);
