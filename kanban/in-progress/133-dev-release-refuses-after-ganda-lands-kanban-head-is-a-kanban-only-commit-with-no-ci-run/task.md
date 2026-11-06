@@ -70,6 +70,7 @@ Acceptance criteria:
   TimeWarp.Nuru.DevCli, and 4.0.0-beta.11 (pinned since task 134) already has the kanban-only walk (Nuru
   task 543). Added the same walk to the repo-local locate-run, with tests. Wrote the releasing guide.
   Ran a live dry run on origin-home master.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session a37b4184-9519-4560-85a4-015fc2ec9150, max-turns 500, Done — 2026-11-06T13:14:06Z
 
 ## Notes
 
