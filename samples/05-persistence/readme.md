@@ -9,6 +9,15 @@ Blazor WebAssembly workspace that stores two TimeWarp.State types in the browser
 
 The attribute chooses the store. The host chooses the implementation by calling `AddBlazoredSessionStorage` and `AddBlazoredLocalStorage`. `PersistenceService` takes both services, so this sample registers both.
 
+## Two action shapes
+
+The sample writes its actions both ways, so you can compare them. See [Actions](../../documentation/topics/actions.md).
+
+- `DisplayPreferencesState` uses the short shape. `SetAccent` and `ToggleCompact` put `[Reducer]` on the `Action` and declare `private static void Reduce(DisplayPreferencesState state, Action action)` in a `static partial` action set. The source generator emits each `Handler`.
+- `DraftNoteState` uses the long shape. `UpdateText` and `Clear` have a hand-written `Handler : StateActionHandler<Action>`.
+
+Both get the same generated `SetAccent(...)`, `ToggleCompact()`, `UpdateText(...)` and `Clear()` methods, and the persistence behavior saves after each one.
+
 ## Run
 
 This sample project-references the in-tree packages, so it does not need `dev pack` before it runs.

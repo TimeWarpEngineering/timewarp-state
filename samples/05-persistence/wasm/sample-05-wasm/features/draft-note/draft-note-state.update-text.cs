@@ -3,7 +3,8 @@
 #endregion
 
 #region Design
-// Nested ActionSet. The handler stores action.Text, falling back to an empty string when it is null.
+// Nested ActionSet with a hand-written Handler (long shape). The handler stores action.Text, falling back to an
+// empty string when it is null. DisplayPreferencesState uses the [Reducer] (short) shape for comparison.
 #endregion
 
 namespace Sample05Wasm.Features.DraftNote;

@@ -17,6 +17,8 @@ TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`anal
 
 Any non-abstract type that implements `IAction` must be nested in a type that implements `IState`.
 
+The rule is the same for both action shapes: a `[Reducer]` action in a `partial` action set and an action with a hand-written `Handler`. See [Actions](xref:TimeWarpState:Actions.md).
+
 ## TWS0002 — Handler must not send an action
 
 - **Severity:** Warning (first release; promote to Error in `.editorconfig`)
@@ -175,7 +177,7 @@ TimeWarp.Mediator names the handler whether or not the State generator emitted i
 - the action set already declares `Handler` by hand
 - the action set does not declare exactly one `static void Reduce(TState state, Action action)`
 
-The generated `Handler` has the Action's accessibility (`public` or `internal`). `[Reducer("Name")]` names it something other than `Handler`. The hand-written `XActionSet { Action; Handler }` shape keeps working beside it. A `Reduce` declared in another partial file of the action set is picked up the next time the Action's own file changes.
+When to use `[Reducer]` and when to hand-write the `Handler` is in [Actions](xref:TimeWarpState:Actions.md). The generated `Handler` has the Action's accessibility (`public` or `internal`). `[Reducer("Name")]` names it something other than `Handler`. The hand-written `XActionSet { Action; Handler }` shape keeps working beside it. A `Reduce` declared in another partial file of the action set is picked up the next time the Action's own file changes.
 
 ## TWSG002 — State clone cannot be generated
 

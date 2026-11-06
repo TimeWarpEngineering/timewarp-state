@@ -3,28 +3,19 @@
 #endregion
 
 #region Design
-// Nested ActionSet with a parameterless Action. The handler negates Compact and completes synchronously.
+// [Reducer] (short) shape with a parameterless Action. The State generator emits ToggleCompactActionSet.Handler,
+// which calls Reduce; the generated ToggleCompact() dispatch method is the same as for a hand-written Handler.
 #endregion
 
 namespace Sample05Wasm.Features.DisplayPreferences;
 
 partial class DisplayPreferencesState
 {
-  public static class ToggleCompactActionSet
+  public static partial class ToggleCompactActionSet
   {
+    [Reducer]
     public sealed class Action : IAction;
 
-    public sealed class Handler : StateActionHandler<Action>
-    {
-      public Handler(IStore store) : base(store) { }
-
-      private DisplayPreferencesState DisplayPreferencesState => Store.GetState<DisplayPreferencesState>();
-
-      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
-      {
-        DisplayPreferencesState.Compact = !DisplayPreferencesState.Compact;
-        return ValueTask.CompletedTask;
-      }
-    }
+    private static void Reduce(DisplayPreferencesState state, Action action) => state.Compact = !state.Compact;
   }
 }

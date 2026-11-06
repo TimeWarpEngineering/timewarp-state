@@ -5,6 +5,13 @@ title: Release 12.0.0-beta.17
 
 ## Release 12.0.0-beta.17
 
+### Authoring: the short action shape (task 145)
+
+- `[Reducer]` is now the recommended way to write an action. You write the `Action` and one `static void Reduce(TState state, Action action)` in a `static partial` action set, and the generator writes the `Handler`. The long shape, with a hand-written `Handler : StateActionHandler<Action>`, keeps working and stays documented. Use it for async work, injected services, or anything beyond a synchronous change to the state.
+- New topic [Actions](xref:TimeWarpState:Actions.md) shows both shapes side by side and what the generator emits for each. `readme.md` and the summary now show the short shape.
+- The persistence sample (`samples/05-persistence`) writes `DisplayPreferencesState`'s actions with `[Reducer]`. `DraftNoteState` keeps the long shape for comparison.
+- New analyzer tests cover TWS0001, TWS0004 to TWS0008 and TWS0010/TWS0011 against `[Reducer]` action sets, including a `[Reducer]` action that also has `[CatalogAction]`. Every rule accepts the short shape and still reports a real fault in it. No analyzer changed.
+
 ### `[Reducer]`: generated action handlers (task 144)
 
 - New `[Reducer]` attribute in `TimeWarp.State`. Put it on an action set's `Action` and declare `static void Reduce(TState state, Action action)` in the same `partial` action set. The generator emits `XActionSet.Handler : StateActionHandler<Action>`, which calls `Reduce` with the state from the store. The hand-written `Handler` shape is unchanged.

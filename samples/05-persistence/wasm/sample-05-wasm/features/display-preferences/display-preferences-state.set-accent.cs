@@ -3,37 +3,23 @@
 #endregion
 
 #region Design
-// Nested ActionSet. The handler assigns action.Accent to DisplayPreferencesState.Accent and completes
-// synchronously.
+// [Reducer] (short) shape: the State generator emits SetAccentActionSet.Handler, which calls Reduce with the state
+// from the store. The action set is partial so the generated Handler can join it (TWS0014 otherwise). DraftNoteState
+// keeps the hand-written Handler (long) shape so the sample shows both.
 #endregion
 
 namespace Sample05Wasm.Features.DisplayPreferences;
 
 partial class DisplayPreferencesState
 {
-  public static class SetAccentActionSet
+  public static partial class SetAccentActionSet
   {
-    public sealed class Action : IAction
+    [Reducer]
+    public sealed class Action(AccentKind accent) : IAction
     {
-      public AccentKind Accent { get; }
-
-      public Action(AccentKind accent)
-      {
-        Accent = accent;
-      }
+      public AccentKind Accent { get; } = accent;
     }
 
-    public sealed class Handler : StateActionHandler<Action>
-    {
-      public Handler(IStore store) : base(store) { }
-
-      private DisplayPreferencesState DisplayPreferencesState => Store.GetState<DisplayPreferencesState>();
-
-      public override ValueTask Handle(Action action, CancellationToken cancellationToken)
-      {
-        DisplayPreferencesState.Accent = action.Accent;
-        return ValueTask.CompletedTask;
-      }
-    }
+    private static void Reduce(DisplayPreferencesState state, Action action) => state.Accent = action.Accent;
   }
 }
