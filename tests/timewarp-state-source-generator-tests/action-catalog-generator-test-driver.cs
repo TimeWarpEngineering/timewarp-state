@@ -1,5 +1,5 @@
 #region Purpose
-// Runs ActionSetMethodSourceGenerator + ActionCatalogSourceGenerator against in-memory source that
+// Runs TimeWarpStateGenerator (dispatch methods and catalog together) against in-memory source that
 // references TimeWarp.State, so tests can assert both the emitted text and that it compiles.
 #endregion
 
@@ -35,8 +35,7 @@ internal static class ActionCatalogGeneratorTestDriver
 
     GeneratorDriver driver = CSharpGeneratorDriver.Create
     (
-      new ActionSetMethodSourceGenerator().AsSourceGenerator(),
-      new ActionCatalogSourceGenerator().AsSourceGenerator()
+      new TimeWarpStateGenerator().AsSourceGenerator()
     );
     driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation outputCompilation, out _);
     return (driver.GetRunResult(), outputCompilation);
@@ -45,7 +44,7 @@ internal static class ActionCatalogGeneratorTestDriver
   public static string CatalogSource(GeneratorDriverRunResult runResult) =>
     runResult.Results
       .SelectMany(result => result.GeneratedSources)
-      .Single(generated => generated.HintName == ActionCatalogSourceGenerator.HintName)
+      .Single(generated => generated.HintName == CatalogEmitter.HintName)
       .SourceText
       .ToString();
 

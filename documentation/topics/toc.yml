@@ -16,5 +16,7 @@
   topicUid: TimeWarpState:RenderControl.md
 - name: Action catalog
   topicUid: TimeWarpState:ActionCatalog.md
+- name: State manifest
+  topicUid: TimeWarpState:StateManifest.md
 - name: Enable JavaScript interop
   topicUid: TimeWarp.State:EnableJavascriptInterop.md

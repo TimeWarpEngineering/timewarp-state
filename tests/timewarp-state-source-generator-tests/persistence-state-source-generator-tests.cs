@@ -1,5 +1,5 @@
 #region Purpose
-// PersistenceStateSourceGenerator: nested TWSG001, unique hint names, top-level Load() emit.
+// Persistence Load (TimeWarpStateGenerator, PersistenceEmitter): nested TWSG001, unique hint names, top-level Load() emit.
 #endregion
 
 #region Design
@@ -29,7 +29,7 @@ public class Should_Report_TWSG001_For_Nested_PersistentState
     GeneratorDriverRunResult runResult = PersistenceGeneratorTestDriver.Run(Source);
 
     Diagnostic diagnostic = runResult.Diagnostics.ShouldHaveSingleItem();
-    diagnostic.Id.ShouldBe(PersistenceStateSourceGenerator.NestedPersistentStateDiagnosticId);
+    diagnostic.Id.ShouldBe(StateGeneratorDiagnostics.NestedPersistentStateId);
     diagnostic.Severity.ShouldBe(DiagnosticSeverity.Error);
     diagnostic.GetMessage().ShouldContain("NestedWidgetState");
     runResult.Results[0].GeneratedSources.ShouldBeEmpty();
@@ -63,7 +63,7 @@ public class Should_Not_Throw_When_Two_Nested_Types_Share_A_Simple_Name
 
     GeneratorDriverRunResult runResult = Should.NotThrow(() => PersistenceGeneratorTestDriver.Run(Source));
 
-    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldAllBe(id => id == PersistenceStateSourceGenerator.NestedPersistentStateDiagnosticId);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldAllBe(id => id == StateGeneratorDiagnostics.NestedPersistentStateId);
     runResult.Diagnostics.Length.ShouldBe(2);
     runResult.Results[0].GeneratedSources.ShouldBeEmpty();
     runResult.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "SG001");
@@ -86,7 +86,7 @@ public class Should_Emit_Load_For_Top_Level_PersistentState
 
     GeneratorDriverRunResult runResult = PersistenceGeneratorTestDriver.Run(Source);
 
-    runResult.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == PersistenceStateSourceGenerator.NestedPersistentStateDiagnosticId);
+    runResult.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == StateGeneratorDiagnostics.NestedPersistentStateId);
     runResult.Diagnostics.ShouldNotContain(diagnostic => diagnostic.Id == "SG001");
     GeneratedSourceResult generatedSource = runResult.Results[0].GeneratedSources.ShouldHaveSingleItem();
     generatedSource.HintName.ShouldBe("App.WidgetState_Persistence.g.cs");
@@ -119,7 +119,7 @@ public class Should_Use_Containing_Types_In_Hint_Names
 
     GeneratorDriverRunResult runResult = Should.NotThrow(() => PersistenceGeneratorTestDriver.Run(Source));
 
-    runResult.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(PersistenceStateSourceGenerator.NestedPersistentStateDiagnosticId);
+    runResult.Diagnostics.ShouldHaveSingleItem().Id.ShouldBe(StateGeneratorDiagnostics.NestedPersistentStateId);
     GeneratedSourceResult generatedSource = runResult.Results[0].GeneratedSources.ShouldHaveSingleItem();
     generatedSource.HintName.ShouldBe("App.WidgetState_Persistence.g.cs");
     generatedSource.SourceText.ToString().ShouldContain("\npartial class WidgetState");

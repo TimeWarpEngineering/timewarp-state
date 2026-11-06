@@ -1,5 +1,5 @@
 #region Purpose
-// Selects the Action, State, or Diff tab.
+// Selects the Action, State, Diff, or Manifest tab.
 #endregion
 
 #region Design
@@ -40,6 +40,7 @@ partial class InspectorState
           action.Tab == DetailTabAction
           || action.Tab == DetailTabState
           || action.Tab == DetailTabDiff
+          || action.Tab == DetailTabManifest
         )
         {
           InspectorState.DetailTab = action.Tab;

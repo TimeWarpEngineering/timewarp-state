@@ -3,11 +3,13 @@
 #endregion
 
 #region Design
-// Mirrors what ActionCatalogSourceGenerator accepts so a misplaced attribute is an error instead of a
-// silent omission: the target must be a class named Action nested in a *ActionSet nested in a type, none of them generic, all at least internal.
+// Uses the generator's own placement rule (CatalogActionFacts, linked from the source generator project) so a
+// misplaced attribute is an error instead of a silent omission: the target must be a class named Action nested in a
+// *ActionSet nested in a type, none of them generic, all at least internal. The class requirement is this
+// analyzer's own addition.
 // Description is required (TWS0005) and should be one plain sentence (TWS0007: no line breaks, a single
-// sentence terminator at most at the end). Names default to <StateWithoutSuffix>.<ActionSetWithoutSuffix>,
-// the same rule the generator applies; duplicates in one compilation are reported at compilation end
+// sentence terminator at most at the end). Names default to <StateWithoutSuffix>.<ActionSetWithoutSuffix>
+// (CatalogActionFacts.GetName, the rule the generator applies); duplicates in one compilation are reported at compilation end
 // (TWS0006) on every declaration that shares the name. Cross-assembly duplicates are a runtime error in
 // ActionCatalog.
 // DisplayName is optional; when given it must not be empty or whitespace (TWS0008). An explicit null is the
@@ -28,7 +30,6 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
   public const string DisplayNameDiagnosticId = "TWS0008";
 
   private const string Category = "Design";
-  private const string CatalogActionMetadataName = "TimeWarp.State.CatalogActionAttribute";
 
   private static readonly DiagnosticDescriptor PlacementRule =
     new
@@ -100,7 +101,7 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
     context.EnableConcurrentExecution();
     context.RegisterCompilationStartAction(static compilationStartContext =>
     {
-      INamedTypeSymbol? catalogAction = compilationStartContext.Compilation.GetTypeByMetadataName(CatalogActionMetadataName);
+      INamedTypeSymbol? catalogAction = compilationStartContext.Compilation.GetTypeByMetadataName(CatalogActionFacts.AttributeMetadataName);
       if (catalogAction is null)
         return;
 
@@ -134,8 +135,7 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
   )
   {
     INamedTypeSymbol type = (INamedTypeSymbol)context.Symbol;
-    AttributeData? attribute = type.GetAttributes()
-      .FirstOrDefault(data => SymbolEqualityComparer.Default.Equals(data.AttributeClass, catalogAction));
+    AttributeData? attribute = CatalogActionFacts.FindAttribute(type, catalogAction);
     if (attribute is null)
       return;
 
@@ -143,61 +143,30 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
       ?? type.Locations.FirstOrDefault()
       ?? Location.None;
 
-    INamedTypeSymbol? actionSet = type.ContainingType;
-    INamedTypeSymbol? state = actionSet?.ContainingType;
-    if (type.TypeKind != TypeKind.Class || type.Name != "Action" || actionSet is null || state is null
-        || !actionSet.Name.EndsWith("ActionSet", StringComparison.Ordinal) || actionSet.Name == "ActionSet"
-        || state.IsGenericType || actionSet.IsGenericType || type.IsGenericType
-        || !IsVisibleInAssembly(type))
+    if (type.TypeKind != TypeKind.Class
+        || !CatalogActionFacts.TryGetPlacement(type, out INamedTypeSymbol actionSet, out INamedTypeSymbol state))
     {
       context.ReportDiagnostic(Diagnostic.Create(PlacementRule, location, type.ToDisplayString()));
       return;
     }
 
-    string? description = GetNamedString(attribute, "Description");
-    if (string.IsNullOrWhiteSpace(description))
+    CatalogActionAttributeFacts facts = CatalogActionFacts.ReadAttribute(attribute);
+    if (string.IsNullOrWhiteSpace(facts.Description))
     {
       context.ReportDiagnostic(Diagnostic.Create(DescriptionRule, location, type.ToDisplayString()));
     }
-    else if (!IsPlainSentence(description!))
+    else if (!IsPlainSentence(facts.Description))
     {
       context.ReportDiagnostic(Diagnostic.Create(PlainSentenceRule, location, type.ToDisplayString()));
     }
 
-    if (attribute.NamedArguments.Any(argument => argument.Key == "DisplayName" && argument.Value.Kind != TypedConstantKind.Error)
-        && GetNamedString(attribute, "DisplayName") is string displayName
-        && string.IsNullOrWhiteSpace(displayName))
+    if (facts.HasDisplayName && facts.DisplayName is string displayName && string.IsNullOrWhiteSpace(displayName))
     {
       context.ReportDiagnostic(Diagnostic.Create(DisplayNameRule, location, type.ToDisplayString()));
     }
 
-    string? name = GetNamedString(attribute, "Name");
-    names.Add((string.IsNullOrWhiteSpace(name) ? GetDefaultName(state.Name, actionSet.Name) : name!, location));
+    names.Add((CatalogActionFacts.GetName(facts, state, actionSet), location));
   }
-
-  private static bool IsVisibleInAssembly(INamedTypeSymbol symbol)
-  {
-    for (INamedTypeSymbol? current = symbol; current is not null; current = current.ContainingType)
-    {
-      switch (current.DeclaredAccessibility)
-      {
-        case Accessibility.Public:
-        case Accessibility.Internal:
-        case Accessibility.ProtectedOrInternal:
-          continue;
-        default:
-          return false;
-      }
-    }
-
-    return true;
-  }
-
-  private static string? GetNamedString(AttributeData attribute, string argumentName) =>
-    attribute.NamedArguments
-      .Where(argument => argument.Key == argumentName)
-      .Select(argument => argument.Value.Value as string)
-      .FirstOrDefault();
 
   internal static bool IsPlainSentence(string description)
   {
@@ -212,14 +181,5 @@ public class CatalogActionAnalyzer : DiagnosticAnalyzer
     }
 
     return true;
-  }
-
-  internal static string GetDefaultName(string stateName, string actionSetName)
-  {
-    string state = stateName.EndsWith("State", StringComparison.Ordinal) && stateName.Length > "State".Length
-      ? stateName.Substring(0, stateName.Length - "State".Length)
-      : stateName;
-    string actionSet = actionSetName.Substring(0, actionSetName.Length - "ActionSet".Length);
-    return $"{state}.{actionSet}";
   }
 }

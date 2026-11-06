@@ -1,0 +1,329 @@
+// ==== App.Features.Counter.CounterState.AddActionSet_Method.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Features.Counter;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+partial class CounterState
+{
+    public async Task Add(int amount = 1, global::App.Features.Counter.Speed speed = (global::App.Features.Counter.Speed)(1), CancellationToken? externalCancellationToken = null)
+    {
+        using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+            : null;
+
+        await Sender.Send
+        (
+            new AddActionSet.Action(amount, speed),
+            linkedCts?.Token ?? CancellationToken
+        );
+    }
+}
+#pragma warning restore CS1591
+
+// ==== App.Features.Counter.CounterState.IncrementCountActionSet_Method.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Features.Counter;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+partial class CounterState
+{
+    public async Task IncrementCount(CancellationToken? externalCancellationToken = null)
+    {
+        using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+            : null;
+
+        await Sender.Send
+        (
+            new IncrementCountActionSet.Action(),
+            linkedCts?.Token ?? CancellationToken
+        );
+    }
+}
+#pragma warning restore CS1591
+
+// ==== App.Features.Counter.CounterState.RenameActionSet_Method.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Features.Counter;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+partial class CounterState
+{
+    public async Task Rename(string name, CancellationToken? externalCancellationToken = null)
+    {
+        using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+            : null;
+
+        await Sender.Send
+        (
+            new RenameActionSet.Action() { Name = name },
+            linkedCts?.Token ?? CancellationToken
+        );
+    }
+}
+#pragma warning restore CS1591
+
+// ==== App.Features.Counter.CounterState.ResizeActionSet_Method.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Features.Counter;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+partial class CounterState
+{
+    public async Task Resize(int size, CancellationToken? externalCancellationToken = null)
+    {
+        using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+            : null;
+
+        await Sender.Send
+        (
+            new ResizeActionSet.Action(size),
+            linkedCts?.Token ?? CancellationToken
+        );
+    }
+}
+#pragma warning restore CS1591
+
+// ==== App.Features.Counter.CounterState.ScheduleActionSet_Method.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Features.Counter;
+
+using System.Threading;
+using System.Threading.Tasks;
+
+partial class CounterState
+{
+    public async Task Schedule(global::System.Guid Id, global::System.DateTime At, string Label, double Weight = 0.5, bool Animate = false, CancellationToken? externalCancellationToken = null)
+    {
+        using CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+            : null;
+
+        await Sender.Send
+        (
+            new ScheduleActionSet.Action(Id, At, Label, Weight, Animate),
+            linkedCts?.Token ?? CancellationToken
+        );
+    }
+}
+#pragma warning restore CS1591
+
+// ==== App.Features.Counter.CounterState_Persistence.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Features.Counter;
+
+partial class CounterState
+{
+  /// <summary>
+  /// (Re)loads this [PersistentState] state from its configured persistence store.
+  /// </summary>
+  public async global::System.Threading.Tasks.Task Load(global::System.Threading.CancellationToken? externalCancellationToken = null)
+  {
+    using global::System.Threading.CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? global::System.Threading.CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    // Load is dispatched through a single hand-written Mediator request whose handler is
+    // registered by Mediator's generator (a per-state generated handler would not be).
+    await Sender.Send
+    (
+      new global::TimeWarp.State.Plus.PersistentState.LoadPersistentStateRequest(typeof(CounterState)),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
+}
+#pragma warning restore CS1591
+
+// ==== TimeWarp.State.ActionCatalog.g.cs ====
+// <auto-generated/>
+#nullable enable
+#pragma warning disable CS1591
+
+[assembly: global::Golden.Tests.GeneratedActionCatalogProviderAttribute]
+
+namespace Golden.Tests
+{
+  /// <summary>Actions in this assembly marked with [CatalogAction].</summary>
+  internal static class GeneratedActionCatalog
+  {
+    public static global::System.Collections.Generic.IReadOnlyList<global::TimeWarp.State.ActionCatalogEntry> All { get; } =
+      new global::TimeWarp.State.ActionCatalogEntry[]
+      {
+        new global::TimeWarp.State.ActionCatalogEntry
+        (
+          name: "Counter.Add",
+          description: "Add to the count.",
+          permissions: new string[] { "counter.write" },
+          visibility: (global::TimeWarp.State.ActionVisibility)1,
+          stateType: typeof(global::App.Features.Counter.CounterState),
+          actionType: typeof(global::App.Features.Counter.CounterState.AddActionSet.Action),
+          parameters: new global::TimeWarp.State.ActionCatalogParameter[]
+          {
+            new global::TimeWarp.State.ActionCatalogParameter("amount", typeof(int), false, "1", "{\"type\":\"integer\"}"),
+            new global::TimeWarp.State.ActionCatalogParameter("speed", typeof(global::App.Features.Counter.Speed), false, "Speed.Fast", "{\"type\":\"string\",\"enum\":[\"Slow\",\"Fast\"]}"),
+          },
+          inputSchema: "{\"type\":\"object\",\"properties\":{\"amount\":{\"type\":\"integer\"},\"speed\":{\"type\":\"string\",\"enum\":[\"Slow\",\"Fast\"]}},\"required\":[],\"additionalProperties\":false}",
+          executor: static (store, arguments, cancellationToken) =>
+          {
+            global::TimeWarp.State.ActionCatalogArguments.EnsureCount("Counter.Add", arguments, 0, 2);
+            global::App.Features.Counter.CounterState state = store.GetState<global::App.Features.Counter.CounterState>();
+            if (arguments.Length == 0) return state.Add(externalCancellationToken: cancellationToken);
+            if (arguments.Length == 1) return state.Add(global::TimeWarp.State.ActionCatalogArguments.Get<int>("Counter.Add", arguments, 0, "amount"), externalCancellationToken: cancellationToken);
+            return state.Add(global::TimeWarp.State.ActionCatalogArguments.Get<int>("Counter.Add", arguments, 0, "amount"), global::TimeWarp.State.ActionCatalogArguments.Get<global::App.Features.Counter.Speed>("Counter.Add", arguments, 1, "speed"), externalCancellationToken: cancellationToken);
+          },
+          displayName: "Add"
+        ),
+        new global::TimeWarp.State.ActionCatalogEntry
+        (
+          name: "Counter.Rename",
+          description: "Rename the counter.",
+          permissions: global::System.Array.Empty<string>(),
+          visibility: (global::TimeWarp.State.ActionVisibility)1,
+          stateType: typeof(global::App.Features.Counter.CounterState),
+          actionType: typeof(global::App.Features.Counter.CounterState.RenameActionSet.Action),
+          parameters: new global::TimeWarp.State.ActionCatalogParameter[]
+          {
+            new global::TimeWarp.State.ActionCatalogParameter("name", typeof(string), true, null, "{\"type\":\"string\"}"),
+          },
+          inputSchema: "{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"}},\"required\":[\"name\"],\"additionalProperties\":false}",
+          executor: static (store, arguments, cancellationToken) =>
+          {
+            global::TimeWarp.State.ActionCatalogArguments.EnsureCount("Counter.Rename", arguments, 1, 1);
+            global::App.Features.Counter.CounterState state = store.GetState<global::App.Features.Counter.CounterState>();
+            return state.Rename(global::TimeWarp.State.ActionCatalogArguments.Get<string>("Counter.Rename", arguments, 0, "name"), externalCancellationToken: cancellationToken);
+          },
+          displayName: null
+        ),
+        new global::TimeWarp.State.ActionCatalogEntry
+        (
+          name: "Counter.ScheduleReset",
+          description: "Schedule a reset.",
+          permissions: global::System.Array.Empty<string>(),
+          visibility: (global::TimeWarp.State.ActionVisibility)2,
+          stateType: typeof(global::App.Features.Counter.CounterState),
+          actionType: typeof(global::App.Features.Counter.CounterState.ScheduleActionSet.Action),
+          parameters: new global::TimeWarp.State.ActionCatalogParameter[]
+          {
+            new global::TimeWarp.State.ActionCatalogParameter("Id", typeof(global::System.Guid), true, null, "{\"type\":\"string\",\"format\":\"uuid\"}"),
+            new global::TimeWarp.State.ActionCatalogParameter("At", typeof(global::System.DateTime), true, null, "{\"type\":\"string\",\"format\":\"date-time\"}"),
+            new global::TimeWarp.State.ActionCatalogParameter("Label", typeof(string), true, null, "{\"type\":\"string\"}"),
+            new global::TimeWarp.State.ActionCatalogParameter("Weight", typeof(double), false, "0.5", "{\"type\":\"number\"}"),
+            new global::TimeWarp.State.ActionCatalogParameter("Animate", typeof(bool), false, "false", "{\"type\":\"boolean\"}"),
+          },
+          inputSchema: "{\"type\":\"object\",\"properties\":{\"Id\":{\"type\":\"string\",\"format\":\"uuid\"},\"At\":{\"type\":\"string\",\"format\":\"date-time\"},\"Label\":{\"type\":\"string\"},\"Weight\":{\"type\":\"number\"},\"Animate\":{\"type\":\"boolean\"}},\"required\":[\"Id\",\"At\",\"Label\"],\"additionalProperties\":false}",
+          executor: static (store, arguments, cancellationToken) =>
+          {
+            global::TimeWarp.State.ActionCatalogArguments.EnsureCount("Counter.ScheduleReset", arguments, 3, 5);
+            global::App.Features.Counter.CounterState state = store.GetState<global::App.Features.Counter.CounterState>();
+            if (arguments.Length == 3) return state.Schedule(global::TimeWarp.State.ActionCatalogArguments.Get<global::System.Guid>("Counter.ScheduleReset", arguments, 0, "Id"), global::TimeWarp.State.ActionCatalogArguments.Get<global::System.DateTime>("Counter.ScheduleReset", arguments, 1, "At"), global::TimeWarp.State.ActionCatalogArguments.Get<string>("Counter.ScheduleReset", arguments, 2, "Label"), externalCancellationToken: cancellationToken);
+            if (arguments.Length == 4) return state.Schedule(global::TimeWarp.State.ActionCatalogArguments.Get<global::System.Guid>("Counter.ScheduleReset", arguments, 0, "Id"), global::TimeWarp.State.ActionCatalogArguments.Get<global::System.DateTime>("Counter.ScheduleReset", arguments, 1, "At"), global::TimeWarp.State.ActionCatalogArguments.Get<string>("Counter.ScheduleReset", arguments, 2, "Label"), global::TimeWarp.State.ActionCatalogArguments.Get<double>("Counter.ScheduleReset", arguments, 3, "Weight"), externalCancellationToken: cancellationToken);
+            return state.Schedule(global::TimeWarp.State.ActionCatalogArguments.Get<global::System.Guid>("Counter.ScheduleReset", arguments, 0, "Id"), global::TimeWarp.State.ActionCatalogArguments.Get<global::System.DateTime>("Counter.ScheduleReset", arguments, 1, "At"), global::TimeWarp.State.ActionCatalogArguments.Get<string>("Counter.ScheduleReset", arguments, 2, "Label"), global::TimeWarp.State.ActionCatalogArguments.Get<double>("Counter.ScheduleReset", arguments, 3, "Weight"), global::TimeWarp.State.ActionCatalogArguments.Get<bool>("Counter.ScheduleReset", arguments, 4, "Animate"), externalCancellationToken: cancellationToken);
+          },
+          displayName: null
+        ),
+      };
+  }
+
+  internal sealed class GeneratedActionCatalogProviderAttribute : global::TimeWarp.State.ActionCatalogProviderAttribute
+  {
+    public override global::System.Collections.Generic.IReadOnlyList<global::TimeWarp.State.ActionCatalogEntry> Entries => GeneratedActionCatalog.All;
+  }
+}
+#pragma warning restore CS1591
+
+// ==== TimeWarpStateClones.g.cs ====
+// <auto-generated/>
+#nullable enable
+#pragma warning disable CS1591
+#pragma warning disable CS8600
+#pragma warning disable CS8601
+#pragma warning disable CS8602
+#pragma warning disable CS8603
+#pragma warning disable CS8604
+#pragma warning disable CS8625
+
+namespace TimeWarp.Features.Cloning
+{
+  [global::TimeWarp.Fixie.NotTest]
+  public static class GeneratedCloneExtensions
+  {
+    public static global::App.Features.Counter.CounterState? Clone(this global::App.Features.Counter.CounterState? source) =>
+      source is null ? null : global::TimeWarp.State.Cloning.Generated.TimeWarpStateClones.Clone_App_Features_Counter_CounterState_1c1fddf7(source, new global::TimeWarp.Features.Cloning.CloneMap());
+
+  }
+}
+
+namespace TimeWarp.State.Cloning.Generated
+{
+  file static class TimeWarpStateClones
+  {
+    public static global::App.Features.Counter.CounterState Clone_App_Features_Counter_CounterState_1c1fddf7(global::App.Features.Counter.CounterState source, global::TimeWarp.Features.Cloning.CloneMap map)
+    {
+      if (map.TryGet(source, out global::App.Features.Counter.CounterState? existing))
+      {
+        return existing;
+      }
+      global::App.Features.Counter.CounterState clone = new();
+      map.Add(source, clone);
+      Access_App_Features_Counter_CounterState_8e1e9615.F_Count_e1d54ee0(clone) = Access_App_Features_Counter_CounterState_8e1e9615.F_Count_e1d54ee0(source);
+      Access_TimeWarp_State_State_TState__af329512<global::App.Features.Counter.CounterState>.F_IsDisposed_7f3abe56(clone) = Access_TimeWarp_State_State_TState__af329512<global::App.Features.Counter.CounterState>.F_IsDisposed_7f3abe56(source);
+      return clone;
+    }
+
+    [global::System.Runtime.CompilerServices.ModuleInitializer]
+    internal static void Register()
+    {
+      global::TimeWarp.Features.Cloning.StateCloneRegistry.Register<global::App.Features.Counter.CounterState>(static state => Clone_App_Features_Counter_CounterState_1c1fddf7(state, new global::TimeWarp.Features.Cloning.CloneMap()));
+    }
+
+    [global::System.Runtime.CompilerServices.ModuleInitializer]
+    internal static void RegisterServices()
+    {
+      global::TimeWarp.State.StateRegistrationRegistry.Register
+      (
+        typeof(RegistrationAnchor).Assembly,
+        static services =>
+        {
+          global::Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddTransient<global::App.Features.Counter.CounterState>(services);
+        }
+      );
+    }
+
+    private sealed class RegistrationAnchor;
+  }
+
+  file static class Access_App_Features_Counter_CounterState_8e1e9615
+  {
+    [global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Field, Name = "<Count>k__BackingField")] internal static extern ref global::System.Int32 F_Count_e1d54ee0(global::App.Features.Counter.CounterState target);
+  }
+
+  file static class Access_TimeWarp_State_State_TState__af329512<T0>
+    where T0 : global::TimeWarp.State.State<T0>
+  {
+    [global::System.Runtime.CompilerServices.UnsafeAccessor(global::System.Runtime.CompilerServices.UnsafeAccessorKind.Field, Name = "IsDisposed")] internal static extern ref global::System.Boolean F_IsDisposed_7f3abe56(global::TimeWarp.State.State<T0> target);
+  }
+}
+
+// ==== diagnostics ====

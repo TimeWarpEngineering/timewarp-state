@@ -41,6 +41,7 @@
   <Folder Name="/source/">
     <Project Path="source/timewarp-state/timewarp-state.csproj">
       <BuildDependency Project="source/timewarp-state-analyzer/timewarp-state-analyzer.csproj" />
+      <BuildDependency Project="source/timewarp-state-analyzer-code-fixes/timewarp-state-analyzer-code-fixes.csproj" />
     </Project>
     <Project Path="source/timewarp-state-blazor/timewarp-state-blazor.csproj" />
     <Project Path="source/timewarp-state-devtools-app/timewarp-state-devtools-app.csproj" />
@@ -51,6 +52,7 @@
     <Project Path="source/timewarp-state-plus/timewarp-state-plus.csproj" />
     <Project Path="source/timewarp-state-telemetry/timewarp-state-telemetry.csproj" />
     <Project Path="source/timewarp-state-analyzer/timewarp-state-analyzer.csproj" />
+    <Project Path="source/timewarp-state-analyzer-code-fixes/timewarp-state-analyzer-code-fixes.csproj" />
     <Project Path="source/timewarp-state-source-generator/timewarp-state-source-generator.csproj" />
     <Project Path="source/timewarp-state-policies/timewarp-state-policies.csproj" />
   </Folder>

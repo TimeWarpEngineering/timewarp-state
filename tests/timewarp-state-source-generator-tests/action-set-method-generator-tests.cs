@@ -1,11 +1,12 @@
 #region Purpose
-// ActionSetMethodSourceGenerator: every Action shape from the task 140 spike, required members, state shapes
-// (nested, generic, global namespace, internal), and that SG002 is gone. Failure shapes (TWSG003, or skipped
+// Dispatch methods (TimeWarpStateGenerator, DispatchMethodEmitter): every Action shape from the task 140 spike,
+// required members, state shapes (nested, generic, global namespace, internal), and that SG002 is gone. Failure shapes (TWSG003, or skipped
 // silently) are in action-set-method-generator-failure-tests.cs.
 #endregion
 
 #region Design
-// Each test compiles inline source through GeneratorTestHost with only the ActionSet method generator, then asserts
+// Each test compiles inline source through GeneratorTestHost with TimeWarpStateGenerator and reads only the
+// *_Method.g.cs sources and non-clone diagnostics (the old ActionSet method generator's view), then asserts
 // the generated signature text and that the output compiles (or, for TWSG003, that nothing is emitted). The shapes
 // that compiled before (explicit constructor, init-only property) pin their old signature, which is the non-breaking
 // rule. Sources share one State<T> prelude so each test reads as the Action shape alone.
@@ -39,10 +40,16 @@ internal static class ActionSetSources
   public static (string Text, ImmutableArray<Diagnostic> Diagnostics, Compilation Output) Run(string source)
   {
     (GeneratorDriver driver, Compilation output, _) =
-      GeneratorTestHost.Run(GeneratorTestHost.CreateCompilation(source), new ActionSetMethodSourceGenerator());
+      GeneratorTestHost.Run(GeneratorTestHost.CreateCompilation(source), new TimeWarpStateGenerator());
     GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    string text = string.Join("\n", result.GeneratedSources.Select(generated => generated.SourceText.ToString()));
-    return (text, result.Diagnostics, output);
+    string text = string.Join
+    (
+      "\n",
+      result.GeneratedSources
+        .Where(generated => generated.HintName.EndsWith("_Method.g.cs", StringComparison.Ordinal))
+        .Select(generated => generated.SourceText.ToString())
+    );
+    return (text, [.. result.Diagnostics.Where(diagnostic => diagnostic.Id != StateGeneratorDiagnostics.CloneUnsupportedId)], output);
   }
 }
 

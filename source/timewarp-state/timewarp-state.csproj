@@ -50,6 +50,9 @@
     <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\timewarp-state-analyzer-code-fixes\timewarp-state-analyzer-code-fixes.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
     <ProjectReference Include="..\timewarp-state-source-generator\timewarp-state-source-generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
@@ -71,6 +74,8 @@
   <ItemGroup>
     <None Include="$(ArtifactsDirectory)analyzers\$(Configuration)\netstandard2.0\timewarp-state-analyzer.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
     <None Include="$(ArtifactsDirectory)analyzers\$(Configuration)\netstandard2.0\timewarp-state-source-generator.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
+    <!-- Code fixes for the analyzer rules (TWS0013). Loaded by the IDE only. -->
+    <None Include="$(ArtifactsDirectory)analyzers\$(Configuration)\netstandard2.0\timewarp-state-analyzer-code-fixes.dll" Pack="true" PackagePath="analyzers\dotnet\cs"/>
   </ItemGroup>
   
   <ItemGroup>

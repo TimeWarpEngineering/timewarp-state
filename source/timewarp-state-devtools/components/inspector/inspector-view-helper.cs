@@ -22,7 +22,8 @@ public static class InspectorViewHelper
   [
     new(InspectorState.DetailTabAction, "Action", "tab-action"),
     new(InspectorState.DetailTabState, "State", "tab-state"),
-    new(InspectorState.DetailTabDiff, "Diff", "tab-diff")
+    new(InspectorState.DetailTabDiff, "Diff", "tab-diff"),
+    new(InspectorState.DetailTabManifest, "Manifest", "tab-manifest")
   ];
 
   /// <summary>State panel format tabs, in display order.</summary>

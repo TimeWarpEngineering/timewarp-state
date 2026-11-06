@@ -13,8 +13,6 @@
 
 namespace TimeWarp.State.Analyzer;
 
-using Microsoft.CodeAnalysis.CSharp;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
 {
@@ -35,7 +33,7 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
     context.EnableConcurrentExecution();
     context.RegisterCompilationStartAction(static compilationStartContext =>
     {
-      INamedTypeSymbol? timeWarpState = StateSymbolHelpers.GetTimeWarpStateType(compilationStartContext.Compilation);
+      INamedTypeSymbol? timeWarpState = StateSymbolFacts.GetTimeWarpStateType(compilationStartContext.Compilation);
       if (timeWarpState is null)
         return;
 
@@ -52,7 +50,7 @@ public class StateReadOnlyPublicPropertiesAnalyzer : DiagnosticAnalyzer
       return;
 
     INamedTypeSymbol? type = context.SemanticModel.GetDeclaredSymbol(typeDeclaration);
-    if (type is null || !StateSymbolHelpers.InheritsFromTimeWarpState(type, timeWarpState))
+    if (type is null || !StateSymbolFacts.InheritsFromTimeWarpState(type, timeWarpState))
       return;
 
     foreach (ISymbol member in type.GetMembers())

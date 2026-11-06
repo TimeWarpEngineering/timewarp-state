@@ -9,8 +9,6 @@
 
 namespace TimeWarp.State.Analyzer;
 
-using Microsoft.CodeAnalysis.CSharp;
-
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 {
@@ -80,7 +78,6 @@ public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
       ImplementsIAction(symbolInfo.BaseType);
   }
 
-
   private static bool IsNestedInIState(SyntaxNodeAnalysisContext context, TypeDeclarationSyntax typeDeclaration)
   {
     // Check all ancestor classes.
@@ -97,7 +94,6 @@ public class TimeWarpStateActionAnalyzer : DiagnosticAnalyzer
 
     return false;
   }
-
 
   private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, SyntaxToken identifier)
   {

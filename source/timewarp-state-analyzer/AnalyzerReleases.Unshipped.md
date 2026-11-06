@@ -1,6 +1,6 @@
 ; Unshipped analyzer release
 ; https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
-; TWS0009-TWS0012 stay here until the 12.0 release. Move them to AnalyzerReleases.Shipped.md at that release.
+; TWS0009-TWS0013 stay here until the 12.0 release. Move them to AnalyzerReleases.Shipped.md at that release.
 
 ### New Rules
 
@@ -18,3 +18,4 @@ TWS0006 | Design | Error | CatalogActionAnalyzer
 TWS0007 | Design | Warning | CatalogActionAnalyzer
 TWS0008 | Design | Error | CatalogActionAnalyzer
 TWS0009 | Design | Error | StateImplementationAnalyzer
+TWS0013 | Design | Warning | StateJsonSerializableAnalyzer

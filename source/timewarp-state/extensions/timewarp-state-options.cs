@@ -48,6 +48,16 @@ public class TimeWarpStateOptions
   /// Do not key this off log level; the strings are shown on screen, not only in logs.
   /// </remarks>
   public bool CaptureRenderCaller { get; set; } = false;
+
+  /// <summary>
+  /// JSON options for persistence and, unless the telemetry options supply their own, telemetry snapshots.
+  /// Defaults to camelCase with no <see cref="JsonSerializerOptions.TypeInfoResolver"/>.
+  /// </summary>
+  /// <remarks>
+  /// For trimming, AOT, and telemetry snapshots, set the resolver to a <see cref="System.Text.Json.Serialization.JsonSerializerContext"/>
+  /// that lists each state: <c>options.JsonSerializerOptions.TypeInfoResolver = AppStateJsonContext.Default</c>.
+  /// Analyzer TWS0013 reports a state the context does not list, and its code fix adds the <c>[JsonSerializable]</c> line.
+  /// </remarks>
   public JsonSerializerOptions JsonSerializerOptions { get; }
   
   public readonly IServiceCollection ServiceCollection;

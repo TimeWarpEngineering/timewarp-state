@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Code fixes for the TimeWarp.State analyzers. A separate assembly so timewarp-state-analyzer.dll keeps
+       compiler-only references (RS1038): the IDE loads this one, the command-line compiler loads only the analyzer. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <OutputPath>$(ArtifactsDirectory)analyzers\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Same Roslyn floor as the analyzer. PrivateAssets keeps it out of every consumer's dependency graph. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\timewarp-state-analyzer\timewarp-state-analyzer.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

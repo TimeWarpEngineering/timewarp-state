@@ -15,3 +15,7 @@ global using Shouldly;
 global using TimeWarp.Fixie;
 global using TimeWarp.State.SourceGenerator;
 global using TimeWarp.State.SourceGenerator.Tests;
+global using TimeWarp.State.Facts;
+global using System.Runtime.CompilerServices;
+global using System.Text;
+global using TimeWarp.State;

@@ -5,7 +5,7 @@
 #region Design
 // IStore is scoped. An ingest request and a circuit would otherwise each hold an empty log.
 // This mailbox is the one list both sides see. Add raises Changed outside the lock; the circuit
-// dispatches NoteLogChanged, which re-renders from Snapshot. SetPaused and Clear raise Changed too,
+// dispatches NoteDataChanged, which re-renders from Snapshot. SetPaused and Clear raise Changed too,
 // so a second tab sees the shared pause flag and list. Pause parks spans in Pending so they
 // stay out of the displayed list until SetPaused(false) moves them onto Entries inside the same lock,
 // so no ingest can interleave and Entries stays in sequence order. UI actions never call Add.

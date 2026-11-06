@@ -1,5 +1,5 @@
 #region Purpose
-// Source text for the generic and tuple member shapes StateCloneSourceGenerator tests.
+// Source text for the generic and tuple member shapes the clone-stage tests use.
 #endregion
 
 #region Design

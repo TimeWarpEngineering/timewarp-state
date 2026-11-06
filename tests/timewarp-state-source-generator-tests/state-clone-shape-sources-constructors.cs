@@ -1,5 +1,5 @@
 #region Purpose
-// Source text for the constructor, record, and polymorphism member shapes StateCloneSourceGenerator tests.
+// Source text for the constructor, record, and polymorphism member shapes the clone-stage tests use.
 #endregion
 
 #region Design

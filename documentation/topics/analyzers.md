@@ -71,7 +71,7 @@ internal abstract class DefaultApiHandler<TAction, TRequest, TResponse> : ApiHan
 - **Category:** Persistence
 - **Message:** [PersistentState] is not supported on nested class '{0}'. Move the state to a top-level type.
 
-Reported by `PersistenceStateSourceGenerator`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.
+Reported by `TimeWarpStateGenerator` when it emits persistence `Load()`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.
 
 ## TWS0009 — State needs ICloneable or an accessible constructor
 
@@ -104,13 +104,47 @@ A non-abstract class that derives from `State<T>` should be sealed.
 
 A public property needs no setter, or an `init` setter, or a setter that is private, internal, private protected, or protected internal. A protected setter is allowed on an abstract state. Positional record properties are `init` and are not flagged. The rule reads symbols, so it sees members the compiler generates for a record.
 
+## TWS0013 — State needs a [JsonSerializable] entry
+
+- **Severity:** Warning
+- **Category:** Design
+- **Message:** The state '{0}' is serialized by {1} but no JsonSerializerContext in this project lists it; add [JsonSerializable(typeof({0}))]
+- **Code fix:** yes
+
+System.Text.Json's source generator reads only user source, so TimeWarp.State cannot generate the `[JsonSerializable]` line for you. This rule reports each concrete state that needs source-generated `JsonTypeInfo` and that no `JsonSerializerContext` in the same project lists. `{1}` names the reason:
+
+- **persistence:** the state has `[PersistentState]` and the project declares at least one `JsonSerializerContext`. With no context, persistence uses the reflection resolver and the rule stays quiet.
+- **telemetry snapshots:** the project references `TimeWarp.State.Telemetry`. Snapshots have no reflection fallback. A state whose `TypeInfoResolver` returns no type info is skipped with only a debug log, so this reason is reported whether or not a context exists.
+
+The telemetry reason cannot see `IncludeSnapshots` (off by default) or a resolver set on the telemetry options. Both are runtime settings, and an analyzer reads only source. A project that uses telemetry for spans only, with snapshots off, gets one warning per state, and `TreatWarningsAsErrors` fails its build. Turn the rule off or down for that project in `.editorconfig`:
+
+```ini
+[*.cs]
+dotnet_diagnostic.TWS0013.severity = none   # or suggestion
+```
+
+The code fix offers one action per context in the project: **Add [JsonSerializable(typeof(X))] to AppJsonContext**. With no context it offers **Create StateJsonContext**, which adds `state-json-context.cs` beside the state. The new context is `public` when the state is public, so a host project (a hosted WASM server, or an Auto/prerender server) can wire it. For a non-public state it is `internal`. Then make the context the resolver, once:
+
+```csharp
+builder.Services.AddTimeWarpState(options =>
+  options.JsonSerializerOptions.TypeInfoResolver = AppJsonContext.Default);
+```
+
+A context in another project is not seen. If yours lives there, suppress the rule for this project:
+
+```ini
+dotnet_diagnostic.TWS0013.severity = none
+```
+
+Abstract and open generic states are skipped. See [Persistence](xref:TimeWarpState:Persistence.md) and [Telemetry](xref:TimeWarpState:Telemetry.md).
+
 ## TWSG002 — State clone cannot be generated
 
 - **Severity:** Error
 - **Category:** Cloning
 - **Message:** Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', mark the member [CloneShared] to copy it by reference, or change the unsupported member.
 
-Reported by `StateCloneSourceGenerator` once, at the source member that reaches something it cannot clone: `object`, an interface or abstract class with no implementation, an inaccessible type, an open generic, a pointer, a ref struct, or a type from another assembly whose fields it cannot all see. `{2}` names the state or `[GenerateClone]` root the member was reached from. The build fails. There is no reflection fallback. Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it by reference, or change the member. `[CloneShared]` is how an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`) stays on the clone. See [Cloning](xref:TimeWarpState:Cloning.md).
+Reported by the clone stage of `TimeWarpStateGenerator` once, at the source member that reaches something it cannot clone: `object`, an interface or abstract class with no implementation, an inaccessible type, an open generic, a pointer, a ref struct, or a type from another assembly whose fields it cannot all see. `{2}` names the state or `[GenerateClone]` root the member was reached from. The build fails. There is no reflection fallback. Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it by reference, or change the member. `[CloneShared]` is how an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`) stays on the clone. See [Cloning](xref:TimeWarpState:Cloning.md).
 
 ## TWSG003 — State member cannot be generated
 
@@ -118,7 +152,7 @@ Reported by `StateCloneSourceGenerator` once, at the source member that reaches 
 - **Category:** Generation
 - **Message:** Cannot generate '{0}' for '{1}' because {2}
 
-Reported by `ActionSetMethodSourceGenerator` (the `State.Method(...)` for each nested `*ActionSet`) and by `PersistenceStateSourceGenerator` (`Load()`), at the Action or the state. Each case used to emit generated code that failed to compile. For ActionSet methods that means a plain class Action in a class state, the only shape the generator served before 12.0.0-beta.17. A record or struct Action, or an ActionSet in a record or struct state, got no generated code before. When one of those cannot get a method, the generator emits nothing and reports nothing, so a build that passed still passes. The message names the reason:
+Reported by `TimeWarpStateGenerator` for the `State.Method(...)` of each nested `*ActionSet` and for `Load()`, at the Action or the state. Each case used to emit generated code that failed to compile. For ActionSet methods that means a plain class Action in a class state, the only shape the generator served before 12.0.0-beta.17. A record or struct Action, or an ActionSet in a record or struct state, got no generated code before. When one of those cannot get a method, the generator emits nothing and reports nothing, so a build that passed still passes. The message names the reason:
 
 - The state, or a type that contains it, is not `partial`.
 - The `[PersistentState]` type does not derive from `State<T>`.

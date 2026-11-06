@@ -41,6 +41,16 @@ A row whose `timewarp.state.kind` tag is `init` is a state-initialization snapsh
 
 The header theme control uses the TimeWarp palette. Dark is the default. Light follows `prefers-color-scheme` or an explicit choice on the control.
 
+## Manifest tab
+
+The **Manifest** tab lists the inspected app's states and their actions before any span arrives. The app sends them once at startup:
+
+```csharp
+builder.Services.AddTimeWarpStateDevToolsManifest(typeof(CounterState).Assembly);
+```
+
+The data is the [State manifest](xref:TimeWarpState:StateManifest.md) the source generator writes. It arrives on `POST /ingest/manifest`, under the same CORS rule as spans. Each assembly keeps its newest manifest. Dispatching an action from this tab is not built yet.
+
 ## AppHost
 
 ```csharp

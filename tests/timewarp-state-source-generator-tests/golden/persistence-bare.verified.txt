@@ -1,0 +1,58 @@
+// ==== App.Bare.GadgetState_Persistence.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Bare;
+
+partial class GadgetState
+{
+  /// <summary>
+  /// (Re)loads this [PersistentState] state from its configured persistence store.
+  /// </summary>
+  public async global::System.Threading.Tasks.Task Load(global::System.Threading.CancellationToken? externalCancellationToken = null)
+  {
+    using global::System.Threading.CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? global::System.Threading.CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    // Load is dispatched through a single hand-written Mediator request whose handler is
+    // registered by Mediator's generator (a per-state generated handler would not be).
+    await Sender.Send
+    (
+      new global::TimeWarp.State.Plus.PersistentState.LoadPersistentStateRequest(typeof(GadgetState)),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
+}
+#pragma warning restore CS1591
+
+// ==== App.Bare.WidgetState_Persistence.g.cs ====
+#nullable enable
+
+#pragma warning disable CS1591
+namespace App.Bare;
+
+partial class WidgetState
+{
+  /// <summary>
+  /// (Re)loads this [PersistentState] state from its configured persistence store.
+  /// </summary>
+  public async global::System.Threading.Tasks.Task Load(global::System.Threading.CancellationToken? externalCancellationToken = null)
+  {
+    using global::System.Threading.CancellationTokenSource? linkedCts = externalCancellationToken.HasValue
+      ? global::System.Threading.CancellationTokenSource.CreateLinkedTokenSource(externalCancellationToken.Value, CancellationToken)
+      : null;
+
+    // Load is dispatched through a single hand-written Mediator request whose handler is
+    // registered by Mediator's generator (a per-state generated handler would not be).
+    await Sender.Send
+    (
+      new global::TimeWarp.State.Plus.PersistentState.LoadPersistentStateRequest(typeof(WidgetState)),
+      linkedCts?.Token ?? CancellationToken
+    );
+  }
+}
+#pragma warning restore CS1591
+
+// ==== diagnostics ====
+TWSG001 Error Host.cs(12,24): [PersistentState] is not supported on nested class 'NestedState'. Move the state to a top-level type.

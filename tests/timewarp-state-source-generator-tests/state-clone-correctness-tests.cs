@@ -195,7 +195,7 @@ public class Should_Not_Name_Unnameable_Types
       """;
 
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
-    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldContain(StateCloneSourceGenerator.DiagnosticId);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldContain(StateGeneratorDiagnostics.CloneUnsupportedId);
     string? source = StateCloneGeneratorTestDriver.CloneSource(runResult);
     source?.ShouldNotContain("Secret");
     CorrectnessDiagnostics.GeneratedErrors(outputCompilation).ShouldBeEmpty();
@@ -248,7 +248,7 @@ public class Should_Not_Name_Unnameable_Types
       """;
 
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
-    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldContain(StateCloneSourceGenerator.DiagnosticId);
+    runResult.Diagnostics.Select(diagnostic => diagnostic.Id).ShouldContain(StateGeneratorDiagnostics.CloneUnsupportedId);
     string? source = StateCloneGeneratorTestDriver.CloneSource(runResult);
     source?.ShouldNotContain("Hidden");
     CorrectnessDiagnostics.CompilerErrors(outputCompilation).ShouldBeEmpty();
