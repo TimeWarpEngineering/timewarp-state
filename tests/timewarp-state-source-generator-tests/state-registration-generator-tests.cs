@@ -141,7 +141,7 @@ public class Should_Not_Register_Open_Or_FileLocal_State
       """;
 
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
-    runResult.Diagnostics.Any(diagnostic => diagnostic.Id == StateCloneSourceGenerator.DiagnosticId).ShouldBeTrue();
+    runResult.Diagnostics.Any(diagnostic => diagnostic.Id == StateGeneratorDiagnostics.CloneUnsupportedId).ShouldBeTrue();
     string? source = StateCloneGeneratorTestDriver.CloneSource(runResult);
     if (source is not null)
     {
@@ -164,7 +164,7 @@ public class Should_Not_Register_Open_Or_FileLocal_State
       """;
 
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
-    runResult.Diagnostics.Any(diagnostic => diagnostic.Id == StateCloneSourceGenerator.DiagnosticId).ShouldBeTrue();
+    runResult.Diagnostics.Any(diagnostic => diagnostic.Id == StateGeneratorDiagnostics.CloneUnsupportedId).ShouldBeTrue();
     string? source = StateCloneGeneratorTestDriver.CloneSource(runResult);
     if (source is not null)
     {

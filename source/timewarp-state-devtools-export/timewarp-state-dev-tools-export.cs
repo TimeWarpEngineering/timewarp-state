@@ -75,4 +75,48 @@ public static class TimeWarpStateDevToolsExport
 
     return new Uri(new Uri(text, UriKind.Absolute), "ingest/spans");
   }
+
+  /// <summary>
+  /// <c>{origin}/ingest/manifest</c> for an absolute origin or base URI.
+  /// </summary>
+  /// <param name="baseUri">DevTools origin.</param>
+  public static Uri ManifestIngestUri(Uri baseUri)
+  {
+    ArgumentNullException.ThrowIfNull(baseUri);
+    string text = baseUri.AbsoluteUri;
+    if (!text.EndsWith('/'))
+    {
+      text += "/";
+    }
+
+    return new Uri(new Uri(text, UriKind.Absolute), "ingest/manifest");
+  }
+
+  /// <summary>
+  /// Posts the State manifest of each assembly in <paramref name="assemblies"/> to DevTools once, when the host starts.
+  /// Does nothing when <see cref="EndpointEnvironmentVariable"/> is unset or blank, or when its value is not an absolute
+  /// URI (no error is raised). A down inspector never fails the app. The post is not retried: when DevTools starts or
+  /// restarts after the app, its Manifest tab stays empty until the app restarts.
+  /// </summary>
+  /// <param name="services">The service collection.</param>
+  /// <param name="assemblies">Assemblies compiled with the State source generator. One without states contributes nothing.</param>
+  /// <returns>The same collection.</returns>
+  /// <exception cref="ArgumentNullException"><paramref name="services"/> or <paramref name="assemblies"/> is null.</exception>
+  public static IServiceCollection AddTimeWarpStateDevToolsManifest(this IServiceCollection services, params Assembly[] assemblies)
+  {
+    ArgumentNullException.ThrowIfNull(services);
+    ArgumentNullException.ThrowIfNull(assemblies);
+
+    string? endpoint = Environment.GetEnvironmentVariable(EndpointEnvironmentVariable);
+    if (string.IsNullOrWhiteSpace(endpoint) || !Uri.TryCreate(endpoint.Trim(), UriKind.Absolute, out Uri? baseUri))
+    {
+      return services;
+    }
+
+    // A factory, not an instance, so the container owns the publisher and disposes it and its HttpClient.
+    Uri ingestUri = ManifestIngestUri(baseUri);
+    Assembly[] manifestAssemblies = [.. assemblies];
+    services.AddSingleton<IHostedService>(_ => new DevToolsManifestPublisher(ingestUri, manifestAssemblies));
+    return services;
+  }
 }

@@ -5,6 +5,6 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-TWSG001 | Persistence | Error | PersistenceStateSourceGenerator
-TWSG002 | Cloning | Error | StateCloneSourceGenerator
-TWSG003 | Generation | Error | ActionSetMethodSourceGenerator, PersistenceStateSourceGenerator
+TWSG001 | Persistence | Error | TimeWarpStateGenerator (persistence Load)
+TWSG002 | Cloning | Error | TimeWarpStateGenerator (clone stage)
+TWSG003 | Generation | Error | TimeWarpStateGenerator (dispatch methods, persistence Load)

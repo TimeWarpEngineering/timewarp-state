@@ -39,7 +39,7 @@ public sealed partial class InspectorState : State<InspectorState>
   /// <summary>True when ingest is parking spans instead of showing them.</summary>
   public bool Paused { get; private set; }
 
-  /// <summary>Detail tab: <c>action</c>, <c>state</c>, or <c>diff</c>.</summary>
+  /// <summary>Detail tab: <c>action</c>, <c>state</c>, <c>diff</c>, or <c>manifest</c>.</summary>
   public string DetailTab { get; private set; } = DetailTabState;
 
   /// <summary>State panel mode: <c>tree</c> or <c>raw</c>.</summary>
@@ -60,6 +60,9 @@ public sealed partial class InspectorState : State<InspectorState>
 
   /// <summary>Detail tab that shows the structural diff.</summary>
   public const string DetailTabDiff = "diff";
+
+  /// <summary>Detail tab that lists the states and actions the inspected app declared.</summary>
+  public const string DetailTabManifest = "manifest";
 
   /// <summary>Collapsible JSON tree.</summary>
   public const string JsonViewTree = "tree";

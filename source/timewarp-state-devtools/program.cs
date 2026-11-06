@@ -1,5 +1,5 @@
 #region Purpose
-// Hosts the DevTools Blazor UI and the span ingest endpoint.
+// Hosts the DevTools Blazor UI and the span and manifest ingest endpoints.
 #endregion
 
 #region Design
@@ -15,7 +15,7 @@
 // dotnet run does not attach the static web asset file provider, and the asset endpoint then
 // looks for that script under wwwroot. UseStaticWebAssets attaches the manifest in every environment.
 // Ingest CORS is registered only in Development and only when an origin list is configured.
-// RequireCors limits the policy to POST /ingest/spans. The server exporter does not send Origin,
+// RequireCors limits the policy to POST /ingest/spans and POST /ingest/manifest. The server exporter does not send Origin,
 // so it still posts when the policy is absent.
 #endregion
 
@@ -37,6 +37,7 @@ public class Program
       .AddInteractiveServerComponents();
 
     builder.Services.AddSingleton<InspectorLog>();
+    builder.Services.AddSingleton<InspectorManifest>();
     builder.Services.AddGeneratedMediator<ClientPipeline>();
     builder.Services.AddTimeWarpState();
     builder.Services.AddTimeWarpStateBlazor();
@@ -59,6 +60,7 @@ public class Program
     app.UseAntiforgery();
 
     SpanIngestEndpoint.Map(app, ingestCors);
+    ManifestIngestEndpoint.Map(app, ingestCors);
 
     app.MapRazorComponents<Components.App>()
       .AddInteractiveServerRenderMode();

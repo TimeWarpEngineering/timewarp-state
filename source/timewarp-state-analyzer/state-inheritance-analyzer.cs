@@ -38,7 +38,7 @@ public class StateInheritanceAnalyzer : DiagnosticAnalyzer
     context.EnableConcurrentExecution();
     context.RegisterCompilationStartAction(static compilationStartContext =>
     {
-      INamedTypeSymbol? timeWarpState = StateSymbolHelpers.GetTimeWarpStateType(compilationStartContext.Compilation);
+      INamedTypeSymbol? timeWarpState = StateSymbolFacts.GetTimeWarpStateType(compilationStartContext.Compilation);
       if (timeWarpState is null)
         return;
 
@@ -57,7 +57,7 @@ public class StateInheritanceAnalyzer : DiagnosticAnalyzer
       return;
 
     INamedTypeSymbol? baseTypeSymbol = context.SemanticModel.GetSymbolInfo(baseType.Type).Symbol as INamedTypeSymbol;
-    if (baseTypeSymbol is null || !StateSymbolHelpers.IsTimeWarpState(baseTypeSymbol, timeWarpState))
+    if (baseTypeSymbol is null || !StateSymbolFacts.IsTimeWarpState(baseTypeSymbol, timeWarpState))
       return;
 
     ITypeSymbol? typeArg = baseTypeSymbol.TypeArguments.FirstOrDefault();

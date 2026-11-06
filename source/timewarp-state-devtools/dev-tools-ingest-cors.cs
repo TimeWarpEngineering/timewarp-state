@@ -1,5 +1,5 @@
 #region Purpose
-// Development-only CORS for POST /ingest/spans, limited to configured browser origins.
+// Development-only CORS for POST /ingest/spans and POST /ingest/manifest, limited to configured browser origins.
 #endregion
 
 #region Design
@@ -8,16 +8,16 @@
 // least one absolute http(s) origin is configured. No origin means no CORS middleware, so the
 // inspector is not an open sink. Origins come from TIMEWARP_STATE_DEVTOOLS_CORS_ORIGINS (Aspire
 // sets that from every inspected app) and from TimeWarp:State:DevTools:CorsOrigins. Invalid entries
-// are skipped. UseCors() enables the middleware without a global policy. SpanIngestEndpoint
-// calls RequireCors so only POST /ingest/spans receives allow headers. When that response already
-// carries Access-Control-Allow-Origin and the preflight asks for private-network access, the
-// response allows it. Other routes, including the Blazor circuit, do not.
+// are skipped. UseCors() enables the middleware without a global policy. SpanIngestEndpoint and
+// ManifestIngestEndpoint call RequireCors so only POST /ingest/spans and POST /ingest/manifest receive
+// allow headers. When that response already carries Access-Control-Allow-Origin and the preflight asks
+// for private-network access, the response allows it. Other routes, including the Blazor circuit, do not.
 #endregion
 
 namespace TimeWarp.State.DevTools;
 
 /// <summary>
-/// CORS policy for the DevTools span ingest route.
+/// CORS policy for the DevTools ingest routes: span ingest and manifest ingest.
 /// </summary>
 public static class DevToolsIngestCors
 {
@@ -75,8 +75,8 @@ public static class DevToolsIngestCors
 
   /// <summary>
   /// Enables CORS middleware without a global policy, and answers a private-network preflight
-  /// on <see cref="SpanIngestEndpoint.Route"/> after the policy has allowed the origin.
-  /// Call only when <see cref="Add"/> returned true. The ingest route calls
+  /// on <see cref="SpanIngestEndpoint.Route"/> and <see cref="ManifestIngestEndpoint.Route"/> after the
+  /// policy has allowed the origin. Call only when <see cref="Add"/> returned true. Both ingest routes call
   /// <c>RequireCors</c> with <see cref="PolicyName"/>.
   /// </summary>
   /// <param name="app">The inspector application.</param>
@@ -86,7 +86,11 @@ public static class DevToolsIngestCors
     ArgumentNullException.ThrowIfNull(app);
     app.Use(async (context, next) =>
     {
-      if (context.Request.Path.StartsWithSegments(SpanIngestEndpoint.Route))
+      if
+      (
+        context.Request.Path.StartsWithSegments(SpanIngestEndpoint.Route)
+        || context.Request.Path.StartsWithSegments(ManifestIngestEndpoint.Route)
+      )
       {
         context.Response.OnStarting(() =>
         {

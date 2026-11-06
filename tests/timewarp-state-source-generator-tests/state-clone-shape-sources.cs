@@ -1,5 +1,5 @@
 #region Purpose
-// Shared lookup, constants, and compile checks for the table-driven StateCloneSourceGenerator shape tests.
+// Shared lookup, constants, and compile checks for the table-driven clone-stage shape tests.
 #endregion
 
 #region Design

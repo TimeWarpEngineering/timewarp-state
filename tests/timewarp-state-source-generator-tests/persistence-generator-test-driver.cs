@@ -1,5 +1,5 @@
 #region Purpose
-// Runs PersistenceStateSourceGenerator against in-memory syntax for generator tests.
+// Runs TimeWarpStateGenerator against in-memory syntax for generator tests.
 #endregion
 
 #region Design
@@ -20,7 +20,7 @@ internal static class PersistenceGeneratorTestDriver
       references: [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)],
       options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-    GeneratorDriver driver = CSharpGeneratorDriver.Create(new PersistenceStateSourceGenerator());
+    GeneratorDriver driver = CSharpGeneratorDriver.Create(new TimeWarpStateGenerator());
     driver = driver.RunGenerators(compilation);
     return driver.GetRunResult();
   }

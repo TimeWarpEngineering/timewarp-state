@@ -1,5 +1,5 @@
 #region Purpose
-// Plans per-type clone methods for StateCloneSourceGenerator.
+// Plans per-type clone methods for the clone stage of TimeWarpStateGenerator (CloneEmitter).
 #endregion
 
 #region Design

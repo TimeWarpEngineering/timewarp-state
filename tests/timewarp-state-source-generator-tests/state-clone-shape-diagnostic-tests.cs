@@ -201,7 +201,7 @@ public class Should_Report_TWSG002_At_Source
     (string source, string[] messageFragments) = Shapes[shape];
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(source, allowUnsafe: true);
     Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
-    error.Id.ShouldBe(StateCloneSourceGenerator.DiagnosticId);
+    error.Id.ShouldBe(StateGeneratorDiagnostics.CloneUnsupportedId);
     error.Location.IsInSource.ShouldBeTrue();
     string message = error.GetMessage();
     foreach (string fragment in messageFragments)
@@ -232,7 +232,7 @@ public class Should_Report_TWSG002_At_Source
 
     (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Source);
     Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
-    error.Id.ShouldBe(StateCloneSourceGenerator.DiagnosticId);
+    error.Id.ShouldBe(StateGeneratorDiagnostics.CloneUnsupportedId);
     error.Location.IsInSource.ShouldBeTrue();
     error.GetMessage().ShouldContain("member 'B'");
     error.GetMessage().ShouldContain("subtype 'Holder.PrivBase'");
@@ -256,7 +256,7 @@ public class Should_Report_TWSG002_At_Source
 
     (GeneratorDriverRunResult runResult, Compilation _) = StateCloneGeneratorTestDriver.Run(Source);
     Diagnostic error = runResult.Diagnostics.ShouldHaveSingleItem();
-    error.Id.ShouldBe(StateCloneSourceGenerator.DiagnosticId);
+    error.Id.ShouldBe(StateGeneratorDiagnostics.CloneUnsupportedId);
     error.Location.IsInSource.ShouldBeTrue();
     string message = error.GetMessage();
     message.ShouldContain("'Inner'");

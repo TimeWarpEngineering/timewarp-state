@@ -104,7 +104,7 @@ internal sealed partial class StateClonePlanner
 
       reportedRoots.Add(pair.Value);
       diagnostics.Add(Diagnostic.Create(
-        StateCloneSourceGenerator.UnsupportedRule,
+        StateGeneratorDiagnostics.CloneUnsupported,
         location,
         slot.Type.ToDisplayString(),
         slot.Detail,
@@ -142,7 +142,7 @@ internal sealed partial class StateClonePlanner
       if (!AnyReportedBelow(root, rootOf, reportedRoots))
       {
         diagnostics.Add(Diagnostic.Create(
-          StateCloneSourceGenerator.UnsupportedRule,
+          StateGeneratorDiagnostics.CloneUnsupported,
           SourceLocation(root.Type) ?? Location.None,
           root.Type.ToDisplayString(),
           root.Detail ?? "a member cannot be cloned",

@@ -1,5 +1,5 @@
 #region Purpose
-// ActionSetMethodSourceGenerator failure shapes: TWSG003 for shapes the pre-141 generator served (a plain class
+// Dispatch method failure shapes (TimeWarpStateGenerator): TWSG003 for shapes the pre-141 generator served (a plain class
 // Action in a class state), and silence for shapes it ignored, which compiled before (review round 1, M1).
 #endregion
 

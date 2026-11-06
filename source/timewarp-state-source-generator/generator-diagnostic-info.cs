@@ -1,5 +1,6 @@
 #region Purpose
-// Equatable diagnostic data for the incremental generators, plus TWSG003, the shared "cannot generate" rule.
+// Equatable diagnostic data for TimeWarpStateGenerator, plus its descriptors: TWSG001 (nested [PersistentState]),
+// TWSG002 (a clone cannot be generated) and TWSG003 (a member cannot be generated).
 #endregion
 
 #region Design
@@ -59,7 +60,33 @@ internal sealed record GeneratorDiagnosticInfo
 
 internal static class StateGeneratorDiagnostics
 {
+  public const string NestedPersistentStateId = "TWSG001";
+  public const string CloneUnsupportedId = "TWSG002";
   public const string CannotGenerateMemberId = "TWSG003";
+
+  public static readonly DiagnosticDescriptor NestedPersistentState =
+    new
+    (
+      NestedPersistentStateId,
+      title: "[PersistentState] is not supported on nested classes",
+      messageFormat: "[PersistentState] is not supported on nested class '{0}'. Move the state to a top-level type.",
+      category: "Persistence",
+      defaultSeverity: DiagnosticSeverity.Error,
+      isEnabledByDefault: true,
+      description: "Policies nest actions in states, not states in other types. Nested [PersistentState] would emit a top-level partial that does not merge with the nested type."
+    );
+
+  public static readonly DiagnosticDescriptor CloneUnsupported =
+    new
+    (
+      CloneUnsupportedId,
+      title: "State clone cannot be generated",
+      messageFormat: "Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', mark the member [CloneShared] to copy it by reference, or change the unsupported member.",
+      category: "Cloning",
+      defaultSeverity: DiagnosticSeverity.Error,
+      isEnabledByDefault: true,
+      description: "The state clone source generator could not emit a clone. Implement ICloneable, mark the member [CloneShared] to copy it by reference, or change the member named in the message."
+    );
 
   public static readonly DiagnosticDescriptor CannotGenerateMember =
     new
@@ -76,7 +103,7 @@ internal static class StateGeneratorDiagnostics
   public static DiagnosticDescriptor Find(string id) => id switch
   {
     CannotGenerateMemberId => CannotGenerateMember,
-    PersistenceStateSourceGenerator.NestedPersistentStateDiagnosticId => PersistenceStateSourceGenerator.NestedPersistentStateRule,
+    NestedPersistentStateId => NestedPersistentState,
     _ => throw new ArgumentOutOfRangeException(nameof(id), id, "Unknown generator diagnostic id.")
   };
 }

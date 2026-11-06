@@ -1,5 +1,5 @@
 #region Purpose
-// Source text for the [cloneshared] and icloneable member shapes StateCloneSourceGenerator tests.
+// Source text for the [cloneshared] and icloneable member shapes the clone-stage tests use.
 #endregion
 
 #region Design

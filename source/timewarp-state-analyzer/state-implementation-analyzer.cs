@@ -32,7 +32,7 @@ public class StateImplementationAnalyzer : DiagnosticAnalyzer
 
     context.RegisterCompilationStartAction(static compilationStartContext =>
     {
-      INamedTypeSymbol? timeWarpState = StateSymbolHelpers.GetTimeWarpStateType(compilationStartContext.Compilation);
+      INamedTypeSymbol? timeWarpState = StateSymbolFacts.GetTimeWarpStateType(compilationStartContext.Compilation);
       if (timeWarpState is null)
         return;
 
@@ -49,7 +49,7 @@ public class StateImplementationAnalyzer : DiagnosticAnalyzer
     if (namedTypeSymbol.IsAbstract)
       return;
 
-    if (!StateSymbolHelpers.IsTimeWarpState(namedTypeSymbol.BaseType, timeWarpState))
+    if (!StateSymbolFacts.IsTimeWarpState(namedTypeSymbol.BaseType, timeWarpState))
       return;
 
     if (!ImplementsICloneable(namedTypeSymbol) && !HasAccessibleConstructor(namedTypeSymbol))

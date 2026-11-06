@@ -1,0 +1,38 @@
+h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-family: var(--twe-font-sans);
+}
+
+h3 {
+  margin: 0.8rem 0 0.3rem;
+  font-size: 0.95rem;
+  font-family: var(--twe-font-sans);
+  color: var(--twe-json-key);
+}
+
+h4 {
+  margin: 0.6rem 0 0.2rem;
+  font-size: 0.9rem;
+  font-family: var(--twe-font-mono);
+}
+
+.empty {
+  margin: 0.4rem 0;
+  color: var(--twe-muted);
+}
+
+.actions {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-family: var(--twe-font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.catalog,
+.tracked {
+  margin-left: 0.6rem;
+  color: var(--twe-muted);
+}

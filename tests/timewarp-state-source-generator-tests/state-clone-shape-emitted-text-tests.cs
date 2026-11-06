@@ -1,5 +1,5 @@
 #region Purpose
-// Asserts on the text StateCloneSourceGenerator emits for specific supported shapes.
+// Asserts on the text the clone stage (CloneEmitter) emits for specific supported shapes.
 #endregion
 
 #region Design

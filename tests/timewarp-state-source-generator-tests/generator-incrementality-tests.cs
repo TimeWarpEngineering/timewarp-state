@@ -1,26 +1,23 @@
 #region Purpose
-// Incrementality tests, Mediator style, for all four State generators: an unrelated edit leaves every named step
-// Cached or Unchanged and re-adds no source; a relevant edit is Modified and re-emits.
+// Incrementality tests, Mediator style, for TimeWarpStateGenerator: an unrelated edit leaves every fact step, the
+// State graph and every emit step Cached or Unchanged, and adds no source again. A relevant edit is Modified and
+// re-emits only what changed.
 #endregion
 
 #region Design
 // Cached means the step did not run. Unchanged means it ran and produced an equal value, so everything after it is
-// Cached. A CreateSyntaxProvider or ForAttributeWithMetadataName transform reruns when the compilation changes and is
-// Unchanged when its equatable model is equal; that is the property these tests pin, which is why both reasons are
-// accepted for the first step. Output steps (RegisterSourceOutput) must be Cached after an unrelated edit, and the
-// generated text must be identical.
-// The clone generator plans from CompilationProvider, so its plan step always reruns; the test pins that the plan is
-// Unchanged and its output Cached, which is all Option 0 promises. Moving planning off CompilationProvider is Option 1.
-// The "edit in the same file" cases add a member far above the action. A model that held a span would be Modified;
-// these models hold none on the success path.
-// Task 140 left open whether ForAttributeWithMetadataName defeats caching (Mediator's design note says so). The
-// catalog test measures it for State: the Entries step is Cached after an unrelated edit.
-// Measured on Microsoft.CodeAnalysis.CSharp 4.14.0 (task 141, 2026-11-06), unrelated file added:
-//   ActionSet.Candidates Cached, ActionSet.Models Cached; Catalog.Entries Cached, Catalog.AssemblyName Unchanged,
-//   Catalog.Collected Cached; Persistence.Candidates Cached, Persistence.Models Cached; Clone.Plan Unchanged;
-//   every output step Cached. Edit above the action in the same file: ActionSet.Candidates Cached.
-// The assertions accept Cached or Unchanged for steps fed by a transform so a Roslyn upgrade that reports the
-// other reason does not fail a test that still proves the output was not re-added.
+// Cached. A CreateSyntaxProvider transform reruns for a changed tree and is Unchanged when its equatable fact is equal.
+// The clone plan and the assembly fact read CompilationProvider, so they rerun on every edit. The tests pin that they
+// come out Unchanged, which keeps State.Graph Cached.
+// Output steps (RegisterSourceOutput) must be Cached after an unrelated edit, and the generated text must be identical.
+// Per-item emission is pinned too. Adding a state property changes the clone plan, so the graph is Modified, but the
+// dispatch methods it projects are Unchanged, so their outputs are Cached and only the clone file is re-added.
+// The "edit in the same file" case adds a method far above the action. Methods are not cloned, so the clone plan
+// stays equal. A fact that held a span would be Modified, and these facts hold none on the success path.
+// Accepting Cached or Unchanged for steps fed by a transform keeps a Roslyn upgrade that reports the other reason
+// from failing a test that still proves the output was not re-added.
+// Measured on Microsoft.CodeAnalysis.CSharp 4.14.0 (task 142, 2026-11-06), unrelated file added: see Results in the
+// task 142 kitchen.
 #endregion
 
 // ReSharper disable InconsistentNaming
@@ -59,7 +56,10 @@ internal static class IncrementalSources
     }
     """;
 
-  public static string WithLeadingMember(string source) =>
+  public static string WithLeadingMethod(string source) =>
+    source.Replace("  public int Count { get; private set; }", "  public int Count { get; private set; }\n\n  public string Describe() => \"counter\";");
+
+  public static string WithLeadingProperty(string source) =>
     source.Replace("  public int Count { get; private set; }", "  public int Count { get; private set; }\n\n  public string Label { get; private set; } = \"counter\";");
 
   public static string WithChangedParameter(string source) =>
@@ -80,151 +80,117 @@ internal static class IncrementalSources
       public override void Initialize() { }
     }
     """;
+
+  public static CSharpCompilation Both() =>
+    GeneratorTestHost.CreateCompilation(ActionState).AddSyntaxTrees(GeneratorTestHost.Parse(PersistentState, "Widget.cs"));
+
+  public static GeneratorDriver ReplaceCounter(GeneratorDriver driver, CSharpCompilation compilation, Func<string, string> edit, out CSharpCompilation edited)
+  {
+    SyntaxTree tree = compilation.SyntaxTrees.First();
+    edited = compilation.ReplaceSyntaxTree(tree, GeneratorTestHost.Parse(edit(ActionState), tree.FilePath));
+    return driver.RunGenerators(edited);
+  }
 }
 
-public class ActionSetMethod_Should_Stay_Cached
+public class Should_Stay_Cached
 {
   public static void Given_Unrelated_File_Added()
   {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new ActionSetMethodSourceGenerator());
+    CSharpCompilation compilation = IncrementalSources.Both();
+    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new TimeWarpStateGenerator());
     string[] first = GeneratorTestHost.GeneratedTexts(driver);
+    first.ShouldContain(text => text.StartsWith(CatalogEmitter.HintName, StringComparison.Ordinal));
+    first.ShouldContain(text => text.StartsWith(ManifestEmitter.HintName, StringComparison.Ordinal));
+    first.ShouldContain(text => text.StartsWith(CloneEmitter.HintName, StringComparison.Ordinal));
+    first.ShouldContain(text => text.Contains("_Persistence.g.cs"));
+    first.ShouldContain(text => text.Contains("_Method.g.cs"));
 
     driver = driver.RunGenerators(compilation.AddSyntaxTrees(GeneratorTestHost.Parse(IncrementalSources.Unrelated, "Unrelated.cs")));
 
     GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ActionSetCandidates).ShouldNotBeEmpty();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ActionSetCandidates).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ActionSetModels).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
+    foreach (string step in new[] { TrackingNames.Actions, TrackingNames.Persistence, TrackingNames.States, TrackingNames.Assembly, TrackingNames.ClonePlan })
+      GeneratorTestHost.TrackedReasons(result, step).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason), step);
+
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Graph).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
+    foreach (string step in new[] { TrackingNames.EmitDispatch, TrackingNames.EmitPersistence, TrackingNames.EmitCatalog, TrackingNames.EmitManifest, TrackingNames.EmitClone })
+      GeneratorTestHost.TrackedReasons(result, step).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached, step);
+
     GeneratorTestHost.OutputReasons(result).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
     GeneratorTestHost.GeneratedTexts(driver).ShouldBe(first);
   }
 
   public static void Given_Edit_Above_The_Action_In_The_Same_File()
   {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new ActionSetMethodSourceGenerator());
-
-    SyntaxTree tree = compilation.SyntaxTrees.Single();
-    driver = driver.RunGenerators(compilation.ReplaceSyntaxTree(tree,
-      GeneratorTestHost.Parse(IncrementalSources.WithLeadingMember(IncrementalSources.ActionState), tree.FilePath)));
-
-    GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ActionSetCandidates).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
-    GeneratorTestHost.OutputReasons(result).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
-  }
-
-  public static void Given_Action_Parameter_Changed_Re_Emits()
-  {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new ActionSetMethodSourceGenerator());
-
-    SyntaxTree tree = compilation.SyntaxTrees.Single();
-    driver = driver.RunGenerators(compilation.ReplaceSyntaxTree(tree,
-      GeneratorTestHost.Parse(IncrementalSources.WithChangedParameter(IncrementalSources.ActionState), tree.FilePath)));
-
-    GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ActionSetModels).ShouldContain(IncrementalStepRunReason.Modified);
-    GeneratorTestHost.OutputReasons(result).ShouldContain(IncrementalStepRunReason.Modified);
-    GeneratorTestHost.GeneratedTexts(driver).ShouldContain(text => text.Contains("bool Animate = false"));
-  }
-}
-
-public class ActionCatalog_Should_Stay_Cached
-{
-  public static void Given_Unrelated_File_Added()
-  {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new ActionCatalogSourceGenerator());
+    CSharpCompilation compilation = IncrementalSources.Both();
+    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new TimeWarpStateGenerator());
     string[] first = GeneratorTestHost.GeneratedTexts(driver);
-    first.ShouldNotBeEmpty();
 
-    driver = driver.RunGenerators(compilation.AddSyntaxTrees(GeneratorTestHost.Parse(IncrementalSources.Unrelated, "Unrelated.cs")));
+    driver = IncrementalSources.ReplaceCounter(driver, compilation, IncrementalSources.WithLeadingMethod, out _);
 
     GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.CatalogEntries).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.CatalogAssemblyName).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.CatalogCollected).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Actions).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.States).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Graph).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
     GeneratorTestHost.OutputReasons(result).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
     GeneratorTestHost.GeneratedTexts(driver).ShouldBe(first);
   }
-
-  public static void Given_Action_Parameter_Changed_Re_Emits()
-  {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new ActionCatalogSourceGenerator());
-
-    SyntaxTree tree = compilation.SyntaxTrees.Single();
-    driver = driver.RunGenerators(compilation.ReplaceSyntaxTree(tree,
-      GeneratorTestHost.Parse(IncrementalSources.WithChangedParameter(IncrementalSources.ActionState), tree.FilePath)));
-
-    GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.CatalogEntries).ShouldContain(IncrementalStepRunReason.Modified);
-    GeneratorTestHost.OutputReasons(result).ShouldContain(IncrementalStepRunReason.Modified);
-    GeneratorTestHost.GeneratedTexts(driver).ShouldContain(text => text.Contains("\"Animate\""));
-  }
 }
 
-public class Persistence_Should_Stay_Cached
+public class Should_Re_Emit_Only_What_Changed
 {
-  public static void Given_Unrelated_File_Added()
+  public static void Given_Action_Parameter_Changed()
   {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.PersistentState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new PersistenceStateSourceGenerator());
-    string[] first = GeneratorTestHost.GeneratedTexts(driver);
-    first.ShouldNotBeEmpty();
+    CSharpCompilation compilation = IncrementalSources.Both();
+    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new TimeWarpStateGenerator());
 
-    driver = driver.RunGenerators(compilation.AddSyntaxTrees(GeneratorTestHost.Parse(IncrementalSources.Unrelated, "Unrelated.cs")));
+    driver = IncrementalSources.ReplaceCounter(driver, compilation, IncrementalSources.WithChangedParameter, out _);
 
     GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.PersistenceCandidates).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.PersistenceModels).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
-    GeneratorTestHost.OutputReasons(result).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
-    GeneratorTestHost.GeneratedTexts(driver).ShouldBe(first);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Actions).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Graph).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitDispatch).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitCatalog).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitManifest).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitPersistence).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitClone).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.OutputReasons(result).ShouldContain(IncrementalStepRunReason.Modified);
+
+    string[] texts = GeneratorTestHost.GeneratedTexts(driver);
+    texts.ShouldContain(text => text.Contains("bool Animate = false"));
+    texts.ShouldContain(text => text.StartsWith(CatalogEmitter.HintName, StringComparison.Ordinal) && text.Contains("\"Animate\""));
+    texts.ShouldContain(text => text.StartsWith(ManifestEmitter.HintName, StringComparison.Ordinal) && text.Contains("Animate"));
   }
 
-  public static void Given_New_Persistent_State_Re_Emits()
+  public static void Given_State_Property_Added_Re_Plans_The_Clone_Only()
   {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.PersistentState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new PersistenceStateSourceGenerator());
+    CSharpCompilation compilation = IncrementalSources.Both();
+    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new TimeWarpStateGenerator());
+
+    driver = IncrementalSources.ReplaceCounter(driver, compilation, IncrementalSources.WithLeadingProperty, out _);
+
+    GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.ClonePlan).ShouldAllBe(reason => reason == IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Graph).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitClone).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitDispatch).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitPersistence).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitCatalog).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitManifest).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    GeneratorTestHost.OutputReasons(result).Count(reason => reason == IncrementalStepRunReason.Modified).ShouldBe(1);
+  }
+
+  public static void Given_New_Persistent_State()
+  {
+    CSharpCompilation compilation = IncrementalSources.Both();
+    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new TimeWarpStateGenerator());
 
     driver = driver.RunGenerators(compilation.AddSyntaxTrees(GeneratorTestHost.Parse(
       IncrementalSources.PersistentState.Replace("WidgetState", "GadgetState"), "Gadget.cs")));
 
     GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.PersistenceModels).ShouldContain(IncrementalStepRunReason.New);
-    result.GeneratedSources.Length.ShouldBe(2);
-  }
-}
-
-public class StateClone_Should_Not_Re_Add_Source
-{
-  public static void Given_Unrelated_File_Added()
-  {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new StateCloneSourceGenerator());
-    string[] first = GeneratorTestHost.GeneratedTexts(driver);
-    first.ShouldNotBeEmpty();
-
-    driver = driver.RunGenerators(compilation.AddSyntaxTrees(GeneratorTestHost.Parse(IncrementalSources.Unrelated, "Unrelated.cs")));
-
-    GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ClonePlan).ShouldAllBe(reason => reason == IncrementalStepRunReason.Unchanged);
-    GeneratorTestHost.OutputReasons(result).ShouldAllBe(reason => reason == IncrementalStepRunReason.Cached);
-    GeneratorTestHost.GeneratedTexts(driver).ShouldBe(first);
-  }
-
-  public static void Given_State_Member_Added_Re_Plans()
-  {
-    CSharpCompilation compilation = GeneratorTestHost.CreateCompilation(IncrementalSources.ActionState);
-    (GeneratorDriver driver, _, _) = GeneratorTestHost.Run(compilation, new StateCloneSourceGenerator());
-
-    SyntaxTree tree = compilation.SyntaxTrees.Single();
-    driver = driver.RunGenerators(compilation.ReplaceSyntaxTree(tree,
-      GeneratorTestHost.Parse(IncrementalSources.WithLeadingMember(IncrementalSources.ActionState), tree.FilePath)));
-
-    GeneratorRunResult result = driver.GetRunResult().Results.ShouldHaveSingleItem();
-    GeneratorTestHost.TrackedReasons(result, TrackingNames.ClonePlan).ShouldAllBe(reason => reason == IncrementalStepRunReason.Modified);
-    GeneratorTestHost.OutputReasons(result).ShouldContain(IncrementalStepRunReason.Modified);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.Persistence).ShouldContain(IncrementalStepRunReason.New);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitPersistence).ShouldContain(IncrementalStepRunReason.New);
+    GeneratorTestHost.TrackedReasons(result, TrackingNames.EmitDispatch).ShouldAllBe(reason => GeneratorTestHost.IsCachedOrUnchanged(reason));
+    result.GeneratedSources.Count(source => source.HintName.EndsWith("_Persistence.g.cs", StringComparison.Ordinal)).ShouldBe(2);
   }
 }

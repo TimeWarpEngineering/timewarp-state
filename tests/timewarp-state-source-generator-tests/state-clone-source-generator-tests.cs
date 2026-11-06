@@ -1,5 +1,5 @@
 #region Purpose
-// StateCloneSourceGenerator: TWSG002 on an unsupported member, ICloneable skips the field clone but is rooted for trimming, and a simple state is registered.
+// Clone stage (TimeWarpStateGenerator, CloneEmitter): TWSG002 on an unsupported member, ICloneable skips the field clone but is rooted for trimming, and a simple state is registered.
 #endregion
 
 #region Design
@@ -26,7 +26,7 @@ public class Should_Report_TWSG002
 
     (GeneratorDriverRunResult runResult, Compilation outputCompilation) = StateCloneGeneratorTestDriver.Run(Source);
     IEnumerable<Diagnostic> diagnostics = runResult.Diagnostics.Concat(outputCompilation.GetDiagnostics());
-    diagnostics.Any(diagnostic => diagnostic.Id == StateCloneSourceGenerator.DiagnosticId).ShouldBeTrue();
+    diagnostics.Any(diagnostic => diagnostic.Id == StateGeneratorDiagnostics.CloneUnsupportedId).ShouldBeTrue();
   }
 }
 

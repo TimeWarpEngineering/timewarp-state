@@ -1,5 +1,5 @@
 #region Purpose
-// ActionCatalogSourceGenerator: registry snapshot, opt-in, parameters and defaults, name override,
+// Action catalog (TimeWarpStateGenerator, CatalogEmitter): registry snapshot, opt-in, parameters and defaults, name override,
 // permissions/visibility, complex parameter types, and compile check of the generated output.
 #endregion
 
@@ -120,7 +120,7 @@ public class Should_Emit_Nothing
 
     runResult.Results
       .SelectMany(result => result.GeneratedSources)
-      .ShouldNotContain(generated => generated.HintName == ActionCatalogSourceGenerator.HintName);
+      .ShouldNotContain(generated => generated.HintName == CatalogEmitter.HintName);
     ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
   }
 
@@ -140,7 +140,7 @@ public class Should_Emit_Nothing
 
     runResult.Results
       .SelectMany(result => result.GeneratedSources)
-      .ShouldNotContain(generated => generated.HintName == ActionCatalogSourceGenerator.HintName);
+      .ShouldNotContain(generated => generated.HintName == CatalogEmitter.HintName);
   }
 }
 
@@ -176,7 +176,7 @@ public class Should_Respect_A_Hand_Written_Method
 
     runResult.Results
       .SelectMany(result => result.GeneratedSources)
-      .ShouldNotContain(generated => generated.HintName == ActionCatalogSourceGenerator.HintName);
+      .ShouldNotContain(generated => generated.HintName == CatalogEmitter.HintName);
     ActionCatalogGeneratorTestDriver.ShouldCompile(outputCompilation);
   }
 
@@ -457,8 +457,8 @@ public class Should_Emit_DisplayName
 public class Should_Name_By_Convention
 {
   public static void Given_State_Without_State_Suffix() =>
-    ActionCatalogSourceGenerator.GetDefaultName("Credentials", "AddPasskeyActionSet").ShouldBe("Credentials.AddPasskey");
+    CatalogActionFacts.GetDefaultName("Credentials", "AddPasskeyActionSet").ShouldBe("Credentials.AddPasskey");
 
   public static void Given_State_Suffix() =>
-    ActionCatalogSourceGenerator.GetDefaultName("CredentialsState", "AddPasskeyActionSet").ShouldBe("Credentials.AddPasskey");
+    CatalogActionFacts.GetDefaultName("CredentialsState", "AddPasskeyActionSet").ShouldBe("Credentials.AddPasskey");
 }

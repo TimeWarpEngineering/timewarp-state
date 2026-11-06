@@ -71,7 +71,7 @@ internal abstract class DefaultApiHandler<TAction, TRequest, TResponse> : ApiHan
 - **Category:** Persistence
 - **Message:** [PersistentState] is not supported on nested class '{0}'. Move the state to a top-level type.
 
-Reported by `PersistenceStateSourceGenerator`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.
+Reported by `TimeWarpStateGenerator` when it emits persistence `Load()`. Policies nest **actions** in states, not states in other types. A nested `[PersistentState]` class is skipped (no generated `Load()` partial). Move the state to a top-level type.
 
 ## TWS0009 — State needs ICloneable or an accessible constructor
 
@@ -144,7 +144,7 @@ Abstract and open generic states are skipped. See [Persistence](xref:TimeWarpSta
 - **Category:** Cloning
 - **Message:** Cannot generate a clone for '{0}'{2} because {1}. Implement ICloneable on '{0}', mark the member [CloneShared] to copy it by reference, or change the unsupported member.
 
-Reported by `StateCloneSourceGenerator` once, at the source member that reaches something it cannot clone: `object`, an interface or abstract class with no implementation, an inaccessible type, an open generic, a pointer, a ref struct, or a type from another assembly whose fields it cannot all see. `{2}` names the state or `[GenerateClone]` root the member was reached from. The build fails. There is no reflection fallback. Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it by reference, or change the member. `[CloneShared]` is how an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`) stays on the clone. See [Cloning](xref:TimeWarpState:Cloning.md).
+Reported by the clone stage of `TimeWarpStateGenerator` once, at the source member that reaches something it cannot clone: `object`, an interface or abstract class with no implementation, an inaccessible type, an open generic, a pointer, a ref struct, or a type from another assembly whose fields it cannot all see. `{2}` names the state or `[GenerateClone]` root the member was reached from. The build fails. There is no reflection fallback. Implement `ICloneable` on that type, mark the member `[CloneShared]` to copy it by reference, or change the member. `[CloneShared]` is how an injected service (`ILogger<T>`, `HttpClient`, `NavigationManager`) stays on the clone. See [Cloning](xref:TimeWarpState:Cloning.md).
 
 ## TWSG003 — State member cannot be generated
 
@@ -152,7 +152,7 @@ Reported by `StateCloneSourceGenerator` once, at the source member that reaches 
 - **Category:** Generation
 - **Message:** Cannot generate '{0}' for '{1}' because {2}
 
-Reported by `ActionSetMethodSourceGenerator` (the `State.Method(...)` for each nested `*ActionSet`) and by `PersistenceStateSourceGenerator` (`Load()`), at the Action or the state. Each case used to emit generated code that failed to compile. For ActionSet methods that means a plain class Action in a class state, the only shape the generator served before 12.0.0-beta.17. A record or struct Action, or an ActionSet in a record or struct state, got no generated code before. When one of those cannot get a method, the generator emits nothing and reports nothing, so a build that passed still passes. The message names the reason:
+Reported by `TimeWarpStateGenerator` for the `State.Method(...)` of each nested `*ActionSet` and for `Load()`, at the Action or the state. Each case used to emit generated code that failed to compile. For ActionSet methods that means a plain class Action in a class state, the only shape the generator served before 12.0.0-beta.17. A record or struct Action, or an ActionSet in a record or struct state, got no generated code before. When one of those cannot get a method, the generator emits nothing and reports nothing, so a build that passed still passes. The message names the reason:
 
 - The state, or a type that contains it, is not `partial`.
 - The `[PersistentState]` type does not derive from `State<T>`.
