@@ -64,7 +64,7 @@ dotnet build --project <ProjectPath> --configuration Release
 - **TimeWarp.State.Blazor**: Components, JavaScript interop, render subscriptions, wwwroot assets. Static web assets stay under `_content/TimeWarp.State/`
 - **TimeWarp.State.Plus**: ActionTracking, Routing, persistence. Package id unchanged. Depends on TimeWarp.State.Blazor
 - **TimeWarp.State.Analyzer**: Roslyn analyzers (embedded in main package)
-- **TimeWarp.State.SourceGenerator**: Code generation (embedded in main package). One `TimeWarpStateGenerator`: fact extractors, one `StateGraph`, emitters for dispatch methods, catalog, persistence `Load`, clones and registration, and the State manifest. `facts/` is shared with the analyzer as linked source
+- **TimeWarp.State.SourceGenerator**: Code generation (embedded in main package). One `TimeWarpStateGenerator`: fact extractors, one `StateGraph`, emitters for dispatch methods, `[Reducer]` handlers, catalog, persistence `Load`, clones and registration, and the State manifest. `facts/` is shared with the analyzer as linked source
 - **TimeWarp.State.Policies**: NetArchTest rules for architecture validation
 
 ### Testing Strategy
@@ -76,7 +76,7 @@ dotnet build --project <ProjectPath> --configuration Release
 
 ### Key Patterns
 - **CQRS/Flux**: Unidirectional data flow with Actions/StateActionHandlers
-- **TimeWarp.Mediator 15.0.0-beta.2**: One package (`TimeWarp.Mediator`, contracts plus the bundled analyzer) and `TimeWarp.Mediator.Generators` on hosts. Generated `AddGeneratedMediator<TScope>()` lives in `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`); import that namespace. `ISender<ClientPipeline>` / `ISender<ServerPipeline>`. Handler and behavior methods return `ValueTask`.
+- **TimeWarp.Mediator 15.0.0-beta.5**: One package (`TimeWarp.Mediator`, contracts plus the bundled analyzer) and `TimeWarp.Mediator.Generators` on hosts. Generated `AddGeneratedMediator<TScope>()` lives in `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`); import that namespace. `ISender<ClientPipeline>` / `ISender<ServerPipeline>`. Handler and behavior methods return `ValueTask`.
 - **Async-First**: All operations are async by design
 - **TypeScript Integration**: Strong typing for JavaScript interop
 
@@ -166,7 +166,7 @@ Follow structured task workflow using Kanban approach:
 ## Essential Dependencies
 
 - **Blazor**: UI framework (Server/WebAssembly)
-- **TimeWarp.Mediator 15.0.0-beta.2**: CQRS/mediator via `TimeWarp.Mediator` plus generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`). There is no Contracts package and no Analyzers package.
+- **TimeWarp.Mediator 15.0.0-beta.5**: CQRS/mediator via `TimeWarp.Mediator` plus generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`). There is no Contracts package and no Analyzers package.
 - **Microsoft.JSInterop**: JavaScript interop for browser features
 - **Fixie**: Testing framework
 - **NetArchTest**: Architecture testing

@@ -138,6 +138,45 @@ dotnet_diagnostic.TWS0013.severity = none
 
 Abstract and open generic states are skipped. See [Persistence](xref:TimeWarpState:Persistence.md) and [Telemetry](xref:TimeWarpState:Telemetry.md).
 
+## TWS0014 — [Reducer] handler cannot be generated
+
+- **Severity:** Error
+- **Category:** Design
+- **Message:** [Reducer] on '{0}' gets no generated handler because {1}
+
+`[Reducer]` asks the TimeWarp.State generator to emit an action set's `Handler`. You write only the Action and one static `Reduce` method:
+
+```csharp
+public partial class CounterState
+{
+  public static partial class DecrementCountActionSet
+  {
+    [Reducer]
+    public sealed class Action(int amount) : IAction
+    {
+      public int Amount { get; } = amount;
+    }
+
+    private static void Reduce(CounterState state, Action action) => state.Count -= action.Amount;
+  }
+}
+```
+
+The generator emits `DecrementCountActionSet.Handler : StateActionHandler<Action>`, which gets the state from the store and calls `Reduce`. `ReducerAttribute` derives from TimeWarp.Mediator's `GeneratedHandlerAttribute` (TimeWarp.Mediator 15.0.0-beta.5 or later), so the generated mediator dispatches the Action to that `Handler` even though the Mediator generator cannot see another generator's output.
+
+TimeWarp.Mediator names the handler whether or not the State generator emitted it. When the State generator did not, the build fails inside `Mediator.g.cs` (CS0234 or CS0246, plus TWM012), and none of those says what to change. TWS0014 runs the generator's own rule and reports the reason on the attribute. `{1}` is one of:
+
+- it is not the nested `Action` class of an `*ActionSet` inside a state
+- the state, the action set or the Action is generic, or the state is abstract
+- the Action does not implement `IAction`
+- the action set, the state or a containing type is not `partial`
+- the Action is `private` or `protected`
+- the handler name is not a simple type name (`[Reducer("Other.Handler")]`)
+- the action set already declares `Handler` by hand
+- the action set does not declare exactly one `static void Reduce(TState state, Action action)`
+
+The generated `Handler` has the Action's accessibility (`public` or `internal`). `[Reducer("Name")]` names it something other than `Handler`. The hand-written `XActionSet { Action; Handler }` shape keeps working beside it. A `Reduce` declared in another partial file of the action set is picked up the next time the Action's own file changes.
+
 ## TWSG002 — State clone cannot be generated
 
 - **Severity:** Error

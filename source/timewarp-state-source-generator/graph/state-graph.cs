@@ -18,14 +18,18 @@
 
 namespace TimeWarp.State.SourceGenerator;
 
-/// <summary>One nested <c>*ActionSet.Action</c>: its dispatch method or failure, catalog entry, and manifest entry.</summary>
+/// <summary>
+/// One nested <c>*ActionSet.Action</c>: its dispatch method or failure, catalog entry, manifest entry, and the
+/// <c>[Reducer]</c> handler when one is emitted.
+/// </summary>
 internal sealed record ActionFact
 (
   string StateKey,
   ActionSetMethodModel? Method,
   GeneratorDiagnosticInfo? Diagnostic,
   CatalogEntryModel? Catalog,
-  ManifestActionModel Manifest
+  ManifestActionModel Manifest,
+  ReducerHandlerModel? Handler
 );
 
 /// <summary>One <c>[PersistentState]</c> class declaration: its Load model or failure, and the persistence method.</summary>
@@ -101,6 +105,7 @@ internal sealed record ManifestParameterModel
 internal sealed record StateGraph
 (
   EquatableArray<ActionSetMethodModel> DispatchMethods,
+  EquatableArray<ReducerHandlerModel> ReducerHandlers,
   EquatableArray<PersistenceModel> PersistenceLoads,
   CatalogModel Catalog,
   ManifestModel? Manifest,

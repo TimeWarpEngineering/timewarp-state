@@ -20,6 +20,7 @@
          generator-only file in that folder is not linked into the analyzer by accident. -->
     <Compile Include="..\timewarp-state-source-generator\facts\catalog-action-facts.cs" Link="facts\catalog-action-facts.cs" />
     <Compile Include="..\timewarp-state-source-generator\facts\state-symbol-facts.cs" Link="facts\state-symbol-facts.cs" />
+    <Compile Include="..\timewarp-state-source-generator\facts\reducer-facts.cs" Link="facts\reducer-facts.cs" />
   </ItemGroup>
 
 </Project>

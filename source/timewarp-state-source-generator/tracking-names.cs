@@ -19,6 +19,7 @@ internal static class TrackingNames
   public const string Graph = "State.Graph";
 
   public const string EmitDispatch = "State.Emit.Dispatch";
+  public const string EmitReducer = "State.Emit.Reducer";
   public const string EmitPersistence = "State.Emit.Persistence";
   public const string EmitCatalog = "State.Emit.Catalog";
   public const string EmitManifest = "State.Emit.Manifest";
