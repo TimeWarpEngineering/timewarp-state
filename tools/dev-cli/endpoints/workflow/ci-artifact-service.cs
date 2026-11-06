@@ -1,11 +1,15 @@
 #region Purpose
-// Finds the successful CI run for HEAD and downloads its Packages-* artifact into artifacts/packages.
+// Finds the successful CI run to promote (HEAD's, or that of the green commit HEAD is only kanban-only
+// commits past) and downloads its Packages-* artifact into artifacts/packages.
 #endregion
 
 #region Design
 // Release promotes tested CI output (Nuru 458 / Ganda 209), so it never rebuilds. gh calls use
 // WithNoValidation and read the exit code; a missing gh binary surfaces as Win32Exception -> GhUnavailable.
 // Unrecoverable gh failures throw InvalidOperationException; ReleasePipeline turns that into an abort.
+// Locate-run walks first-parent history through ArtifactSourceWalk (task 133); GhGitCommitCiLookup is
+// its gh/git side. A failed gh run list throws GhRunListException so the walk ends and locate-run
+// reports GhFailed, as it did before the walk existed.
 #endregion
 
 namespace DevCli.Commands;
@@ -18,7 +22,23 @@ internal enum LocateRunStatus
   NoMatchingRun
 }
 
-internal sealed record LocateRunOutcome(LocateRunStatus Status, string HeadSha, IReadOnlyList<CiRunSummary> CandidateRuns, string? Detail);
+/// <summary>
+/// Locate-run result. <see cref="TargetSha"/> is the commit whose artifact is promoted: HEAD, or the
+/// green commit HEAD is <see cref="SkippedCommitCount"/> kanban-only commits past. On failure it is HEAD.
+/// </summary>
+internal sealed record LocateRunOutcome
+(
+  LocateRunStatus Status,
+  string HeadSha,
+  string TargetSha,
+  int SkippedCommitCount,
+  IReadOnlyList<CiRunSummary> CandidateRuns,
+  string? Detail
+)
+{
+  public static LocateRunOutcome Failed(LocateRunStatus status, string headSha, string? detail) =>
+    new(status, headSha, headSha, 0, [], detail);
+}
 
 internal enum DownloadArtifactStatus
 {
@@ -50,30 +70,38 @@ internal sealed class CiArtifactService
 
     string headSha = headResult.Stdout.Trim();
 
-    CommandOutput runListResult;
+    CommandOutput revListResult = await ReleaseGitGate.GitAsync(ct, "rev-list", "--first-parent", $"--max-count={ReleaseGuard.ReleaseTargetWalkLimit}", headSha);
+
+    if (revListResult.ExitCode != 0)
+    {
+      throw new InvalidOperationException($"Could not list first-parent history from HEAD: {revListResult.Stderr.Trim()}");
+    }
+
+    string[] firstParentShas = revListResult.Stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    ArtifactSourceWalkResult walk;
     try
     {
-      runListResult = await Shell.Builder("gh")
-        .WithArguments("run", "list", "--workflow", "workflow.yml", "--commit", headSha, "--status", "success", "--json", "databaseId,event,headSha,createdAt")
-        .WithNoValidation()
-        .CaptureAsync(ct);
+      walk = await ArtifactSourceWalk.RunAsync(headSha, firstParentShas, new GhGitCommitCiLookup(), ct);
     }
     catch (Win32Exception)
     {
-      return new LocateRunOutcome(LocateRunStatus.GhUnavailable, headSha, [], null);
+      return LocateRunOutcome.Failed(LocateRunStatus.GhUnavailable, headSha, null);
     }
-
-    if (runListResult.ExitCode != 0)
+    catch (GhRunListException exception)
     {
-      return new LocateRunOutcome(LocateRunStatus.GhFailed, headSha, [], runListResult.Stderr.Trim());
+      return LocateRunOutcome.Failed(LocateRunStatus.GhFailed, headSha, exception.Message);
     }
 
-    List<CiRunSummary>? runs = JsonSerializer.Deserialize(runListResult.Stdout, DevCliJsonContext.Default.ListCiRunSummary);
-    IReadOnlyList<CiRunSummary> candidateRuns = CiRunPromotion.OrderCandidateRuns(runs ?? [], headSha);
+    if (!walk.Verdict.Ok)
+    {
+      string? detail = walk.ShippingCommitSha is null
+        ? null
+        : $"Commit {walk.ShippingCommitSha} changes {walk.ShippingPath}, outside {ReleaseGuard.NonShippingPathPrefix}, so no earlier green run can stand in for it.";
+      return LocateRunOutcome.Failed(LocateRunStatus.NoMatchingRun, headSha, detail);
+    }
 
-    return candidateRuns.Count == 0
-      ? new LocateRunOutcome(LocateRunStatus.NoMatchingRun, headSha, [], null)
-      : new LocateRunOutcome(LocateRunStatus.Found, headSha, candidateRuns, null);
+    return new LocateRunOutcome(LocateRunStatus.Found, headSha, walk.Verdict.TargetSha!, walk.Verdict.SkippedCommitCount, walk.CandidateRuns, null);
   }
 
   public async Task<DownloadArtifactOutcome> DownloadPackagesArtifactAsync(
@@ -136,5 +164,47 @@ internal sealed class CiArtifactService
     }
 
     return new DownloadArtifactOutcome(DownloadArtifactStatus.Exhausted, null, null, expiredEncounters);
+  }
+}
+
+/// <summary>Thrown by <see cref="GhGitCommitCiLookup"/> when <c>gh run list</c> exits non-zero.</summary>
+internal sealed class GhRunListException : Exception
+{
+  public GhRunListException(string message) : base(message) { }
+
+  public GhRunListException() { }
+
+  public GhRunListException(string message, Exception innerException) : base(message, innerException) { }
+}
+
+/// <summary>The real <see cref="ICommitCiLookup"/>: <c>gh run list</c> per commit and <c>git diff</c> for paths.</summary>
+internal sealed class GhGitCommitCiLookup : ICommitCiLookup
+{
+  public async Task<IReadOnlyList<CiRunSummary>> GetSuccessfulRunsAsync(string sha, CancellationToken ct)
+  {
+    CommandOutput runListResult = await Shell.Builder("gh")
+      .WithArguments("run", "list", "--workflow", "workflow.yml", "--commit", sha, "--status", "success", "--json", "databaseId,event,headSha,createdAt")
+      .WithNoValidation()
+      .CaptureAsync(ct);
+
+    if (runListResult.ExitCode != 0)
+    {
+      throw new GhRunListException(runListResult.Stderr.Trim());
+    }
+
+    return JsonSerializer.Deserialize(runListResult.Stdout, DevCliJsonContext.Default.ListCiRunSummary) ?? [];
+  }
+
+  public async Task<IReadOnlyList<string>> GetChangedPathsAsync(string sha, CancellationToken ct)
+  {
+    // --no-renames lists both sides of a rename, so a move from source/ into kanban/ still shows source/.
+    CommandOutput diffResult = await ReleaseGitGate.GitAsync(ct, "diff", "--name-only", "--no-renames", $"{sha}^1", sha);
+
+    if (diffResult.ExitCode != 0)
+    {
+      throw new InvalidOperationException($"Could not list the paths changed by {sha}: {diffResult.Stderr.Trim()}");
+    }
+
+    return diffResult.Stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
   }
 }

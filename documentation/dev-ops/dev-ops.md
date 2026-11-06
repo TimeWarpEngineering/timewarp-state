@@ -11,19 +11,12 @@
 
 ## Release Process
 
-NuGet packages are published automatically when a GitHub Release is created:
+Packages are published when a GitHub Release is created. `dev release` creates the tag and the release from `<Version>` in `source/Directory.Build.props`. The release run promotes the CI artifact of the tagged commit; it does not rebuild. [Releasing](releasing.md) has the steps, the kanban-only commit rule, and the fixes for each refusal.
 
-1. **Master Branch**: Builds and tests on every push, but does not publish packages
-2. **Release Creation**: When a GitHub Release is created, the release workflow validates the version and publishes all NuGet packages
+### CI/CD Workflow
 
-### Creating a Release
+`.github/workflows/workflow.yml` is a thin trigger for `dev workflow`:
 
-1. Ensure the version in `Directory.Build.props` matches the intended release version
-2. Create a GitHub Release with a tag that exactly matches the version number
-3. The release workflow will automatically validate the version and publish packages to NuGet.org
-
-### CI/CD Workflows
-
-* **master-build.yml**: Runs on master branch pushes - builds, tests, but no publishing
-* **ci-build.yml**: Runs on pull requests - builds and tests
-* **release-publish.yml**: Runs on GitHub release creation - publishes NuGet packages
+* **pull_request** and **push to master**: build, test, e2e, and verify samples, then upload the `Packages-*` artifact
+* **release: published**: promote that artifact to NuGet.org
+* **workflow_dispatch**: `merge` (build and test), `release` (break-glass publish; needs `confirm=release`), or `probe` (trusted-publishing check)
