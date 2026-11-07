@@ -20,9 +20,11 @@ which asserts the literal `Version="4.14.0"` line.
 Repo context: `global.json` is SDK 11.0.100-rc.3; CI uses it via setup-dotnet. The 10.x SDK on the dev box is 10.0.403,
 already above the 10.0.400 floor.
 
-## Decision to make first
+## Decision: BUMP THE FLOOR (Steve, 2026-11-07)
 
-Bumping is a consumer-facing floor change, not a plain dependency refresh. Decide and record under `## Results`:
+Steve decided: bump to 5.9.0 and raise the consumer SDK floor. Do not re-deliberate the keep path. Still verify and
+record the exact floor 5.9.0 implies (which SDK bundles Roslyn 5.9) under `## Results`, because the props comment may
+be stale. The remaining bullets describe what was considered:
 
 - Do we accept that TimeWarp.State 12 consumers need SDK 10.0.400+ (or any .NET 11 SDK)? Check the floor 5.9.0
   actually implies (Roslyn 5.9 ships with which SDK; verify against the package's release notes / the SDK's bundled
@@ -51,7 +53,7 @@ Bumping is a consumer-facing floor change, not a plain dependency refresh. Decid
 
 ## Checklist
 
-- [ ] Floor decision recorded under `## Results` with the verified SDK → Roslyn mapping
+- [x] Floor decision: bump (Steve 2026-11-07); verified SDK → Roslyn mapping still to be recorded under `## Results`
 - [ ] Both packages at 5.9.0 in `Directory.Packages.props` (or pin kept and outdated report silenced, per decision)
 - [ ] Pin comment and `PinRoslynAtTheConsumerCompilerFloor` updated
 - [ ] Analyzer, code-fix, generator and clone-planner test suites pass
@@ -66,6 +68,7 @@ Bumping is a consumer-facing floor change, not a plain dependency refresh. Decid
 
 - Created: ffba6066-c22c-42a7-95c8-de75506a6687 (2026-11-07)
 - Context: Steve asked for a task to update the two outdated CodeAnalysis libs after `ganda nuget outdated` (2026-11-07)
+- Launch: Steve said "launch 151 bump the floor" — decision made, bump path only (2026-11-07)
 
 ## Notes
 
