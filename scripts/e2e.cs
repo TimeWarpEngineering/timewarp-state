@@ -15,14 +15,16 @@
 #region Design
 // Run is orchestration only. It sets NUGET_PACKAGES to artifacts/nuget-packages, then restores tools and cleans,
 // trusts dev certs only over https, builds the analyzer and source generator, sets UseHttp in the client
-// appsettings, publishes the server to tests/test-app/output, builds the tests, and installs Chromium. It then
-// starts the SUT on port 7011 through SutHost, waits up to 30 tries, runs dotnet test with chrome.runsettings, and
-// stops the SUT. A failed required step (E2eStepFailedException) or a failed test run sets Environment.ExitCode to 1.
-// The handler returns normally, so ScriptContext disposes; Environment.Exit is never called.
+// appsettings, publishes the server to tests/test-app/output, builds the tests, and ensures Chromium is installed.
+// It then starts the SUT on port 7011 through SutHost, waits up to 30 tries, runs dotnet test with
+// chrome.runsettings, and stops the SUT. A failed required step (E2eStepFailedException) or a failed test run sets
+// Environment.ExitCode to 1. The handler returns normally, so ScriptContext disposes; Environment.Exit is never called.
+// --skip-setup skips tool restore, dev certs, and the browser step for a box that is already set up; clean and the
+// builds still run. --with-deps asks for Playwright's system packages outside CI (CI always asks; see e2e-build.cs).
 #endregion
 
 NuruApp app = NuruApp.CreateBuilder()
-  .Map("")
+  .Map("--skip-setup --with-deps")
     .WithHandler(App.Run)
     .AsCommand()
     .Done()
@@ -43,7 +45,7 @@ static partial class App
   const int MaxReadyAttempts = 30;
   static readonly TimeSpan ReadyRetryInterval = TimeSpan.FromSeconds(1);
 
-  public static async Task Run()
+  public static async Task Run(bool skipSetup, bool withDeps)
   {
     using ScriptContext context = ScriptContext.FromRelativePath("..");
     DevCli.NuGetPackageIsolation.Isolation isolation =
@@ -56,9 +58,20 @@ static partial class App
 
     try
     {
-      await RunStep("Restore-Tools-And-Cleanup", () => RestoreToolsAndCleanup(OutputPath));
+      if (skipSetup)
+      {
+        WriteLine("--skip-setup: skipping tool restore, dev certs, and browser install.");
+      }
+
+      await RunStep("Restore-Tools-And-Cleanup", () => RestoreToolsAndCleanup(OutputPath, restoreTools: !skipSetup));
       await RunStep("Install-LinuxDevCerts", async () =>
       {
+        if (skipSetup)
+        {
+          WriteLine("Skipping dev-certs: --skip-setup.");
+          return;
+        }
+
         if (useHttp)
         {
           WriteLine("Skipping dev-certs trust: E2E runs over http (UseHttp=true).");
@@ -72,7 +85,16 @@ static partial class App
       RunStep("Update-ClientAppSettings", () => UpdateClientAppSettings(ClientAppSettingsPath, useHttp));
       await RunStep("Build-And-Publish-Sut", () => BuildAndPublishSut(SutProjectPath, OutputPath));
       await RunStep("Build-Test", () => BuildTest(TestProjectPath));
-      await RunStep("Ensure-Browsers-Installed", () => EnsureBrowsersInstalled(TestProjectPath));
+      await RunStep("Ensure-Browsers-Installed", async () =>
+      {
+        if (skipSetup)
+        {
+          WriteLine("Skipping browser install: --skip-setup.");
+          return;
+        }
+
+        await EnsureBrowsersInstalled(TestProjectPath, withDeps);
+      });
 
       if (!await RunTestsAgainstSut(sutUrl, useHttp))
       {

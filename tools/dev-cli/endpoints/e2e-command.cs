@@ -7,13 +7,22 @@
 // NUGET_PACKAGES to artifacts/nuget-packages before this command starts
 // scripts/e2e.cs. Child non-zero exit fails this process. Root nuget.config does
 // not list artifacts/packages, so this command does not create that folder.
+// --skip-setup and --with-deps pass through to scripts/e2e.cs. The browser step
+// skips the install when the Chromium revision Playwright wants is cached, and
+// adds Playwright's --with-deps (apt, needs root) only in CI or with --with-deps.
 #endregion
 
 namespace DevCli.Commands;
 
-[NuruRoute("e2e", Description = "Run Playwright end-to-end tests")]
+[NuruRoute("e2e", Description = "Run Playwright end-to-end tests. Skips the Chromium install when the revision Playwright wants is cached; --skip-setup skips tool restore, dev certs, and browser install")]
 internal sealed class E2eCommand : ICommand<Unit>
 {
+  [Option("skip-setup", null, Description = "Skip tool restore, dev certs, and Playwright browser install (box already set up)")]
+  public bool SkipSetup { get; set; }
+
+  [Option("with-deps", null, Description = "Install Playwright system packages (apt, needs passwordless sudo) outside CI")]
+  public bool WithDeps { get; set; }
+
   internal sealed class Handler : ICommandHandler<E2eCommand, Unit>
   {
     private readonly ITerminal Terminal;
@@ -49,8 +58,19 @@ internal sealed class E2eCommand : ICommand<Unit>
       Terminal.WriteLine("Running Playwright end-to-end tests...");
       Terminal.WriteLine($"Working from: {repoRoot}");
 
+      List<string> arguments = ["run", "--file", e2eRunner, "--"];
+      if (command.SkipSetup)
+      {
+        arguments.Add("--skip-setup");
+      }
+
+      if (command.WithDeps)
+      {
+        arguments.Add("--with-deps");
+      }
+
       int exitCode = await Shell.Builder("dotnet")
-        .WithArguments("run", "--file", e2eRunner)
+        .WithArguments([.. arguments])
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
