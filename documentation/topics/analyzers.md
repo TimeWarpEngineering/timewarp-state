@@ -5,7 +5,7 @@ title: Analyzers
 
 # Analyzers
 
-TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class. The clone source generator reports **TWSG002** when it cannot emit a clone for a reachable member. The ActionSet method generator and the persistence generator report **TWSG003** instead of emitting a member that would not compile.
+TimeWarp.State ships Roslyn analyzers inside the `TimeWarp.State` package (`analyzers/dotnet/cs`). Consuming projects get them automatically; there is no separate analyzer package. The analyzers, code fixes and source generators compile against Roslyn 5.9 (`Microsoft.CodeAnalysis.CSharp` 5.9.0), so they need a compiler at Roslyn 5.9 or later: SDK 10.0.400 or later, or .NET 11 SDK preview.6 or later. An older compiler does not load them and reports CS9057. The persistence source generator in the same package reports **TWSG001** when `[PersistentState]` is applied to a nested class. The clone source generator reports **TWSG002** when it cannot emit a clone for a reachable member. The ActionSet method generator and the persistence generator report **TWSG003** instead of emitting a member that would not compile.
 
 > **Breaking change:** analyzer diagnostic IDs were renamed to the `TWS` prefix: `TW0001` → `TWS0001`, `TW0002` → `TWS0002`, `TW0003` → `TWS0003`. This stops colliding with TimeWarp.SourceGenerators, which owns the bare `TW0001`–`TW0006` range (its `TW0002` is the unrelated XML-docs-to-markdown rule). Update `.editorconfig` `dotnet_diagnostic.*.severity` entries to the new ids.
 
