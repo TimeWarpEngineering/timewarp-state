@@ -87,6 +87,9 @@ Move the Roslyn compile references of the shipped analyzer, code fixes and sourc
 - Launch: Steve said "launch 151 bump the floor" — decision made, bump path only (2026-11-07)
 - Implement (ganda task work, 2026-11-07): bumped both pins to 5.9.0, verified the floor from dotnet/sdk tags, docs + beta.18 notes; build/test/e2e/verify-samples green. `dev test` first failed on the stale `~/.dotnet/toolResolverCache` (fixie); cleared it and reran.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session b856b077-fb6f-4581-9299-06a8a8601025, max-turns 500, Done — 2026-11-07T14:20:01Z
+- Review oracle: general reviewer, effort 2, round 1, disposition clean (ganda task work, print mode, 2026-11-07)
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7), session 93a49854-ae59-405c-a6bf-85a3ef31f95b, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-07T14:28:32Z
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-07T14:29:06Z
 
 ## Results
 
@@ -164,7 +167,21 @@ Expect:
 - `ganda nuget outdated` ends with "All packages are up to date!"
 - The nuspec has one dependency, `TimeWarp.Mediator`, and no `Microsoft.CodeAnalysis.CSharp`.
 
+### Review
+
+- Round 1, roster general, effort 2. Counts: bug 0/0/0, suggestion 0/0/0, nit 0/0/0 (open/fixed/wontfix). Disposition: **clean**. No wontfix and no escalation.
+- The goal restatement hedges the 10.0.403 `verify-samples` run. That mismatch is a misread under `## Learnings`. Round 1 opened no finding.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 - Related: task 146 updated all other outdated packages and left these two pinned.
 - Consumer impact is the whole point of this task. Treat the bump as a release-notes item, not a chore.
+
+## Learnings
+
+- Misread: `## Goal (implementer restatement)` says `verify-samples` runs on SDK 11 rc.3 and on 10.0.403 "where the SDK can build the sample." The original requirement and the checklist say to run `verify-samples` on 10.0.403 and on 11 rc.3 and record both, with no such hedge. Samples inherit `net11.0` from `Directory.Build.props`, so SDK 10.0.403 cannot build them. Results record that limit and a scratch load of the packed analyzer and generator DLLs on 10.0.403. The consumer proof remains `verify-samples` on 11.0.100-rc.3. Round 1 did not open a finding for it.
