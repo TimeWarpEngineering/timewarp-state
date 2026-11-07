@@ -71,6 +71,7 @@ Acceptance criteria:
   in `dev build` / `verify-samples` (projects outside the test-app graph). Audit: `ganda repo audit --fix` passes and
   changed nothing; the 2 advisory warnings (kanban-landed claim 098 with no worktree, kebab-path names for Blazor
   `*.lib.module.*` / DevTools `.targets` files whose names the framework requires) are pre-existing and not this task's.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 84d5126b-fca2-4c3c-86a5-c4abf41cf9ab, max-turns 500, Done — 2026-11-07T11:59:28Z
 
 ## Notes
 
