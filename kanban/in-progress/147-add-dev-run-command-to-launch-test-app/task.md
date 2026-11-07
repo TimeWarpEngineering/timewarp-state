@@ -41,6 +41,8 @@ Acceptance:
 
 - Implement oracle (ganda task work, claude implementer) 2026-11-07: added `run` endpoint, smoke-launched both profiles, ran audit --fix.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 89f1848b-2e51-4fbc-813e-53c369e80d2f, max-turns 500, Done — 2026-11-07T07:36:13Z
+- Review oracle round 1: reviewer-cursor (cursor, vendor xai, model grok-4.7), body tw-implementation-review, effort 2, roster general, turn cap 120, session id not exposed, max-turns uncapped (no --max-turns flag; bound 120). Disposition clean — 2026-11-07. Artifacts: `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-07T07:47:08Z
 
 ## Results
 
@@ -71,6 +73,22 @@ Expect:
 2. `Launching test app (profile: https)...`, then `Now listening on: https://localhost:7011` and `http://localhost:5058`.
 3. A `dotnet run … --launch-profile http --no-build` line, then `Now listening on: http://localhost:5058`.
 4. `Error: unknown profile 'bogus'. Use one of: https, http.` and exit code `1`.
+
+### Review
+
+Round 1, effort 2, roster general. Disposition: **clean**. No misread between `## Goal (implementer restatement)` and the original task. No wontfix and no escalation.
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 0 | 0 | 0 |
+| suggestion | 0 | 0 | 0 |
+| nit | 0 | 0 | 0 |
+
+Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
