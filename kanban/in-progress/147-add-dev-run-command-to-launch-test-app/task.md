@@ -40,6 +40,7 @@ Acceptance:
 - Launch: claude code review session, Steve asked to roll in audit fixes (2026-11-07)
 
 - Implement oracle (ganda task work, claude implementer) 2026-11-07: added `run` endpoint, smoke-launched both profiles, ran audit --fix.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 89f1848b-2e51-4fbc-813e-53c369e80d2f, max-turns 500, Done — 2026-11-07T07:36:13Z
 
 ## Results
 
