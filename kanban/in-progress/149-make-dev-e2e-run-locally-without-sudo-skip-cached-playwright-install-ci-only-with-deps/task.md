@@ -74,6 +74,8 @@ Acceptance criteria:
 - Implemented under `ganda task work` implement oracle (2026-11-07): browser revision check, CI-only with-deps + sudo -n
   guard, non-interactive dev certs, `--skip-setup`/`--with-deps`; 4 local runs recorded under Results.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 0e746bf4-5483-4d66-b5ea-48a49e5fbe98, max-turns 500, Done — 2026-11-07T12:56:37Z
+- Review oracle: reviewed by reviewer (Grok 4.7), body tw-implementation-review, effort 2, roster general, budget turn cap 120, session not reported (harness uncapped), disposition clean — 2026-11-07. No misread: the implementer's restatement matches the task.
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-07T13:07:24Z
 
 ## Results
 
@@ -142,6 +144,14 @@ Expect:
   `--with-deps` it warns that `sudo -n true` failed and drops the flag instead of prompting).
 - CI e2e step log shows `not found in /home/runner/.cache/ms-playwright; installing.` and
   `Running: pwsh … install chromium --with-deps`, and the job is green.
+
+### Review
+
+Round 1, roster general, effort 2. Final counts: bug 0 / suggestion 0 / nit 0 (open 0, fixed 0, wontfix 0). Disposition: clean. The restatement matches the task, so there is no misread. Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
