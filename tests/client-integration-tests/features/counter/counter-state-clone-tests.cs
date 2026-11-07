@@ -6,9 +6,7 @@
 // Seeds Count with the test-only Initialize(count) and calls the Clone() extension directly.
 #endregion
 
-namespace CounterState;
-
-using Test.App.Client.Features.Counter;
+namespace CounterState_;
 
 public class Clone_Should : BaseTest
 {
@@ -26,6 +24,7 @@ public class Clone_Should : BaseTest
 
     //Act
     CounterState? clone = CounterState.Clone();
+    clone.ShouldNotBeNull();
 
     //Assert
     CounterState.ShouldNotBeSameAs(clone);

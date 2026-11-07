@@ -8,9 +8,6 @@
 
 namespace GetEnclosingStateType_;
 
-using TimeWarp.Features.RenderSubscriptions;
-using TimeWarp.State.Extensions;
-
 public class TypeExtensionsTests
 {
   private class TestState : IState

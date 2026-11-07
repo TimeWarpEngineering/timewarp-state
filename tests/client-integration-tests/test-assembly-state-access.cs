@@ -7,8 +7,6 @@
 // GetCallingAssembly is this assembly when a test calls those overloads.
 #endregion
 
-using System.Runtime.CompilerServices;
-
 namespace Client.Integration.Tests;
 
 internal static class TestAssemblyStateAccess

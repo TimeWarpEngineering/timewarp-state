@@ -9,11 +9,6 @@
 
 namespace TimerElapsed_;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using TimeWarp.State.Plus.Features.Timers;
-
 public class TimerElapsed_Should
 {
   public async Task Publish_The_Notification_And_Restart_The_Named_Timer()

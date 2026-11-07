@@ -4,7 +4,8 @@
 
 #region Design
 // [TrackAction] puts it in ActionTrackingState while it runs. FiveSecondTask links an optional external token with the
-// state's CancellationToken so tests and ActiveActionsPage can cancel it either way.
+// state's CancellationToken so tests and ActiveActionsPage can cancel it either way. Start/complete go to ILogger
+// because Console is banned (RS0030).
 #endregion
 
 namespace Test.App.Client.Features.Application;
@@ -18,13 +19,18 @@ public partial class ApplicationState
 
     internal sealed class Handler : StateActionHandler<Action>
     {
-      public Handler(IStore store) : base(store) {}
+      private readonly ILogger<Handler> Logger;
+
+      public Handler(IStore store, ILogger<Handler> logger) : base(store)
+      {
+        Logger = logger;
+      }
 
       public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        Console.WriteLine("Start five second task");
+        Logger.LogInformation("Start five second task");
         await Task.Delay(millisecondsDelay: 5000, cancellationToken: cancellationToken);
-        Console.WriteLine("Five second task complete");
+        Logger.LogInformation("Five second task complete");
       }
     }
   }

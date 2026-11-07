@@ -7,8 +7,6 @@
 // GetCallingAssembly is this assembly when a test calls RouteState.Initialize(Stack).
 #endregion
 
-using System.Runtime.CompilerServices;
-
 namespace TimeWarp.State.Plus.Tests;
 
 internal static class TestAssemblyStateAccess

@@ -23,6 +23,7 @@ global using TimeWarp.Mediator;
 global using TimeWarp.Mediator.Generated;
 // ReSharper disable once RedundantUsingDirective.Global
 global using Microsoft.AspNetCore.Components;
+global using Microsoft.AspNetCore.Components.Rendering;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
@@ -30,6 +31,7 @@ global using Microsoft.JSInterop;
 global using System;
 global using System.Collections;
 global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
 // ReSharper disable once RedundantUsingDirective.Global
 global using System.Diagnostics.CodeAnalysis;
 // ReSharper disable once RedundantUsingDirective.Global
@@ -51,6 +53,7 @@ global using Test.App.Client.Features.Base;
 global using Test.App.Client.Features.Base.Components;
 global using Test.App.Client.Features.Counter;
 global using Test.App.Client.Features.Blue;
+global using Test.App.Client.Features.CloneTest;
 global using Test.App.Client.Features.EventStream;
 global using Test.App.Client.Features.Purple;
 global using Test.App.Client.Features.WeatherForecast;

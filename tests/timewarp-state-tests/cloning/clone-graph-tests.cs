@@ -16,7 +16,9 @@ public class Should_
   {
     var original = new Sample(privateValue: 7) { Name = "a", Numbers = [1, 2, 3] };
 
-    Sample clone = original.Clone();
+    Sample? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
 
     clone.ShouldNotBeSameAs(original);
     clone.Name.ShouldBe("a");
@@ -29,7 +31,9 @@ public class Should_
   {
     var original = new Sample(privateValue: 1) { Ignored = "original", JsonIgnored = "original" };
 
-    Sample clone = original.Clone();
+    Sample? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
 
     clone.Id.ShouldNotBe(original.Id);
     clone.Id.ShouldNotBe(Guid.Empty);
@@ -45,7 +49,9 @@ public class Should_
       Lookup = new Dictionary<string, Child> { ["x"] = new() { Value = 10 } }
     };
 
-    Sample clone = original.Clone();
+    Sample? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
     clone.Children[0].Value = 99;
     clone.Lookup["x"].Value = 99;
     clone.Lookup["y"] = new Child { Value = 3 };
@@ -62,7 +68,9 @@ public class Should_
     var original = new Sample(privateValue: 0) { Children = [shared, shared] };
     original.Self = original;
 
-    Sample clone = original.Clone();
+    Sample? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
 
     clone.Self.ShouldBeSameAs(clone);
     clone.Children[0].ShouldBeSameAs(clone.Children[1]);
@@ -77,7 +85,9 @@ public class Should_
       Children = new[,] { { new Child { Value = 1 } }, { new Child { Value = 2 } } }
     };
 
-    ArrayHolder clone = original.Clone();
+    ArrayHolder? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
 
     clone.Numbers.ShouldNotBeSameAs(original.Numbers);
     clone.Numbers[1, 1].ShouldBe(4);
@@ -89,7 +99,9 @@ public class Should_
   {
     var original = new Holder { Pair = new Pair { Child = new Child { Value = 1 }, Count = 2 } };
 
-    Holder clone = original.Clone();
+    Holder? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
     clone.Pair.Child.Value = 50;
 
     original.Pair.Child.Value.ShouldBe(1);
@@ -101,7 +113,9 @@ public class Should_
     Action action = () => { };
     var original = new Sample(privateValue: 0) { Callback = action, Kind = typeof(string) };
 
-    Sample clone = original.Clone();
+    Sample? clone = original.Clone();
+
+    clone.ShouldNotBeNull();
 
     clone.Callback.ShouldBeSameAs(action);
     clone.Kind.ShouldBeSameAs(typeof(string));

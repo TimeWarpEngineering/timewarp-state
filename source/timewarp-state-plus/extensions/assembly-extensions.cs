@@ -10,9 +10,6 @@
 
 namespace TimeWarp.State.Plus.Extensions;
 
-using System.Resources;
-using System.Runtime.CompilerServices;
-
 public static class AssemblyExtensions
 {
   public static AssemblyInfo GetAssemblyInfo(this Assembly assembly) => new(assembly);

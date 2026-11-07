@@ -10,10 +10,6 @@
 // ReSharper disable UnusedType.Global
 namespace ActiveActionBehavior_;
 
-using Microsoft.Extensions.Logging.Abstractions;
-using TimeWarp.Features.ActionTracking;
-using TimeWarp.State.Plus.Features.Timers;
-
 public class ActiveActionBehavior_Should
 {
   public async Task Skip_Tracking_When_Action_Is_Internal()
@@ -156,7 +152,6 @@ public class ActiveActionBehavior_Should
       Tokens.Add(cancellationToken);
       return ValueTask.FromResult<object?>(null);
     }
-
 
   }
 }

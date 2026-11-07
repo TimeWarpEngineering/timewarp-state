@@ -12,10 +12,6 @@
 
 namespace Test.App.Server.Features.WeatherForecast;
 
-using Contracts.Features.WeatherForecast;
-using TimeWarp.Mediator;
-using TimeWarp.State;
-
 [MediatorScope(typeof(ServerPipeline))]
 public sealed class GetWeatherForecastsRequest : IRequest<GetWeatherForecasts.Response>
 {

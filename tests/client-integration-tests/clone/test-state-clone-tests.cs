@@ -9,8 +9,6 @@
 
 namespace TestState_;
 
-using TestApp.Client.Integration.Tests.Clone;
-
 public class Clone_Should
 {
 
@@ -21,7 +19,8 @@ public class Clone_Should
     var testState = new TestState();
 
     // Act
-    TestState clone = testState.Clone();
+    TestState? clone = testState.Clone();
+    clone.ShouldNotBeNull();
 
     // Assert
     clone.SortedFruits.Count().ShouldBe(7);

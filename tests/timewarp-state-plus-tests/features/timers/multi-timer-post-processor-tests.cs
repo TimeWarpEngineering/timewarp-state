@@ -10,10 +10,6 @@
 // ReSharper disable UnusedType.Global
 namespace MultiTimerPostProcessor_;
 
-using Microsoft.Extensions.Logging.Abstractions;
-using TimeWarp.Features.ActionTracking;
-using TimeWarp.State.Plus.Features.Timers;
-
 public class MultiTimerPostProcessor_Should
 {
   public async Task Dispatch_Reset_Once_For_User_Request_And_Skip_On_Internal()
@@ -142,8 +138,6 @@ public class MultiTimerPostProcessor_Should
       await Record(request, cancellationToken);
       return null;
     }
-
-
 
     private async Task Record(object request, CancellationToken cancellationToken)
     {

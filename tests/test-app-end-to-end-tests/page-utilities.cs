@@ -9,7 +9,6 @@
 #endregion
 
 namespace Test.App.EndToEnd.Tests;
-using Microsoft.Playwright;
 
 public static class PageUtilities
 {
@@ -44,7 +43,6 @@ public static class PageUtilities
 
       if (isBlazorDownloaded)
       {
-        Console.WriteLine("Blazor WASM resource is downloaded.");
         return;
       }
 

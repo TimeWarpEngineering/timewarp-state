@@ -9,9 +9,6 @@
 
 namespace Test.App.Client.Features.Base.Components;
 
-using CloneTest;
-using Microsoft.AspNetCore.Components.Rendering;
-
 /// <summary>
 /// Makes access to the State a little easier and exposes the render-mode fragment the test pages render.
 /// </summary>

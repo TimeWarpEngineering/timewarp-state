@@ -48,8 +48,10 @@
 
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.3.26522.148" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="11.0.0-rc.3.26522.148" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Configuration" Version="11.0.0-rc.3.26522.148" />
+    <!-- Direct pin for timewarp-state-analyzer-tests: NuGet.Packaging 7.0.3 (via Analyzer.Testing 1.1.4) pulls 9.0.6,
+         which has NU1902/NU1903 advisories that fail the build under TreatWarningsAsErrors. why: task 148 2026-11-07 -->
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="11.0.0-rc.3.26522.148" />
 
     <!-- Microsoft Testing & Build Tools -->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
@@ -81,6 +83,5 @@
 
     <!-- System & Utilities -->
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="11.0.0-rc.3.26522.148" />
   </ItemGroup>
 </Project>

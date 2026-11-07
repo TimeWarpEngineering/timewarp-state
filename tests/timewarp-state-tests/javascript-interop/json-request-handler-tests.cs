@@ -83,6 +83,8 @@ public class Should_
     );
   }
 
+  // BL0016: this class is a test double for the JS runtime; its own calls are not real interop to guard.
+#pragma warning disable BL0016
   private sealed class RecordingJsRuntime : IJSRuntime
   {
     public int InvokeCount { get; private set; }
@@ -102,4 +104,5 @@ public class Should_
       return default;
     }
   }
+#pragma warning restore BL0016
 }

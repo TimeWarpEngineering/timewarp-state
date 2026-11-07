@@ -6,20 +6,24 @@
 // Bound to ServerPipeline so it never runs ClientPipeline store behaviors. Consumes the
 // server-local GetWeatherForecastsRequest (not the contracts Query HTTP DTO) and returns the
 // shared contracts Response. Assembly MediatorScope is reinforced on the type for TWM004 clarity.
+// Calls and results are logged through ILogger because Console is banned (RS0030).
 #endregion
 
 namespace Test.App.Server.Features.WeatherForecast;
 
-using Contracts.Features.WeatherForecast;
-using TimeWarp.Mediator;
-using TimeWarp.State;
-
 [MediatorScope(typeof(ServerPipeline))]
 public sealed class GetWeatherForecastsHandler : IRequestHandler<GetWeatherForecastsRequest, GetWeatherForecasts.Response>
 {
+  private readonly ILogger<GetWeatherForecastsHandler> Logger;
+
+  public GetWeatherForecastsHandler(ILogger<GetWeatherForecastsHandler> logger)
+  {
+    Logger = logger;
+  }
+
   public ValueTask<GetWeatherForecasts.Response> Handle(GetWeatherForecastsRequest request, CancellationToken cancellationToken)
   {
-    Console.WriteLine("Weather API endpoint called at: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+    Logger.LogInformation("Weather API endpoint called for {Days} days", request.Days);
 
     DateOnly startDate = DateOnly.FromDateTime(DateTime.Now);
     string[] summaries = ["Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"];
@@ -36,7 +40,7 @@ public sealed class GetWeatherForecastsHandler : IRequestHandler<GetWeatherForec
             )
         ).ToArray();
 
-    Console.WriteLine($"Generated {forecasts.Length} weather forecasts");
+    Logger.LogInformation("Generated {Count} weather forecasts", forecasts.Length);
 
     GetWeatherForecasts.Response response = new();
     response.AddRange(forecasts);

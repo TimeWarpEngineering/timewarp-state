@@ -6,9 +6,7 @@
 // Uses default JsonSerializerOptions so the [JsonConstructor] (guid, count) is exercised; mirrors the BlueState tests.
 #endregion
 
-namespace CounterState;
-
-using Test.App.Client.Features.Counter;
+namespace CounterState_;
 
 public class JsonSerializer_Should : BaseTest
 {

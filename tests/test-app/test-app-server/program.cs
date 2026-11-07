@@ -7,14 +7,11 @@
 // ServerPipeline mediator with AddGeneratedMediator. Generated extensions are internal to each host, so the
 // client's extension is not in scope here. The weather endpoint passes the Days query value to the handler;
 // Days defaults to 5 so a plain api/weather request still works. The throw-server-side-exception endpoint
-// throws InvalidOperationException with the query message.
+// throws InvalidOperationException with the query message. App is fully qualified: inside Test.App.Server the
+// bare name App binds to the Test.App namespace before any global using.
 #endregion
 
 namespace Test.App.Server;
-
-using Components;
-using Contracts.Features.WeatherForecast;
-using Features.WeatherForecast;
 
 internal class Program
 {
@@ -44,11 +41,7 @@ internal class Program
     builder.Services.LogTimeWarpStateMiddleware(logger, MediatorManifest.Json);
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-      app.UseWebAssemblyDebugging();
-    }
-    else
+    if (!app.Environment.IsDevelopment())
     {
       app.UseExceptionHandler("/Error", createScopeForErrors: true);
       // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -60,7 +53,7 @@ internal class Program
     app.MapStaticAssets();
     app.UseAntiforgery();
 
-    app.MapRazorComponents<App>()
+    app.MapRazorComponents<Test.App.Components.App>()
         .AddInteractiveServerRenderMode()
         .AddInteractiveWebAssemblyRenderMode()
         .AddAdditionalAssemblies(typeof(Test.App.Client.AssemblyMarker).Assembly);

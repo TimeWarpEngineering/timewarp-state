@@ -10,8 +10,6 @@
 // ReSharper disable UnusedType.Global
 namespace PushRouteInfo_;
 
-using Microsoft.JSInterop;
-
 public class PushRouteInfo_Should
 {
   private const string UrlA = "http://localhost/a";
@@ -27,6 +25,8 @@ public class PushRouteInfo_Should
     protected override void NavigateToCore(string uri, bool forceLoad) => Uri = uri;
   }
 
+  // BL0016: this class is a test double for the JS runtime; its own calls are not real interop to guard.
+#pragma warning disable BL0016
   private sealed class TitleJsRuntime : IJSRuntime
   {
     public string Title { get; set; } = "";
@@ -69,6 +69,7 @@ public class PushRouteInfo_Should
       public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
   }
+#pragma warning restore BL0016
 
   private static
   (

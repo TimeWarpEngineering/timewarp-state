@@ -46,6 +46,14 @@
     <None Include=".\readme.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
+  <!-- wwwroot/js and wwwroot/types are tracked in git. Microsoft.TypeScript.MSBuild's CleanTypeScriptOutputs deletes
+       every file listed in tsc-emitted.txt, so a Rebuild (a no-incremental dotnet build) removed them after evaluation
+       had already globbed them as static web assets, and the build failed with "No file exists for the asset".
+       Dropping the list first keeps the tracked files; tsc still rewrites them on every build. (task 148) -->
+  <Target Name="KeepTrackedTypeScriptOutputsOnClean" BeforeTargets="CleanTypeScriptOutputs">
+    <Delete Files="$(IntermediateOutputPath)tsc-emitted.txt" />
+  </Target>
+
   <Target Name="RemoveTSConfigFileFromPackage" AfterTargets="CompileTypeScriptWithTSConfig">
     <ItemGroup>
       <Content Remove="**\tsconfig.json" />

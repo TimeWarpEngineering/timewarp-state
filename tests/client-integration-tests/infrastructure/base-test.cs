@@ -22,7 +22,6 @@ public abstract class BaseTest
 
   protected BaseTest(ClientHost clientHost)
   {
-    Console.WriteLine("BaseTest");
     IServiceScopeFactory serviceScopeFactory = clientHost.ServiceProvider.GetService<IServiceScopeFactory>()!;
     IServiceScope serviceScope = serviceScopeFactory.CreateScope();
     ServiceProvider = serviceScope.ServiceProvider;

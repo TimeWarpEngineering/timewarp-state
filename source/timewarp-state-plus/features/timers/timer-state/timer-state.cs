@@ -17,9 +17,6 @@
 
 namespace TimeWarp.State.Plus.Features.Timers;
 
-using Microsoft.Extensions.Options;
-using System.Timers;
-
 public sealed partial class TimerState : State<TimerState>, ICloneable
 {
   private readonly ILogger<TimerState> Logger;

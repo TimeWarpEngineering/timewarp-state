@@ -25,7 +25,8 @@ public class Clone_Should : BaseTest
     ApplicationState.Initialize(name: "TestName", exceptionMessage: "Some ExceptionMessage");
 
     //Act
-    ApplicationState clone = ApplicationState.Clone();
+    ApplicationState? clone = ApplicationState.Clone();
+    clone.ShouldNotBeNull();
 
     //Assert
     ApplicationState.ShouldNotBeSameAs(clone);
