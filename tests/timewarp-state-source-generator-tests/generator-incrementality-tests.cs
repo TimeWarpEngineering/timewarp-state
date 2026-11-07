@@ -17,7 +17,7 @@
 // Accepting Cached or Unchanged for steps fed by a transform keeps a Roslyn upgrade that reports the other reason
 // from failing a test that still proves the output was not re-added.
 // Measured on Microsoft.CodeAnalysis.CSharp 4.14.0 (task 142, 2026-11-06), unrelated file added: see Results in the
-// task 142 kitchen.
+// task 142 kitchen. Still green on 5.9.0 (task 151).
 #endregion
 
 // ReSharper disable InconsistentNaming

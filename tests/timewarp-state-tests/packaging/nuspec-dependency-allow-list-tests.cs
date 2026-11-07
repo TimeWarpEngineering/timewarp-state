@@ -5,7 +5,7 @@
 #region Design
 // The checker is the same type dev pack runs against nupkgs. These tests feed it dependency ids and a
 // nuspec document so a regression fails in the test run, without packing. The Roslyn pin assertion
-// keeps the analyzer and generator on the 4.14.0 consumer compiler floor.
+// keeps the analyzer and generator on the 5.9.0 consumer compiler floor (SDK 10.0.400+, .NET 11 SDK preview.6+; task 151).
 #endregion
 
 namespace TimeWarp.State.Packaging;
@@ -56,7 +56,7 @@ public class NuspecDependencyAllowList_Should_
           <dependencies>
             <group targetFramework="net11.0">
               <dependency id="TimeWarp.Mediator" version="15.0.0-beta.5" exclude="Build,Analyzers" />
-              <dependency id="Microsoft.CodeAnalysis.CSharp" version="4.14.0" exclude="Build,Analyzers" />
+              <dependency id="Microsoft.CodeAnalysis.CSharp" version="5.9.0" exclude="Build,Analyzers" />
             </group>
           </dependencies>
         </metadata>
@@ -69,7 +69,7 @@ public class NuspecDependencyAllowList_Should_
   public static void PinRoslynAtTheConsumerCompilerFloor()
   {
     string props = ReadRepoFile("Directory.Packages.props");
-    props.ShouldContain("""<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />""");
+    props.ShouldContain("""<PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />""");
 
     string buildProps = ReadRepoFile("Directory.Build.props");
     System.Xml.Linq.XDocument.Parse(buildProps)
