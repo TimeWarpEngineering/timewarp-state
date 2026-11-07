@@ -10,16 +10,19 @@ Add a `dev run` endpoint to the dev CLI (`tools/dev-cli/`) that launches the tes
 - Runs `dotnet run --project tests/test-app/test-app-server --launch-profile <profile>`. Default profile `https` (matches `launchSettings.json`: `https://localhost:7011;http://localhost:5058`).
 - Support `--profile http|https` (or `--http` flag) and pass-through of extra args to `dotnet run` if trivial; otherwise record as follow-up.
 - `./bin/dev run --help` lists the command. `./bin/dev build` and `ganda repo audit` clean.
+- Run `ganda repo audit --fix` in this worktree and commit whatever it changes as part of this task (audit fixes are policy; list them under `## Results`). Advisory warnings it cannot fix (kanban-landed 098, kebab-path names) stay as they are.
 
 ## Checklist
 
 - [ ] `run-command.cs` endpoint added
 - [ ] Default launches test app on https profile; `--profile`/`--http` override works
 - [ ] `./bin/dev run --help` shows it; build + audit green
+- [ ] `ganda repo audit --fix` run and its changes committed
 
 ## Session
 
 - Created: ses_e4dbb8ee4ffeHWuFv7lGTHeTG1 (2026-11-07)
+- Launch: claude code review session, Steve asked to roll in audit fixes (2026-11-07)
 
 ## Notes
 
