@@ -369,3 +369,6 @@ bin/dev
 bin/dev.dbg
 # AOT dev CLI on Windows (self-install output; local; not product)
 bin/dev.exe
+
+# VS Code settings: Peacock rewrites this file; vscode-window-icon --fix writes it locally (not tracked)
+.vscode/settings.json
