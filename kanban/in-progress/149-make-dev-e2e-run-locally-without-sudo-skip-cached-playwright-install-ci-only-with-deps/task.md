@@ -73,6 +73,7 @@ Acceptance criteria:
 - Context: Steve hit the sudo prompt running `dev e2e` locally after task 147/148; asked for no reinstall when cached, maybe a version check (2026-11-07)
 - Implemented under `ganda task work` implement oracle (2026-11-07): browser revision check, CI-only with-deps + sudo -n
   guard, non-interactive dev certs, `--skip-setup`/`--with-deps`; 4 local runs recorded under Results.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 0e746bf4-5483-4d66-b5ea-48a49e5fbe98, max-turns 500, Done — 2026-11-07T12:56:37Z
 
 ## Results
 
