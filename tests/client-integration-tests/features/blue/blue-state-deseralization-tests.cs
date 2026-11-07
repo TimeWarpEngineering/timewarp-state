@@ -9,8 +9,6 @@
 
 namespace BlueState_;
 
-using Test.App.Client.Features.Blue;
-
 public class JsonSerializer_Should : BaseTest
 {
   private BlueState BlueState { get; }

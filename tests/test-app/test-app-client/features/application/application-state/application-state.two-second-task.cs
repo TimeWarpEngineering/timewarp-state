@@ -4,7 +4,8 @@
 
 #region Design
 // [TrackAction] makes it visible in ActionTrackingState while it runs. Callers send the action directly; the
-// convenience TwoSecondTask method is left commented out.
+// convenience TwoSecondTask method is left commented out. Start/complete go to ILogger because Console is
+// banned (RS0030).
 #endregion
 
 namespace Test.App.Client.Features.Application;
@@ -18,12 +19,18 @@ public partial class ApplicationState
 
     internal sealed class Handler : StateActionHandler<Action>
     {
-      public Handler(IStore store) : base(store) {}
+      private readonly ILogger<Handler> Logger;
+
+      public Handler(IStore store, ILogger<Handler> logger) : base(store)
+      {
+        Logger = logger;
+      }
+
       public override async ValueTask Handle(Action action, CancellationToken cancellationToken)
       {
-        Console.WriteLine("Start two Second Task");
+        Logger.LogInformation("Start two second task");
         await Task.Delay(millisecondsDelay: 2000, cancellationToken: cancellationToken);
-        Console.WriteLine("Two Second Task Complete");
+        Logger.LogInformation("Two second task complete");
       }
     }
   }

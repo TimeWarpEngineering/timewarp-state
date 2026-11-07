@@ -34,6 +34,8 @@ public class Should_
     scriptRuntime.InitCalls.ShouldBe(1);
   }
 
+  // BL0016: this class is a test double for the JS runtime; its own calls are not real interop to guard.
+#pragma warning disable BL0016
   private sealed class ScriptRuntime : IJSRuntime
   {
     public int InitCalls { get; private set; }
@@ -52,6 +54,7 @@ public class Should_
       return new ValueTask<TValue>(default(TValue)!);
     }
   }
+#pragma warning restore BL0016
 
   private sealed class UnusedSender : ISender<ClientPipeline>
   {

@@ -8,6 +8,7 @@
 
 global using TimeWarp.Mediator;
 global using TimeWarp.State.Extensions;
+global using TimeWarp.Features.Persistence;
 global using Shouldly;
 global using Mono.Cecil;
 global using NetArchTest.Policies;

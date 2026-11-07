@@ -10,8 +10,6 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace AnyClone.Tests.TestObjects;
 
-using System.Collections.ObjectModel;
-
 [GenerateClone]
 public class CustomCollectionObject<T> : Collection<T>
 {

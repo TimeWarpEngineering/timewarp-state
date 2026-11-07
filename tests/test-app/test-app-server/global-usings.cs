@@ -8,6 +8,8 @@
 #endregion
 
 global using Test.App.Contracts.Features.ExceptionHandlings;
+global using Test.App.Contracts.Features.WeatherForecast;
+global using Test.App.Server.Features.WeatherForecast;
 global using TimeWarp.Mediator;
 global using TimeWarp.State;
 global using Test.App.Server.Generated;

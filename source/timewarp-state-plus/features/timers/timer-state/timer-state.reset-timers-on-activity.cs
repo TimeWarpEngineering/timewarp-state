@@ -8,7 +8,6 @@
 
 namespace TimeWarp.State.Plus.Features.Timers;
 
-using System.Timers;
 public partial class TimerState
 {
   public static class ResetTimersOnActivityActionSet

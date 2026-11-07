@@ -42,7 +42,6 @@
       [assembly: MediatorAssembly] and MediatorScope(ClientPipeline).
     -->
     <PackageReference Include="TimeWarp.Mediator"/>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
   </ItemGroup>
 
   <ItemGroup>

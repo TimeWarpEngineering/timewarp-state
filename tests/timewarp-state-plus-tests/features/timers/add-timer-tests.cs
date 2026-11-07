@@ -10,10 +10,6 @@
 // ReSharper disable UnusedType.Global
 namespace AddTimer_;
 
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using TimeWarp.State.Plus.Features.Timers;
-
 public class AddTimer_Should
 {
   private const double ShortDurationMs = 50;

@@ -5,7 +5,8 @@
 #region Design
 // They are plain static methods using Shouldly, not MSTest tests, so the page can call them in Server and browser WASM
 // and the E2E test can check the result. Each type has a clone-equals case and a mutated-clone-differs case. The page
-// runs the 2D and 3D array cases and ModifiedClone_InterfaceObject with the rest.
+// runs the 2D and 3D array cases and ModifiedClone_InterfaceObject with the rest. Generated Clone() returns T?, so
+// each case asserts ShouldNotBeNull() before comparing or mutating the clone.
 #endregion
 
 namespace AnyClone.Tests;
@@ -22,7 +23,8 @@ public static class CloneProviderTests
       LongValue = 10000,
       StringValue = "Test String"
     };
-    BasicObject cloned = original.Clone();
+    BasicObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -37,7 +39,8 @@ public static class CloneProviderTests
       LongValue = 10000,
       StringValue = "Test String"
     };
-    BasicObject cloned = original.Clone();
+    BasicObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
     cloned.StringValue = "A different string";
 
     cloned.ShouldNotBe(original);
@@ -51,7 +54,8 @@ public static class CloneProviderTests
       IntArray = [1, 2, 3, 4],
       DoubleArray = [1.0, 2.0, 3.0, 4.0, 5.0]
     };
-    ArrayObject cloned = original.Clone();
+    ArrayObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -67,7 +71,8 @@ public static class CloneProviderTests
                 { 7, 8 }
             }
     };
-    MultiDimensional2dArrayObject cloned = original.Clone();
+    MultiDimensional2dArrayObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -81,7 +86,8 @@ public static class CloneProviderTests
                 { { 10, 11, 12 }, { 13, 14, 15 }, { 16, 17, 18 } }
             }
     };
-    MultiDimensional3dArrayObject cloned = original.Clone();
+    MultiDimensional3dArrayObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -94,7 +100,8 @@ public static class CloneProviderTests
       IntArray = [1, 2, 3, 4],
       DoubleArray = [1.0, 2.0, 3.0, 4.0, 5.0]
     };
-    ArrayObject cloned = original.Clone();
+    ArrayObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
     cloned.ByteArray[2] = 0x10;
 
     cloned.ShouldNotBe(original);
@@ -119,7 +126,8 @@ public static class CloneProviderTests
                     }
                 }
     };
-    CollectionObject cloned = original.Clone();
+    CollectionObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -143,7 +151,8 @@ public static class CloneProviderTests
                     }
                 }
     };
-    CollectionObject cloned = original.Clone();
+    CollectionObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
     cloned.ObjectCollection.Skip(1).First().BoolValue = true;
 
     cloned.ShouldNotBe(original);
@@ -159,7 +168,8 @@ public static class CloneProviderTests
                     { 3, new BasicObject { IntValue = 3, LongValue = 30} }
                 }
     };
-    DictionaryObject cloned = original.Clone();
+    DictionaryObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -174,7 +184,8 @@ public static class CloneProviderTests
                     { 3, new BasicObject { IntValue = 3, LongValue = 30} }
                 }
     };
-    DictionaryObject cloned = original.Clone();
+    DictionaryObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
     cloned.Collection[2].LongValue = 200;
 
     cloned.ShouldNotBe(original);
@@ -193,7 +204,8 @@ public static class CloneProviderTests
                     { 3, new BasicObject { IntValue = 3, LongValue = 30 } }
                 }
     };
-    InterfaceObject cloned = original.Clone();
+    InterfaceObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -211,7 +223,8 @@ public static class CloneProviderTests
                     { 3, new BasicObject { IntValue = 3, LongValue = 30 } }
                 }
     };
-    InterfaceObject cloned = original.Clone();
+    InterfaceObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
     cloned.DictionaryValue[2].StringValue = "Test string";
 
     cloned.ShouldNotBe(original);
@@ -220,7 +233,8 @@ public static class CloneProviderTests
   public static void Should_Clone_ComplexObject()
   {
     using var original = new ComplexObject(100);
-    ComplexObject cloned = original.Clone();
+    ComplexObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }
@@ -228,7 +242,8 @@ public static class CloneProviderTests
   public static void ModifiedClone_ComplexObject_ShouldNotBeEqual()
   {
     using var original = new ComplexObject(100);
-    ComplexObject cloned = original.Clone();
+    ComplexObject? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
     cloned.listOfStrings.Add("new string");
 
     cloned.ShouldNotBe(original);
@@ -242,7 +257,8 @@ public static class CloneProviderTests
                 new() { IntValue = 2, BoolValue = false, ByteValue = 20, LongValue = 200, StringValue = "Test 2" },
                 new() { IntValue = 3, BoolValue = true, ByteValue = 30, LongValue = 300, StringValue = "Test 3" }
             };
-    CustomCollectionObject<BasicObject> cloned = original.Clone();
+    CustomCollectionObject<BasicObject>? cloned = original.Clone();
+    cloned.ShouldNotBeNull();
 
     cloned.ShouldBe(original);
   }

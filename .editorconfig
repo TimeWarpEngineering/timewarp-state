@@ -353,3 +353,6 @@ dotnet_diagnostic.TWA0004.severity = none
 [artifacts/nuget-packages/**.cs]
 generated_code = true
 dotnet_diagnostic.TWA0004.severity = none
+# generated_code above makes nullable annotations in package sources (TimeWarp.Nuru.DevCli content files) CS8669,
+# which TreatWarningsAsErrors turns into errors. Those files are not ours to annotate (task 148).
+dotnet_diagnostic.CS8669.severity = none

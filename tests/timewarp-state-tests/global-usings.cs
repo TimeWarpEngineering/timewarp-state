@@ -21,6 +21,7 @@ global using Microsoft.JSInterop;
 global using TimeWarp.Features.JavaScriptInterop;
 global using TimeWarp.Features.StateTransactions;
 global using TimeWarp.Features.RenderSubscriptions;
+global using TimeWarp.State.Extensions;
 global using System.Runtime.CompilerServices;
 global using Microsoft.Extensions.Logging;
 global using TimeWarp.Features.Cloning;

@@ -10,9 +10,6 @@
 
 namespace StoreLifecycle;
 
-using Test.App.Client.Features.Blue;
-using Test.App.Client.Features.Counter;
-
 /// <summary>
 /// Integration tests for Store state lifecycle management.
 /// Tests GetState, Reset, RemoveState, and PreviousState tracking.

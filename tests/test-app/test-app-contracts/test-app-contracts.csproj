@@ -9,7 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="TimeWarp.Mediator" />
-    <PackageReference Include="System.Net.Http.Json" />
   </ItemGroup>
 
 </Project>

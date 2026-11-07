@@ -9,8 +9,6 @@
 
 namespace SubscriptionsTests;
 
-using Test.App.Client.Features.Counter;
-
 /// <summary>
 /// Integration tests for the Subscriptions system.
 /// Tests subscription management, re-rendering, and component lifecycle.

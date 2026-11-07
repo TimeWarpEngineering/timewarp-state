@@ -11,7 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="TimeWarp.Mediator" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>

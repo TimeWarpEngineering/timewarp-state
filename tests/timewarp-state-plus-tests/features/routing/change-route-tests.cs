@@ -8,8 +8,6 @@
 
 namespace ChangeRoute_;
 
-using Microsoft.Extensions.Logging.Abstractions;
-
 public class ChangeRoute_Should
 {
   public async Task Navigate_When_The_Route_Differs()

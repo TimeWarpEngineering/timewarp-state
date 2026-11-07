@@ -10,7 +10,8 @@
 // InitAsync is idempotent so extra renders cannot leak JS interop roots.
 // One DotNetObjectReference is stored for the handler lifetime and disposed
 // with the scoped service. JSDisconnectedException is swallowed because
-// circuit teardown can dispose after the JS runtime is already gone.
+// circuit teardown can dispose after the JS runtime is already gone. InitAsync swallows it too:
+// a circuit that drops before first render has no page script left to initialize.
 // TimeWarpJavaScriptInterop also gates on firstRender; both guards stay.
 #endregion
 
@@ -159,18 +160,26 @@ public class JsonRequestHandler : IAsyncDisposable, IDisposable
   // Page script controls the name; cap what reaches Warning-level logs.
   private static string Truncate(string value) => value.Length <= 256 ? value : $"{value[..256]}…";
 
-  public ValueTask<object> InitAsync()
+  public async ValueTask InitAsync()
   {
     if (IsInitialized || IsDisposed)
     {
-      return default;
+      return;
     }
 
     Logger.LogDebug(EventIds.JsonRequestHandler_Initializing, "Initializing");
     JsonRequestHandlerReference = DotNetObjectReference.Create(this);
     IsInitialized = true;
     const string initializeJavaScriptInteropName = "InitializeJavaScriptInterop";
-    return JsRuntime.InvokeAsync<object>(initializeJavaScriptInteropName, JsonRequestHandlerReference);
+    try
+    {
+      await JsRuntime.InvokeVoidAsync(initializeJavaScriptInteropName, JsonRequestHandlerReference);
+    }
+    catch (JSDisconnectedException)
+    {
+      // The circuit is already gone, so there is no page script to initialize.
+      Logger.LogDebug(EventIds.JsonRequestHandler_Initializing, "JS runtime disconnected before initialization");
+    }
   }
 
   public void Dispose()
