@@ -27,17 +27,73 @@ means no export, so the change is safe in CI even without a collector.
 - If the repo has its own `ActivitySource`, register it with `options.ActivitySources.Add("<literal>")`.
 - `dev --capabilities` and `dev build` still work; AOT publish of the dev CLI still succeeds.
 
+## Goal (implementer restatement)
+
+Make every `dev` command in timewarp-state emit a Nuru command span and duration metric when an
+OTLP endpoint is configured, and nest under a caller's `TRACEPARENT`.
+
+Acceptance:
+- `tools/dev-cli/dev.cs` calls `.UseTelemetry(options => options.ServiceName = "timewarp-state-dev")`
+  (string literal) on the builder chain.
+- `IncomingTraceContext` (copied from timewarp-nuru) restores `TRACEPARENT`/`TRACESTATE` onto
+  `Activity.Current` around `app.RunAsync(args)`.
+- Dev CLI has no ActivitySource of its own, so no `ActivitySources.Add` is needed (the product
+  sources under `source/` are library code, not dev CLI code).
+- `dev --capabilities` and `dev build` still work; the AOT dev CLI publish still succeeds.
+- With `OTEL_EXPORTER_OTLP_ENDPOINT` set, a run exports a span; unset exports nothing.
+- `tools/dev-cli/telemetry.md` documents the env vars.
+
 ## Checklist
 
-- [ ] Add `UseTelemetry` call to `tools/dev-cli/dev.cs`
-- [ ] Add `IncomingTraceContext` and wrap `RunAsync`
-- [ ] Register repo-specific ActivitySources if any
-- [ ] Build dev CLI (`bin/dev build`) and run one command with `OTEL_EXPORTER_OTLP_ENDPOINT` set; confirm a span arrives
-- [ ] Add a short `tools/dev-cli/telemetry.md` naming the env vars (copy from timewarp-nuru)
+- [x] Add `UseTelemetry` call to `tools/dev-cli/dev.cs`
+- [x] Add `IncomingTraceContext` and wrap `RunAsync`
+- [x] Register repo-specific ActivitySources if any
+- [x] Build dev CLI (`bin/dev build`) and run one command with `OTEL_EXPORTER_OTLP_ENDPOINT` set; confirm a span arrives
+- [x] Add a short `tools/dev-cli/telemetry.md` naming the env vars (copy from timewarp-nuru)
 
 ## Session
 
 - Created: b3be0249-1852-425a-9e90-5a7e56049503 (2026-11-08)
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session e8c39c9a-e7d8-477a-bb07-4d8c3d4c3fd0, max-turns 500, Done — 2026-11-10T12:14:48Z
+
+## Results
+
+- `tools/dev-cli/dev.cs`: `.UseTelemetry(options => options.ServiceName = "timewarp-state-dev")`
+  on the builder; `using IDisposable? incomingTrace = IncomingTraceContext.Restore();` before
+  `app.RunAsync(args)`. Design region notes the telemetry behavior.
+- `tools/dev-cli/endpoints/incoming-trace-context.cs`: copied verbatim from timewarp-nuru.
+- `tools/dev-cli/global-usings.cs`: added `System.Diagnostics` and
+  `System.Runtime.CompilerServices` (Activity, UnsafeAccessor).
+- No `ActivitySources.Add`: the dev CLI has no ActivitySource of its own. The sources under
+  `source/` (telemetry, devtools) are TimeWarp.State library code that `dev` never loads.
+- `tools/dev-cli/telemetry.md`: env vars, span/metric names, TRACEPARENT behaviour. Trimmed from
+  the nuru copy, which also lists workflow stage spans that this repo does not have.
+- Gates: `./bin/dev self-install` (AOT publish) succeeded; `./bin/dev --capabilities` works;
+  `./bin/dev build --quiet` succeeded; `ganda repo audit` passes (3 pre-existing advisory
+  warnings: kanban-landed 098, kebab-path-names for wwwroot/.targets files, vscode-window-icon;
+  none in scope of this change). Full test suite not run: no product or test code changed.
+- Span proof: a local OTLP http/protobuf capture listener on 127.0.0.1:4318, running
+  `dev build --quiet` with `OTEL_EXPORTER_OTLP_ENDPOINT` and a fixed `TRACEPARENT`, received
+  `/v1/traces` and `/v1/metrics` posts carrying service name `timewarp-state-dev`, source
+  `TimeWarp.Nuru.Behavior`, a `build` span, the caller's trace id and parent span id, and
+  `nuru.behavior.commands.duration`.
+
+### How to validate
+
+Smoke:
+
+```bash
+./bin/dev self-install
+./bin/dev --capabilities >/dev/null && echo capabilities-ok
+OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp.timewarp.work OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf \
+  TRACEPARENT=00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01 ./bin/dev build --quiet
+```
+
+Expect: self-install reports success; `capabilities-ok` prints; the build succeeds and the
+collector shows a `build` span for service `timewarp-state-dev` under trace
+`0af7651916cd43dd8448eb211c80319c`, parented to span `b7ad6b7169203331`, plus a
+`nuru.behavior.commands.duration` sample. With `OTEL_EXPORTER_OTLP_ENDPOINT` unset, nothing
+is exported and output is unchanged.
 
 ## Notes
 
