@@ -55,6 +55,8 @@ Acceptance:
 
 - Created: b3be0249-1852-425a-9e90-5a7e56049503 (2026-11-08)
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session e8c39c9a-e7d8-477a-bb07-4d8c3d4c3fd0, max-turns 500, Done — 2026-11-10T12:14:48Z
+- Review oracle: Cursor Grok 4.7 (general, effort 2), conversation da2ec7f5-fe42-41c3-905d-79f17347de52, Grok session ffba6066-c22c-42a7-95c8-de75506a6687, ganda session 842767, turn cap 120 (cursor uncapped), 2026-11-10
+- Review oracle: review by reviewer-cursor (cursor, vendor xai, model grok-4.7-high), session not reported, max-turns uncapped (no --max-turns flag; bound 120), artifacts general.md, merged.md, disposition.md — 2026-11-10T12:24:02Z
 
 ## Results
 
@@ -94,6 +96,14 @@ collector shows a `build` span for service `timewarp-state-dev` under trace
 `0af7651916cd43dd8448eb211c80319c`, parented to span `b7ad6b7169203331`, plus a
 `nuru.behavior.commands.duration` sample. With `OTEL_EXPORTER_OTLP_ENDPOINT` unset, nothing
 is exported and output is unchanged.
+
+### Review
+
+Round 1, effort 2, roster general. Counts: bug 0 open / 0 fixed / 0 wontfix, suggestion 0, nit 0. Final open count 0. Disposition: **clean**. The implementer restatement matches the task; no misread. Artifacts: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
