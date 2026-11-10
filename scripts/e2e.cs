@@ -17,7 +17,7 @@
 // trusts dev certs only over https, builds the analyzer and source generator, sets UseHttp in the client
 // appsettings, publishes the server to tests/test-app/output, builds the tests, and ensures Chromium is installed.
 // It then starts the SUT on port 7011 through SutHost, waits up to 30 tries, runs dotnet test with
-// chrome.runsettings, and stops the SUT. A failed required step (E2eStepFailedException) or a failed test run sets
+// chrome.runsettings and XPlat Code Coverage into artifacts/coverage, and stops the SUT. A failed required step (E2eStepFailedException) or a failed test run sets
 // Environment.ExitCode to 1. The handler returns normally, so ScriptContext disposes; Environment.Exit is never called.
 // --skip-setup skips tool restore, dev certs, and the browser step for a box that is already set up; clean and the
 // builds still run. --with-deps asks for Playwright's system packages outside CI (CI always asks; see e2e-build.cs).
@@ -96,7 +96,8 @@ static partial class App
         await EnsureBrowsersInstalled(TestProjectPath, withDeps);
       });
 
-      if (!await RunTestsAgainstSut(sutUrl, useHttp))
+      string coverageDirectory = Path.GetFullPath(Path.Combine("artifacts", "coverage"));
+      if (!await RunTestsAgainstSut(sutUrl, useHttp, coverageDirectory))
       {
         WriteLine("E2E tests failed.");
         Environment.ExitCode = 1;
@@ -109,7 +110,7 @@ static partial class App
     }
   }
 
-  static async Task<bool> RunTestsAgainstSut(string sutUrl, bool useHttp)
+  static async Task<bool> RunTestsAgainstSut(string sutUrl, bool useHttp, string coverageDirectory)
   {
     WriteStepHeader("Start-Sut");
     SutHost sut = SutHost.Start(OutputPath, sutUrl, useHttp);
@@ -121,7 +122,7 @@ static partial class App
       await RunStep("Wait-For-Sut", () => sut.WaitUntilReadyAsync(MaxReadyAttempts, ReadyRetryInterval));
 
       WriteStepHeader("Run-Tests");
-      testsPassed = await RunTests(TestProjectDir, useHttp);
+      testsPassed = await RunTests(TestProjectDir, useHttp, coverageDirectory);
       WriteStepFooter("Run-Tests");
     }
     finally

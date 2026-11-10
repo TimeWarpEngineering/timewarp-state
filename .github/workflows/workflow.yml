@@ -118,8 +118,9 @@ jobs:
           }
 
       - name: coverage
-        # Upload the Cobertura directory the coverage check looks for.
-        # warn: release and probe do not run the test step, so the directory may be empty.
+        # Cobertura from the e2e dotnet test (--collect:"XPlat Code Coverage",
+        # results directory artifacts/coverage). Release and probe never reach this
+        # step. A missing file means that test run wrote nothing, so the job fails.
         if: >-
           success() &&
           github.event_name != 'release' &&
@@ -128,7 +129,7 @@ jobs:
         with:
           name: coverage
           path: artifacts/coverage
-          if-no-files-found: warn
+          if-no-files-found: error
 
       - name: Upload Artifacts
         # Skip release (promote the already-uploaded merge artifact) and probe
