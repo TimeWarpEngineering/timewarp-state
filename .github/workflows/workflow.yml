@@ -117,6 +117,19 @@ jobs:
             dotnet run --file tools/dev-cli/dev.cs -- workflow
           }
 
+      - name: coverage
+        # Upload the Cobertura directory the coverage check looks for.
+        # warn: release and probe do not run the test step, so the directory may be empty.
+        if: >-
+          success() &&
+          github.event_name != 'release' &&
+          !(github.event_name == 'workflow_dispatch' && (inputs.mode == 'release' || inputs.mode == 'probe'))
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: artifacts/coverage
+          if-no-files-found: warn
+
       - name: Upload Artifacts
         # Skip release (promote the already-uploaded merge artifact) and probe
         # (pipeline is skipped, so artifacts/packages is empty).
