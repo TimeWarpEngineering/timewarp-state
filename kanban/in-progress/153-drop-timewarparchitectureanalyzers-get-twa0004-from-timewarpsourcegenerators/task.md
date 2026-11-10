@@ -60,6 +60,7 @@ Upstream of that: **timewarp-architecture 486** classification + move-out.
 - Review oracle round 1: claude opus-5-5 (tw-implementation-review, effort 2, roster general, turn cap 120). 1 open nit (M1), fix pass requested — 2026-11-10
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session c455f085-af00-4d96-829a-05f7e03469b7, max-turns 120, artifacts general.md, merged.md — 2026-11-10T11:27:46Z
 - Fix pass 2: grok `01a1c536-d362-7ce2-b44f-97299ad9e9e7` (2026-11-10). M1: the `.editorconfig` comment names `TimeWarp.Architecture.Analyzers 2.0.0-beta.29` and says the Architecture-app ids stay `none` but are inert. Severity lines are unchanged. The fixie cause sentence now names a stale `~/.dotnet/toolResolverCache`.
+- Review oracle round 2: claude opus-5-5 (tw-implementation-review, effort 1, roster general, turn cap 80). M1 is verified fixed and there are 0 open, so the disposition is clean — 2026-11-10
 
 ## Results
 
@@ -77,7 +78,11 @@ Audit `--fix` also bumped `TimeWarp.Nuru` and `TimeWarp.Nuru.DevCli` to `4.0.0-b
 
 ### Review
 
-Round 1 (2026-11-10): effort 2, general reviewer only. Counts after the fix pass: bug 0, suggestion 0, nit 1 fixed (M1), 0 open. M1 was an `.editorconfig` comment that cited "2.0.0-beta.29" without a package name, so it read as a SourceGenerators version, and that did not say the Architecture-app `none` ids are inert. The fix names `TimeWarp.Architecture.Analyzers 2.0.0-beta.29` and adds that inert clause. The `dotnet_diagnostic.TWA*.severity` lines are unchanged. The reviewer reproduced the TWA0004 error on a `git archive` copy with the Purpose region removed. `dev.cs --help` builds, and no Architecture package reference remains. Disposition waits on round 2; this pass does not write `review/disposition.md`. Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+Round 1 (2026-11-10): effort 2, general reviewer only. Counts after the fix pass: bug 0, suggestion 0, nit 1 fixed (M1), 0 open. M1 was an `.editorconfig` comment that cited "2.0.0-beta.29" without a package name, so it read as a SourceGenerators version, and that did not say the Architecture-app `none` ids are inert. The fix names `TimeWarp.Architecture.Analyzers 2.0.0-beta.29` and adds that inert clause. The `dotnet_diagnostic.TWA*.severity` lines are unchanged. The reviewer reproduced the TWA0004 error on a `git archive` copy with the Purpose region removed. `dev.cs --help` builds, and no Architecture package reference remains. Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+
+Round 2 (2026-11-10): effort 1 (by-diff, 107 lines), general reviewer only. It re-reviewed the fix delta `bd1a92fb..fb00d08f`. M1 is verified fixed. The SourceGenerators 1.0.0-beta.13 DLL reports only TW0001, TW0007, TWA0004, TWA0023, and TWA0038, which confirms that the other TWA `none` ids are inert. There are no new findings. Final counts: bug 0, suggestion 0, nit 1 fixed, 0 open, 0 wontfix.
+
+**Disposition: clean** (2 rounds, 0 open, no wontfix, no escalations). Paths: `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ### How to validate
 
@@ -109,8 +114,8 @@ ganda repo audit
 ## Review
 
 - Round 1: Blocked — open M1
-- Fix pass 2: M1 marked fixed on `review/round-1/merged.md`. Round 2 has not run.
-
+- Fix pass 2: M1 marked fixed on `review/round-1/merged.md`.
+- Round 2: Done
 ## Notes
 
 Filed by Jenzi after Steven approved filing the three linked tasks (2026-11-09). State's comment

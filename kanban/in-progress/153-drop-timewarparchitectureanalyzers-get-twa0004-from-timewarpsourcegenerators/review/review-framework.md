@@ -2,11 +2,11 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 613
-- Effort: 2
+- Lines changed: 107
+- Effort: 1
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 120 (--max-turns; cursor uncapped)
+- Turn cap: 80 (--max-turns; cursor uncapped)
 
 ## Framework — task 153
 
@@ -26,3 +26,10 @@
 - Address the diff and surrounding call sites; re-verify falsifiable claims against the repo
 - Prior rounds are immutable; new work goes in `round-(N+1)/`
 - `ganda repo audit --fix` output (hooks, suppression baseline, pin bumps, .gitignore) is policy baseline, not a finding
+
+## Round 2
+
+**Date:** 2026-11-10
+**Diff scope:** fix delta `bd1a92fb..fb00d08f` (the `.editorconfig` comment and kitchen updates)
+**Effort:** 1 (by-diff, 107 lines). The roster is general.
+**Session IDs:** review oracle claude opus-5-5 (ganda task work review node, round 2, headless print mode)
