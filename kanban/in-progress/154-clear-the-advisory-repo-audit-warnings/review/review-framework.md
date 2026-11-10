@@ -2,21 +2,19 @@
 
 ## Budget (by-diff)
 
-- Lines changed: 248
+- Lines changed: 227
 - Effort: 2
 - TCB hits: none
 - Roster axes: general
 - Turn cap: 120 (--max-turns; cursor uncapped)
 
-# Review framework — task 154
+## Round 2 scope
 
-**Date:** 2026-11-11
-**Host task:** kanban/in-progress/154-clear-the-advisory-repo-audit-warnings/
-**Diff scope:** branch `task/154-clear-the-advisory-repo-audit-warnings` vs `master` (merge-base). Product files: `.editorconfig`, `.github/workflows/workflow.yml`. Kitchen move of task.md is not reviewed as product.
-**Plan / brief:** task.md `## Goal (implementer restatement)`: clear the four advisory `ganda repo audit` warnings (ci-code-coverage, kebab-path-names, vscode-window-icon, kanban-landed) under the per-item constraints in `## Requirements`.
-**Effort:** 2 (by-diff budget), roster axis general
-**Reviewer roster:** general (review oracle, claude-opus-5-5)
-**Session IDs:** review oracle under ganda task work (claude, model claude-opus-5-5)
+- **Date:** 2026-11-11
+- **Diff scope:** delta since round 1, `b7c9f360..HEAD` (`34ad43c0` fix, `bb9fa831` docs). Product files:
+  `.github/workflows/workflow.yml`, `scripts/e2e.cs`, `scripts/e2e-tests.cs`.
+- **Brief:** fix pass for round-1 M1 and M2. The e2e `dotnet test` collects Cobertura into `artifacts/coverage`, and the upload fails when no file is written.
+- **Effort:** 2, roster general (review oracle, claude-opus-5-5)
 
 ## Ground rules
 
