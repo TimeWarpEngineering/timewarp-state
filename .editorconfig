@@ -286,14 +286,18 @@ dotnet_diagnostic.ca1308.severity = none
 dotnet_diagnostic.TW0007.severity = warning
 dotnet_diagnostic.TW0007.filename = global-usings.cs
 
-# TimeWarp.Architecture.Analyzers (TWA rules). Only TWA0004 applies to this library; the rest
-# target TimeWarp.Architecture apps (FluentValidation, FastEndpoints, Aspire ServiceNames,
-# slices, the dotnet-new template) and are off. Decisions are recorded in kanban task 099-001.
-# TWA0022 found no hits (the test app's direct Sender.Send calls are deliberate) and TWA0023
-# (type-stem naming, off upstream by default) found 835 sites, so both stay off.
+# TWA0004, TWA0023, and TWA0038 ship in TimeWarp.SourceGenerators 1.0.0-beta.13 (task 153).
+# TWA0004 is error on this library. TWA0023 (type-stem naming, off upstream by default)
+# found 835 sites and stays none. TWA0038 keeps the package default (warning, 500 lines);
+# this file does not lower it. The other ids target TimeWarp.Architecture apps
+# (FluentValidation, FastEndpoints, Aspire ServiceNames, slices, the dotnet-new template)
+# and stay none, matching tasks 099-001 and 132. Those Architecture-app ids stay none
+# but are inert now that State no longer references TimeWarp.Architecture.Analyzers (task 153).
+# TWA0022 found no hits (the test app's direct Sender.Send calls are deliberate).
 # TWA0005 is retired upstream (reserved id, never reported), so it has no entry.
-# 2.0.0-beta.29 adds TWA0025, TWA0026, TWA0027, TWA0028, TWA0032, TWA0033, TWA0034, TWA0035,
-# TWA0036, and TWA0037. They stay off for the same reason. TWA0036 (ISO 8601 dates) warns on
+# TimeWarp.Architecture.Analyzers 2.0.0-beta.29 added TWA0025, TWA0026, TWA0027, TWA0028,
+# TWA0032, TWA0033, TWA0034, TWA0035, TWA0036, and TWA0037. They stay off for the same
+# reason. TWA0036 (ISO 8601 dates) warns on
 # sample and test-app weather dates and one DevTools timestamp; those displays are unchanged
 # (task 132). Razor C# is a source-generator tree, and that tree does not carry EditorConfig
 # diagnostic severities: sample 00 Weather.razor still reported TWA0036 while this file set

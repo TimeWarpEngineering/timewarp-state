@@ -28,7 +28,7 @@ internal sealed class RunCommand : ICommand<Unit>
   [Parameter(IsCatchAll = true, Description = "Extra arguments passed to dotnet run")]
   public string[] Args { get; set; } = [];
 
-  internal sealed class Handler : ICommandHandler<RunCommand, Unit>
+  internal sealed class Handler : IRequestHandler<RunCommand, Unit>
   {
     private static readonly string[] KnownProfiles = [DefaultProfile, HttpProfile];
 
@@ -39,7 +39,7 @@ internal sealed class RunCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async Task<Unit> Handle(RunCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(RunCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)

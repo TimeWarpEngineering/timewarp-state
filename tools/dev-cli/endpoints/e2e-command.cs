@@ -23,7 +23,7 @@ internal sealed class E2eCommand : ICommand<Unit>
   [Option("with-deps", null, Description = "Install Playwright system packages (apt, needs passwordless sudo) outside CI")]
   public bool WithDeps { get; set; }
 
-  internal sealed class Handler : ICommandHandler<E2eCommand, Unit>
+  internal sealed class Handler : IRequestHandler<E2eCommand, Unit>
   {
     private readonly ITerminal Terminal;
 
@@ -32,7 +32,7 @@ internal sealed class E2eCommand : ICommand<Unit>
       Terminal = terminal;
     }
 
-    public async Task<Unit> Handle(E2eCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(E2eCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)

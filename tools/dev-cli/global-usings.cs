@@ -6,7 +6,8 @@
 // Global using directives only: System namespaces, Nuru, Mediator, Amuru, Terminal, DevCli and
 // Microsoft.Extensions.DependencyInjection for dev.cs and the endpoint files.
 // No `using static Unit`: Unit.Task collides with System.Threading.Tasks.Task inside
-// TimeWarp.Nuru.DevCli 4.0.0-beta.10 content (CS0229 on Task.FromResult). Handlers return Unit.Value.
+// TimeWarp.Nuru.DevCli content (CS0229 on Task.FromResult). Handlers return Unit.Value.
+// Nuru 4.0.0-beta.12 handlers implement IRequestHandler and return ValueTask. why: task 153
 #endregion
 
 global using System;

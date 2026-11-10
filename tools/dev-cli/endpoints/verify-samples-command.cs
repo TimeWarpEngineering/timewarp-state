@@ -26,7 +26,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
 {
   private const string PackagedSampleMarker = "samples/00-state-action-handler/auto/";
 
-  internal sealed class Handler : ICommandHandler<VerifySamplesCommand, Unit>
+  internal sealed class Handler : IRequestHandler<VerifySamplesCommand, Unit>
   {
     private readonly ITerminal Terminal;
     private readonly IPackableProjectService PackableProjectService;
@@ -37,7 +37,7 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       PackableProjectService = packableProjectService;
     }
 
-    public async Task<Unit> Handle(VerifySamplesCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(VerifySamplesCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)
