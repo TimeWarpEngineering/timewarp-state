@@ -141,12 +141,13 @@ First-pass `ganda repo audit` exited 0. Passed 42, Failed 1, Skipped 3. The one 
 `kebab-path-names` (warning) on the seven paths in the description. `ci-code-coverage`,
 `vscode-window-icon`, and `kanban-landed` passed.
 
-Fix-pass `ganda repo audit` exited 1. Passed 41, Failed 2, Skipped 3. `ci-code-coverage` passes
-("CI collects code coverage and uploads it"). `vscode-window-icon` passes. `kebab-path-names`
-warns on the same seven paths. `kanban-landed` is an Error because this kitchen differs from
-origin-home (`KitchenNotLanded` on `task.md`). Blanket `ganda repo audit --fix` was not run:
-the kebab fixer renames paths, and this task must not rename the six assembly-named files or
-backlog 110. The kitchen is landed with `ganda kanban reconcile` after the fix commit.
+Fix-pass `ganda repo audit` before the kitchen land exited 1. Passed 41, Failed 2, Skipped 3.
+`kanban-landed` was an Error because this kitchen differed from origin-home. Blanket
+`ganda repo audit --fix` was not run: the kebab fixer renames paths, and this task must not
+rename the six assembly-named files or backlog 110. `ganda kanban reconcile` landed the kitchen.
+The audit after that land exited 0. Passed 42, Failed 1, Skipped 3. `ci-code-coverage` passes
+("CI collects code coverage and uploads it"). `vscode-window-icon` and `kanban-landed` pass.
+`kebab-path-names` warns on the same seven paths.
 
 `./bin/dev build` succeeded with 0 warnings and 0 errors (00:00:16.90). The six assembly-named
 paths are still tracked. `git status` shows no change under those `wwwroot` files or the targets
