@@ -27,6 +27,10 @@
 // Apply points NUGET_PACKAGES at artifacts/nuget-packages before any command runs
 // so child dotnet restores do not fill ~/.nuget/packages. Root nuget.config does
 // not list artifacts/packages.
+// UseTelemetry gives every route (local and DevCli-provided) a TimeWarp.Nuru.Behavior
+// command span and duration metric. Export only happens when OTEL_EXPORTER_OTLP_ENDPOINT
+// is set (see telemetry.md). IncomingTraceContext restores a caller's TRACEPARENT so
+// command spans nest under ganda or CI. The dev CLI owns no ActivitySource of its own.
 #endregion
 
 string? repoRoot = Git.FindRoot();
@@ -38,6 +42,7 @@ if (repoRoot is not null)
 NuruApp app = NuruApp.CreateBuilder()
   .WithName("dev")
   .WithDescription("Development CLI for timewarp-state")
+  .UseTelemetry(options => options.ServiceName = "timewarp-state-dev")
   .ConfigureServices(services =>
   {
     services.AddSingleton<IRepoCleanService, RepoCleanService>();
@@ -48,4 +53,5 @@ NuruApp app = NuruApp.CreateBuilder()
   .DiscoverEndpoints()
   .Build();
 
+using IDisposable? incomingTrace = IncomingTraceContext.Restore();
 return await app.RunAsync(args);
