@@ -41,10 +41,10 @@
     <!-- Microsoft.CodeAnalysis.CSharp is a compile reference of the analyzer and source generator only.
          A repo-wide reference ships the Roslyn compiler as a runtime dependency of every packed library. -->
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
-    <!-- TW0007 file-level usings → kebab global-usings.cs -->
+    <!-- TW0007 file-level usings → kebab global-usings.cs.
+         TWA0004 #region Purpose (and TWA0023, TWA0038) ship in this package as of 1.0.0-beta.13.
+         Severities stay in .editorconfig. why: task 153 -->
     <PackageReference Include="TimeWarp.SourceGenerators" PrivateAssets="all" />
-    <!-- TWA0004 #region Purpose on every source file; other TWA rules are configured in .editorconfig -->
-    <PackageReference Include="TimeWarp.Architecture.Analyzers" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- TWA0004 default for sources outside the repo (package-injected files such as Fixie.Main.cs);

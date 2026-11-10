@@ -372,3 +372,6 @@ bin/dev.exe
 
 # VS Code settings: Peacock rewrites this file; vscode-window-icon --fix writes it locally (not tracked)
 .vscode/settings.json
+
+# ganda task work walk state (signal logs, walk locks, walk holders) in origin-home
+/.timewarp/signals/

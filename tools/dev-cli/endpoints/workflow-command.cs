@@ -27,7 +27,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
   [Option("api-key", "k", Description = "NuGet API key for publishing (prefer the NUGET_API_KEY env var; argv is visible in the process list)")]
   public string? ApiKey { get; set; }
 
-  internal sealed class Handler : ICommandHandler<WorkflowCommand, Unit>
+  internal sealed class Handler : IRequestHandler<WorkflowCommand, Unit>
   {
     private readonly PipelineConsole Output;
     private readonly ITerminal Terminal;
@@ -53,7 +53,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
       PackableProjectService = packableProjectService;
     }
 
-    public async Task<Unit> Handle(WorkflowCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(WorkflowCommand command, CancellationToken ct)
     {
       string? eventName = Environment.GetEnvironmentVariable("GITHUB_EVENT_NAME");
       CiMode mode = CiModeDetector.DetermineMode(command.Mode, eventName);
@@ -102,11 +102,11 @@ internal sealed class WorkflowCommand : ICommand<Unit>
 
       (string Name, Func<Task> Run)[] steps =
       [
-        ("Clean", () => new CleanCommand.Handler(Terminal, RepoCleanService).Handle(new CleanCommand(), ct)),
-        ("Build", () => new BuildCommand.Handler(Terminal).Handle(new BuildCommand(), ct)),
-        ("Test", () => new TestCommand.Handler(Terminal).Handle(new TestCommand(), ct)),
-        ("E2E", () => new E2eCommand.Handler(Terminal).Handle(new E2eCommand(), ct)),
-        ("Verify Samples", () => new VerifySamplesCommand.Handler(Terminal, PackableProjectService).Handle(new VerifySamplesCommand(), ct))
+        ("Clean", () => new CleanCommand.Handler(Terminal, RepoCleanService).Handle(new CleanCommand(), ct).AsTask()),
+        ("Build", () => new BuildCommand.Handler(Terminal).Handle(new BuildCommand(), ct).AsTask()),
+        ("Test", () => new TestCommand.Handler(Terminal).Handle(new TestCommand(), ct).AsTask()),
+        ("E2E", () => new E2eCommand.Handler(Terminal).Handle(new E2eCommand(), ct).AsTask()),
+        ("Verify Samples", () => new VerifySamplesCommand.Handler(Terminal, PackableProjectService).Handle(new VerifySamplesCommand(), ct).AsTask())
       ];
 
       foreach ((string name, Func<Task> run) in steps)

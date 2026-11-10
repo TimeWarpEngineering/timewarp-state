@@ -21,7 +21,8 @@ using TimeWarp.Amuru;
 string? root = Git.FindRoot();
 if (root is null)
 {
-  return 0;
+  Console.Error.WriteLine("Refusing push: repository root was not found.");
+  return 1;
 }
 
 // stdin: <local ref> <local sha> <remote ref> <remote sha> (one line per dest)

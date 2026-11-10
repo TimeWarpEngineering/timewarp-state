@@ -79,7 +79,7 @@ internal sealed class ReleasePipeline
     }
 
     BeginStep(2, "Check Version");
-    StepOutcome checkVersionOutcome = await Output.RunStepAsync("Check Version", () => CheckVersionHandler.Handle(new CheckVersionCommand(), ct), ct);
+    StepOutcome checkVersionOutcome = await Output.RunStepAsync("Check Version", () => CheckVersionHandler.Handle(new CheckVersionCommand(), ct).AsTask(), ct);
     PipelineResult? checkVersionFailure = CheckVersionFailure(checkVersionOutcome);
     if (checkVersionFailure is not null)
     {

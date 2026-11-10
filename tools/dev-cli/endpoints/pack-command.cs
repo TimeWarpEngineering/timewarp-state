@@ -16,7 +16,7 @@ namespace DevCli.Commands;
 [NuruRoute("pack", Description = "Pack packable projects into artifacts/packages")]
 internal sealed class PackCommand : ICommand<Unit>
 {
-  internal sealed class Handler : ICommandHandler<PackCommand, Unit>
+  internal sealed class Handler : IRequestHandler<PackCommand, Unit>
   {
     private readonly ITerminal Terminal;
     private readonly IPackableProjectService PackableProjectService;
@@ -27,7 +27,7 @@ internal sealed class PackCommand : ICommand<Unit>
       PackableProjectService = packableProjectService;
     }
 
-    public async Task<Unit> Handle(PackCommand command, CancellationToken ct)
+    public async ValueTask<Unit> Handle(PackCommand command, CancellationToken ct)
     {
       string? repoRoot = Git.FindRoot();
       if (repoRoot is null)

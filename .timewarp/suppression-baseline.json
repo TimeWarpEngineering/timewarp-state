@@ -1,0 +1,274 @@
+{
+  "files": {
+    ".editorconfig": {
+      "CS1591": 1,
+      "CS8669": 1,
+      "TWA0002": 1,
+      "TWA0003": 1,
+      "TWA0004": 2,
+      "TWA0006": 1,
+      "TWA0007": 1,
+      "TWA0008": 1,
+      "TWA0009": 1,
+      "TWA0010": 1,
+      "TWA0011": 1,
+      "TWA0012": 1,
+      "TWA0013": 1,
+      "TWA0014": 1,
+      "TWA0015": 1,
+      "TWA0016": 1,
+      "TWA0020": 1,
+      "TWA0021": 1,
+      "TWA0022": 1,
+      "TWA0023": 1,
+      "TWA0024": 1,
+      "TWA0025": 1,
+      "TWA0026": 1,
+      "TWA0027": 1,
+      "TWA0028": 1,
+      "TWA0032": 1,
+      "TWA0033": 1,
+      "TWA0034": 1,
+      "TWA0035": 1,
+      "TWA0036": 1,
+      "TWA0037": 1,
+      "ca1308": 1
+    },
+    ".githooks/post-checkout.cs": {
+      "CA2007": 1
+    },
+    ".githooks/post-commit.cs": {
+      "CA2007": 1
+    },
+    ".githooks/post-merge.cs": {
+      "CA2007": 1
+    },
+    ".githooks/pre-commit.cs": {
+      "CA1849": 2,
+      "CA2007": 1,
+      "RS0030": 2
+    },
+    ".githooks/pre-push.cs": {
+      "CA1849": 3,
+      "CA2007": 1,
+      "RS0030": 3
+    },
+    "Directory.Build.props": {
+      "1503": 1,
+      "CS7035": 1,
+      "NU1503": 1
+    },
+    "msbuild/external-sources.globalconfig": {
+      "TWA0004": 1,
+      "TWA0025": 1,
+      "TWA0026": 1,
+      "TWA0027": 1,
+      "TWA0028": 1,
+      "TWA0032": 1,
+      "TWA0033": 1,
+      "TWA0034": 1,
+      "TWA0035": 1,
+      "TWA0036": 1,
+      "TWA0037": 1
+    },
+    "samples/00-state-action-handler/auto/sample-00-auto/sample-00-auto-client/sample-00-auto-client.csproj": {
+      "1591": 1
+    },
+    "samples/00-state-action-handler/server/sample-00-server/sample-00-server.csproj": {
+      "1591": 1
+    },
+    "samples/00-state-action-handler/wasm/sample-00-wasm/sample-00-wasm.csproj": {
+      "1591": 1
+    },
+    "samples/02-action-tracking/wasm/sample-02-wasm/sample-02-wasm.csproj": {
+      "1591": 1
+    },
+    "samples/03-routing/wasm/sample-03-wasm/sample-03-wasm.csproj": {
+      "1591": 1
+    },
+    "samples/04-telemetry/apphost/sample-04-apphost.csproj": {
+      "1591": 1,
+      "CS8981": 1
+    },
+    "samples/04-telemetry/server/sample-04-server/sample-04-server.csproj": {
+      "1591": 1
+    },
+    "samples/04-telemetry/wasm/sample-04-wasm/sample-04-wasm.csproj": {
+      "1591": 1
+    },
+    "samples/05-persistence/wasm/sample-05-wasm/sample-05-wasm.csproj": {
+      "1591": 1
+    },
+    "samples/06-render-control/wasm/sample-06-wasm/sample-06-wasm.csproj": {
+      "1591": 1
+    },
+    "samples/07-console/sample-07-console/program.cs": {
+      "RS0030": 1
+    },
+    "samples/07-console/sample-07-console/sample-07-console.csproj": {
+      "1591": 1
+    },
+    "scripts/Directory.Build.props": {
+      "CS1591": 1,
+      "RS0030": 1
+    },
+    "source/timewarp-state-blazor/component-trim-roots.cs": {
+      "CA2255": 1
+    },
+    "source/timewarp-state-blazor/components/timewarp-state-component.capture-render-caller.cs": {
+      "IL2026": 1
+    },
+    "source/timewarp-state-blazor/components/timewarp-state-component.check-complex-parameter-changed.cs": {
+      "IL2026": 2,
+      "IL2070": 2,
+      "IL2072": 1,
+      "IL2075": 2
+    },
+    "source/timewarp-state-blazor/components/timewarp-state-component.register-render-trigger.cs": {
+      "IL3050": 1
+    },
+    "source/timewarp-state-blazor/features/javascript-interop/json-request-handler.cs": {
+      "IL2026": 1,
+      "IL2057": 1,
+      "IL2067": 1,
+      "IL2070": 1,
+      "IL2072": 1,
+      "IL3050": 1
+    },
+    "source/timewarp-state-devtools-app/timewarp-state-devtools-app.csproj": {
+      "NU5128": 1
+    },
+    "source/timewarp-state-devtools/timewarp-state-devtools.csproj": {
+      "1591": 1
+    },
+    "source/timewarp-state-plus/component-trim-roots.cs": {
+      "CA2255": 1
+    },
+    "source/timewarp-state-plus/features/persistence/load-persistent-state-request.cs": {
+      "IL2026": 1,
+      "IL2075": 1
+    },
+    "source/timewarp-state-plus/features/persistence/pipeline/persistent-state-post-processor.cs": {
+      "IL2026": 2,
+      "IL2075": 1,
+      "IL3050": 1
+    },
+    "source/timewarp-state-plus/features/persistence/services/persistence-service.cs": {
+      "IL2026": 1,
+      "IL2072": 1,
+      "IL3050": 1
+    },
+    "source/timewarp-state-plus/features/persistence/state-initialized-notification-handler.cs": {
+      "IL2026": 1,
+      "IL2075": 1
+    },
+    "source/timewarp-state-plus/state/timewarp-cacheable-state.cs": {
+      "IL2026": 1,
+      "IL3050": 1
+    },
+    "source/timewarp-state-source-generator/emitters/persistence-emitter.cs": {
+      "CS1591": 1
+    },
+    "tests/client-integration-tests/client-integration-tests.csproj": {
+      "1591": 1
+    },
+    "tests/client-integration-tests/pipeline/render-subscription-context-tests.cs": {
+      "CS0618": 6
+    },
+    "tests/test-app/test-app-client/test-app-client.csproj": {
+      "CS1591": 1
+    },
+    "tests/test-app/test-app-client/test-objects/array-object.cs": {
+      "CS8618": 1,
+      "CS8765": 1,
+      "CS8767": 1
+    },
+    "tests/test-app/test-app-client/test-objects/basic-object-with-ignore.cs": {
+      "CS8618": 1,
+      "CS8765": 1,
+      "CS8767": 1
+    },
+    "tests/test-app/test-app-client/test-objects/basic-object.cs": {
+      "CS8618": 1,
+      "CS8765": 1,
+      "CS8767": 1,
+      "IDE0044": 1
+    },
+    "tests/test-app/test-app-client/test-objects/collection-object.cs": {
+      "CS8618": 1,
+      "CS8765": 1,
+      "CS8767": 1
+    },
+    "tests/test-app/test-app-client/test-objects/complex-object.cs": {
+      "CS0067": 1,
+      "CS8618": 1,
+      "CS8765": 1,
+      "CS8767": 1,
+      "IDE0044": 1
+    },
+    "tests/test-app/test-app-client/test-objects/dictionary-object.cs": {
+      "CS8765": 1,
+      "CS8767": 1
+    },
+    "tests/test-app/test-app-client/test-objects/equality-comparers.cs": {
+      "CS8625": 1,
+      "CS8767": 1
+    },
+    "tests/test-app/test-app-client/test-objects/interface-object.cs": {
+      "CS8765": 1,
+      "CS8767": 1
+    },
+    "tests/test-app/test-app-client/test-objects/multi-dimensional2d-array-object.cs": {
+      "CS8765": 1
+    },
+    "tests/test-app/test-app-client/test-objects/multi-dimensional3d-array-object.cs": {
+      "CS8765": 1
+    },
+    "tests/timewarp-state-analyzer-tests/fixie-verifier.cs": {
+      "CA1822": 1
+    },
+    "tests/timewarp-state-analyzer-tests/timewarp-state-analyzer-tests.csproj": {
+      "NU1701": 1
+    },
+    "tests/timewarp-state-devtools-inspected-app/timewarp-state-devtools-inspected-app.csproj": {
+      "CS1591": 1
+    },
+    "tests/timewarp-state-plus-tests/features/routing/push-route-info-tests.cs": {
+      "BL0016": 1
+    },
+    "tests/timewarp-state-source-generator-tests/action-catalog-source-generator-tests.cs": {
+      "CS1591": 1
+    },
+    "tests/timewarp-state-tests/javascript-interop/json-request-handler-lifecycle-tests.cs": {
+      "BL0016": 1
+    },
+    "tests/timewarp-state-tests/javascript-interop/json-request-handler-tests.cs": {
+      "BL0016": 1
+    },
+    "tests/timewarp-state-tests/pipeline/render-subscriptions-post-processor-tests.cs": {
+      "CS0618": 5
+    },
+    "tests/timewarp-state-tests/shared/service-state-fixtures.cs": {
+      "TWM001": 1
+    },
+    "tools/dev-cli/Directory.Build.props": {
+      "CA1031": 1,
+      "CA1034": 1,
+      "CA1303": 1,
+      "CA1508": 1,
+      "CA1515": 1,
+      "CA1849": 1,
+      "CA2000": 1,
+      "CA2007": 1,
+      "CA2016": 1,
+      "CA5399": 1,
+      "CS1591": 1,
+      "IDE0065": 1,
+      "IL2026": 1,
+      "IL2104": 1,
+      "IL3050": 1,
+      "IL3053": 1,
+      "RCS1046": 1
+    }
+  }
+}

@@ -60,6 +60,10 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
+defaults:
+  run:
+    shell: pwsh
+
 jobs:
   ci:
     name: CI
@@ -105,13 +109,13 @@ jobs:
           # dev workflow reads the key from NUGET_API_KEY so it stays off the dev argv. Empty outside release.
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: |
-          if [ "${{ github.event_name }}" == "release" ]; then
+          if ('${{ github.event_name }}' -eq 'release') {
             dotnet run --file tools/dev-cli/dev.cs -- workflow
-          elif [ "${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release' }}" == "true" ]; then
+          } elseif ("${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.confirm == 'release' }}" -eq 'true') {
             dotnet run --file tools/dev-cli/dev.cs -- workflow --mode release
-          else
+          } else {
             dotnet run --file tools/dev-cli/dev.cs -- workflow
-          fi
+          }
 
       - name: Upload Artifacts
         # Skip release (promote the already-uploaded merge artifact) and probe
