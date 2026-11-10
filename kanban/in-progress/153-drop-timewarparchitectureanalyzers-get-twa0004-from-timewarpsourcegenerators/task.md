@@ -56,6 +56,8 @@ Upstream of that: **timewarp-architecture 486** classification + move-out.
 - Created: 1548987 (2026-11-09)
 - Implementation: grok `01a1c51b-8acb-7f01-8e00-5158bb6c26e5` (2026-11-10). SourceGenerators `1.0.0-beta.13` is on nuget.org and contains TWA0004. Audit `--fix` seeded `.timewarp/suppression-baseline.json`, refreshed `.githooks/*` to the attest baseline, ignored `/.timewarp/signals/`, wrote a gitignored `.vscode/settings.json` window title, and bumped Nuru, Nuru.DevCli, Amuru, Amuru.Tools, and Terminal. Nuru 4.0.0-beta.12 pulls Mediator 15, so the dev CLI handlers moved to `IRequestHandler` / `ValueTask`. The CI pipeline step is pwsh, with top-level `defaults.run.shell`.
 - Implement oracle: implemented by implementer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1c51b-8acb-7f01-8e00-5158bb6c26e5, max-turns 500, Done — 2026-11-10T11:23:53Z
+- Review oracle round 1: claude opus-5-5 (tw-implementation-review, effort 2, roster general, turn cap 120). 1 open nit (M1), fix pass requested — 2026-11-10
+- Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session c455f085-af00-4d96-829a-05f7e03469b7, max-turns 120, artifacts general.md, merged.md — 2026-11-10T11:27:46Z
 
 ## Results
 
@@ -70,6 +72,10 @@ Architecture's master `Directory.Packages.props` still pins `TimeWarp.State` `12
 Audit `--fix` also bumped `TimeWarp.Nuru` and `TimeWarp.Nuru.DevCli` to `4.0.0-beta.12`, `TimeWarp.Amuru` and `TimeWarp.Amuru.Tools` to `3.0.0-beta.2`, and `TimeWarp.Terminal` to `2.0.0-beta.1`. Dev CLI handlers now implement `IRequestHandler<,>` and return `ValueTask<Unit>`. Pipeline steps call `.AsTask()` where the step delegate is `Func<Task>`. `dotnet run --file tools/dev-cli/dev.cs -- --help` succeeds.
 
 `./bin/dev test` stops at `dotnet fixie` because local tool `fixie.console` 3.4.0 targets `netcoreapp3.1` and this SDK answers `Run "dotnet tool restore"` even after a successful restore. The same projects run under `dotnet test`: analyzer 90, source generator 174, state 153 passed / 1 skipped, plus 40 / 1 skipped, telemetry 21, devtools 124, isolation 4, client integration 67 / 1 skipped, architecture 7 / 1 skipped. Failed 0.
+
+### Review
+
+Round 1 (2026-11-10): effort 2, general reviewer only. Counts: bug 0, suggestion 0, nit 1 open (M1). M1: an `.editorconfig` comment cites "2.0.0-beta.29" without a package name, so it reads as a SourceGenerators version. The comment also does not say that the Architecture-app `none` ids are now inert. The reviewer reproduced the TWA0004 error on a `git archive` copy with the Purpose region removed. `dev.cs --help` builds, and no Architecture package reference remains. Disposition is pending until a fix pass closes M1 and round 2 re-reviews it. Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
 
 ### How to validate
 
@@ -93,6 +99,10 @@ ganda repo audit
 - `./bin/dev build` ends with `Build succeeded` and `0 Error(s)`.
 - The probe build fails with `error TWA0004` on `assembly-marker.cs` and `1 Error(s)`.
 - `ganda repo audit` exits 0. Advisory warnings may name claim 098 and the known non-kebab assembly paths.
+
+## Review
+
+- Round 1: Blocked — open M1
 
 ## Notes
 
