@@ -95,6 +95,7 @@ Acceptance criteria:
 - Review oracle round 1: claude (vendor anthropic, model claude-opus-5-5), effort 2, roster general, turn cap 120 — 2026-11-11. Fix pass requested for M1, M2.
 - Review oracle: review by reviewer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 98302167-8403-46c6-a785-65041a9c820b, max-turns 120, artifacts general.md, merged.md — 2026-11-10T19:00:57Z
 - Fix pass: 01a1c6d5-b9b8-7481-9684-402651d09175 (2026-11-11). implement-fix-2. Collect Cobertura from the e2e `dotnet test` and keep the upload.
+- Review oracle round 2: claude (vendor anthropic, model claude-opus-5-5), effort 2, roster general, turn cap 120 — 2026-11-11. Disposition clean.
 
 ## Results
 
@@ -197,7 +198,15 @@ Expect:
 ### Review
 
 Round 1 (effort 2, roster: general). Counts at merge: bug 1 open, nit 1 open. Fix pass implemented
-both. Round 2 is the host's next review node. `review/round-1/merged.md` is unchanged.
+both. `review/round-1/merged.md` is unchanged.
+
+Round 2 (effort 2, roster: general) reviewed the fix delta `b7c9f360..HEAD`. Final counts: bug 0 open,
+1 fixed. Suggestion 0. Nit 0 open, 1 fixed. No wontfix and no new findings. **Disposition: clean.**
+Round 2 re-ran the filtered coverage command, which wrote `coverage.cobertura.xml` with
+`lines-valid="332"`. It confirmed that the PR/merge pipeline always runs E2E before the upload step. It
+re-ran `ganda repo audit`: Passed 42, Failed 1 (the `kebab-path-names` warning on the seven paths),
+Skipped 3. Follow-up outside this task: the report covers only the e2e test assembly, because the SUT
+runs out of process.
 
 - **M1 (bug):** the e2e `dotnet test` now collects Cobertura into `artifacts/coverage`. A filtered
   run wrote `coverage.cobertura.xml` with `lines-valid="332"` and `lines-covered="6"`. The upload
@@ -208,12 +217,13 @@ both. Round 2 is the host's next review node. `review/round-1/merged.md` is unch
 The goal restatement matches the task. The other items (kebab exemption not available, backlog 110
 left alone, window icon, 098 claim) were verified in round 1.
 
-Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`,
+`review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Review
 
-- Round 1: open M1, M2 — fix pass applied on this branch. Round 2 has not run.
-
+- Round 1: open M1, M2. The fix pass was applied on this branch.
+- Round 2: Done
 ## Notes
 
 Requested by Steven 2026-11-11 after running `ganda repo audit` on master: "create task and fix
