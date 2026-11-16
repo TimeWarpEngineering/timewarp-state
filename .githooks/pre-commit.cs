@@ -4,6 +4,11 @@
 #:property NoWarn=CA2007;CA1849;RS0030
 #:property RunAnalyzers=false
 
+#region Purpose
+// Stop a commit when HEAD is master or main, so the commit happens on a task branch.
+// git commit --no-verify is the only way past the refusal.
+#endregion
+
 // Refuse commits while HEAD is master or main.
 // Escape hatch: git commit --no-verify
 using TimeWarp.Amuru;

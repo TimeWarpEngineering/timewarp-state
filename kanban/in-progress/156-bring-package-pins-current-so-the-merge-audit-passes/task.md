@@ -46,6 +46,20 @@ likely to start failing as soon as this task's own PR is audited. Bring them all
 8. Bump the State package version if a packed dependency changed (Mediator is a packed dependency
    of State; `dev check-version` must pass).
 
+## Goal (implementer restatement)
+
+Make `ganda repo audit` pass `package-pin-currency` on this branch so `ganda pr merge` stops
+refusing PRs in this repo. Acceptance:
+
+- `ganda repo audit --fix` output committed first.
+- Mediator and Mediator.Generators at the latest beta; any API/generator breakage fixed.
+- Amuru(+Tools), Nuru(+DevCli), SourceGenerators, Terminal at their latest versions; dev CLI
+  still behaves under the new Amuru.
+- Build.Tasks taken to 2.x if mechanical, else left at 1.0.0 and reported (not silently exempted).
+- State package version bumped because Mediator (a packed dependency) changes; `dev check-version` passes.
+- `./bin/dev build` 0 warnings / 0 errors, `./bin/dev test` green, tracked `wwwroot` JS intact,
+  `ganda repo audit` green including `package-pin-currency`.
+
 ## Checklist
 
 - [ ] `ganda repo audit --fix` run and committed
