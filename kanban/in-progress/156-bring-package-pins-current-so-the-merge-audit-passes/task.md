@@ -80,6 +80,7 @@ refusing PRs in this repo. Acceptance:
 - Fix pass for round 1 (implement-fix-2 oracle, implementer-claude, claude-opus-5-5), 2026-11-16: M1 fixed. Five current-version sentences now name Mediator 15.0.0-beta.9.
 - Review round 2: grok session 01a1e2b7-5465-7510-a6ff-d7650199b4d2 (2026-11-16), effort 1, roster general. M1 confirmed fixed. No new findings. Disposition clean.
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e2b7-5465-7510-a6ff-d7650199b4d2, max-turns 80, artifacts review/round-2/general.md, review/round-2/merged.md, review/disposition.md — 2026-11-16T05:00:05Z
+- Installed ganda changed during this walk: was 54396888 bytes f6703ddac0ec247a5a8bee139f3f5161086981e3f58400e95340bff8fe88cca4; now 54396888 bytes 47fef67179714cab240f4c99604ec94f7b46fba9e706242787a7d99d3048e6bb
 
 ## Results
 
