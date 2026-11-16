@@ -62,17 +62,54 @@ refusing PRs in this repo. Acceptance:
 
 ## Checklist
 
-- [ ] `ganda repo audit --fix` run and committed
-- [ ] Mediator + Mediator.Generators at latest; code compiles and tests pass
-- [ ] Amuru, Nuru, SourceGenerators, Terminal pins at latest
-- [ ] Build.Tasks major bump done, or reported as deferred with the reason
-- [ ] State version bumped if a packed dependency changed
-- [ ] Build clean, tests green, tracked wwwroot JS intact
-- [ ] `ganda repo audit`: `package-pin-currency` passes
+- [x] `ganda repo audit --fix` run and committed
+- [x] Mediator + Mediator.Generators at latest; code compiles and tests pass
+- [x] Amuru, Nuru, SourceGenerators, Terminal pins at latest
+- [x] Build.Tasks major bump done, or reported as deferred with the reason
+- [x] State version bumped if a packed dependency changed
+- [x] Build clean, tests green, tracked wwwroot JS intact
+- [x] `ganda repo audit`: `package-pin-currency` passes
 
 ## Session
 
 - Created: 31bc0748-8dda-4ee8-912e-8d546f2d6990 (2026-11-16)
+- Implemented 2026-11-16 (implement oracle, ganda task work): audit fix, pins, .NET 11 GA + Aspire advisories, beta.18 bump.
+
+## Results
+
+**Summary.** All TimeWarp pins are current. `package-pin-currency` passes, and so does the rest of the audit. Fixing the gates took more than the pins:
+
+- **Audit fix (committed first, b7a570a9).** `ganda repo audit --fix` raised every behind TimeWarp pin to its latest version: Amuru/Amuru.Tools 3.0.0-beta.5, Build.Tasks 2.0.1-beta.1, Mediator/Mediator.Generators 15.0.0-beta.9, Nuru/Nuru.DevCli 4.0.0-beta.14, SourceGenerators 1.0.0-beta.16, Terminal 2.0.0-beta.2. It also refreshed the `.githooks/*.cs` Purpose regions and added `.githooks/prepare-commit-msg(.cs)`. The old comment that named the Amuru pin in `Directory.Packages.props` was replaced.
+- **Mediator 15.0.0-beta.9.** The release notes for beta.6, beta.8 and beta.9 list no API changes. beta.8 moved to .NET 11 GA packages, and beta.9 builds its generator and analyzer for net11.0 only. Everything compiled and every test passed without code changes.
+- **New NuGet advisories (NU1902/NU1903 as errors).** `Microsoft.Extensions.Validation` 11.0.0-rc.3 (GHSA-m28h-pj36-4364) and `Aspire.Hosting` 13.6.4 (GHSA-f7vh-h5g3-7jrh) broke restore. All `11.0.0-rc.3.26522.148` pins moved to .NET 11 GA `11.0.0`. That includes the `Microsoft.NETCore.App.Ref` reference pack in `analyzer-test-factory.cs`. Aspire moved to 13.6.5, which covers the central pins, the sample-04 `Aspire.AppHost.Sdk`, and the packaged DevTools consumer test. `global.json` now pins SDK `11.0.100` with `allowPrerelease: false`, as `claude.md` planned for GA.
+- **SourceGenerators 1.0.0-beta.16 Roslyn collision.** This analyzer-only package now declares `Microsoft.CodeAnalysis.CSharp >= 5.12.0` as a net11.0 dependency (beta.13 declared 5.9.0). That raised NU1605 downgrade errors in `timewarp-state-analyzer-tests` and `timewarp-state-source-generator-tests`, which deliberately test on the 5.9.0 consumer floor. The shipped floor stays 5.9.0, and the `nuspec-dependency-allow-list` test still asserts it. Those two test projects now `Remove` the lint-only `TimeWarp.SourceGenerators` reference (commented in each csproj). The cost: TW0007/TWA0004 lint no longer runs on those two test projects. Follow-up candidate: timewarp-source-generators should stop declaring Roslyn as a package dependency of an analyzer-only package.
+- **Build.Tasks 1.0.0 → 2.0.1-beta.1: done, mechanical.** 2.x requires the .NET 11 `dotnet` CLI as the build host, and that is what this repo uses. Generated AssemblyInfo still stamps `CommitHash` and `CommitDate`.
+- **Amuru 3.0.0-beta.5.** The dev CLI compiled (pre-commit self-install) and propagates exit codes. A failing fixie step made `./bin/dev test` exit 1, and the green run exits 0. Hooks ran on commit.
+- **Version.** `12.0.0-beta.17` is already published, and Mediator is a packed dependency. `TimeWarpStateVersion` and `source/Directory.Build.props` `<Version>` moved to `12.0.0-beta.18`. `./bin/dev check-version` reports "Version in source is new". The dependency updates were added to the unreleased `release12.0.0-beta.18.md`.
+- **Stale tool cache (machine state, not repo).** The first `./bin/dev test` failed with `Run "dotnet tool restore" to make the "fixie" command available`, and `dotnet tool restore` did not fix it. The cause was the stale `~/.dotnet/toolResolverCache`. Clearing it (`rm -rf ~/.dotnet/toolResolverCache`) fixed it. No repo workaround was added.
+- **Tracked wwwroot JS.** `git status` after build and test shows no deleted or modified `wwwroot` files.
+- **Audit advisory left as is.** The `kebab-path-names` warning (7 paths: Blazor `{AssemblyName}.lib.module.*`, `build/{PackageId}.targets`, backlog 110) is the documented task-154 decision in `.editorconfig` and does not block.
+
+### Gates
+
+| Gate | Command | Result |
+|------|---------|--------|
+| Build | `./bin/dev build` | Build succeeded, 0 Warning(s), 0 Error(s) |
+| Test | `./bin/dev test` | Tests completed successfully (exit 0): source-generator 174, state 153 (+1 skipped), plus 40 (+1), telemetry 21, devtools 124, devtools isolation 4, client integration 67 (+1), architecture 7 (+1), analyzer 90 |
+| Audit | `ganda repo audit` | exit 0, "Repository passes — 1 advisory (non-blocking) warning(s)"; `package-pin-currency` PASS; only advisory is `kebab-path-names` (pre-existing, task 154) |
+| Version | `./bin/dev check-version` | Version in source is new (12.0.0-beta.18) |
+
+### How to validate
+
+**Smoke:**
+
+```bash
+./bin/dev build && ./bin/dev test && ganda repo audit && ./bin/dev check-version
+grep -n 'TimeWarp\.' Directory.Packages.props
+git status --short source/timewarp-state-blazor/wwwroot
+```
+
+**Expect:** build 0 warnings and 0 errors. Tests completed successfully. The audit exits 0 with `package-pin-currency` PASS, and its only advisory is `kebab-path-names`. check-version reports 12.0.0-beta.18 as new. Mediator pins read 15.0.0-beta.9, Amuru 3.0.0-beta.5, Nuru 4.0.0-beta.14, SourceGenerators 1.0.0-beta.16, Terminal 2.0.0-beta.2, Build.Tasks 2.0.1-beta.1. `wwwroot` git status is empty. If fixie asks for `dotnet tool restore`, clear `~/.dotnet/toolResolverCache`; that is machine state.
 
 ## Notes
 
