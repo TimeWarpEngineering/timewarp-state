@@ -154,7 +154,11 @@ Fix pass (M1, 2026-11-16), rerun after the doc edit:
 
 ### Review
 
-Round 1 (effort 2, roster general): 1 suggestion (M1), 0 bugs, 0 nits. M1 is fixed in the fix pass; disposition recorded in `merged.md`. Round 2 is next. Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`.
+Round 1 (effort 2, roster general): 1 suggestion (M1), 0 bugs, 0 nits.
+Round 2 (effort 1, roster general): re-checked the fix delta. M1 stays fixed. No new findings.
+Final counts: bug 0, suggestion 1 fixed, nit 0. Open 0.
+Disposition: clean.
+Paths: `review/review-framework.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ### How to validate
 
@@ -173,15 +177,18 @@ Round 1 (effort 2, roster general): 1 suggestion (M1), 0 bugs, 0 nits. M1 is fix
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-16T05:36:30Z
 - Review oracle: grok (vendor xAI), session 01a1e2db-8067-7281-92b8-7658e3944f4d, effort 2, roster general, max-turns 120, round 1 open — 2026-11-16
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e2db-8067-7281-92b8-7658e3944f4d, max-turns 120, artifacts general.md, merged.md — 2026-11-16T05:48:16Z
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1e2e9-eebb-7cd2-afee-a90c0f0436c4, effort 1, roster general, max-turns 80, artifacts round-2/general.md, round-2/merged.md, disposition.md — 2026-11-16
 
 ## Review
 
 - Round 1: Blocked — open M1
 - Fix pass (2026-11-16): M1 fixed by implementer-claude (claude-opus-5-5). Round 2 is next.
-
+- Round 2: Done
 ## Notes
 
 Requested by Steven 2026-11-16 after `ganda nuget outdated`: asked why Roslyn was held, pointed
 out the repo is on .NET 11, then "create task and launch it".
 
 Review round 1: `review/round-1/merged.md` (M1 open). Goal restatement matches the task; no misread.
+
+Review round 2: `review/disposition.md` (clean). The fix-pass restatement matches M1 and the task. No misread.

@@ -2,19 +2,19 @@
 
 **Date:** 2026-11-16
 **Host task:** kanban/in-progress/157-raise-the-roslyn-floor-to-5-12-0-and-update-the-remaining-outdated-packages/
-**Diff scope:** branch `task/157-raise-the-roslyn-floor-to-5-12-0-and-update-the` vs `master` (merge-base `48f40451`). Product commit `e4c304a8`. 306 lines changed.
-**Plan / brief:** Raise the Roslyn consumer compiler floor from 5.9.0 to 5.12.0 and bring the other seven outdated pins current. Goal restatement matches the task requirements.
-**Effort:** 2 (general only; host Budget.ByDiff)
+**Diff scope:** round 2 is the delta since round-1 base `87667996` (commit `70df11fc`): `readme.md` and `documentation/partials/installation.md`. Round 1 was the branch vs `master` (merge-base `48f40451`, product commit `e4c304a8`, 306 lines).
+**Plan / brief:** Raise the Roslyn consumer compiler floor from 5.9.0 to 5.12.0 and bring the other seven outdated pins current. Round 2 checks the M1 wording fix. Goal restatement matches the task requirements.
+**Effort:** round 2 is 1 (general only; host Budget.ByDiff). Round 1 was 2.
 **Reviewer roster:** general
-**Session IDs:** review oracle grok session 01a1e2db-8067-7281-92b8-7658e3944f4d; implementer session not reported
+**Session IDs:** round 1 review oracle grok session 01a1e2db-8067-7281-92b8-7658e3944f4d; round 2 review oracle grok session 01a1e2e9-eebb-7cd2-afee-a90c0f0436c4; implementer session not reported
 
 ## Budget (by-diff)
 
-- Lines changed: 306
-- Effort: 2
+- Lines changed: 105 (round 2 delta; round 1 was 306)
+- Effort: 1 (round 2; round 1 was 2)
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 120 (--max-turns; cursor uncapped)
+- Turn cap: 80 (--max-turns; cursor uncapped). Round 1 cap was 120.
 
 ## Ground rules
 
