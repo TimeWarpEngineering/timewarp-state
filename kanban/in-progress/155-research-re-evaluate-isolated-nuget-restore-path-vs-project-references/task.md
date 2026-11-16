@@ -47,6 +47,7 @@ Acceptance criteria:
 
 - Created: ccd4893c-4c6d-47fb-9913-a5368de1e1b4 (2026-11-11)
 - 2026-11-16 implement oracle (ganda task work): inventory, history, issue 647, report, gates.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-16T10:13:15Z
 
 ## Notes
 
