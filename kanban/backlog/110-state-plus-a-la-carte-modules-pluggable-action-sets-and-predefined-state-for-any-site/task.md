@@ -1,4 +1,4 @@
-# Task 110: State Plus a-la-carte modules: pluggable action sets + predefined state for any site
+# State Plus a-la-carte modules: pluggable action sets and predefined state for any site
 
 ## Description
 
