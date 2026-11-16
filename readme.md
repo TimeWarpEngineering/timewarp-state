@@ -41,7 +41,7 @@ See full [documentation](https://timewarpengineering.github.io/timewarp-state/).
 
 ## Installation
 
-Requirements: consuming projects target `net11.0` and build with a .NET 11 SDK. The analyzers and source generators in the package compile against Roslyn 5.9 (`Microsoft.CodeAnalysis.CSharp` 5.9.0), so the compiler must be Roslyn 5.9 or later: .NET 11 SDK preview.6 or later (every RC qualifies). On the .NET 10 line that is SDK 10.0.400 or later. See [12.0.0-beta.18](documentation/release-notes/release12.0.0-beta.18.md).
+Requirements: consuming projects target `net11.0` and build with a .NET 11 SDK. The analyzers and source generators in the package compile against Roslyn 5.12 (`Microsoft.CodeAnalysis.CSharp` 5.12.0), so the compiler must be Roslyn 5.12 or later: .NET SDK 11.0.100 (GA) or later. .NET 11 preview and RC SDKs that bundle an older Roslyn are not supported. See [12.0.0-beta.18](documentation/release-notes/release12.0.0-beta.18.md).
 
 ```console
 dotnet add package TimeWarp.State
