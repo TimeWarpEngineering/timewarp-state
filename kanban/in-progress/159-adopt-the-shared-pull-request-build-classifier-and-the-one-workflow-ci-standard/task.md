@@ -89,8 +89,8 @@ GITHUB_EVENT_NAME=pull_request GITHUB_EVENT_PATH=$T/event.json GITHUB_OUTPUT=$T/
 
 Expect: `Pull request changes only declared non-build paths. Skipping build and test. ...`, exit 0, and
 `$T/out` holds `requires_build=false`. Ran this against the kanban-only commit `caae4ff4`: got exactly that.
-With a head that changes `tools/` (this branch's HEAD) the classifier prints `Build path changed: ... Full build.`
-and runs the pipeline. On GitHub: this task's pull request shows a `CI` run (it changes `tools/`, so it builds).
+With a head that changes `tools/` (this branch's HEAD) the classifier should print `Build path changed: ... Full build.`
+and run the pipeline (not run locally, since it cleans the worktree; the pull request's CI run proves it). On GitHub: this task's pull request shows a `CI` run (it changes `tools/`, so it builds).
 
 ## Session
 
