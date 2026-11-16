@@ -78,6 +78,8 @@ refusing PRs in this repo. Acceptance:
 - Review round 1: grok session 01a1e2aa-135a-74c2-8d23-9096aed2a212 (2026-11-16), effort 2, roster general. Open finding M1. No disposition yet.
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e2aa-135a-74c2-8d23-9096aed2a212, max-turns 120, artifacts general.md, merged.md — 2026-11-16T04:52:51Z
 - Fix pass for round 1 (implement-fix-2 oracle, implementer-claude, claude-opus-5-5), 2026-11-16: M1 fixed. Five current-version sentences now name Mediator 15.0.0-beta.9.
+- Review round 2: grok session 01a1e2b7-5465-7510-a6ff-d7650199b4d2 (2026-11-16), effort 1, roster general. M1 confirmed fixed. No new findings. Disposition clean.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e2b7-5465-7510-a6ff-d7650199b4d2, max-turns 80, artifacts review/round-2/general.md, review/round-2/merged.md, review/disposition.md — 2026-11-16T05:00:05Z
 
 ## Results
 
@@ -130,12 +132,12 @@ git grep -n "Mediator 15.0.0-beta" readme.md claude.md documentation/overview.md
 
 ### Review
 
-Round 1 (effort 2, roster general). Counts after the fix pass: 0 bugs open, 1 fixed, 0 wontfix. M1 (the packed readme said hosts consume Mediator 15.0.0-beta.5) is fixed. The five current-version sentences now say 15.0.0-beta.9. Review round 2 is next. Paths: `review/review-framework.md`, `review/round-1/merged.md`. The implementer restatement matches the original task. No misread.
+Round 1 (effort 2, roster general) raised M1. The fix pass set it to fixed. Round 2 (effort 1, roster general) re-read delta `4d836273..9112cf73` and confirmed the five current-version sentences name Mediator 15.0.0-beta.9. No new findings. Final counts: bug 0 open, 1 fixed, 0 wontfix; suggestion 0; nit 0. Disposition: clean. Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`. The implementer restatement matches the original task. No misread. Gates were not re-run in round 2; the fix-pass record covers the docs delta.
 
 ## Review
 
-- Round 1: M1 fixed in the fix pass (2026-11-16); round 2 pending
-
+- Round 1: M1 fixed in the fix pass (2026-11-16)
+- Round 2: Done
 ## Notes
 
 Requested by Steven 2026-11-16: "skip audit and then we update".
