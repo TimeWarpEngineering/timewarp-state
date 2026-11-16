@@ -64,22 +64,131 @@ SourceGenerators reference and lost TW0007 / TWA0004.
     regenerate and check `git status` before finishing. If fixie asks for a tool restore, that is
     the stale `~/.dotnet/toolResolverCache`; report it rather than working around it in the repo.
 
+## Goal (implementer restatement)
+
+Move the analyzer / code-fix / source-generator Roslyn floor from 5.9.0 to 5.12.0 (the Roslyn that
+.NET SDK 11.0.100 GA bundles), and bring the other seven outdated pins current.
+
+Acceptance:
+
+- `ganda repo audit --fix` run first; whatever it changes is committed.
+- `Microsoft.CodeAnalysis.Analyzers`, `.CSharp`, `.CSharp.Workspaces` all 5.12.0; pin comment states the
+  verified SDK that bundles 5.12; guard test `PinRoslynAtTheConsumerCompilerFloor` asserts 5.12.0.
+- The two analyzer test projects that dropped `TimeWarp.SourceGenerators` in task 156 get it back (comment
+  removed) and build clean with TW0007 / TWA0004 running.
+- netstandard2.0 analyzer, code-fix and generator projects build; Roslyn stays `PrivateAssets` and is not a
+  nuspec dependency.
+- OpenTelemetry x3 1.21.0, Microsoft.NET.Test.Sdk 18.12.0, MSTest x2 4.5.3, coverlet.collector 10.1.1.
+- No stale 5.9 / 10.0.400 floor statement in docs, readme, claude.md, packed readme; beta.18 release notes
+  describe the change.
+- `./bin/dev build` 0/0, `./bin/dev test` green, `ganda repo audit` passes, `ganda nuget outdated` reports 0
+  outdated (Blazored.* "not found" lines pre-existing), tracked wwwroot JS intact.
+
+Fix pass (review round 1 → 2): M1 asks that `readme.md` and `documentation/partials/installation.md` use
+the decision's qualifier. Only .NET 11 preview / RC SDKs that bundle an older Roslyn are unsupported, not
+every preview / RC SDK. The minimum stays .NET SDK 11.0.100 (GA). Done when both files and the packed readme
+carry the qualified sentence and the gates pass again.
+
 ## Checklist
 
-- [ ] `ganda repo audit --fix` run and committed
-- [ ] Roslyn ×3 at 5.12.0; pin comment and guard test updated
-- [ ] SourceGenerators lint restored on the two analyzer test projects
-- [ ] Roslyn still not a package dependency
-- [ ] OpenTelemetry ×3, Test.Sdk, MSTest ×2, coverlet bumped
-- [ ] Docs and release notes state the new floor; no stale 5.9 / 10.0.400 statements
-- [ ] Build clean, tests green, tracked wwwroot JS intact
-- [ ] `ganda repo audit` passes; `ganda nuget outdated` reports 0 outdated
+- [x] `ganda repo audit --fix` run and committed
+- [x] Roslyn ×3 at 5.12.0; pin comment and guard test updated
+- [x] SourceGenerators lint restored on the two analyzer test projects
+- [x] Roslyn still not a package dependency
+- [x] OpenTelemetry ×3, Test.Sdk, MSTest ×2, coverlet bumped
+- [x] Docs and release notes state the new floor; no stale 5.9 / 10.0.400 statements
+- [x] Build clean, tests green, tracked wwwroot JS intact
+- [x] `ganda repo audit` passes; `ganda nuget outdated` reports 0 outdated
+
+## Results
+
+### What changed
+
+- `ganda repo audit --fix` ran first and changed nothing, so there was no audit-fix commit.
+- `Directory.Packages.props`: Microsoft.CodeAnalysis.Analyzers / .CSharp / .CSharp.Workspaces 5.9.0 → 5.12.0;
+  OpenTelemetry ×3 1.20.1 → 1.21.0; Microsoft.NET.Test.Sdk 18.11.0 → 18.12.0; MSTest.TestAdapter /
+  TestFramework 4.5.2 → 4.5.3; coverlet.collector 10.1.0 → 10.1.1. The pin comment now gives the 5.12.0 floor
+  and the SDK that bundles it.
+- Floor verified from the installed SDKs' `Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll` ProductVersion:
+  11.0.100 → `5.12.0-1.26529.118`, 10.0.404 → `5.9.0-1.26529.119`.
+- Guard test `PinRoslynAtTheConsumerCompilerFloor` now asserts 5.12.0, with the reason in its Design region.
+  The nuspec fixture in `RejectAnUnexpectedDependencyInNuspecXml` uses 5.12.0 too.
+- `timewarp-state-analyzer-tests` and `timewarp-state-source-generator-tests`: removed the task 156
+  `<PackageReference Remove="TimeWarp.SourceGenerators" />` and its comment. Both restore
+  TimeWarp.SourceGenerators 1.0.0-beta.16 with Microsoft.CodeAnalysis.CSharp 5.12.0 (checked in
+  `obj/project.assets.json`). No new lint findings came up: the build has 0 warnings.
+- Docs: `readme.md` (this is the packed readme of TimeWarp.State; the 5.12 line is confirmed inside the nupkg),
+  `documentation/partials/installation.md`, `documentation/topics/analyzers.md` and the release notes
+  for unreleased 12.0.0-beta.18 (the floor section is rewritten to 5.12 / SDK 11.0.100, and a task 157 dependency
+  section is added) now give the new floor. `claude.md` and `overview.md` had no floor statement. No stale
+  5.9 / 10.0.400 floor statement remains outside older release notes and history comments.
+- Version: `./bin/dev check-version` reports source 12.0.0-beta.18 against NuGet beta.17, safe to release.
+  No bump.
+- Roslyn is still not a package dependency. None of the packed nuspecs lists any `Microsoft.CodeAnalysis.*`.
+  `TimeWarp.State.DevTools.Export` now depends on `OpenTelemetry` 1.21.0. The analyzer, code-fix and
+  generator csprojs keep `PrivateAssets="all"`.
+- Tracked `wwwroot` JS is intact: `git status` shows no deletions. No `--no-incremental` build ran.
+- Review round 1 fix (M1): `readme.md` and `documentation/partials/installation.md` now say ".NET 11 preview
+  and RC SDKs that bundle an older Roslyn are not supported." This matches the pin comment and the beta.18
+  release notes. The rebuilt nupkg readme has the same sentence.
+- Environment note: the first `./bin/dev test` failed with "Run dotnet tool restore" for fixie.
+  `~/.dotnet/toolResolverCache/1/fixie.console` pointed at the gc'd task-156 worktree's `artifacts/nuget-packages`.
+  `rm -rf ~/.dotnet/toolResolverCache` followed by `dotnet tool restore` fixed it. Nothing in the repo changed.
+
+### Gates
+
+| Gate | Command | Result |
+|---|---|---|
+| Build | `./bin/dev build` | exit 0, 0 Warning(s), 0 Error(s) |
+| Test | `./bin/dev test` | exit 0. All suites pass (90, 174, 153+1 skipped, 40+1 skipped, 21, 124, 4, 67+1 skipped, 7+1 skipped). The skips are the template `SkipExample`. |
+| Audit | `ganda repo audit` | exit 0, "Repository passes", `package-pin-currency` PASS. One advisory: `kebab-path-names` (warning, pre-existing and documented in `.editorconfig` by task 154) |
+| Outdated | `ganda nuget outdated` | "All packages are up to date!". `Blazored.LocalStorage` / `Blazored.SessionStorage` "not found on nuget.org" is pre-existing |
+
+Fix pass (M1, 2026-11-16), rerun after the doc edit:
+
+| Gate | Command | Result |
+|---|---|---|
+| Build | `./bin/dev build` | exit 0, 0 Warning(s), 0 Error(s) |
+| Test | `./bin/dev test` | exit 0. All suites pass (90, 174, 153+1 skipped, 40+1 skipped, 21, 124, 4, 67+1 skipped, 7+1 skipped) |
+| Audit | `ganda repo audit` | exit 0. The only item is the pre-existing `kebab-path-names` advisory (warning) |
+
+### Review
+
+Round 1 (effort 2, roster general): 1 suggestion (M1), 0 bugs, 0 nits.
+Round 2 (effort 1, roster general): re-checked the fix delta. M1 stays fixed. No new findings.
+Final counts: bug 0, suggestion 1 fixed, nit 0. Open 0.
+Disposition: clean.
+Paths: `review/review-framework.md`, `review/round-2/general.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
+### How to validate
+
+- Smoke: `./bin/dev build && ./bin/dev test`, then `grep -n 'CodeAnalysis' Directory.Packages.props` and
+  `unzip -p artifacts/packages/TimeWarp.State.12.0.0-beta.18.nupkg '*.nuspec' | grep -c CodeAnalysis`.
+- Expect: the build has 0 warnings and 0 errors, and the tests are green, including
+  `NuspecDependencyAllowList_Should_.PinRoslynAtTheConsumerCompilerFloor`. All three Roslyn pins read 5.12.0.
+  The nuspec count is `0`. `ganda nuget outdated` reports all packages up to date.
+- Smoke (M1): `grep -n 'bundle an older Roslyn' readme.md documentation/partials/installation.md` and
+  `unzip -p artifacts/packages/TimeWarp.State.12.0.0-beta.18.nupkg readme.md | grep -c 'bundle an older Roslyn'`.
+- Expect (M1): one hit in each file, and a count of `1` in the packed readme.
 
 ## Session
 
 - Created: 31bc0748-8dda-4ee8-912e-8d546f2d6990 (2026-11-16)
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-16T05:36:30Z
+- Review oracle: grok (vendor xAI), session 01a1e2db-8067-7281-92b8-7658e3944f4d, effort 2, roster general, max-turns 120, round 1 open — 2026-11-16
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e2db-8067-7281-92b8-7658e3944f4d, max-turns 120, artifacts general.md, merged.md — 2026-11-16T05:48:16Z
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1e2e9-eebb-7cd2-afee-a90c0f0436c4, effort 1, roster general, max-turns 80, artifacts round-2/general.md, round-2/merged.md, disposition.md — 2026-11-16
 
+## Review
+
+- Round 1: Blocked — open M1
+- Fix pass (2026-11-16): M1 fixed by implementer-claude (claude-opus-5-5). Round 2 is next.
+- Round 2: Done
 ## Notes
 
 Requested by Steven 2026-11-16 after `ganda nuget outdated`: asked why Roslyn was held, pointed
 out the repo is on .NET 11, then "create task and launch it".
+
+Review round 1: `review/round-1/merged.md` (M1 open). Goal restatement matches the task; no misread.
+
+Review round 2: `review/disposition.md` (clean). The fix-pass restatement matches M1 and the task. No misread.
