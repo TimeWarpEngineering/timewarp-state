@@ -46,6 +46,10 @@ the pull request shows a `CI` run.
 - [x] `ganda repo audit` clean
 - [ ] This task's pull request shows a `CI` run (record the URL in Results)
 
+## Review
+
+- Round 1: Done
+
 ## Notes
 
 State builds from roots outside the defaults (for example `samples/**`, `scripts/**`); check the current `pull_request` filter and declare those through `PullRequestBuildConfig`.
@@ -92,7 +96,27 @@ Expect: `Pull request changes only declared non-build paths. Skipping build and 
 With a head that changes `tools/` (this branch's HEAD) the classifier should print `Build path changed: ... Full build.`
 and run the pipeline (not run locally, since it cleans the worktree; the pull request's CI run proves it). On GitHub: this task's pull request shows a `CI` run (it changes `tools/`, so it builds).
 
+### Review
+
+Round 1, effort 2, roster general. Disposition: **clean**. Final open count: 0. No wontfix and no escalation.
+
+The restatement mismatches the task Notes on `samples/**` and `scripts/**`. That misread is under `## Learnings` and was not raised as a finding.
+
+| Severity | open | fixed | wontfix |
+|----------|------|-------|---------|
+| bug | 0 | 0 | 0 |
+| suggestion | 0 | 0 | 0 |
+| nit | 0 | 0 | 0 |
+
+Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
 ## Session
 
 - Created: 64677b22-d705-4b25-b537-4b53732bcb92 (2026-11-16)
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 61873cfa-2718-4ad5-9cde-5fa50ae23985, max-turns 500, Done — 2026-11-16T17:43:01Z
+- Review oracle: reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1e574-a9eb-7561-9f39-5e44ab2cc7a8, tw-implementation-review, effort 2, roster general, turn cap 120, 2026-11-17
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e574-a9eb-7561-9f39-5e44ab2cc7a8, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-16T17:50:24Z
+
+## Learnings
+
+- Misread: `## Goal (implementer restatement)` does not match the task Notes. The Notes say this repo builds from roots outside the classifier defaults and give `samples/**` and `scripts/**` as examples to declare through `PullRequestBuildConfig`. The restatement instead declares packed files outside the protected roots (`readme.md`, `assets/logo.png`) and does not mention those two trees. The shipped `PullRequestBuildClassifier` in TimeWarp.Nuru.DevCli 4.0.0-beta.15 skips only declared non-build paths. `samples/` and `scripts/` are not on that list, so a non-markdown change there already requires a build. The two `buildPaths` entries are the ones that change a decision: the default rule would skip root markdown and `assets/**`, and both files are packed. Round 1 did not open a finding for the mismatch.
