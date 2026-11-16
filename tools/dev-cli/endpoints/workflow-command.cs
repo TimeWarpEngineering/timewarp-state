@@ -2,7 +2,14 @@
 // Mode-aware CI/CD pipeline for TimeWarp.State
 #endregion
 #region Design
-// PR/merge: assert-version-ssot → clean → build → test → e2e → verify-samples.
+// PR/merge: classify → assert-version-ssot → clean → build → test → e2e → verify-samples.
+// Classify is the shared PullRequestBuildClassifier (TimeWarp.Nuru.DevCli). On a pull
+// request that changes only declared non-build paths (kanban, documentation, ...) it
+// prints its message and the run exits 0 without building. Every other event builds.
+// workflow.yml has no paths filter on pull_request, so every pull request reports CI.
+// On a skip, requires_build=false goes to GITHUB_OUTPUT so the workflow's coverage and
+// Packages-* uploads skip too. Packed root files (readme.md, assets/logo.png) are
+// declared in .timewarp/dev.jsonc under pullRequestBuild.buildPaths, not here.
 // verify-samples packs, then restores sample 00 auto from artifacts/packages.
 // The other samples ProjectReference source and are part of the build filter.
 // Release: ReleasePipeline (workflow/release-pipeline.cs) promotes the CI Packages-* artifact — no rebuild.
@@ -92,6 +99,14 @@ internal sealed class WorkflowCommand : ICommand<Unit>
 
     private async Task<PipelineResult> RunPrAsync(string repoRoot, CancellationToken ct)
     {
+      PullRequestBuildDecision decision = await PullRequestBuildClassifier.DecideAsync(repoRoot, ct);
+      Terminal.WriteLine(decision.Message);
+      if (!decision.RequiresBuild)
+      {
+        await WriteSkipOutputAsync(ct);
+        return PipelineResult.Success;
+      }
+
       Terminal.WriteLine("Pipeline: assert-version-ssot → clean → build → test → e2e → verify-samples\n");
 
       if (new RepoVersionService(Terminal, repoRoot).AssertVersionSsot() is null)
@@ -119,6 +134,16 @@ internal sealed class WorkflowCommand : ICommand<Unit>
 
       Terminal.WriteLine("\nPipeline SUCCEEDED".Green());
       return PipelineResult.Success;
+    }
+
+    private static async Task WriteSkipOutputAsync(CancellationToken ct)
+    {
+      // GitHub Actions step output; absent on a local run.
+      string? outputPath = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
+      if (!string.IsNullOrEmpty(outputPath))
+      {
+        await File.AppendAllTextAsync(outputPath, "requires_build=false\n", ct);
+      }
     }
   }
 }

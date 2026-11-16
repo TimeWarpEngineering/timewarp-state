@@ -1,28 +1,19 @@
 name: CI/CD Pipeline
 
 # Thin trigger. Pipeline lives in C# (`dev workflow`).
-# PR/merge: assert-version-ssot → clean → build → test → e2e → verify-samples.
+# PR/merge: classify → assert-version-ssot → clean → build → test → e2e → verify-samples.
 # verify-samples packs, then restores sample 00 auto. Other samples are project references.
 # Release: promote CI Packages-* artifact (no rebuild). Docs job deferred.
 on:
+  # No paths filter on pull_request: every pull request reports CI (the org
+  # one-workflow CI standard, ganda 655). dev workflow asks the shared
+  # PullRequestBuildClassifier (TimeWarp.Nuru.DevCli) whether to build; a pull
+  # request that changes only non-build paths (kanban, docs, ...) exits 0 early.
   pull_request:
-    paths:
-      - 'source/**'
-      - 'tests/**'
-      - 'samples/**'
-      - 'scripts/**'
-      - 'tools/**'
-      - 'msbuild/**'
-      - '.github/workflows/**'
-      - 'Directory.Build.props'
-      - 'Directory.Packages.props'
-      - 'timewarp-state.slnx'
-      - '*.props'
-      - '*.targets'
-      - 'nuget.config'
-      - 'global.json'
   push:
     branches: [master]
+    # Keep the push filter: a kanban-only or docs-only merge to master must not
+    # rebuild and upload a Packages-* artifact that release would promote.
     paths:
       - 'source/**'
       - 'tests/**'
@@ -34,6 +25,8 @@ on:
       - 'Directory.Build.props'
       - 'Directory.Packages.props'
       - 'timewarp-state.slnx'
+      - 'readme.md'
+      - 'assets/logo.png'
       - '*.props'
       - '*.targets'
       - 'nuget.config'
@@ -102,6 +95,7 @@ jobs:
         run: echo "Trusted publishing OK — OIDC exchange succeeded for this repo + workflow.yml. (A failure of the NuGet login step above means the policy is missing or misconfigured on NuGet.org.)"
 
       - name: Run CI Pipeline
+        id: pipeline
         if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -121,8 +115,10 @@ jobs:
         # Cobertura from the e2e dotnet test (--collect:"XPlat Code Coverage",
         # results directory artifacts/coverage). Release and probe never reach this
         # step. A missing file means that test run wrote nothing, so the job fails.
+        # A pull request the classifier skipped (requires_build=false) has no coverage.
         if: >-
           success() &&
+          steps.pipeline.outputs.requires_build != 'false' &&
           github.event_name != 'release' &&
           !(github.event_name == 'workflow_dispatch' && (inputs.mode == 'release' || inputs.mode == 'probe'))
         uses: actions/upload-artifact@v7
@@ -133,9 +129,11 @@ jobs:
 
       - name: Upload Artifacts
         # Skip release (promote the already-uploaded merge artifact) and probe
-        # (pipeline is skipped, so artifacts/packages is empty).
+        # (pipeline is skipped, so artifacts/packages is empty), and a pull request
+        # the classifier skipped (requires_build=false, nothing packed).
         if: >-
           success() &&
+          steps.pipeline.outputs.requires_build != 'false' &&
           github.event_name != 'release' &&
           !(github.event_name == 'workflow_dispatch' && (inputs.mode == 'release' || inputs.mode == 'probe'))
         uses: actions/upload-artifact@v7

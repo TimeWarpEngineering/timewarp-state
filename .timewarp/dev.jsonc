@@ -1,0 +1,13 @@
+{
+  // Additions to PullRequestBuildClassifier (dev workflow on a pull request).
+  // readme.md is packed into TimeWarp.State and assets/logo.png is the package
+  // icon of every nupkg, so a pull request that touches only one of them must
+  // still build and pack. The default rule skips root markdown and assets/**.
+  // samples/ and scripts/ build under the default rule (not declared non-build).
+  "pullRequestBuild": {
+    "buildPaths": [
+      "readme.md",
+      "assets/logo.png"
+    ]
+  }
+}
