@@ -342,9 +342,12 @@ dotnet_diagnostic.TWA0037.severity = none
 [ganda.audit]
 # GitHub requires .github/PULL_REQUEST_TEMPLATE/ (exact basename) for PR templates.
 kebab-path-names.prune = PULL_REQUEST_TEMPLATE
-# Blazor JS initializer contract: wwwroot/{AssemblyName}.lib.module.js must match
-# Test.App.Client (test-app-client.csproj AssemblyName). Cannot kebab-rename without
-# breaking JS initializers and assembly-qualified type names in E2E.
+# Blazor JS initializers ({AssemblyName}.lib.module.js), their map / d.ts / ts sources,
+# and build/{PackageId}.targets must keep the assembly or package id (task 154).
+# kebab-path-names.prune matches directory basenames only. There is no per-path
+# file exemption, so these six names stay visible as a warning instead of turning
+# the check off. Backlog 110's doubled hyphen is a separate kitchen the kanban CLI
+# cannot rename.
 kebab-path-names.severity = warning
 
 # .githooks/*.cs are owned byte for byte by ganda's repo-baseline template (no #region blocks;
