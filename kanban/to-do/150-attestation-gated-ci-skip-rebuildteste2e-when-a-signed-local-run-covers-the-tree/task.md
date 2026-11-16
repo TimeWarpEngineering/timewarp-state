@@ -2,12 +2,13 @@
 
 ## Description
 
-CI takes ~5.5 minutes per master/PR run and every agent walk waits on it at the merge gate. Steve's direction
+CI takes 5.5 to 7 minutes per master/PR run and every agent walk waits on it at the merge gate. Steve's direction
 (2026-11-07): run the pipeline locally, attest the result, and let CI skip work that a trusted signed run already
 covered. Apply this to all builds, not just e2e.
 
 Measured on master run for 51e8e997 (2026-11-07): total 5m34s. Inside `Run CI Pipeline`: restore + build + unit
 test suites ~3m, e2e ~70s (publish SUT 25s, Playwright install 16s, tests 26s), verify-samples ~50s.
+Re-checked 2026-11-16: the five most recent successful runs took 5m28s to 7m12s, so the saving still stands.
 
 `ganda repo attest` already signs `tree` + `check_set` into a git note (key `tw-audit-1`) and `ganda repo attest status`
 verifies it against the current tree. Today the check_set only covers the audit checks. The release pipeline already
@@ -38,6 +39,15 @@ If absent or stale, it runs the full pipeline as today.
    payload and let CI refuse mismatched ones.
 6. Agent walks: `ganda task work` should run `dev ci` + attest before `open-pr` so the PR's CI is the fast path by
    default. Coordinate with the task-work host steps (likely a timewarp-ganda task).
+7. Coverage upload: since task 154 the workflow has a `coverage` step that uploads `artifacts/coverage` with
+   `if-no-files-found: error`, and that file is written by the e2e test run. A fast path that skips e2e must skip that
+   step too, or carry the coverage file some other way. Pick one.
+
+## How to run this task
+
+RFC first. The design questions above are the first deliverable and the ganda-side tasks do not exist yet, so a
+plain implement walk cannot finish. Start with `ganda task work 150 --routine rfc`; implement on this same task
+after the RFC is folded in.
 
 ## Requirements
 
@@ -47,12 +57,12 @@ If absent or stale, it runs the full pipeline as today.
 - Ganda-side pieces go in timewarp-ganda tasks; list their ids under `## Notes` and block on them explicitly.
 - Prove it: one PR where CI skips the pipeline on an attested tree and finishes in under 1 minute, and one where a
   non-attested push still runs everything. Record both run ids under `## Results`.
-- Depends on task 149 (local `dev e2e` must run without prompts).
+- Local `dev e2e` already runs without prompts (task 149, done 2026-11-07).
 - Run `ganda repo audit --fix` in this worktree and commit whatever it changes (audit fixes are policy).
 
 ## Checklist
 
-- [ ] RFC written under `rfc/` with the six decisions resolved
+- [ ] RFC written under `rfc/` with the seven decisions resolved
 - [ ] Ganda-side tasks created in timewarp-ganda and linked
 - [ ] `dev ci` runs all stages locally and attests with stage payload
 - [ ] Workflow gate reads attestation; skips pipeline on match; full run on miss
@@ -70,5 +80,7 @@ If absent or stale, it runs the full pipeline as today.
 
 ## Notes
 
-- Prerequisite: task 149.
+- Task 149 (the former prerequisite) is done.
+- Groomed 2026-11-16: dropped the finished 149 dependency, added the coverage-upload question, refreshed timing,
+  and marked the task RFC-first.
 - Timing source: `gh run view` on the master run for 51e8e997 (task 148 merge), 2026-11-07.
