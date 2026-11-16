@@ -29,7 +29,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="11.0.0" />
 
     <!-- Microsoft Code Analysis -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0">
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.12.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
@@ -38,13 +38,15 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <!-- Analyzer and source generator compile against this Roslyn, so it is the consumer compiler floor.
-         5.9.0 loads on SDK 10.0.400+ and .NET 11 SDK preview.6+ (first SDKs that bundle Roslyn 5.9; task 151).
+         5.12.0 loads on .NET SDK 11.0.100 (GA) and later, which bundles Roslyn 5.12.0 (checked from the SDK's
+         Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll; SDK 10.0.404 bundles 5.9). The packages target net11.0, so a
+         .NET 11 SDK is already required. .NET 11 preview / RC SDKs with an older Roslyn are not supported (task 157).
          Those projects mark the reference PrivateAssets so it is not a package dependency. -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />
     <!-- Code fixes compile against the same Roslyn floor as the analyzer. -->
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.12.0" />
 
     <!-- Microsoft Extensions -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
@@ -54,7 +56,7 @@
     <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
 
     <!-- Microsoft Testing & Build Tools -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
     <!-- v4 is the MSTest 4 build of Playwright. Microsoft.Playwright.MSTest 1.63.0 still binds the MSTest 3 assembly. -->
     <PackageVersion Include="Microsoft.Playwright.MSTest.v4" Version="1.64.1" />
     <PackageVersion Include="Microsoft.TypeScript.MSBuild" Version="7.0.1" />
@@ -63,21 +65,21 @@
     <PackageVersion Include="FakeItEasy" Version="9.0.1" />
     <PackageVersion Include="Fixie.TestAdapter" Version="4.2.0" />
     <!-- Paired with Microsoft.Playwright.MSTest.v4. The non-v4 Playwright.MSTest package binds the MSTest 3 assembly identity. -->
-    <PackageVersion Include="MSTest.TestAdapter" Version="4.5.2" />
-    <PackageVersion Include="MSTest.TestFramework" Version="4.5.2" />
+    <PackageVersion Include="MSTest.TestAdapter" Version="4.5.3" />
+    <PackageVersion Include="MSTest.TestFramework" Version="4.5.3" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.5" />
     <!-- 4.3.0 is the latest stable. 5.0.0-preview.2 drops params overloads such as ShouldBeOneOf; the stable-band outdated tool does not select it. -->
     <PackageVersion Include="Shouldly" Version="4.3.0" />
-    <PackageVersion Include="coverlet.collector" Version="10.1.0" />
+    <PackageVersion Include="coverlet.collector" Version="10.1.1" />
 
     <!-- Blazor Storage -->
     <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageVersion Include="Blazored.SessionStorage" Version="2.4.0" />
 
     <!-- OpenTelemetry / Aspire (telemetry sample) -->
-    <PackageVersion Include="OpenTelemetry" Version="1.20.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.20.1" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry" Version="1.21.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.21.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.21.0" />
     <PackageVersion Include="Aspire.Hosting" Version="13.6.5" />
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.6.5" />
 
