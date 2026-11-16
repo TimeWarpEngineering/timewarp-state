@@ -4,6 +4,11 @@
 #:property NoWarn=CA2007;CA1849;RS0030
 #:property RunAnalyzers=false
 
+#region Purpose
+// Stop a push of a local task branch onto master or main from any HEAD, and stop a home-branch update or a mixed tag-and-branch batch while HEAD is master or main.
+// An empty destination list, refs/tags, and refs/ganda stay allowed, so a non-fast-forward error and a claims publish can still surface. git push --no-verify is the escape hatch.
+#endregion
+
 // Refuse pushes that update home branches (master/main) while HEAD is master or main.
 // Allow other dests (feature/*, etc.) so origin-home can publish a missing --into ref.
 // Allow refs/tags/* (release tags) and refs/ganda/* (claims CAS) when every dest is one of those.

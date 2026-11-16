@@ -8,6 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Fixie.TestAdapter" />
     <PackageReference Include="Shouldly" />
+    <!-- TimeWarp.SourceGenerators (lint-only, from Directory.Build.props) declares Microsoft.CodeAnalysis.CSharp >= 5.12.0
+         as a net11.0 dependency since 1.0.0-beta.16. That collides (NU1605) with the 5.9.0 floor this project tests on,
+         so this project drops it. why: task 156 -->
+    <PackageReference Remove="TimeWarp.SourceGenerators" />
     <!-- Keep analyzer tests on the same 5.9.0 floor the shipped analyzer compiles against. -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" />

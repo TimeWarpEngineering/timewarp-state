@@ -4,6 +4,11 @@
 #:property NoWarn=CA2007
 #:property RunAnalyzers=false
 
+#region Purpose
+// After a merge lands, run ganda repo attest and write a missing root, a failed attest, or a ganda binary that will not start to stderr.
+// The hook exits 0 in every case, because that status cannot undo the merge.
+#endregion
+
 // Dispatcher: ganda repo attest.
 // Runs after the merge. Report a missing root, a failed attest, or a ganda
 // binary that cannot be started on stderr and exit 0. The exit code cannot

@@ -4,6 +4,11 @@
 #:property NoWarn=CA2007
 #:property RunAnalyzers=false
 
+#region Purpose
+// On a branch checkout, run ganda repo attest.
+// A missing root, a failed attest, or a ganda binary that will not start is written to stderr, and the hook still exits 0 so git checkout, git switch, and git worktree add succeed.
+#endregion
+
 // Dispatcher for branch checkouts only ($3 == 1): ganda repo attest.
 // A non-zero exit becomes the exit status of git checkout, git switch, and
 // git worktree add. Report a missing root, a failed attest, or a ganda
