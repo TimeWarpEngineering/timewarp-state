@@ -77,7 +77,7 @@ dotnet build --project <ProjectPath> --configuration Release
 ### Key Patterns
 - **CQRS/Flux**: Unidirectional data flow with Actions/StateActionHandlers
 - **Action authoring**: Prefer the short shape: `[Reducer]` on the nested `Action` of a `static partial` `*ActionSet` plus `private static void Reduce(TState state, Action action)`; the generator emits the `Handler`. Hand-write `Handler : StateActionHandler<Action>` (long shape) for async work, injected services, or anything beyond a synchronous state change. Both get the same dispatch method, catalog entry and manifest entry. See `documentation/topics/actions.md`; TWS0014 reports a `[Reducer]` the generator cannot serve.
-- **TimeWarp.Mediator 15.0.0-beta.5**: One package (`TimeWarp.Mediator`, contracts plus the bundled analyzer) and `TimeWarp.Mediator.Generators` on hosts. Generated `AddGeneratedMediator<TScope>()` lives in `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`); import that namespace. `ISender<ClientPipeline>` / `ISender<ServerPipeline>`. Handler and behavior methods return `ValueTask`.
+- **TimeWarp.Mediator 15.0.0-beta.9**: One package (`TimeWarp.Mediator`, contracts plus the bundled analyzer) and `TimeWarp.Mediator.Generators` on hosts. Generated `AddGeneratedMediator<TScope>()` lives in `TimeWarp.Mediator.Generated` (or `TimeWarpMediatorNamespace`); import that namespace. `ISender<ClientPipeline>` / `ISender<ServerPipeline>`. Handler and behavior methods return `ValueTask`.
 - **Async-First**: All operations are async by design
 - **TypeScript Integration**: Strong typing for JavaScript interop
 
@@ -167,7 +167,7 @@ Follow structured task workflow using Kanban approach:
 ## Essential Dependencies
 
 - **Blazor**: UI framework (Server/WebAssembly)
-- **TimeWarp.Mediator 15.0.0-beta.5**: CQRS/mediator via `TimeWarp.Mediator` plus generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`). There is no Contracts package and no Analyzers package.
+- **TimeWarp.Mediator 15.0.0-beta.9**: CQRS/mediator via `TimeWarp.Mediator` plus generated `AddGeneratedMediator<TScope>()` / named pipelines (`ISender<ClientPipeline>`, `ISender<ServerPipeline>`). There is no Contracts package and no Analyzers package.
 - **Microsoft.JSInterop**: JavaScript interop for browser features
 - **Fixie**: Testing framework
 - **NetArchTest**: Architecture testing

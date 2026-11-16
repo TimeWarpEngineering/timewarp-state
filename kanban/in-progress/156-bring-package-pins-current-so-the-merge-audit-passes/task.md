@@ -75,6 +75,9 @@ refusing PRs in this repo. Acceptance:
 - Created: 31bc0748-8dda-4ee8-912e-8d546f2d6990 (2026-11-16)
 - Implemented 2026-11-16 (implement oracle, ganda task work): audit fix, pins, .NET 11 GA + Aspire advisories, beta.18 bump.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-16T04:42:30Z
+- Review round 1: grok session 01a1e2aa-135a-74c2-8d23-9096aed2a212 (2026-11-16), effort 2, roster general. Open finding M1. No disposition yet.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e2aa-135a-74c2-8d23-9096aed2a212, max-turns 120, artifacts general.md, merged.md — 2026-11-16T04:52:51Z
+- Fix pass for round 1 (implement-fix-2 oracle, implementer-claude, claude-opus-5-5), 2026-11-16: M1 fixed. Five current-version sentences now name Mediator 15.0.0-beta.9.
 
 ## Results
 
@@ -91,7 +94,19 @@ refusing PRs in this repo. Acceptance:
 - **Tracked wwwroot JS.** `git status` after build and test shows no deleted or modified `wwwroot` files.
 - **Audit advisory left as is.** The `kebab-path-names` warning (7 paths: Blazor `{AssemblyName}.lib.module.*`, `build/{PackageId}.targets`, backlog 110) is the documented task-154 decision in `.editorconfig` and does not block.
 
+- **Docs (review round 1, M1).** The current-version sentences in `readme.md:26` (packed into the State nupkg), `claude.md:80`, `claude.md:170`, `documentation/overview.md:44` and `documentation/partials/summary.md:10` now say TimeWarp.Mediator 15.0.0-beta.9, which matches the nuspec dependency. These were left alone on purpose: the "15.0.0-beta.5 or later" feature floors (`documentation/topics/actions.md`, `documentation/topics/analyzers.md`, the comments in `reducer-attribute.cs` and `reducer-handler-emitter.cs`), the release notes, and the `nuspec-dependency-allow-list-tests.cs` fixture XML.
+
 ### Gates
+
+Fix pass (round 1 → M1), rerun after the docs edit:
+
+| Gate | Command | Result |
+|------|---------|--------|
+| Build | `./bin/dev build` | Build succeeded, 0 Warning(s), 0 Error(s) |
+| Test | `./bin/dev test` | Tests completed successfully (exit 0): analyzer 90, source-generator 174, state 153 (+1 skipped), 40 (+1), telemetry 21, devtools 124, devtools isolation 4, client integration 67 (+1), architecture 7 (+1) |
+| Audit | `ganda repo audit` | exit 0, "Repository passes — 1 advisory (non-blocking) warning(s)", 42 passed; only advisory is `kebab-path-names` (pre-existing, task 154) |
+
+Implement pass:
 
 | Gate | Command | Result |
 |------|---------|--------|
@@ -108,9 +123,18 @@ refusing PRs in this repo. Acceptance:
 ./bin/dev build && ./bin/dev test && ganda repo audit && ./bin/dev check-version
 grep -n 'TimeWarp\.' Directory.Packages.props
 git status --short source/timewarp-state-blazor/wwwroot
+git grep -n "Mediator 15.0.0-beta" readme.md claude.md documentation/overview.md documentation/partials/summary.md
 ```
 
-**Expect:** build 0 warnings and 0 errors. Tests completed successfully. The audit exits 0 with `package-pin-currency` PASS, and its only advisory is `kebab-path-names`. check-version reports 12.0.0-beta.18 as new. Mediator pins read 15.0.0-beta.9, Amuru 3.0.0-beta.5, Nuru 4.0.0-beta.14, SourceGenerators 1.0.0-beta.16, Terminal 2.0.0-beta.2, Build.Tasks 2.0.1-beta.1. `wwwroot` git status is empty. If fixie asks for `dotnet tool restore`, clear `~/.dotnet/toolResolverCache`; that is machine state.
+**Expect:** build 0 warnings and 0 errors. Tests completed successfully. The audit exits 0 with `package-pin-currency` PASS, and its only advisory is `kebab-path-names`. check-version reports 12.0.0-beta.18 as new. Mediator pins read 15.0.0-beta.9, Amuru 3.0.0-beta.5, Nuru 4.0.0-beta.14, SourceGenerators 1.0.0-beta.16, Terminal 2.0.0-beta.2, Build.Tasks 2.0.1-beta.1. `wwwroot` git status is empty. The last grep shows five lines, and every one says 15.0.0-beta.9. If fixie asks for `dotnet tool restore`, clear `~/.dotnet/toolResolverCache`; that is machine state.
+
+### Review
+
+Round 1 (effort 2, roster general). Counts after the fix pass: 0 bugs open, 1 fixed, 0 wontfix. M1 (the packed readme said hosts consume Mediator 15.0.0-beta.5) is fixed. The five current-version sentences now say 15.0.0-beta.9. Review round 2 is next. Paths: `review/review-framework.md`, `review/round-1/merged.md`. The implementer restatement matches the original task. No misread.
+
+## Review
+
+- Round 1: M1 fixed in the fix pass (2026-11-16); round 2 pending
 
 ## Notes
 
