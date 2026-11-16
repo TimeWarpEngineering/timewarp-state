@@ -95,3 +95,4 @@ and run the pipeline (not run locally, since it cleans the worktree; the pull re
 ## Session
 
 - Created: 64677b22-d705-4b25-b537-4b53732bcb92 (2026-11-16)
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 61873cfa-2718-4ad5-9cde-5fa50ae23985, max-turns 500, Done — 2026-11-16T17:43:01Z
