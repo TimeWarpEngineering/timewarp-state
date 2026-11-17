@@ -12,6 +12,9 @@
 // Failures carry an equatable LocationInfo, re-joined to the current tree when reported.
 // ClonePlanResult keeps Diagnostic values. Their locations point into the compilation the plan came from, and
 // Diagnostic equality compares descriptor, location and arguments, so an equal plan compares equal.
+// Declared actions (task 160) are ActionFacts too, from DeclaredActionExtractor: Origin "declared", the handler and
+// response from the declaration, no [Reducer] handler and no diagnostic. The builder keeps one fact per action type,
+// source first, so a declared request also written in source (or declared twice) yields one method and one row.
 // StateKey is StateSymbolFacts.FullMetadataName, the runtime Type.FullName shape, so the manifest can join facts by
 // state and DevTools can join manifest entries to live types.
 #endregion
@@ -90,8 +93,18 @@ internal sealed record ManifestActionModel
   string? Method,
   EquatableArray<ManifestParameterModel> Parameters,
   string? Catalog,
-  bool Tracked
-);
+  bool Tracked,
+  string Origin = ManifestActionModel.SourceOrigin,
+  string? Handler = null,
+  string? Response = null
+)
+{
+  /// <summary>An action written in this compilation's source.</summary>
+  public const string SourceOrigin = "source";
+
+  /// <summary>An action another generator emits, declared by a GeneratedRequestPattern (task 160).</summary>
+  public const string DeclaredOrigin = "declared";
+}
 
 internal sealed record ManifestParameterModel
 (

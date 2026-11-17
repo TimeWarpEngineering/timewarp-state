@@ -76,8 +76,8 @@ internal static class ManifestSources
     """{"type":"App.Counter.CounterState","name":"CounterState","persistent":"LocalStorage","clone":"generated","actions":[""" +
     """{"type":"App.Counter.CounterState+AddActionSet+Action","name":"AddActionSet.Action","method":"Add","parameters":[""" +
     """{"name":"Amount","type":"int","default":null,"required":true},{"name":"Note","type":"string","default":"\"x\"","required":false}],""" +
-    "\"catalog\":\"Counter.Add\",\"tracked\":true}," +
-    """{"type":"App.Counter.CounterState+ResetActionSet+Action","name":"ResetActionSet.Action","method":"Reset","parameters":[],"catalog":null,"tracked":false}]},""" +
+    "\"catalog\":\"Counter.Add\",\"tracked\":true,\"origin\":\"source\",\"handler\":null,\"response\":null}," +
+    """{"type":"App.Counter.CounterState+ResetActionSet+Action","name":"ResetActionSet.Action","method":"Reset","parameters":[],"catalog":null,"tracked":false,"origin":"source","handler":null,"response":null}]},""" +
     """{"type":"App.Counter.EmptyState","name":"EmptyState","persistent":null,"clone":"cloneable","actions":[]}]}""";
 
   public static (GeneratorDriver Driver, Compilation Output) Run(string source, string assemblyName = "Manifest.Tests")

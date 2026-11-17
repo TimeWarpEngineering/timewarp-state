@@ -12,6 +12,9 @@
 // Pipeline (every step named in TrackingNames, pinned by generator-incrementality-tests):
 //   State.Actions       CreateSyntaxProvider: ActionFactExtractor. One ActionFact per *ActionSet.Action, including
 //                       the [Reducer] handler (task 144) from the shared ReducerFacts rule.
+//   State.Declared      CreateSyntaxProvider: DeclaredActionExtractor. ActionFacts (origin "declared") for the
+//                       requests a Mediator GeneratedRequestPattern declares under a state (task 160). Another
+//                       generator emits those Actions, so State cannot see them; it serves the declaration instead.
 //   State.Persistence   CreateSyntaxProvider: PersistenceFactExtractor. One PersistenceFact per [PersistentState].
 //   State.States        CreateSyntaxProvider: StateFactExtractor. One StateFact per concrete IState type.
 //   State.Assembly      CompilationProvider.Select: assembly name and whether the manifest attribute exists.
@@ -44,6 +47,16 @@ public sealed class TimeWarpStateGenerator : IIncrementalGenerator
       .Where(static fact => fact is not null)
       .Select(static (fact, _) => fact!)
       .WithTrackingName(TrackingNames.Actions);
+
+    IncrementalValuesProvider<ActionFact> declared = context.SyntaxProvider
+      .CreateSyntaxProvider
+      (
+        predicate: static (node, _) => DeclaredActionExtractor.IsCandidateSyntax(node),
+        transform: static (syntaxContext, cancellationToken) => DeclaredActionExtractor.Extract(syntaxContext, cancellationToken)
+      )
+      .Where(static facts => facts is not null)
+      .SelectMany(static (facts, _) => facts!.Value)
+      .WithTrackingName(TrackingNames.Declared);
 
     IncrementalValuesProvider<PersistenceFact> persistence = context.SyntaxProvider
       .CreateSyntaxProvider
@@ -78,6 +91,8 @@ public sealed class TimeWarpStateGenerator : IIncrementalGenerator
       .WithTrackingName(TrackingNames.ClonePlan);
 
     IncrementalValueProvider<StateGraph> graph = actions.Collect()
+      .Combine(declared.Collect())
+      .Select(static (pair, _) => pair.Left.AddRange(pair.Right))
       .Combine(persistence.Collect())
       .Combine(states.Collect())
       .Combine(assembly)

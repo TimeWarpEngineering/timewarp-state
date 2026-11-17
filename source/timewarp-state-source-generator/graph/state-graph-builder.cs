@@ -13,6 +13,8 @@
 //   Persistence attaches only to states already present. A [PersistentState] class that is not a state is no state.
 //   States and actions are sorted by type name, ordinal. Null when the manifest attribute is unavailable or there is
 //   no state, so nothing is emitted.
+// Declared actions (task 160) arrive in the same action list after the source ones; Distinct drops a declared fact
+// whose action type is already present.
 // A state declared twice (partial declarations each with a base list) is reported once by the extractor. Build
 // still de-duplicates by key, defensively.
 #endregion
@@ -31,6 +33,7 @@ internal static class StateGraphBuilder
   )
   {
     string namespaceName = CatalogEmitter.GetNamespace(assembly.AssemblyName);
+    actions = Distinct(actions);
 
     List<GeneratorDiagnosticInfo> diagnostics = [];
     diagnostics.AddRange(actions.Where(fact => fact.Diagnostic is not null).Select(fact => fact.Diagnostic!));
@@ -101,6 +104,21 @@ internal static class StateGraphBuilder
       .ToList();
 
     return new ManifestModel(namespaceName, assemblyName, new EquatableArray<ManifestStateModel>(rowsOut));
+  }
+
+  // One fact per action type. Source facts come first (the generator appends declared facts), so a source action
+  // wins over a declaration of the same type, and a request declared twice keeps its first declaration.
+  private static ImmutableArray<ActionFact> Distinct(ImmutableArray<ActionFact> actions)
+  {
+    HashSet<string> types = new(StringComparer.Ordinal);
+    ImmutableArray<ActionFact>.Builder kept = ImmutableArray.CreateBuilder<ActionFact>(actions.Length);
+    foreach (ActionFact action in actions)
+    {
+      bool first = types.Add(action.Manifest.Type);
+      if (first || action.Manifest.Origin == ManifestActionModel.SourceOrigin) kept.Add(action);
+    }
+
+    return kept.Count == actions.Length ? actions : kept.ToImmutable();
   }
 
   private static string SimpleName(string key)

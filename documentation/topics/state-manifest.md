@@ -26,7 +26,8 @@ The document, version 1:
    "persistent":null,"clone":"generated",
    "actions":[{"type":"Test.App.Client.Features.Counter.CounterState+IncrementCountActionSet+Action",
                "name":"IncrementCountActionSet.Action","method":"IncrementCount",
-               "parameters":[],"catalog":null,"tracked":false}]}]}
+               "parameters":[],"catalog":null,"tracked":false,
+               "origin":"source","handler":null,"response":null}]}]}
 ```
 
 | Field | Meaning |
@@ -40,8 +41,21 @@ The document, version 1:
 | `parameters` | the method's parameters: `name`, `type`, `default` (source text or `null`), `required` |
 | `catalog` | the action catalog name for a `[CatalogAction]` action, otherwise `null` |
 | `tracked` | `true` for a `[TrackAction]` action |
+| `origin` | `source` for an action written in the assembly, `declared` for one another source generator emits. A document without the field reads as `source`. |
+| `handler` | for a declared action, the handler the declaration names (`Type.FullName` shape); otherwise `null` |
+| `response` | for a declared action, the response type its request interface names; `null` for a void action or a source action |
 
 States and actions are sorted by type name. Readers ignore fields they do not know, so later versions can add facts.
+
+## Actions another generator emits
+
+Roslyn generators cannot see each other's output. When another generator emits a state's `XActionSet.Action`, a TimeWarp.Mediator `GeneratedRequestPattern` attribute on a source type declares it (TimeWarp.Mediator 15.0.0-beta.10 or later), and TimeWarp.State serves the declaration as if the action were in source:
+
+- a dispatch method `internal Task X(XActionSet.Action action, CancellationToken? externalCancellationToken = null)` that sends the given Action (State cannot see the Action's constructor; the emitting generator can add a typed overload),
+- an action catalog entry `<StateWithoutSuffix>.X` with one `action` parameter, its `Description` from the contract's `[Description]` and its `Permissions` from a contract attribute's `string[] Permissions` named argument,
+- a manifest row with `origin` `declared` and the declaration's `handler` and `response`.
+
+TWS0015 reports a declared action that no generator emitted. `samples/09-declared-actions` shows a sibling generator and a declaration.
 
 ## Read it at runtime
 

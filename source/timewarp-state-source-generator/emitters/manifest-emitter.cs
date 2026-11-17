@@ -16,7 +16,11 @@
 //    "persistent":"SessionStorage"|"LocalStorage"|null,"clone":"generated"|"cloneable",
 //    "actions":[{"type":"<Type.FullName>","name":"<telemetry action name>","method":"<State method>"|null,
 //      "parameters":[{"name":"amount","type":"int","default":"1"|null,"required":false}],
-//      "catalog":"<catalog name>"|null,"tracked":false}]}]}
+//      "catalog":"<catalog name>"|null,"tracked":false,"origin":"source"|"declared",
+//      "handler":"<Type.FullName>"|null,"response":"<response type>"|null}]}]}
+// origin, handler and response were added in task 160 without a version change: readers ignore unknown fields, and
+// a reader that finds no origin treats the action as "source". handler and response are the declaration's for a
+// declared action (another generator emits it, a GeneratedRequestPattern names it) and null for a source action.
 // States and actions are ordered by type name (ordinal), so the text is stable. The JSON is written by hand: the
 // generator targets netstandard2.0 and must not depend on System.Text.Json.
 #endregion
@@ -98,6 +102,9 @@ internal static class ManifestEmitter
 
         json.Append("],\"catalog\":").Append(NullableString(action.Catalog));
         json.Append(",\"tracked\":").Append(action.Tracked ? "true" : "false");
+        json.Append(",\"origin\":").Append(String(action.Origin));
+        json.Append(",\"handler\":").Append(NullableString(action.Handler));
+        json.Append(",\"response\":").Append(NullableString(action.Response));
         json.Append('}');
       }
 

@@ -57,6 +57,12 @@ Dispatches one action with `TimeWarp.State` and no Blazor package:
 - `AddGeneratedMediator<ClientPipeline>` and `AddTimeWarpState`
 - Prints `Count=5` and exits 0
 
+### [09-DeclaredActions](09-declared-actions/overview.md)
+Actions another source generator emits, declared with TimeWarp.Mediator's `GeneratedRequestPattern`:
+- A sibling generator emits `AddRoleActionSet` and `RemoveRoleActionSet` in `RoleState`
+- `[ContractState]` (a derived pattern attribute) declares them, so Mediator dispatches them and TimeWarp.State emits the dispatch methods, catalog entries, and manifest rows
+- Prints `Roles=Editor` and exits 0
+
 ## Getting Started
 
 Each sample project contains its own README with detailed information about:

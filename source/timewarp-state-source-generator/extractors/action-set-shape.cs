@@ -217,7 +217,7 @@ internal static class ActionSetShape
   private static bool IsAccessibleFromState(Accessibility accessibility) =>
     accessibility is not (Accessibility.Private or Accessibility.Protected or Accessibility.ProtectedAndInternal);
 
-  private static bool IsPartial(INamedTypeSymbol type) =>
+  internal static bool IsPartial(INamedTypeSymbol type) =>
     type.DeclaringSyntaxReferences.Length > 0
     && type.DeclaringSyntaxReferences.All(reference =>
       reference.GetSyntax() is TypeDeclarationSyntax declaration

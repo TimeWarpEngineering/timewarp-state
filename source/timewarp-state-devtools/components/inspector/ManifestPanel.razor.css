@@ -36,3 +36,9 @@ h4 {
   margin-left: 0.6rem;
   color: var(--twe-muted);
 }
+
+.declared {
+  margin-left: 0.6rem;
+  color: var(--twe-muted);
+  font-style: italic;
+}

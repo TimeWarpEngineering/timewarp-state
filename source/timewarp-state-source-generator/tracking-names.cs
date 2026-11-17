@@ -12,6 +12,7 @@ namespace TimeWarp.State.SourceGenerator;
 internal static class TrackingNames
 {
   public const string Actions = "State.Actions";
+  public const string Declared = "State.Declared";
   public const string Persistence = "State.Persistence";
   public const string States = "State.States";
   public const string Assembly = "State.Assembly";
