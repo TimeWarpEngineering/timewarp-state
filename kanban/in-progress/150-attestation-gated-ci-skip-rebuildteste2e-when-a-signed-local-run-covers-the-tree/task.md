@@ -79,14 +79,14 @@ and that a plain implement walk cannot finish, so this walk parks as Blocked unt
 
 ## Checklist
 
-- [ ] RFC written under `rfc/` with the seven decisions resolved
-- [ ] Ganda-side tasks created in timewarp-ganda and linked
+- [x] RFC written under `rfc/` with the seven decisions resolved
+- [x] Ganda-side tasks created in timewarp-ganda and linked
 - [ ] `dev ci` runs all stages locally and attests with stage payload
 - [ ] Workflow gate reads attestation; skips pipeline on match; full run on miss
 - [ ] `Packages-*` artifact still produced on the fast path
 - [ ] Tool-version drift refuses the fast path
 - [ ] Two proving runs recorded (fast path < 1 min, slow path unchanged)
-- [ ] `ganda task work` runs the local pipeline + attest before open-pr (or follow-up task linked)
+- [x] `ganda task work` runs the local pipeline + attest before open-pr (or follow-up task linked)
 - [ ] `ganda repo audit --fix` run and its changes committed
 - [ ] `## Results` filled in
 
@@ -95,6 +95,7 @@ and that a plain implement walk cannot finish, so this walk parks as Blocked unt
 - Created: ffba6066-c22c-42a7-95c8-de75506a6687 (2026-11-07)
 - Context: Steve: "CI takes forever and it slows up all of our agents"; wants local run + attestation to skip CI work across all builds (2026-11-07)
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 98240814-df7b-428f-ad99-3daf2845663f, max-turns 500, Blocked — 2026-11-17T12:26:55Z
+- RFC oracle: grok session 01a1e986-6767-78a3-b95e-36f8a1bf1041 (2026-11-17). Ballot in `rfc/rfc.md`. Fold-in is the next compute on this id.
 
 ## Notes
 
@@ -102,7 +103,12 @@ and that a plain implement walk cannot finish, so this walk parks as Blocked unt
 - Groomed 2026-11-16: dropped the finished 149 dependency, added the coverage-upload question, refreshed timing,
   and marked the task RFC-first.
 - Timing source: `gh run view` on the master run for 51e8e997 (task 148 merge), 2026-11-07.
+- RFC: `rfc/rfc.md`. Resolved 2026-11-17. Third option on the artifact: `refs/ci-packages/<treeSha>`, not a draft GitHub Release. Second key `tw-ci-1`. Tree lookup. Coverage step skipped on the fast path.
+- timewarp-ganda 660: CI stage note and `tw-ci-1`. Fold-in of `dev ci` waits on that merge.
+- timewarp-ganda 661: task-work `localCi` after the last kitchen commit and before the branch push CI sees. Stage failure fails the walk. A publish or auth failure warns and still opens the pull request.
 
 ## Blocked
 
 2026-11-17: This task needs its RFC first. Run `ganda task work 150 --routine rfc` to write rfc/ with the seven decisions and create the linked timewarp-ganda tasks (stage coverage in the attestation, running the local pipeline before open-pr). Then run the implement walk again.
+
+Cleared 2026-11-17 by the RFC walk. `rfc/rfc.md` is resolved. timewarp-ganda tasks 660 and 661 are in `kanban/to-do/`. Fold-in on this id still waits on 660 before `dev ci` can call the attest command. 661 is the walk hook and is not required for one manual proof.
