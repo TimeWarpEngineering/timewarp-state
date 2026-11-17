@@ -60,6 +60,23 @@ after the RFC is folded in.
 - Local `dev e2e` already runs without prompts (task 149, done 2026-11-07).
 - Run `ganda repo audit --fix` in this worktree and commit whatever it changes (audit fixes are policy).
 
+## Goal (implementer restatement)
+
+Cut CI wall time (5.5 to 7 min per run) by letting CI trust a signed local pipeline run. A local `dev ci` runs
+build, test, e2e and verify-samples, then attests HEAD's tree with a payload that names the passed stages and the
+tool versions. The workflow checks that attestation before `Run CI Pipeline`: on a match it only packs the
+`Packages-*` artifact (and skips or feeds the coverage upload); on a miss it runs everything as today.
+
+Acceptance: an RFC under `rfc/` settles the seven design questions; the ganda-side tasks exist in timewarp-ganda and
+are linked; `dev ci` attests with a stage payload; the workflow gate skips on match and runs fully on miss; the
+artifact is still produced; tool-version drift refuses the fast path; two proving CI runs (fast < 1 min, slow
+unchanged) are recorded under `## Results`; `ganda repo audit --fix` changes are committed.
+
+Implement-walk finding (2026-11-17): no `rfc/` folder exists yet and `ganda repo attest` has no stage-payload
+option (only `[--force] [--no-push] [--no-status]`, `status`, `keygen`, `key-show`). The task says it is RFC-first
+and that a plain implement walk cannot finish, so this walk parks as Blocked until
+`ganda task work 150 --routine rfc` writes the RFC and creates the timewarp-ganda tasks.
+
 ## Checklist
 
 - [ ] RFC written under `rfc/` with the seven decisions resolved
