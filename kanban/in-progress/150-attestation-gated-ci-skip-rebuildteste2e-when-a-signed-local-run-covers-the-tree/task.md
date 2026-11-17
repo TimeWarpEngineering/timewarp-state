@@ -94,6 +94,7 @@ and that a plain implement walk cannot finish, so this walk parks as Blocked unt
 
 - Created: ffba6066-c22c-42a7-95c8-de75506a6687 (2026-11-07)
 - Context: Steve: "CI takes forever and it slows up all of our agents"; wants local run + attestation to skip CI work across all builds (2026-11-07)
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 98240814-df7b-428f-ad99-3daf2845663f, max-turns 500, Blocked — 2026-11-17T12:26:55Z
 
 ## Notes
 
@@ -101,3 +102,7 @@ and that a plain implement walk cannot finish, so this walk parks as Blocked unt
 - Groomed 2026-11-16: dropped the finished 149 dependency, added the coverage-upload question, refreshed timing,
   and marked the task RFC-first.
 - Timing source: `gh run view` on the master run for 51e8e997 (task 148 merge), 2026-11-07.
+
+## Blocked
+
+2026-11-17: This task needs its RFC first. Run `ganda task work 150 --routine rfc` to write rfc/ with the seven decisions and create the linked timewarp-ganda tasks (stage coverage in the attestation, running the local pipeline before open-pr). Then run the implement walk again.
