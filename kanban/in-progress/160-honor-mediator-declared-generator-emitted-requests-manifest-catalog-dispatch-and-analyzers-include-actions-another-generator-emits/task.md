@@ -89,6 +89,8 @@ Acceptance:
   is on nuget.org; pinned it. Built the declared-action reader, extractor, emitter changes, manifest fields, TWS0015,
   tests, sample 09, and docs. Gates under Results.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-17T11:22:05Z
+- Review oracle: grok, conversation `01a1e93e-424a-79e3-bf47-0f521c2737eb`, effort 3, roster general, round 1, clean (2026-11-17)
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1e93e-424a-79e3-bf47-0f521c2737eb, max-turns 200, artifacts general.md, merged.md, disposition.md — 2026-11-17T11:34:35Z
 
 ## Results
 
@@ -186,6 +188,16 @@ A declared request counts when it expands to `<container>.<Name>ActionSet.Action
   may want a `[Description]` on the contract type, or a follow-up that also reads the nested request type.
 - TWS0006 does not see declared catalog names. A clash with a source `[CatalogAction(Name = ...)]` is caught by
   `ActionCatalog` at startup.
+
+### Review
+
+- Round 1, roster general, effort 3. Counts: bug 0/0/0, suggestion 0/0/0, nit 0/0/0 (open/fixed/wontfix). Disposition: **clean**. No wontfix and no escalation.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+- The implementer restatement matches the original task. No misread.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
