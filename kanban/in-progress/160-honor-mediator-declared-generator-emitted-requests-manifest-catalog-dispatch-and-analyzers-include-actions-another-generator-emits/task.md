@@ -88,6 +88,7 @@ Acceptance:
 - 2026-11-17 implementer (ganda task work, implement oracle): Mediator 15.0.0-beta.10 (contains 043, merge b15c0aa)
   is on nuget.org; pinned it. Built the declared-action reader, extractor, emitter changes, manifest fields, TWS0015,
   tests, sample 09, and docs. Gates under Results.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-17T11:22:05Z
 
 ## Results
 
