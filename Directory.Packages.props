@@ -10,8 +10,8 @@
     <PackageVersion Include="TimeWarp.Amuru.Tools" Version="3.0.0-beta.5" />
     <PackageVersion Include="TimeWarp.Build.Tasks" Version="2.0.1-beta.1" />
     <PackageVersion Include="TimeWarp.Fixie" Version="3.1.0" />
-    <PackageVersion Include="TimeWarp.Mediator" Version="15.0.0-beta.9" />
-    <PackageVersion Include="TimeWarp.Mediator.Generators" Version="15.0.0-beta.9" />
+    <PackageVersion Include="TimeWarp.Mediator" Version="15.0.0-beta.10" />
+    <PackageVersion Include="TimeWarp.Mediator.Generators" Version="15.0.0-beta.10" />
     <PackageVersion Include="TimeWarp.Nuru" Version="4.0.0-beta.15" />
     <PackageVersion Include="TimeWarp.Nuru.DevCli" Version="4.0.0-beta.15" />
     <PackageVersion Include="TimeWarp.SourceGenerators" Version="1.0.0-beta.16" />

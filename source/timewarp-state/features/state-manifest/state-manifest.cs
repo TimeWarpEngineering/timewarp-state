@@ -12,6 +12,8 @@
 // not objects are skipped.
 // Type names are runtime Type.FullName strings (nested types joined with '+'). Name is Type.Name, the value
 // TimeWarp.State.Telemetry puts in timewarp.state.state_type. An action's Name is the timewarp.state.action value.
+// An action's origin, handler and response (task 160) are init properties, not positional parameters, so the record's
+// constructor and deconstruction stay as they were. A document written before task 160 has no origin: "source".
 #endregion
 
 namespace TimeWarp.State;
@@ -99,6 +101,11 @@ public sealed class StateManifest
             String(action, "catalog"),
             Boolean(action, "tracked")
           )
+          {
+            Origin = String(action, "origin") ?? StateManifestAction.SourceOrigin,
+            Handler = String(action, "handler"),
+            Response = String(action, "response")
+          }
         );
       }
 
@@ -162,7 +169,29 @@ public sealed record StateManifestAction
   IReadOnlyList<StateManifestParameter> Parameters,
   string? CatalogName,
   bool Tracked
-);
+)
+{
+  /// <summary>The <see cref="Origin"/> of an action written in the assembly's source.</summary>
+  public const string SourceOrigin = "source";
+
+  /// <summary>
+  /// The <see cref="Origin"/> of an action another source generator emits, declared by a TimeWarp.Mediator
+  /// <c>GeneratedRequestPattern</c>.
+  /// </summary>
+  public const string DeclaredOrigin = "declared";
+
+  /// <summary><c>source</c> or <c>declared</c>. A document without the field reads as <c>source</c>.</summary>
+  public string Origin { get; init; } = SourceOrigin;
+
+  /// <summary>Runtime type name of the handler the declaration names, for a declared action; otherwise null.</summary>
+  public string? Handler { get; init; }
+
+  /// <summary>Response type the declaration names, for a declared action that returns one; otherwise null.</summary>
+  public string? Response { get; init; }
+
+  /// <summary>True when another source generator emits the action (<see cref="Origin"/> is <c>declared</c>).</summary>
+  public bool IsDeclared => Origin == DeclaredOrigin;
+}
 
 /// <summary>A parameter of a <see cref="StateManifestAction"/> method.</summary>
 /// <param name="Name">Parameter name, as the action catalog uses it.</param>

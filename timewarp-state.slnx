@@ -30,6 +30,10 @@
   <Folder Name="/Samples/07-Console/">
     <Project Path="samples/07-console/sample-07-console/sample-07-console.csproj" />
   </Folder>
+  <Folder Name="/Samples/09-DeclaredActions/">
+    <Project Path="samples/09-declared-actions/sample-09-console/sample-09-console.csproj" />
+    <Project Path="samples/09-declared-actions/sample-09-generator/sample-09-generator.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />

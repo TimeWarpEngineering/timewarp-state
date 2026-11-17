@@ -204,7 +204,7 @@ internal static class ActionFactExtractor
     );
   }
 
-  private static string Keyword(INamedTypeSymbol type) => type switch
+  internal static string Keyword(INamedTypeSymbol type) => type switch
   {
     { IsRecord: true, TypeKind: TypeKind.Struct } => "record struct",
     { IsRecord: true } => "record",
@@ -213,7 +213,7 @@ internal static class ActionFactExtractor
     _ => "class"
   };
 
-  private static string Declaration(INamedTypeSymbol type) =>
+  internal static string Declaration(INamedTypeSymbol type) =>
     type.TypeParameters.Length == 0
       ? ActionSetConstructorParser.Escape(type.Name)
       : $"{ActionSetConstructorParser.Escape(type.Name)}<{string.Join(", ", type.TypeParameters.Select(parameter => parameter.Name))}>";

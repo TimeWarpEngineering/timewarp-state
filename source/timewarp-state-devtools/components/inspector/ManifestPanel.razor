@@ -7,6 +7,11 @@
     action.Parameters.Count == 0
       ? "()"
       : "(" + string.Join(", ", action.Parameters.Select(parameter => parameter.Type + " " + parameter.Name)) + ")";
+
+  // Declared actions (task 160) are emitted by another source generator; the badge's tooltip names the handler and
+  // response the declaration gives.
+  private static string DeclaredTitle(StateManifestAction action) =>
+    "Emitted by another generator. Handler: " + (action.Handler ?? "unknown") + ". Response: " + (action.Response ?? "none") + ".";
 }
 
 <h2>Declared states</h2>
@@ -41,6 +46,10 @@ else
                 @if (action.Tracked)
                 {
                   <span class="tracked">tracked</span>
+                }
+                @if (action.IsDeclared)
+                {
+                  <span class="declared" data-qa="manifest-action-declared" title="@DeclaredTitle(action)">declared</span>
                 }
               </li>
             }

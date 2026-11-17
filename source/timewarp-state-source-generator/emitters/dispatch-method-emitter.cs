@@ -8,6 +8,8 @@
 // method generator's, byte for byte, which the golden tests pin. The method takes an optional CancellationToken
 // linked with the state's own token. Required members are set with an object initializer. The containing-type chain
 // and namespace come from the model, so nested, generic and global-namespace states get a partial that merges.
+// A declared action (task 160) is emitted by another generator, so its constructor is unknown here. Its model has
+// one parameter, the Action itself, and SendsActionParameter: the method sends that instance instead of building one.
 #endregion
 
 namespace TimeWarp.State.SourceGenerator;
@@ -39,9 +41,11 @@ internal static class DispatchMethodEmitter
         .Select(parameter => $"{parameter.InitializerMember} = {parameter.Name}")
     );
 
-    string construction = initializer.Length == 0
-      ? $"new {model.ActionSetName}.Action({argumentList})"
-      : $"new {model.ActionSetName}.Action({argumentList}) {{ {initializer} }}";
+    string construction = model.SendsActionParameter
+      ? model.Parameters[0].Name
+      : initializer.Length == 0
+        ? $"new {model.ActionSetName}.Action({argumentList})"
+        : $"new {model.ActionSetName}.Action({argumentList}) {{ {initializer} }}";
 
     string separator = model.Parameters.Count > 0 ? ", " : "";
 
@@ -99,5 +103,6 @@ internal sealed record ActionSetMethodModel
   string MethodName,
   string Accessibility,
   EquatableArray<ActionParameterModel> Parameters,
-  string HintName
+  string HintName,
+  bool SendsActionParameter = false
 );

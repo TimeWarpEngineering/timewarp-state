@@ -179,6 +179,16 @@ TimeWarp.Mediator names the handler whether or not the State generator emitted i
 
 When to use `[Reducer]` and when to hand-write the `Handler` is in [Actions](xref:TimeWarpState:Actions.md). The generated `Handler` has the Action's accessibility (`public` or `internal`). `[Reducer("Name")]` names it something other than `Handler`. The hand-written `XActionSet { Action; Handler }` shape keeps working beside it. A `Reduce` declared in another partial file of the action set is picked up the next time the Action's own file changes.
 
+## TWS0015 — Declared action is missing
+
+- **Severity:** Error
+- **Category:** Design
+- **Message:** '{0}' declares action '{1}' under state '{2}', but no generator emitted it. Fix the declaration or the generator that emits it.
+
+Roslyn generators cannot see each other's output. When another generator emits a state's actions, a TimeWarp.Mediator `GeneratedRequestPattern` attribute (or one derived from it) on a source type declares them, and TimeWarp.State emits the dispatch method, catalog entry and manifest row from that declaration (see [State manifest](xref:TimeWarpState:StateManifest.md)). TWS0015 runs after every generator and reports, on the attribute, each declared `<State>.<Name>ActionSet.Action` that does not exist. The declaration and the generator that emits the action have drifted. TimeWarp.Mediator's TWM013 reports the same drift from Mediator's side, and also a pattern it cannot read.
+
+The emitted Action and handler are generated code, which the State analyzers do not inspect. `DeclaredActionAnalyzer`'s Design region lists, per rule, how TWS0001-TWS0014 treat a declared action: TWS0001 holds by construction, TWS0002/0003/0005/0006/0007 are skipped, TWS0004/0008/0014 do not apply, and the state rules run as usual.
+
 ## TWSG002 — State clone cannot be generated
 
 - **Severity:** Error

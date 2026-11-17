@@ -5,6 +5,27 @@ title: Release 12.0.0-beta.18
 
 ## Release 12.0.0-beta.18
 
+### Actions another source generator emits (task 160)
+
+Roslyn generators cannot see each other's output. TimeWarp.Mediator 15.0.0-beta.10 (task 043) adds
+`GeneratedRequestPatternAttribute`: a source type declares, by name templates and contract types, the requests
+another generator emits. TimeWarp.State now serves every declared request that lives under a state
+(`<State>.<Name>ActionSet.Action`) as an action of that state:
+
+- **Dispatch method:** `internal Task <Name>(<Name>ActionSet.Action action, CancellationToken? externalCancellationToken = null)`
+  sends the given Action. State cannot see the Action's constructor, so the method takes the instance; the emitting
+  generator can add a typed overload. Skipped when the state already has a member of that name.
+- **Action catalog entry:** name `<StateWithoutSuffix>.<Name>`, one `action` parameter. `Description` comes from the
+  contract's `System.ComponentModel.DescriptionAttribute` (or an attribute with a `Description` named argument),
+  `Permissions` from an attribute on the contract with a `string[] Permissions` named argument; otherwise empty.
+- **Manifest:** each action row gains `origin` (`source` or `declared`), `handler` and `response`. The format stays
+  version 1. `StateManifestAction` gains `Origin`, `Handler`, `Response` and `IsDeclared` (init properties; the
+  constructor is unchanged). A document without `origin` reads as `source`. The DevTools manifest tab marks declared
+  actions.
+- **TWS0015 (new, Error):** a declared action is missing after every generator ran. `DeclaredActionAnalyzer`'s Design
+  region lists how TWS0001-TWS0014 treat declared actions.
+- Sample `samples/09-declared-actions` pairs a sibling generator with a `[ContractState]` declaration.
+
 ### Consumer compiler floor raised to Roslyn 5.12 (tasks 151, 157)
 
 - **Breaking for old compilers:** the analyzers, code fixes and source generators inside `TimeWarp.State` now compile against `Microsoft.CodeAnalysis.CSharp` and `Microsoft.CodeAnalysis.CSharp.Workspaces` **5.12.0** (was 4.14.0). The compiler that builds your project must be Roslyn 5.12 or later.
@@ -16,6 +37,7 @@ title: Release 12.0.0-beta.18
 
 - .NET 11 GA: Microsoft.AspNetCore.Components.*, Microsoft.Extensions.* and related pins `11.0.0-rc.3.26522.148` → `11.0.0`. `global.json` now pins SDK `11.0.100`. The rc.3 `Microsoft.Extensions.Validation` carried advisory GHSA-m28h-pj36-4364.
 - TimeWarp.Mediator and TimeWarp.Mediator.Generators `15.0.0-beta.5` → `15.0.0-beta.9`. Mediator beta.9 builds its generator and analyzer for `net11.0` only, so the build host must be the .NET 11 `dotnet` CLI. There were no API changes.
+- Task 160: TimeWarp.Mediator and TimeWarp.Mediator.Generators `15.0.0-beta.9` → `15.0.0-beta.10` (`GeneratedRequestPatternAttribute`, analyzer TWM013).
 - Aspire.Hosting, Aspire.Hosting.AppHost and the sample `Aspire.AppHost.Sdk` `13.6.4` → `13.6.5` (13.6.4 carried advisory GHSA-f7vh-h5g3-7jrh).
 - Build-only pins: TimeWarp.Amuru `3.0.0-beta.5`, TimeWarp.Nuru `4.0.0-beta.14`, TimeWarp.SourceGenerators `1.0.0-beta.16`, TimeWarp.Terminal `2.0.0-beta.2`, TimeWarp.Build.Tasks `2.0.1-beta.1`. None of them is a dependency of a published package.
 
