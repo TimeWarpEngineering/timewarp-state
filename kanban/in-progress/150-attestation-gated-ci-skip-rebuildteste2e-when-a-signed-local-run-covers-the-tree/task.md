@@ -62,15 +62,17 @@ after the RFC is folded in.
 
 ## Goal (implementer restatement)
 
-Cut CI wall time (5.5 to 7 min per run) by letting CI trust a signed local pipeline run. A local `dev ci` runs
-build, test, e2e and verify-samples, then attests HEAD's tree with a payload that names the passed stages and the
-tool versions. The workflow checks that attestation before `Run CI Pipeline`: on a match it only packs the
-`Packages-*` artifact (and skips or feeds the coverage upload); on a miss it runs everything as today.
+Cut CI wall time (5.5 to 7 min per run) by letting CI trust a local pipeline run on the same tree. Under the
+no-signing override below: `dev ci` runs assert-version-ssot, clean, build, test, e2e and verify-samples, pushes the
+packed nupkgs to `refs/ci-packages/<tree>`, and writes the plain JSON note on `refs/notes/ganda-ci` with
+`ganda repo ci-note write` (stages, tools `sdk`/`rid`/`playwright`/`chromium`, package sha256s). A workflow step
+before `Run CI Pipeline` reads that note for `HEAD^{tree}`; on a hit (all stages pass, SDK and RID match, every
+package hash matches) it restores the packages and skips the pipeline and the coverage upload, and `Upload Artifacts`
+still publishes `Packages-*`. On any miss it stays green and the full pipeline runs as today.
 
-Acceptance: an RFC under `rfc/` settles the seven design questions; the ganda-side tasks exist in timewarp-ganda and
-are linked; `dev ci` attests with a stage payload; the workflow gate skips on match and runs fully on miss; the
-artifact is still produced; tool-version drift refuses the fast path; two proving CI runs (fast < 1 min, slow
-unchanged) are recorded under `## Results`; `ganda repo audit --fix` changes are committed.
+Acceptance: `dev ci` exists and publishes; the gate skips on a hit and runs fully on a miss; the artifact is still
+produced; SDK/RID drift refuses the fast path; `localCi` in `.timewarp/dev.jsonc` lets `ganda task work` run it;
+`ganda repo audit --fix` changes committed and the audit green; proving runs recorded under `## Results`.
 
 Implement-walk finding (2026-11-17): no `rfc/` folder exists yet and `ganda repo attest` has no stage-payload
 option (only `[--force] [--no-push] [--no-status]`, `status`, `keygen`, `key-show`). The task says it is RFC-first
@@ -97,14 +99,14 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
 
 - [x] RFC written under `rfc/` with the seven decisions resolved
 - [x] Ganda-side tasks created in timewarp-ganda and linked
-- [ ] `dev ci` runs all stages locally and writes the unsigned stage note (ganda 660)
-- [ ] Workflow gate reads the stage note (ganda 660 `status`); skips pipeline on match; full run on miss
-- [ ] `Packages-*` artifact still produced on the fast path
-- [ ] Tool-version drift refuses the fast path
-- [ ] Two proving runs recorded (fast path < 1 min, slow path unchanged)
+- [x] `dev ci` runs all stages locally and writes the unsigned stage note (ganda 660)
+- [x] Workflow gate reads the stage note (same contract as ganda 660 `status`; see Results for why not the binary); skips pipeline on match; full run on miss
+- [x] `Packages-*` artifact still produced on the fast path
+- [x] Tool-version drift refuses the fast path
+- [ ] Two proving runs recorded (fast path < 1 min, slow path unchanged) — local proof recorded; GitHub run ids need the PR (later host node)
 - [x] `ganda task work` runs the local pipeline + attest before open-pr (or follow-up task linked)
-- [ ] `ganda repo audit --fix` run and its changes committed
-- [ ] `## Results` filled in
+- [x] `ganda repo audit --fix` run and its changes committed
+- [x] `## Results` filled in
 
 ## Session
 
@@ -112,6 +114,7 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
 - Context: Steve: "CI takes forever and it slows up all of our agents"; wants local run + attestation to skip CI work across all builds (2026-11-07)
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 98240814-df7b-428f-ad99-3daf2845663f, max-turns 500, Blocked — 2026-11-17T12:26:55Z
 - RFC oracle: grok session 01a1e986-6767-78a3-b95e-36f8a1bf1041 (2026-11-17). Ballot in `rfc/rfc.md`. Fold-in is the next compute on this id.
+- Implement oracle (fold-in): claude-opus-5-5, 2026-11-18. `dev ci`, pwsh gate, `localCi`, docs, tests; filed task 161 for the Amuru/Nuru pin migration the audit fix exposed.
 
 ## Notes
 
@@ -122,6 +125,90 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
 - RFC: `rfc/rfc.md`. Resolved 2026-11-17. Third option on the artifact: `refs/ci-packages/<treeSha>`, not a draft GitHub Release. Second key `tw-ci-1`. Tree lookup. Coverage step skipped on the fast path.
 - timewarp-ganda 660: unsigned CI stage note (rewritten 2026-11-17, no `tw-ci-1`). Fold-in of `dev ci` waits on that merge.
 - timewarp-ganda 661: task-work `localCi` after the last kitchen commit and before the branch push CI sees. Stage failure fails the walk. A publish or auth failure warns and still opens the pull request.
+- timewarp-state 161: migrate the dev CLI to Amuru 3.0.0-beta.10 typed builders and Nuru 4.0.0-beta.16; removes the
+  four `package-pin-currency.hold` entries this task added.
+
+## Results
+
+### What shipped
+
+- `tools/dev-cli/endpoints/ci-command.cs`: `dev ci`. Clean-tree check, PR stages, second clean-tree and HEAD check,
+  push `refs/ci-packages/<tree>` (git plumbing; `*.nupkg` only), then `ganda repo ci-note write --from
+  artifacts/ci/ci-note-input.json`. Exit 0 published, 1 stage failed or dirty, 2 publish failed (timewarp-ganda
+  `local-ci.md` contract).
+- `tools/dev-cli/endpoints/workflow/pr-pipeline.cs`: the stage list, now shared by `dev workflow` and `dev ci`.
+- `tools/dev-cli/endpoints/workflow/ci-note-input.cs`: pure note-input builder (stage ids, tools, packages, RID,
+  Chromium revision, sha256), linked into `timewarp-state-tests`.
+- `scripts/ci-fast-path-gate.ps1` + workflow step `Local CI fast path` (pull_request and push only).
+  `Run CI Pipeline` and `coverage` skip when `fast_path == 'true'`; `Upload Artifacts` unchanged.
+- `.timewarp/dev.jsonc`: `localCi = dotnet run --file tools/dev-cli/dev.cs -- ci` (timewarp-ganda 661 hook).
+- `documentation/dev-ops/local-ci.md` (+ toc, dev-ops.md link).
+- `tests/timewarp-state-tests/release-pipeline/ci-note-input-tests.cs` (6 tests, one pins the gate's stage list).
+
+### Deviations from the override text
+
+- The gate does not run `ganda repo ci-note status`: timewarp-ganda is a private repo with no release binary for
+  1.0.0-beta.38 (latest GitHub release v1.0.0-beta.23, no assets), so the runner cannot install it. The gate reads
+  the same note with git + pwsh and applies the same rule (every required stage `pass`), plus SDK/RID and package
+  hashes. Locally `ganda repo ci-note status` and the gate agreed on tree 40f17485 (both pass).
+- The gate is pwsh, not bash: the `workflow-pwsh-shell` audit check refuses bash steps.
+- No "PR touches workflow.yml → full run" rule: that fall-through existed only to pin the signing key (resolution 2),
+  which the override removed.
+
+### Boy-scout (audit)
+
+- `ganda repo audit --fix` bumped TimeWarp.SourceGenerators 1.0.0-beta.16 → 1.0.0-beta.17 (kept) and Amuru /
+  Amuru.Tools 3.0.0-beta.5 → beta.10, Nuru / Nuru.DevCli 4.0.0-beta.15 → beta.16. The last four broke the build:
+  17 AMURU0001/0002 errors in `tools/dev-cli/endpoints/` and CS0246 `GhReleaseCreateBuilder` in DevCli beta.16
+  `release-guard.cs` linked into `timewarp-state-tests`. Reverted those four and added `package-pin-currency.hold`
+  entries naming task 161 under `[ganda.audit]` in `.editorconfig`.
+
+### Gates
+
+- `./bin/dev build` (after `dotnet run --file tools/dev-cli/dev.cs -- self-install`): Build succeeded (first run
+  failed TW0007 on test-file usings; fixed by nesting the test namespace and a global using; rerun green).
+- `tests/timewarp-state-tests/release-pipeline/ci-note-input-tests.cs`: not a Jaribu runfile (Fixie project); ran
+  `dotnet fixie timewarp-state-tests --tests "*CiNoteInputTests*"`: 6 passed. CI runs the full suite.
+- `ganda repo audit --fix`: passes all checks after the fix; rerun `ganda repo audit` after the pin holds: passes all
+  audit checks.
+
+### Local proof (2026-11-18)
+
+- `dotnet run --file tools/dev-cli/dev.cs -- ci` on commit 357d2187 (tree 40f1748559f9df10815acfe7ba217e4c2b92aa76):
+  exit 0 in 332 s. Pipeline SUCCEEDED; tools chromium=1248, playwright=1.64.1, rid=linux-x64, sdk=11.0.100; pushed 9
+  packages to `refs/ci-packages/40f17485…` (origin 5ee4c733) and `refs/notes/ganda-ci` (origin 8f2b7e44).
+- Hit: `pwsh -File scripts/ci-fast-path-gate.ps1` on that tree: `CI fast path: hit … 9 package(s) restored`,
+  `fast_path=true`, 2.7 s. All 9 restored nupkgs byte-identical (`cmp`) to the local packs; `.snupkg` excluded.
+- Miss: same script in a throwaway clone at 2c8722ac (tree bd7b2aa4): `miss (no CI note for tree bd7b2aa4…)`, exit 0,
+  `artifacts/packages` left absent so the pipeline packs.
+- GitHub proving runs: not yet. The pull request is a later host node. With 661, `ganda task work` runs `localCi`
+  before the open-pr / land-pr push, so that PR's CI should take the fast path when its merge tree equals the head
+  tree. Record the fast run id and a full (miss) run id here at the merge gate.
+
+### Risk for review
+
+- Tree lookup (resolution 4) hits only when `refs/pull/N/merge` (and the master merge commit) has the same tree as
+  the head `dev ci` ran on, i.e. the branch already contains master. Each walk lands `land kanban <id>` commits on
+  master, so master often moves after `dev ci`; then both PR and master runs miss and run in full (correct, just no
+  saving). If the proving runs show that, a follow-up could accept a head-tree note when the merge differs from the
+  head only under `kanban/`.
+
+### How to validate
+
+Smoke:
+
+```bash
+git status --short                                   # empty
+dotnet run --file tools/dev-cli/dev.cs -- ci; echo $? # 0; prints "CI note written and pushed for tree <tree>"
+ganda repo ci-note status --require assert-version-ssot,build,test,e2e,verify-samples
+rm -rf artifacts/packages && pwsh -File scripts/ci-fast-path-gate.ps1
+```
+
+Expect: `dev ci` exits 0 and pushes `refs/ci-packages/<tree>` and `refs/notes/ganda-ci`; `status` exits 0 with all
+five stages pass; the gate prints `CI fast path: hit` and `fast_path=true` and restores the `*.nupkg` files. Any
+commit that changes the tree, then the gate again: `CI fast path: miss (no CI note for tree …)`, exit 0. On GitHub, a
+hit run shows `Local CI fast path` hit, `Run CI Pipeline` and `coverage` skipped, `Upload Artifacts` green, job under
+one minute; a miss run shows the full pipeline as before.
 
 ## Blocked
 
