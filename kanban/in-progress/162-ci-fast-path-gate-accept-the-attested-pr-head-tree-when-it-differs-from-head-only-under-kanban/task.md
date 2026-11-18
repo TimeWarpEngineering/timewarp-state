@@ -94,7 +94,22 @@ Acceptance:
 - Context: Steve 2026-11-18 "create the kanban-ignore task and launch it", after PR #692 proved the plumbing but
   missed on both runs.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session e165382e-6a76-4746-90b0-1508ca64a8f4, max-turns 500, Done — 2026-11-18T14:23:03Z
+- Review oracle: general (grok, effort 2, roster general), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, open findings M1 M2 — 2026-11-18
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, artifacts review/round-1/general.md, review/round-1/merged.md — 2026-11-18
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, artifacts general.md, merged.md — 2026-11-18T14:35:21Z
+- Review oracle: review round 2 by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1ef18-ce82-7111-b9f5-499860aaa744, max-turns 80, effort 1, roster general, artifacts review/round-2/general.md, review/round-2/merged.md, review/disposition.md — 2026-11-18
 
+## Learnings
+
+- Misread: Goal item 1 says stop at the first candidate whose tree has a note, and it limits merge parents to `push`. The restatement keeps walking after a noted candidate that differs outside `kanban/`, and it walks parents whenever HEAD is a merge, including a pull request. The script follows the restatement. That continuation is what the Requirements need: a note on parent 1 must not hide a hit on the PR head (parent 2) on the master push. The extra parent walk on a pull request still has to pass the same kanban-only check, and a duplicate tree is skipped. Not filed as a defect.
+
+## Review
+
+- Round 1: Blocked — open M1, M2
+- Round 1 fix pass (implement-fix-2, 2026-11-18): M1 fixed (`--no-renames` on the reason diff, new test), M2 fixed
+  (workflow banner, gate Purpose line, `documentation/dev-ops/local-ci.md`).
+- Round 2: Done
+  Disposition `review/disposition.md`. Roster general, effort 1, session 01a1ef18-ce82-7111-b9f5-499860aaa744.
 ## Results
 
 ### What changed
@@ -117,6 +132,12 @@ Acceptance:
   Test project gains `TimeWarp.Amuru` (central version, `ProcessStartInfo` is banned) and the global using that
   TW0007 asks for.
 - `dev ci`, signing, ganda, and the note format are unchanged.
+- Review round 1 fix pass: `scripts/ci-fast-path-tree.ps1` builds the miss reason from
+  `git diff --name-only --no-renames`, so a move from `source/` into `kanban/` names the `source/` path (M1; the
+  accept or reject decision is still the stripped tree ids). New test
+  `Name_The_Source_Path_When_A_File_Moves_Into_Kanban`. The workflow banner, the gate's Purpose line, and
+  `documentation/dev-ops/local-ci.md` now describe the candidate walk and the top-level `kanban` rule; the doc keeps
+  the exact-tree rule for `dev ci` itself and corrects the SourceLink note (M2).
 
 ### Gates
 
@@ -126,6 +147,11 @@ Acceptance:
   `dotnet fixie timewarp-state-tests --configuration Release --no-build --tests "*CiFastPathTreeTests*"` → 3 passed.
 - `tests/timewarp-state-tests/release-pipeline/ci-note-input-tests.cs` (reads the gate script's stage line, which
   this change kept): same runner, `--tests "*CiNoteInputTests*"` → 6 passed.
+- Fix pass (round 1 M1, M2): `./bin/dev build` → exit 0, 0 Error(s). `dotnet fixie timewarp-state-tests
+  --configuration Release --no-build --tests "*CiFastPathTreeTests*"` → 4 passed (adds the rename case).
+  `ganda repo audit` → 1 failure, `kanban-landed` (task 161's live kitchen differed from origin-home, not this
+  task's change); `ganda repo audit --fix` landed kitchen 161 onto origin-home, no tracked change here; the
+  re-audit in that run shows no failures.
 - `ganda repo audit`: passes, 1 advisory (`vscode-window-icon`, `.vscode/settings.json` missing).
   `ganda repo audit --fix` wrote only the gitignored `.vscode/settings.json`; no tracked change, no pin bumps.
 
@@ -155,6 +181,13 @@ Smoke: in a scratch clone with `origin` set to GitHub, `git checkout --detach 81
 path` step.
 Expect: `CI fast path: hit (parent 2 da11d7ff…)` and `fast_path=true` with 9 nupkgs in `artifacts/packages`; on the
 PR run, `CI fast path: hit (pr-head …)` and `Run CI Pipeline` skipped.
+
+### Review disposition
+
+- Rounds: 2. Roster: general. Round 1 effort 2 (120 turns). Round 2 effort 1 (80 turns) on the 177-line fix delta.
+- Counts (final, round 2): suggestion 2 fixed (M1, M2); bug 0; nit 0; open 0; wontfix 0.
+- Disposition: clean. No exceptions.
+- Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Notes
 
