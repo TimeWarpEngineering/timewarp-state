@@ -4,7 +4,8 @@ name: CI/CD Pipeline
 # PR/merge: classify → assert-version-ssot → clean → build → test → e2e → verify-samples.
 # verify-samples packs, then restores sample 00 auto. Other samples are project references.
 # Release: promote CI Packages-* artifact (no rebuild). Docs job deferred.
-# Fast path (task 150): when `dev ci` already passed on this exact tree, the gate step restores its
+# Fast path (task 150, task 162): when `dev ci` already passed on HEAD, the PR head, or a merge parent
+# whose tree equals HEAD's tree outside the top-level kanban/ entry, the gate step restores its
 # packages and the pipeline step is skipped. See documentation/dev-ops/local-ci.md.
 on:
   # No paths filter on pull_request: every pull request reports CI (the org
@@ -97,12 +98,17 @@ jobs:
         run: echo "Trusted publishing OK — OIDC exchange succeeded for this repo + workflow.yml. (A failure of the NuGet login step above means the policy is missing or misconfigured on NuGet.org.)"
 
       - name: Local CI fast path
-        # Pull request and push only. Reads the unsigned dev ci note on refs/notes/ganda-ci for
-        # HEAD^{tree}, checks stages, SDK, and RID, and restores the attested nupkgs from
+        # Pull request and push only. Reads the unsigned dev ci note on refs/notes/ganda-ci for the
+        # first candidate commit with one: HEAD, the PR head (pull_request), then each merge parent
+        # (push; the PR head is parent 2). The candidate's tree must equal HEAD's tree once the
+        # top-level kanban entry is removed from both, because master lands kanban commits before the
+        # merge (task 162). Then it checks stages, SDK, and RID, and restores the attested nupkgs from
         # refs/ci-packages/<tree> into artifacts/packages. Any miss prints why, stays green, and
         # leaves fast_path unset, so the full pipeline below runs as before.
         id: fastpath
         if: github.event_name == 'pull_request' || github.event_name == 'push'
+        env:
+          CI_FAST_PATH_PR_HEAD: ${{ github.event.pull_request.head.sha }}
         run: ./scripts/ci-fast-path-gate.ps1
 
       - name: Run CI Pipeline
