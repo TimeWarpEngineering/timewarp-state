@@ -6,11 +6,11 @@
 #region Design
 // Pure so the unit tests link it (tests/timewarp-state-tests). JSON is written with Utf8JsonWriter because the
 // dev CLI publishes AOT and reflection serialization is off there. Keys are written in ordinal order.
-// StageIds is the list scripts/ci-fast-path-gate.sh requires; change both together. `dev ci` writes a note
+// StageIds is the list scripts/ci-fast-path-gate.ps1 requires; change both together. `dev ci` writes a note
 // only after every stage passed, so every id is "pass" (ganda accepts "fail", but a failed run has no
 // fast-path use and writes nothing).
 // Rid is "<os>-<arch>" from the running process (linux-x64 on the ubuntu runner and on a WSL box), built the
-// same way as the gate's `uname` mapping, so the two compare exactly. A non-linux RID never takes the fast path.
+// same way as the gate's RuntimeInformation.OSArchitecture mapping, so the two compare exactly. A non-linux RID never takes the fast path.
 // The Chromium revision is the one Playwright's browsers.json (copied into the e2e test output) asks for;
 // scripts/e2e-build.cs installs that revision before the tests run, so it is the revision that ran.
 // why: task 150, no-signing override (Steven 2026-11-17), unsigned note from timewarp-ganda 660

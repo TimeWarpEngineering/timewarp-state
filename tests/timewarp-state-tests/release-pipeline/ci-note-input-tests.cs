@@ -5,7 +5,7 @@
 
 #region Design
 // CiNoteInput is the same file `dev ci` compiles. The stage list is pinned here and in
-// scripts/ci-fast-path-gate.sh (REQUIRED_STAGES); the test reads that script so the two cannot drift.
+// scripts/ci-fast-path-gate.ps1 ($RequiredStages); the test reads that script so the two cannot drift.
 // The namespace nests under DevCli.Commands so the linked internal types resolve without a using.
 // The JSON is parsed back rather than compared as text, apart from key order, which the note keeps ordinal.
 #endregion
@@ -88,10 +88,12 @@ public class Should_
 
   public static void Match_The_Gate_Script_Stage_List()
   {
-    string script = File.ReadAllText(Path.Combine(FindRepoRoot(), "scripts", "ci-fast-path-gate.sh"));
-    string line = script.Split('\n').Single(text => text.StartsWith("REQUIRED_STAGES=(", StringComparison.Ordinal));
-    string[] gateStages = line["REQUIRED_STAGES=(".Length..line.IndexOf(')', StringComparison.Ordinal)]
-      .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    string script = File.ReadAllText(Path.Combine(FindRepoRoot(), "scripts", "ci-fast-path-gate.ps1"));
+    const string Prefix = "$RequiredStages = @(";
+    string line = script.Split('\n').Single(text => text.StartsWith(Prefix, StringComparison.Ordinal));
+    string[] gateStages = [.. line[Prefix.Length..line.IndexOf(')', StringComparison.Ordinal)]
+      .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+      .Select(stage => stage.Trim('\''))];
 
     gateStages.ShouldBe(CiNoteInput.StageIds);
   }

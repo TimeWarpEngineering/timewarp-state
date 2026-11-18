@@ -32,7 +32,7 @@ git push
 
 ## What CI does
 
-The `Local CI fast path` step (`scripts/ci-fast-path-gate.sh`) runs on `pull_request` and `push` before
+The `Local CI fast path` step (`scripts/ci-fast-path-gate.ps1`) runs on `pull_request` and `push` before
 `Run CI Pipeline`. It takes the fast path only when all of these hold:
 
 - the note for `HEAD^{tree}` exists and records every stage as `pass`;

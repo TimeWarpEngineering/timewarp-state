@@ -103,8 +103,7 @@ jobs:
         # leaves fast_path unset, so the full pipeline below runs as before.
         id: fastpath
         if: github.event_name == 'pull_request' || github.event_name == 'push'
-        shell: bash
-        run: bash scripts/ci-fast-path-gate.sh
+        run: ./scripts/ci-fast-path-gate.ps1
 
       - name: Run CI Pipeline
         id: pipeline
