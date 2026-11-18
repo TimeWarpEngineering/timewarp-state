@@ -98,6 +98,7 @@ Acceptance:
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, artifacts review/round-1/general.md, review/round-1/merged.md — 2026-11-18
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, artifacts general.md, merged.md — 2026-11-18T14:35:21Z
 - Review oracle: review round 2 by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1ef18-ce82-7111-b9f5-499860aaa744, max-turns 80, effort 1, roster general, artifacts review/round-2/general.md, review/round-2/merged.md, review/disposition.md — 2026-11-18
+- Installed ganda changed during this walk: was 54987160 bytes 1bbfa7bd9212afcf72542564690a768a6b8b85a20c95c1300a4c45500079cfc6; now 55037800 bytes fa2b7eedb920caa6af321bdc4612189673e7598cd8f65b582e796e6d60cf27c2
 
 ## Learnings
 
