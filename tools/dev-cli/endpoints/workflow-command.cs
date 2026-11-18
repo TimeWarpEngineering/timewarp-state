@@ -15,7 +15,8 @@
 // Release: ReleasePipeline (workflow/release-pipeline.cs) promotes the CI Packages-* artifact — no rebuild.
 // TimeWarpStateVersion (CPM / samples) must equal source/ Directory.Build.props
 // Version (pack / check-version); RepoVersionService.AssertVersionSsot fails on drift.
-// Handlers are invoked directly so the pipeline does not need a pre-installed ./bin/dev.
+// The stages live in workflow/pr-pipeline.cs, shared with `dev ci` (the local run that writes the CI note
+// the workflow's fast-path gate reads; see documentation/dev-ops/local-ci.md).
 // Both pipelines return a PipelineResult; this handler is the only place that sets the final
 // Environment.ExitCode. The NuGet API key comes from --api-key or NUGET_API_KEY (CI uses the env var
 // so the key stays off the dev argv; see workflow/nuget-push-service.cs for the remaining exposure).
@@ -107,33 +108,7 @@ internal sealed class WorkflowCommand : ICommand<Unit>
         return PipelineResult.Success;
       }
 
-      Terminal.WriteLine("Pipeline: assert-version-ssot → clean → build → test → e2e → verify-samples\n");
-
-      if (new RepoVersionService(Terminal, repoRoot).AssertVersionSsot() is null)
-      {
-        Terminal.WriteErrorLine("\nPipeline FAILED — Assert Version SSOT failed".Red());
-        return PipelineResult.Failed("Assert Version SSOT failed");
-      }
-
-      (string Name, Func<Task> Run)[] steps =
-      [
-        ("Clean", () => new CleanCommand.Handler(Terminal, RepoCleanService).Handle(new CleanCommand(), ct).AsTask()),
-        ("Build", () => new BuildCommand.Handler(Terminal).Handle(new BuildCommand(), ct).AsTask()),
-        ("Test", () => new TestCommand.Handler(Terminal).Handle(new TestCommand(), ct).AsTask()),
-        ("E2E", () => new E2eCommand.Handler(Terminal).Handle(new E2eCommand(), ct).AsTask()),
-        ("Verify Samples", () => new VerifySamplesCommand.Handler(Terminal, PackableProjectService).Handle(new VerifySamplesCommand(), ct).AsTask())
-      ];
-
-      foreach ((string name, Func<Task> run) in steps)
-      {
-        if (await Output.RunStepAsync(name, run, ct) != StepOutcome.Succeeded)
-        {
-          return PipelineResult.Failed($"{name} failed");
-        }
-      }
-
-      Terminal.WriteLine("\nPipeline SUCCEEDED".Green());
-      return PipelineResult.Success;
+      return await new PrPipeline(Output, RepoCleanService, PackableProjectService).RunAsync(repoRoot, ct);
     }
 
     private static async Task WriteSkipOutputAsync(CancellationToken ct)

@@ -4,6 +4,8 @@ name: CI/CD Pipeline
 # PR/merge: classify → assert-version-ssot → clean → build → test → e2e → verify-samples.
 # verify-samples packs, then restores sample 00 auto. Other samples are project references.
 # Release: promote CI Packages-* artifact (no rebuild). Docs job deferred.
+# Fast path (task 150): when `dev ci` already passed on this exact tree, the gate step restores its
+# packages and the pipeline step is skipped. See documentation/dev-ops/local-ci.md.
 on:
   # No paths filter on pull_request: every pull request reports CI (the org
   # one-workflow CI standard, ganda 655). dev workflow asks the shared
@@ -94,9 +96,20 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.mode == 'probe'
         run: echo "Trusted publishing OK — OIDC exchange succeeded for this repo + workflow.yml. (A failure of the NuGet login step above means the policy is missing or misconfigured on NuGet.org.)"
 
+      - name: Local CI fast path
+        # Pull request and push only. Reads the unsigned dev ci note on refs/notes/ganda-ci for
+        # HEAD^{tree}, checks stages, SDK, and RID, and restores the attested nupkgs from
+        # refs/ci-packages/<tree> into artifacts/packages. Any miss prints why, stays green, and
+        # leaves fast_path unset, so the full pipeline below runs as before.
+        id: fastpath
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: ./scripts/ci-fast-path-gate.ps1
+
       - name: Run CI Pipeline
         id: pipeline
-        if: github.event_name != 'workflow_dispatch' || inputs.mode != 'probe'
+        if: >-
+          steps.fastpath.outputs.fast_path != 'true' &&
+          (github.event_name != 'workflow_dispatch' || inputs.mode != 'probe')
         env:
           GH_TOKEN: ${{ github.token }}
           UseHttp: "true"
@@ -116,8 +129,10 @@ jobs:
         # results directory artifacts/coverage). Release and probe never reach this
         # step. A missing file means that test run wrote nothing, so the job fails.
         # A pull request the classifier skipped (requires_build=false) has no coverage.
+        # The local CI fast path skips the pipeline, so it has no coverage either (RFC resolution 7).
         if: >-
           success() &&
+          steps.fastpath.outputs.fast_path != 'true' &&
           steps.pipeline.outputs.requires_build != 'false' &&
           github.event_name != 'release' &&
           !(github.event_name == 'workflow_dispatch' && (inputs.mode == 'release' || inputs.mode == 'probe'))
@@ -130,7 +145,8 @@ jobs:
       - name: Upload Artifacts
         # Skip release (promote the already-uploaded merge artifact) and probe
         # (pipeline is skipped, so artifacts/packages is empty), and a pull request
-        # the classifier skipped (requires_build=false, nothing packed).
+        # the classifier skipped (requires_build=false, nothing packed). On the local CI fast path the
+        # gate restored the attested nupkgs into artifacts/packages and requires_build is unset.
         if: >-
           success() &&
           steps.pipeline.outputs.requires_build != 'false' &&

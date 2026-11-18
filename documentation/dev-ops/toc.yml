@@ -2,3 +2,5 @@
   href: dev-ops.md
 - name: Releasing
   href: releasing.md
+- name: Local CI fast path
+  href: local-ci.md

@@ -342,6 +342,9 @@ dotnet_diagnostic.TWA0037.severity = none
 [ganda.audit]
 # GitHub requires .github/PULL_REQUEST_TEMPLATE/ (exact basename) for PR templates.
 kebab-path-names.prune = PULL_REQUEST_TEMPLATE
+# Amuru 3.0.0-beta.10 adds AMURU0001/0002 (17 dev CLI call sites) and Nuru.DevCli 4.0.0-beta.16 content
+# needs Amuru.Tools in the test project. Task 161 migrates and deletes these holds. why: task 150 audit gate (2026-11-18)
+package-pin-currency.hold = TimeWarp.Amuru=3.0.0-beta.5 | AMURU0001 typed-builder analyzers break the dev CLI | 161, TimeWarp.Amuru.Tools=3.0.0-beta.5 | AMURU0001 typed-builder analyzers break the dev CLI | 161, TimeWarp.Nuru=4.0.0-beta.15 | needs Amuru 3.0.0-beta.10 | 161, TimeWarp.Nuru.DevCli=4.0.0-beta.15 | release-guard.cs content needs Amuru.Tools in tests | 161
 
 # .githooks/*.cs are owned byte for byte by ganda's repo-baseline template (no #region blocks;
 # `ganda hooks install attest` overwrites any edit), so they can never carry a Purpose region.

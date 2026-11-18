@@ -14,6 +14,7 @@
     <Compile Include="..\..\tools\dev-cli\endpoints\nuspec-dependency-allow-list.cs" Link="packaging\nuspec-dependency-allow-list.cs" />
     <Compile Include="..\..\tools\dev-cli\endpoints\nuget-package-isolation.cs" Link="packaging\nuget-package-isolation.cs" />
     <Compile Include="..\..\tools\dev-cli\endpoints\workflow\artifact-source-walk.cs" Link="release-pipeline\artifact-source-walk.cs" />
+    <Compile Include="..\..\tools\dev-cli\endpoints\workflow\ci-note-input.cs" Link="release-pipeline\ci-note-input.cs" />
   </ItemGroup>
 
   <!-- The walk's decision rules come from TimeWarp.Nuru.DevCli (Nuru task 543). These files are pure. -->

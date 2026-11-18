@@ -20,3 +20,5 @@ Packages are published when a GitHub Release is created. `dev release` creates t
 * **pull_request** and **push to master**: build, test, e2e, and verify samples, then upload the `Packages-*` artifact
 * **release: published**: promote that artifact to NuGet.org
 * **workflow_dispatch**: `merge` (build and test), `release` (break-glass publish; needs `confirm=release`), or `probe` (trusted-publishing check)
+
+When `dev ci` already passed on the exact tree a pull request or push checks out, CI skips the pipeline and uploads the packages that run built. See [Local CI fast path](local-ci.md).
