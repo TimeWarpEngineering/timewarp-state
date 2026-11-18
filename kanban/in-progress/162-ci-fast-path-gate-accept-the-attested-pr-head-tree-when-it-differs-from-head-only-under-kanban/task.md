@@ -93,6 +93,7 @@ Acceptance:
 - Created: 3f3c256d-283c-4d41-ac7b-bb500c1a1415 (2026-11-18)
 - Context: Steve 2026-11-18 "create the kanban-ignore task and launch it", after PR #692 proved the plumbing but
   missed on both runs.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session e165382e-6a76-4746-90b0-1508ca64a8f4, max-turns 500, Done — 2026-11-18T14:23:03Z
 
 ## Results
 
