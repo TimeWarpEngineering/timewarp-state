@@ -29,6 +29,9 @@ Acceptance criteria:
 - Minted by ganda task wave run 20261118T170809Z-b6e473
 - 2026-11-19 implementer (claude): bumped Playwright.MSTest.v4 1.65.0, Aspire.Hosting / Aspire.Hosting.AppHost 17.0.0, Version 12.0.0-beta.19. Aspire 17 obsoletes `AddProject(name, path)` (CS0618 broke the build) and `Aspire.AppHost.Sdk` (ASPIRE012), so the hosting package, sample AppHost, and DevTools tests moved to `AddDotnetProject` from new pin `Aspire.Hosting.Dotnet` 17.0.0.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T20:10:48Z
+- Reviewer: Grok session 01a1f048-ab18-7b91-a7c5-42dbba6fef1e (2026-11-19), effort 1, roster general, round 1. Turn cap 80.
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1f048-ab18-7b91-a7c5-42dbba6fef1e, max-turns 80, artifacts general.md, merged.md — 2026-11-18T20:18:54Z
+- 2026-11-19 implementer (claude) fix pass for round 1: M1 fixed. `Aspire.Hosting.Dotnet` added to the `TimeWarp.State.DevTools.Hosting` entry in `tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs`; new allow-list test checks packable projects' public PackageReferences against the list.
 
 ## Results
 
@@ -39,6 +42,8 @@ Acceptance criteria:
 - `TimeWarp.State.DevTools.Hosting`: references Aspire.Hosting.Dotnet; `AddTimeWarpStateDevToolsProject` calls `AddDotnetProject` and returns `IResourceBuilder<DotnetProjectResource>` (was `ProjectResource`). Breaking on a beta package; recorded in release notes.
 - `samples/04-telemetry/apphost`: off the obsolete `Aspire.AppHost.Sdk`. It is now plain `Microsoft.NET.Sdk` with Aspire.Hosting.AppHost + Aspire.Hosting.Dotnet, and it adds the server with `AddDotnetProject` (no server ProjectReference, no `Projects.sample_04_server`).
 - `tests/timewarp-state-devtools-tests`: hosting tests use `AddDotnetProject` / `DotnetProjectResource`. The packaged consumer AppHost drops `Aspire.AppHost.Sdk` and references Aspire.Hosting.AppHost `17.0.0`.
+- `tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs` (review M1): the Hosting allow-list adds `Aspire.Hosting.Dotnet`, a public dependency because `AddTimeWarpStateDevToolsProject` returns `IResourceBuilder<DotnetProjectResource>`.
+- `tests/timewarp-state-tests/packaging/nuspec-dependency-allow-list-tests.cs`: new `AllowEachPublicPackageReferenceOfEveryPackableProject` reads each packable `source/**/*.csproj` and fails when a PackageReference without `PrivateAssets="all"` is missing from that package's allow-list. It catches M1-style drift without packing.
 - Docs: the hosting readme and `documentation/topics/devtools.md` show `AddDotnetProject`. New `documentation/release-notes/release12.0.0-beta.19.md` plus a toc entry.
 - Audit boy-scout: `ganda repo audit --fix` cleared advisory `vscode-window-icon`. It wrote the gitignored local `.vscode/settings.json` only, so nothing was committed.
 
@@ -50,6 +55,11 @@ Acceptance criteria:
   - `tests/timewarp-state-devtools-tests/packaged-devtools-app-tests.cs` → `PackagedDevToolsApp_Should.StartFromAnOutOfTreeAppHost` passed (packs, restores an Aspire 17 AppHost, starts the packaged inspector).
 - E2E (`tests/test-app-end-to-end-tests`, the Playwright bump): it compiles in the build and was not run here. CI runs it.
 - Smoke: `dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj` (timeout 150 s). The dashboard started, and the `timewarp-devtools` and `sample-04-server` resources both reached Running.
+- Fix pass (review M1), 2026-11-19:
+  - `dotnet run --file tools/dev-cli/dev.cs -- self-install` (dev-cli source changed), then `./bin/dev build --quiet` → Build completed successfully.
+  - `tests/timewarp-state-tests/packaging/nuspec-dependency-allow-list-tests.cs` (Fixie, not a Jaribu runfile): `NUGET_PACKAGES=$PWD/artifacts/nuget-packages dotnet tool run fixie timewarp-state-tests --no-build --tests "*NuspecDependencyAllowList*"` → 6 passed.
+  - `./bin/dev pack` → exit 0, "Packed set verified." `unzip -p artifacts/packages/TimeWarp.State.DevTools.Hosting.12.0.0-beta.19.nupkg TimeWarp.State.DevTools.Hosting.nuspec` lists `Aspire.Hosting.Dotnet` 17.0.0.
+  - `ganda repo audit` → "Repository passes all audit checks."
 - `ganda repo audit` → passes (one advisory, vscode-window-icon). `ganda repo audit --fix` cleared it: "Repository passes all audit checks."
 
 ### How to validate
@@ -58,7 +68,22 @@ Smoke:
 ```bash
 ./bin/dev build
 NUGET_PACKAGES=$PWD/artifacts/nuget-packages dotnet fixie timewarp-state-devtools-tests
+NUGET_PACKAGES=$PWD/artifacts/nuget-packages dotnet tool run fixie timewarp-state-tests --tests "*NuspecDependencyAllowList*"
+./bin/dev pack
+unzip -p artifacts/packages/TimeWarp.State.DevTools.Hosting.12.0.0-beta.19.nupkg TimeWarp.State.DevTools.Hosting.nuspec | grep dependency
 dotnet run --project samples/04-telemetry/apphost/sample-04-apphost.csproj
 ```
 
-Expect: the build succeeds with 0 warnings (no CS0618, no ASPIRE012), and Fixie reports `124 passed`. The AppHost prints a dashboard URL, and its log shows `sample-04-server` and `timewarp-devtools` in state Running. `grep -n Version source/Directory.Build.props` shows `12.0.0-beta.19`.
+Expect: the build succeeds with 0 warnings (no CS0618, no ASPIRE012), and Fixie reports `124 passed`. The allow-list run reports `6 passed`. `dev pack` exits 0 with "Packed set verified.", and the Hosting nuspec lists `Aspire.Hosting.Dotnet` 17.0.0. The AppHost prints a dashboard URL, and its log shows `sample-04-server` and `timewarp-devtools` in state Running. `grep -n Version source/Directory.Build.props` shows `12.0.0-beta.19`.
+
+### Review
+
+Round 1, effort 1, roster general. Counts: 0 open, 1 fixed (M1), 0 wontfix. M1 fixed in the round-1 fix pass. Paths: `review/review-framework.md`, `review/round-1/merged.md`.
+
+## Learnings
+
+- Misread (review round 1): the implementer restatement adds "The sample's `Aspire.AppHost.Sdk` pin moves to 17.0.0 with it so SDK and package match." The task does not ask for that pin. It asks to bump `Aspire.Hosting.AppHost` to 17.0.0. The code removes the obsolete SDK (ASPIRE012) instead of moving it to 17.0.0, which matches the task and the recorded 0-warning build.
+
+## Review
+
+- Round 1: Blocked — open M1
