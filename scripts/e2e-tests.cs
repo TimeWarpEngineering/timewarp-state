@@ -17,21 +17,20 @@ static partial class App
   static async Task<bool> RunTests(string testProjectDir, bool useHttp, string coverageDirectory)
   {
     string preparedCoverageDirectory = PrepareCoverageDirectory(coverageDirectory);
-    string[] arguments =
-    [
-      "test",
-      "--no-build",
-      "--settings:playwright-settings/chrome.runsettings",
-      "--collect:XPlat Code Coverage;IncludeTestAssembly=true",
-      "--results-directory",
-      preparedCoverageDirectory,
-      "./test-app-end-to-end-tests.csproj"
-    ];
+    const string projectFile = "./test-app-end-to-end-tests.csproj";
+    const string settingsFile = "playwright-settings/chrome.runsettings";
+    const string collector = "XPlat Code Coverage;IncludeTestAssembly=true";
     string useHttpValue = useHttp ? "true" : "false";
 
-    WriteLine($"Executing: UseHttp={useHttpValue} dotnet {string.Join(" ", arguments)}");
-    int exitCode = await Shell.Builder("dotnet")
-      .WithArguments(arguments)
+    WriteLine(
+      $"Executing: UseHttp={useHttpValue} dotnet test {projectFile} --results-directory {preparedCoverageDirectory} " +
+      $"--settings {settingsFile} --no-build --collect \"{collector}\"");
+    int exitCode = await DotNet.Test()
+      .WithProject(projectFile)
+      .WithNoBuild()
+      .WithSettings(settingsFile)
+      .WithCollect(collector)
+      .WithResultsDirectory(preparedCoverageDirectory)
       .WithWorkingDirectory(testProjectDir)
       .WithEnvironmentVariable("UseHttp", useHttpValue)
       .RunAsync();

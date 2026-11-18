@@ -83,17 +83,14 @@ internal sealed class PackCommand : ICommand<Unit>
       foreach (PackableProject project in packableProjects)
       {
         Terminal.WriteLine($"Packing {project.PackageId} {version}...");
-        int packExit = await Shell.Builder("dotnet")
-          .WithArguments(
-            "pack",
-            project.ProjectPath,
-            "--configuration", "Release",
-            "--output", artifactsDir,
-            // source/Directory.Build.props sets GeneratePackageOnBuild=true. Under the .NET 11 SDK an
-            // explicit `dotnet pack` of such a project skips Build and silently omits the Razor class
-            // library's staticwebassets/ files (scoped CSS bundle, wwwroot JS) from the nupkg.
-            // Packing with GeneratePackageOnBuild=false makes Pack depend on Build so they are included.
-            "-p:GeneratePackageOnBuild=false")
+        int packExit = await DotNet.Pack(project.ProjectPath)
+          .WithConfiguration("Release")
+          .WithOutput(artifactsDir)
+          // source/Directory.Build.props sets GeneratePackageOnBuild=true. Under the .NET 11 SDK an
+          // explicit `dotnet pack` of such a project skips Build and silently omits the Razor class
+          // library's staticwebassets/ files (scoped CSS bundle, wwwroot JS) from the nupkg.
+          // Packing with GeneratePackageOnBuild=false makes Pack depend on Build so they are included.
+          .WithProperty("GeneratePackageOnBuild", "false")
           .WithWorkingDirectory(repoRoot)
           .WithNoValidation()
           .RunAsync(ct);
@@ -150,10 +147,10 @@ internal sealed class PackCommand : ICommand<Unit>
     private async Task<bool> NupkgContentMatchesAsync(string repoRoot, CancellationToken ct)
     {
       Terminal.WriteLine("Checking nupkg content...");
-      int toolRestore = await Shell.Builder("dotnet")
-        .WithArguments("tool", "restore")
+      int toolRestore = await DotNet.Tool()
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
+        .Restore()
         .RunAsync(ct);
       if (toolRestore != 0)
       {
@@ -166,8 +163,8 @@ internal sealed class PackCommand : ICommand<Unit>
         "tests",
         "timewarp-state-packaging-tests",
         "timewarp-state-packaging-tests.csproj");
-      int buildExit = await Shell.Builder("dotnet")
-        .WithArguments("build", testProject, "--configuration", "Release")
+      int buildExit = await DotNet.Build(testProject)
+        .WithConfiguration("Release")
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
@@ -177,10 +174,11 @@ internal sealed class PackCommand : ICommand<Unit>
         return false;
       }
 
-      int testExit = await Shell.Builder("dotnet")
-        .WithArguments("fixie", "timewarp-state-packaging-tests")
+      int testExit = await DotNet.Tool()
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
+        .Run("fixie")
+        .WithArguments("timewarp-state-packaging-tests")
         .RunAsync(ct);
       if (testExit != 0)
       {

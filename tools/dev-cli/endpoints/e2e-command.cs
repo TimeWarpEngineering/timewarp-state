@@ -58,7 +58,7 @@ internal sealed class E2eCommand : ICommand<Unit>
       Terminal.WriteLine("Running Playwright end-to-end tests...");
       Terminal.WriteLine($"Working from: {repoRoot}");
 
-      List<string> arguments = ["run", "--file", e2eRunner, "--"];
+      List<string> arguments = [];
       if (command.SkipSetup)
       {
         arguments.Add("--skip-setup");
@@ -69,7 +69,8 @@ internal sealed class E2eCommand : ICommand<Unit>
         arguments.Add("--with-deps");
       }
 
-      int exitCode = await Shell.Builder("dotnet")
+      int exitCode = await DotNet.Run()
+        .WithFile(e2eRunner)
         .WithArguments([.. arguments])
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()

@@ -134,8 +134,9 @@ static partial class App
   static async Task EnsureBrowsersInstalled(string testProjectPath, bool withDepsRequested)
   {
     // Ask MSBuild for the Debug output so the target framework is not hard-coded here.
-    CommandOutput targetPath = await Shell.Builder("dotnet")
-      .WithArguments("msbuild", testProjectPath, "-getProperty:TargetPath", "-p:Configuration=Debug")
+    CommandOutput targetPath = await DotNet.MsBuild(testProjectPath)
+      .WithGetProperty("TargetPath")
+      .WithProperty("Configuration", "Debug")
       .CaptureAsync();
     EnsureSuccess(targetPath.ExitCode, "dotnet msbuild -getProperty:TargetPath (tests)");
 

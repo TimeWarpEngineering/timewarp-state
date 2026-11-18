@@ -59,18 +59,19 @@ internal sealed class NuGetPushService
 
       Terminal.WriteLine($"Pushing {project.PackageId}.{version}.nupkg...");
 
-      List<string> args = ["nuget", "push", nupkgPath, "--source", NuGetSource, "--skip-duplicate"];
+      DotNetNuGetPushBuilder push = DotNet.NuGet()
+        .WithWorkingDirectory(repoRoot)
+        .WithNoValidation()
+        .Push(nupkgPath)
+        .WithSource(NuGetSource)
+        .WithSkipDuplicate();
 
       if (!string.IsNullOrEmpty(apiKey))
       {
-        args.AddRange(["--api-key", apiKey]);
+        push = push.WithApiKey(apiKey);
       }
 
-      int exitCode = await Shell.Builder("dotnet")
-        .WithArguments([.. args])
-        .WithWorkingDirectory(repoRoot)
-        .WithNoValidation()
-        .RunAsync(ct);
+      int exitCode = await push.RunAsync(ct);
 
       if (exitCode != 0)
       {

@@ -65,6 +65,8 @@ internal sealed class RunCommand : ICommand<Unit>
         return Unit.Value;
       }
 
+      // Args go to `dotnet run` itself (see Design), so this keeps the raw argument list on
+      // DotNet.Builder(). DotNet.Run().WithArguments puts them after `--`, which hands them to the app.
       string[] arguments =
       [
         "run",
@@ -77,7 +79,7 @@ internal sealed class RunCommand : ICommand<Unit>
       Terminal.WriteLine($"Working from: {repoRoot}");
       Terminal.WriteLine($"dotnet {string.Join(' ', arguments)}");
 
-      int exitCode = await Shell.Builder("dotnet")
+      int exitCode = await DotNet.Builder()
         .WithArguments(arguments)
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
