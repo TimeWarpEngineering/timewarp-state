@@ -100,9 +100,11 @@ jobs:
       - name: Local CI fast path
         # Pull request and push only. Reads the unsigned dev ci note on refs/notes/ganda-ci for the
         # first candidate commit with one: HEAD, the PR head (pull_request), then each merge parent
-        # (push; the PR head is parent 2). The candidate's tree must equal HEAD's tree once the
-        # top-level kanban entry is removed from both, because master lands kanban commits before the
-        # merge (task 162). Then it checks stages, SDK, and RID, and restores the attested nupkgs from
+        # (push; the PR head is parent 2), each followed by its first-parent ancestors (up to 10),
+        # because ganda task work pushes kanban-only land-pr commits after dev ci ran (task 163). The
+        # commit's tree must equal HEAD's tree once the top-level kanban entry is removed from both,
+        # because master lands kanban commits before the merge (task 162); a chain stops at the first
+        # tree that differs outside kanban/. Then it checks stages, SDK, and RID, and restores the attested nupkgs from
         # refs/ci-packages/<tree> into artifacts/packages. Any miss prints why, stays green, and
         # leaves fast_path unset, so the full pipeline below runs as before.
         id: fastpath
