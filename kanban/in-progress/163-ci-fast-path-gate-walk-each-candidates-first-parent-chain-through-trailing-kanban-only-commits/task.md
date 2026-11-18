@@ -91,6 +91,7 @@ Acceptance:
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session ea93328b-5603-43d0-b2df-380b6df0256c, max-turns 500, Done — 2026-11-18T15:38:13Z
 - Reviewer: grok session 01a1ef4f-1de2-71c1-a7ec-9b40e1d53e85 (2026-11-18), effort 2, roster general, round 1, disposition clean
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1ef4f-1de2-71c1-a7ec-9b40e1d53e85, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-18T15:48:39Z
+- Installed ganda changed during this walk: was 55037800 bytes fa2b7eedb920caa6af321bdc4612189673e7598cd8f65b582e796e6d60cf27c2; now 55037800 bytes 9e42ae6a28d59eb3284c86fc6a2b4aabf6ffa4c31c59d330b27ef51d79e100b6
 
 ## Results
 
