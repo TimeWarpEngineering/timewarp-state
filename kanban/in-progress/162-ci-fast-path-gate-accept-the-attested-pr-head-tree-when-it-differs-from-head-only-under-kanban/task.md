@@ -41,6 +41,30 @@ checked-out tree is under `kanban/`:
    `source/` is not). A pwsh-level test is fine if the test project can shell out; otherwise test the C# mirror if
    one is extracted.
 
+## Goal (implementer restatement)
+
+The fast-path gate keys on the checked-out tree, but CI never checks out the tree `dev ci` attested: the PR run
+checks out `refs/pull/N/merge` and the master run checks out the merge commit, and both carry kanban commits that
+master landed after the branch was cut. Teach the gate to find the attested tree and accept it when the only
+difference is the top-level `kanban` entry.
+
+Acceptance:
+
+- The gate tries candidates in order: HEAD, the PR head sha (passed in through `env` on `pull_request`), then each
+  parent of HEAD when HEAD is a merge. Duplicates are skipped. The first candidate whose tree has a note and whose
+  tree equals HEAD's tree once the top-level `kanban` entry is removed from both wins. A candidate with a note but a
+  difference outside `kanban/` is rejected with a printed reason (the paths that differ) and the walk goes on, so a
+  note on the base parent cannot hide a hit on the PR head. No winner is a miss that lists every candidate's reason.
+- Stage, SDK, RID, package set, and sha256 checks are unchanged, and they read the attested tree's note and
+  `refs/ci-packages/<attested tree>`. The hit line names the candidate (`HEAD`, `pr-head`, `parent N`).
+- The stripped-tree rule lives in a small dot-sourced PowerShell helper so a unit test can run the real rule;
+  the gate stays a script. `dev ci`, signing, ganda, and the note format are untouched.
+- Script header and workflow step comment describe the candidate walk and the kanban-only rule.
+- A unit test runs the helper under pwsh in a throwaway git repo: trees differing only under `kanban/` strip to
+  the same tree; a one-byte change under `source/` does not.
+- `dev build` clean, the edited test file green, `ganda repo audit` clean. The PR and master-push run evidence
+  (hit lines, run ids, wall times) can only exist after open-pr and merge, so later nodes record it.
+
 ## Requirements
 
 - Prove it: this task's own PR runs through `ganda task work`, which runs `dev ci` and writes the note before the
@@ -54,12 +78,12 @@ checked-out tree is under `kanban/`:
 
 ## Checklist
 
-- [ ] Gate walks candidates: HEAD, PR head (pull_request), merge parents (push)
-- [ ] Stripped-tree equivalence (kanban/ only) implemented in pwsh with a printed reason on miss
-- [ ] Workflow passes the PR head sha to the gate via env
-- [ ] Script header and workflow comment updated
-- [ ] Unit test pins the kanban-only rule
-- [ ] `dev build` 0 warnings, `dev test` green, `ganda repo audit` clean
+- [x] Gate walks candidates: HEAD, PR head (pull_request), merge parents (push)
+- [x] Stripped-tree equivalence (kanban/ only) implemented in pwsh with a printed reason on miss
+- [x] Workflow passes the PR head sha to the gate via env
+- [x] Script header and workflow comment updated
+- [x] Unit test pins the kanban-only rule
+- [x] `dev build` 0 warnings, `dev test` green, `ganda repo audit` clean
 - [ ] PR run shows a hit and finishes under 1 minute (run id recorded)
 - [ ] Master push run shows a hit (run id recorded)
 - [ ] `## Results` filled in with before/after times
@@ -69,6 +93,67 @@ checked-out tree is under `kanban/`:
 - Created: 3f3c256d-283c-4d41-ac7b-bb500c1a1415 (2026-11-18)
 - Context: Steve 2026-11-18 "create the kanban-ignore task and launch it", after PR #692 proved the plumbing but
   missed on both runs.
+
+## Results
+
+### What changed
+
+- `scripts/ci-fast-path-tree.ps1` (new, dot-sourced): `Get-TreeWithoutKanban` (`git ls-tree`, drop the top-level
+  `kanban` line, `git mktree`) and `Get-KanbanOnlyDifference` (returns `$null` when the stripped trees are equal,
+  otherwise `differs outside kanban/: <first 5 paths>`).
+- `scripts/ci-fast-path-gate.ps1`: walks candidates `HEAD`, `pr-head` (`$env:CI_FAST_PATH_PR_HEAD`), then
+  `parent N` when HEAD is a merge; skips repeated trees. A candidate wins when its tree has a note and passes the
+  kanban-only rule against HEAD's tree. A noted candidate that differs outside kanban/ is rejected with the paths
+  and the walk continues (so a note on parent 1 cannot hide a hit on parent 2). No winner is one miss line listing
+  every candidate's reason. Stage, SDK, RID, package set, and sha256 checks are unchanged and read the attested
+  tree's note and `refs/ci-packages/<attested tree>`. Hit line: `CI fast path: hit (<label> <sha>). ...`.
+  Purpose/Design header rewritten for the walk and the rule.
+- `.github/workflows/workflow.yml`: fast-path step gets `env: CI_FAST_PATH_PR_HEAD:
+  ${{ github.event.pull_request.head.sha }}` (empty on push); step comment describes the walk and the rule.
+- `tests/timewarp-state-tests/release-pipeline/ci-fast-path-tree-tests.cs` (new): runs the real helper under pwsh
+  in a throwaway git repo. Kanban-only change strips to the same tree with an empty reason; a one-byte change under
+  `source/` does not (reason `differs outside kanban/: source/lib/a.cs`); a nested `source/kanban/` change does not.
+  Test project gains `TimeWarp.Amuru` (central version, `ProcessStartInfo` is banned) and the global using that
+  TW0007 asks for.
+- `dev ci`, signing, ganda, and the note format are unchanged.
+
+### Gates
+
+- `./bin/dev build`: exit 0, 0 Warning(s), 0 Error(s).
+- `tests/timewarp-state-tests/release-pipeline/ci-fast-path-tree-tests.cs`: not a standalone runfile (Fixie
+  project, no `#if !JARIBU_MULTI` guard); ran the class alone with the runner `scripts/test.cs` uses:
+  `dotnet fixie timewarp-state-tests --configuration Release --no-build --tests "*CiFastPathTreeTests*"` → 3 passed.
+- `tests/timewarp-state-tests/release-pipeline/ci-note-input-tests.cs` (reads the gate script's stage line, which
+  this change kept): same runner, `--tests "*CiNoteInputTests*"` → 6 passed.
+- `ganda repo audit`: passes, 1 advisory (`vscode-window-icon`, `.vscode/settings.json` missing).
+  `ganda repo audit --fix` wrote only the gitignored `.vscode/settings.json`; no tracked change, no pin bumps.
+
+### Gate dry run on real notes (scratch clone, gate scripts from this branch)
+
+- Detached at `8139649c` (the PR #692 merge; tree `059ffb62…`, the same tree run 44318421138 missed on), no env:
+  `attested tree 5b2d62f8… from parent 2 da11d7ff…`, `hit (parent 2 da11d7ff…)`, 9 packages restored and
+  sha-checked, `fast_path=true`, 5.4 s wall.
+- Same commit with `CI_FAST_PATH_PR_HEAD=da11d7ff…`: `hit (pr-head da11d7ff…)`.
+- A commit on top that edits `readme.md`, with the same PR head: `miss (HEAD …: no CI note for tree 0421eb30…;
+  pr-head da11d7ff…: attested tree 5b2d62f8… differs outside kanban/: readme.md, scripts/ci-fast-path-gate.ps1)`,
+  `artifacts/packages` cleared.
+
+### CI proof (pending, after open-pr and merge)
+
+- Control: PR #692 run 44318421138 (pull_request) missed, 6m39s; master push run 44319655507 ran the full
+  pipeline (~6m).
+- This PR's pull_request run: expect `CI fast path: hit (pr-head …)` and `Run CI Pipeline` skipped. Run id and wall
+  time: to record.
+- Master push run after merge: expect `CI fast path: hit (parent 2 …)`. Run id and wall time: to record.
+
+### How to validate
+
+Smoke: in a scratch clone with `origin` set to GitHub, `git checkout --detach 8139649c`, copy
+`scripts/ci-fast-path-gate.ps1` and `scripts/ci-fast-path-tree.ps1` from this branch, run
+`pwsh -NoProfile -File scripts/ci-fast-path-gate.ps1`. Then check this PR's `CI` job log for the `Local CI fast
+path` step.
+Expect: `CI fast path: hit (parent 2 da11d7ff…)` and `fast_path=true` with 9 nupkgs in `artifacts/packages`; on the
+PR run, `CI fast path: hit (pr-head …)` and `Run CI Pipeline` skipped.
 
 ## Notes
 
