@@ -18,6 +18,7 @@ global using System.Reflection.Metadata;
 global using System.Reflection.PortableExecutable;
 global using Aspire.Hosting;
 global using Aspire.Hosting.ApplicationModel;
+global using Aspire.Hosting.Dotnet;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Mvc.Testing;

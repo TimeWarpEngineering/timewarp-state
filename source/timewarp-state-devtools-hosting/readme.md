@@ -8,9 +8,11 @@ Dev-only. Production app packages do not reference it. There is no time-travel c
 
 ```csharp
 IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
-builder.AddProject<Projects.MyApp>("my-app")
+builder.AddDotnetProject("my-app", "../my-app/my-app.csproj")
   .WithTimeWarpStateDevTools(devtools);
 ```
+
+`AddDotnetProject` comes from `Aspire.Hosting.Dotnet`, which this package references. Aspire 17 replaced `AddProject` with it. The AppHost uses `Microsoft.NET.Sdk` with an `Aspire.Hosting.AppHost` package reference. `Aspire.AppHost.Sdk` is obsolete in Aspire 17 (ASPIRE012).
 
 Reference this package. It depends on `TimeWarp.State.DevTools.App` at the same version. That package contains the published inspector at `tools/TimeWarp.State.DevTools.dll`. The publish is framework-dependent and has no runtime identifier. Aspire starts the dll with the .NET host from `DOTNET_HOST_PATH`, then the running `dotnet` muxer, then `DOTNET_ROOT/dotnet`, then `dotnet` on PATH.
 
@@ -26,6 +28,6 @@ The same call adds the inspected app's `https` and `http` endpoints to `TIMEWARP
 
 ## Inner loop on the inspector
 
-`AddTimeWarpStateDevToolsProject(projectPath)` adds that csproj as a project resource. The path is an argument. The sample AppHost does not call it. Use it only while changing the inspector project itself.
+`AddTimeWarpStateDevToolsProject(projectPath)` adds that csproj with `AddDotnetProject` and returns `IResourceBuilder<DotnetProjectResource>`. The path is an argument. The sample AppHost does not call it. Use it only while changing the inspector project itself.
 
 When Aspire ships a dashboard plugin model, this companion app is the page to port.

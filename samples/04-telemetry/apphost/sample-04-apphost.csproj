@@ -1,6 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="13.6.5" />
+  <!--
+    Aspire 17 marks Aspire.AppHost.Sdk obsolete (ASPIRE012). The AppHost is a plain
+    Microsoft.NET.Sdk project with explicit Aspire.Hosting.AppHost and Aspire.Hosting.Dotnet
+    references. program.cs adds the server with AddDotnetProject, so there is no
+    ProjectReference to it. why: task 164 2026-11-19
+  -->
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -13,13 +18,11 @@
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Dotnet" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\server\sample-04-server\sample-04-server.csproj" />
-    <ProjectReference
-      Include="..\..\..\source\timewarp-state-devtools-hosting\timewarp-state-devtools-hosting.csproj"
-      IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\..\source\timewarp-state-devtools-hosting\timewarp-state-devtools-hosting.csproj" />
   </ItemGroup>
 
   <!-- In-repo import of the same targets the TimeWarp.State.DevTools.App package imports for consumers. ProjectReference does not flow that package's buildTransitive assets. -->

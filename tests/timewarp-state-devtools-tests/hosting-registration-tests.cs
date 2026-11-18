@@ -70,8 +70,8 @@ public class AddTimeWarpStateDevTools_Should
       root,
       "samples/00-state-action-handler/server/sample-00-server/sample-00-server.csproj"
     );
-    builder.AddProject("frontend-a", serverA).WithTimeWarpStateDevTools(devtools);
-    builder.AddProject("frontend-b", serverB).WithTimeWarpStateDevTools(devtools);
+    builder.AddDotnetProject("frontend-a", serverA).WithTimeWarpStateDevTools(devtools);
+    builder.AddDotnetProject("frontend-b", serverB).WithTimeWarpStateDevTools(devtools);
 
     Dictionary<string, object> variables = await ApplyEnvironmentCallbacks(devtools.Resource);
     ReferenceExpression expression = variables[TimeWarpStateDevToolsHosting.CorsOriginsEnvironmentVariable]
@@ -210,8 +210,8 @@ public class AddTimeWarpStateDevTools_Should
   {
     string project = Path.Combine(RepoPaths.Root(), "source", "timewarp-state-devtools", "timewarp-state-devtools.csproj");
     IDistributedApplicationBuilder builder = CreateBuilder();
-    IResourceBuilder<ProjectResource> devtools = builder.AddTimeWarpStateDevToolsProject(project);
-    devtools.Resource.Annotations.OfType<IProjectMetadata>().Single().ProjectPath.ShouldBe(Path.GetFullPath(project));
+    IResourceBuilder<DotnetProjectResource> devtools = builder.AddTimeWarpStateDevToolsProject(project);
+    devtools.Resource.GetProjectMetadata().ProjectPath.ShouldBe(Path.GetFullPath(project));
     HttpEndpoint(devtools.Resource).UriScheme.ShouldBe("http");
     devtools.Resource.IsExcludedFromPublish().ShouldBeTrue();
     devtools.Resource.Name.ShouldBe(TimeWarpStateDevToolsHosting.DefaultResourceName);
@@ -232,7 +232,7 @@ public class AddTimeWarpStateDevTools_Should
       "timewarp-state-devtools.csproj"
     );
     const string projectResourceName = "custom-devtools-project";
-    IResourceBuilder<ProjectResource> projectResource =
+    IResourceBuilder<DotnetProjectResource> projectResource =
       builder.AddTimeWarpStateDevToolsProject(project, projectResourceName);
     projectResource.Resource.Name.ShouldBe(projectResourceName);
   }
@@ -257,8 +257,8 @@ public class AddTimeWarpStateDevTools_Should
     httpEndpoint.Name.ShouldBe(TimeWarpStateDevToolsHosting.UiEndpointName);
 
     string serverProject = Path.Combine(root, "samples/04-telemetry/server/sample-04-server/sample-04-server.csproj");
-    IResourceBuilder<ProjectResource> server = builder
-      .AddProject("sample-04-server", serverProject)
+    IResourceBuilder<DotnetProjectResource> server = builder
+      .AddDotnetProject("sample-04-server", serverProject)
       .WithTimeWarpStateDevTools(devtools);
 
     server.Resource.Annotations.OfType<WaitAnnotation>()
@@ -311,8 +311,8 @@ public class AddTimeWarpStateDevTools_Should
       RepoPaths.Root(),
       "samples/04-telemetry/server/sample-04-server/sample-04-server.csproj"
     );
-    IResourceBuilder<ProjectResource> server = builder
-      .AddProject("sample-04-server", serverProject)
+    IResourceBuilder<DotnetProjectResource> server = builder
+      .AddDotnetProject("sample-04-server", serverProject)
       .WithTimeWarpStateDevTools(devtools);
 
     server.Resource.Annotations.OfType<WaitAnnotation>()
