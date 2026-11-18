@@ -1,7 +1,8 @@
 #!/usr/bin/env pwsh
 # Purpose
-#   GitHub Actions gate before `Run CI Pipeline`: when a passing `dev ci` run already covered this exact tree,
-#   restore its packages into artifacts/packages and set fast_path=true so the workflow skips the pipeline.
+#   GitHub Actions gate before `Run CI Pipeline`: when a passing `dev ci` run already covered this tree (or one
+#   that differs from it only under the top-level kanban/ entry), restore its packages into artifacts/packages
+#   and set fast_path=true so the workflow skips the pipeline.
 #
 # Design
 #   Reads timewarp-ganda 660's unsigned note on refs/notes/ganda-ci (same contract as

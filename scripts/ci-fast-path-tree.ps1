@@ -9,8 +9,11 @@
 #   writes the rest back with `git mktree`; equal input entries give the same tree id, so comparing the two ids is
 #   the whole check. mktree unquotes the names ls-tree quotes, so the round trip keeps every other entry intact.
 #   Get-KanbanOnlyDifference returns $null when the rule holds and a printable reason (the first paths that
-#   differ outside kanban/) when it does not. Every git call runs in the current directory.
+#   differ outside kanban/) when it does not. That path list uses `git diff --no-renames`, so a move from source/
+#   into kanban/ still names the source/ path (same reason as ci-artifact-service.cs); the accept or reject decision
+#   is the stripped tree ids alone. Every git call runs in the current directory.
 #   why: task 162, PR #692 missed because the merge tree carried master's land-kanban commits (2026-11-18)
+#   why: task 162 review round 1 M1, rename detection hid the source/ side of a move into kanban/ (2026-11-18)
 
 function Get-TreeWithoutKanban([string] $Tree)
 {
@@ -29,7 +32,7 @@ function Get-KanbanOnlyDifference([string] $Tree, [string] $OtherTree)
   if (-not $left -or -not $right) { return "cannot strip kanban from tree $Tree or $OtherTree" }
   if ($left -ceq $right) { return $null }
 
-  $paths = @(& git diff --name-only $Tree $OtherTree 2>$null |
+  $paths = @(& git diff --name-only --no-renames $Tree $OtherTree 2>$null |
     Where-Object { -not $_.StartsWith('kanban/', [StringComparison]::Ordinal) })
   $shown = ($paths | Select-Object -First 5) -join ', '
   if ($paths.Count -gt 5) { $shown += ", and $($paths.Count - 5) more" }

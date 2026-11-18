@@ -4,7 +4,8 @@ name: CI/CD Pipeline
 # PR/merge: classify → assert-version-ssot → clean → build → test → e2e → verify-samples.
 # verify-samples packs, then restores sample 00 auto. Other samples are project references.
 # Release: promote CI Packages-* artifact (no rebuild). Docs job deferred.
-# Fast path (task 150): when `dev ci` already passed on this exact tree, the gate step restores its
+# Fast path (task 150, task 162): when `dev ci` already passed on HEAD, the PR head, or a merge parent
+# whose tree equals HEAD's tree outside the top-level kanban/ entry, the gate step restores its
 # packages and the pipeline step is skipped. See documentation/dev-ops/local-ci.md.
 on:
   # No paths filter on pull_request: every pull request reports CI (the org

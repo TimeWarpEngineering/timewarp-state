@@ -38,6 +38,17 @@ public class Should_
     (await repository.DifferenceAsync(before, after)).ShouldBe("differs outside kanban/: source/lib/a.cs");
   }
 
+  // why: task 162 review round 1 M1, rename detection listed only kanban/a.cs and the reason named no path
+  public static async Task Name_The_Source_Path_When_A_File_Moves_Into_Kanban()
+  {
+    using TempRepository repository = await TempRepository.CreateAsync();
+    string before = await repository.WriteTreeAsync();
+    await repository.MoveFileAsync("source/lib/a.cs", "kanban/a.cs");
+    string after = await repository.WriteTreeAsync();
+
+    (await repository.DifferenceAsync(before, after)).ShouldBe("differs outside kanban/: source/lib/a.cs");
+  }
+
   public static async Task Keep_Trees_Apart_When_A_Nested_Kanban_Folder_Differs()
   {
     using TempRepository repository = await TempRepository.CreateAsync();
@@ -76,6 +87,14 @@ public class Should_
       string path = Path.Combine(root, relativePath);
       Directory.CreateDirectory(Path.GetDirectoryName(path)!);
       await File.WriteAllTextAsync(path, content);
+    }
+
+    public Task MoveFileAsync(string fromPath, string toPath)
+    {
+      string target = Path.Combine(root, toPath);
+      Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+      File.Move(Path.Combine(root, fromPath), target);
+      return Task.CompletedTask;
     }
 
     public async Task<string> WriteTreeAsync()
