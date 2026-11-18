@@ -13,10 +13,14 @@
 #   and both carry the land-kanban commits master took after `dev ci` ran, so their tree is never the attested
 #   one. The gate walks candidate commits in order: HEAD; the PR head ($env:CI_FAST_PATH_PR_HEAD, set from
 #   github.event.pull_request.head.sha on pull_request); then each parent of HEAD when HEAD is a merge (on push the
-#   PR head is parent 2). A candidate wins when its tree has a note and equals HEAD's tree once the top-level
-#   `kanban` entry is removed from both (scripts/ci-fast-path-tree.ps1). A candidate with a note but a difference
-#   outside kanban/ is rejected with the paths that differ and the walk goes on. No winner is a miss listing every
-#   candidate's reason. kanban/ holds task files only; no build, test, or pack step reads it.
+#   PR head is parent 2). A commit wins when its tree has a note and equals HEAD's tree once the top-level
+#   `kanban` entry is removed from both (scripts/ci-fast-path-tree.ps1). After each candidate the walk follows
+#   that candidate's first-parent chain (task 163): `ganda task work` runs `dev ci` at open-pr and pushes
+#   kanban-only land-pr commits after it, so the attested commit is usually an ancestor of the PR head, and the hit
+#   names it `<candidate> ancestor K <sha>`. A chain stops at the first tree that differs outside kanban/ (the
+#   reason lists the paths), at a root, or after $MaxAncestors ancestors; trees already tested are skipped. No
+#   winner is a miss listing every chain's reason. kanban/ holds task files only; no build, test, or pack step
+#   reads it.
 #   Drift (RFC resolution 5): the note's sdk must equal `dotnet --version` after Setup .NET, and its rid must
 #   equal this runner's rid and start with linux-. playwright and chromium are recorded for the reader.
 #   Packages (RFC resolution 3): refs/ci-packages/<attested tree> holds the *.nupkg files; the set of names and every
@@ -26,7 +30,8 @@
 #   PowerShell pipeline touches the bytes.
 #   A script, not a runfile: a runfile compile on a cold runner costs more than the whole fast path.
 #   why: task 150, no-signing override (Steven 2026-11-17); workflow-pwsh-shell audit check
-#   (no bash steps); task 162, PR #692 missed on both runs over kanban-only drift (2026-11-18)
+#   (no bash steps); task 162, PR #692 missed on both runs over kanban-only drift (2026-11-18); task 163, PR #694
+#   run 44330457502 missed the attested commit one land-pr commit behind the PR head (2026-11-18)
 
 $ErrorActionPreference = 'Stop'
 $PSNativeCommandUseErrorActionPreference = $false
@@ -34,19 +39,13 @@ $PSNativeCommandUseErrorActionPreference = $false
 $RequiredStages = @('assert-version-ssot', 'build', 'test', 'e2e', 'verify-samples')
 $NotesRef = 'refs/notes/ganda-ci'
 $PackagesDir = 'artifacts/packages'
+$MaxAncestors = 10
 
 function Write-Miss([string] $Reason)
 {
   if (Test-Path $PackagesDir) { Remove-Item -Recurse -Force $PackagesDir }
   Write-Host "CI fast path: miss ($Reason). Running the full pipeline."
   exit 0
-}
-
-function Invoke-Git([string[]] $Arguments)
-{
-  $output = & git @Arguments 2>$null
-  if ($LASTEXITCODE -ne 0) { return $null }
-  return ($output -join "`n").Trim()
 }
 
 . (Join-Path $PSScriptRoot 'ci-fast-path-tree.ps1')
@@ -66,30 +65,11 @@ if ($parents.Count -gt 1)
   for ($index = 0; $index -lt $parents.Count; $index++) { $candidates.Add(@{ Label = "parent $($index + 1)"; Commit = $parents[$index] }) }
 }
 
-$tree = $null
-$hit = $null
-$noteText = $null
-$seen = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
-$reasons = [System.Collections.Generic.List[string]]::new()
-foreach ($candidate in $candidates)
-{
-  $label = "$($candidate.Label) $($candidate.Commit)"
-  $candidateTree = if ($candidate.Commit) { Invoke-Git @('rev-parse', '--verify', '--quiet', "$($candidate.Commit)^{tree}") } else { $null }
-  if (-not $candidateTree) { $reasons.Add("${label}: cannot read its tree"); continue }
-  if (-not $seen.Add($candidateTree)) { continue }
-  $candidateNote = Invoke-Git @('notes', "--ref=$NotesRef", 'show', $candidateTree)
-  if (-not $candidateNote) { $reasons.Add("${label}: no CI note for tree $candidateTree"); continue }
-  if ($candidateTree -cne $headTree)
-  {
-    $difference = Get-KanbanOnlyDifference $candidateTree $headTree
-    if ($difference) { $reasons.Add("${label}: attested tree $candidateTree $difference"); continue }
-  }
-  $tree = $candidateTree
-  $hit = $label
-  $noteText = $candidateNote
-  break
-}
-if (-not $tree) { Write-Miss ($reasons -join '; ') }
+$found = Find-AttestedTree -HeadTree $headTree -Candidates $candidates.ToArray() -NotesRef $NotesRef -MaxAncestors $MaxAncestors
+$tree = $found.Tree
+$hit = $found.Label
+$noteText = $found.Note
+if (-not $tree) { Write-Miss ($found.Reasons -join '; ') }
 Write-Host "CI fast path: attested tree $tree from $hit"
 Write-Host "CI fast path: note $noteText"
 

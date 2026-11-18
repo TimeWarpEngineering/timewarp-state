@@ -43,11 +43,20 @@ candidates in order and skips a tree it has already tried:
 2. `pr-head`, the pull request's head commit (`CI_FAST_PATH_PR_HEAD`, set on `pull_request` only);
 3. `parent N`, each parent of `HEAD` when `HEAD` is a merge (on the `master` push the PR head is parent 2).
 
-A candidate is the attested one when its tree has a note and that tree equals `HEAD^{tree}` once the top-level
-`kanban` entry is removed from both (`scripts/ci-fast-path-tree.ps1`). A candidate with a note that differs
-outside `kanban/` is rejected with the paths that differ, and the walk goes on. The hit line names the winner,
-for example `CI fast path: hit (pr-head <sha>)`. With no winner the gate prints one miss line with every
-candidate's reason.
+A commit is the attested one when its tree has a note and that tree equals `HEAD^{tree}` once the top-level
+`kanban` entry is removed from both (`scripts/ci-fast-path-tree.ps1`).
+
+After each candidate the gate walks that candidate's first-parent ancestors with the same rule. `ganda task work`
+runs `dev ci` at open-pr and then pushes kanban-only `land-pr` commits, so the attested commit is usually one or
+more commits behind the PR head (and behind parent 2 of the `master` merge). A chain stops at:
+
+- the first commit whose tree differs from `HEAD^{tree}` outside `kanban/` (the reason lists the paths; an older
+  commit cannot be the attested build of this tree);
+- a root commit, or 10 ancestors.
+
+Commits and trees already tested are not tested again. The hit line names the winner, for example
+`CI fast path: hit (pr-head <sha>)` or `CI fast path: hit (pr-head ancestor 1 <sha>)`. With no winner the gate
+prints one miss line with every chain's reason.
 
 It takes the fast path only when all of these hold for the attested tree:
 
@@ -74,4 +83,5 @@ Any miss prints the reason, stays green, and the full pipeline runs.
 - The SourceLink commit inside fast-path packages is the commit `dev ci` packed. Its tree equals the tree CI
   checked out outside `kanban/`, so every source file SourceLink points at is the same.
 
-why: task 150 (2026-11-18); task 162, kanban-only tree drift and the candidate walk (2026-11-18)
+why: task 150 (2026-11-18); task 162, kanban-only tree drift and the candidate walk (2026-11-18); task 163, the
+ancestor walk past land-pr commits (2026-11-18)
