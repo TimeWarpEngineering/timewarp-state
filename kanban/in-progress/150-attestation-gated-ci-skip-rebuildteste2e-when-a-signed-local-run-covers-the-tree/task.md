@@ -77,28 +77,12 @@ option (only `[--force] [--no-push] [--no-status]`, `status`, `keygen`, `key-sho
 and that a plain implement walk cannot finish, so this walk parks as Blocked until
 `ganda task work 150 --routine rfc` writes the RFC and creates the timewarp-ganda tasks.
 
-## Override: no signing (Steven 2026-11-17)
-
-Steven overrode the ballot's signing decisions ("Is all this shit worth it? We're trying to make CI faster", then
-"rewrite it, make it the simple one"). Everyone who can push can also edit the workflow, so a signature protects
-nothing here. This overrides every RFC resolution that names a key, a signature, `tw-ci-1`, or
-`ganda repo attest` for stage claims:
-
-- No signing and no second key. The note is a plain, unsigned JSON git note on `refs/notes/ganda-ci`, keyed by tree.
-- timewarp-ganda 660 was rewritten to that: a ganda command (suggested `ganda repo ci-note write|status`) that writes
-  `{tree, stages, tools, packages, ts}` and pushes it, and a `status` that exits 0 only when the `--require`d stages
-  all passed and prints the tools. Use the command names 660 ships.
-- `dev ci` runs the stages, then calls 660's `write`. The workflow gate calls 660's `status` with the required
-  stages and compares SDK and RID from its tools output. Everything else in the RFC (artifact, tree lookup, coverage
-  skipped on the fast path) stands.
-- 661 (task-work runs `localCi` before the push) is unchanged.
-
 ## Checklist
 
 - [x] RFC written under `rfc/` with the seven decisions resolved
 - [x] Ganda-side tasks created in timewarp-ganda and linked
-- [ ] `dev ci` runs all stages locally and writes the unsigned stage note (ganda 660)
-- [ ] Workflow gate reads the stage note (ganda 660 `status`); skips pipeline on match; full run on miss
+- [ ] `dev ci` runs all stages locally and attests with stage payload
+- [ ] Workflow gate reads attestation; skips pipeline on match; full run on miss
 - [ ] `Packages-*` artifact still produced on the fast path
 - [ ] Tool-version drift refuses the fast path
 - [ ] Two proving runs recorded (fast path < 1 min, slow path unchanged)
@@ -120,11 +104,12 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
   and marked the task RFC-first.
 - Timing source: `gh run view` on the master run for 51e8e997 (task 148 merge), 2026-11-07.
 - RFC: `rfc/rfc.md`. Resolved 2026-11-17. Third option on the artifact: `refs/ci-packages/<treeSha>`, not a draft GitHub Release. Second key `tw-ci-1`. Tree lookup. Coverage step skipped on the fast path.
-- timewarp-ganda 660: unsigned CI stage note (rewritten 2026-11-17, no `tw-ci-1`). Fold-in of `dev ci` waits on that merge.
+- timewarp-ganda 660: CI stage note and `tw-ci-1`. Fold-in of `dev ci` waits on that merge.
 - timewarp-ganda 661: task-work `localCi` after the last kitchen commit and before the branch push CI sees. Stage failure fails the walk. A publish or auth failure warns and still opens the pull request.
 
 ## Blocked
 
-2026-11-17: This task needs its RFC first. Run `ganda task work 150 --routine rfc` to write rfc/ with the seven decisions and create the linked timewarp-ganda tasks (stage coverage in the attestation, running the local pipeline before open-pr). Then run the implement walk again.
-
-Cleared 2026-11-17 by the RFC walk. `rfc/rfc.md` is resolved. timewarp-ganda tasks 660 and 661 are in `kanban/to-do/`. Fold-in on this id still waits on 660 before `dev ci` can call the attest command. 661 is the walk hook and is not required for one manual proof.
+Resolved 2026-11-18. The RFC is written under `rfc/` (ballot resolved, commit ec381102). timewarp-ganda tasks 660
+(`ganda repo ci-note write`/`status`) and 661 (walk hook) are done and the installed ganda (1.0.0-beta.38) ships
+`ganda repo ci-note`. The implement walk can proceed: wire `dev ci` to `ganda repo ci-note write`, add the workflow
+gate using `ganda repo ci-note status`, and follow the decisions in `rfc/rfc.md`.
