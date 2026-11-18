@@ -116,6 +116,16 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
 - RFC oracle: grok session 01a1e986-6767-78a3-b95e-36f8a1bf1041 (2026-11-17). Ballot in `rfc/rfc.md`. Fold-in is the next compute on this id.
 - Implement oracle (fold-in): claude-opus-5-5, 2026-11-18. `dev ci`, pwsh gate, `localCi`, docs, tests; filed task 161 for the Amuru/Nuru pin migration the audit fix exposed.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T13:25:28Z
+- Review oracle: general (grok, effort 3, roster general), session 01a1eed5-9579-7b12-8049-91779d8e067f, max-turns uncapped (review budget 200), clean — 2026-11-18
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1eed5-9579-7b12-8049-91779d8e067f, max-turns 200, artifacts general.md, merged.md, disposition.md — 2026-11-18T13:38:53Z
+
+## Learnings
+
+- Misread: the implementer restatement says the workflow reads the `refs/notes/ganda-ci` note itself. The override, and the resolved Blocked note below, say the gate calls `ganda repo ci-note status`. Fold-in follows the restatement. `scripts/ci-fast-path-gate.ps1` applies the same rule (required stages `pass`, SDK and RID match, package names and sha256 match). Results already records the reason: the runner cannot install the private ganda binary, and the RFC forbids compiling the dev CLI on the runner. The behavior matches the status contract. The wording in the restatement is the mismatch.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
@@ -193,6 +203,14 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
   master, so master often moves after `dev ci`; then both PR and master runs miss and run in full (correct, just no
   saving). If the proving runs show that, a follow-up could accept a head-tree note when the merge differs from the
   head only under `kanban/`.
+
+### Review disposition
+
+Round 1, general only, effort 3. Counts: bug 0, suggestion 0, nit 0 (all open/fixed/wontfix zero). Outcome: **clean**. No escalations.
+
+Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+
+GitHub proving run ids stay unchecked above. They wait on the pull request (later host node).
 
 ### How to validate
 
