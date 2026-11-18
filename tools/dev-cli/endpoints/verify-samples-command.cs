@@ -123,8 +123,8 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
     {
       string relativePath = Path.GetRelativePath(repoRoot, project);
       Terminal.WriteLine($"\nBuilding {relativePath}...");
-      int exitCode = await Shell.Builder("dotnet")
-        .WithArguments("build", project, "--configuration", "Release")
+      int exitCode = await DotNet.Build(project)
+        .WithConfiguration("Release")
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
@@ -157,16 +157,11 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
 
       string publishOutput = Path.Combine(repoRoot, "artifacts", "publish", "sample-05-wasm-trimmed");
       Terminal.WriteLine("\nPublishing samples/05-persistence trimmed...");
-      int publishExitCode = await Shell.Builder("dotnet")
-        .WithArguments
-        (
-          "publish",
-          persistenceProject,
-          "--configuration", "Release",
-          "--output", publishOutput,
-          "-p:VerifySamplesTrim=true",
-          "-p:TrimmerSingleWarn=false"
-        )
+      int publishExitCode = await DotNet.Publish(persistenceProject)
+        .WithConfiguration("Release")
+        .WithOutput(publishOutput)
+        .WithProperty("VerifySamplesTrim", "true")
+        .WithProperty("TrimmerSingleWarn", "false")
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
@@ -185,8 +180,11 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
     {
       string relativePath = Path.GetRelativePath(repoRoot, project);
       Terminal.WriteLine($"\nRestoring {relativePath} from the local feed...");
-      int restoreExitCode = await Shell.Builder("dotnet")
-        .WithArguments("restore", project, "--configfile", configPath, "--force")
+      int restoreExitCode = await DotNet.Restore(project)
+        // RestoreConfigFile is the MSBuild property behind `dotnet restore --configfile`;
+        // DotNetRestoreBuilder has no --configfile option.
+        .WithProperty("RestoreConfigFile", configPath)
+        .WithForce()
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
@@ -199,8 +197,9 @@ internal sealed class VerifySamplesCommand : ICommand<Unit>
       }
 
       Terminal.WriteLine($"Building {relativePath}...");
-      int buildExitCode = await Shell.Builder("dotnet")
-        .WithArguments("build", project, "--configuration", "Release", "--no-restore")
+      int buildExitCode = await DotNet.Build(project)
+        .WithConfiguration("Release")
+        .WithNoRestore()
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);

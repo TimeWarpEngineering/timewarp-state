@@ -49,8 +49,10 @@ static partial class App
     }
   }
 
+  // DotNet.DevCerts().Https() has no standard input or timeout option, so the raw argument list stays on
+  // DotNet.Builder(), which carries both.
   static Task<int> RunDevCerts(params string[] options) =>
-    Shell.Builder("dotnet")
+    DotNet.Builder()
       .WithArguments(["dev-certs", "https", .. options])
       .WithStandardInput(string.Empty)
       .WithTimeout(DevCertsTimeout)

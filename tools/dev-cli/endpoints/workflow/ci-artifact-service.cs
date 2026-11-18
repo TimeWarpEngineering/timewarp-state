@@ -114,8 +114,7 @@ internal sealed class CiArtifactService
 
     foreach (CiRunSummary run in candidateRuns)
     {
-      CommandOutput artifactsResult = await Shell.Builder("gh")
-        .WithArguments("api", $"repos/{{owner}}/{{repo}}/actions/runs/{run.DatabaseId}/artifacts")
+      CommandOutput artifactsResult = await Gh.Api($"repos/{{owner}}/{{repo}}/actions/runs/{run.DatabaseId}/artifacts")
         .WithNoValidation()
         .CaptureAsync(ct);
 
@@ -149,8 +148,10 @@ internal sealed class CiArtifactService
 
       Terminal.WriteLine($"Downloading artifact '{artifact.Name}' from run {run.DatabaseId} ({run.Event})...");
 
-      int exitCode = await Shell.Builder("gh")
-        .WithArguments("run", "download", run.DatabaseId.ToString(CultureInfo.InvariantCulture), "--name", artifact.Name, "--dir", artifactsDir)
+      int exitCode = await Gh.Run()
+        .Download(run.DatabaseId.ToString(CultureInfo.InvariantCulture))
+        .WithName(artifact.Name)
+        .WithDirectory(artifactsDir)
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);
@@ -182,8 +183,12 @@ internal sealed class GhGitCommitCiLookup : ICommitCiLookup
 {
   public async Task<IReadOnlyList<CiRunSummary>> GetSuccessfulRunsAsync(string sha, CancellationToken ct)
   {
-    CommandOutput runListResult = await Shell.Builder("gh")
-      .WithArguments("run", "list", "--workflow", "workflow.yml", "--commit", sha, "--status", "success", "--json", "databaseId,event,headSha,createdAt")
+    CommandOutput runListResult = await Gh.Run()
+      .List()
+      .WithWorkflow("workflow.yml")
+      .WithCommit(sha)
+      .WithStatus("success")
+      .WithJson("databaseId", "event", "headSha", "createdAt")
       .WithNoValidation()
       .CaptureAsync(ct);
 

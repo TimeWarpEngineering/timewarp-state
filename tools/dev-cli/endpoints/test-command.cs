@@ -44,10 +44,10 @@ internal sealed class TestCommand : ICommand<Unit>
       Terminal.WriteLine("Restoring local tools (fixie.console)...");
       Terminal.WriteLine($"Working from: {repoRoot}");
 
-      int restoreExitCode = await Shell.Builder("dotnet")
-        .WithArguments("tool", "restore")
+      int restoreExitCode = await DotNet.Tool()
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
+        .Restore()
         .RunAsync(ct);
 
       if (restoreExitCode != 0)
@@ -59,8 +59,8 @@ internal sealed class TestCommand : ICommand<Unit>
 
       Terminal.WriteLine("Running test suite...");
 
-      int exitCode = await Shell.Builder("dotnet")
-        .WithArguments("run", "--file", testRunner)
+      int exitCode = await DotNet.Run()
+        .WithFile(testRunner)
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .RunAsync(ct);

@@ -121,8 +121,7 @@ internal sealed class CiCommand : ICommand<Unit>
 
     private async Task<Dictionary<string, string>> ReadToolsAsync(string repoRoot, CancellationToken ct)
     {
-      CommandOutput sdk = await Shell.Builder("dotnet")
-        .WithArguments("--version")
+      CommandOutput sdk = await DotNet.WithVersion()
         .WithWorkingDirectory(repoRoot)
         .WithNoValidation()
         .CaptureAsync(ct);

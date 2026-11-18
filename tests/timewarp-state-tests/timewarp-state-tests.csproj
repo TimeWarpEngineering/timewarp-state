@@ -8,6 +8,8 @@
     <PackageReference Include="TimeWarp.Mediator.Generators" PrivateAssets="all" />
     <!-- Source-only package: no assets flow in; the path property links the pure release-guard files below. -->
     <PackageReference Include="TimeWarp.Nuru.DevCli" GeneratePathProperty="true" ExcludeAssets="all" PrivateAssets="all" />
+    <!-- Nuru.DevCli 4.0.0-beta.16 release-guard.cs builds `gh release create` with GhReleaseCreateBuilder (task 161). -->
+    <PackageReference Include="TimeWarp.Amuru.Tools" />
   </ItemGroup>
 
   <ItemGroup>
