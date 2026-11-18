@@ -97,6 +97,7 @@ Acceptance:
 - Review oracle: general (grok, effort 2, roster general), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, open findings M1 M2 — 2026-11-18
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, artifacts review/round-1/general.md, review/round-1/merged.md — 2026-11-18
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1ef0a-4a93-77b2-83e2-f0a05143f29f, max-turns 120, artifacts general.md, merged.md — 2026-11-18T14:35:21Z
+- Review oracle: review round 2 by reviewer-grok (grok, vendor xai, model grok-4.7), session 01a1ef18-ce82-7111-b9f5-499860aaa744, max-turns 80, effort 1, roster general, artifacts review/round-2/general.md, review/round-2/merged.md, review/disposition.md — 2026-11-18
 
 ## Learnings
 
@@ -107,7 +108,8 @@ Acceptance:
 - Round 1: Blocked — open M1, M2
 - Round 1 fix pass (implement-fix-2, 2026-11-18): M1 fixed (`--no-renames` on the reason diff, new test), M2 fixed
   (workflow banner, gate Purpose line, `documentation/dev-ops/local-ci.md`).
-
+- Round 2: Done
+  Disposition `review/disposition.md`. Roster general, effort 1, session 01a1ef18-ce82-7111-b9f5-499860aaa744.
 ## Results
 
 ### What changed
@@ -179,6 +181,13 @@ Smoke: in a scratch clone with `origin` set to GitHub, `git checkout --detach 81
 path` step.
 Expect: `CI fast path: hit (parent 2 da11d7ff…)` and `fast_path=true` with 9 nupkgs in `artifacts/packages`; on the
 PR run, `CI fast path: hit (pr-head …)` and `Run CI Pipeline` skipped.
+
+### Review disposition
+
+- Rounds: 2. Roster: general. Round 1 effort 2 (120 turns). Round 2 effort 1 (80 turns) on the 177-line fix delta.
+- Counts (final, round 2): suggestion 2 fixed (M1, M2); bug 0; nit 0; open 0; wontfix 0.
+- Disposition: clean. No exceptions.
+- Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Notes
 

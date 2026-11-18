@@ -2,19 +2,19 @@
 
 **Date:** 2026-11-18
 **Host task:** kanban/in-progress/162-ci-fast-path-gate-accept-the-attested-pr-head-tree-when-it-differs-from-head-only-under-kanban/
-**Diff scope:** branch `task/162-ci-fast-path-gate-accept-the-attested-pr-head-tree` vs `master` (three-dot). Product files: `.github/workflows/workflow.yml`, `scripts/ci-fast-path-gate.ps1`, `scripts/ci-fast-path-tree.ps1`, `tests/timewarp-state-tests/release-pipeline/ci-fast-path-tree-tests.cs`, `tests/timewarp-state-tests/global-usings.cs`, `tests/timewarp-state-tests/timewarp-state-tests.csproj`. Kitchen `task.md` is on the branch and is not product behavior.
-**Plan / brief:** Teach the CI fast-path gate to accept an attested tree when the checked-out tree differs only by the top-level `kanban` entry. Candidates: HEAD, the PR head sha from `CI_FAST_PATH_PR_HEAD`, then each parent when HEAD is a merge.
-**Effort:** 2 (general only)
+**Diff scope:** Round 1 reviewed the branch vs `master`. Round 2 reviews the fix delta only: `7a984d93` (round 1 `base.sha`) .. `HEAD` (`57c98e15`). Product files in that delta: `.github/workflows/workflow.yml` (banner), `documentation/dev-ops/local-ci.md`, `scripts/ci-fast-path-gate.ps1` (Purpose), `scripts/ci-fast-path-tree.ps1` (`--no-renames`), `tests/timewarp-state-tests/release-pipeline/ci-fast-path-tree-tests.cs` (move-into-kanban case).
+**Plan / brief:** Teach the CI fast-path gate to accept an attested tree when the checked-out tree differs only by the top-level `kanban` entry. Round 2 checks that M1 and M2 from round 1 are fixed and that the fix delta adds no new defect.
+**Effort:** round 1 was 2 (general only, 120 turns). Round 2 is 1 (general only, 80 turns) on the 177-line delta.
 **Reviewer roster:** general
-**Session IDs:** review oracle grok session `01a1ef0a-4a93-77b2-83e2-f0a05143f29f` (2026-11-18). Implementer session `e165382e-6a76-4746-90b0-1508ca64a8f4`.
+**Session IDs:** round 1 grok `01a1ef0a-4a93-77b2-83e2-f0a05143f29f`. Round 2 grok `01a1ef18-ce82-7111-b9f5-499860aaa744` (2026-11-18). Implementer session `e165382e-6a76-4746-90b0-1508ca64a8f4`.
 
 ## Budget (by-diff)
 
-- Lines changed: 395
-- Effort: 2
+- Lines changed: 177
+- Effort: 1
 - TCB hits: none
 - Roster axes: general
-- Turn cap: 120 (--max-turns; cursor uncapped)
+- Turn cap: 80 (--max-turns; cursor uncapped)
 
 ## Ground rules
 
