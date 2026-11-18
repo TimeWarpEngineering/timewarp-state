@@ -109,6 +109,7 @@ and that a plain implement walk cannot finish, so this walk parks as Blocked unt
 
 ## Blocked
 
-2026-11-17: This task needs its RFC first. Run `ganda task work 150 --routine rfc` to write rfc/ with the seven decisions and create the linked timewarp-ganda tasks (stage coverage in the attestation, running the local pipeline before open-pr). Then run the implement walk again.
-
-Cleared 2026-11-17 by the RFC walk. `rfc/rfc.md` is resolved. timewarp-ganda tasks 660 and 661 are in `kanban/to-do/`. Fold-in on this id still waits on 660 before `dev ci` can call the attest command. 661 is the walk hook and is not required for one manual proof.
+Resolved 2026-11-18. The RFC is written under `rfc/` (ballot resolved, commit ec381102). timewarp-ganda tasks 660
+(`ganda repo ci-note write`/`status`) and 661 (walk hook) are done and the installed ganda (1.0.0-beta.38) ships
+`ganda repo ci-note`. The implement walk can proceed: wire `dev ci` to `ganda repo ci-note write`, add the workflow
+gate using `ganda repo ci-note status`, and follow the decisions in `rfc/rfc.md`.
