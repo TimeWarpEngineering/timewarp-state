@@ -88,6 +88,7 @@ Acceptance:
 - 2026-11-18 implement oracle: walk in `ci-fast-path-tree.ps1`, gate rewired, docs, 4 tests; dry run on PR #694
   history hits `pr-head ancestor 1 97c8816f`. Note: master push for #694 would still miss (master moved outside
   kanban/ before the merge), so the master-push proof needs a quiet master between dev ci and merge.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session ea93328b-5603-43d0-b2df-380b6df0256c, max-turns 500, Done — 2026-11-18T15:38:13Z
 
 ## Results
 
