@@ -28,6 +28,7 @@ Acceptance criteria:
 
 - Minted by ganda task wave run 20261118T170809Z-b6e473
 - 2026-11-19 implementer (claude): bumped Playwright.MSTest.v4 1.65.0, Aspire.Hosting / Aspire.Hosting.AppHost 17.0.0, Version 12.0.0-beta.19. Aspire 17 obsoletes `AddProject(name, path)` (CS0618 broke the build) and `Aspire.AppHost.Sdk` (ASPIRE012), so the hosting package, sample AppHost, and DevTools tests moved to `AddDotnetProject` from new pin `Aspire.Hosting.Dotnet` 17.0.0.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T20:10:48Z
 
 ## Results
 
