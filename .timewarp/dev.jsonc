@@ -9,5 +9,12 @@
       "readme.md",
       "assets/logo.png"
     ]
-  }
+  },
+  // ganda task work runs this before the branch push GitHub CI sees (timewarp-ganda 661).
+  // dev ci runs the PR pipeline, then publishes refs/ci-packages/<tree> and the
+  // refs/notes/ganda-ci note, so CI skips the pipeline on that tree.
+  // Exit 0 published, 1 a stage failed, 2 stages passed but publishing failed.
+  // The runfile form builds the dev CLI from this tree, so a stale ./bin/dev cannot run it.
+  // why: task 150 (2026-11-18)
+  "localCi": "dotnet run --file tools/dev-cli/dev.cs -- ci"
 }
