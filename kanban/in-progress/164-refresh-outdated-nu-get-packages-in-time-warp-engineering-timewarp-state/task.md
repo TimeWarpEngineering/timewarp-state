@@ -30,6 +30,7 @@ Acceptance criteria:
 - 2026-11-19 implementer (claude): bumped Playwright.MSTest.v4 1.65.0, Aspire.Hosting / Aspire.Hosting.AppHost 17.0.0, Version 12.0.0-beta.19. Aspire 17 obsoletes `AddProject(name, path)` (CS0618 broke the build) and `Aspire.AppHost.Sdk` (ASPIRE012), so the hosting package, sample AppHost, and DevTools tests moved to `AddDotnetProject` from new pin `Aspire.Hosting.Dotnet` 17.0.0.
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T20:10:48Z
 - Reviewer: Grok session 01a1f048-ab18-7b91-a7c5-42dbba6fef1e (2026-11-19), effort 1, roster general, round 1. Turn cap 80.
+- Reviewer round 2: Grok session 01a1f053-b783-7360-b462-b58d6babf168 (2026-11-19), effort 1, roster general, turn cap 80. Re-reviewed the M1 fix delta `43e09174..04cf07c0`. Disposition clean, 0 open.
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1f048-ab18-7b91-a7c5-42dbba6fef1e, max-turns 80, artifacts general.md, merged.md — 2026-11-18T20:18:54Z
 - 2026-11-19 implementer (claude) fix pass for round 1: M1 fixed. `Aspire.Hosting.Dotnet` added to the `TimeWarp.State.DevTools.Hosting` entry in `tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs`; new allow-list test checks packable projects' public PackageReferences against the list.
 
@@ -78,7 +79,9 @@ Expect: the build succeeds with 0 warnings (no CS0618, no ASPIRE012), and Fixie 
 
 ### Review
 
-Round 1, effort 1, roster general. Counts: 0 open, 1 fixed (M1), 0 wontfix. M1 fixed in the round-1 fix pass. Paths: `review/review-framework.md`, `review/round-1/merged.md`.
+Round 1, effort 1, roster general. Counts at close of that round were 1 open bug (M1). The fix pass set M1 to fixed.
+
+Round 2, effort 1, roster general. Re-reviewed the fix delta `43e09174..04cf07c0`. M1 stays fixed. No new findings. Final counts: 0 open, 1 fixed (M1 bug), 0 wontfix. Disposition: clean. Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
 
 ## Learnings
 
@@ -87,3 +90,4 @@ Round 1, effort 1, roster general. Counts: 0 open, 1 fixed (M1), 0 wontfix. M1 f
 ## Review
 
 - Round 1: Blocked — open M1
+- Round 2: Done

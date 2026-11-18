@@ -6,11 +6,15 @@
 **Plan / brief:** Refresh the three outdated NuGet pins in `Directory.Packages.props` (Playwright.MSTest.v4 1.65.0, Aspire.Hosting 17.0.0, Aspire.Hosting.AppHost 17.0.0) and set `<Version>` to `12.0.0-beta.19`. The implementer also moved Aspire 17 call sites off obsolete `AddProject` and `Aspire.AppHost.Sdk`.
 **Effort:** 1 (general only)
 **Reviewer roster:** general
-**Session IDs:** grok `01a1f048-ab18-7b91-a7c5-42dbba6fef1e` (2026-11-19). Implementer session was not reported.
+**Session IDs:** grok `01a1f048-ab18-7b91-a7c5-42dbba6fef1e` (2026-11-19, round 1). Round 2: grok `01a1f053-b783-7360-b462-b58d6babf168` (2026-11-19). Implementer session was not reported.
+
+## Round 2 scope
+
+Delta since round 1 base `43e09174` through `04cf07c0` (fix commit). Product files: `tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs`, `tests/timewarp-state-tests/packaging/nuspec-dependency-allow-list-tests.cs`. Re-verify M1. Do not re-review the earlier pin bump.
 
 ## Budget (by-diff)
 
-- Lines changed: 162
+- Lines changed: 155
 - Effort: 1
 - TCB hits: none
 - Roster axes: general
