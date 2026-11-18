@@ -115,6 +115,7 @@ nothing here. This overrides every RFC resolution that names a key, a signature,
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5, response model claude-opus-5-5), session 98240814-df7b-428f-ad99-3daf2845663f, max-turns 500, Blocked — 2026-11-17T12:26:55Z
 - RFC oracle: grok session 01a1e986-6767-78a3-b95e-36f8a1bf1041 (2026-11-17). Ballot in `rfc/rfc.md`. Fold-in is the next compute on this id.
 - Implement oracle (fold-in): claude-opus-5-5, 2026-11-18. `dev ci`, pwsh gate, `localCi`, docs, tests; filed task 161 for the Amuru/Nuru pin migration the audit fix exposed.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T13:25:28Z
 
 ## Notes
 
