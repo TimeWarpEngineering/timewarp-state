@@ -54,6 +54,7 @@ Acceptance:
 - Created: 2939415 (2026-11-18), from task 150's implement walk
 - 2026-11-18 implement walk: pins moved to Amuru/Amuru.Tools 3.0.0-beta.10 and Nuru/Nuru.DevCli 4.0.0-beta.16;
   dev CLI and scripts moved to the typed builders; holds deleted. `ganda repo audit --fix` changed nothing.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T14:29:26Z
 
 ## Results
 
