@@ -91,3 +91,26 @@ Round 2, effort 1, roster general. Re-reviewed the fix delta `43e09174..04cf07c0
 
 - Round 1: Blocked — open M1
 - Round 2: Done
+
+## Resume note (2026-11-19)
+
+The walk parked at open-pr because local CI failed its first step:
+
+```
+Version SSOT mismatch: source/Directory.Build.props Version='12.0.0-beta.19',
+msbuild/repository.props TimeWarpStateVersion='12.0.0-beta.18'. Align both.
+```
+
+The branch itself is not wrong. Task 165 (PR #696, merged 2026-11-19) made
+`TimeWarpStateVersion` derive from `source/Directory.Build.props` `<Version>`, so there is now
+one version and the single bump on this branch is enough.
+
+To resume: merge `origin/master` into this branch to take task 165 (this branch does not touch
+`msbuild/repository.props`, so no conflict is expected), run `./bin/dev ci`, then let the walk
+continue from open-pr. Do not edit `msbuild/repository.props` by hand and do not change the
+version. Review is already clean (round 2); the merge of master is the only new delta.
+
+After merge the version 12.0.0-beta.19 is on master but not released. The release is run
+separately (`ganda task wave --brief release-pending`), on Steve's go.
+
+- Why: Steve 2026-11-19, wave run 20261118T170809Z-b6e473 parked this task; 165 fixed the cause.
