@@ -51,3 +51,34 @@ Expect: the pin reads `Version="1.65.1"` and the build succeeds with 0 errors; C
 ## Review
 
 - Round 1: Done
+
+## Resume note (2026-11-19)
+
+The walk parked at open-pr. Implement and review are done and clean (one dev-only pin,
+Microsoft.Playwright.MSTest.v4 1.65.0 to 1.65.1). Local CI
+(`dotnet run --file tools/dev-cli/dev.cs -- ci`) failed in the test step:
+
+```
+==> Run analyzer tests
+Run "dotnet tool restore" to make the "fixie" command available.
+Run analyzer tests failed: exit code 1
+Pipeline FAILED — Test failed
+```
+
+What is known:
+
+- `assert-version-ssot`, `clean` and `build` passed (0 errors), so task 165's single version works.
+- `tools/dev-cli/endpoints/test-command.cs` already runs `dotnet tool restore` before
+  `scripts/test.cs`, so this is not simply a missing restore. The `fixie` command was still not
+  found when the analyzer tests ran.
+- Tasks 164 and 165 passed the same pipeline earlier the same day. 164's own notes run fixie with
+  `NUGET_PACKAGES=$PWD/artifacts/nuget-packages` set by hand, so the isolated package folder is a
+  likely place to look (restore and run resolving tools from different folders, or `clean`
+  removing what the restore wrote).
+
+To resume: reproduce with `./bin/dev ci` in this worktree and find why `fixie` is not available
+after the restore. If the pipeline has a real gap in a fresh worktree, fix it in the dev CLI so a
+new worktree passes without manual steps; do not just rerun until green. If it does not
+reproduce, record that here and let the walk continue from open-pr.
+
+- Why: wave run 20261119T023451Z-133310 parked this task (Steve launched the libs wave 2026-11-19).
