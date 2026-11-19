@@ -81,6 +81,16 @@ Acceptance:
 - Created: 531abc9c-a359-4f69-b125-2e4cabf1218a (2026-11-19)
 - 2026-11-19 implement oracle (Claude Opus 5.5): derived TimeWarpStateVersion, reduced assert-version-ssot, comments. Boy-scout: `ganda repo audit --fix` fixed the advisory `vscode-window-icon` warning (.vscode/settings.json is git-ignored, nothing to commit).
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-19T01:42:35Z
+- Reviewer: grok session 01a1f178-5212-73e3-ad80-9b1e586f0610 (2026-11-19), effort 2, roster general, max-turns 120
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1f178-5212-73e3-ad80-9b1e586f0610, max-turns 120, artifacts general.md, merged.md, disposition.md — 2026-11-19T01:51:05Z
+
+## Learnings
+
+- The implementer restatement matches the original task. Keeping `assert-version-ssot` as a check that the derived value is non-empty and equals `<Version>` is one of the two options the task allows.
+
+## Review
+
+- Round 1: Done
 
 ## Notes
 
@@ -88,6 +98,7 @@ Acceptance:
   20261118T170809Z-b6e473 parked task 164 on the mismatch.
 - After this merges, task 164 can be resumed (`ganda task work 164`); its branch only has to
   take master, and the single `<Version>` bump it already made is then enough.
+- Review round 1 (2026-11-19): clean, 0 findings. Paths: `review/review-framework.md`, `review/round-1/merged.md`, `review/disposition.md`.
 
 ## Results
 
@@ -161,4 +172,12 @@ Expect:
 - `git grep` over build files finds the version only in `source/Directory.Build.props`. Release-note and readme links in `documentation/` and `readme.md` are prose and stay as they are.
 - On the pull request, CI's `assert-version-ssot` stage prints `Version SSOT: 12.0.0-beta.18 (... derived ...)`,
   and `verify-samples` passes.
+
+### Review
+
+- Round 1, effort 2, roster general (grok session `01a1f178-5212-73e3-ad80-9b1e586f0610`). No specialist axes.
+- Counts: bug 0 open / 0 fixed / 0 wontfix; suggestion 0 / 0 / 0; nit 0 / 0 / 0. Final open count 0.
+- Disposition: `clean`. No wontfix. No escalation.
+- Paths: `review/review-framework.md`, `review/round-1/general.md`, `review/round-1/merged.md`, `review/disposition.md`.
+- This review read the diff and the recorded gates. It did not re-run `./bin/dev build`, `./bin/dev test`, or `ganda repo audit`.
 
