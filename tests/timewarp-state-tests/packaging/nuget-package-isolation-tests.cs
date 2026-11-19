@@ -7,6 +7,8 @@
 // folder so a regression fails without writing ~/.nuget/packages.
 // DeleteVersionFolders is the same helper verify-samples uses to drop a same-version
 // extract before restoring the nupkg just packed.
+// PruneStaleToolResolverEntries runs against a temp copy of the SDK's toolResolverCache layout,
+// so the tests never touch ~/.dotnet.
 #endregion
 
 namespace TimeWarp.State.Packaging;
@@ -146,6 +148,85 @@ public class NuGetPackageIsolation_Should_
     folders.ShouldNotContain(isolated);
   }
 
+  public static void PruneAToolResolverEntryWhoseExecutableIsGone()
+  {
+    using CacheFixture fixture = CacheFixture.CreateEmpty();
+    string missing = Path.Combine(fixture.Root, "gone-worktree", "Fixie.Console.dll");
+    string entryFile = WriteToolResolverEntry(fixture.Root, "fixie.console", missing);
+
+    IReadOnlyList<string> pruned = DevCli.NuGetPackageIsolation.PruneStaleToolResolverEntries(fixture.Root);
+
+    pruned.ShouldBe([entryFile]);
+    File.Exists(entryFile).ShouldBeFalse();
+  }
+
+  public static void KeepAToolResolverEntryWhoseExecutableExists()
+  {
+    using CacheFixture fixture = CacheFixture.CreateEmpty();
+    string present = Path.Combine(fixture.Root, "Fixie.Console.dll");
+    File.WriteAllText(present, "");
+    string entryFile = WriteToolResolverEntry(fixture.Root, "fixie.console", present);
+    string before = File.ReadAllText(entryFile);
+
+    IReadOnlyList<string> pruned = DevCli.NuGetPackageIsolation.PruneStaleToolResolverEntries(fixture.Root);
+
+    pruned.ShouldBeEmpty();
+    File.ReadAllText(entryFile).ShouldBe(before);
+  }
+
+  public static void KeepTheLiveEntriesWhenOnlySomeAreStale()
+  {
+    using CacheFixture fixture = CacheFixture.CreateEmpty();
+    string present = Path.Combine(fixture.Root, "docfx.dll");
+    File.WriteAllText(present, "");
+    string missing = Path.Combine(fixture.Root, "gone-worktree", "docfx.dll");
+    string entryFile = Path.Combine(fixture.Root, "docfx");
+    File.WriteAllText(
+      entryFile,
+      $$"""[{"Version":"2.77.0","PathToExecutable":{{JsonString(missing)}}},{"Version":"2.78.0","PathToExecutable":{{JsonString(present)}}}]""");
+
+    IReadOnlyList<string> pruned = DevCli.NuGetPackageIsolation.PruneStaleToolResolverEntries(fixture.Root);
+
+    pruned.ShouldBe([entryFile]);
+    using System.Text.Json.JsonDocument document = System.Text.Json.JsonDocument.Parse(File.ReadAllText(entryFile));
+    document.RootElement.GetArrayLength().ShouldBe(1);
+    document.RootElement[0].GetProperty("Version").GetString().ShouldBe("2.78.0");
+    document.RootElement[0].GetProperty("PathToExecutable").GetString().ShouldBe(present);
+  }
+
+  public static void LeaveAnUnreadableToolResolverFileAlone()
+  {
+    using CacheFixture fixture = CacheFixture.CreateEmpty();
+    string entryFile = Path.Combine(fixture.Root, "broken");
+    File.WriteAllText(entryFile, "not json");
+
+    IReadOnlyList<string> pruned = DevCli.NuGetPackageIsolation.PruneStaleToolResolverEntries(fixture.Root);
+
+    pruned.ShouldBeEmpty();
+    File.ReadAllText(entryFile).ShouldBe("not json");
+  }
+
+  public static void IgnoreAMissingToolResolverCacheFolder()
+  {
+    string missingFolder = Path.Combine(Path.GetTempPath(), "tool-cache-" + Guid.NewGuid().ToString("N"));
+
+    DevCli.NuGetPackageIsolation.PruneStaleToolResolverEntries(missingFolder).ShouldBeEmpty();
+  }
+
+  private static string WriteToolResolverEntry(string cacheFolder, string packageId, string pathToExecutable)
+  {
+    string entryFile = Path.Combine(cacheFolder, packageId);
+    File.WriteAllText(
+      entryFile,
+      $$"""[{"Version":"3.4.0","TargetFramework":"net11.0","RuntimeIdentifier":"any","Name":"fixie","Runner":"dotnet","PathToExecutable":{{JsonString(pathToExecutable)}}}]""");
+    return entryFile;
+  }
+
+  private static string JsonString(string value)
+  {
+    return System.Text.Json.JsonSerializer.Serialize(value);
+  }
+
   private sealed class CacheFixture : IDisposable
   {
     private CacheFixture(string root)
@@ -161,6 +242,13 @@ public class NuGetPackageIsolation_Should_
       string versionFolder = Path.Combine(root, packageFolder, version);
       Directory.CreateDirectory(versionFolder);
       File.WriteAllText(Path.Combine(versionFolder, ".nupkg.metadata"), metadata);
+      return new CacheFixture(root);
+    }
+
+    public static CacheFixture CreateEmpty()
+    {
+      string root = Path.Combine(Path.GetTempPath(), "nuget-guard-" + Guid.NewGuid().ToString("N"));
+      Directory.CreateDirectory(root);
       return new CacheFixture(root);
     }
 

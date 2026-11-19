@@ -18,6 +18,14 @@ Acceptance criteria:
 - source/Directory.Build.props <Version> is unchanged (no release).
 - `./bin/dev build` passes and `ganda repo audit` passes.
 
+Resume pass (2026-11-19): local CI failed at `Run analyzer tests` because `fixie` was not found.
+Find why, and fix it in the dev CLI so a fresh task worktree passes without manual steps.
+
+Acceptance criteria (resume):
+- Root cause named and reproduced.
+- The dev CLI fixes it with no manual cache clearing; a test covers the fix.
+- `dotnet fixie timewarp-state-tests` passes in this worktree after the fix.
+
 ## Session
 
 - Minted by ganda task wave run 20261119T023451Z-133310
@@ -36,7 +44,37 @@ Acceptance criteria:
 - Test files: none added or edited. The only consumer is the Playwright E2E project (MSTest, not a Jaribu runfile; needs a running app); CI runs it.
 - `ganda repo audit` — PASS with 1 advisory warning (`vscode-window-icon`: .vscode/settings.json missing). `ganda repo audit --fix` wrote the git-ignored local `.vscode/settings.json`; rerun reports "Repository passes all audit checks" (44 passed, 0 failed). No tracked file changed by the fix.
 
+### Resume pass: stale tool resolver cache (2026-11-19)
+
+- Root cause (reproduced): `~/.dotnet/toolResolverCache/1/*` named tool paths under the gc'd
+  task-164 worktree's `artifacts/nuget-packages`. That SDK cache is machine-wide and keyed by tool
+  id and version only, and `dotnet tool restore` does not rewrite an entry it finds, so
+  `dotnet tool run fixie` failed in every other worktree. Not a product or package-bump failure.
+- Fix: `NuGetPackageIsolation.Apply` (`tools/dev-cli/endpoints/nuget-package-isolation.cs`, shared
+  by the dev CLI and `scripts/*.cs`) now calls `PruneStaleToolResolverEntries`. It removes cache
+  entries whose `PathToExecutable` no longer exists (rewrites the file with the live entries, or
+  deletes it when none remain). Best effort: an unreadable file or folder is left alone. The next
+  restore writes the entry for the current worktree.
+- Tests: 5 new cases in `tests/timewarp-state-tests/packaging/nuget-package-isolation-tests.cs`
+  against a temp cache folder (prune a gone path, keep a live path, keep live entries in a mixed
+  file, leave invalid JSON alone, missing folder).
+- Docs: `scripts/overview.md` isolation section.
+- Verified: `self-install` pruned all 7 stale entries; `dotnet tool restore` then wrote fixie's
+  entry for this worktree; `dotnet fixie timewarp-state-tests` ran.
+
+### Gates (resume pass)
+
+- `dotnet run --file tools/dev-cli/dev.cs -- self-install` — installed (dev CLI changed).
+- `./bin/dev build` — PASS (0 warnings, 0 errors).
+- `dotnet fixie timewarp-state-tests` (with `NUGET_PACKAGES=$PWD/artifacts/nuget-packages`, after `dotnet tool restore`) — PASS, 173 passed, 1 skipped, including the 5 new `NuGetPackageIsolation_Should_` cases. Fixie project, not a Jaribu runfile.
+- `ganda repo audit` — PASS ("Repository passes all audit checks"), run once after the last product edit.
+
 ### How to validate
+
+Resume smoke: point a fake entry at a missing path, e.g.
+`echo '[{"Version":"3.4.0","PathToExecutable":"/nonexistent/Fixie.Console.dll"}]' > ~/.dotnet/toolResolverCache/1/fixie.console`,
+then `./bin/dev test` (or `./bin/dev ci`).
+Expect: the analyzer tests step finds `fixie`; the entry now names this worktree's `artifacts/nuget-packages`.
 
 Smoke: `grep -n 'Microsoft.Playwright.MSTest.v4' Directory.Packages.props` then `./bin/dev build`.
 Expect: the pin reads `Version="1.65.1"` and the build succeeds with 0 errors; CI's E2E job restores 1.65.1 and passes.
@@ -52,7 +90,11 @@ Expect: the pin reads `Version="1.65.1"` and the build succeeds with 0 errors; C
 
 - Round 1: Done
 
-## Resume note (2026-11-19)
+## Resume note (2026-11-19) — resolved
+
+Resolved in the resume implement pass: stale `~/.dotnet/toolResolverCache` entries from the gc'd
+task-164 worktree; the dev CLI now prunes them. See `### Resume pass` under `## Results`.
+
 
 The walk parked at open-pr. Implement and review are done and clean (one dev-only pin,
 Microsoft.Playwright.MSTest.v4 1.65.0 to 1.65.1). Local CI

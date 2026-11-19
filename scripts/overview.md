@@ -11,6 +11,7 @@ Restores in this repo use `artifacts/nuget-packages` and do not write the packed
 - `nuget.config` sets `globalPackagesFolder` to `artifacts/nuget-packages` (relative to the config file).
 - `Directory.Build.props` sets `RestorePackagesPath` to the same folder. That property wins over `NUGET_PACKAGES` for project restore, build, pack, and test.
 - `scripts/package.cs`, `build.cs`, `test.cs`, `e2e.cs`, and `clean.cs`, and the dev CLI, set `NUGET_PACKAGES` to that folder before they start child `dotnet` processes.
+- The same step prunes stale entries from the SDK's local-tool resolver cache (`~/.dotnet/toolResolverCache/1`, or under `DOTNET_CLI_HOME`). That cache is machine-wide and keyed only by tool id and version, so it can name a tool path inside a task worktree that `ganda worktree gc` has deleted. `dotnet tool restore` does not rewrite an entry it finds, and `dotnet fixie` then fails with `Run "dotnet tool restore"`. An entry whose `PathToExecutable` is missing is removed, and the next restore writes it for this worktree.
 
 A local pack stays in `artifacts/packages`. A restore extracts it under `artifacts/nuget-packages`. The release version string can match a package published to nuget.org. Other repositories on the machine still resolve that version from their own cache and from nuget.org.
 

@@ -13,6 +13,12 @@
 // DeleteVersionFolders removes <lowercase id>/<version> under a packages folder.
 // verify-samples calls it on the isolated folder before restoring sample 00 auto,
 // because NuGet keeps a same-version extract and does not read the nupkg just packed.
+// The SDK's local-tool resolver cache (~/.dotnet/toolResolverCache/1, or under DOTNET_CLI_HOME)
+// is machine-wide and keyed by tool id and version only. Restore does not rewrite an entry it
+// finds, so after one task worktree's isolated folder is deleted every other worktree gets
+// "Run dotnet tool restore" for that tool. The first Apply prunes entries whose executable is gone;
+// the next dotnet tool restore writes them again for the current folder. Pruning is best effort:
+// a file it cannot read or write is left as it was.
 #endregion
 
 namespace DevCli;
@@ -41,9 +47,45 @@ internal static class NuGetPackageIsolation
     string? previous = Environment.GetEnvironmentVariable("NUGET_PACKAGES");
     Directory.CreateDirectory(isolated);
     Environment.SetEnvironmentVariable("NUGET_PACKAGES", isolated);
+    PruneStaleToolResolverEntries(ToolResolverCacheFolder());
     Isolation isolation = new(isolated, previous);
     Applied = isolation;
     return isolation;
+  }
+
+  internal static string ToolResolverCacheFolder()
+  {
+    string? cliHome = Environment.GetEnvironmentVariable("DOTNET_CLI_HOME");
+    string home = string.IsNullOrWhiteSpace(cliHome)
+      ? Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
+      : cliHome;
+    return Path.Combine(home, ".dotnet", "toolResolverCache", "1");
+  }
+
+  internal static IReadOnlyList<string> PruneStaleToolResolverEntries(string cacheFolder)
+  {
+    if (string.IsNullOrWhiteSpace(cacheFolder) || !Directory.Exists(cacheFolder))
+    {
+      return [];
+    }
+
+    List<string> pruned = [];
+    try
+    {
+      foreach (string entryFile in Directory.EnumerateFiles(cacheFolder))
+      {
+        if (TryPruneToolResolverFile(entryFile))
+        {
+          pruned.Add(entryFile);
+        }
+      }
+    }
+    catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+    {
+      // Best effort: a cache folder that cannot be listed is left for dotnet tool restore.
+    }
+
+    return pruned;
   }
 
   internal static string MachineGlobalPackagesFolder()
@@ -260,6 +302,74 @@ internal static class NuGetPackageIsolation
     }
 
     return null;
+  }
+
+  private static bool TryPruneToolResolverFile(string entryFile)
+  {
+    try
+    {
+      byte[] content = File.ReadAllBytes(entryFile);
+      using System.Text.Json.JsonDocument document = System.Text.Json.JsonDocument.Parse(content);
+      if (document.RootElement.ValueKind != System.Text.Json.JsonValueKind.Array)
+      {
+        return false;
+      }
+
+      List<System.Text.Json.JsonElement> kept = [];
+      int total = 0;
+      foreach (System.Text.Json.JsonElement entry in document.RootElement.EnumerateArray())
+      {
+        total++;
+        if (!IsStaleToolResolverEntry(entry))
+        {
+          kept.Add(entry);
+        }
+      }
+
+      if (kept.Count == total)
+      {
+        return false;
+      }
+
+      if (kept.Count == 0)
+      {
+        File.Delete(entryFile);
+        return true;
+      }
+
+      string temporary = entryFile + "." + Guid.NewGuid().ToString("N") + ".tmp";
+      using (FileStream stream = File.Create(temporary))
+      using (System.Text.Json.Utf8JsonWriter writer = new(stream))
+      {
+        writer.WriteStartArray();
+        foreach (System.Text.Json.JsonElement entry in kept)
+        {
+          entry.WriteTo(writer);
+        }
+
+        writer.WriteEndArray();
+      }
+
+      File.Move(temporary, entryFile, overwrite: true);
+      return true;
+    }
+    catch (Exception exception) when (exception is System.Text.Json.JsonException or IOException or UnauthorizedAccessException)
+    {
+      return false;
+    }
+  }
+
+  private static bool IsStaleToolResolverEntry(System.Text.Json.JsonElement entry)
+  {
+    if (entry.ValueKind != System.Text.Json.JsonValueKind.Object
+      || !entry.TryGetProperty("PathToExecutable", out System.Text.Json.JsonElement pathProperty)
+      || pathProperty.ValueKind != System.Text.Json.JsonValueKind.String)
+    {
+      return false;
+    }
+
+    string? path = pathProperty.GetString();
+    return !string.IsNullOrWhiteSpace(path) && !File.Exists(path);
   }
 
   private static bool TryReadSource(string metadataPath, out string source)
