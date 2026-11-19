@@ -6,15 +6,19 @@
 **Plan / brief:** Refresh the three outdated NuGet pins in `Directory.Packages.props` (Playwright.MSTest.v4 1.65.0, Aspire.Hosting 17.0.0, Aspire.Hosting.AppHost 17.0.0) and set `<Version>` to `12.0.0-beta.19`. The implementer also moved Aspire 17 call sites off obsolete `AddProject` and `Aspire.AppHost.Sdk`.
 **Effort:** 1 (general only)
 **Reviewer roster:** general
-**Session IDs:** grok `01a1f048-ab18-7b91-a7c5-42dbba6fef1e` (2026-11-19, round 1). Round 2: grok `01a1f053-b783-7360-b462-b58d6babf168` (2026-11-19). Implementer session was not reported.
+**Session IDs:** grok `01a1f048-ab18-7b91-a7c5-42dbba6fef1e` (2026-11-19, round 1). Round 2: grok `01a1f053-b783-7360-b462-b58d6babf168` (2026-11-19). Round 3: grok `01a1f193-cfea-74c2-b386-5d29855ca2f7` (2026-11-19). Implementer session was not reported.
 
 ## Round 2 scope
 
 Delta since round 1 base `43e09174` through `04cf07c0` (fix commit). Product files: `tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs`, `tests/timewarp-state-tests/packaging/nuspec-dependency-allow-list-tests.cs`. Re-verify M1. Do not re-review the earlier pin bump.
 
+## Round 3 scope
+
+Delta since round 2 close `04cf07c0` through `005d9b2e`. Versus `master`, the product diff is still the task 164 pin bump, the Aspire 17 call-site migration, and the M1 allow-list fix (17 files). The new commits merge `origin/master` (task 165: `TimeWarpStateVersion` is read from `source/Directory.Build.props`) and record that resume. Re-verify M1 and that the merge kept both sides. Do not re-litigate the pin bump except where the merge touched `Directory.Packages.props`.
+
 ## Budget (by-diff)
 
-- Lines changed: 155
+- Lines changed: 188
 - Effort: 1
 - TCB hits: none
 - Roster axes: general
