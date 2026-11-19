@@ -13,8 +13,9 @@
 // verify-samples packs, then restores sample 00 auto from artifacts/packages.
 // The other samples ProjectReference source and are part of the build filter.
 // Release: ReleasePipeline (workflow/release-pipeline.cs) promotes the CI Packages-* artifact — no rebuild.
-// TimeWarpStateVersion (CPM / samples) must equal source/ Directory.Build.props
-// Version (pack / check-version); RepoVersionService.AssertVersionSsot fails on drift.
+// source/Directory.Build.props <Version> is the one version literal (pack / check-version / release).
+// msbuild/repository.props derives TimeWarpStateVersion (CPM / sample 00 auto) from it;
+// RepoVersionService.AssertVersionSsot checks the evaluated value is non-empty and equal. why: task 165
 // The stages live in workflow/pr-pipeline.cs, shared with `dev ci` (the local run that writes the CI note
 // the workflow's fast-path gate reads; see documentation/dev-ops/local-ci.md).
 // Both pipelines return a PipelineResult; this handler is the only place that sets the final

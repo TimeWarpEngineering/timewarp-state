@@ -3,7 +3,8 @@
 #endregion
 #region Design
 // Derives a solution filter from timewarp-state.slnx that omits sample 00 auto.
-// That sample PackageReferences TimeWarp.State at TimeWarpStateVersion, which is
+// That sample PackageReferences TimeWarp.State at TimeWarpStateVersion (derived by
+// msbuild/repository.props from source/Directory.Build.props <Version>), which is
 // not on nuget.org until release. verify-samples packs, then restores it with a
 // mapped config file. The other samples ProjectReference source and stay in this
 // filter. Root nuget.config does not list artifacts/packages. Filter JSON is written
