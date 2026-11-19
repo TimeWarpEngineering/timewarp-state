@@ -1,4 +1,4 @@
-<Project>
+<Project InitialTargets="_TimeWarpStateAssertVersion">
   <!-- Repository path definitions - can be imported standalone without build configuration -->
   <PropertyGroup Label="Repository Structure">
     <RepositoryName>timewarp-state</RepositoryName>
@@ -15,7 +15,24 @@
     <!-- Restore target for every project in this repo. Not the machine-wide ~/.nuget/packages folder. -->
     <IsolatedNuGetPackagesDirectory>$(ArtifactsDirectory)nuget-packages/</IsolatedNuGetPackagesDirectory>
     <LocalNuGetCache>$(RepositoryRoot)local-nuget-feed/</LocalNuGetCache>
-    <!-- Product package version SSOT. source/Directory.Build.props <Version> must match. -->
-    <TimeWarpStateVersion>12.0.0-beta.18</TimeWarpStateVersion>
   </PropertyGroup>
+
+  <!--
+    Product package version. The one literal lives in source/Directory.Build.props <Version>, where
+    ganda task wave, dev check-version and dev release read and write it. TimeWarpStateVersion is read
+    from that file at evaluation time (Directory.Packages.props pins TimeWarp.State and
+    TimeWarp.State.Blazor at it), so this file stays importable on its own. No fallback: an empty
+    read fails every build through _TimeWarpStateAssertVersion.
+    why: task 165, Steve 2026-11-19 "fix it in state so there's one version"
+  -->
+  <PropertyGroup Label="Product Version">
+    <TimeWarpStateVersionFile>$(SourceDirectory)Directory.Build.props</TimeWarpStateVersionFile>
+    <TimeWarpStateVersion Condition="Exists('$(TimeWarpStateVersionFile)')">$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(TimeWarpStateVersionFile)')), '(?&lt;=&lt;Version&gt;)[^&lt;]*(?=&lt;/Version&gt;)').Value.Trim())</TimeWarpStateVersion>
+  </PropertyGroup>
+
+  <Target Name="_TimeWarpStateAssertVersion">
+    <Error Condition="'$(TimeWarpStateVersion)' == ''"
+           Code="TWSV001"
+           Text="TimeWarpStateVersion is empty: no &lt;Version&gt; element with a value was read from '$(TimeWarpStateVersionFile)'. That file holds the one TimeWarp.State package version (msbuild/repository.props derives TimeWarpStateVersion from it)." />
+  </Target>
 </Project>
