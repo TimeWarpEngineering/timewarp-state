@@ -31,8 +31,12 @@ Acceptance criteria:
 - Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-18T20:10:48Z
 - Reviewer: Grok session 01a1f048-ab18-7b91-a7c5-42dbba6fef1e (2026-11-19), effort 1, roster general, round 1. Turn cap 80.
 - Reviewer round 2: Grok session 01a1f053-b783-7360-b462-b58d6babf168 (2026-11-19), effort 1, roster general, turn cap 80. Re-reviewed the M1 fix delta `43e09174..04cf07c0`. Disposition clean, 0 open.
+- Reviewer round 3: Grok session 01a1f193-cfea-74c2-b386-5d29855ca2f7 (2026-11-19), effort 1, roster general, turn cap 80. Re-reviewed the resume merge `04cf07c0..005d9b2e` (task 165 into this branch). Disposition clean, 0 open.
 - Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1f048-ab18-7b91-a7c5-42dbba6fef1e, max-turns 80, artifacts general.md, merged.md — 2026-11-18T20:18:54Z
+- 2026-11-19 implementer (claude) resume pass: merged `origin/master` (task 165, one version SSOT) into the branch. The only conflict was this task file (master's copy lacked the resume note; kept ours). `msbuild/repository.props` and `Directory.Packages.props` merged clean.
 - 2026-11-19 implementer (claude) fix pass for round 1: M1 fixed. `Aspire.Hosting.Dotnet` added to the `TimeWarp.State.DevTools.Hosting` entry in `tools/dev-cli/endpoints/nuspec-dependency-allow-list.cs`; new allow-list test checks packable projects' public PackageReferences against the list.
+- Implement oracle: implemented by implementer-claude (claude, vendor anthropic, model claude-opus-5-5), session not reported, max-turns 500, Done — 2026-11-19T02:12:37Z
+- Review oracle: review by reviewer-grok (grok, vendor xai, model grok-4.7, response model grok-4.7-build), session 01a1f193-cfea-74c2-b386-5d29855ca2f7, max-turns 80, artifacts general.md, merged.md, disposition.md — 2026-11-19T02:17:29Z
 
 ## Results
 
@@ -61,6 +65,12 @@ Acceptance criteria:
   - `tests/timewarp-state-tests/packaging/nuspec-dependency-allow-list-tests.cs` (Fixie, not a Jaribu runfile): `NUGET_PACKAGES=$PWD/artifacts/nuget-packages dotnet tool run fixie timewarp-state-tests --no-build --tests "*NuspecDependencyAllowList*"` → 6 passed.
   - `./bin/dev pack` → exit 0, "Packed set verified." `unzip -p artifacts/packages/TimeWarp.State.DevTools.Hosting.12.0.0-beta.19.nupkg TimeWarp.State.DevTools.Hosting.nuspec` lists `Aspire.Hosting.Dotnet` 17.0.0.
   - `ganda repo audit` → "Repository passes all audit checks."
+- Resume pass (merge of `origin/master` for task 165), 2026-11-19:
+  - `dotnet run --file tools/dev-cli/dev.cs -- self-install` (master changed `tools/dev-cli`), then `./bin/dev build` → Build completed successfully, 0 warnings, 0 errors.
+  - `dotnet msbuild source/timewarp-state/timewarp-state.csproj -getProperty:TimeWarpStateVersion -getProperty:Version` → both `12.0.0-beta.19`. The "Version SSOT mismatch" check that parked open-pr no longer exists.
+  - `./bin/dev check-version` → "Version in source is new — safe to release." (12.0.0-beta.19, NuGet latest 12.0.0-beta.17).
+  - No test file changed in this pass; the full `./bin/dev ci` is left to the host open-pr node and PR CI.
+  - `ganda repo audit` → "Repository passes all audit checks."
 - `ganda repo audit` → passes (one advisory, vscode-window-icon). `ganda repo audit --fix` cleared it: "Repository passes all audit checks."
 
 ### How to validate
@@ -81,7 +91,9 @@ Expect: the build succeeds with 0 warnings (no CS0618, no ASPIRE012), and Fixie 
 
 Round 1, effort 1, roster general. Counts at close of that round were 1 open bug (M1). The fix pass set M1 to fixed.
 
-Round 2, effort 1, roster general. Re-reviewed the fix delta `43e09174..04cf07c0`. M1 stays fixed. No new findings. Final counts: 0 open, 1 fixed (M1 bug), 0 wontfix. Disposition: clean. Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
+Round 2, effort 1, roster general. Re-reviewed the fix delta `43e09174..04cf07c0`. M1 stays fixed. No new findings. Counts at close of that round: 0 open, 1 fixed (M1 bug), 0 wontfix. Disposition then: clean. Paths: `review/review-framework.md`, `review/round-2/merged.md`, `review/disposition.md`.
+
+Round 3, effort 1, roster general. Re-reviewed the resume merge of `origin/master` (task 165) `04cf07c0..005d9b2e`. The merge kept the task 164 pins and the M1 allow-list fix, and took the single version read from `source/Directory.Build.props`. The recorded resume build (0 warnings, both version properties `12.0.0-beta.19`, `./bin/dev check-version`, clean audit) covers that delta. M1 stays fixed. No new findings. Final counts: 0 open, 1 fixed (M1 bug), 0 wontfix. Disposition: clean. Paths: `review/review-framework.md`, `review/round-3/merged.md`, `review/disposition.md`. Gates were not re-run in this round.
 
 ## Learnings
 
@@ -91,3 +103,26 @@ Round 2, effort 1, roster general. Re-reviewed the fix delta `43e09174..04cf07c0
 
 - Round 1: Blocked — open M1
 - Round 2: Done
+- Round 3: Done
+## Resume note (2026-11-19)
+
+The walk parked at open-pr because local CI failed its first step:
+
+```
+Version SSOT mismatch: source/Directory.Build.props Version='12.0.0-beta.19',
+msbuild/repository.props TimeWarpStateVersion='12.0.0-beta.18'. Align both.
+```
+
+The branch itself is not wrong. Task 165 (PR #696, merged 2026-11-19) made
+`TimeWarpStateVersion` derive from `source/Directory.Build.props` `<Version>`, so there is now
+one version and the single bump on this branch is enough.
+
+To resume: merge `origin/master` into this branch to take task 165 (this branch does not touch
+`msbuild/repository.props`, so no conflict is expected), run `./bin/dev ci`, then let the walk
+continue from open-pr. Do not edit `msbuild/repository.props` by hand and do not change the
+version. Review is already clean (round 2); the merge of master is the only new delta.
+
+After merge the version 12.0.0-beta.19 is on master but not released. The release is run
+separately (`ganda task wave --brief release-pending`), on Steve's go.
+
+- Why: Steve 2026-11-19, wave run 20261118T170809Z-b6e473 parked this task; 165 fixed the cause.
