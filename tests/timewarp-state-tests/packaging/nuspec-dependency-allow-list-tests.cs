@@ -1,5 +1,6 @@
 #region Purpose
-// Proves the packed-package dependency allow-list rejects Roslyn and JetBrains.Annotations.
+// Proves the packed-package dependency allow-list rejects Roslyn and JetBrains.Annotations, and that
+// every public PackageReference of a packable project is on that project's list.
 #endregion
 
 #region Design
@@ -19,6 +20,41 @@ public class NuspecDependencyAllowList_Should_
     {
       IReadOnlyList<string> disallowed = DevCli.NuspecDependencyAllowList.FindDisallowed(packageId, allowed);
       disallowed.ShouldBeEmpty();
+    }
+  }
+
+  public static void AllowEachPublicPackageReferenceOfEveryPackableProject()
+  {
+    string sourceDirectory = Path.Combine(FindRepoRoot(), "source");
+    foreach (string projectPath in Directory.GetFiles(sourceDirectory, "*.csproj", SearchOption.AllDirectories))
+    {
+      System.Xml.Linq.XDocument project = System.Xml.Linq.XDocument.Load(projectPath);
+      string? packageId = project
+        .Descendants()
+        .Where(element => element.Name.LocalName == "PackageId")
+        .Select(element => element.Value.Trim())
+        .FirstOrDefault();
+      bool isPackable = project
+        .Descendants()
+        .Any(element => element.Name.LocalName == "IsPackable"
+          && string.Equals(element.Value.Trim(), "true", StringComparison.OrdinalIgnoreCase));
+      if (packageId is null || !isPackable)
+      {
+        continue;
+      }
+
+      string[] publicPackageIds =
+      [
+        .. project
+          .Descendants()
+          .Where(element => element.Name.LocalName == "PackageReference" && !IsPrivate(element))
+          .Select(element => (string?)element.Attribute("Include"))
+          .Where(id => !string.IsNullOrWhiteSpace(id))
+          .Select(id => id!),
+      ];
+
+      IReadOnlyList<string> disallowed = DevCli.NuspecDependencyAllowList.FindDisallowed(packageId, publicPackageIds);
+      disallowed.ShouldBeEmpty($"{packageId} ({Path.GetFileName(projectPath)})");
     }
   }
 
@@ -80,15 +116,24 @@ public class NuspecDependencyAllowList_Should_
       .ShouldNotContain("Microsoft.CodeAnalysis.CSharp");
   }
 
-  private static string ReadRepoFile(string relativePath)
+  private static bool IsPrivate(System.Xml.Linq.XElement packageReference)
+  {
+    string? privateAssets = (string?)packageReference.Attribute("PrivateAssets")
+      ?? packageReference.Elements().FirstOrDefault(element => element.Name.LocalName == "PrivateAssets")?.Value;
+    return string.Equals(privateAssets?.Trim(), "all", StringComparison.OrdinalIgnoreCase);
+  }
+
+  private static string ReadRepoFile(string relativePath) =>
+    File.ReadAllText(Path.Combine(FindRepoRoot(), relativePath));
+
+  private static string FindRepoRoot()
   {
     DirectoryInfo? directory = new(AppContext.BaseDirectory);
     while (directory is not null)
     {
-      string solution = Path.Combine(directory.FullName, "timewarp-state.slnx");
-      if (File.Exists(solution))
+      if (File.Exists(Path.Combine(directory.FullName, "timewarp-state.slnx")))
       {
-        return File.ReadAllText(Path.Combine(directory.FullName, relativePath));
+        return directory.FullName;
       }
 
       directory = directory.Parent;

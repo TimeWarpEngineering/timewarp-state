@@ -6,7 +6,8 @@
 // Direct nuspec dependencies are the consumer restore graph. Roslyn and JetBrains.Annotations are
 // compile-time only and must not appear. A package id with no entry fails closed. The check compares
 // ids only, so a version bump of an allowed dependency stays green. dev pack reads each nupkg; the
-// unit tests feed the same check a nuspec that adds a dependency outside the list.
+// unit tests feed the same check a nuspec that adds a dependency outside the list, and check each
+// packable project's public PackageReference ids against its entry so a new reference fails before pack.
 #endregion
 
 namespace DevCli;
@@ -53,6 +54,7 @@ internal static class NuspecDependencyAllowList
       ["TimeWarp.State.DevTools.Hosting"] = new HashSet<string>(StringComparer.Ordinal)
       {
         "Aspire.Hosting",
+        "Aspire.Hosting.Dotnet",
         "TimeWarp.State.DevTools.App",
       },
       ["TimeWarp.State.DevTools.Wasm"] = new HashSet<string>(StringComparer.Ordinal)

@@ -3,12 +3,13 @@
 #endregion
 
 #region Design
-// Adds the sample server and the DevTools Blazor app. WithTimeWarpStateDevTools publishes the
-// DevTools origin so the server can export TimeWarp.State activities to the inspector.
+// Adds the sample server with AddDotnetProject (path relative to this AppHost) and the DevTools
+// Blazor app. WithTimeWarpStateDevTools publishes the DevTools origin so the server can export
+// TimeWarp.State activities to the inspector.
 #endregion
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 IResourceBuilder<ExecutableResource> devtools = builder.AddTimeWarpStateDevTools();
-builder.AddProject<Projects.sample_04_server>("sample-04-server")
+builder.AddDotnetProject("sample-04-server", "../server/sample-04-server/sample-04-server.csproj")
   .WithTimeWarpStateDevTools(devtools);
 builder.Build().Run();

@@ -10,4 +10,5 @@ global using System.Reflection;
 global using System.Runtime.CompilerServices;
 global using Aspire.Hosting;
 global using Aspire.Hosting.ApplicationModel;
+global using Aspire.Hosting.Dotnet;
 global using TimeWarp.State.DevTools.Hosting;

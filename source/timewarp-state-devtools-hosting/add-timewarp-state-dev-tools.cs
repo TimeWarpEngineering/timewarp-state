@@ -23,6 +23,8 @@
 // IResourceBuilder<T> is invariant, so WaitFor rewraps the inspector as IResource.
 // AddTimeWarpStateDevToolsProject is the inner-loop switch: the caller passes a csproj path.
 // There is no parent-folder walk and no TIMEWARP_STATE_DEVTOOLS_PROJECT override.
+// It calls AddDotnetProject from Aspire.Hosting.Dotnet. Aspire 17 made AddProject(name, path)
+// obsolete, so the switch returns a DotnetProjectResource builder.
 #endregion
 
 namespace TimeWarp.State.DevTools.Hosting;
@@ -221,7 +223,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
   /// <param name="name">Resource name. Defaults to <see cref="TimeWarpStateDevToolsHosting.DefaultResourceName"/>.</param>
   /// <returns>The DevTools project resource.</returns>
   /// <exception cref="InvalidOperationException"><paramref name="projectPath"/> is not a file.</exception>
-  public static IResourceBuilder<ProjectResource> AddTimeWarpStateDevToolsProject
+  public static IResourceBuilder<DotnetProjectResource> AddTimeWarpStateDevToolsProject
   (
     this IDistributedApplicationBuilder builder,
     string projectPath,
@@ -239,7 +241,7 @@ public static class TimeWarpStateDevToolsHostingExtensions
     }
 
     return builder
-      .AddProject(name, fullPath)
+      .AddDotnetProject(name, fullPath)
       .WithHttpEndpoint(name: TimeWarpStateDevToolsHosting.UiEndpointName)
       .LabelDevToolsUi();
   }
