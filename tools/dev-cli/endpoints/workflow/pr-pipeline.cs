@@ -7,6 +7,8 @@
 // local run that writes the CI note). Keeping it in one place means a note can only claim the stages CI
 // would have run. The stage ids the note records are CiNoteInput.StageIds; clean is housekeeping, not a stage.
 // Handlers are invoked directly so the pipeline does not need a pre-installed ./bin/dev.
+// assert-version-ssot evaluates msbuild/repository.props and checks the TimeWarpStateVersion it derives equals
+// source/Directory.Build.props <Version> (the one literal). why: task 165
 // why: task 150, `dev ci` shares the stages with `dev workflow`
 #endregion
 
@@ -29,9 +31,9 @@ internal sealed class PrPipeline
 
   public async Task<PipelineResult> RunAsync(string repoRoot, CancellationToken ct)
   {
-    Terminal.WriteLine("Pipeline: assert-version-ssot → clean → build → test → e2e → verify-samples\n");
+    Terminal.WriteLine("Pipeline: assert-version-ssot (derived TimeWarpStateVersion == Version) → clean → build → test → e2e → verify-samples\n");
 
-    if (new RepoVersionService(Terminal, repoRoot).AssertVersionSsot() is null)
+    if (await new RepoVersionService(Terminal, repoRoot).AssertVersionSsot(ct) is null)
     {
       Terminal.WriteErrorLine("\nPipeline FAILED — Assert Version SSOT failed".Red());
       return PipelineResult.Failed("Assert Version SSOT failed");

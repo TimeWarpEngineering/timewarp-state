@@ -65,7 +65,7 @@ internal sealed class ReleasePipeline
 
   private async Task<PipelineResult> RunStepsAsync(string repoRoot, string? apiKey, CancellationToken ct)
   {
-    string? version = new RepoVersionService(Terminal, repoRoot).AssertVersionSsot();
+    string? version = await new RepoVersionService(Terminal, repoRoot).AssertVersionSsot(ct);
     if (version is null)
     {
       return Output.Abort("Assert Version SSOT failed");
