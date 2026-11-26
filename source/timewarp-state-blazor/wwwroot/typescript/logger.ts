@@ -1,3 +1,7 @@
+// #region Purpose
+// Styled console logging for the TimeWarp.State JS interop.
+// #endregion
+
 // Logger.ts
 export interface LogStyles {
   info: string;

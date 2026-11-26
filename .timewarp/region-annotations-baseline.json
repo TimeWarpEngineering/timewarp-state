@@ -1,0 +1,8 @@
+{
+  "files": [
+    "source/timewarp-state-blazor/wwwroot/js/TimeWarp.State.Blazor.lib.module.js",
+    "source/timewarp-state-blazor/wwwroot/js/constants.js",
+    "source/timewarp-state-blazor/wwwroot/js/logger.js",
+    "source/timewarp-state-blazor/wwwroot/js/timewarp-state.js"
+  ]
+}

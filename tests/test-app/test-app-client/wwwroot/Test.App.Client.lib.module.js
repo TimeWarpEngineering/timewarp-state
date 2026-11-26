@@ -1,3 +1,7 @@
+// #region Purpose
+// Test app JS initializer: waits for the JsonRequestHandler and exposes interop helpers the E2E tests drive.
+// #endregion
+
 import { timeWarpState } from '/_content/TimeWarp.State/js/timewarp-state.js'
 import { log, LogAction } from '/_content/TimeWarp.State/js/logger.js'
 

@@ -1,3 +1,7 @@
+// #region Purpose
+// Downloads a .NET stream reference as a file in the browser.
+// #endregion
+
 // TODO:  Make this Typescript attach it to window.TimeWarp to avoid conflicts with other libraries
 
 // wwwroot/js/downloadFile.js

@@ -1,4 +1,7 @@
 // noinspection JSUnusedLocalSymbols,JSUnusedGlobalSymbols
+// #region Purpose
+// Blazor JS initializer: registers window.TimeWarpState and the InitializeJavaScriptInterop entry point .NET calls.
+// #endregion
 
 import {timeWarpState} from './timewarp-state.js';
 import {log, LogAction} from './logger.js'
