@@ -1,3 +1,7 @@
+// #region Purpose
+// Applies the DevTools light/dark/system theme on the html element.
+// #endregion
+
 // Applies the DevTools theme on <html>. "system" clears data-theme so prefers-color-scheme wins.
 window.timeWarpDevToolsTheme = {
   apply(theme) {

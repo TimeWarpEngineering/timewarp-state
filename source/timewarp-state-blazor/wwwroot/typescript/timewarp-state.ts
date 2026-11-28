@@ -1,3 +1,7 @@
+// #region Purpose
+// TimeWarpState: holds the .NET JsonRequestHandler reference and dispatches JSON requests to it.
+// #endregion
+
 import {JsonRequestHandlerMethodName} from './constants.js';
 import {DotNetReference} from './dot-net-reference';
 import {log} from './logger.js';
